@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.6 2003-04-06 16:31:08 roebel Exp $
+# $Id: Makefile.am,v 1.7 2003-04-08 18:29:39 roebel Exp $
 #
 # ./Easdif/src/Makefile.am	Feb. 2003 Axel Roebel
 #
@@ -31,6 +31,9 @@
 
 
 # $Log: not supported by cvs2svn $
+# Revision 1.6  2003/04/06 16:31:08  roebel
+# Added license info
+#
 # Revision 1.5  2003/03/18 15:37:11  roebel
 # Use libtool for conveniance library
 #
@@ -70,7 +73,7 @@ libEasdif_la_SOURCES =  sdifentity.cpp sdifexception.cpp sdifframe.cpp \
 			sdifinit.cpp sdifmatrix.cpp sdifnamevaluetable.cpp
 
 libEasdif_la_LIBADD  = @SDIFCPPLIB@
-libEasdif_la_LDFLAGS = -no-undefined  -rpath $(libdir)
+libEasdif_la_LDFLAGS = -no-undefined  -release @VERSION@ -rpath $(libdir)
 
 
 INCLUDES = -I$(top_srcdir) -I../SDIF/include -I$(top_srcdir)/SDIF/include -I$(top_srcdir)/SDIF/sdif   -DUSE_CONFIGURE
