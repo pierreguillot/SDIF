@@ -1,3 +1,12 @@
+2004-01-19  Axel Roebel  <Axel.Roebel@ircam.fr>
+Version 0.8.0
+	
+	* easdif/sdifentity.h, easdif/sdifentity.cpp
+	new methods for reading only selected frames, and reawind the sdif file reader
+	to the beginning.
+
+	* added --enable-java switch to swig configure
+
 2003-11-25  Axel Roebel  <Axel.Roebel@ircam.fr>
 Version 0.7.3
 
@@ -458,4 +467,4 @@ Version 0.21
 	* ChangeLog: Added changelog to repository.
 
 
-$Id: ChangeLog,v 1.26 2003-11-25 10:59:15 roebel Exp $
+$Id: ChangeLog,v 1.27 2004-01-19 16:20:24 roebel Exp $
