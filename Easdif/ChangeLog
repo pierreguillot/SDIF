@@ -1,3 +1,10 @@
+2004-02-02  Axel Roebel  <Axel.Roebel@ircam.fr>
+Version 0.8.1
+	
+	* easdif/sdifframe.h, easdif/sdifframe.cpp
+	fixed problem in sdifframe that would result in 
+	error when matrices in the frame would be resized.
+	
 2004-01-19  Axel Roebel  <Axel.Roebel@ircam.fr>
 Version 0.8.0
 	
@@ -467,4 +474,4 @@ Version 0.21
 	* ChangeLog: Added changelog to repository.
 
 
-$Id: ChangeLog,v 1.27 2004-01-19 16:20:24 roebel Exp $
+$Id: ChangeLog,v 1.28 2004-02-02 18:07:19 roebel Exp $
