@@ -1,4 +1,4 @@
-/* $Id: SdifErrMess.c,v 3.4 1999-10-13 16:05:39 schwarz Exp $
+/* $Id: SdifErrMess.c,v 3.5 1999-11-03 16:42:30 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -15,6 +15,15 @@
  * author: Dominique Virolle 1998
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.4  1999/10/13  16:05:39  schwarz
+ * Changed data type codes (SdifDataTypeET) to SDIF format version 3, as
+ * decided with Matt Wright June 1999, added integer data types.
+ * Added writing of 1NVT with real frame header (but data is still not in
+ * matrices).
+ * The data type handling makes heavy use of code-generating macros,
+ * called for all data types with the sdif_foralltypes macro, thus
+ * adding new data types is easy.
+ *
  * Revision 3.3  1999/09/28  13:08:49  schwarz
  * Included #include <preincluded.h> for cross-platform uniformisation,
  * which in turn includes host_architecture.h and SDIF's project_preinclude.h.
@@ -216,7 +225,7 @@ SdifFsPrintError(char* oErrMess,
 
 
 
-#ifdef _DEBUG
+#if defined (DEBUG)  ||  defined (_DEBUG)
 	sprintf(HeadErrMess,
 			"*Sdif* Error %d of level %d (%s, %d)\n  SdifFile: %s",
 			Error->Tag,
@@ -230,7 +239,7 @@ SdifFsPrintError(char* oErrMess,
 			Error->Tag,
 			Error->Level,
 			SdifF->Name);
-#endif /* ifdef _DEBUG */
+#endif /* ifdef DEBUG */
 
 
 	if (SdifF->Stream)

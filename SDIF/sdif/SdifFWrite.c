@@ -1,4 +1,4 @@
-/* $Id: SdifFWrite.c,v 3.5 1999-10-15 12:28:44 schwarz Exp $
+/* $Id: SdifFWrite.c,v 3.6 1999-11-03 16:42:34 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -14,6 +14,12 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.5  1999/10/15  12:28:44  schwarz
+ * Updated writing of types and stream-id chunks to frames.
+ * No time parameter for name value tables and stream ID tables, since
+ * this decision is better left to the library.  (It uses the _SdifNoTime
+ * constant, which happens to be _Sdif_MIN_DOUBLE_.)
+ *
  * Revision 3.4  1999/10/13  16:05:43  schwarz
  * Changed data type codes (SdifDataTypeET) to SDIF format version 3, as
  * decided with Matt Wright June 1999, added integer data types.
@@ -305,7 +311,7 @@ SdifFWriteAllStreamID (SdifFileT *SdifF)
 #if (_SdifFormatVersion >= 3)
       /* write types as frame (for now with no matrices, but ascii data) */
       SdifFSetCurrFrameHeader (SdifF, e1IDS, _SdifUnknownSize, 0, 
-			       _SdifNoStreamID, _SdifNoTime);
+			       _SdifAllStreamID, _SdifNoTime);
       SizeW  = SdifFWriteFrameHeader (SdifF);
 #else
       SizeW  = SdifFWriteChunkHeader(SdifF, e1IDS, _SdifUnknownSize);

@@ -1,4 +1,4 @@
-/* $Id: SdifFScan.c,v 3.4 1999-10-15 12:27:51 schwarz Exp $
+/* $Id: SdifFScan.c,v 3.5 1999-11-03 16:42:33 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -14,6 +14,11 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.4  1999/10/15  12:27:51  schwarz
+ * No time parameter for name value tables and stream ID tables, since
+ * this decision is better left to the library.  (It uses the _SdifNoTime
+ * constant, which happens to be _Sdif_MIN_DOUBLE_.)
+ *
  * Revision 3.3  1999/10/13  16:05:42  schwarz
  * Changed data type codes (SdifDataTypeET) to SDIF format version 3, as
  * decided with Matt Wright June 1999, added integer data types.
@@ -166,7 +171,7 @@ SdifFScanAllASCIIChunks(SdifFileT *SdifF)
 	{
 
 	case e1NVT :
-	  SdifNameValuesLNewTable(SdifF->NameValues, _SdifNoStreamID);
+	  SdifNameValuesLNewTable(SdifF->NameValues, _SdifAllStreamID);
 	  SizeR += SdifFScanNameValueLCurrNVT(SdifF);
 	  break;
 
