@@ -32,9 +32,13 @@
  * 
  * 
  * 
- * $Id: sdifentity.cpp,v 1.23 2004-09-10 09:20:52 roebel Exp $ 
+ * $Id: sdifentity.cpp,v 1.24 2004-10-07 14:48:11 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.23  2004/09/10 09:20:52  roebel
+ * Extend frame directory to contain the matrix signatures for each frame.
+ * No longer needs to re read the frame to decide whether frame is selected.
+ *
  * Revision 1.22  2004/09/09 19:17:37  roebel
  * Version 1.0.0beta:
  * First complete version of iterator access when reading files. Frame-Iterators use the
@@ -174,7 +178,7 @@ SDIFEntity::SDIFEntity(): efile(0), mSize(0), mEof(true), mEofSeen(false),
 bool SDIFEntity::OpenRead(const char* filename)
 {
     isFrameDirEnabled = false;
-    mFrameDirectory.resize(0);
+    mFrameDirectory.clear();
     return ReOpenRead(filename);
 }
 
@@ -298,7 +302,7 @@ bool SDIFEntity::OpenWrite(const char* filename)
     // close file in case it was already open
     Close();
     isFrameDirEnabled = false;
-    mFrameDirectory.resize(0);
+    mFrameDirectory.clear();
     efile = SdifFOpen (filename, eWriteFile);
 
     if(!efile)
@@ -538,7 +542,7 @@ int SDIFEntity::ReadNextSelectedFrame(SDIFFrame& frame, SdifFloat8 time)
     // attention creation of iterator changes current position
     if(mCurrDirPos == mFrameDirectory.begin() 
        ||(mCurrDirPos == mFrameDirectory.end() 
-          && mFrameDirectory.size() &&mFrameDirectory.back().LocTime() < time )
+          && !mFrameDirectory.empty() &&mFrameDirectory.back().LocTime() < time )
        ||(mCurrDirPos->LocTime() < time )){
       up =true;
     }
