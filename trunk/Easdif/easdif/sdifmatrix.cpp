@@ -32,9 +32,12 @@
  * 
  * 
  * 
- * $Id: sdifmatrix.cpp,v 1.19 2004-07-13 15:02:00 roebel Exp $ 
+ * $Id: sdifmatrix.cpp,v 1.20 2004-07-20 19:32:36 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.19  2004/07/13 15:02:00  roebel
+ * Use member bytesread instead of local variable.
+ *
  * Revision 1.18  2003/12/05 13:36:58  roebel
  * Added proper initialization for bytesread variable
  *
@@ -306,8 +309,8 @@ int SDIFMatrix::Read(SdifFileT* file)
     }
   
     mSig = SdifFCurrMatrixSignature(file);
-    int nrows = SdifFCurrNbRow(file);
-    int ncols = SdifFCurrNbCol(file);
+    int	 nrows = SdifFNumRowsSelected(file);
+    int	 ncols = SdifFNumColumnsSelected(file);
 	
     Init(mSig, nrows, ncols, SdifFCurrDataType (file));
     /* add bytesread */
