@@ -1,4 +1,4 @@
-/* $Id: SdifFile.c,v 3.13.2.2 2000-08-21 21:35:15 tisseran Exp $
+/* $Id: SdifFile.c,v 3.13.2.3 2000-10-25 18:35:56 roebel Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -33,6 +33,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.13.2.2  2000/08/21  21:35:15  tisseran
+ * *** empty log message ***
+ *
  * Revision 3.13.2.1  2000/08/21  14:04:15  tisseran
  * *** empty log message ***
  *
@@ -140,6 +143,8 @@
 #include "SdifRWLowLevel.h" /* for SdifInitMachineType()  into SdifFLoadPredinedTypes */
 #include "SdifPreTypes.h"
 #include "SdifFScan.h"
+
+#include "SdifVersion.h"
 
 
 /* #include <sys/types.h> */
@@ -685,10 +690,6 @@ SdifGenKill(void)
 
 void SdifPrintVersion(void)
 {
-#ifndef lint
-    static char rcsid[]= "$Revision: 3.13.2.2 $ IRCAM $Date: 2000-08-21 21:35:15 $";
-#endif
-
     if (SdifStdErr == NULL)
 	SdifStdErr = stderr;
 
