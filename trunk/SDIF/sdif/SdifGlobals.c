@@ -1,4 +1,4 @@
-/* $Id: SdifGlobals.c,v 3.9 2000-11-21 16:34:49 roebel Exp $
+/* $Id: SdifGlobals.c,v 3.10 2001-02-08 15:26:56 tisseran Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -31,6 +31,12 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.9  2000/11/21 16:34:49  roebel
+ * New SdifSignatureConst builds integer signature according to
+ * endianess of machine. Multicharacter constants are no longer
+ * supported by the library. Cleaned up sdif.h/SdifGlobals.h a bit.
+ * Test for Multicharacter conversion is removed from configure.in.
+ *
  * Revision 3.8  2000/11/21 14:51:49  schwarz
  * - sdif.h is now included by all sdif/Sdif*.c files.
  * - Removed all public typedefs, enums, structs, and defines from the
@@ -166,7 +172,7 @@ SdifSizeofDataType(SdifDataTypeET DataType)
     return (DataType & 0xff);
 #else
     switch (DataType)
-	{
+    {
     case eUnicode :
     case eChar :
         return 1;
@@ -178,9 +184,9 @@ SdifSizeofDataType(SdifDataTypeET DataType)
     case eFloat4 :
     case eInt4 :
     case eUInt4 :
-	default :
+    default :
         return 4;
-	}
+    }
 #endif
 }
 
