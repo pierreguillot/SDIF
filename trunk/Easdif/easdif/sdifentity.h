@@ -32,9 +32,13 @@
  * 
  * 
  * 
- * $Id: sdifentity.h,v 1.25 2004-09-10 09:20:52 roebel Exp $ 
+ * $Id: sdifentity.h,v 1.26 2004-09-10 10:58:21 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.25  2004/09/10 09:20:52  roebel
+ * Extend frame directory to contain the matrix signatures for each frame.
+ * No longer needs to re read the frame to decide whether frame is selected.
+ *
  * Revision 1.24  2004/09/09 19:36:52  roebel
  * Made some members of the iterator private.
  *
@@ -206,8 +210,8 @@ namespace Easdif {
     SdifFloat8     LocTime()      const { return mFrameHdr.Time; }
     SdifSignature  LocSignature() const { return mFrameHdr.Signature;}
     SdiffPosT      LocPos()       const { return mPos;}
-    SdifSignature  LocMSignature(int ind)     const { 
-      if(ind<0 || ind >= mFrameHdr.NbMatrix)
+    SdifSignature  LocMSignature(SdifUInt4 ind)     const { 
+      if(ind >= mFrameHdr.NbMatrix)
         return eEmptySignature;
       switch(ind) {
       case 0 : return mMatrixSig0; break;
@@ -218,7 +222,7 @@ namespace Easdif {
       return mMatrixN[ind-3];
     }
     void SetMSignature(SdifUInt4 ind,SdifSignature _sig ){
-      if(ind<0 || ind >= mFrameHdr.NbMatrix){
+      if( ind >= mFrameHdr.NbMatrix){
         std::cerr << " SDIFLocation:: SetMSignature ind out of bounds "<< ind << "\n";
         return ;
       }
