@@ -1,4 +1,4 @@
-/* $Id: SdifHash.c,v 3.7 2003-11-07 21:47:18 roebel Exp $
+/* $Id: SdifHash.c,v 3.8 2004-09-09 17:43:14 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -35,6 +35,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.7  2003/11/07 21:47:18  roebel
+ * removed XpGuiCalls.h and replaced preinclude.h  by local files
+ *
  * Revision 3.6  2002/05/24 19:37:52  ftissera
  * Change code to be compatible with C++
  * Cast pointers to correct type.
@@ -275,14 +278,15 @@ SdifHashTablePutChar(SdifHashTableT* HTable,
 
 /***************** eHashInt4 **********************/
 
+#if 0
 unsigned int
 SdifHashInt4(unsigned int i, unsigned int HashSize)
 {
   return i % HashSize;
 }
-
-
-
+#else
+#   define SdifHashInt4(i, n)	((i) % (n))
+#endif
 
 
 void*
