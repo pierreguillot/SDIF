@@ -32,9 +32,15 @@
  * 
  * 
  * 
- * $Id: sdifmatrix.cpp,v 1.21 2004-07-21 13:27:07 roebel Exp $ 
+ * $Id: sdifmatrix.cpp,v 1.22 2004-09-08 09:16:26 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.21  2004/07/21 13:27:07  roebel
+ * Added new data accessing functions to read complete columns
+ * GetCol(double *,int icol), GetCol(float *,int icol), GetCol(int *,int icol)
+ * and rows
+ * GetRow(double *,int irow), GetRow(float *,int irow), GetRow(int *,int irow)
+ *
  * Revision 1.20  2004/07/20 19:32:36  roebel
  * Added support for row and column selection.
  * Matrix reading/writing reorganized to handle complete matrices whenever
@@ -320,7 +326,7 @@ int SDIFMatrix::Read(SdifFileT* file)
 	
     Init(mSig, nrows, ncols, SdifFCurrDataType (file));
     /* add bytesread */
-    bytesread += mInter->read(file);	    
+    bytesread += mInter->read(file);
     return bytesread;
 }
 
