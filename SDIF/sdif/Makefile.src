@@ -1,4 +1,4 @@
-# $Id: Makefile.src,v 3.4 2000-03-01 11:20:22 schwarz Exp $
+# $Id: Makefile.src,v 3.5 2000-05-04 14:59:31 schwarz Exp $
 #
 #               Copyright (c) 1998 by IRCAM - Centre Pompidou
 #                          All rights reserved.
@@ -8,6 +8,9 @@
 #                            manager@ircam.fr
 #
 # $Log: not supported by cvs2svn $
+# Revision 3.4  2000/03/01  11:20:22  schwarz
+# Added preliminary sketch of SdifHighLevel
+#
 # Revision 3.3  1999/10/07  15:08:05  schwarz
 # Moved headers from Makefile.headers (which has been removed) to
 # Makefile.src.  Headers are derived from sources, so your less prone
@@ -30,6 +33,7 @@
 SDIF_SRC = \
 	SdifHash.c \
 	SdifGlobals.c \
+	SdifSignatureTab.c \
 	SdifError.c \
 	SdifMemory.c \
 	SdifNameValue.c \
@@ -57,6 +61,7 @@ SDIF_SRC = \
 	SdifPreTypes.c \
 	SdifSelect.c \
 	SdifHighLevel.c \
+	SdifCheck.c \
 
 
 SDIF_HEADERS = \
