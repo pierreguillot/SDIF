@@ -1,6 +1,13 @@
-$Id: ChangeLog,v 1.3 2003-04-03 13:21:48 schwarz Exp $
-	
 2003-04-03  Diemo Schwarz  <schwarz@ircam.fr>
+
+	* configure.in:
+	Version number set in configure.in, generates Doxyfile with correct number.
+	Version numbering scheme with 3 fields:
+	- first  number: major version, only gigantic changes
+	- second number: minor version, records changes in API
+			 (added/removed functions, changed prototypes)
+	- third  number: release number, for intermediate releases,
+			 bug fixes, etc. that don't change the API
 
 	* Makefile.am: Added doc and test targets.
 
@@ -182,3 +189,5 @@ Version 0.21
 
 	* ChangeLog: Added changelog to repository.
 
+
+$Id: ChangeLog,v 1.4 2003-04-03 13:37:01 schwarz Exp $
