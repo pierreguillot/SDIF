@@ -1,5 +1,15 @@
+2004-07-29  Axel Roebel  <roebel@localdomain>
+Version 0.10.1
+
+	* easdif/sdifmatrixdata.h
+	GetCol/SetCol functions used wrong increment,
+
+	* easdif/sdifframe.cpp
+	use eEmptySignature for Frame init.
+	
+
 2004-07-28  Axel Roebel  <Axel.Roebel@ircam.fr>
-Version 0.9.2
+Version 0.10.0
 
 	* easdif/sdifmatrixdata.h, easdif/sdifmatrixdatainterface.h, easdif/sdifmatrix.h
 	Added matrix accessing functions using unsigned char
@@ -539,4 +549,4 @@ Version 0.21
 	* ChangeLog: Added changelog to repository.
 
 
-$Id: ChangeLog,v 1.36 2004-07-28 14:59:25 roebel Exp $
+$Id: ChangeLog,v 1.37 2004-07-29 13:45:27 roebel Exp $
