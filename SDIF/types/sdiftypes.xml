@@ -1,6 +1,10 @@
 <sdif-tdl version="0.3alpha">
 
-<!-- $Log: not supported by cvs2svn $
+<!-- 
+ $Log: not supported by cvs2svn $
+ Revision 1.8  2000/09/27 10:12:47  schwarz
+ Ideas for datatype, datarange.
+
  Revision 1.7  2000/08/22  18:01:06  peeters
  Added definition for 1MRK, 1PEM, 1VUV, 1VUF, 1VUN
 
@@ -32,7 +36,7 @@
 <types-version>Ircam_1.5</types-version>
 
 <types-revision>
-  $Id: sdiftypes.xml,v 1.8 2000-09-27 10:12:47 schwarz Exp $
+  $Id: sdiftypes.xml,v 1.9 2001-04-18 16:24:52 schwarz Exp $
 </types-revision>
 
 
