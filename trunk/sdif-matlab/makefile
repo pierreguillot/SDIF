@@ -1,10 +1,14 @@
-# $Id: makefile,v 1.14 2000-08-27 14:32:20 schwarz Exp $
+# $Id: makefile,v 1.15 2000-09-28 19:17:55 schwarz Exp $
 #
 # makefile	26. January 2000	Diemo Schwarz
 #
 # formesutils matlab library
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.14  2000/08/27  14:32:20  schwarz
+# Added data directory for reference data.
+# Version number, dist uses sdif-matlab-readme, no querysdif.
+#
 # Revision 1.13  2000/08/27  14:24:12  schwarz
 # Clarified empty matrix issue:  The doc was wrong!
 # Updated doc and loadsdiffile and loadsdifflat now use eof flag right
@@ -116,7 +120,8 @@ allsrc		= $(cfiles)
 #
 
 # install mex files and supporting m-files INSTALL_FILES into INSTALL_DIR
-INSTALL_DIR	= /u/formes/lib/matlab
+#INSTALL_DIR	= /u/formes/lib/matlab
+INSTALL_DIR	= /u/formes/share/lib/matlab
 INSTALL_FILES	= $(mexfiles) $(mfiles) mex.makedefs
 INSTALLED_FILES = $(INSTALL_FILES:%=$(INSTALL_DIR)/%)
 
@@ -180,6 +185,8 @@ t1.sdif:
 install:	all $(INSTALL_DIR)
 		cp -f $(INSTALL_FILES) $(INSTALL_DIR)
 		chmod g-w $(INSTALLED_FILES) # assure ownership-change
+installdefs:
+		cp -f mex.makedefs $(INSTALL_DIR)
 dist:		all
 		tar cvfz $(DIST_BASE).tar.gz $(DIST_FILES)
 		@echo now do: cvs tag $(CVSTAG)
