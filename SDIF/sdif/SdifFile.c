@@ -1,4 +1,4 @@
-/* $Id: SdifFile.c,v 3.13 2000-08-21 10:02:50 tisseran Exp $
+/* $Id: SdifFile.c,v 3.13.2.1 2000-08-21 14:04:15 tisseran Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -16,10 +16,6 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
- * Revision 3.12  2000/08/07  15:05:45  schwarz
- * Error checking for read general header.
- * Remove double definition of 1GAI matrix type.
- *
  * Revision 3.11  2000/05/12  14:41:47  schwarz
  * On behalf of Adrien, synchronisation with Mac sources, with some slight
  * changes because of cross-platform issues:
@@ -125,25 +121,11 @@
 #include "SdifPreTypes.h"
 #include "SdifFScan.h"
 
-#if HOST_OS_UNIX
-#include <sys/types.h>
+
+/* #include <sys/types.h> */
+#if HAVE_SYS_STAT_H
 #include <sys/stat.h>
 #endif
-
-
-int        gSdifInitialised = 0;
-SdifFileT *gSdifPredefinedTypes;
-
-/* _SdifTypesFileName is normaly defined
- * in the Makefile with -D_SdifTypesFileName="<FileNameWithPath>"
- * then default _SdifTypesFileName is not used.
- */
-#ifndef _SdifTypesFileName
-#define _SdifTypesFileName  "SdifTypes.STYP"
-#endif
-
-/* Global variable to Know the SDIF declaration file type used */
-char *UsedSdifFileTypes;
 
 
 SdifFileT*
@@ -277,7 +259,7 @@ SdifFOpen(const char* Name, SdifFileModeET Mode)
       }
       else
       {   /* check if we can perform seeks (with Sdiffsetpos) on this file */
-#if HOST_OS_UNIX
+#if HAVE_SYS_STAT_H
 	  SdifF->isSeekable  =  stdio == eBinaryModeUnknown
 			        && !S_ISFIFO (fileno (SdifF->Stream));
 #else
@@ -585,13 +567,10 @@ SdifTakeCodedPredefinedTypes(SdifFileT *SdifF)
 void
 SdifFLoadPredefinedTypes(SdifFileT *SdifF, char *TypesFileName)
 {
-  UsedSdifFileTypes = (char *) malloc(1024*sizeof(char));
-  
   if (SdifStrEq(TypesFileName, ""))
     {
       _SdifRemark("Load Coded Predefinied Types, it can be incomplete (file name null)\n");
       SdifTakeCodedPredefinedTypes(SdifF);
-      UsedSdifFileTypes = strcpy(UsedSdifFileTypes,"Predefinied Types");
     }
   else
     {
@@ -600,13 +579,11 @@ SdifFLoadPredefinedTypes(SdifFileT *SdifF, char *TypesFileName)
         {
           _SdifRemark("Load Coded Predefinied Types, it can be incomplete (file not found)\n");
           SdifTakeCodedPredefinedTypes(SdifF);
-	  UsedSdifFileTypes = strcpy(UsedSdifFileTypes,"Predefinied Types");
         }
       else
         {
-	  UsedSdifFileTypes = strcpy(UsedSdifFileTypes,TypesFileName);
-	  SdifFScanGeneralHeader   (SdifF);
-	  SdifFScanAllASCIIChunks  (SdifF);
+            SdifFScanGeneralHeader   (SdifF);
+            SdifFScanAllASCIIChunks  (SdifF);
         }
     }
 }
@@ -616,6 +593,16 @@ SdifFLoadPredefinedTypes(SdifFileT *SdifF, char *TypesFileName)
 
 
 
+int        gSdifInitialised = 0;
+SdifFileT *gSdifPredefinedTypes;
+
+/* _SdifTypesFileName is normaly defined
+ * in the Makefile with -D_SdifTypesFileName="<FileNameWithPath>"
+ * then default _SdifTypesFileName is not used.
+ */
+#ifndef _SdifTypesFileName
+#define _SdifTypesFileName  "SdifTypes.STYP"
+#endif
 
 void
 SdifGenInit(char *PredefinedTypesFile)
@@ -679,9 +666,9 @@ SdifGenKill(void)
 void SdifPrintVersion(void)
 {
 #ifndef lint
-    static char rcsid[]= "$Revision: 3.13 $ IRCAM $Date: 2000-08-21 10:02:50 $";
+    static char rcsid[]= "$Revision: 3.13.2.1 $ IRCAM $Date: 2000-08-21 14:04:15 $";
 #endif
-    
+
     if (SdifStdErr == NULL)
 	SdifStdErr = stderr;
 
@@ -692,12 +679,7 @@ void SdifPrintVersion(void)
     fprintf(SdifStdErr, "CVS: %s\n", rcsid);
 #endif
 
-    fprintf(SdifStdErr, "Release: %s, %s\n", _SDIF_VERSION, __DATE__);
-
-    /* Print which SdifTypes.STYP file is used:
-       Environment variable or compilation setting */
-    fprintf(SdifStdErr, "SDIF File Types: %s \n", UsedSdifFileTypes);
-    
+    fprintf(SdifStdErr, "Release: %s, %s\n", VERSION, __DATE__);
 }
 
 
@@ -909,8 +891,6 @@ SdifFPutInMtrxUsed (SdifFileT *SdifF, SdifSignature Sign)
 
 /* Error management */
 
-/* Return pointer to last error of file or NULL if there are no errors
-   present.  */
 SdifErrorT*
 SdifFLastError (SdifFileT *SdifF)
 {
@@ -918,7 +898,7 @@ SdifFLastError (SdifFileT *SdifF)
 }
 
 
-/* Return last error tag of file */
+
 SdifErrorTagET
 SdifFLastErrorTag (SdifFileT *SdifF)
 {

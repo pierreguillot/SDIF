@@ -1,4 +1,4 @@
-/* $Id: SdifFPut.h,v 3.5 2000-08-21 10:02:48 tisseran Exp $
+/* $Id: SdifFPut.h,v 3.5.2.1 2000-08-21 14:04:10 tisseran Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -73,8 +73,8 @@
  */
 
 
-#ifndef _SdifFPut_
-#define _SdifFPut_
+#ifndef _SDIFFPUT_H
+#define _SDIFFPUT_H 1
 
 #include "SdifGlobals.h"
 #include "SdifFileStruct.h"

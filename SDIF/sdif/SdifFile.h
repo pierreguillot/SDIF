@@ -1,4 +1,4 @@
-/* $Id: SdifFile.h,v 3.8 2000-05-22 15:23:15 schwarz Exp $
+/* $Id: SdifFile.h,v 3.8.2.1 2000-08-21 14:04:15 tisseran Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -17,6 +17,9 @@ LIBRARY
 
 LOG
  * $Log: not supported by cvs2svn $
+ * Revision 3.8  2000/05/22  15:23:15  schwarz
+ * Added functions to retrieve and inspect the stream ID table of a file.
+ *
  * Revision 3.7  2000/05/04  15:05:48  schwarz
  * SDIF Selection is now parsed automatically on opening a file,
  * and placed in file->Selection.
@@ -75,8 +78,10 @@ LOG
  * This can subsequently be used for SdifSetCurrOneRow.
  */
 
-#ifndef _SdifFile_
-#define _SdifFile_
+#ifndef _SDIFFILE_H
+#define _SDIFFILE_H
+
+#include "config.h" /* For _SDIF_VERSION declaration (made by autoconf) */
 
 #include "SdifFileStruct.h"
 #include "SdifGlobals.h"

@@ -1,4 +1,4 @@
-/* $Id: SdifFWrite.h,v 3.7 2000-07-18 15:08:35 tisseran Exp $
+/* $Id: SdifFWrite.h,v 3.7.2.1 2000-08-21 14:04:13 tisseran Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -105,6 +105,20 @@ void main(void)
 
 LOG
  * $Log: not supported by cvs2svn $
+ * Revision 3.7  2000/07/18  15:08:35  tisseran
+ * This release implements the New SDIF Specification (june 1999):
+ * - Name Values Table are written in a 1NVT frame which contains a 1NVT matrix
+ * - Frame and matrix type declaration are written in a 1TYP frame which contains a 1TYP matrix.
+ * - Stream ID are written in a 1IDS frame which contains a 1IDS matrix.
+ *
+ * Read function accept the previous version of the specification (read a text frame without matrix) to be compatible with older SDIF files.
+ *
+ * SdifString.h and SdifString.c implements some string mangement (creation, destruction, append, test of end of string, getc, ungetc).
+ *
+ * WATCH OUT:
+ *      We don't care about the old SDIF Specification (_SdifFormatVersion < 3)
+ * To use _SdifFormatVersion < 3, get the previous release.
+ *
  * Revision 3.6  2000/05/10  15:32:13  schwarz
  * Added functions to calculate the Size argument for SdifFSetCurrFrameHeader:
  * SdifSizeOfFrameHeader and SdifSizeOfMatrix
@@ -154,8 +168,8 @@ LOG
  */
 
 
-#ifndef _SdifFWrite_
-#define _SdifFWrite_
+#ifndef _SDIFFWRITE_H 
+#define _SDIFFWRITE_H 1
 
 #include "SdifGlobals.h"
 #include "SdifFileStruct.h"

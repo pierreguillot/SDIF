@@ -1,4 +1,4 @@
-/* $Id: SdifFScan.c,v 3.9 2000-08-21 10:02:49 tisseran Exp $
+/* $Id: SdifFScan.c,v 3.9.2.1 2000-08-21 14:04:12 tisseran Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.

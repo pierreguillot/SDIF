@@ -1,4 +1,4 @@
-/* $Id: SdifSelect.h,v 3.9 2000-08-07 15:05:46 schwarz Exp $
+/* $Id: SdifSelect.h,v 3.9.2.1 2000-08-21 14:04:23 tisseran Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -236,19 +236,11 @@ int SdifFreeSelection (SdifSelectionT *sel);
 /*DOC: 
   Returns pointer to first char of select spec (starting with ::), 
   or NULL if not found.
-  
-  [in] filename can be NULL
 */
 char *SdifSelectFindSelection (const char *filename);
 
 
 /*DOC: 
-  SdifGetFilenameAndSelection parses
-
-  [in]  filename (can be NULL) into
-  [out] sel      which must point to an SdifSelectionT structure.
-  [return] 
-		a pointer to a copy of the filename part of filename
 */
 char *SdifGetFilenameAndSelection (/*in*/  const char *filename, 
 				   /*out*/ SdifSelectionT *sel);
@@ -292,7 +284,8 @@ void SdifSelectAdd_TYPE_Range (SdifListT *list,
 #endif	/* if 0 */
 
 
-#ifdef __STDC__
+#ifdef STDC_HEADERS
+/* #ifdefined (__STDC__) */
 /*#if defined (_ANSI_C_SOURCE)  ||  defined (__STDC__)*/
 
 #define _addrangeproto(name, type, field) \
@@ -322,7 +315,7 @@ void SdifSelectAddSignatureRange (SdifListT *list, SdifSignature value, SdifSele
 void SdifSelectAddString (SdifListT *list, char * value) ; 
 void SdifSelectAddStringRange (SdifListT *list, char * value, SdifSelectTokens rt,      char * range) ; 
 
-#endif
+#endif /* STDC_HEADERS */
 
 
 /*

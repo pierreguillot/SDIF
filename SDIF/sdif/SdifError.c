@@ -1,4 +1,4 @@
-/* $Id: SdifError.c,v 3.5 2000-08-21 10:02:45 tisseran Exp $
+/* $Id: SdifError.c,v 3.5.2.1 2000-08-21 14:04:04 tisseran Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -76,7 +76,6 @@ int SdifErrorLine;
 FILE* SdifStdErr = NULL;
 
 
-
 static void 
 SdifExit (void)
 {
@@ -96,9 +95,6 @@ SdifErrorWarning(SdifErrorEnum Error, const void *ErrorMess)
 {
   int exitit = 0;
 
-  if (gSdifErrorOutputEnabled == 0)
-    return;
-  
   fprintf(SdifStdErr, "*Sdif* Error (%s, %d)\n  ", SdifErrorFile, SdifErrorLine);
 
   switch(Error)

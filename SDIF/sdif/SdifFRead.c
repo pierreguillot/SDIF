@@ -1,4 +1,4 @@
-/* $Id: SdifFRead.c,v 3.10 2000-08-07 15:05:45 schwarz Exp $
+/* $Id: SdifFRead.c,v 3.10.2.1 2000-08-21 14:04:11 tisseran Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -134,27 +134,25 @@ SdifFReadGeneralHeader(SdifFileT *SdifF)
   SizeR += SdiffReadUInt4 (&(SdifF->TypesVersion),  1, SdifF->Stream) * sizeof(SdifUInt4);
   
   if (SdifF->CurrSignature != eSDIF)
-  {
+    {
       sprintf(gSdifErrorMess, "%s not correctly read", 
 	      SdifSignatureToString(eSDIF));
       _SdifFError(SdifF, eBadHeader, gSdifErrorMess);
-  }
-  else
-  {   /* read rest of header chunk (might contain additional data) */
-      SdifFReadPadding (SdifF, SdifF->ChunkSize - (SizeR - SizeS));
+    }
 
-      if (SdifF->FormatVersion != _SdifFormatVersion)
-      {
-	  char *mfmt = SdifF->FormatVersion > _SdifFormatVersion
-	  ? "file is in a newer SDIF format version (%d) than the library (%d)"
-	  : "File is in an old SDIF format version (%d).  "
-	    "The library (version %d) is not backwards compatible.";
+  /* read rest of header chunk (might contain additional data) */
+  SdifFReadPadding (SdifF, SdifF->ChunkSize - (SizeR - SizeS));
 
-	  sprintf (gSdifErrorMess, mfmt, SdifF->FormatVersion, 
-		   _SdifFormatVersion);
-	  _SdifFError(SdifF, eBadFormatVersion, gSdifErrorMess);
-      }
-  }
+  if (SdifF->FormatVersion != _SdifFormatVersion)
+  {
+      char *mfmt = SdifF->FormatVersion > _SdifFormatVersion
+	? "file is in a newer SDIF format version (%d) than the library (%d)"
+	: "File is in an old SDIF format version (%d).  "
+	  "The library (version %d) is not backwards compatible.";
+
+      sprintf (gSdifErrorMess, mfmt, SdifF->FormatVersion, _SdifFormatVersion);
+      _SdifFError(SdifF, eBadFormatVersion, gSdifErrorMess);
+    }
     
   return SizeR;
 }
@@ -525,7 +523,7 @@ SdifSkipMatrixData(SdifFileT *SdifF)
   Pos += NbBytesToSkip;
   if (SdiffSetPos(SdifF->Stream, &Pos) != 0)
   {
-#if HOST_OS_UNIX
+#if HAVE_ERRNO_H
       if (errno == ESPIPE)
       {	  /* second chance: SdiffSetPos didn't work because we're
 	  reading from a pipe.  Instead of making the whole thing

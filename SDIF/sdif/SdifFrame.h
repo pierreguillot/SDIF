@@ -1,4 +1,4 @@
-/* $Id: SdifFrame.h,v 3.1 1999-03-14 10:56:54 virolle Exp $
+/* $Id: SdifFrame.h,v 3.1.2.1 2000-08-21 14:04:17 tisseran Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -15,6 +15,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.1  1999/03/14  10:56:54  virolle
+ * SdifStdErr add
+ *
  * Revision 2.1  1998/12/21  18:27:19  schwarz
  * Inserted copyright message.
  *
@@ -36,8 +39,8 @@
  *
  */
 
-#ifndef _SdifFrame_
-#define _SdifFrame_
+#ifndef _SDIFFRAME_H
+#define _SDIFFRAME_H 1
 
 #include "SdifGlobals.h"
 #include "SdifHash.h"

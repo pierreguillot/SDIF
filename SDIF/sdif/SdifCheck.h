@@ -1,4 +1,4 @@
-/* $Id: SdifCheck.h,v 3.1 2000-05-04 14:59:34 schwarz Exp $
+/* $Id: SdifCheck.h,v 3.1.2.1 2000-08-21 14:04:01 tisseran Exp $
   
                  Copyright (c) 1998 by IRCAM - Centre Pompidou
                             All rights reserved.
@@ -14,11 +14,15 @@ LIBRARY
 
 LOG
     $Log: not supported by cvs2svn $
+ * Revision 3.1  2000/05/04  14:59:34  schwarz
+ * Added modules SdifCheck and SdifSignatureTab, containing functions
+ * formerly in SdifFile.
+ *
 */
 
 
-#ifndef _SdifCheck_
-#define _SdifCheck_
+#ifndef _SDIFCHECK_H
+#define _SDIFCHECK_H 1
 
 #include "SdifFileStruct.h"
 

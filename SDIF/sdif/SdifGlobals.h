@@ -1,4 +1,4 @@
-/* $Id: SdifGlobals.h,v 3.8 2000-04-11 14:44:11 schwarz Exp $
+/* $Id: SdifGlobals.h,v 3.8.2.1 2000-08-21 14:04:18 tisseran Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -14,6 +14,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.8  2000/04/11  14:44:11  schwarz
+ * Use Char for Text in SDIF types.
+ *
  * Revision 3.7  2000/03/01  11:17:37  schwarz
  * Backwards compatibility of data types for reading text.
  *
@@ -228,7 +231,7 @@ typedef enum SdifDataTypeE
   eFloat8b  = 0x0020	/* = 64 */
 } SdifDataTypeET;
 
-#ifdef __STDC__  /* Is the compiler ANSI? */
+#ifdef STDC_HEADERS  /* Is the compiler ANSI? */
 
 /* generate template for all types */
 #define sdif__foralltypes(macro, post)	macro(Float4)post \

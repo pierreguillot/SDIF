@@ -1,4 +1,4 @@
-/* $Id: SdifHard_OS.h,v 3.5 2000-03-01 11:17:38 schwarz Exp $
+/* $Id: SdifHard_OS.h,v 3.5.2.1 2000-08-21 14:04:20 tisseran Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -16,6 +16,9 @@
  * author: Dominique Virolle 1998
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.5  2000/03/01  11:17:38  schwarz
+ * Factored out SdiffIsFile from get/setpos macros.
+ *
  * Revision 3.4  1999/10/13  16:05:50  schwarz
  * Changed data type codes (SdifDataTypeET) to SDIF format version 3, as
  * decided with Matt Wright June 1999, added integer data types.
@@ -79,11 +82,11 @@
 
 
 
-#if defined(__mips64) || defined(__alpha)
-#define _LONG64BITS_
-#else
-#define _LONG32BITS_
-#endif
+/*  #if defined(__mips64) || defined(__alpha) */
+/*  #define _LONG64BITS_ */
+/*  #else */
+/*  #define _LONG32BITS_ */
+/*  #endif */
 
 /* to do fpos_t compatible on MacinTosh */
 #if defined(MACINTOSH) || defined(WIN32)

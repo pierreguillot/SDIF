@@ -1,4 +1,4 @@
-/* $Id: SdifError.h,v 3.3 2000-08-21 10:02:46 tisseran Exp $
+/* $Id: SdifError.h,v 3.3.2.1 2000-08-21 14:04:05 tisseran Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -52,8 +52,8 @@
  */
 
 
-#ifndef _SdifError_
-#define _SdifError_
+#ifndef _SDIFERROR_H
+#define _SDIFERROR_H
 
 #include <stdio.h>
 
@@ -83,8 +83,6 @@ extern char *SdifErrorFile;
 extern int SdifErrorLine;
 extern FILE* SdifStdErr;
 
-extern int gSdifErrorOutputEnabled;
-
 void SdifSetExitFunc (SdifExitFuncT func);
 void SdifErrorWarning(SdifErrorEnum Error, const void *ErrorMess);
 
@@ -98,6 +96,6 @@ fprintf(SdifStdErr, "*Sdif Debug* %s, %d:\n", SdifErrorFile, SdifErrorLine), \
 fprintf(SdifStdErr, "%s\n",(mess)))
 
 #define _SdifRemark(mess) \
-(gSdifErrorOutputEnabled ? fprintf(SdifStdErr, "*Sdif* %s\n", mess) : 0 )
+fprintf(SdifStdErr, "*Sdif* %s\n", mess)
 
 #endif /* _SdifError_ */
