@@ -7,11 +7,14 @@
  * 
  * 
  * 
- * $Id: sdifmatrix.cpp,v 1.3 2002-06-18 14:48:53 ftissera Exp $ 
+ * $Id: sdifmatrix.cpp,v 1.4 2002-07-12 10:20:04 ftissera Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.3  2002/06/18 14:48:53  ftissera
+ * add GetSignature(), GetStringSignature() and GetType()
+ *
  * Revision 1.2  2002/04/11 16:41:55  ftissera
- * comment for sdifmatrix.cpp
+ * add comment for sdifmatrix.cpp
  * 
  * 
  */
@@ -113,7 +116,7 @@ int SDIFMatrix::Write(SdifFileT* file)
     SdifFSetCurrMatrixHeader(file, mSig, mType, nrows, ncols);
     //SdifFSetCurrMatrixHeader(file, mSig, eFloat4, nrows, ncols);
     SizeFrameW += SdifFWriteMatrixHeader(file);
-    SizeFrameW +=mInter->write(file);
+    SizeFrameW += mInter->write(file);
 
     return SizeFrameW;
 }
@@ -123,6 +126,20 @@ int SDIFMatrix::Read(SdifFileT* file)
 {
     int bytesread = 0;
     bytesread += SdifFReadMatrixHeader(file);
+    /* for selection */
+    if (!SdifFCurrMatrixIsSelected (file))
+	  {
+	      //bytesread += SdifFSkipMatrixData(file);
+	      SdifFSkipMatrixData(file);
+
+/*
+	      bytesread += SdifFReadPadding(file,
+	      SdifFPaddingCalculate
+	      (file->Stream, bytesread));
+*/
+	      //return bytesread;
+	      return 0;
+	  }
 
     mSig = SdifFCurrMatrixSignature(file);
     m_Signature = SdifSignatureToString(mSig);
@@ -131,7 +148,8 @@ int SDIFMatrix::Read(SdifFileT* file)
     mType  = SdifFCurrDataType (file);
 	
     CreateMatrixData(mSig, nrows, ncols, mType);
-    mInter->read(file);	    
+    /* add bytesread */
+    bytesread += mInter->read(file);	    
     return bytesread;
 }
 
