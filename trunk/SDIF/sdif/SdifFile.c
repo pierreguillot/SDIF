@@ -1,4 +1,4 @@
-/* $Id: SdifFile.c,v 3.32 2003-06-06 10:25:44 schwarz Exp $
+/* $Id: SdifFile.c,v 3.33 2003-06-24 15:24:58 roebel Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -33,6 +33,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.32  2003/06/06 10:25:44  schwarz
+ * Added eReadWriteFile that eventually opens a file in read-write mode.
+ *
  * Revision 3.31  2003/05/30 17:42:05  schwarz
  * Added SdifFGetMatrixType and SdifFGetFrameType.
  *
@@ -212,7 +215,9 @@
 
 #include <preincluded.h>
 #include "XpGuiCalls.h"
+#if 0
 #include "UniversalEnvVar.h"
+#endif
 
 #include "SdifGlobals.h"
 #include "SdifFile.h"
@@ -241,7 +246,7 @@
 #include "SdifVersion.h"
 
 #ifndef AUTOCKSUM
-#define AUTOCKSUM "$Checksum: not available$ IRCAM $Date: 2003-06-06 10:25:44 $" 
+#define AUTOCKSUM "$Checksum: not available$ IRCAM $Date: 2003-06-24 15:24:58 $" 
 #endif
 
 #ifndef lint
