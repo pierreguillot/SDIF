@@ -176,8 +176,8 @@ for (row = 0; row &lt; nrows; row++)
     for (col = 1; col &lt;= ncols; col++)
     {
         SdifFSetCurrOneRowCol (file, col, value);
-        SizeFrameW += SdifFWriteOneRow (file);
     }
+    SizeFrameW += SdifFWriteOneRow (file);
 }
 <FONT COLOR="#0000ff"><TT><I>/* Write matrix padding */</I></TT></FONT>
 SizeFrameW += SdifFWritePadding (file, SdifFPaddingCalculate (file-&gt;Stream, SizeFrameW));
