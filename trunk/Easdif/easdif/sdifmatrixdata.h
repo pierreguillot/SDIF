@@ -33,9 +33,12 @@
  * 
  * 
  * 
- * $Id: sdifmatrixdata.h,v 1.14 2004-09-08 09:17:10 roebel Exp $ 
+ * $Id: sdifmatrixdata.h,v 1.15 2004-11-18 18:05:29 ellis Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.14  2004/09/08 09:17:10  roebel
+ * Fixed misleading error message.
+ *
  * Revision 1.13  2004/07/29 13:44:44  roebel
  * Fixed SetCol to use correct element offset as well.
  *
@@ -783,7 +786,7 @@ public:
     
     T* start = &m_Data[irow*m_Ncols];
     T* end   = &m_Data[(irow+1)*m_Ncols];
-    while(start !=end)    *start =  static_cast<T>(*in++) ;
+    while(start !=end)    *start++ =  static_cast<T>(*in++) ;
 
     return;
   }

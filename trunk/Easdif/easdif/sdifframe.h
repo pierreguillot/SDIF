@@ -34,9 +34,12 @@
  * sdifframe.h is composed of the different methods which are using to 
  * manipulate the frame.
  * 
- * $Id: sdifframe.h,v 1.15 2004-08-26 09:33:12 roebel Exp $ 
+ * $Id: sdifframe.h,v 1.16 2004-11-18 18:05:29 ellis Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.15  2004/08/26 09:33:12  roebel
+ * Added stl compliant iterators to iterate over matrices in a frame
+ *
  * Revision 1.14  2004/08/25 18:23:56  roebel
  * Version 0.11.0
  * removed SetNbMatrix which was confusing because people used it
@@ -496,6 +499,16 @@ public:
    * @brief Set one element of the frame header : the time
    */
   void SetTime(float time);
+
+  /** 
+   * \ingroup setmframe
+   * @brief comparator function on the time
+   */
+  bool operator<(SDIFFrame compareTo) const
+  {
+  	return mTime < compareTo.mTime;
+  };
+
 
 };
 } // end of namespace Easdif
