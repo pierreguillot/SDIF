@@ -1,4 +1,4 @@
-/* $Id: sdifextract.c,v 1.10 2002-05-24 19:41:51 ftissera Exp $
+/* $Id: sdifextract.c,v 1.11 2003-03-18 14:20:59 roebel Exp $
  
                 Copyright (c) 1998 by IRCAM - Centre Pompidou
                            All rights reserved.
@@ -13,6 +13,9 @@
    Extract data from an SDIF-file.  
    
    $Log: not supported by cvs2svn $
+   Revision 1.10  2002/05/24 19:41:51  ftissera
+   Change code to be compatible with C++
+
    Revision 1.9  2001/09/11 13:04:27  roebel
    sdifextract sdif output bug fixed
 
@@ -202,7 +205,7 @@ void usage (char *msg, char *arg, int longhelp)
     }
     if (longhelp)
     {
-    	fprintf (SdifStdErr, "\n" PROG "version $Revision: 1.10 $\n\n");
+    	fprintf (SdifStdErr, "\n" PROG "version $Revision: 1.11 $\n\n");
     
     	if (types)
     	{
@@ -510,6 +513,19 @@ int KERmain(int argc, char** argv)
 
 #else
 
+
+/* 65536 crashes under Win NT */
+/* use global arrays to prevent crash on MacOSX 
+ * no need to have the arrays local !*/
+
+#   define	maxintsel	32768	/* todo: make dynamic */
+#   define	hard_defined_get(arr, ind)	((ind) < maxintsel  ?  arr [ind]  :  	      \
+		   (fprintf(stderr, PROG "Number of columns out of bounds, exiting\n"), XpExit (9), 0))
+
+
+    int		flatcol[maxintsel], cumulcol[maxintsel+1], numcolsel,
+    		flatrow[maxintsel], cumulrow[maxintsel+1], numrowsel;
+
 int main(int argc, char** argv);
 int main(int argc, char** argv)
 {
@@ -520,12 +536,6 @@ int main(int argc, char** argv)
     SdifSelectionT *isel;
 
 
-/* 65536 crashes under Win NT */
-#   define	maxintsel	32768	/* todo: make dynamic */
-#   define	hard_defined_get(arr, ind)	((ind) < maxintsel  ?  arr [ind]  :  	      \
-		   (fprintf(stderr, PROG "Number of columns out of bounds, exiting\n"), XpExit (9), 0))
-    int		flatcol [maxintsel], cumulcol [maxintsel + 1], numcolsel,
-    		flatrow [maxintsel], cumulrow [maxintsel + 1], numrowsel;
 
     /* selection arguments with default values */
     char	*infile  	= NULL, 
