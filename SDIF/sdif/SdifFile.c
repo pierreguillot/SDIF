@@ -1,4 +1,4 @@
-/* $Id: SdifFile.c,v 3.36 2003-11-07 12:09:08 ellis Exp $
+/* $Id: SdifFile.c,v 3.37 2003-11-07 15:29:28 tisseran Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -33,6 +33,10 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.36  2003/11/07 12:09:08  ellis
+ * Added the declaration of of two functions in the header file
+ * SdifFAllFrameTypeToSdifString and SdifFAllMatrixTypeToSdifString
+ *
  * Revision 3.35  2003/08/06 15:10:46  schwarz
  * Finally removed obsolete functions (like SdifSkip...).
  *
@@ -249,15 +253,8 @@
 #include <sys/stat.h>
 #endif
 
-
-#include "SdifVersion.h"
-
-#ifndef AUTOCKSUM
-#define AUTOCKSUM "$Checksum: not available$ IRCAM $Date: 2003-11-07 12:09:08 $" 
-#endif
-
 #ifndef lint
-    static char identstring[]= AUTOCKSUM;
+    static char identstring[]= "$SDIFVersion: " SDIF_VERSION_STRING" $ IRCAM $SDIFcompiled: "__DATE__" $";;
 #endif
 
 /* Include all Frame Type */
