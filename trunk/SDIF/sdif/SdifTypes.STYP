@@ -46,9 +46,9 @@ SDIF
   1FTD  1STF    { ISTF Info;
                   1STF FourierTransform; }
 
-  1MTD  IENV    { SamplingRate, Scale, BreakFreq }
+  1MTD  IENV    { HighestBinFrequency, Scale, BreakFreq }
   1MTD  1ENV    { amplitude }
-  1FTD  1ENV    { 1ENV envelope; }
+  1FTD  1ENV    { 1ENV Envelope; }
 
   1MTD 	1ARA 	{ a }
   1FTD 	1ARA 	{ 1ARA ARCoefs; }
@@ -63,10 +63,20 @@ SDIF
   1FTD 	1CEC 	{ 1CEC CepstralCoefs; }
  
   1MTD  1NRG    { energy }
-  1FTD  1NRG    { 1NRG energy; }
+  1MTD  INRG    { Scale, NormalisationFactor }
+  1FTD  1NRG    { INRG ScaleAndFactor;
+		  1NRG Energy; }
+
+  1MTD  1BND    { LowerFrequencyLimit, UpperFrequencyLimit }
+  1FTD  1BND    { 1BND Bands }
 
   1MTD  1HRE    { MeanDeltaFrequency, Harmonicity, WeightedHarmonicity }
   1FTD  1HRE    { 1HRE harm; }
+
+  1MTD  EMPM	{ Value, Index }
+  1MTD  EMJR    { Record }
+  1FTD  EFPM	{ EMPM Tableau;
+		  EMJR EndRecording;}
 }
 
 ENDF
