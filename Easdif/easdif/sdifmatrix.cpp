@@ -32,9 +32,13 @@
  * 
  * 
  * 
- * $Id: sdifmatrix.cpp,v 1.4 2003-04-29 15:41:30 schwarz Exp $ 
+ * $Id: sdifmatrix.cpp,v 1.5 2003-05-01 19:01:39 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.4  2003/04/29 15:41:30  schwarz
+ * Changed all names View* to Print* and *Info to *Header for consistency
+ * with SDIF library.
+ *
  * Revision 1.3  2003/04/29 15:18:04  schwarz
  * CreateMatrixData accepts SdifSignature or std::string,
  * throws exception when unimplemented data type requested.
@@ -89,13 +93,12 @@ SDIFMatrix::SDIFMatrix(const SdifDataTypeET _type):
     //mSig = SdifSignatureConst('1','T','R','C');
     // signifies uninitialized matrix
     mSig = 0;
-    CreateMatrixData(mSig, 1, 1, mType);
+    Init(mSig, 1, 1, mType);
 }
 
 SDIFMatrix::SDIFMatrix(const SDIFMatrix& aMatrix):mInter(0)
 {
     // Check     
-    m_Signature = aMatrix.m_Signature;
     mSig = aMatrix.mSig;
     mType = aMatrix.mType;
     bytesread = aMatrix.bytesread;
@@ -104,21 +107,14 @@ SDIFMatrix::SDIFMatrix(const SDIFMatrix& aMatrix):mInter(0)
 }
 
 
-
-void SDIFMatrix::CreateMatrixData_(const char *sig, SdifSignature ssig, 
-				   int nrows, int ncols, 
-				   SdifDataTypeET type)
+void SDIFMatrix::Init(SdifSignature sig, int nrows, int ncols, SdifDataTypeET type)
 {
     if(mInter) {
 	delete mInter;
 	mInter =0;
     }
 
-    mSig = ssig;
-    m_Signature = sig;
-    mType = type;
-
-    switch (mType){
+    switch (type){
     case eInt4:
 	mInter=static_cast<SDIFMatrixDataInterface*>(new SDIFMatrixData<int>(nrows,ncols));
 	break;
@@ -130,28 +126,33 @@ void SDIFMatrix::CreateMatrixData_(const char *sig, SdifSignature ssig,
 	break;
 
     default:
-      cerr  << endl << "!!! matrix type " << mType << " not yet implemented !!!" << endl;
-      throw;
+      std::cerr  << std::endl << "!!! matrix type " << type << " not yet implemented !!!" << std::endl;
+      SDIFMatrixDataError exc;
+      exc.initException(eError,
+			"Error in  SDIFMatrix::Init!!! unimplemented matrix type used !!!",
+		      0,0,0,0);      
+
+      throw exc; // to be implemented
     }
+    mSig  = sig;
+    mType = type;
 }
 
 
-void SDIFMatrix::CreateMatrixData(SdifSignature sig, int nrows, int ncols, SdifDataTypeET type)//=eFloat4)
+void SDIFMatrix::Init(const std::string &sig, int nrows, int ncols, SdifDataTypeET type)
 {
-    CreateMatrixData_(SdifSignatureToString(sig), sig, nrows, ncols, type);
+    Init(SdifStringToSignature(sig.c_str()), nrows, ncols, type);
 }
 
 
 
-void SDIFMatrix::CreateMatrixData(std::string &sig, int nrows, int ncols, SdifDataTypeET type)//=eFloat4)
-{
-    CreateMatrixData_(const_cast<char*>(sig.c_str()), 
-		      SdifStringToSignature(const_cast<char*>(sig.c_str())), 
-		      nrows, ncols, type);
+bool SDIFMatrix::Resize(int _rows,int _ncols) {
+  if(mInter){
+    mInter->Resize(_rows,_ncols);
+    return true;
+  }
+  return false;
 }
-
-
-
 
 int SDIFMatrix::Write(SdifFileT* file)
 {
@@ -164,9 +165,6 @@ int SDIFMatrix::Write(SdifFileT* file)
     // we do not ned to resize
     //    mInter->Resize(nrows, ncols);
     SizeFrameW = 0;
-
-    /* convert for the signature*/
-    mSig = SdifStringToSignature(const_cast<char*>(m_Signature.c_str()));
 
     /* Set with the current matrix header */
     SdifFSetCurrMatrixHeader(file, mSig, mType, nrows, ncols);
@@ -198,12 +196,11 @@ int SDIFMatrix::Read(SdifFileT* file)
 	  }
 
     mSig = SdifFCurrMatrixSignature(file);
-    m_Signature = SdifSignatureToString(mSig);
     int nrows = SdifFCurrNbRow(file);
     int ncols = SdifFCurrNbCol(file);
     mType  = SdifFCurrDataType (file);
 	
-    CreateMatrixData(mSig, nrows, ncols, mType);
+    Init(mSig, nrows, ncols, mType);
     /* add bytesread */
     bytesread += mInter->read(file);	    
     return bytesread;
@@ -212,7 +209,7 @@ int SDIFMatrix::Read(SdifFileT* file)
 /* to see the matrix */
 void SDIFMatrix::Print()
 {
-   std::cout << " Signature : " << m_Signature << std::endl;
+   std::cout << " Signature : " << SdifSignatureToString(mSig) << std::endl;
    mInter->print();
 }
 
@@ -267,6 +264,6 @@ SdifSignature SDIFMatrix::GetSignature() const
 /* to get the string signature of the matrix*/
 std::string SDIFMatrix::GetStringSignature() const
 {
-    return m_Signature;
+    return std::string(SdifSignatureToString(mSig));
 }
 } // end of namespace Easdif

@@ -33,9 +33,12 @@
  * 
  * 
  * 
- * $Id: sdifmatrix.h,v 1.6 2003-04-29 15:54:07 schwarz Exp $ 
+ * $Id: sdifmatrix.h,v 1.7 2003-05-01 19:02:25 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.6  2003/04/29 15:54:07  schwarz
+ * Use SWIG_RENAME_EASDIF to control class renaming.
+ *
  * Revision 1.5  2003/04/29 15:41:30  schwarz
  * Changed all names View* to Print* and *Info to *Header for consistency
  * with SDIF library.
@@ -93,6 +96,7 @@
 
 #include <string>
 #include <sdif.h>
+#include "easdif/sdifexception.h"
 #include "easdif/sdifmatrixdatainterface.h"
 #include "easdif/sdifmatrixdata.h"
 
@@ -117,12 +121,8 @@ private:
     SDIFMatrixDataInterface* mInter;
 
     int bytesread;
-    std::string m_Signature;
     SdifSignature mSig;
     SdifDataTypeET mType;
-
-    void CreateMatrixData_(const char *, SdifSignature, 
-			   int, int, SdifDataTypeET);
 
 
 public:
@@ -133,14 +133,14 @@ public:
     SDIFMatrix(SdifSignature sig, int nrows = 1, int ncols = 1, 
 	       SdifDataTypeET type = eFloat4)
     {
-      CreateMatrixData(sig, nrows, ncols, type);
+      Init(sig, nrows, ncols, type);
     }
 
     // constructor with space initialisation, default singleton float matrix
     SDIFMatrix(std::string& sig, int nrows = 1, int ncols = 1, 
 	       SdifDataTypeET type = eFloat4)
     {
-      CreateMatrixData(sig, nrows, ncols, type);
+      Init(sig, nrows, ncols, type);
     }
 
     ~SDIFMatrix(){
@@ -186,20 +186,42 @@ public:
 
 /** 
  * \ingroup rwmat
- * create a vector of data for a matrix
+ * \brief Re-Initialize matrix to hold data
+ * 
+ * @param sig    SDIFMatrix Signature
+ * @param nrows  Number of rows fo the matrix
+ * @param ncols  Number of columns of the matrix
+ * @param type   SDIFDataType = type of internal representation of the matrix
  */
-    void CreateMatrixData(SdifSignature sig, 
-			  int nrows, int ncols, SdifDataTypeET  type);
-//type default = eFloat4
+  void Init(SdifSignature sig, 
+	      int nrows, int ncols, SdifDataTypeET  type);
 
 /** 
  * \ingroup rwmat
- * create a vector of data for a matrix
+ * \brief Re-Initialize matrix to hold data
+ * 
+ * @param sig    SDIFMatrix Signature
+ * @param nrows  Number of rows fo the matrix
+ * @param ncols  Number of columns of the matrix
+ * @param type   SDIFDataType = type of internal representation of the matrix
  */
-    void CreateMatrixData(std::string &sig, 
-			  int nrows, int ncols, SdifDataTypeET  type);
+  void Init(const std::string &sig, 
+	      int nrows, int ncols, SdifDataTypeET  type);
 
 
+/** 
+ * \ingroup rwmat
+ * \brief Resize matrix to hold rowsxcolumns
+ * 
+ * @param nrows  Number of rows fo the matrix
+ * @param ncols  Number of columns of the matrix
+ *
+ * \return true if successful/false if matrix has not yet been initialized to a signature/data type
+ *       
+ */
+  bool Resize(int nrows, int ncols);
+
+  
 /*************************************************************************/
 /* Get the members of the matrix */
 /**
@@ -297,8 +319,12 @@ public:
   // std::string Get() ??? exception when not string matrix?
   void Get(std::string& value)
   {
-    cerr  << endl << "!!! string matrix access to be implemented !!!" << endl;
-    throw; // to be implemented
+    SDIFMatrixDataError exc;
+    exc.initException(eError,
+		      "Error in  SDIFMatrix::!!! string matrix access to be implemented !!!",
+		      0,0,0,0);      
+
+    throw exc; // to be implemented
   }
 
 
@@ -337,8 +363,12 @@ public:
   // string and set string data
   void Set(const std::string& value)
   {
-    cerr  << endl << "!!! string matrix access to be implemented !!!" << endl;
-    throw; // to be implemented
+    SDIFMatrixDataError exc;
+    exc.initException(eError,
+		      "Error in  SDIFMatrix::!!! string matrix access to be implemented !!!",
+		      0,0,0,0);      
+
+    throw exc; // to be implemented
   }
 
 };
