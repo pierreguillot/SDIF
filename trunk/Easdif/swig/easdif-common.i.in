@@ -1,10 +1,13 @@
-// $Id: easdif.i,v 1.10 2003-04-29 16:28:48 schwarz Exp $ -*-c-*-
+// $Id: easdif-common.i.in,v 1.1 2003-04-30 11:34:31 tisseran Exp $ -*-c-*-
 //
 // easdif.i		16.04.2003		Diemo Schwarz
 //
 // Interface file for swig, defining the callable easdif functions
 //
 // $Log: not supported by cvs2svn $
+// Revision 1.10  2003/04/29 16:28:48  schwarz
+// Use SWIG_RENAME_EASDIF to control class renaming.
+//
 // Revision 1.9  2003/04/29 15:20:38  schwarz
 // take care of ambiguous definitions (because of swig bug)
 //
@@ -43,25 +46,14 @@
 // Doesn't do much except counting frames.
 
 
-// generate perl module named 'eaSDIF'
-%module eaSDIF
-
-// include typemaps
-%include sdiftypemap.i
 
 // include header to make wrapper compile
 %{
-#include "easdif/easdif.h"
+#include "@EASDIF_INC_DIR@/easdif/easdif.h"
 
 using namespace Easdif;
 %}
 
-
-// module initialisation code
-%init 
-%{
-    EasdifInit();
-%}
 
 
 // would have to zap other constructors, if not, SdifSignature is invisible...
@@ -74,12 +66,10 @@ using namespace Easdif;
 //%ignore CreateMatrixData(SdifSignature, int, int, SdifDataTypeET);
 %ignore CreateMatrixData(std::string &, int, int, SdifDataTypeET);
 
-// define only the needed basic SDIF stuff from sdif.h
-%include sdifdefines.i
 
 // read all class definitions
 #define SWIG_RENAME_EASDIF
-%include "../easdif/sdifmatrix.h"
-%include "../easdif/sdifnamevaluetable.h"
-%include "../easdif/sdifframe.h"
-%include "../easdif/sdifentity.h"
+%include "@EASDIF_INC_DIR@/easdif/sdifmatrix.h"
+%include "@EASDIF_INC_DIR@/easdif/sdifnamevaluetable.h"
+%include "@EASDIF_INC_DIR@/easdif/sdifframe.h"
+%include "@EASDIF_INC_DIR@/easdif/sdifentity.h"
