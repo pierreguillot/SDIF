@@ -1,10 +1,17 @@
-// $Id: easdif.i,v 1.7 2003-04-18 15:41:18 schwarz Exp $ -*-c-*-
+// $Id: easdif.i,v 1.8 2003-04-18 17:45:23 schwarz Exp $ -*-c-*-
 //
 // easdif.i		16.04.2003		Diemo Schwarz
 //
 // Interface file for swig, defining the callable easdif functions
 //
 // $Log: not supported by cvs2svn $
+// Revision 1.7  2003/04/18 15:41:18  schwarz
+// Don't include all definitions from sdif.h, only the ones needed by
+// easdif, defined in sdifdefine.i.  -> smaller wrapper size:
+// .cxx	 880k -> 130k
+// .o	1000k -> 210k
+// .pm	 123k -> 8k
+//
 // Revision 1.6  2003/04/18 14:31:27  schwarz
 // Added typemap for string to SdifSignature conversion (input arg):
 // Setting/writing data works --> wrapper complete, but rudimentary.
@@ -32,7 +39,7 @@
 %module eaSDIF
 
 // include typemaps
-%include sdifsignature.i
+%include sdiftypemap.i
 
 // include header to make wrapper compile
 %{
