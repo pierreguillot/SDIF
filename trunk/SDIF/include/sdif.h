@@ -1,8 +1,11 @@
-/* $Id: sdif.h,v 1.17 2002-08-05 14:22:42 roebel Exp $
+/* $Id: sdif.h,v 1.18 2002-08-13 10:52:56 schwarz Exp $
  *
  * This file contains type declaration of variables used in SDIF library.
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.17  2002/08/05 14:22:42  roebel
+ * Added support to replace a selection.
+ *
  * Revision 1.16  2002/06/18 13:56:23  ftissera
  * Move SdifFGetAllTypefromSdifString declaration from SdifFGet.h to sdif.h
  *
@@ -81,7 +84,7 @@
  * Revision 1.1.2.1  2000/08/21  13:07:41  tisseran
  * *** empty log message ***
  *
- * $Date: 2002-08-05 14:22:42 $
+ * $Date: 2002-08-13 10:52:56 $
  *
  */
 
@@ -97,7 +100,7 @@ extern "C" {
 #endif
 
 
-static const char _sdif_h_cvs_revision_ [] = "$Id: sdif.h,v 1.17 2002-08-05 14:22:42 roebel Exp $";
+static const char _sdif_h_cvs_revision_ [] = "$Id: sdif.h,v 1.18 2002-08-13 10:52:56 schwarz Exp $";
 
 
 #include <stdio.h>
@@ -2533,6 +2536,13 @@ int SdifSelectTestString (SdifListT *list, const char *cand);
 */
 
 
+
+/*DOC: 
+  Read frame headers until a frame matching the file selection
+  has been found or the end of the file has been reached.
+
+  [] Return false if end of file was reached, true if data has been read. */
+int SdifFReadNextSelectedFrameHeader (SdifFileT *f);
 
 
 /*DOC: 
