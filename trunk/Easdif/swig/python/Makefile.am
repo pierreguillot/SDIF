@@ -11,7 +11,7 @@ INCL		= -I/usr/local/include -I$(PYTHON_INCLUDE) \
 EASDIF_LIB_PATH	= @EASDIF_LIB_PATH@
 # dbflag = -g
 
-if SWIG_HAVE_STL
+if SWIG_PYTHON_HAS_STLMAP
 HAVE_STL        = -DSWIG_HAVE_STLMAP
 else
 HAVE_STL        = 
