@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.15 2003-03-07 17:31:37 roebel Exp $
+# $Id: Makefile.am,v 1.16 2003-03-07 17:55:01 roebel Exp $
 #
 # ./Makefile.am		September 2000			Patrice Tisserand
 #
@@ -30,6 +30,9 @@
 
 
 # $Log: not supported by cvs2svn $
+# Revision 1.15  2003/03/07 17:31:37  roebel
+# cplusplus compilation is moved in its own directory.
+#
 # Revision 1.14  2002/10/31 16:35:36  schwarz
 # Added sdif.vcproj
 # More info for dist.
@@ -91,8 +94,13 @@
 # Revision 1.1.2.4  2000/10/26  17:27:16  schwarz
 # Added header with copyright and links to all Makefile.am and configure.in.
 
+if COND_COMPILE_DOC
+DOC_SRC_DIR = doc
+else
+DOC_SRC_DIR =
+endif 
 
-SUBDIRS = sdif include tools data test sdifcpp
+SUBDIRS = sdif include tools data test sdifcpp $(DOC_SRC_DIR)
 
 sdifincdir = @top_srcdir@/include
 
