@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.4 2000-10-30 19:05:49 roebel Exp $
+# $Id: Makefile.am,v 1.5 2000-10-31 11:46:28 roebel Exp $
 #
 # ./test/Makefile.am		September 2000			Patrice Tisserand
 #
@@ -29,6 +29,10 @@
 # send email to:  sdif@ircam.fr
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.4  2000/10/30  19:05:49  roebel
+# Added support for relative path compilation (VPATH)
+# Added support for debugging feature in configure.in and Makefiles
+#
 # Revision 1.3  2000/10/30  16:30:00  roebel
 # Added INCLUDES variable:
 #    INCLUDES = -I../include
@@ -46,9 +50,13 @@ EXTRA_DIST = test_conv test_cmpsdif cmd_testcheck xpianoRes.m5.FIL.sdif
 noinst_PROGRAMS = headerTest NVTTest testcheck testselect
 noinst_HEADERS = utils.h
 headerTest_SOURCES = test1.c utils.c
+headerTest_DEPENDENCIES = ../sdif/@SELLIB@
 NVTTest_SOURCES = test2.c utils.c
+NVTTest_DEPENDENCIES = ../sdif/@SELLIB@
 testcheck_SOURCES = testcheck.c
+testcheck_DEPENDENCIES = ../sdif/@SELLIB@
 testselect_SOURCES = testselect.c
+testselect_DEPENDENCIES = ../sdif/@SELLIB@
 
 LDADD = -l@TESTLIB@
 LDFLAGS = -L../sdif

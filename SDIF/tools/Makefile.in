@@ -10,7 +10,7 @@
 # even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 # PARTICULAR PURPOSE.
 
-# $Id: Makefile.in,v 1.11 2000-10-31 11:22:29 roebel Exp $
+# $Id: Makefile.in,v 1.12 2000-10-31 11:46:33 roebel Exp $
 #
 # ./tools/Makefile.am		September 2000			Patrice Tisserand
 #
@@ -122,21 +122,29 @@ tosdif_debug_SOURCES = tosdif.c
 
 querysdif_debug_LDADD = -lsdif-debug
 querysdif_debug_LDFLAGS = -L../sdif
+querysdif_debug_DEPENDENCIES = ../sdif/libsdif-debug.a
 sdifextract_debug_LDADD = -lsdif-debug
 sdifextract_debug_LDFLAGS = -L../sdif
+sdifextract_debug_DEPENDENCIES = ../sdif/libsdif-debug.a
 sdiftotext_debug_LDADD = -lsdif-debug
 sdiftotext_debug_LDFLAGS = -L../sdif
+sdiftotext_debug_DEPENDENCIES = ../sdif/libsdif-debug.a
 tosdif_debug_LDADD = -lsdif-debug
 tosdif_debug_LDFLAGS = -L../sdif
+tosdif_debug_DEPENDENCIES = ../sdif/libsdif-debug.a
 
 querysdif_LDADD = -lsdif
 querysdif_LDFLAGS = -L../sdif
+querysdif_DEPENDENCIES = ../sdif/libsdif.a
 sdifextract_LDADD = -lsdif
 sdifextract_LDFLAGS = -L../sdif
+sdifextract_DEPENDENCIES = ../sdif/libsdif.a
 sdiftotext_LDADD = -lsdif
 sdiftotext_LDFLAGS = -L../sdif
+sdiftotext_DEPENDENCIES = ../sdif/libsdif.a
 tosdif_LDADD = -lsdif
 tosdif_LDFLAGS = -L../sdif
+tosdif_DEPENDENCIES = ../sdif/libsdif.a
 
 INCLUDES = -I$(top_srcdir)/include
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
@@ -150,25 +158,17 @@ CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
 querysdif_debug_OBJECTS =  querysdif.o
-querysdif_debug_DEPENDENCIES = 
 sdifextract_debug_OBJECTS =  sdifextract.o
-sdifextract_debug_DEPENDENCIES = 
 sdiftotext_debug_OBJECTS =  sdiftotext.o
-sdiftotext_debug_DEPENDENCIES = 
 tosdif_debug_OBJECTS =  tosdif.o
-tosdif_debug_DEPENDENCIES = 
 querysdif_SOURCES = querysdif.c
 querysdif_OBJECTS =  querysdif.o
-querysdif_DEPENDENCIES = 
 sdifextract_SOURCES = sdifextract.c
 sdifextract_OBJECTS =  sdifextract.o
-sdifextract_DEPENDENCIES = 
 sdiftotext_SOURCES = sdiftotext.c
 sdiftotext_OBJECTS =  sdiftotext.o
-sdiftotext_DEPENDENCIES = 
 tosdif_SOURCES = tosdif.c
 tosdif_OBJECTS =  tosdif.o
-tosdif_DEPENDENCIES = 
 CFLAGS = @CFLAGS@
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 CCLD = $(CC)

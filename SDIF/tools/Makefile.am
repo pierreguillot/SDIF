@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.4 2000-10-30 19:05:54 roebel Exp $
+# $Id: Makefile.am,v 1.5 2000-10-31 11:46:32 roebel Exp $
 #
 # ./tools/Makefile.am		September 2000			Patrice Tisserand
 #
@@ -29,6 +29,10 @@
 # send email to:  sdif@ircam.fr
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.4  2000/10/30  19:05:54  roebel
+# Added support for relative path compilation (VPATH)
+# Added support for debugging feature in configure.in and Makefiles
+#
 # Revision 1.3  2000/10/30  14:44:02  roebel
 # Moved all tool sources into central tools directory and added config.h to sources
 #
@@ -49,21 +53,29 @@ tosdif_debug_SOURCES=tosdif.c
 
 querysdif_debug_LDADD = -lsdif-debug
 querysdif_debug_LDFLAGS = -L../sdif
+querysdif_debug_DEPENDENCIES=../sdif/libsdif-debug.a
 sdifextract_debug_LDADD = -lsdif-debug
 sdifextract_debug_LDFLAGS = -L../sdif
+sdifextract_debug_DEPENDENCIES=../sdif/libsdif-debug.a
 sdiftotext_debug_LDADD = -lsdif-debug
 sdiftotext_debug_LDFLAGS = -L../sdif
+sdiftotext_debug_DEPENDENCIES=../sdif/libsdif-debug.a
 tosdif_debug_LDADD = -lsdif-debug
 tosdif_debug_LDFLAGS = -L../sdif
+tosdif_debug_DEPENDENCIES=../sdif/libsdif-debug.a
 
 querysdif_LDADD = -lsdif
 querysdif_LDFLAGS = -L../sdif
+querysdif_DEPENDENCIES=../sdif/libsdif.a
 sdifextract_LDADD = -lsdif
 sdifextract_LDFLAGS = -L../sdif
+sdifextract_DEPENDENCIES=../sdif/libsdif.a
 sdiftotext_LDADD = -lsdif
 sdiftotext_LDFLAGS = -L../sdif
+sdiftotext_DEPENDENCIES=../sdif/libsdif.a
 tosdif_LDADD = -lsdif
 tosdif_LDFLAGS = -L../sdif
+tosdif_DEPENDENCIES=../sdif/libsdif.a
 
 INCLUDES = -I$(top_srcdir)/include
 
