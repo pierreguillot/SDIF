@@ -1,28 +1,41 @@
-#####################################
-# SDIF VERSION 3.3: (26 April 2001) #
-#####################################	
-The main changes are:
 
-1: Modification of standard SDIF description types initialisation: The
-   types can now be defined in the file SdifTypes.STYP OR a built-in
-   definition can be used.  This allows effectively to drop the
-   SdifTypes.STYP file altogether and avoid frequent installation
-   problems.
+Version 3.4:
 
-   The name of the built-in definition string is SDIFTYPES_STRING (in file sdiftypes.h).
-   This string is used by SDIF library when the file SdifTypes.STYP define at compilation (in directory 
-   datadir, by default /usr/local/share or $PREFIX/share) or file specified in environnement variable
-   SDIFTYPES is not found.   
+-- Added defines SDIF_VERSION_MAJOR/SDIF_VERSION_MINOR
+	for version indication.
 
-   TODO:   This string is generated at IRCAM, by a perl script which should be included in future version
-   of library.
+-- No more warnings if the number of columns exceeds the number defined 
+	in the types file.
 
-2: Fix for autoconfiguration tools.  autoconf will now work on all
-   UNIX-like operating systems (OSF1, IRIX, Linux and Mac OS X).
+-- Minor changes in the default sdiftypes file.
+	
+Version 3.3:
 
-   Beware, we have suppose than in each platform will use configure mechanism, the directory divider is "/".
+	
+-- Modification of standard SDIF description types initialisation: 
+	The types can now be defined in the file SdifTypes.STYP OR 
+	a built-in definition can be used. This allows effectively 
+	to drop the SdifTypes.STYP file altogether and avoid 
+	frequent installation problems.
 
-   TODO:   We will include a test at configuration to know the directory divider use on Operating System.
+	The name of the built-in definition string is SDIFTYPES_STRING 
+	(in file sdiftypes.h). This string is used by SDIF library 
+	when the file SdifTypes.STYP define at compilation (in directory 
+	datadir, by default /usr/local/share or $PREFIX/share) or 
+	file specified in environnement variable SDIFTYPES is not found.   
+
+	TODO: This string is generated at IRCAM, by a perl script 
+	which should be included in future version
+	of library.
+
+-- Fix for autoconfiguration tools.  autoconf will now work on all
+	UNIX-like operating systems (OSF1, IRIX, Linux and Mac OS X).
+
+	Beware, we have suppose than in each platform will use 
+	configure mechanism, the directory divider is "/".
+
+	TODO:  We will include a test at configuration 
+	to know the directory divider use on Operating System.
    
 
 
