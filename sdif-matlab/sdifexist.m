@@ -1,14 +1,18 @@
 % Test if SDIF file exists.  Takes care of SDIF selection.
 %
-%          sdifexist(name)	Exits with error if file's not there or i
+%          sdifexist(name)	Exits with error if file's not there or is
 %                               not an sdif fil.
 % result = sdifexist(name)	Returns flag.
 
-% $Id: sdifexist.m,v 1.4 2004-07-20 14:49:12 roebel Exp $
+% $Id: sdifexist.m,v 1.5 2004-07-20 16:04:02 roebel Exp $
 %
 % sdifexist.m	4. May 2000	Diemo Schwarz
 %
 % $Log: not supported by cvs2svn $
+% Revision 1.4  2004/07/20 14:49:12  roebel
+% Changed to do what it is supposed to do: only returns true if the file is really
+% an sdif file.
+%
 % Revision 1.3  2003/09/15 17:06:58  schwarz
 % handle ::: correctly
 %
