@@ -32,9 +32,13 @@
  * 
  * 
  * 
- * $Id: sdifentity.cpp,v 1.24 2004-10-07 14:48:11 roebel Exp $ 
+ * $Id: sdifentity.cpp,v 1.25 2005-02-04 12:31:43 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.24  2004/10/07 14:48:11  roebel
+ * Replaced calls to resize(0) by clear() and
+ * test using size() by !empty() to improve efficiency.
+ *
  * Revision 1.23  2004/09/10 09:20:52  roebel
  * Extend frame directory to contain the matrix signatures for each frame.
  * No longer needs to re read the frame to decide whether frame is selected.
@@ -584,11 +588,8 @@ int SDIFEntity::ReadNextSelectedFrame(SDIFFrame& frame, SdifFloat8 time)
 }
 
 int SDIFEntity::WriteFrame(SDIFFrame& frame)
-{
-    int size_frame = 0;
-    
-    frame.Write(efile);
-    return size_frame;
+{    
+    return frame.Write(efile);
 }
 
 void SDIFEntity::PrintAllNVTs()
