@@ -33,9 +33,12 @@
  * 
  * 
  * 
- * $Id: sdifmatrix.h,v 1.17 2003-11-25 10:55:42 roebel Exp $ 
+ * $Id: sdifmatrix.h,v 1.18 2004-03-19 22:09:50 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.17  2003/11/25 10:55:42  roebel
+ * Added missing namespace qualifier for exceptions.
+ *
  * Revision 1.16  2003/11/18 18:21:21  roebel
  * Impemented Get(std::string) for text matrices.
  * declared exceptions for Init and Get methods.
@@ -370,29 +373,48 @@ public:
  */
     int GetNbCols() const;
 
-/**
- * \ingroup membmat 
- * get the matrix SdifSignature
- */
+  /**
+   * \ingroup membmat 
+   * get the matrix SdifSignature
+   */
     SdifSignature GetSignature() const;
 
-/** 
- * \ingroup membmat
- * get the matrix string Signature
- */
+  /** 
+   * \ingroup membmat
+   * get the matrix string Signature
+   */
     std::string GetStringSignature() const;
 
-/** 
- * \ingroup membmat
- * get the matrix type of data
- */
+  /** 
+   * \ingroup membmat
+   * get the matrix type of data
+   */
     SdifDataTypeET GetType() const;
 
-/** 
- * \ingroup membmat
- * get name of column or empty string if unknown
- */
- std::string GetColName(int i) const;
+  /** 
+   * \ingroup membmat
+   * get name of column or empty string if unknown
+   */
+  std::string GetColName(int i) const;
+
+
+
+  /** 
+   * \ingroup membmat
+   * @brief Set one element of the matrix header : the signature
+   */
+  void SetSignature(SdifSignature sig) {  mSig = sig;}
+
+  /** 
+   * \ingroup membmat
+   * @brief Set one element of the matrix header : the signature with a string
+   */
+  void SetSignature(const std::string& signature){
+    mSig = SdifStringToSignature(const_cast<char*>(signature.c_str()));
+  }
+
+
+
 
 /*************************************************************************/
 /* Get the values of the matrix */
