@@ -10,7 +10,7 @@
 # even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 # PARTICULAR PURPOSE.
 
-# $Id: Makefile.in,v 1.12 2000-10-31 11:46:25 roebel Exp $
+# $Id: Makefile.in,v 1.13 2000-11-21 09:04:28 roebel Exp $
 #
 # ./doc/Makefile.am		September 2000			Patrice Tisserand
 #
@@ -41,7 +41,7 @@
 # send email to:  sdif@ircam.fr
 #
 # $Log: not supported by cvs2svn $
-# Revision 1.3  2000/10/30  11:35:08  roebel
+# Revision 1.3  2000/10/30 11:35:08  roebel
 # mv from state dead to state up-to-date to override cvs bg
 #
 # Revision 1.1.2.2  2000/10/26  17:27:32  schwarz

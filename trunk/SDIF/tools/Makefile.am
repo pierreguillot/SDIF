@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.5 2000-10-31 11:46:32 roebel Exp $
+# $Id: Makefile.am,v 1.6 2000-11-21 09:04:32 roebel Exp $
 #
 # ./tools/Makefile.am		September 2000			Patrice Tisserand
 #
@@ -29,6 +29,9 @@
 # send email to:  sdif@ircam.fr
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.5  2000/10/31 11:46:32  roebel
+# Added makefile dependency of all progs from generated library
+#
 # Revision 1.4  2000/10/30  19:05:54  roebel
 # Added support for relative path compilation (VPATH)
 # Added support for debugging feature in configure.in and Makefiles
@@ -45,6 +48,7 @@
 
 EXTRA_PROGRAMS=querysdif-debug sdifextract-debug sdiftotext-debug tosdif-debug querysdif sdifextract sdiftotext tosdif
 bin_PROGRAMS = @PROGLIST@
+
 
 querysdif_debug_SOURCES=querysdif.c
 sdifextract_debug_SOURCES=sdifextract.c
@@ -77,5 +81,5 @@ tosdif_LDADD = -lsdif
 tosdif_LDFLAGS = -L../sdif
 tosdif_DEPENDENCIES=../sdif/libsdif.a
 
-INCLUDES = -I$(top_srcdir)/include
+INCLUDES = -I$(top_srcdir)/include -I$(top_srcdir)/sdif
 
