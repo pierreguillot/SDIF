@@ -1,4 +1,4 @@
-/* $Id: SdifNameValue.c,v 3.12 2002-12-13 15:58:12 roebel Exp $
+/* $Id: SdifNameValue.c,v 3.13 2002-12-17 15:56:52 roebel Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -34,6 +34,10 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.12  2002/12/13 15:58:12  roebel
+ * Fixed two bugs in SdifNameValuesLSetCurrNVT. Name table access would change
+ * the name table indexes due to faulty assignment instead of comparison.
+ *
  * Revision 3.11  2002/05/24 19:37:52  ftissera
  * Change code to be compatible with C++
  * Cast pointers to correct type.
@@ -331,7 +335,7 @@ SdifNameValuesLSetCurrNVT(SdifNameValuesLT *NameValuesL, SdifUInt4 NumCurrNVT)
     NVT = (SdifNameValueTableT*) SdifListGetCurr(NameValuesL->NVTList);
     if (NVT)
     {
-      /* If current name table is one below the one that is requested
+      /* If current name table is  below the one that is requested
        * we just follow the list */
       if (NVT->NumTable <= NumCurrNVT)
         {
