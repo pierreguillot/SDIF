@@ -50,12 +50,26 @@ int main(int argc, char** argv)
 
     /*for adding the Name Value Tables of the EntityRead, the file of
      *EntityToRead must be Open*/
-    readentity.OpenRead(argv[1]);
+    try {
+      if (!readentity.OpenRead(argv[1]) ) {
+	std::cerr << "Could not open input file :"<<argv[1]<<std::endl;
+	exit(1);
+      }
+    }
+    catch(SDIFBadHeader& e)
+      {
+	e.ErrorMessage();
+	exit(1);
+      }
 
     SdifStringT *type = readentity.GetTypeString();
     entity.SetTypeString(type);
     /* to open a file for writing */
-    entity.OpenWrite(argv[2]);
+    
+    if(!entity.OpenWrite(argv[2])) {
+	std::cerr << "Could not open output file :"<<argv[2]<<std::endl;
+	exit(1);
+    }
 
 
     /******** READ AND WRITE  ********/
@@ -125,7 +139,7 @@ int main(int argc, char** argv)
     catch(SDIFEof& e)
       {
 	/* if we want an access to the file */
-	SdifFileT *sf = e.sdifFile();
+	const SdifFileT *sf = e.sdifFile();
 
 	std::cerr << " Catch EOF for file " <<sf->Name << " -- ending program " << std::endl;
 	/* to have the error message */
