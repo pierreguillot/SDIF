@@ -1,8 +1,11 @@
-/* $Id: sdif.h,v 1.8 2000-12-07 13:01:39 roebel Exp $
+/* $Id: sdif.h,v 1.9 2001-04-25 11:29:10 tisseran Exp $
  *
  * This file contains type declaration of variables used in SDIF library.
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.8  2000/12/07 13:01:39  roebel
+ * Fixed wrong enum datatype declarations for backward compatibility
+ *
  * Revision 1.7  2000/11/21 16:34:48  roebel
  * New SdifSignatureConst builds integer signature according to
  * endianess of machine. Multicharacter constants are no longer
@@ -39,7 +42,7 @@
  * Revision 1.1.2.1  2000/08/21  13:07:41  tisseran
  * *** empty log message ***
  *
- * $Date: 2000-12-07 13:01:39 $
+ * $Date: 2001-04-25 11:29:10 $
  *
  */
 
@@ -52,7 +55,7 @@ extern "C" {
 #endif
 
 
-static const char _sdif_h_cvs_revision_ [] = "$Id: sdif.h,v 1.8 2000-12-07 13:01:39 roebel Exp $";
+static const char _sdif_h_cvs_revision_ [] = "$Id: sdif.h,v 1.9 2001-04-25 11:29:10 tisseran Exp $";
 
 
 #include <stdio.h>
@@ -1505,11 +1508,16 @@ SdifUInt2       SdifExistUserFrameType (SdifHashTableT *FrameTypeHT);
 					macro(UInt8 )post \
 				      */
 
+#define sdif_foralltypes_post_body    /* this is empty */
+#define sdif_foralltypes_post_proto ; /* this is a semicolon */
+
+
 /* generate template for all types */
-#define sdif_foralltypes(macro)		sdif__foralltypes(macro,)
+//old: #define sdif_foralltypes(macro)          sdif__foralltypes(macro,)
+#define sdif_foralltypes(macro)         sdif__foralltypes(macro,sdif_foralltypes_post_body)
 
 /* generate prototype template for all types */
-#define sdif_proto_foralltypes(macro)	sdif__foralltypes(macro,;)
+#define sdif_proto_foralltypes(macro)   sdif__foralltypes(macro,sdif_foralltypes_post_proto)
 
 #endif /* STDC_HEADERS */
 

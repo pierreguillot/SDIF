@@ -1,63 +1,42 @@
-//
-//
-// $Log: not supported by cvs2svn $
-# Revision 2.1  1999/02/28  12:16:27  virolle
-# memory report
-#
-//
-//
+# SDIF
+
+(C) Copyright Ircam 1998, 1999, 2000
 
 
-librairie SDIF avec 2 utilitaires, tosdif, sdiftotext
------------------------------------------------------
+# Introduction
+
+SDIF stands for SoundDescription Interchange Format.
+The general idea of SDIF is to store information related to signal processing and specifically of sound, in files, according to a common format to all data types. Thus, it is possible to store results or parameters of analyses, syntheses... 
+
+# Installation and compilation
+
+Refer to the file INSTALL
+
+# Utilisation
+
+If you don't install the library, you need to set the environment variable SDIFTYPES to use tools.
+SDIFTYPES must be set to the path of SdifTypes.STYP (file of frames and matrix types).
+By default, this file is in sdif_package_dir/data/
+For example, if you put SDIF in joe home directory, to set SDIFTYPES you must execute:
+- if you use bash:
+        export SDIFTYPES= /home/joe/SDIF-3.3/data/SdifTypes.STYP
+
+- if you use csh:
+        setenv SDIFTYPES /home/joe/SDIF-3.3/data/SdifTypes.STYP
+
+# Documentation
+
+There is an HTML documentation in doc directory. 
 
 
-Makefile		Makefile general: all, clean, install, uninstall
-Makefile.preamble	variables generales aux makefiles. INSTALL_ROOT
-			permet de controler le lieu d'installation de
-			la librairie.
-Makefile.postamble	regles communes aux makefiles.
+# License Agreement
+
+SDIF is free software, distributed under the GNU General
+Public License. See the file COPYING for further information.
 
 
+# Contact
 
+SDIF home page: http://www.ircam.fr/sdif
 
-doc/		documentations de la librairie en html: index.html
-sdif/		SOURCES de la librairie + fichiers des types predefinis.
-others/		autres sources non incluses dans la librairie (obsolettes
-		mais pourraient redevenir importantes)
-obj/		.o repartis par machine
-libsdif/	libsdif.a repartis par machine
-tosdif/		utilitaire de conversion d'un fichier sdif text en fichier binaire
-sdiftotext/	inverse de tosdif
-files/		fichier tests. seul files/txt n'est pas vide au cvs checkout
-test/		pour tester des fonctions particulieres
-CVS/		gestion CVS
-
-
-
-
-Memory Report
--------------
-
-Object : Trying to find memory leak.
-
-5 tokens can be added with -D (or /D windows) to have a memory report
-of the allocations made with SdifMalloc, SdifCalloc and SdifRealloc.
-If memory heap is not free with SdifFree, then this heap is taken as memory leak.
-
-The 5 tokens are :
-_SdifMemoryReport         to have a memory report at the end of execution (with the other token too).
-_SdifMemoryReportAlloc    to have a report only about allocation and re-allocation
-_SdifMemoryReportReAlloc  to have a report only about re-allocation
-_SdifMemoryReportFree	    to have a report only about memory released to the system
-_SdifMemoryBigReport		  to have a full report
-
-If one of tokens _SdifMemoryReportAlloc, _SdifMemoryReportReAlloc, _SdifMemoryReportFree, _SdifMemoryBigReport
-are defined, then _SdifMemoryReport is automaticaly defined.
-
-All SdifFree must be before SdifGenKill which call SdifMrDrainBlockList.
-SdifMrDrainBlockList is the function wich print the final memory report and drain the list of memory leak.
-
-use memory report with another memory leak viewer (like Purify product) might give a bad idea of the memory free.
-Don't distribute a programme linked with activated memory report, because it's more long.
 
