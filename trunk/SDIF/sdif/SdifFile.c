@@ -1,4 +1,4 @@
-/* $Id: SdifFile.c,v 3.2 1999-09-20 13:21:57 schwarz Exp $
+/* $Id: SdifFile.c,v 3.3 1999-09-28 10:36:59 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -16,6 +16,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.2  1999/09/20  13:21:57  schwarz
+ * Introduced user data and access functions SdifFAddUserData/GetUserData.
+ *
  * Revision 3.1  1999/03/14  10:56:49  virolle
  * SdifStdErr add
  *
@@ -58,6 +61,7 @@
 #include "SdifTest.h"
 #include "SdifSelect.h"
 #include "SdifErrMess.h"
+#include "SdifFRead.h"		/* for SdifFReadGeneralHeader */
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -67,6 +71,24 @@
 #include "SdifPreTypes.h"
 #include "SdifFScan.h"
 
+
+
+int
+SdifCheckFileFormat (char *name)
+{
+    int		ret = 0;
+    SdifFileT	*file;
+    
+    SdifDisableErrorOutput ();
+    if (file = SdifFOpen (name, eReadFile))
+    {
+        SdifFReadGeneralHeader (file);
+	ret = SdifFCurrSignature (file) == eSDIF;
+	SdifFClose (file);
+    }
+    SdifEnableErrorOutput ();
+    return (ret);
+}
 
 
 SdifFileT*
@@ -82,7 +104,7 @@ SdifFOpen(const char* Name, SdifFileModeET Mode)
     {
       SdifF->Name             = SdifCreateStrNCpy(Name, SdifStrLen(Name)+1);
       SdifF->Mode             = Mode;
-	  SdifF->FormatVersion    = _SdifFormatVersion; /* default */
+      SdifF->FormatVersion    = _SdifFormatVersion; /* default */
       
       SdifF->NameValues       = SdifCreateNameValuesL(_SdifNameValueHashSize);
       SdifF->MatrixTypesTable = SdifCreateHashTable(_SdifGenHashSize, eHashInt4,
@@ -119,6 +141,8 @@ SdifFOpen(const char* Name, SdifFileModeET Mode)
 
       SdifF->Stream        = NULL;
       SdifF->Errors        = SdifCreateErrorL(SdifF);
+
+      SdifF->NbUserData    = 0;
       
 
       switch (Mode)
@@ -578,7 +602,7 @@ SdifGenKill(void)
 void SdifPrintVersion(void)
 {
 #ifndef lint
-    static char rcsid[]= "$Revision: 3.2 $ IRCAM $Date: 1999-09-20 13:21:57 $";
+    static char rcsid[]= "$Revision: 3.3 $ IRCAM $Date: 1999-09-28 10:36:59 $";
 #endif
 
     if (SdifStdErr == NULL)
