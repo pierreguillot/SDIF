@@ -47,7 +47,7 @@ clean:
 	rm -f $(PROG)
 	rm -f $(OBJS)
 	rm -f *~
-# $Id: Makefile,v 3.1 1999-03-14 10:58:00 virolle Exp $
+# $Id: Makefile,v 3.2 2000-09-27 10:18:00 schwarz Exp $
 #
 #               Copyright (c) 1998 by IRCAM - Centre Pompidou
 #                          All rights reserved.
@@ -63,3 +63,7 @@ install: $(PROG)
 	cp  $(PROG) $(HOME)/bin/$(ARCH)/$(ODIRS)
 test:
 	cd $(PROGDIRS) ;
+
+
+# crash: sdifextract matt/fft.sdif::@0-1|wc
+# crash: cd matt; sdifextract venti.sdif::@0-1 xventi.sdif
