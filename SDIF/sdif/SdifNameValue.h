@@ -1,4 +1,4 @@
-/* $Id: SdifNameValue.h,v 3.9 2001-05-02 09:34:46 tisseran Exp $
+/* $Id: SdifNameValue.h,v 3.10 2002-12-12 10:34:42 roebel Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -34,6 +34,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.9  2001/05/02 09:34:46  tisseran
+ * Change License from GNU Public License to GNU Lesser Public License.
+ *
  * Revision 3.8  2000/11/21 14:51:50  schwarz
  * - sdif.h is now included by all sdif/Sdif*.c files.
  * - Removed all public typedefs, enums, structs, and defines from the
@@ -115,90 +118,14 @@
 #define _SdifNameValue_
 
 
+#include "sdif.h"
 #include "SdifGlobals.h"
 #include "SdifHash.h"
 #include "SdifList.h"
 
-#define _SdifNameValueHashSize 31
-
-
-/*
- * NameValue
- */
-
-SdifNameValueT* SdifCreateNameValue(const char *Name,  const char *Value);
-void            SdifKillNameValue(SdifNameValueT *NameValue);
 
 
 
-
-/*
- * NameValueTable
- */
-
-SdifNameValueTableT* SdifCreateNameValueTable(  SdifUInt4 StreamID, 
-                                                SdifUInt4 HashSize, 
-						SdifUInt4 NumTable);
-void            SdifKillNameValueTable          (void* NVTable);
-SdifNameValueT* SdifNameValueTableGetNV         (SdifNameValueTableT* NVTable, const char *Name);
-SdifNameValueT* SdifNameValueTablePutNV         (SdifNameValueTableT* NVTable, const char *Name,  const char *Value);
-SdifFloat8      SdifNameValueTableGetTime       (SdifNameValueTableT* NVTable);
-SdifUInt4       SdifNameValueTableGetNumTable   (SdifNameValueTableT* NVTable);
-SdifUInt4       SdifNameValueTableGetStreamID  (SdifNameValueTableT* NVTable);
-
-
-
-/*
- * NameValueTableList
- */
-
-
-SdifNameValuesLT*   SdifCreateNameValuesL       (SdifUInt4  HashSize);
-void                SdifKillNameValuesL         (SdifNameValuesLT *NameValuesL);
-
-/*DOC: 
-  Cette fonction permet d'ajouter une nouvelle NVT dans la liste
-  de tables passée par argument:
-  <code>SdifNameValuesLNewHT(SdifF->NamefValues);</code><br>
-  Attention, à l'ouverture de SdifF, il n'y a aucune table dans
-  SdifF->NamefValues. Il faudra donc au moins en ajouter une pour
-  pouvoir y mettre des NameValue.  */
-SdifNameValuesLT*   SdifNameValuesLNewTable     (SdifNameValuesLT *NameValuesL, SdifUInt4 StreamID);
-
-/*DOC: 
-  Cette fonction permet de définir la nième NVT de la liste des
-  tables comme NVT courante.  */
-SdifNameValueTableT*SdifNameValuesLSetCurrNVT   (SdifNameValuesLT *NameValuesL, SdifUInt4 NumCurrNVT);
-
-/*DOC: 
-  Cette fonction permet de récupérer une Name-Value de la liste
-  des NVTs en passant le Name en argument.  Dans le cas ou Name est
-  référencé dans plusieurs NVT, alors c'est la première NVT le
-  contenant qui sera prise en compte.  Le pointeur retourné est de
-  type SdifNameValueT qui contient deux champs: Name et Value.  */
-SdifNameValueT*     SdifNameValuesLGet          (SdifNameValuesLT *NameValuesL, char *Name);
-
-/*DOC: 
-  Cette fonction réalise aussi une requête en fonction de Name
-  mais uniquement dans la NVT courante.  */
-SdifNameValueT*     SdifNameValuesLGetCurrNVT   (SdifNameValuesLT *NameValuesL, const char *Name);
-
-/*DOC: 
-  Cette fonction permet d'ajouter une NameValue à table courante
-  qui est la dernière table créée ou celle définie en tant que table
-  courante. Name et Value doivent être des chaines caractères ASCII
-  sans espacements.  */
-SdifNameValueT*     SdifNameValuesLPutCurrNVT   (SdifNameValuesLT *NameValuesL, const char *Name,  const char *Value);
-SdifUInt2           SdifNameValuesLIsNotEmpty   (SdifNameValuesLT *NameValuesL);
-
-
-/*
- * Obsolete
- */
-SdifNameValuesLT*   SdifNameValuesLNewHT    (SdifNameValuesLT *NameValuesL);
-SdifHashTableT*     SdifNameValuesLSetCurrHT(SdifNameValuesLT *NameValuesL, SdifUInt4 NumCurrHT);
-SdifNameValueT*     SdifNameValuesLGetCurrHT(SdifNameValuesLT *NameValuesL, char *Name);
-SdifNameValueT*     SdifNameValuesLPutCurrHT(SdifNameValuesLT *NameValuesL, const char *Name,  const char *Value);
 
 
 #endif /* _SdifNameValue_ */
