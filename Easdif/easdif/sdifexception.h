@@ -34,9 +34,14 @@
  * 
  * 
  * 
- * $Id: sdifexception.h,v 1.9 2004-07-27 17:39:31 roebel Exp $ 
+ * $Id: sdifexception.h,v 1.10 2004-09-09 19:17:38 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.9  2004/07/27 17:39:31  roebel
+ * Changed include directive to use user path and not system path for sdif.h
+ * Changed what to be of type const throw() to properly replace the underlying
+ * method of the base class.
+ *
  * Revision 1.8  2004/07/21 13:20:28  roebel
  * Added support to hold a frameDirectory in the entity and
  * the possibility to read frames from a given time position.
@@ -275,6 +280,15 @@ class SDIFFrameHeaderSizeError : public SDIFFileError
 public:
   constructor(SDIFFrameHeaderSizeError,SDIFFileError)
 };
+
+/// \ingroup exception 
+/// \brief SDIFDirError: Indicates error when creating the SDIF Frame directory
+class SDIFDirError : public SDIFFileError
+{
+public:
+  constructor(SDIFDirError,SDIFFileError)
+};
+
 
 /// \ingroup exception 
 /// \brief SDIFBadFormatVersion

@@ -32,9 +32,15 @@
  * 
  * 
  * 
- * $Id: sdifentity.h,v 1.22 2004-09-08 09:15:57 roebel Exp $ 
+ * $Id: sdifentity.h,v 1.23 2004-09-09 19:17:38 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.22  2004/09/08 09:15:57  roebel
+ * Improved efficiency of FrameDirectory by means of
+ * preventing the need to  search the complete directoy for each frame read.
+ * FrameDir is now a list and there exists a current read position pointer into that list
+ * that indicates where to search for insert positions.
+ *
  * Revision 1.21  2004/08/25 09:22:11  roebel
  * SDIFEntity::Rewind(time) no longer private.
  *
@@ -154,6 +160,71 @@
 #include "easdif/sdifinit.h"
 
 namespace Easdif {
+  //  pairs of time and file position serve as directory
+  struct SDIFLocation {
+
+    SdiffPosT        mPos;
+
+    SdifUInt4        mId;
+    SdifFloat8       mTime;
+    SdifSignature        mSig;
+
+    SDIFLocation():mPos(-1){      
+      mSig  = eEmptySignature;
+      mId   = 0;
+      mTime = -1.;      
+    }
+
+    SDIFLocation(SdifUInt4 _pos,SdifUInt4 _id, SdifFloat8 _time, 
+                 SdifSignature _sig )
+      :mPos(_pos),mId(_id),mTime(_time),mSig(_sig)  {
+
+    }
+
+    SdifUInt4      GetStreamID()  const { return mId;}
+    SdifFloat8     GetTime()      const { return mTime;}
+    SdifSignature  GetSignature() const { return mSig;}
+    SdiffPosT      GetPos()       const { return mPos;}
+
+  };
+
+namespace {
+  // inversion of const tag for elem_iterator classes
+  template<int CONST>
+  struct swap_const {
+    enum {CONSTINV=1};
+  };
+  
+  template<>
+  struct swap_const<1> {
+    enum {CONSTINV=0};
+  };
+
+  template<int CONST>
+  struct Base_Iterator {
+    typedef  std::list<Easdif::SDIFLocation>::iterator basic_iterator;
+  };
+
+  template<>
+  struct Base_Iterator<1> {
+    typedef std::list<Easdif::SDIFLocation>::const_iterator basic_iterator;
+  };
+
+  template<int CONST>
+  struct IteratorTypes {
+    typedef Easdif::SDIFFrame value_type;
+    typedef Easdif::SDIFFrame *pointer;
+    typedef Easdif::SDIFFrame& reference;    
+  };
+
+  template<>
+  struct IteratorTypes<1> {
+    typedef const Easdif::SDIFFrame value_type;
+    typedef const Easdif::SDIFFrame *pointer;
+    typedef const Easdif::SDIFFrame& reference;    
+  };
+}
+
 
 /** 
  * @brief class holding all information concerned with a singe sdif file.
@@ -182,25 +253,302 @@ private:
   SdiffPosT mFirstFramePos;	// file position after reading the header
   
   bool mEof;
-  
+  bool mEofSeen;
+
   int mOpen;
   size_t generalHeader;
   size_t asciiChunks;
 
-  //  pairs of time and file position serve as directory
-  struct SDIFLocation {
-    std::pair<SdifFloat8,SdifUInt4> loc;
-    SDIFLocation():loc(-1.,0){}
-    SDIFLocation(SdifFloat8 _time,SdifUInt4 _pos):loc(_time,_pos){}
-    SdifFloat8  GetTime() const { return loc.first;}
-    SdifUInt4   GetPos()  const { return loc.second;}
-  };
-
-  std::list<SDIFLocation> mFrameDirectory;
-  std::list<SDIFLocation>::iterator mCurrDirPos;
+  mutable std::list<SDIFLocation>::iterator mCurrDirPos;
   bool isFrameDirEnabled;
 
 public: 
+
+
+
+  /**
+   * @brief bidrectional  iterator 
+   *
+   * An iterator class that will
+   * iterate over all selected frames  in the SDIFEntity 
+   * Note that write access to the frame pointed to by the iterator 
+   * will change a frame in memory and will not yet be written into the file
+   * 
+   */
+  template<int CONST>
+  class FRIterator {
+  public:
+    typename Base_Iterator<0>::basic_iterator mBase;
+   //typename std::list<SDIFLocation>::iterator mBase;
+    SDIFEntity   *mpEnt;
+    SDIFFrame     mFrame;
+    bool          mlEndUP;
+    bool          mlEndDOWN;
+    bool          mlFrameIsLoaded;
+  private:
+    
+    
+    friend class FRIterator<swap_const<CONST>::CONSTINV>;
+    friend class SDIFEntity;
+    typedef typename Base_Iterator<CONST>::basic_iterator basic_iterator;
+    //typedef std::list<SDIFLocation>::iterator basic_iterator;
+    
+    void initIterator(bool up) {
+      bool matrixSelection = !SdifListIsEmpty (mpEnt->GetFile()->Selection->matrix);
+      //position to next selected frame
+
+      if(mBase!=
+         mpEnt->mFrameDirectory.end() ||
+         (!mlEndDOWN && !up)|| (!mlEndUP && up)) {
+
+        if(mpEnt->mFrameDirectory.size() && (mlEndUP || mlEndDOWN)
+           && mBase== mpEnt->mFrameDirectory.end()) {
+
+          if(mlEndDOWN && up)
+            {mBase = mpEnt->mFrameDirectory.begin(); mlEndDOWN=false;}
+          if(mlEndUP  && !up) 
+            {--mBase; mlEndUP= false;}
+        }
+
+        while(mBase!=
+              mpEnt->mFrameDirectory.end()){
+
+          SdifFrameHeaderS tt;
+          SDIFLocation &ll=*mBase;
+          tt.Signature =  ll.GetSignature();
+          tt.Size      =  SdifSizeOfFrameHeader();
+          tt.NbMatrix  = 0;
+          tt.NumID     = ll.GetStreamID();
+          tt.Time      = ll.GetTime();
+
+          if(SdifFrameIsSelected(&tt,mpEnt->GetFile()->Selection)) {
+            if(matrixSelection) {
+              GotoPos();
+              if(mpEnt->ReadNextFrame(mFrame) ) {              
+                mlFrameIsLoaded = true;
+                return;
+              }
+            }
+            else {
+              return;
+            }
+          }
+          if(up)
+            ++mBase;
+          else{
+            if(mBase == mpEnt->mFrameDirectory.begin() )
+              break;
+            else
+              --mBase;                
+          }
+        }
+      }
+
+      if(up && !mpEnt->mEofSeen) {        
+        if(mpEnt->ReadNextSelectedFrame(mFrame)){
+          mBase = --mpEnt->mFrameDirectory.end();
+          mlFrameIsLoaded = true;
+          return;
+        }
+      }
+
+      // signal not found for both directions is end of File      
+      mBase = mpEnt->mFrameDirectory.end();
+      if(up)
+        mlEndUP   = true;
+      else
+        mlEndDOWN = true;
+      mlFrameIsLoaded = true;
+      return;
+    }
+
+  public:
+    typedef typename basic_iterator::iterator_category  iterator_category;
+    typedef SDIFFrame        value_type;
+    typedef typename basic_iterator::difference_type   difference_type;
+    typedef typename IteratorTypes<CONST>::pointer       pointer;
+    typedef typename IteratorTypes<CONST>::reference     reference;
+
+     
+    SDIFLocation& GetLoc() {
+      return *mBase;
+    }
+
+    const
+    SDIFLocation& GetLoc() const {
+      return *mBase;
+    }
+
+    bool GotoPos()  {
+      SdiffPosT pos = mBase->GetPos();
+      mpEnt->mCurrDirPos   = mBase;
+      mpEnt->mEof   = false;
+      if(-1==SdiffSetPos(mpEnt->GetFile()->Stream,&pos)) {
+        std::cerr << "cannot seek to pos %d " <<pos<< "\n";
+        exit(1);
+        return false;
+      }
+      
+      if(mpEnt->mOpen & 2) {
+        size_t SizeR = 0;
+        SdifFGetSignature(mpEnt->GetFile(), &SizeR);            
+        if(SizeR!=sizeof(SdifSignature)){
+          std::cerr << "cannot read signature to pos "<<pos <<"\n";
+          exit(1);
+          return false;
+        }
+      }
+      
+      return true;
+    }
+       
+    
+    FRIterator () : mpEnt(0),mlEndUP(false),mlEndDOWN(false),mlFrameIsLoaded(false)  {};
+
+    FRIterator (const FRIterator<CONST> & in) : 
+      mBase(in.mBase),mpEnt(in.mpEnt), 
+      mlEndUP(in.mlEndUP),mlEndDOWN(in.mlEndDOWN),mlFrameIsLoaded(false)
+    {    };
+
+    FRIterator (const FRIterator<swap_const<CONST>::CONSTINV> & in) : 
+      mBase(in.mBase), mpEnt(in.mpEnt), 
+      mlEndUP(in.mlEndUP), mlEndDOWN(in.mlEndDOWN), mlFrameIsLoaded(false)     
+    {    };
+	
+    FRIterator (const SDIFEntity *_ent, bool end = false) : 
+      mBase(end ? 
+            const_cast<SDIFEntity *>(_ent)->mFrameDirectory.end()
+            :const_cast<SDIFEntity *>(_ent)->mCurrDirPos),
+      mpEnt(const_cast<SDIFEntity *>(_ent)),mlFrameIsLoaded(false)
+    {
+      mlEndUP    = end || (mBase == mpEnt->mFrameDirectory.end()&&mpEnt->mEofSeen);
+      mlEndDOWN  = false;
+      if(!mlEndUP) {
+        initIterator(true);
+      }      
+    }
+	
+    FRIterator (const SDIFEntity &_ent, bool end = false) : 
+      mBase(end ? 
+            const_cast<SDIFEntity *>(&_ent)->mFrameDirectory.end()
+            :const_cast<SDIFEntity *>(&_ent)->mCurrDirPos),
+      mpEnt(const_cast<SDIFEntity *>(&_ent)),mlFrameIsLoaded(false)
+    {
+      mlEndUP = end || (mBase == mpEnt->mFrameDirectory.end()&&mpEnt->mEofSeen);
+      mlEndDOWN  = false;
+      if(!mlEndUP) {
+        initIterator(true);
+      }
+    }
+	
+    ~FRIterator ( ) {};
+	
+    FRIterator& operator ++() {
+      mlFrameIsLoaded = false;
+      mFrame.ClearData();
+
+      if(!mlEndUP ) {
+        if(mBase!=mpEnt->mFrameDirectory.end()) 
+          ++mBase;
+
+        initIterator(true);
+      }    
+      return *this;
+    }
+	
+    FRIterator operator ++(int) {
+      FRIterator tmp=*this;
+      this->operator++();
+      return tmp;
+    }
+		
+    
+    FRIterator& operator --() {
+      mFrame.ClearData();
+      mlFrameIsLoaded = false;
+      if(!mlEndDOWN) {
+        if(mBase==
+           mpEnt->mFrameDirectory.end() && !mpEnt->mEofSeen) {
+          
+          while(!mpEnt->eof()) {
+            mpEnt->ReadNextSelectedFrame(mFrame);
+          }        
+        }
+        
+        if(mBase!= mpEnt->mFrameDirectory.begin()){
+          mlEndUP = false;
+          --mBase;
+        }
+        initIterator(false);      
+      }
+      return *this;
+    }
+	
+    FRIterator operator --(int) {
+      FRIterator tmp=*this;
+      this->operator--();
+      return tmp;
+    }
+	
+    reference operator*()  { 
+      if(!mlFrameIsLoaded) {
+        GotoPos();
+        if(mpEnt->ReadNextFrame(mFrame) ) {
+          mlFrameIsLoaded = true;            
+        }
+      }
+      return mFrame;
+    }
+    reference operator*() const { 
+      if(!mlFrameIsLoaded) {
+        GotoPos();
+        if(mpEnt->ReadNextFrame(mFrame) ) {
+          mlFrameIsLoaded = true;            
+        }
+      }
+
+      return mFrame;      
+    }
+    
+    pointer operator->() const {      
+      if(!mlFrameIsLoaded) {
+        GotoPos();
+        if(mpEnt->ReadNextFrame(mFrame) ) {
+          mlFrameIsLoaded = true;            
+        }
+      }
+      return &mFrame;
+    }
+
+    pointer operator->()  {      
+      if(!mlFrameIsLoaded) {
+        GotoPos();
+        if(mpEnt->ReadNextFrame(mFrame) ) {
+          mlFrameIsLoaded = true;            
+        }
+      }
+      return &mFrame;
+    }
+	
+    template<int OC>
+    bool operator==(const FRIterator<OC>& i)const {
+      return((i.mlEndUP  ||i.mlEndDOWN) == (mlEndUP || mlEndDOWN)  && i.mBase == mBase);
+    }
+
+    template<int OC>
+    bool operator!=(const  FRIterator<OC>& i)const {
+      return !operator==(i);
+    }
+
+
+
+  };
+  typedef FRIterator<0>       iterator;
+  typedef FRIterator<1> const_iterator;      
+
+  mutable std::list<SDIFLocation> mFrameDirectory;
+
+
     /// Default constructor
     SDIFEntity();
     ~SDIFEntity()
@@ -212,6 +560,27 @@ public:
 	    }
 	};
 
+
+
+  const_iterator
+  begin () const {
+    return const_iterator(this,false);
+  }
+
+  iterator
+  begin ()  {
+    return iterator(this,false);
+  }
+
+  const_iterator
+  end () const {
+    return const_iterator(this,true);
+  }
+
+  iterator
+  end ()  {
+    return iterator(this,true);
+  }
 
 /*************************************************************************/
 /* Description type */
@@ -342,9 +711,29 @@ public:
  * \ingroup  file
  * open a file in reading mode
  * @param filename 
+ *               
  * @return true if opened/false if error
  */
     bool OpenRead(const char* filename);
+
+/** 
+ * \ingroup  file
+ * open a file in reading mode without destroying any information
+ *    in the internal FrameDirectory
+ * @param filename 
+ *
+ * In constrast to standard OpenRead the internal frame directory 
+ * is kept and reused.
+ *     Attention reusing a directory is only reasonable if the
+ *       same file is.
+ * 
+ * If there is no directory information, either if the SDIFEntity
+ * has just been  created or the file that has previously been opened
+ * did not use a frame directory this call is equivalent to OpenRead()
+ *               
+ * @return true if opened/false if error
+ */
+    bool ReOpenRead(const char* filename);
 
 /** 
  * \ingroup  file
@@ -370,21 +759,6 @@ public:
     bool Rewind();
 
 
-  /** 
-   * \ingroup  file
-   * rewind a file to a frame that has a time position
-   * that is guaranteed to be before the time specified in timePos
-   * if the directory information is incomplete (due to selection)
-   * the frame may be well before the time required.
-   *
-   * Postion will be on end of file if there  exists
-   * no Frame after timePos
-   *
-   *
-   * @return true if positioning was successful
-   */
-    
-    bool Rewind(SdifFloat8 timePos);
 
   /** 
    * \ingroup file
@@ -424,7 +798,7 @@ public:
    * all frames up to the current frame are reread to obtain a complete
    * and consistent directory. 
    */
-  void EnableFrameDir();
+  void EnableFrameDir()  throw(SDIFDirError);
 
   /**
    * \ingroup file
@@ -449,8 +823,7 @@ private:
    * the frame read interface.
    *
    */
-  void AddFramePos(SdifFloat8 time,SdifUInt4 pos);
-
+  void AddFramePos(SdifUInt4 id, SdifSignature sig, SdifFloat8 time,SdiffPosT pos);
 private:
   // this appears to be a remaining of the initial development 
   // will be removed in the future

@@ -32,9 +32,16 @@
  * 
  * 
  * 
- * $Id: sdifframe.cpp,v 1.13 2004-08-25 18:23:56 roebel Exp $ 
+ * $Id: sdifframe.cpp,v 1.14 2004-09-09 19:17:38 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.13  2004/08/25 18:23:56  roebel
+ * Version 0.11.0
+ * removed SetNbMatrix which was confusing because people used it
+ * to resize a Frame. Added a real resize function.
+ * Added size(), resize() and clear() functions to
+ * have more consistent interface compared to stl containers.
+ *
  * Revision 1.12  2004/07/29 13:43:39  roebel
  * Use eEmptySignature to initialize signature of empty frame.
  *
@@ -123,15 +130,17 @@ int SDIFFrame::Read(SdifFileT* file, bool &eof)
 {
     mFrameBytesRead = 0;
     ClearData();
+
     mFrameBytesRead += ReadHeader(file);
     /* for selection */
     if (mFrameBytesRead == 0)
     {
-	SdifFSkipFrameData (file);
-	//to have exception
-	eof = (SdifFGetSignature (file, &mFrameBytesRead) == eEof);
-	return 0;
+      SdifFSkipFrameData (file);
+      //to have exception
+      eof = (SdifFGetSignature (file, &mFrameBytesRead) == eEof);
+      return 0;
     }
+
     Resize(mNbMatrix);
     mFrameBytesRead += ReadData(file);
 
@@ -155,8 +164,11 @@ int SDIFFrame::Read(SDIFEntity& entity)
     
     if(entity.IsFrameDir()){
       mFrameBytesRead = Read(file, entity.mEof);
-      // frame info is correct even if frame has been skipped
-      entity.AddFramePos(SdifFCurrTime(file),file->StartChunkPos);
+      // minimal frame info is correct even if frame has been skipped
+      entity.AddFramePos(SdifFCurrID(file),SdifFCurrFrameSignature(file),
+                         SdifFCurrTime(file),file->StartChunkPos);
+      if(entity.mEof)
+        entity.mEofSeen = true;
     }
     else
       mFrameBytesRead = Read(file, entity.mEof);
@@ -197,7 +209,6 @@ int SDIFFrame::ReadHeader(SdifFileT* file)
     //int eof = 0;
 
     BytesRead += SdifFReadFrameHeader(file);
-
     /* for selection*/
        if (!SdifFCurrFrameIsSelected (file))
 	  {
@@ -229,13 +240,14 @@ int SDIFFrame::Write(SdifFileT* file)
     SdifUInt4 index;
     SdifUInt4 lsize=GetSize();
     
-    WriteHeader(file);
-    SdifUInt4 _size    = 0;
-    for (index = 0; index < mNbMatrix; index++)	    
-	_size += mv_Matrix[index].Write(file);     
+    SdifUInt4 _size    = WriteHeader(file);
+    for (index = 0; index < mNbMatrix; index++) {
+      _size += mv_Matrix[index].Write(file);     
+    }
 
-    if(_size != lsize){
-      throw Easdif::SDIFFrameHeaderSizeError(eError,"Error in SDIFFrame::Write -- FrameSize in Header does not match size of matrices in header",file,eBadHeader,0,0);
+    // Signature and size entry do not count for frame size
+    if(_size != lsize + 8){
+      throw Easdif::SDIFFrameHeaderSizeError(eError,"Error in SDIFFrame::Write -- FrameSize  does not match written size",file,eBadHeader,0,0);
     }
     return _size; 
 }
@@ -249,12 +261,9 @@ int SDIFFrame::Write(const SDIFEntity& entity)
 /* writing informations */
 int SDIFFrame::WriteHeader(SdifFileT* file)
 {
-  int _frsize = SdifSizeOfFrameHeader();
-  SdifFSetCurrFrameHeader(file, mSig, GetSize()+SdifSizeOfFrameHeader(),
+  SdifFSetCurrFrameHeader(file, mSig, GetSize(),
 			  mNbMatrix, mStreamID, mTime); 
-  SdifFWriteFrameHeader(file);    
-  
-  return _frsize;
+  return SdifFWriteFrameHeader(file);     
 }
 
 /* writing informations with SDIFEntity*/
@@ -377,10 +386,11 @@ const SDIFMatrix& SDIFFrame::GetMatrix(unsigned int index) const
 
 SdifUInt4 SDIFFrame::GetSize() const
 {
-  SdifUInt4       size=0;
-    
-  for(unsigned int i=0;i<GetNbMatrix();++i)
+  SdifUInt4       size=SdifSizeOfFrameHeader();
+
+  for(unsigned int i=0;i<GetNbMatrix();++i){
     size += GetMatrix(i).GetSize();
+  }
   return size;
 
 }
