@@ -32,9 +32,12 @@
  * 
  * 
  * 
- * $Id: sdifentity.h,v 1.26 2004-09-10 10:58:21 roebel Exp $ 
+ * $Id: sdifentity.h,v 1.27 2004-09-10 14:45:28 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.26  2004/09/10 10:58:21  roebel
+ * Fixed signed unsigned compiler warnings
+ *
  * Revision 1.25  2004/09/10 09:20:52  roebel
  * Extend frame directory to contain the matrix signatures for each frame.
  * No longer needs to re read the frame to decide whether frame is selected.
@@ -261,16 +264,16 @@ namespace {
 
   template<int CONST>
   struct IteratorTypes {
-    typedef Easdif::SDIFFrame value_type;
-    typedef Easdif::SDIFFrame *pointer;
-    typedef Easdif::SDIFFrame& reference;    
+    typedef Easdif::SDIFFrame    value_type;
+    typedef Easdif::SDIFFrame   *pointer;
+    typedef Easdif::SDIFFrame&   reference;    
   };
 
   template<>
   struct IteratorTypes<1> {
-    typedef const Easdif::SDIFFrame value_type;
-    typedef const Easdif::SDIFFrame *pointer;
-    typedef const Easdif::SDIFFrame& reference;    
+    typedef const Easdif::SDIFFrame   value_type;
+    typedef const Easdif::SDIFFrame  *pointer;
+    typedef const Easdif::SDIFFrame&  reference;    
   };
 }
 
@@ -286,7 +289,8 @@ namespace {
 
 class SDIFEntity
 {
-    friend class SDIFFrame;
+  friend class SDIFFrame;
+  typedef std::list<SDIFLocation> Directory;
 
 private:
 
@@ -308,7 +312,7 @@ private:
   size_t generalHeader;
   size_t asciiChunks;
 
-  mutable std::list<SDIFLocation>::iterator mCurrDirPos;
+  mutable Directory::iterator mCurrDirPos;
   bool isFrameDirEnabled;
 
 public: 
@@ -457,10 +461,10 @@ public:
       mlEndUP(in.mlEndUP), mlEndDOWN(in.mlEndDOWN), mlFrameIsLoaded(false)     
     {    };
 	
-    FRIterator (const SDIFEntity *_ent, bool end = false) : 
+    FRIterator (const SDIFEntity * _ent, bool end = false) : 
       mBase(end ? 
-            const_cast<SDIFEntity *>(_ent)->mFrameDirectory.end()
-            :const_cast<SDIFEntity *>(_ent)->mCurrDirPos),
+            const_cast<SDIFEntity *>(_ent)->mFrameDirectory.end() :
+            const_cast<SDIFEntity *>(_ent)->mCurrDirPos),
       mpEnt(const_cast<SDIFEntity *>(_ent)),mlFrameIsLoaded(false)
     {
       mlEndUP    = end || (mBase == mpEnt->mFrameDirectory.end()&&mpEnt->mEofSeen);
@@ -471,9 +475,9 @@ public:
     }
 	
     FRIterator (const SDIFEntity &_ent, bool end = false) : 
-      mBase(end ? 
-            const_cast<SDIFEntity *>(&_ent)->mFrameDirectory.end()
-            :const_cast<SDIFEntity *>(&_ent)->mCurrDirPos),
+      mBase(end ?
+            const_cast<SDIFEntity &>(_ent).mFrameDirectory.end():
+            const_cast<SDIFEntity &>(_ent).mCurrDirPos),
       mpEnt(const_cast<SDIFEntity *>(&_ent)),mlFrameIsLoaded(false)
     {
       mlEndUP = end || (mBase == mpEnt->mFrameDirectory.end()&&mpEnt->mEofSeen);
@@ -587,8 +591,10 @@ public:
   };
   typedef FRIterator<0>       iterator;
   typedef FRIterator<1> const_iterator;      
+  friend class FRIterator<0>;
+  friend class FRIterator<1>;
 
-  mutable std::list<SDIFLocation> mFrameDirectory;
+  mutable Directory           mFrameDirectory;
 
 
     /// Default constructor
@@ -622,6 +628,21 @@ public:
   iterator
   end ()  {
     return iterator(this,true);
+  }
+
+  const SDIFLocation&
+  GetCurLoc() const {
+    return *mCurrDirPos;
+  }
+
+  Directory::const_iterator
+  GetCurItPos() const {
+    return Directory::const_iterator(mCurrDirPos);
+  }
+
+  const Directory&
+  GetDirectory() const {
+    return mFrameDirectory;
   }
 
 /*************************************************************************/
