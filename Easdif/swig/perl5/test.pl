@@ -1,8 +1,11 @@
 #!/usr/bin/perl
 
-# $Id: test.pl,v 1.1 2003-05-07 15:14:36 tisseran Exp $
+# $Id: test.pl,v 1.2 2003-05-15 11:38:22 schwarz Exp $
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.1  2003/05/07 15:14:36  tisseran
+# Readded missing test.pl
+#
 # Revision 1.9  2003/04/18 15:41:18  schwarz
 # Don't include all definitions from sdif.h, only the ones needed by
 # easdif, defined in sdifdefine.i.  -> smaller wrapper size:
@@ -49,9 +52,9 @@ print "created new SDIFEntity $file\n";
 $frame = new eaSDIF::Frame;
 print "created new SDIFFrame $frame\n";
 
-#with shadow class: 
-$res = $file->OpenRead("../../test/lic.sdif")  ||  die;
-print "open (mode $eaSDIF::eReadFile)...$res\n";
+$filename = "../../test/lic.sdif";
+$res = $file->OpenRead($filename)  ||  die;
+print "open ('$filename', mode $eaSDIF::eReadFile)...$res\n";
 
 %count = ();
 
@@ -62,10 +65,10 @@ while (!$file->eof())
     $count{$fsig}++;
 
     # print frame to stdout
-    #$frame->View();
+    #$frame->Print();
 
     $mat  = $frame->GetMatrix(0);
-#    $nomat= $frame->GetMatrix(1);
+#    $nomat= $frame->GetMatrix(1);	# test exception
     $msig = $mat->GetSignature();
     $nrow = $mat->GetNbRows();
     $ncol = $mat->GetNbCols();
@@ -78,11 +81,12 @@ while (!$file->eof())
     $valsum{$sig}  += $val;
     $valssum{$sig} += $val * $val;
 
-    print "frame $fsig matrix $msig($nrow, $ncol) = $val\n";
+    printf "frame %s(%.3f) matrix %s(%d, %d) = %g\n", 
+           $fsig, $frame->GetTime(), $msig, $nrow, $ncol, $val;
 }
 
 print "\ntypes defined in file:\n";
-$file->ViewTypes();
+$file->PrintTypes();
 
 # close file
 $file->Close();
@@ -104,10 +108,10 @@ while (my ($sig, $c) = each %valcount)
 	   $c, $sig, $mu, $sigma;
 
     # write one matrix with mean at time sigma per type found
-    $omt->CreateMatrixData($valmsig{$sig}, 1, 1, $eaSDIF::eFloat4);
+    $omt->Init($valmsig{$sig}, 1, 1, $eaSDIF::eFloat4);
     $omt->Set(0, 0, $mu);
 
-    $ofr->SetInfo($valfsig{$sig}, $stream++, $sigma);
+    $ofr->SetHeader($valfsig{$sig}, $stream++, $sigma);
     $ofr->AddMatrix($omt);
     $bytes += $ofr->Write($out);
 }
