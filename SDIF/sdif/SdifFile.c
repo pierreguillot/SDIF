@@ -1,4 +1,4 @@
-/* $Id: SdifFile.c,v 3.15 2000-10-27 15:04:53 roebel Exp $
+/* $Id: SdifFile.c,v 3.16 2000-10-27 18:55:49 roebel Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -33,6 +33,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.15  2000/10/27  15:04:53  roebel
+ * Moved version to automatically generated SDifVersion.h
+ *
  * Revision 3.14  2000/08/22  13:17:24  schwarz
  * Centralised error report function SdifFError, called from _SdifFError
  * macro.  Error level names (gSdifErrorLevel) are printed, so that users
@@ -167,6 +170,18 @@
 #if HAVE_SYS_STAT_H
 #include <sys/stat.h>
 #endif
+
+#include "SdifVersion.h"
+
+#ifndef AUTOCKSUM
+#define AUTOCKSUM "$Checksum: not available$ IRCAM $Date: 2000-10-27 18:55:49 $" 
+#endif
+
+#ifndef lint
+    static char identstring[]= AUTOCKSUM;
+#endif
+
+
 
 
 SdifFileT*
