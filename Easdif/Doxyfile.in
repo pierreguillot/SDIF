@@ -1,7 +1,10 @@
-# Doxyfile 1.2.12
-# $Id: Doxyfile.in,v 1.3 2003-04-08 23:20:43 roebel Exp $
+# Doxyfile 1.2.12						       -*-sh-*-
+# $Id: Doxyfile.in,v 1.4 2003-04-18 16:46:54 schwarz Exp $
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.3  2003/04/08 23:20:43  roebel
+# Added test for program dot
+#
 # Revision 1.2  2003/04/08 18:22:31  roebel
 # Fixed support for doc in non top source dir
 #
@@ -882,11 +885,3 @@ BIN_ABSPATH            =
 # the documentation for these projects as well.
 
 EXT_DOC_PATHS          = 
-
-
-
-
-
-
-
-
