@@ -1,4 +1,4 @@
-# $Id: Makefile.preamble,v 3.4 1999-10-07 15:22:53 schwarz Exp $
+# $Id: Makefile.preamble,v 3.5 2000-02-22 15:45:18 schwarz Exp $
 #
 #               Copyright (c) 1998 by IRCAM - Centre Pompidou
 #                          All rights reserved.
@@ -11,6 +11,11 @@
 # 
 #
 # $Log: not supported by cvs2svn $
+# Revision 3.4  1999/10/07  15:22:53  schwarz
+# Factoring of commonly used path part $(ARCHDIR).
+# User option for me to compile into my $(HOME)/xxx.
+# Various little improvements.
+#
 # Revision 3.3  1999/09/28  13:24:34  schwarz
 # Use true ansi compiler, correct libraries, and include path for
 # preincluded.h, including host_architecture.h and SDIF's project_preinclude.h.
@@ -44,6 +49,11 @@ ifeq ($(ARCH),sgi)
 endif
 ifeq ($(ARCH),alpha)
 	SHELL = /usr/local/bin/tcsh
+# AMD K6 = 586
+ifeq ($(ARCH),Linux)	
+	SHELL=/bin/tcsh
+endif
+
 endif
 ifeq ($(ARCH), mips)
 	SHELL = /u/formes/virolle/bin/mips/tcsh
@@ -151,7 +161,7 @@ ifeq ($(SYSTEM), IRIX)
 	CAFLAGS =  -fullwarn
 	LFLAGS =
 	LIBS	+= -lgen
-	RANLIB = 0
+	RANLIB = echo no ranlib
 	INSTALL := /usr/local/bin/install -c 
 	INSTALL_H_FILES := $(INSTALL)
 endif
@@ -161,7 +171,7 @@ ifeq ($(SYSTEM), ULTRIX)
 	CC = gcc
 	CAFLAGS =  -ansi -pedantic
 	LIBS	+= -lgen
-	RANLIB = 0
+	RANLIB = echo no ranlib
 	INSTALL :=  /usr/local/bin/install -c 
 	INSTALL_H_FILES := $(INSTALL)
 endif
@@ -172,7 +182,7 @@ ifeq ($(SYSTEM), IRIX64)
 	CAFLAGS =  -64 -mips4 -D__mips64 
 	LFLAGS = -64 -mips4
 	LIBS	+= -lgen
-	RANLIB = 0
+	RANLIB = echo no ranlib
 	INSTALL :=  /usr/local/bin/install -c 
 	INSTALL_H_FILES := $(INSTALL)
 endif
@@ -196,9 +206,18 @@ ifeq ($(SYSTEM), OSF1)
 
 	INSTALL := /usr/local/bin/install -c 
 	INSTALL_H_FILES := cp -f
-	# RANLIB = ranlib
-	RANLIB = 0
+	RANLIB = echo no ranlib
 endif
+
+
+ifeq ($(SYSTEM),Linux)
+	CC=gcc
+	CAFLAGS= -Wall -ansi
+	RANLIB=/usr/bin/ranlib
+	INSTALL:=/usr/bin/install -c
+	INSTALL_H_FILES:=$(INSTALL)
+endif
+
 
 
 ######
