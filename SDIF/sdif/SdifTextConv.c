@@ -1,4 +1,4 @@
-/* $Id: SdifTextConv.c,v 3.5 2000-11-14 10:42:27 lefevre Exp $
+/* $Id: SdifTextConv.c,v 3.6 2000-11-15 14:53:37 lefevre Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -32,6 +32,9 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.5  2000/11/14  10:42:27  lefevre
+ * no message
+ *
  * Revision 3.4  2000/10/27  20:03:45  roebel
  * autoconf merged back to main trunk
  *
@@ -74,13 +77,10 @@
 #include "SdifTextConv.h"
 #include "SdifFile.h"
 #include "SdifTest.h"
-
 #include "SdifRWLowLevel.h"
-
 #include "SdifFScan.h"
 #include "SdifFWrite.h"
 #include "SdifErrMess.h"
-
 #include <stdlib.h>
 
 

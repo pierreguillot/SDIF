@@ -1,4 +1,4 @@
-/* $Id: SdifGlobals.h,v 3.9 2000-10-27 20:03:34 roebel Exp $
+/* $Id: SdifGlobals.h,v 3.10 2000-11-15 14:53:30 lefevre Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -31,6 +31,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.9  2000/10/27  20:03:34  roebel
+ * autoconf merged back to main trunk
+ *
  * Revision 3.8.2.2  2000/08/21  21:35:24  tisseran
  * *** empty log message ***
  *
@@ -274,7 +277,7 @@ typedef enum SdifDataTypeE
 /* generate prototype template for all types */
 #define sdif_proto_foralltypes(macro)	sdif__foralltypes(macro,;)
 
-#endif /* __STDC__ */
+#endif /* STDC_HEADERS */
 
 #else
 

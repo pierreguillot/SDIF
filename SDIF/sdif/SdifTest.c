@@ -1,4 +1,4 @@
-/* $Id: SdifTest.c,v 3.6 2000-10-27 20:03:45 roebel Exp $
+/* $Id: SdifTest.c,v 3.7 2000-11-15 14:53:36 lefevre Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -33,6 +33,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.6  2000/10/27  20:03:45  roebel
+ * autoconf merged back to main trunk
+ *
  * Revision 3.5  2000/08/22  13:38:41  schwarz
  * SdifFTestMatrixWithFrameHeader warns about additional undeclared
  * matrix in frame but do not signal an error, because we allow any
@@ -74,14 +77,13 @@
  */
 
 #include <preincluded.h>
+
 #include <stdio.h>
 #include <stdlib.h>
-
-
+#include <ctype.h>
 #include "SdifTest.h"
 #include "SdifPrint.h"
 #include "SdifRWLowLevel.h"
-#include <ctype.h>
 #include "SdifFile.h"
 #include "SdifErrMess.h"
 

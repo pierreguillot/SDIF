@@ -1,4 +1,4 @@
-/* $Id: SdifHard_OS.c,v 3.6 2000-10-27 20:03:34 roebel Exp $
+/* $Id: SdifHard_OS.c,v 3.7 2000-11-15 14:53:30 lefevre Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -28,6 +28,9 @@
  *
  * author: Dominique Virolle 1998
  * $Log: not supported by cvs2svn $
+ * Revision 3.6  2000/10/27  20:03:34  roebel
+ * autoconf merged back to main trunk
+ *
  * Revision 3.5.2.2  2000/08/21  21:35:25  tisseran
  * *** empty log message ***
  *
@@ -71,11 +74,10 @@
 
 
 #include <preincluded.h>
+
 #include "SdifHard_OS.h"
 #include "SdifError.h"
-
 #include <string.h>
-
 #include <ctype.h>
 #include <stdlib.h>
 

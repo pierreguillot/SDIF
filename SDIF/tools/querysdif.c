@@ -1,4 +1,4 @@
-/* $Id: querysdif.c,v 1.1 2000-10-30 14:44:03 roebel Exp $
+/* $Id: querysdif.c,v 1.2 2000-11-15 14:53:40 lefevre Exp $
  
                 Copyright (c) 1998 by IRCAM - Centre Pompidou
                            All rights reserved.
@@ -13,6 +13,9 @@
    View summary of data in an SDIF-file.  
    
    $Log: not supported by cvs2svn $
+ * Revision 1.1  2000/10/30  14:44:03  roebel
+ * Moved all tool sources into central tools directory and added config.h to sources
+ *
  * Revision 1.2  2000/10/27  20:04:18  roebel
  * autoconf merged back to main trunk
  *
@@ -45,10 +48,16 @@
 */
 
 
+#include <preincluded.h>
+#include "XpGuiCalls.h"
+
+#include "SdifGlobals.h"
+#include "SdifFile.h"
+#include "SdifFRead.h"
+#include "SdifFPrint.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include "sdif.h"
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -77,7 +86,7 @@ void usage (void)
 "printed, followed by a count of the frames and the matrices occuring in\n"
 "the file.\n"
 "\n");
-    exit(1);
+    XpExit(1);
 }
 
 /* Count occurence of signatures as frame or matrix under
@@ -116,7 +125,7 @@ int GetSigIndex (SdifSignature s, int parent, int stream)
 	{
 	    fprintf (SdifStdErr, "Too many different signatures, "
 		     "can't handle more than %d!\n", MaxSignatures);
-	    exit (1);
+	    XpExit (1);
 	}
 
 	sigs [i].sig    = s;
@@ -144,7 +153,21 @@ int CountSig (SdifSignature s, int parent, int stream, float time)
 }
 
 
-int main (int argc, char **argv)
+/*--------------------------------------------------------------------------*/
+/*	KERmain / main															*/
+/*--------------------------------------------------------------------------*/
+
+#if HOST_OS_MAC
+
+int KERmain(int argc, char** argv);
+int KERmain(int argc, char** argv)
+
+#else
+
+int main(int argc, char** argv);
+int main(int argc, char** argv)
+
+#endif
 {
     int		i, m, eof = 0;
     size_t	bytesread = 0;
@@ -203,7 +226,7 @@ int main (int argc, char **argv)
     {
 	fprintf (SdifStdErr, "Can't open input file %s.\n", infile);
         SdifGenKill ();
-        exit (1);
+        XpExit (1);
     }
     in->TextStream = stdout;	/* SdifFPrint* functions need this */
 

@@ -1,4 +1,4 @@
-/* $Id: SdifFPrint.c,v 3.5 2000-10-27 20:03:27 roebel Exp $
+/* $Id: SdifFPrint.c,v 3.6 2000-11-15 14:53:26 lefevre Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -31,6 +31,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.5  2000/10/27  20:03:27  roebel
+ * autoconf merged back to main trunk
+ *
  * Revision 3.4.2.1  2000/08/21  21:35:05  tisseran
  * *** empty log message ***
  *
@@ -59,12 +62,11 @@
 
 
 #include <preincluded.h>
+
 #include "SdifFPrint.h"
 #include "SdifTest.h"
 #include "SdifFile.h"
-
 #include "SdifRWLowLevel.h"
-
 #include "SdifNameValue.h"
 #include "SdifHash.h"
 #include "SdifMatrixType.h"
@@ -72,7 +74,6 @@
 #include "SdifStreamID.h"
 #include "SdifFPut.h"
 #include "SdifErrMess.h"
-
 #include "SdifTimePosition.h"
 
 

@@ -1,4 +1,4 @@
-/* $Id: SdifFile.h,v 3.10 2000-10-27 20:03:31 roebel Exp $
+/* $Id: SdifFile.h,v 3.11 2000-11-15 14:53:29 lefevre Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -34,6 +34,9 @@ LIBRARY
 
 LOG
  * $Log: not supported by cvs2svn $
+ * Revision 3.10  2000/10/27  20:03:31  roebel
+ * autoconf merged back to main trunk
+ *
  * Revision 3.9  2000/08/22  13:17:24  schwarz
  * Centralised error report function SdifFError, called from _SdifFError
  * macro.  Error level names (gSdifErrorLevel) are printed, so that users
@@ -109,8 +112,6 @@ LOG
 
 #ifndef _SDIFFILE_H
 #define _SDIFFILE_H
-
-#include "config.h" /* For _SDIF_VERSION declaration (made by autoconf) */
 
 #include "SdifFileStruct.h"
 #include "SdifGlobals.h"

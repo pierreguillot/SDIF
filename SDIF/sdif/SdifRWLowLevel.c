@@ -1,4 +1,4 @@
-/* $Id: SdifRWLowLevel.c,v 3.11 2000-10-27 20:03:42 roebel Exp $
+/* $Id: SdifRWLowLevel.c,v 3.12 2000-11-15 14:53:34 lefevre Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -32,6 +32,9 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.11  2000/10/27  20:03:42  roebel
+ * autoconf merged back to main trunk
+ *
  * Revision 3.10.2.2  2000/08/21  21:35:44  tisseran
  * *** empty log message ***
  *
@@ -99,6 +102,7 @@
 
 
 #include <preincluded.h>
+
 #include <string.h>
 #include <ctype.h>
 #include <assert.h>
@@ -1197,7 +1201,7 @@ static const char *formatUInt8    = "%lu";
 }
 
 /* generate scan functions */
-sdif_foralltypes (scan)
+sdif_foralltypes (scan);
 
 
 

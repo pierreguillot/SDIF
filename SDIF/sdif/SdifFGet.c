@@ -1,4 +1,4 @@
-/* $Id: SdifFGet.c,v 3.8 2000-10-27 20:03:26 roebel Exp $
+/* $Id: SdifFGet.c,v 3.9 2000-11-15 14:53:25 lefevre Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -32,6 +32,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.8  2000/10/27  20:03:26  roebel
+ * autoconf merged back to main trunk
+ *
  * Revision 3.7  2000/08/22  13:37:55  schwarz
  * Replaced short by int, because that's faster and less error-prone.
  *
@@ -88,25 +91,21 @@
 
 
 #include <preincluded.h>
+
 #include <string.h>
 #include "SdifFRead.h"
 #include "SdifFGet.h"
 #include "SdifTest.h"
 #include "SdifFile.h"
-
 #include "SdifRWLowLevel.h"
-
 #include "SdifNameValue.h"
 #include "SdifHash.h"
 #include "SdifMatrixType.h"
 #include "SdifFrameType.h"
 #include "SdifStreamID.h"
 #include "SdifErrMess.h"
-
 #include "SdifTimePosition.h"
-
 #include "SdifString.h"
-
 #include <ctype.h>
 #include <stdlib.h>
 

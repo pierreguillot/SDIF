@@ -1,8 +1,11 @@
-/* $Id: sdif.h,v 1.2 2000-10-27 20:03:18 roebel Exp $
+/* $Id: sdif.h,v 1.3 2000-11-15 14:53:22 lefevre Exp $
  *
  * This file contains type declaration of variables used in SDIF library.
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  2000/10/27  20:03:18  roebel
+ * autoconf merged back to main trunk
+ *
  * Revision 1.1.2.2  2000/08/21  21:34:52  tisseran
  * *** empty log message ***
  *
@@ -12,13 +15,17 @@
  * Revision 1.1.2.1  2000/08/21  13:07:41  tisseran
  * *** empty log message ***
  *
- * $Date: 2000-10-27 20:03:18 $
+ * $Date: 2000-11-15 14:53:22 $
  *
  */
 
 
 #ifndef _SDIF_H
 #define _SDIF_H 1
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 #include <stdio.h>
 #include <float.h>
@@ -606,11 +613,14 @@ struct SdifStringS
 };
 
 
-/* $Id: sdif.h,v 1.2 2000-10-27 20:03:18 roebel Exp $
+/* $Id: sdif.h,v 1.3 2000-11-15 14:53:22 lefevre Exp $
  *
  * This file contains prototype of functions used in SDIF library.
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  2000/10/27  20:03:18  roebel
+ * autoconf merged back to main trunk
+ *
  * Revision 1.1.2.2  2000/08/21  21:34:52  tisseran
  * *** empty log message ***
  *
@@ -620,7 +630,7 @@ struct SdifStringS
  * Revision 1.1.2.1  2000/08/21  13:07:39  tisseran
  * *** empty log message ***
  *
- * $Date: 2000-10-27 20:03:18 $
+ * $Date: 2000-11-15 14:53:22 $
  *
  */
 
@@ -2663,4 +2673,8 @@ SdifTimePositionT*  SdifTimePositionLGetTail(SdifTimePositionLT* TimePositionL);
 
 #endif /* _SdifTimePosition_ */
 
+
+#ifdef __cplusplus
+}
+#endif
 #endif /* _SDIF_H */

@@ -1,4 +1,4 @@
-/* $Id: SdifFile.c,v 3.18 2000-11-14 10:42:26 lefevre Exp $
+/* $Id: SdifFile.c,v 3.19 2000-11-15 14:53:28 lefevre Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -33,6 +33,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.18  2000/11/14  10:42:26  lefevre
+ * no message
+ *
  * Revision 3.17  2000/11/09  15:59:15  schwarz
  * Added lost function SdifFStreamIDTable that returns the file's
  * stream ID table.
@@ -161,6 +164,7 @@
 #include "XpGuiCalls.h"
 #include "UniversalEnvVar.h"
 
+#include "SdifGlobals.h"
 #include "SdifFile.h"
 #include "SdifTest.h"
 #include "SdifSelect.h"
@@ -184,7 +188,7 @@
 #include "SdifVersion.h"
 
 #ifndef AUTOCKSUM
-#define AUTOCKSUM "$Checksum: not available$ IRCAM $Date: 2000-11-14 10:42:26 $" 
+#define AUTOCKSUM "$Checksum: not available$ IRCAM $Date: 2000-11-15 14:53:28 $" 
 #endif
 
 #ifndef lint

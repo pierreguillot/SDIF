@@ -35,6 +35,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.4  2000/10/27  20:03:36  roebel
+ * autoconf merged back to main trunk
+ *
  * Revision 3.3.2.1  2000/08/21  21:35:31  tisseran
  * *** empty log message ***
  *
@@ -62,11 +65,10 @@
  */
 
 #include <preincluded.h>
-#include "SdifList.h"
 
+#include "SdifList.h"
 #include <stdio.h>
 #include <stdlib.h>
-
 #include "SdifMemory.h"
 #include "SdifError.h"
 

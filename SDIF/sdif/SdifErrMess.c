@@ -1,4 +1,4 @@
-/* $Id: SdifErrMess.c,v 3.10 2000-10-27 20:03:25 roebel Exp $
+/* $Id: SdifErrMess.c,v 3.11 2000-11-15 14:53:24 lefevre Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -31,6 +31,9 @@
  * author: Dominique Virolle 1998
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.10  2000/10/27  20:03:25  roebel
+ * autoconf merged back to main trunk
+ *
  * Revision 3.9  2000/08/22  13:17:23  schwarz
  * Centralised error report function SdifFError, called from _SdifFError
  * macro.  Error level names (gSdifErrorLevel) are printed, so that users
@@ -83,6 +86,7 @@
 
 
 #include <preincluded.h>
+
 #include "SdifErrMess.h"
 #include "SdifFile.h"
 #include <string.h>
@@ -218,7 +222,7 @@ SdifKillErrorL(SdifErrorLT *ErrorL)
 
 
 
-SdifUInt4 SdifInsertTailError (SdifErrorLT* ErrorL, int ErrorCount [], 
+SdifUInt4 SdifInsertTailError (SdifErrorLT* ErrorL, unsigned int ErrorCount [], 
 			       SdifErrorTagET Tag, const char* UserMess)
 {
     SdifErrorLevelET	Level    = gSdifErrMessFormat[Tag].Level;

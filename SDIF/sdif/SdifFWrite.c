@@ -1,4 +1,4 @@
-/* $Id: SdifFWrite.c,v 3.13 2000-10-27 20:03:31 roebel Exp $
+/* $Id: SdifFWrite.c,v 3.14 2000-11-15 14:53:28 lefevre Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -31,6 +31,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.13  2000/10/27  20:03:31  roebel
+ * autoconf merged back to main trunk
+ *
  * Revision 3.12.2.1  2000/08/21  21:35:13  tisseran
  * *** empty log message ***
  *
@@ -113,6 +116,7 @@
  */
 
 #include <preincluded.h>
+
 #include "SdifFWrite.h"
 #include "SdifFile.h"
 #include "SdifTest.h"
@@ -505,7 +509,7 @@ SdifFWriteOneRow (SdifFileT *SdifF)
     switch (SdifF->CurrOneRow->DataType)
     {
         /* generate cases for all types */
-	sdif_foralltypes (writerowcase)
+	sdif_foralltypes (writerowcase);
 
 	default :
 	    sprintf(gSdifErrorMess, "OneRow 0x%04x, then Float4 used", 
@@ -533,7 +537,7 @@ SdifFWriteMatrixData (SdifFileT *SdifF, void *data)
     switch (SdifF->CurrMtrxH->DataType)
     {
         /* generate cases for all types */
-	sdif_foralltypes (writemdatacase)
+	sdif_foralltypes (writemdatacase);
 
 	default :
 	    sprintf(gSdifErrorMess, "OneRow 0x%04x, then Float4 used", 

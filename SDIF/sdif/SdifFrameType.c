@@ -1,4 +1,4 @@
-/* $Id: SdifFrameType.c,v 3.3 2000-10-27 20:03:32 roebel Exp $
+/* $Id: SdifFrameType.c,v 3.4 2000-11-15 14:53:29 lefevre Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -37,6 +37,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.3  2000/10/27  20:03:32  roebel
+ * autoconf merged back to main trunk
+ *
  * Revision 3.2.2.1  2000/08/21  21:35:21  tisseran
  * *** empty log message ***
  *
@@ -53,9 +56,9 @@
 
 
 #include <preincluded.h>
+
 #include "SdifFrameType.h"
 #include <stdlib.h>
-
 #include "SdifMatrixType.h"
 
 

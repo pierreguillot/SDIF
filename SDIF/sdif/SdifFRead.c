@@ -1,4 +1,4 @@
-/* $Id: SdifFRead.c,v 3.12 2000-10-27 20:03:29 roebel Exp $
+/* $Id: SdifFRead.c,v 3.13 2000-11-15 14:53:27 lefevre Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -31,6 +31,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.12  2000/10/27  20:03:29  roebel
+ * autoconf merged back to main trunk
+ *
  * Revision 3.11  2000/08/22  13:38:22  schwarz
  * SdifSkip... renamed to SdifFSkip... to follow nomenclature.
  *
@@ -116,23 +119,21 @@
 
 
 #include <preincluded.h>
+
+#include "SdifGlobals.h"
 #include "SdifFRead.h"
 #include "SdifTest.h"
 #include "SdifFile.h"
 #include "SdifGlobals.h"
 #include "SdifRWLowLevel.h"
-
 #include "SdifNameValue.h"
 #include "SdifHash.h"
 #include "SdifMatrixType.h"
 #include "SdifFrameType.h"
 #include "SdifStreamID.h"
 #include "SdifErrMess.h"
-
 #include "SdifTimePosition.h"
-
 #include "SdifFGet.h"
-
 #include <assert.h>
 #include <errno.h>
 
@@ -429,7 +430,7 @@ SdifFReadOneRow(SdifFileT *SdifF)
     switch (SdifF->CurrOneRow->DataType)
     {
         /* generate cases for all types */
-	sdif_foralltypes (readrowcase)
+	sdif_foralltypes (readrowcase);
 
 	default :
 	    sprintf(gSdifErrorMess, "OneRow 0x%04x, then Float4 used", 
