@@ -10,10 +10,13 @@ Version 0.32
 
 	* Enable documentation generation if configured in sub directory.
 
+	* Included easdifintro.h into distribution.
+	
 	* Distribution name now includes SDIF version.
 
 	* Do not install test binaries.
 	
+
 	
 2003-04-03  Diemo Schwarz  <schwarz@ircam.fr>
 	
@@ -207,4 +210,4 @@ Version 0.21
 	* ChangeLog: Added changelog to repository.
 
 
-$Id: ChangeLog,v 1.5 2003-04-09 16:11:22 roebel Exp $
+$Id: ChangeLog,v 1.6 2003-04-09 16:12:41 roebel Exp $
