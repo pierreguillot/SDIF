@@ -1,8 +1,12 @@
 <html>
-<!-- $Id: Todo.html,v 3.8 2000-09-27 10:16:12 schwarz Exp $-->
+<!-- $Id: Todo.html,v 3.9 2001-03-01 11:18:33 schwarz Exp $-->
 <!--
 
 $Log: not supported by cvs2svn $
+Revision 3.8  2000/09/27 10:16:12  schwarz
+More todos.
+Enhanced download info.
+
 Revision 3.7  2000/08/27  15:19:52  schwarz
 Lots of stuff done.
 
@@ -38,7 +42,7 @@ is already done.
 <H1>SDIF TODO</H1>
 
 <table>
-<tr>
+<tr align=left valign=top>
   <th>Description
   <td>This document describes points to do in and around the <a
       href=http://www.ircam.fr/sdif>IRCAM SDIF library</a>.
@@ -51,17 +55,22 @@ is already done.
 
 <tr align=left valign=top>
   <th>Revision
-  <td>$Id: Todo.html,v 3.8 2000-09-27 10:16:12 schwarz Exp $
+  <td>$Id: Todo.html,v 3.9 2001-03-01 11:18:33 schwarz Exp $
 </tr>
 
 <tr align=left valign=top>
-  <th>Last change
+  <th>Last&nbsp;change
   <td><!--#echo var="LAST_MODIFIED"-->
 </tr>
 
 <tr valign=top align=left>
   <th>Change log
-  <td><pre>$Log: not supported by cvs2svn $
+  <td colspan=1><font size=-1><pre>
+$Log: not supported by cvs2svn $
+Revision 3.8  2000/09/27 10:16:12  schwarz
+More todos.
+Enhanced download info.
+
 Revision 3.7  2000/08/27  15:19:52  schwarz
 Lots of stuff done.
 
@@ -85,7 +94,7 @@ Todo documents have the right to decent formatting, too.
 Revision 3.1  2000/07/17  18:09:05  schwarz
 Added Todo.html, to remember what we still wanted to implement and what
 is already done.
-</pre>
+</font></pre>
 </tr>
 
 </table>
@@ -108,28 +117,26 @@ is already done.
 
 <ul>
 
-<li> 1NVT, 1TYP, 1IDS conformant to spec
+<li><b>improvement of the SDIF library</b>
 	<ul>
-	<li> -&gt; send to Matt
-	<li> update Diphone studio
+	<li> unified error handling (pseudo-exceptions by setjmp/longjmp?)
+	<li> Matrix data structure
+	<li> memory i/o
+	<li> i/o function table (swap/native, memory/file)
 	</ul>
 
-<li> ICMC Add. Ana/Syn Panel:
-	<ul>
-	<li> PSOLA writing SDIF (in Matlab)
-	<li> do analyses in Additive, HMM, Partial++
-	</ul>
-
-<li> Release <b>Middle of August</b>
-	<ul>
-	<li> tools: unify flag for types file: use <t>-T</t> throughout
-	<li> reinstall current versions of tools on all systems
-	<li> binary release
-	<li> Test release (Emmanuel, Marcelo, Karim Hadad, Bennet
-	Smith, Julien Boissinot, iii@ircam.fr, Matt, Roebel)
-	</ul>
+<li> tools: unify flag for types file: use <t>-T</t> throughout
 
 <li> Generate export symbols for Macintosh (from autoconf'ed sources)
+
+<li> XML types
+	<ul>
+	<li> design DTD
+	<li> standardise DTD
+	</ul>
+
+<li> Link/instructions to mailing list on sdif main page<br>
+	later: subscribe, unsubscribe, archives from web
 
 </ul>
 
@@ -142,23 +149,11 @@ is already done.
 
 <ul>
 
+<li> PSOLA writing SDIF (in Matlab)
+
 <li> automatic compression/decompression (pipe gzip or zlib)
 
-<li> XML types
-	<ul>
-	<li> design DTD
-	<li> standardise DTD
-	</ul>
-
 <li> write all standard/IRCAM document description types in XML
-
-<li> memory i/o
-
-<li> i/o function table (swap/native, memory/file)
-
-<li> unified error handling
-
-<li> Matrix data structure
 
 <li> update SDIF text format
 	<ul>
@@ -189,6 +184,11 @@ is already done.
 	<li> open multiple files
 	</ul>
 
+<li>Java-SDIF
+	<ul>
+	<li>start with simple version like Matlab-SDIF
+	</ul>
+
 <li> Make: generate version info (date, user, host) on build of programs and lib
 
 <li> Distrib: make, package bin/src releases for all architectures
@@ -213,13 +213,20 @@ is already done.
 <ul>
 
 <li> Fix Diphone SDIF output frame size bug (July 2000)
+
 <li> 1NVT, 1TYP, 1IDS conformant to spec (19/07/2000)
+	<ul>
+	<li> -&gt; send to Matt
+	<li> update Diphone studio
+	</ul>
+
 <li> XML types
 	<ul>
 	<li> translator to .styp, HTML (27.07.2000)
 	<li> convert all .styp definitions to xml (09.08.2000)
 	<li> add all doc we can get hold of to sdiftypes.xml (22.08.2000)
 	</ul>
+
 <li> Release (22.08.2000)
 	<ul>
 	<li> use autoconf / configure
@@ -231,11 +238,18 @@ is already done.
 	<li> create test cases
 	</ul>
 
+	<ul>
+	<li> reinstall current versions of tools on all systems
+	<li> Test release
+	<li> publish binary releases
+	</ul>
+
 <li> Matlab (26.08.2000)
 	<ul>
 	<li> writesdif: write multiple matrix in frame
 	<li> loadsdif: Bug: last matrix is not returned!
 	</ul>
+
 </ul>
 
 </body>
