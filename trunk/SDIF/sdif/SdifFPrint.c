@@ -1,4 +1,4 @@
-/* $Id: SdifFPrint.c,v 3.8 2002-05-24 19:37:52 ftissera Exp $
+/* $Id: SdifFPrint.c,v 3.9 2003-05-30 14:33:44 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -31,6 +31,10 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.8  2002/05/24 19:37:52  ftissera
+ * Change code to be compatible with C++
+ * Cast pointers to correct type.
+ *
  * Revision 3.7  2001/05/02 09:34:41  tisseran
  * Change License from GNU Public License to GNU Lesser Public License.
  *
@@ -254,23 +258,34 @@ SdifFPrintOneRow(SdifFileT *SdifF)
     SizeW = 0;
   
   switch (SdifF->CurrOneRow->DataType)
-    {
-    case eFloat8 :
-      for(iCol=0; iCol<SdifF->CurrOneRow->NbData; iCol++)
-	SizeW += fprintf(SdifF->TextStream, "\t%g", SdifF->CurrOneRow->Data.Float8[iCol]);
-      break;
-    case eFloat4 :
-      for(iCol=0; iCol<SdifF->CurrOneRow->NbData; iCol++)
-	SizeW += fprintf(SdifF->TextStream, "\t%g", SdifF->CurrOneRow->Data.Float4[iCol]);
-      break;
-    default :
-      sprintf(gSdifErrorMess, "OneRow 0x%04x, then Float4 used", SdifF->CurrOneRow->DataType);
-      _SdifFError(SdifF, eTypeDataNotSupported, gSdifErrorMess);
-      /* then values are considered as Float4 */
-      for(iCol=0; iCol<SdifF->CurrOneRow->NbData; iCol++)
-	SizeW += fprintf(SdifF->TextStream, "\t%g", SdifF->CurrOneRow->Data.Float4[iCol]);
-      break;
-    }
+  {
+    case eFloat8:
+	for (iCol = 0; iCol < SdifF->CurrOneRow->NbData; iCol++)
+	    SizeW += fprintf(SdifF->TextStream, "\t%g", 
+			     SdifF->CurrOneRow->Data.Float8[iCol]);
+    break;
+
+    case eFloat4:
+	for (iCol = 0; iCol < SdifF->CurrOneRow->NbData; iCol++)
+	    SizeW += fprintf(SdifF->TextStream, "\t%g", 
+			     SdifF->CurrOneRow->Data.Float4[iCol]);
+    break;
+
+    case eText:
+	for (iCol = 0; iCol < SdifF->CurrOneRow->NbData; iCol++)
+	    SizeW += fprintf(SdifF->TextStream, "\t'%c'", 
+			     SdifF->CurrOneRow->Data.Char[iCol]);
+    break;
+
+    default:
+	sprintf(gSdifErrorMess, "OneRow 0x%04x, then Float4 used", SdifF->CurrOneRow->DataType);
+	_SdifFError(SdifF, eTypeDataNotSupported, gSdifErrorMess);
+	/* then values are considered as Float4 */
+	for (iCol = 0; iCol < SdifF->CurrOneRow->NbData; iCol++)
+	    SizeW += fprintf(SdifF->TextStream, "\t%g", 
+			     SdifF->CurrOneRow->Data.Float4[iCol]);
+    break;
+  }
   SizeW += fprintf(SdifF->TextStream, "\n");
 
   return SizeW;
