@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.9 2003-04-09 12:30:41 roebel Exp $
+# $Id: Makefile.am,v 1.10 2003-04-09 16:10:18 roebel Exp $
 #
 # ./Makefile.am		Feb. 2003     Axel Roebel
 #
@@ -30,6 +30,10 @@
 # 
 
 # $Log: not supported by cvs2svn $
+# Revision 1.9  2003/04/09 12:30:41  roebel
+# Changed default configuration back to enable-shared but added
+# README.MacOSX to announce problems with shared libraries to users.
+#
 # Revision 1.8  2003/04/09 11:55:29  roebel
 # fixed PUBLISH_HOST
 #
@@ -60,7 +64,7 @@
 #
 
 SUBDIRS =  SDIF easdif  test 
-EXTRA_DIST = Doxyfile.in README.MacOSX README.doc
+EXTRA_DIST = Doxyfile.in README.MacOSX 
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = Easdif.pc
@@ -104,20 +108,14 @@ EXTRA_PUBLISH     = $(DOCTAR)
 # this might work differently for other places
 # todo: configure PUBLISH_HOST
 PUBLISH_HOST      = www.ircam.fr
-PUBLISH_HOST      = wwwas
+PUBLISH_USER      = wwwas
 PUBLISH_DIR       = sdif/download/
 PUBLISH_FILES     = $(PUBLISH_FILE) $(PUBLISH_RPM) $(EXTRA_PUBLISH)
 PUBLISH_FILES_MAP = COPYING INSTALL README AUTHORS ChangeLog
+
 publish-ftp:	# (experimental)
-		cat <<END_OF_FTP_COMMANDS \
-$(PUBLISH_USER) \
-$(PW) \
-cd $(PUBLISH_DIR) \
-mput $(PUBLISH_FILES) \
-nmap $1 $1-Easdif \
-mput $(PUBLISH_FILES_MAP) \
-END_OF_FTP_COMMANDS \
-		| ftp $(PUBLISH_HOST)
+	echo -e put $(PUBLISH_FILES)  | ncftp -u$(PUBLISH_USER) -p$(PW) ftp://$(PUBLISH_HOST)/sdif/download/test
+	for ii in  $(PUBLISH_FILES_MAP);do echo put -z $$ii $$ii.Easdif; done|ncftp -u$(PUBLISH_USER) -p$(PW) ftp://$(PUBLISH_HOST)/sdif/download
 
 
 
