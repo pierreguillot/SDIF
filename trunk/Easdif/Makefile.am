@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.12 2003-04-09 16:33:44 roebel Exp $
+# $Id: Makefile.am,v 1.13 2003-04-09 16:54:00 roebel Exp $
 #
 # ./Makefile.am		Feb. 2003     Axel Roebel
 #
@@ -30,6 +30,9 @@
 # 
 
 # $Log: not supported by cvs2svn $
+# Revision 1.12  2003/04/09 16:33:44  roebel
+# Changed publish directory to be special sub directory for Easdif.
+#
 # Revision 1.11  2003/04/09 16:19:42  roebel
 # Directory was still wrong.
 #
@@ -116,12 +119,13 @@ EXTRA_PUBLISH     = $(DOCTAR)
 PUBLISH_HOST      = www.ircam.fr
 PUBLISH_USER      = wwwas
 PUBLISH_DIR       = sdif/download/Easdif
-PUBLISH_FILES     = $(PUBLISH_FILE) $(PUBLISH_RPM) $(EXTRA_PUBLISH)
-PUBLISH_FILES_MAP = COPYING INSTALL README AUTHORS ChangeLog
+PUBLISH_FILES     = $(PUBLISH_FILE) $(PUBLISH_RPM) $(EXTRA_PUBLISH) COPYING INSTALL README AUTHORS ChangeLog
+#PUBLISH_FILES_MAP = COPYING INSTALL README AUTHORS ChangeLog
 
 publish-ftp:	# (experimental)
 	echo -e put $(PUBLISH_FILES)  | ncftp -u$(PUBLISH_USER) -p$(PW) ftp://$(PUBLISH_HOST)/$(PUBLISH_DIR)
-	for ii in  $(PUBLISH_FILES_MAP);do echo put -z $$ii $$ii.Easdif; done|ncftp -u$(PUBLISH_USER) -p$(PW) ftp://$(PUBLISH_HOST)/$(PUBLISH_DIR)
+
+#	for ii in  $(PUBLISH_FILES_MAP);do echo put -z $$ii $$ii.Easdif; done|ncftp -u$(PUBLISH_USER) -p$(PW) ftp://$(PUBLISH_HOST)/$(PUBLISH_DIR)
 
 
 
