@@ -1,4 +1,4 @@
-/* $Id: sdif.h,v 1.21 2002-09-17 09:51:18 schwarz Exp $
+/* $Id: sdif.h,v 1.22 2002-09-20 14:34:41 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -30,6 +30,9 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.21  2002/09/17 09:51:18  schwarz
+ * Added copyright.
+ *
  * Revision 1.20  2002/08/28 14:05:31  schwarz
  * New function SdifFRewind.
  * More documentation for positioning functions and truncate.
@@ -123,7 +126,7 @@
  * Revision 1.1.2.1  2000/08/21  13:07:41  tisseran
  * *** empty log message ***
  *
- * $Date: 2002-09-17 09:51:18 $
+ * $Date: 2002-09-20 14:34:41 $
  *
  */
 
@@ -139,7 +142,7 @@ extern "C" {
 #endif
 
 
-static const char _sdif_h_cvs_revision_ [] = "$Id: sdif.h,v 1.21 2002-09-17 09:51:18 schwarz Exp $";
+static const char _sdif_h_cvs_revision_ [] = "$Id: sdif.h,v 1.22 2002-09-20 14:34:41 schwarz Exp $";
 
 
 #include <stdio.h>
@@ -799,7 +802,12 @@ typedef void (*SdifExitFuncT) (void);
 
 /*DOC:
  Exception function type (See SdifSetErrorFunc and SdifSetWarningFunc). */
-typedef void (*SdifExceptionFuncT) ( int, SdifErrorLevelET, char*, SdifFileT*, SdifErrorT *, char*, int);
+typedef void (*SdifExceptionFuncT) (int error_tag, 
+				    SdifErrorLevelET error_level, 
+				    char *error_message, 
+				    SdifFileT *error_file, 
+				    SdifErrorT *error_ptr, 
+				    char *source_file, int source_line);
 
 
 
@@ -2463,6 +2471,12 @@ int SdifInitSelection (SdifSelectionT *sel, const char *filename, int namelen);
 */
 int SdifFreeSelection (SdifSelectionT *sel);
 
+/*DOC:
+  Killer function for SdifKillList: free one SdifSelectElement 
+*/
+void SdifKillSelectElement (/*SdifSelectionT*/ void *victim);
+
+
 /*
 // FUNCTION GROUP:	Parse and Set Selection
 */
@@ -2492,6 +2506,17 @@ void SdifReplaceSelection (/*in*/ const char* selectionstr,
 /*DOC: 
 */
 void SdifPrintSelection (FILE *out, SdifSelectionT *sel, int options);
+
+
+
+/*DOC:
+  Parse comma-separated list of signatures into list of SdifSelectElementT
+  [Return] true if ok 
+
+  List has to be created before with
+	list = SdifCreateList (SdifKillSelectElement)
+*/
+int SdifParseSignatureList (SdifListT *list, const char *str);
 
 
 
