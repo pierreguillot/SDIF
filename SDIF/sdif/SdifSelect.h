@@ -1,4 +1,4 @@
-/* $Id: SdifSelect.h,v 3.6 2000-03-01 11:18:46 schwarz Exp $
+/* $Id: SdifSelect.h,v 3.7 2000-05-12 16:55:31 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -71,6 +71,11 @@ TODO
 
 LOG
   $Log: not supported by cvs2svn $
+  Revision 3.6  2000/03/01  11:18:46  schwarz
+  Added SdifCreateSelection.
+  Fixed Linux-only bug in SdifGetFilenameAndSelection (high addresses).
+  SdifSelectTestReal first tests from current select element onwards.
+
   Revision 3.5  1999/10/13  16:05:58  schwarz
   Changed data type codes (SdifDataTypeET) to SDIF format version 3, as
   decided with Matt Wright June 1999, added integer data types.
@@ -182,6 +187,10 @@ typedef struct
 */
 
 
+/*DOC:
+  Return pointer to start of filename component in path inPathFileName.
+ */
+char *SdifBaseName (const char* inPathFileName);
 
 
 /* 
