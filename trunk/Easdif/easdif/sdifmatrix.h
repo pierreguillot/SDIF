@@ -33,9 +33,12 @@
  * 
  * 
  * 
- * $Id: sdifmatrix.h,v 1.13 2003-07-17 18:09:35 roebel Exp $ 
+ * $Id: sdifmatrix.h,v 1.14 2003-07-18 19:31:13 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.13  2003/07/17 18:09:35  roebel
+ * Improved Resize method, added Clear method and proper assigment operator
+ *
  * Revision 1.12  2003/07/10 16:14:03  roebel
  * Documentation of constructors.
  *
@@ -238,7 +241,7 @@ public:
    *  in the sdif standard and if you use them only the IRCAM sdif library will
    *  be able to read your data.
    */
-    SDIFMatrix(std::string& sig, int nrows = 1, int ncols = 1, 
+    SDIFMatrix(const std::string& sig, int nrows = 1, int ncols = 1, 
 	       SdifDataTypeET type = eFloat4)
     {
       Init(sig, nrows, ncols, type);
@@ -471,8 +474,8 @@ public:
    * \ingroup setmat
    * \brief set a value using arbitrary input type
    * 
-   * @param i    row    index
-   * @param j    column index
+   * @param i    row    index (C-notation: first row has index 0)
+   * @param j    column index (C-notation: first col has index 0)
    * @param value 
    * 
    */
@@ -502,7 +505,7 @@ public:
 
       Init(mSig, str.length(), 1, eText);
 
-      for (i = 0; i < str.length(); i++)
+      for (i = 0; i < static_cast<int>(str.length()); i++)
 	  mInter->Set(i, 0, str[i]);
   }
 
