@@ -1,3 +1,26 @@
+2003-11-18  Axel Roebel  <Axel.Roebel@ircam.fr>
+Version 0.7.3
+
+	* easdif/sdifmatrix.cpp 
+	Bug fix that would affect reading matrices 
+	with different data type from a single frame.
+
+	* Doxyfile.in
+	Fixed documentation creation if configuring in directory which is
+	not top_srcdir.
+	
+	* easdif/easdif.h
+	Moved SdifCheckFileFormat to Easdif namespace.
+
+	* easdif/sdifexception.h easdif/sdifexception.cpp
+	Sdif exceptions are now properly derived from
+	standard exception. Included  documentation for all exceptions.
+	Unified handling of SDIF errortags and errornums.
+	
+	* easdif/sdifframe.h, easdif/sdifframe.cpp, easdif/sdifexception.h
+	added exception for accessing a matrix which is not contained 
+	in a frame.
+	
 2003-08-06  Axel Roebel  <Axel.Roebel@ircam.fr>
 Version 0.7.2
 
@@ -433,4 +456,4 @@ Version 0.21
 	* ChangeLog: Added changelog to repository.
 
 
-$Id: ChangeLog,v 1.23 2003-08-06 18:03:19 roebel Exp $
+$Id: ChangeLog,v 1.24 2003-11-18 18:23:33 roebel Exp $
