@@ -1,8 +1,15 @@
-/* $Id: sdif.h,v 1.10 2001-04-26 14:47:02 tisseran Exp $
+/* $Id: sdif.h,v 1.11 2001-05-04 14:07:28 tisseran Exp $
  *
  * This file contains type declaration of variables used in SDIF library.
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.10  2001/04/26 14:47:02  tisseran
+ * Correct a stupid error in previous log (arrggghh DON'T USE C COMMENTARY in cvs log).
+ * Correct Makefile.am, change cvstag rules:
+ * cvstags:
+ * 	cvs -F tags $(CVSTAGS)
+ * Add some explication in file ChangeLog
+ *
  * Revision 1.9  2001/04/25 11:29:10  tisseran
  * Change sdif_foralltype macro to compile on MacOS X.
  * Old version: sdif_foralltypes sdif__foralltypes(macro,)
@@ -51,7 +58,7 @@
  * Revision 1.1.2.1  2000/08/21  13:07:41  tisseran
  * *** empty log message ***
  *
- * $Date: 2001-04-26 14:47:02 $
+ * $Date: 2001-05-04 14:07:28 $
  *
  */
 
@@ -64,7 +71,7 @@ extern "C" {
 #endif
 
 
-static const char _sdif_h_cvs_revision_ [] = "$Id: sdif.h,v 1.10 2001-04-26 14:47:02 tisseran Exp $";
+static const char _sdif_h_cvs_revision_ [] = "$Id: sdif.h,v 1.11 2001-05-04 14:07:28 tisseran Exp $";
 
 
 #include <stdio.h>
@@ -1522,7 +1529,7 @@ SdifUInt2       SdifExistUserFrameType (SdifHashTableT *FrameTypeHT);
 
 
 /* generate template for all types */
-//old: #define sdif_foralltypes(macro)          sdif__foralltypes(macro,)
+/* old: #define sdif_foralltypes(macro)          sdif__foralltypes(macro,) */
 #define sdif_foralltypes(macro)         sdif__foralltypes(macro,sdif_foralltypes_post_body)
 
 /* generate prototype template for all types */
