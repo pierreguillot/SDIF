@@ -1,4 +1,4 @@
-/* $Id: loadsdif-subs.c,v 1.2 2000-05-11 12:39:24 schwarz Exp $
+/* $Id: loadsdif-subs.c,v 1.3 2000-05-12 14:03:53 schwarz Exp $
 
    loadsdif_subs.c	25. January 2000	Diemo Schwarz
 
@@ -13,6 +13,10 @@
 	Returns an empty matrix on end-of-file.
    endread ('close')
    $Log: not supported by cvs2svn $
+  Revision 1.2  2000/05/11  12:39:24  schwarz
+  With new SDIF lib, selection is automatically parsed on open, and
+  stored in input->Selection.
+
  * Revision 1.1  2000/05/04  13:24:04  schwarz
  * Matlab mex extension and support functions to load SDIF files.
  * 
@@ -38,7 +42,6 @@ SdifFileT *
 beginread (int nlhs, mxArray *plhs [], char *filename, char *types)
 {
     SdifFileT	   *input = NULL;
-    char	   *fileonly;
     
     if (!gSdifInitialised)
     {
@@ -46,7 +49,7 @@ beginread (int nlhs, mxArray *plhs [], char *filename, char *types)
 	SdifSetExitFunc (exitread);
     }
 
-    if (input    = SdifFOpen (fileonly, eReadFile))
+    if ((input    = SdifFOpen (filename, eReadFile)))
     {
 	if (!(SdifListIsEmpty(input->Selection->row)  &&  
 	      SdifListIsEmpty(input->Selection->column)))

@@ -8,11 +8,15 @@
 % stream frames(i, 2) of height frames(i, 4) with frame type 
 % signatures(i, 1:4) and matrix type signatures(i, 5:8).
 
-% $Id: loadsdifflat.m,v 1.2 2000-05-11 12:37:19 schwarz Exp $
+% $Id: loadsdifflat.m,v 1.3 2000-05-12 14:03:54 schwarz Exp $
 %
 % loadsdifflat.m	31. January 2000	Diemo Schwarz
 %
 % $Log: not supported by cvs2svn $
+% Revision 1.2  2000/05/11  12:37:19  schwarz
+% Init of output variables to avoid 'output argument not assigned' warning.
+% Optional types file argument.
+%
 % Revision 1.1  2000/05/04  13:24:07  schwarz
 % Matlab mex extension and support functions to load SDIF files.
 
@@ -22,7 +26,7 @@ function [ data, frames, signatures ] = loadsdifflat (name, types)
     frames     = [];
     signatures = [];
 
-    sdifexists (name);			% quit with error if file's not there
+    sdifexist (name);			% quit with error if file's not there
 
     if nargin == 1,			% open file with/without types
 	NVTinfo = loadsdif (name);
