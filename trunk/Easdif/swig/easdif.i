@@ -1,10 +1,13 @@
-// $Id: easdif.i,v 1.5 2003-04-17 12:20:39 schwarz Exp $ -*-c-*-
+// $Id: easdif.i,v 1.6 2003-04-18 14:31:27 schwarz Exp $ -*-c-*-
 //
 // easdif.i		16.04.2003		Diemo Schwarz
 //
 // Interface file for swig, defining the callable easdif functions
 //
 // $Log: not supported by cvs2svn $
+// Revision 1.5  2003/04/17 12:20:39  schwarz
+// Output (return value) mapping for SdifSignature works!
+//
 // Revision 1.4  2003/04/17 11:15:01  schwarz
 // Swigging sdif.h works (with some warnings), but that's not yet it...
 //
@@ -24,8 +27,8 @@
 // generate perl module named 'SDIF'
 %module SDIF
 
+// include typemaps
 %include sdifsignature.i
-
 
 // include header to make wrapper compile
 %{
@@ -50,4 +53,3 @@ using namespace Easdif;
 %include "../easdif/sdifnamevaluetable.h"
 %include "../easdif/sdifframe.h"
 %include "../easdif/sdifentity.h"
-
