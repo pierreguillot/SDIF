@@ -1,10 +1,13 @@
-// $Id: easdif-common.i.in,v 1.5 2003-05-28 16:57:02 roebel Exp $ -*-c-*-
+// $Id: easdif-common.i.in,v 1.6 2003-06-05 11:15:09 roebel Exp $ -*-c-*-
 //
 // easdif.i		16.04.2003		Diemo Schwarz
 //
 // Interface file for swig, defining the callable easdif functions
 //
 // $Log: not supported by cvs2svn $
+// Revision 1.5  2003/05/28 16:57:02  roebel
+// Made configure switching map support according tothe swig version installed.
+//
 // Revision 1.4  2003/05/22 21:20:22  roebel
 // Added support for SDIFNameValueTables and std::map.
 //
@@ -69,6 +72,15 @@
 
 using namespace Easdif;
 %}
+
+
+#ifdef SWIG_HAVE_STLMAP
+%include stl.i
+
+// for name value table
+%template(stringmap) std::map<std::string,std::string>;
+#endif
+
 
 
 // change SWIG class names because we prefix with SDIF:: anyway
