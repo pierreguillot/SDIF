@@ -33,9 +33,13 @@
  * 
  * 
  * 
- * $Id: sdifmatrix.h,v 1.23 2004-07-28 14:57:34 roebel Exp $ 
+ * $Id: sdifmatrix.h,v 1.24 2004-07-28 15:06:23 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.23  2004/07/28 14:57:34  roebel
+ * Added support for accessing data as unsigned char.
+ * Added SetRow and SetCol functions.
+ *
  * Revision 1.22  2004/07/27 17:40:19  roebel
  * Changed include directive to use user path and not system path for sdif.h
  *
@@ -439,6 +443,16 @@ public:
 /**
 * \defgroup valmat SDIFMatrix - Get values of the SDIFMatrix 
 */
+
+/**
+ * \ingroup valmat 
+ * get a value in : unsigned char
+ * @param i row index
+ * @param j column index
+ * 
+ * @return the value
+ */
+    int GetUChar(int i, int j) const {return mInter->GetUChar(i, j);};
 
 /**
  * \ingroup valmat 
