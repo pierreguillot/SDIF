@@ -11,9 +11,9 @@
 # even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 # PARTICULAR PURPOSE.
 
+@SET_MAKE@
 
-
-# $Id: Makefile,v 1.8 2003-03-03 10:03:50 roebel Exp $
+# $Id: Makefile.in,v 1.1 2003-03-03 10:03:50 roebel Exp $
 #
 # ./Easdif/src/Makefile.am	Feb. 2003 Axel Roebel
 #
@@ -25,79 +25,79 @@
 # EXTRA_LIBRARIES to provide knowledge about possible substitutions
 # in lib_LTLIBRARIES
 
-SHELL = /bin/sh
+SHELL = @SHELL@
 
-srcdir = .
-top_srcdir = ..
+srcdir = @srcdir@
+top_srcdir = @top_srcdir@
+VPATH = @srcdir@
+prefix = @prefix@
+exec_prefix = @exec_prefix@
 
-prefix = /usr/local
-exec_prefix = ${prefix}
-
-bindir = ${exec_prefix}/bin
-sbindir = ${exec_prefix}/sbin
-libexecdir = ${exec_prefix}/libexec
-datadir = ${prefix}/share
-sysconfdir = ${prefix}/etc
-sharedstatedir = ${prefix}/com
-localstatedir = ${prefix}/var
-libdir = ${exec_prefix}/lib
-infodir = ${prefix}/info
-mandir = ${prefix}/man
-includedir = ${prefix}/include
+bindir = @bindir@
+sbindir = @sbindir@
+libexecdir = @libexecdir@
+datadir = @datadir@
+sysconfdir = @sysconfdir@
+sharedstatedir = @sharedstatedir@
+localstatedir = @localstatedir@
+libdir = @libdir@
+infodir = @infodir@
+mandir = @mandir@
+includedir = @includedir@
 oldincludedir = /usr/include
-pkgdatadir = $(datadir)/Easdif
-pkglibdir = $(libdir)/Easdif
-pkgincludedir = $(includedir)/Easdif
+pkgdatadir = $(datadir)/@PACKAGE@
+pkglibdir = $(libdir)/@PACKAGE@
+pkgincludedir = $(includedir)/@PACKAGE@
 top_builddir = ..
 
-ACLOCAL = ${SHELL} /home/roebel/srclo/Easdif/missing --run aclocal
-AUTOCONF = ${SHELL} /home/roebel/srclo/Easdif/missing --run autoconf
-AUTOMAKE = ${SHELL} /home/roebel/srclo/Easdif/missing --run automake
-AUTOHEADER = ${SHELL} /home/roebel/srclo/Easdif/missing --run autoheader
+ACLOCAL = @ACLOCAL@
+AUTOCONF = @AUTOCONF@
+AUTOMAKE = @AUTOMAKE@
+AUTOHEADER = @AUTOHEADER@
 
-INSTALL = /usr/bin/install -c
-INSTALL_PROGRAM = ${INSTALL}
-INSTALL_DATA = ${INSTALL} -m 644
-INSTALL_SCRIPT = ${INSTALL}
+INSTALL = @INSTALL@
+INSTALL_PROGRAM = @INSTALL_PROGRAM@
+INSTALL_DATA = @INSTALL_DATA@
+INSTALL_SCRIPT = @INSTALL_SCRIPT@
 INSTALL_HEADER = $(INSTALL_DATA)
-transform = s,x,x,
+transform = @program_transform_name@
 NORMAL_INSTALL = :
 PRE_INSTALL = :
 POST_INSTALL = :
 NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
-host_alias = i686-suse-linux
-host_triplet = i686-suse-linux
-AMTAR = ${SHELL} /home/roebel/srclo/Easdif/missing --run tar
+host_alias = @host_alias@
+host_triplet = @host@
+AMTAR = @AMTAR@
 AS = @AS@
-AWK = gawk
-CC = gcc
-CXX = g++
-DEPDIR = .deps
+AWK = @AWK@
+CC = @CC@
+CXX = @CXX@
+DEPDIR = @DEPDIR@
 DLLTOOL = @DLLTOOL@
-ECHO = echo
-EXEEXT = 
-INSTALL_STRIP_PROGRAM = ${SHELL} $(install_sh) -c -s
-IRCAMDEPS = ircam_deps
-LIBTOOL = $(SHELL) $(top_builddir)/libtool
-LN_S = ln -s
+ECHO = @ECHO@
+EXEEXT = @EXEEXT@
+INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
+IRCAMDEPS = @IRCAMDEPS@
+LIBTOOL = @LIBTOOL@
+LN_S = @LN_S@
 OBJDUMP = @OBJDUMP@
-OBJEXT = o
-PACKAGE = Easdif
-RANLIB = ranlib
-SDIFOBJECTS =  $(top_srcdir)/SDIF/sdif/SdifCheck.lo $(top_srcdir)/SDIF/sdif/SdifConvToText.lo $(top_srcdir)/SDIF/sdif/SdifErrMess.lo $(top_srcdir)/SDIF/sdif/SdifError.lo $(top_srcdir)/SDIF/sdif/SdifFGet.lo $(top_srcdir)/SDIF/sdif/SdifFPrint.lo $(top_srcdir)/SDIF/sdif/SdifFPut.lo $(top_srcdir)/SDIF/sdif/SdifFRead.lo $(top_srcdir)/SDIF/sdif/SdifFScan.lo $(top_srcdir)/SDIF/sdif/SdifFWrite.lo $(top_srcdir)/SDIF/sdif/SdifFile.lo $(top_srcdir)/SDIF/sdif/SdifFrame.lo $(top_srcdir)/SDIF/sdif/SdifFrameType.lo $(top_srcdir)/SDIF/sdif/SdifGlobals.lo $(top_srcdir)/SDIF/sdif/SdifHard_OS.lo $(top_srcdir)/SDIF/sdif/SdifHash.lo $(top_srcdir)/SDIF/sdif/SdifHighLevel.lo $(top_srcdir)/SDIF/sdif/SdifList.lo $(top_srcdir)/SDIF/sdif/SdifMatrix.lo $(top_srcdir)/SDIF/sdif/SdifMatrixType.lo $(top_srcdir)/SDIF/sdif/SdifMemory.lo $(top_srcdir)/SDIF/sdif/SdifNameValue.lo $(top_srcdir)/SDIF/sdif/SdifPreTypes.lo $(top_srcdir)/SDIF/sdif/SdifPrint.lo $(top_srcdir)/SDIF/sdif/SdifRWLowLevel.lo $(top_srcdir)/SDIF/sdif/SdifSelect.lo $(top_srcdir)/SDIF/sdif/SdifSignatureTab.lo $(top_srcdir)/SDIF/sdif/SdifStreamID.lo $(top_srcdir)/SDIF/sdif/SdifString.lo $(top_srcdir)/SDIF/sdif/SdifTest.lo $(top_srcdir)/SDIF/sdif/SdifTextConv.lo $(top_srcdir)/SDIF/sdif/SdifTimePosition.lo
-SELLIB = libEasdif.la
-STRIP = strip
-VERSION = 
-am__include = include
-am__quote = 
-install_sh = /home/roebel/srclo/Easdif/install-sh
+OBJEXT = @OBJEXT@
+PACKAGE = @PACKAGE@
+RANLIB = @RANLIB@
+SDIFOBJECTS = @SDIFOBJECTS@
+SELLIB = @SELLIB@
+STRIP = @STRIP@
+VERSION = @VERSION@
+am__include = @am__include@
+am__quote = @am__quote@
+install_sh = @install_sh@
 
 EXTRA_LTLIBRARIES = libEasdif.la 
 
-# lib_LIBRARIES = libEasdif.la
-lib_LTLIBRARIES = libEasdif.la
+# lib_LIBRARIES = @SELLIB@
+lib_LTLIBRARIES = @SELLIB@
 
 EASDIF_H = easdif_version.h easdif.h  sdifentity.h \
 	sdifexception.h sdifframe.h sdifinit.h sdifmatrix.h sdifmatrixdata.h \
@@ -110,7 +110,7 @@ libEasdif_la_SOURCES = sdifentity.cpp sdifexception.cpp sdifframe.cpp \
 			sdifinit.cpp sdifmatrix.cpp sdifnamevaluetable.cpp
 
 
-libEasdif_la_LIBADD =  $(top_srcdir)/SDIF/sdif/SdifCheck.lo $(top_srcdir)/SDIF/sdif/SdifConvToText.lo $(top_srcdir)/SDIF/sdif/SdifErrMess.lo $(top_srcdir)/SDIF/sdif/SdifError.lo $(top_srcdir)/SDIF/sdif/SdifFGet.lo $(top_srcdir)/SDIF/sdif/SdifFPrint.lo $(top_srcdir)/SDIF/sdif/SdifFPut.lo $(top_srcdir)/SDIF/sdif/SdifFRead.lo $(top_srcdir)/SDIF/sdif/SdifFScan.lo $(top_srcdir)/SDIF/sdif/SdifFWrite.lo $(top_srcdir)/SDIF/sdif/SdifFile.lo $(top_srcdir)/SDIF/sdif/SdifFrame.lo $(top_srcdir)/SDIF/sdif/SdifFrameType.lo $(top_srcdir)/SDIF/sdif/SdifGlobals.lo $(top_srcdir)/SDIF/sdif/SdifHard_OS.lo $(top_srcdir)/SDIF/sdif/SdifHash.lo $(top_srcdir)/SDIF/sdif/SdifHighLevel.lo $(top_srcdir)/SDIF/sdif/SdifList.lo $(top_srcdir)/SDIF/sdif/SdifMatrix.lo $(top_srcdir)/SDIF/sdif/SdifMatrixType.lo $(top_srcdir)/SDIF/sdif/SdifMemory.lo $(top_srcdir)/SDIF/sdif/SdifNameValue.lo $(top_srcdir)/SDIF/sdif/SdifPreTypes.lo $(top_srcdir)/SDIF/sdif/SdifPrint.lo $(top_srcdir)/SDIF/sdif/SdifRWLowLevel.lo $(top_srcdir)/SDIF/sdif/SdifSelect.lo $(top_srcdir)/SDIF/sdif/SdifSignatureTab.lo $(top_srcdir)/SDIF/sdif/SdifStreamID.lo $(top_srcdir)/SDIF/sdif/SdifString.lo $(top_srcdir)/SDIF/sdif/SdifTest.lo $(top_srcdir)/SDIF/sdif/SdifTextConv.lo $(top_srcdir)/SDIF/sdif/SdifTimePosition.lo
+libEasdif_la_LIBADD = @SDIFOBJECTS@
 
 libEasdif_la_LDFLAGS = -no-undefined  -rpath $(libdir)
 
@@ -126,16 +126,16 @@ am_libEasdif_la_OBJECTS = sdifentity.lo sdifexception.lo sdifframe.lo \
 	sdifinit.lo sdifmatrix.lo sdifnamevaluetable.lo
 libEasdif_la_OBJECTS = $(am_libEasdif_la_OBJECTS)
 
-DEFS = -DHAVE_CONFIG_H
+DEFS = @DEFS@
 DEFAULT_INCLUDES =  -I. -I$(srcdir) -I.
-CPPFLAGS = 
-LDFLAGS = 
-LIBS = 
+CPPFLAGS = @CPPFLAGS@
+LDFLAGS = @LDFLAGS@
+LIBS = @LIBS@
 depcomp = $(SHELL) $(top_srcdir)/depcomp
-DEP_FILES = $(DEPDIR)/sdifentity.Plo \
-	$(DEPDIR)/sdifexception.Plo $(DEPDIR)/sdifframe.Plo \
-	$(DEPDIR)/sdifinit.Plo $(DEPDIR)/sdifmatrix.Plo \
-	$(DEPDIR)/sdifnamevaluetable.Plo
+@AMDEP_TRUE@DEP_FILES = $(DEPDIR)/sdifentity.Plo \
+@AMDEP_TRUE@	$(DEPDIR)/sdifexception.Plo $(DEPDIR)/sdifframe.Plo \
+@AMDEP_TRUE@	$(DEPDIR)/sdifinit.Plo $(DEPDIR)/sdifmatrix.Plo \
+@AMDEP_TRUE@	$(DEPDIR)/sdifnamevaluetable.Plo
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) \
@@ -144,7 +144,7 @@ LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) \
 CXXLD = $(CXX)
 CXXLINK = $(LIBTOOL) --mode=link $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) \
 	$(AM_LDFLAGS) $(LDFLAGS) -o $@
-CXXFLAGS = -g -O2
+CXXFLAGS = @CXXFLAGS@
 DIST_SOURCES = $(libEasdif_la_SOURCES)
 HEADERS = $(noinst_HEADERS)
 
@@ -226,34 +226,34 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-include $(DEPDIR)/sdifentity.Plo
-include $(DEPDIR)/sdifexception.Plo
-include $(DEPDIR)/sdifframe.Plo
-include $(DEPDIR)/sdifinit.Plo
-include $(DEPDIR)/sdifmatrix.Plo
-include $(DEPDIR)/sdifnamevaluetable.Plo
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/sdifentity.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/sdifexception.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/sdifframe.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/sdifinit.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/sdifmatrix.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/sdifnamevaluetable.Plo@am__quote@
 
 distclean-depend:
 	-rm -rf $(DEPDIR)
 
 .cpp.o:
-	source='$<' object='$@' libtool=no \
-	depfile='$(DEPDIR)/$*.Po' tmpdepfile='$(DEPDIR)/$*.TPo' \
-	$(CXXDEPMODE) $(depcomp) \
+@AMDEP_TRUE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/$*.Po' tmpdepfile='$(DEPDIR)/$*.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 	$(CXXCOMPILE) -c -o $@ `test -f $< || echo '$(srcdir)/'`$<
 
 .cpp.obj:
-	source='$<' object='$@' libtool=no \
-	depfile='$(DEPDIR)/$*.Po' tmpdepfile='$(DEPDIR)/$*.TPo' \
-	$(CXXDEPMODE) $(depcomp) \
+@AMDEP_TRUE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/$*.Po' tmpdepfile='$(DEPDIR)/$*.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 	$(CXXCOMPILE) -c -o $@ `cygpath -w $<`
 
 .cpp.lo:
-	source='$<' object='$@' libtool=yes \
-	depfile='$(DEPDIR)/$*.Plo' tmpdepfile='$(DEPDIR)/$*.TPlo' \
-	$(CXXDEPMODE) $(depcomp) \
+@AMDEP_TRUE@	source='$<' object='$@' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/$*.Plo' tmpdepfile='$(DEPDIR)/$*.TPlo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 	$(LTCXXCOMPILE) -c -o $@ `test -f $< || echo '$(srcdir)/'`$<
-CXXDEPMODE = depmode=gcc3
+CXXDEPMODE = @CXXDEPMODE@
 uninstall-info-am:
 
 tags: TAGS
