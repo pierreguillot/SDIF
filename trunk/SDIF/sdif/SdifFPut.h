@@ -1,4 +1,4 @@
-/* $Id: SdifFPut.h,v 3.2 2000-04-11 14:31:22 schwarz Exp $
+/* $Id: SdifFPut.h,v 3.3 2000-07-06 19:01:46 tisseran Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -19,6 +19,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.2  2000/04/11  14:31:22  schwarz
+ * Read/write NVT as frame with 1 text matrix, conforming to SDIF spec.
+ *
  * Revision 3.1  1999/03/14  10:56:42  virolle
  * SdifStdErr add
  *
@@ -63,7 +66,13 @@
 
 size_t SdifFPutOneNameValue         (SdifFileT *SdifF, int Verbose, SdifNameValueT *NameValue);
 size_t SdifFPutNameValueLCurrNVT    (SdifFileT *SdifF, int Verbose);
-size_t SdifFNameValueLCurrNVTtoString(SdifFileT *SdifF, char *str, int maxlen);
+
+/* This function makes memory reallocation for extends the Name Value capacity
+   In the previous release of this file, it was limited at a char[_SdifStringLen]
+   with _SdifStringLen = 1024.
+   Now, limits depend only on avaluable memory
+*/
+char * SdifFNameValueLCurrNVTtoString(SdifFileT *SdifF);
 size_t SdifFPutOneMatrixType        (SdifFileT *SdifF, int Verbose, SdifMatrixTypeT *MatrixType);
 size_t SdifFPutAllMatrixType        (SdifFileT *SdifF, int Verbose);
 size_t SdifFPutOneComponent         (SdifFileT *SdifF, int Verbose, SdifComponentT *Component);
@@ -79,3 +88,6 @@ size_t SdifFPutAllStreamID          (SdifFileT *SdifF, int Verbose);
 size_t SdifFPutNameValueCurrHT      (SdifFileT *SdifF, int Verbose);
 
 #endif /* _SdifFPut_ */
+
+
+

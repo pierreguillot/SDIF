@@ -15,6 +15,14 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.3  2000/05/12  14:41:48  schwarz
+ * On behalf of Adrien, synchronisation with Mac sources, with some slight
+ * changes because of cross-platform issues:
+ * - Mac only stuff: XpSetFileAttribute XpFileSize
+ * - Cross platform wrapper: XpGetenv XpExit
+ * - Dangerous: strings.h (and thus bzero, bcopy) is not ANSI and thus doesn't
+ *   exist on Mac.  Use string.h and memset, memcpy.
+ *
  * Revision 3.2  1999/09/28  13:09:06  schwarz
  * Included #include <preincluded.h> for cross-platform uniformisation,
  * which in turn includes host_architecture.h and SDIF's project_preinclude.h.
@@ -38,7 +46,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-
 
 SdifBlockListT SdifMrReport = {NULL, 0, 0, 0};
 

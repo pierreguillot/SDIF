@@ -1,4 +1,4 @@
-/* $Id: sdif.h,v 3.4 2000-05-04 15:03:43 schwarz Exp $
+/* $Id: sdif.h,v 3.5 2000-07-06 19:01:50 tisseran Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -18,6 +18,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.4  2000/05/04  15:03:43  schwarz
+ * Added modules SdifCheck and SdifSignatureTab.
+ *
  * Revision 3.3  2000/03/01  11:20:20  schwarz
  * Added preliminary sketch of SdifHighLevel
  *
@@ -60,7 +63,7 @@ extern "C" {
 #include <stdlib.h>
 #include <ctype.h>
 #include <string.h>
-
+  
 #include "SdifHash.h"
 #include "SdifError.h"
 #include "SdifGlobals.h"
