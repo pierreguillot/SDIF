@@ -34,9 +34,13 @@
  * sdifframe.h is composed of the different methods which are using to 
  * manipulate the frame.
  * 
- * $Id: sdifframe.h,v 1.11 2004-02-02 18:07:27 roebel Exp $ 
+ * $Id: sdifframe.h,v 1.12 2004-07-21 13:20:38 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.11  2004/02/02 18:07:27  roebel
+ * Version 0.8.1: bug fix in sdifframe establishing the possibility to
+ * resize matrices within the frame.
+ *
  * Revision 1.10  2003/11/18 18:27:04  roebel
  * Added exceptions when accessing non existing matrices in a frame.
  *
@@ -142,9 +146,7 @@ public:
    *
    *  Constructs a frame 
    */
-  SDIFFrame(): mStreamID(0), mNbMatrix(0)//, mSelected(0)
-	{};
-    //size_t  mFrameBytesRead;
+  SDIFFrame()	{ClearData();}
 
 /** 
  * Read : permit to read entirely a frame : the header and the data
@@ -170,6 +172,9 @@ public:
  * \ingroup rnw
  * read entirely a frame : the header and the data
  * @return number of bytes read
+ *
+ * Attention: using this function bypasses the update of the FrameDirectory
+ * in the SDIFEntity! 
  */
     int  Read(SdifFileT* file, bool &eof);
 
@@ -332,89 +337,101 @@ public:
 
 
 
-/*************************************************************************/
-/* Get members of the frame */
-/**
-* \defgroup  getmframe SDIFFrame - Get members
-*/
+  /*************************************************************************/
+  /* Get members of the frame */
+  /**
+   * \defgroup  getmframe SDIFFrame - Get members
+   */
+  
+  /**
+   * \ingroup getmframe 
+   * @brief get the number of matrix in the frame
+   */
+  SdifUInt4 GetNbMatrix() const  {    return mNbMatrix;}
+  
+  /** 
+   * \ingroup getmframe
+   * @brief get the signature of the frame
+   */
+  SdifSignature GetSignature() const{    return mSig;}
+  
+  
+  /** 
+   * \ingroup getmframe
+   * @brief get the signature of the frame
+   */
+  void GetSignature(std::string& sig) const
+  {
+    sig = SdifSignatureToString(mSig);
+    return;
+  }
 
-/**
- * \ingroup getmframe 
- * @brief get the number of matrix in the frame
- */
-    SdifUInt4     GetNbMatrix() const;
+  /** 
+   * \ingroup getmframe
+   * @brief get the streamID of the frame
+   */
+  SdifUInt4 GetStreamID() const{ return mStreamID;}
 
-/** 
- * \ingroup getmframe
- * @brief get the signature of the frame
- */
-    SdifSignature GetSignature() const;
+  
+  /** 
+   * \ingroup getmframe
+   * @brief get the time of the frame
+   */
+  SdifFloat8 GetTime() const {  return mTime;}
 
-/** 
- * \ingroup getmframe
- * @brief get the streamID of the frame
- */
-    SdifUInt4     GetStreamID() const;
-
-/** 
- * \ingroup getmframe
- * @brief get the time of the frame
- */
-    SdifFloat8    GetTime() const;
-
-/** 
- * \ingroup getmframe
- * @brief get the size of the frame
- */
-    SdifUInt4     GetSize() const;
-
-/*************************************************************************/
-/* Set the informations of the frames */
- /**
-* \defgroup  setmframe SDIFFrame - Set members
-*/
+  /** 
+   * \ingroup getmframe
+   * @brief get the size of the frame
+   */
+  SdifUInt4     GetSize() const;
+  
+  /*************************************************************************/
+  /* Set the informations of the frames */
+  /**
+   * \defgroup  setmframe SDIFFrame - Set members
+   */
   
 /** 
  * \ingroup setmframe
  * @brief Set the frame header
  */
-    void SetHeader(SdifSignature sig, SdifUInt4 streamID, float time);//, SdifUInt4 nbMatrix);
-
-/** 
- * \ingroup setmframe
- * @brief Set the frame header
- */
+  void SetHeader(SdifSignature sig, SdifUInt4 streamID, float time);//, SdifUInt4 nbMatrix);
+  
+  /** 
+   * \ingroup setmframe
+   * @brief Set the frame header
+   */
   void SetHeader(const std::string& sig, SdifUInt4 streamID, float time);
-
-/**
- * \ingroup setmframe 
- * @brief Set one element of the frame header : the number of matrix
- */
-    void SetNbMatrix(SdifUInt4 nbMatrix);
-
-/** 
- * \ingroup setmframe
- * @brief Set one element of the frame header : the signature
- */
-    void SetSignature(SdifSignature sig);
-
-/** 
- * \ingroup setmframe
- * @brief Set one element of the frame header : the signature with a string
- */
-    void SetSignature(const std::string& signature);
-
-/** 
- * \ingroup setmframe
- * @brief Set one element of the frame header : the streamID
- */
-    void SetStreamID(SdifUInt4 streamID);
-
-/** 
- * \ingroup setmframe
- * @brief Set one element of the frame header : the time
- */
-    void SetTime(float time);
+  
+  /**
+   * \ingroup setmframe 
+   * @brief Set one element of the frame header : the number of matrix
+   */
+  void SetNbMatrix(SdifUInt4 nbMatrix);
+  
+  /** 
+   * \ingroup setmframe
+   * @brief Set one element of the frame header : the signature
+   */
+  void SetSignature(SdifSignature sig);
+  
+  /** 
+   * \ingroup setmframe
+   * @brief Set one element of the frame header : the signature with a string
+   */
+  void SetSignature(const std::string& signature);
+  
+  /** 
+   * \ingroup setmframe
+   * @brief Set one element of the frame header : the streamID
+   */
+  void SetStreamID(SdifUInt4 streamID);
+  
+  /** 
+   * \ingroup setmframe
+   * @brief Set one element of the frame header : the time
+   */
+  void SetTime(float time);
 
 };
 } // end of namespace Easdif

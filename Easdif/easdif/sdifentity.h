@@ -32,9 +32,12 @@
  * 
  * 
  * 
- * $Id: sdifentity.h,v 1.17 2004-07-13 15:01:42 roebel Exp $ 
+ * $Id: sdifentity.h,v 1.18 2004-07-21 13:20:24 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.17  2004/07/13 15:01:42  roebel
+ * Removed unused variable mNbFrames.
+ *
  * Revision 1.16  2004/05/04 12:53:35  roebel
  * Fixed documentation.
  *
@@ -157,24 +160,31 @@ private:
 /** 
  * contain the SDIFNameValueTable of the entity
  */
-    std::vector<SDIFNameValueTable> mv_NVT;
+  std::vector<SDIFNameValueTable> mv_NVT;
+  
+  SdifFileT* efile;
+  std::string mDescription;
+  
+  SdifUInt4 mSize;
+  SdifUInt4 mFirstFramePos;	// file position after reading the header
+  
+  bool mEof;
+  
+  int mOpen;
+  size_t generalHeader;
+  size_t asciiChunks;
 
-    SdifFileT* efile;
-    std::string mDescription;
+  //  pairs of time and file position serve as directory
+  struct SDIFLocation {
+    std::pair<SdifFloat8,SdifUInt4> loc;
+    SDIFLocation():loc(-1.,0){}
+    SDIFLocation(SdifFloat8 _time,SdifUInt4 _pos):loc(_time,_pos){}
+    SdifFloat8  GetTime() const { return loc.first;}
+    SdifUInt4   GetPos()  const { return loc.second;}
+  };
 
-    SdifUInt4 mSize;
-	SdifUInt4 mFirstFramePos;	// file position after reading the header
-	 
-    bool mEof;
-
-    int mOpen;
-    size_t generalHeader;
-    size_t asciiChunks;
-  //  size_t bytesread;
-
-    //  char* string;
-    //  char* filename;
-
+  std::vector<SDIFLocation> mFrameDirectory;
+  bool isFrameDirEnabled;
 
 public: 
     /// Default constructor
@@ -336,13 +346,37 @@ public:
  * @return true if closed / false if file was not opened
  */
     bool Close();
+
 /** 
  * \ingroup  file
  * rewind a file to first non-ascii frame after the file header
- * @return true if a signature was read
+ * @return true if positioning was successful
  */
     
     bool Rewind();
+
+private:
+
+  /** 
+   * \ingroup  file
+   * rewind a file to a frame that has a time position
+   * that is guaarantted to be before the time specified in timePos
+   * if the directory information is incomplete (due to selection)
+   * the frame may be well before the time required, because 
+   * the performance is only vague this function is private and 
+   * intended as a helper function for ReadNextFrame(SDIFFrame& frame,SdifFloat8 time)
+   *
+   *
+   * Postion will be on end of file if there  exists
+   * no Frame after timePos
+   *
+   *
+   * @return true if positioning was successful
+   */
+    
+    bool Rewind(SdifFloat8 timePos);
+
+public:
 
   /** 
    * \ingroup file
@@ -369,10 +403,53 @@ public:
   bool eof() const {return mEof;}
 
 
+  /**
+   * \ingroup file
+   * enable Frame Directory:
+   *
+   * If enabled the entity will internally keep track of the positions of all
+   * frames and thereby allow to quickly reposition to a desired frame
+   * by specifying the requested Frame time.
+   *
+   * enableFrameDir can be called at any time, however, is most effectively
+   * set before any frames are read. If it is enabled later the 
+   * all frames up to the current frame are reread to obtain a complete
+   * and consistent directory. 
+   */
+  void EnableFrameDir();
+
+  /**
+   * \ingroup file
+   * true if frame Directory is enabled
+   */
+  bool IsFrameDir() {   return isFrameDirEnabled;}
 
 
+  /**
+   * \ingroup file
+   * dump content of Frame Directory to stderr
+   */
+  void PrintFrameDir() const;
+
+private:
+
+  /**
+   * \ingroup file
+   *
+   * add a new time/position point to the directory
+   * used only internally to maintain directory from 
+   * the frame read interface.
+   *
+   */
+  void AddFramePos(SdifFloat8 time,SdifUInt4 pos);
+
+private:
+  // this appears to be a remaining of the initial development 
+  // will be removed in the future
     /*temporary SetFile*/
     int SetFile(SdifFileT* SdifFile);
+
+public:
     SdifErrorT* LastError();
 
 /*************************************************************************/
@@ -450,6 +527,19 @@ public:
  * return the number of bytes read
  */
     int ReadNextFrame(SDIFFrame& frame);
+
+/**
+ * \ingroup rnwentity
+ * read the next frame of the file that is located after time timePos 
+ * return the number of bytes read
+ *
+ * Calling this function will automatically enable the internal
+ * FrameDirectory.
+ *
+ * \see EnableFrameDir()
+ */
+    int ReadNextFrame(SDIFFrame& frame, SdifFloat8 timePos);
+
 /**
  * \ingroup rnwentity
  * read the next selected frame of the file
@@ -457,6 +547,19 @@ public:
  */
 
   int ReadNextSelectedFrame(SDIFFrame& frame);
+
+/**
+ * \ingroup rnwentity
+ * read the next selected frame of the file starting from position timePos
+ * return the number of bytes read
+ *
+ * Calling this function will automatically enable the internal
+ * FrameDirectory.
+ *
+ * \see EnableFrameDir()
+ */
+  int ReadNextSelectedFrame(SDIFFrame& frame,SdifFloat8 timePos);
+
 
 /** 
  * \ingroup rnwentity
