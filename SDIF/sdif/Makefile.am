@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.33 2004-06-03 11:18:00 schwarz Exp $
+# $Id: Makefile.am,v 1.34 2004-08-23 17:37:32 roebel Exp $
 #
 # ./sdif/Makefile.am		September 2000		Patrice Tisserand
 #
@@ -30,6 +30,16 @@
 
 
 # $Log: not supported by cvs2svn $
+# Revision 1.33  2004/06/03 11:18:00  schwarz
+# Profiling showed some waste of cycles in byte swapping and signature reading:
+# - byte swapping now array-wise, not element-wise in SdifSwap<N>[Copy] routines:   -> from 0.24 s (18.5%) to 0.14s
+# - ASCII signature reading function SdiffGetSignature replaced by new binary
+#   function SdiffReadSignature (also in SdifFGetSignature, so the change is
+#   mostly transparent):
+#   -> from 0.11 s (9.6%)  to 0.01 s
+# - overall run time improvement with test case sdifextractall_a01:
+#   -> from 1.20 s         to 0.86 s (40% faster)
+#
 # Revision 1.32  2003/11/07 21:47:18  roebel
 # removed XpGuiCalls.h and replaced preinclude.h  by local files
 #
@@ -149,7 +159,7 @@
 # Added header with copyright and links to all Makefile.am and configure.in.
 
 
-EXTRA_LIBRARIES   = libsdif.a  libsdif-debug.a  libsdif-profile.a
+#EXTRA_LIBRARIES   = libsdif.a  libsdif-debug.a  libsdif-profile.a
 EXTRA_LTLIBRARIES = libsdif.la libsdif-debug.la libsdif-profile.la
 
 # lib_LIBRARIES = @SELLIB@
