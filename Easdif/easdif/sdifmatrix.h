@@ -33,9 +33,14 @@
  * 
  * 
  * 
- * $Id: sdifmatrix.h,v 1.14 2003-07-18 19:31:13 roebel Exp $ 
+ * $Id: sdifmatrix.h,v 1.15 2003-07-18 20:42:22 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.14  2003/07/18 19:31:13  roebel
+ * Improved documentation.
+ * Changed constructor to use  const std::string as argument.
+ * Fixed warning due to comparison between int and unsigned int.
+ *
  * Revision 1.13  2003/07/17 18:09:35  roebel
  * Improved Resize method, added Clear method and proper assigment operator
  *
@@ -216,11 +221,8 @@ public:
    *  in the sdif standard and if you use them only the IRCAM sdif library will
    *  be able to read your data.
    */
-    SDIFMatrix(SdifSignature sig, int nrows = 1, int ncols = 1, 
-	       SdifDataTypeET type = eFloat4)
-    {
-      Init(sig, nrows, ncols, type);
-    }
+  SDIFMatrix(SdifSignature sig, int nrows = 1, int ncols = 1, 
+	     SdifDataTypeET type = eFloat4);
 
   /** 
    * \ingroup create
@@ -241,11 +243,8 @@ public:
    *  in the sdif standard and if you use them only the IRCAM sdif library will
    *  be able to read your data.
    */
-    SDIFMatrix(const std::string& sig, int nrows = 1, int ncols = 1, 
-	       SdifDataTypeET type = eFloat4)
-    {
-      Init(sig, nrows, ncols, type);
-    }
+  SDIFMatrix(const std::string& sig, int nrows = 1, int ncols = 1, 
+	     SdifDataTypeET type = eFloat4);
 
     ~SDIFMatrix(){
 	if(mInter) {
