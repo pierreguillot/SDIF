@@ -1,4 +1,4 @@
-/* $Id: SdifFGet.c,v 3.12 2003-11-07 21:47:18 roebel Exp $
+/* $Id: SdifFGet.c,v 3.13 2004-05-03 18:07:27 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -32,6 +32,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.12  2003/11/07 21:47:18  roebel
+ * removed XpGuiCalls.h and replaced preinclude.h  by local files
+ *
  * Revision 3.11  2003/08/06 15:11:45  schwarz
  * Finally removed obsolete functions (like SdifSkip...).
  *
@@ -208,8 +211,7 @@ SdifFGetNameValueLCurrNVT(SdifFileT *SdifF, int Verbose)
 			   "have exactly one column!");
 	  str    = SdifCalloc (char, nrow * SdifFCurrNbCol (SdifF));
 	  SizeR += SdiffReadChar (str, nrow, file);
-	  SizeR += SdifFReadPadding(SdifF, SdifFPaddingCalculate (file, 
-								  SizeR + sizeof(SdifSignature)));
+	  SizeR += SdifFReadPadding(SdifF, SdifFPaddingCalculate (file, SizeR));
 	  SdifFNameValueLCurrNVTfromString (SdifF, str);
 	  SdifFree (str);
 	}

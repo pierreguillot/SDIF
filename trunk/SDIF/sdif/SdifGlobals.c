@@ -1,4 +1,4 @@
-/* $Id: SdifGlobals.c,v 3.13 2003-11-07 21:47:18 roebel Exp $
+/* $Id: SdifGlobals.c,v 3.14 2004-05-03 18:07:26 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -31,6 +31,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.13  2003/11/07 21:47:18  roebel
+ * removed XpGuiCalls.h and replaced preinclude.h  by local files
+ *
  * Revision 3.12  2003/07/18 21:08:55  roebel
  * Added new datatypes eInt1 and eUInt1 to SdifDataTypeKnown.
  *
@@ -248,12 +251,22 @@ SdifFPaddingCalculate(FILE *f, size_t NbBytes)
   size_t mod;
 
   if ((f != stdin) && (f != stdout) && (f != stderr))
-    {
-      mod = (size_t) ftell(f) % _SdifPadding;
-      return mod ? (_SdifPadding - mod) : 0;
-    }
+  {
+      /* calculating padding from ftell is redundant, but we leave it in,
+	 with a warning, until everyone's code is tested.
+	 calculating from NbBytes is more efficient
+      */
+      int efficient = SdifPaddingCalculate(NbBytes);
+      int redundant = SdifPaddingCalculate(ftell(f));
+
+      if (efficient != redundant)
+	  _Debug("Attention: Your code calculates the wrong padding!\n"
+		 "Please check calls to SdifFPaddingCalculate\n");
+
+      return redundant;
+  }
   else
-    return SdifPaddingCalculate(NbBytes);
+      return SdifPaddingCalculate(NbBytes);
 }
 
 

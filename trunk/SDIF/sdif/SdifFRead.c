@@ -1,4 +1,4 @@
-/* $Id: SdifFRead.c,v 3.17 2003-11-07 21:47:18 roebel Exp $
+/* $Id: SdifFRead.c,v 3.18 2004-05-03 18:07:27 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -31,6 +31,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.17  2003/11/07 21:47:18  roebel
+ * removed XpGuiCalls.h and replaced preinclude.h  by local files
+ *
  * Revision 3.16  2003/08/06 15:13:14  schwarz
  * New functions SdifFSkip, SdifFSkipOneRow.
  * Finally removed obsolete functions (like SdifSkip...).
@@ -225,8 +228,6 @@ SdifFReadNameValueLCurrNVT(SdifFileT *SdifF)
   SizeR += SdifFReadChunkSize(SdifF);
 #endif
   SizeR += SdifFGetNameValueLCurrNVT(SdifF, 's');
-  SizeR += SdifFReadPadding(SdifF,
-			    SdifFPaddingCalculate(SdifF->Stream, SizeR + sizeof(SdifSignature)));
   
   if (    (SizeR != SdifF->ChunkSize + sizeof(SdifInt4))
        && ((unsigned) SdifF->ChunkSize != (unsigned) _SdifUnknownSize))
@@ -292,8 +293,6 @@ SdifFReadAllType(SdifFileT *SdifF)
       SizeR += SdifFGetAllType(SdifF, 's');
     }
   
-  SizeR += SdifFReadPadding(SdifF, SdifFPaddingCalculate(SdifF->Stream, SizeR + sizeof(SdifSignature)));
-  
   if (    (SizeR != SdifF->ChunkSize + sizeof(SdifInt4))
        && ((unsigned) SdifF->ChunkSize != (unsigned) _SdifUnknownSize))
     {
@@ -344,8 +343,6 @@ SdifFReadAllStreamID(SdifFileT *SdifF)
     {
       SizeR += SdifFGetAllStreamID(SdifF, 's');
     }
-  
-  SizeR += SdifFReadPadding(SdifF, SdifFPaddingCalculate(SdifF->Stream, SizeR + sizeof(SdifSignature)));
   
   if (    (SizeR != SdifF->ChunkSize + sizeof(SdifInt4))
        && ((unsigned) SdifF->ChunkSize != (unsigned) _SdifUnknownSize))
@@ -665,8 +662,7 @@ size_t SdifFReadTextMatrix(SdifFileT *SdifF, SdifStringT *SdifString)
   SizeR += SdifFReadTextMatrixData(SdifF, SdifString);
 
   /* Number of bytes written */
-  SizeR += SdifFReadPadding(SdifF, SdifFPaddingCalculate (file,
-					 SizeR + sizeof(SdifSignature)));
+  SizeR += SdifFReadPadding(SdifF, SdifFPaddingCalculate (file, SizeR));
   return SizeR;
 }
 
