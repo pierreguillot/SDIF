@@ -1,4 +1,4 @@
-/* $Id: SdifSelect.c,v 3.17 2002-09-20 14:43:03 schwarz Exp $
+/* $Id: SdifSelect.c,v 3.18 2003-08-06 15:20:45 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -96,6 +96,10 @@ TODO
 
 LOG
   $Log: not supported by cvs2svn $
+  Revision 3.17  2002/09/20 14:43:03  schwarz
+  - SdifParseSignatureList Parse comma-separated list of signatures
+  - SdifKillSelectElement  now public
+
   Revision 3.16  2002/08/05 14:20:53  roebel
   Fixed compiler warning.
   Added support to replace a selection.
@@ -197,17 +201,7 @@ char *SdifBaseName (const char* path)
 	    return ((char *) path);
 }
 
-int SdifFreeSelectionLists (SdifSelectionT *sel)
-{
-
-    SdifKillList (sel->stream);
-    SdifKillList (sel->frame);
-    SdifKillList (sel->matrix);
-    SdifKillList (sel->column);
-    SdifKillList (sel->row);
-    SdifKillList (sel->time);
-    return (1);
-}
+void SdifInitIntMask (SdifSelectIntMaskP mask);
 
 
 /*
@@ -274,6 +268,7 @@ void SdifKillSelectElement (/*SdifSelectionT*/ void *victim)
     SdifFree (victim);
 }
 
+
 int SdifInitSelectionLists (SdifSelectionT *sel)
 {
 
@@ -283,6 +278,27 @@ int SdifInitSelectionLists (SdifSelectionT *sel)
     sel->column = SdifCreateList (SdifKillSelectElement);
     sel->row    = SdifCreateList (SdifKillSelectElement);
     sel->time   = SdifCreateList (SdifKillSelectElement);
+
+    SdifInitIntMask(&sel->streammask);
+    SdifInitIntMask(&sel->rowmask);
+    SdifInitIntMask(&sel->colmask);
+
+    return (1);
+}
+
+int SdifFreeSelectionLists (SdifSelectionT *sel)
+{
+
+    SdifKillList (sel->stream);
+    SdifKillList (sel->frame);
+    SdifKillList (sel->matrix);
+    SdifKillList (sel->column);
+    SdifKillList (sel->row);
+    SdifKillList (sel->time);
+
+    if (sel->streammask.mask)   SdifFree(sel->streammask.mask);
+    if (sel->rowmask.mask)      SdifFree(sel->rowmask.mask);
+    if (sel->colmask.mask)      SdifFree(sel->colmask.mask);
 
     return (1);
 }
@@ -322,6 +338,58 @@ int SdifFreeSelection (SdifSelectionT *sel)
     return (1);
 }
 
+
+void SdifInitIntMask (SdifSelectIntMaskP mask)
+{
+    mask->mask 	  = NULL;
+    mask->num  	  = 0;
+    mask->max  	  = 0;	/* include all */
+    mask->openend = 1;
+}
+
+
+void SdifSelectGetIntMask (SdifListP list, SdifSelectIntMaskP mask)
+{
+    SdifSelectElementIntT range;
+    int num = 0;
+    int max = 0;
+    int i;
+
+    if (SdifListIsEmpty(list))
+    {
+	SdifInitIntMask (mask);
+    }
+    else
+    {
+	/* find maximum
+	   todo: keep max while parsing, with select element struct */
+	SdifListInitLoop(list);
+	while (SdifSelectGetNextIntRange(list, &range, 1))
+	{
+	    if (range.range > max)
+		max = range.range;
+	    /* later: check here for open-end range type (selection of "1-end") */
+	}
+
+	/* allocate mask */
+	mask->mask = SdifCalloc(int, max + 1);
+
+	/* fill mask */
+	SdifListInitLoop(list);
+	while (SdifSelectGetNextIntRange(list, &range, 1))
+	{
+	    for (i = range.value; i <= range.range; i++)
+	    {
+		num += mask->mask[i] != 1; /* count fresh ints in selection */
+		mask->mask[i] = 1;
+	    }
+	}
+
+	mask->num  = num;
+	mask->max  = max;
+	mask->openend = 0;
+    }
+}
 
 
 
@@ -588,6 +656,12 @@ int SdifParseSelection (SdifSelectionT *sel, const char *str)
 	    break;
 	}
     }
+
+    /* convert row/column selection to masks */
+    SdifSelectGetIntMask(sel->stream, &sel->streammask);
+    SdifSelectGetIntMask(sel->row,    &sel->rowmask);
+    SdifSelectGetIntMask(sel->column, &sel->colmask);
+
     return (ret);
 }
 
@@ -876,7 +950,16 @@ _foralltypes (_getfirst)
 // FUNCTION GROUP:	Selection Testing Functions
 */
 
-int SdifSelectTestIntRange (SdifSelectElementT *elem, int cand)
+int SdifSelectTestIntMask (SdifSelectIntMaskT *mask, SdifUInt4 cand)
+{
+    if (mask->num == 0  ||  cand > mask->max)
+	return (mask->openend);
+    else
+	return (mask->mask[cand]);
+}
+
+
+int SdifSelectTestIntRange (SdifSelectElementT *elem, SdifUInt4 cand)
 {
     if (!elem)   return (0);
 
@@ -920,7 +1003,8 @@ int SdifSelectTestRealRange (SdifSelectElementT *elem, double cand)
 }
 
 
-int SdifSelectTestInt (SdifListT *list, int cand)
+
+int SdifSelectTestInt (SdifListT *list, SdifUInt4 cand)
 {
     if (SdifListIsEmpty (list))
 	return (1);	/* no select spec means: take everything */
@@ -984,11 +1068,36 @@ int SdifSelectTestString (SdifListT *list, const char *cand)
 */
 
 
+/* Get number of selected streams in file selection, 0 for all  */
+int SdifFNumStreamsSelected (SdifFileT *file)
+{
+    return (file->Selection->streammask.num);
+}
+
+/* Get number of selected rows in file selection  */
+int SdifFNumRowsSelected (SdifFileT *file)
+{
+    if (file->Selection->rowmask.num)
+	return (file->Selection->rowmask.num);
+    else
+	return (SdifFCurrNbRow(file));
+}
+
+/* Get number of selected columns in file selection  */
+int SdifFNumColumnsSelected (SdifFileT *file)
+{
+    if (file->Selection->colmask.num)
+	return (file->Selection->colmask.num);
+    else
+	return (SdifFCurrNbCol(file));
+}
+
+
 /* Test the selection elements applicable to frames: time, stream,
    frame type.  Can be called after SdifFReadFrameHeader().  */
 int SdifFrameIsSelected (SdifFrameHeaderT *frame, SdifSelectionT *sel)
 {
-    return ((SdifSelectTestInt	     (sel->stream, frame->NumID)
+    return ((SdifSelectTestIntMask   (&sel->streammask, frame->NumID)
 	     ||  frame->NumID == _SdifAllStreamID)	         &&
 	     SdifSelectTestReal	     (sel->time,   frame->Time)  &&
 	     SdifSelectTestSignature (sel->frame,  frame->Signature));
@@ -1014,4 +1123,16 @@ int SdifFCurrFrameIsSelected (SdifFileT *file)
 int SdifFCurrMatrixIsSelected (SdifFileT *file)
 {
     return (SdifMatrixIsSelected (file->CurrMtrxH, file->Selection));
+}
+
+/* Test file selection if a given row (starting from 1) is selected */
+int SdifFRowIsSelected (SdifFileT *file, int row)
+{
+    return (SdifSelectTestIntMask(&file->Selection->rowmask, row));
+}
+
+/* Test file selection if a given column (starting from 1) is selected */
+int SdifFColumnIsSelected (SdifFileT *file, int col)
+{
+    return (SdifSelectTestIntMask(&file->Selection->colmask, col));
 }
