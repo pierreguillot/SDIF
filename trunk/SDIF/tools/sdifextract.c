@@ -1,4 +1,4 @@
-/* $Id: sdifextract.c,v 1.14 2004-06-17 18:30:05 roebel Exp $
+/* $Id: sdifextract.c,v 1.15 2005-04-05 15:58:23 bogaards Exp $
  
                 Copyright (c) 1998 by IRCAM - Centre Pompidou
                            All rights reserved.
@@ -13,6 +13,10 @@
    Extract data from an SDIF-file.  
    
    $Log: not supported by cvs2svn $
+   Revision 1.14  2004/06/17 18:30:05  roebel
+   Fixed padding calculation. Only count bytes read for  matrices, because
+   frames are by default aligned.
+
    Revision 1.13  2003/11/07 22:25:16  roebel
    Removed last remainings of XpGuiCalls from tools files.
 
@@ -186,6 +190,7 @@ typedef enum {OpenFile,    CloseFile,
 /* output functions */
 void outsdif   (OutAction what, double data);
 void outbpf    (OutAction what, double data);
+void outtime    (OutAction what, double data);
 void outformat (OutAction what, double data);
 
 /* support functions */
@@ -213,7 +218,7 @@ void usage (char *msg, char *arg, int longhelp)
     }
     if (longhelp)
     {
-    	fprintf (SdifStdErr, "\n" PROG "version $Revision: 1.14 $\n\n");
+    	fprintf (SdifStdErr, "\n" PROG "version $Revision: 1.15 $\n\n");
     
     	if (types)
     	{
@@ -255,6 +260,7 @@ void usage (char *msg, char *arg, int longhelp)
 "	-sdif                 output data in SDIF (default)\n"
 "	-bpf                  output data as ASCII multi-bpf\n"
 "	-format               output data as ASCII .format file\n"
+"	-time                 output only frame-times as ASCII\n"
 "\nSelection options:\n"
 "	-t <begin>[-<end>|+<delta>]  select time range <begin> to <end> or \n"
 "                             <begin>-<delta> to <begin>+<delta>\n"
@@ -288,6 +294,10 @@ void usage (char *msg, char *arg, int longhelp)
 "		matrix-row-1\n"
 "		...\n"
 "		matrix-row-n\n"
+"\n"
+"-time   In time format, only the frame-times of the selected frames are\n"
+"	printed, where every time is printed on a new line\n" 
+"\n"
 "\nRemarks:\n\n"
 "--     Watch out for possible ambiguities between floating point time spec and\n"
 "       column spec: @1.2 will be time 1.2, not time 1, column 2. It is advisable\n"
@@ -470,6 +480,38 @@ outbpf (OutAction what, double data)
 	case CloseFile:	    fclose (out);			break;
     }
 }
+void
+outtime (OutAction what, double data)
+{
+    static FILE	  *out = NULL;
+    static double time = -1;
+
+    switch (what)
+    {
+	case OpenFile:
+	    if (outfile)
+	    {
+		if (!(out = fopen (outfile, "w")))
+		    fprintf (SdifStdErr, "Can't open bpf output file %s.\n", 
+			     outfile), exit (0);
+	    }
+	    else
+		out = stdout;
+	break;
+
+	case BeginFrame:    time = data;			break;
+			    
+	case BeginMatrix:   
+	case EndMatrix:     
+	case InRow:	    
+	case EndFrame:	    
+	default:	    /* do nothing */			break;
+			    
+	case BeginRow:	    fprintf (out, "%f\t", time);	break;
+	case EndRow:	    fprintf (out, "\n");		break;
+	case CloseFile:	    fclose (out);			break;
+    }
+}
 
 
 void 
@@ -577,6 +619,7 @@ int main(int argc, char** argv)
 	        if      (SdifStrEq (argv [i], "-sdif"))   output = outsdif;
 		else if (SdifStrEq (argv [i], "-bpf"))    output = outbpf; 
 		else if (SdifStrEq (argv [i], "-format")) output = outformat;
+		else if (SdifStrEq (argv [i], "-time")) output = outtime;
 		else if (SdifStrEq (argv [i], "-help")  || 
 			 SdifStrEq (argv [i], "--help"))
 		    usage (NULL, NULL, 1);
@@ -699,6 +742,7 @@ int main(int argc, char** argv)
 	fprintf (SdifStdErr, "writing as %s\n", 
 		 output == outsdif    ?  "SDIF"         :
 		 output == outbpf     ?  "multi-bpf"    :
+		 output == outtime     ?  "time"    :
 		 output == outformat  ?  "format file"  :  "");
     }
 
@@ -755,64 +799,72 @@ int main(int argc, char** argv)
 	if (time < emint)   emint = time;
 	if (time > emaxt)   emaxt = time;
 	
-	/* for matrices loop */
-	for (m = 0; m < SdifFCurrNbMatrix (in); m++)
-	{
-	    int nbrows, nbcols, selrow;
-
-	    /* Read matrix header */
-	    bytesread = SdifFReadMatrixHeader (in);
-#if DB
-  fprintf (SdifStdErr, "@matrix\t%s  rows %d  cols %d  cumulcol %d\n", 
-    SdifSignatureToString (SdifFCurrMatrixSignature (in)), 
-    SdifFCurrNbRow(in), SdifFCurrNbCol(in), hard_defined_get(cumulcol, SdifFCurrNbCol(in)));
-#endif
-	    /* Check matrix type */
-	    if (!SdifFCurrMatrixIsSelected (in))
-	    {   /* a matrix type we're not interested in, so we skip it */
-		SdifFSkipMatrixData (in);
-		continue;	/* START NEXT ITERATION of for matrices loop */
-	    }
-
-	    ematrix++;
-	    nbrows = SdifFCurrNbRow (in);
-	    nbcols = SdifFCurrNbCol (in);
-	    selrow = 0;
-
-	    /* TODO: output row only when there is a selected column,
-	       when there is no selected column, output num. of rows 0 */
-	    output (BeginMatrix, hard_defined_get (cumulrow, nbrows));
+	/* if a frame has no matrices it can still be selected, and we want to just output the frame */
+	if(output == outtime && (SdifFCurrNbMatrix (in) == 0 || (numrowsel == 0 && numcolsel == 0))){
+		/* BeginRow is the code that leads to the actual writing of the frame time */
+		output (BeginRow,0.);
+		/* EndRow writes the newline */
+		output (EndRow,0.);
+	}else{
 	
-	    /* read matrix data: for rows */
-	    for (r = 1; r <= nbrows; r++)
-	    {
-		bytesread += SdifFReadOneRow (in);
-#if DB > 2
-  fprintf (SdifStdErr, "@row\t%d  selrow %d flatrow [%d] = %d\n", 
-    r, selrow, selrow, hard_defined_get (flatrow, selrow));
-#endif
-		/*if (!SdifSelectTestInt (isel->row, r))*/
-		if (hard_defined_get (flatrow, selrow) != r)
-		    continue;	/* START NEXT ITERATION of for rows loop */
-		selrow++;	/* the row we're waiting for */
+		/* for matrices loop */
+		for (m = 0; m < SdifFCurrNbMatrix (in); m++)
+		{
+		    int nbrows, nbcols, selrow;
 
-		/* write selected column(s), but avoid expensive loop
-		   using flattened column list */
-		output (BeginRow, hard_defined_get (cumulcol, nbcols));
+		    /* Read matrix header */
+		    bytesread = SdifFReadMatrixHeader (in);
+	#if DB
+	  fprintf (SdifStdErr, "@matrix\t%s  rows %d  cols %d  cumulcol %d\n", 
+	    SdifSignatureToString (SdifFCurrMatrixSignature (in)), 
+	    SdifFCurrNbRow(in), SdifFCurrNbCol(in), hard_defined_get(cumulcol, SdifFCurrNbCol(in)));
+	#endif
+		    /* Check matrix type */
+		    if (!SdifFCurrMatrixIsSelected (in))
+		    {   /* a matrix type we're not interested in, so we skip it */
+			SdifFSkipMatrixData (in);
+			continue;	/* START NEXT ITERATION of for matrices loop */
+		    }
 
-		for (c = 0; c < hard_defined_get (cumulcol, nbcols); c++)
-		    output (InRow, SdifFCurrOneRowCol (in, hard_defined_get (flatcol, c)));
+		    ematrix++;
+		    nbrows = SdifFCurrNbRow (in);
+		    nbcols = SdifFCurrNbCol (in);
+		    selrow = 0;
 
-		output (EndRow, 0);
-	    }	/* end for rows */
+		    /* TODO: output row only when there is a selected column,
+		       when there is no selected column, output num. of rows 0 */
+		    output (BeginMatrix, hard_defined_get (cumulrow, nbrows));
+		
+		    /* read matrix data: for rows */
+		    for (r = 1; r <= nbrows; r++)
+		    {
+			bytesread += SdifFReadOneRow (in);
+	#if DB > 2
+	  fprintf (SdifStdErr, "@row\t%d  selrow %d flatrow [%d] = %d\n", 
+	    r, selrow, selrow, hard_defined_get (flatrow, selrow));
+	#endif
+			/*if (!SdifSelectTestInt (isel->row, r))*/
+			if (hard_defined_get (flatrow, selrow) != r)
+			    continue;	/* START NEXT ITERATION of for rows loop */
+			selrow++;	/* the row we're waiting for */
 
-	    output (EndMatrix, 0);
-	    SdifFReadPadding(in, SdifFPaddingCalculate(in->Stream, bytesread));
-	}   /* end for matrices */
+			/* write selected column(s), but avoid expensive loop
+			   using flattened column list */
+			output (BeginRow, hard_defined_get (cumulcol, nbcols));
+
+			for (c = 0; c < hard_defined_get (cumulcol, nbcols); c++)
+			    output (InRow, SdifFCurrOneRowCol (in, hard_defined_get (flatcol, c)));
+
+			output (EndRow, 0);
+		    }	/* end for rows */
+
+		    output (EndMatrix, 0);
+		    SdifFReadPadding(in, SdifFPaddingCalculate(in->Stream, bytesread));
+		}   /* end for matrices */
+	}	/* end if SdifFCurrNbMatrix (in) == 0 */
 
 	output (EndFrame, 0);
 	eof = SdifFGetSignature (in, &bytesread) == eEof;
-
     }   /* end while frames */ 
     
 
