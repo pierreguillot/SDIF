@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.26 2002-10-30 15:48:46 schwarz Exp $
+# $Id: Makefile.am,v 1.27 2003-03-07 17:33:27 roebel Exp $
 #
 # ./sdif/Makefile.am		September 2000		Patrice Tisserand
 #
@@ -30,6 +30,9 @@
 
 
 # $Log: not supported by cvs2svn $
+# Revision 1.26  2002/10/30 15:48:46  schwarz
+# Fixed dependency for SdifVersion.h: target is SdifFile.lo and not SdifFile.o
+#
 # Revision 1.25  2002/10/28 18:03:26  roebel
 # Removed non portable --quiet flag of cmd. Use output redirection instead.
 #
@@ -134,7 +137,6 @@ EXTRA_LTLIBRARIES = libsdif.la libsdif-debug.la libsdif-cpp.la
 lib_LTLIBRARIES = @SELLIB@
 
 
-
 FORMES_H=host_architecture.h  preincluded.h UniversalEnvVar.h  XpGuiCalls.h
 FORMES_INCLUDE=/u/formes/share/include
 
@@ -178,10 +180,8 @@ sdiftype = $(datadir)/SdifTypes.STYP
 INCLUDES = -I../include -I$(top_srcdir)/include -D_SdifTypesFileName=\"$(sdiftype)\" -DUSE_CONFIGURE
 
 
-$(libsdif_a_SOURCES) :  @IRCAMDEPS@
-$(libsdif_la_SOURCES) :  @IRCAMDEPS@
-
-
+$(libsdif_a_SOURCES) :  $(FORMES_H:%=$(top_srcdir)/sdif/%)
+$(libsdif_la_SOURCES) : $(FORMES_H:%=$(top_srcdir)/sdif/%)
 
 #
 # EXTRA rules and dependencies to generate the checksum file SdifVersion.h
@@ -203,25 +203,11 @@ $(top_srcdir)/sdif/SdifVersion.h : $(Versionsrc)
 # EXTRA FOR IRCAM STUFF
 #
 
-.PHONY: ircam_deps
-ircam_deps : $(FORMES_H:%=$(top_srcdir)/sdif/%)
+if ISATIRCAM
+ircam_cmp = $(FORMES_INCLUDE)/$(notdir $(1))
+else
+ircam_cmp = 
+endif
 
-ircam_force_cmp:
-
-$(top_srcdir)/sdif/host_architecture.h: @FORCE_CMP@ #${FORMES_INCLUDE}/host_architecture.h
-#	cp ${FORMES_INCLUDE}/host_architecture.h $@
-	@STEM=host_architecture;if cmp  $(top_srcdir)/sdif/$$STEM.h ${FORMES_INCLUDE}/$$STEM.h 2>&1 >/dev/null;then echo $(top_srcdir)/sdif/$$STEM.h up to date;else echo  Updating $(top_srcdir)/sdif/$$STEM.h; cp ${FORMES_INCLUDE}/$$STEM.h $@;fi
-
-$(top_srcdir)/sdif/preincluded.h :  @FORCE_CMP@ # ${FORMES_INCLUDE}/preincluded.h
-	@STEM=preincluded;if cmp  $(top_srcdir)/sdif/$$STEM.h ${FORMES_INCLUDE}/$$STEM.h 2>&1 >/dev/null;then echo $(top_srcdir)/sdif/$$STEM.h up to date;else echo  Updating $(top_srcdir)/sdif/$$STEM.h; cp ${FORMES_INCLUDE}/$$STEM.h $@;fi
-
-
-$(top_srcdir)/sdif/UniversalEnvVar.h :  @FORCE_CMP@ #${FORMES_INCLUDE}/UniversalEnvVar.h
-#	cp ${FORMES_INCLUDE}/UniversalEnvVar.h $@
-	@STEM=UniversalEnvVar;if cmp  $(top_srcdir)/sdif/$$STEM.h ${FORMES_INCLUDE}/$$STEM.h 2>&1 >/dev/null;then echo $(top_srcdir)/sdif/$$STEM.h up to date;else echo  Updating $(top_srcdir)/sdif/$$STEM.h; cp ${FORMES_INCLUDE}/$$STEM.h $@;fi
-
-
-
-$(top_srcdir)/sdif/XpGuiCalls.h:  @FORCE_CMP@ #${FORMES_INCLUDE}/XpGuiCalls.h
-#	cp ${FORMES_INCLUDE}/XpGuiCalls.h $@
-	@STEM=XpGuiCalls;if cmp  $(top_srcdir)/sdif/$$STEM.h ${FORMES_INCLUDE}/$$STEM.h 2>&1 >/dev/null;then echo $(top_srcdir)/sdif/$$STEM.h up to date;else echo  Updating $(top_srcdir)/sdif/$$STEM.h; cp ${FORMES_INCLUDE}/$$STEM.h $@;fi
+$(FORMES_H:%=$(top_srcdir)/sdif/%) : $(top_srcdir)/sdif/% : $(call ircam_cmp,%)
+	cp $< $@
