@@ -1,5 +1,5 @@
 dnl -*-m4-*- (He emacs, it's a m4 file)
-dnl $Id: configure.in,v 1.5 2000-10-30 19:13:59 roebel Exp $
+dnl $Id: configure.in,v 1.6 2000-10-30 20:05:12 roebel Exp $
 dnl
 dnl configure.in		September 2000		Patrice Tisserand
 dnl
@@ -30,6 +30,9 @@ dnl For any information regarding this and other IRCAM software, please
 dnl send email to:  sdif@ircam.fr
 dnl
 dnl $Log: not supported by cvs2svn $
+dnl Revision 1.5  2000/10/30  19:13:59  roebel
+dnl Removed -g and added -O3 flags for configuration without --enable-debug
+dnl
 dnl Revision 1.4  2000/10/30  19:05:43  roebel
 dnl Added support for relative path compilation (VPATH)
 dnl Added support for debugging feature in configure.in and Makefiles
