@@ -1,4 +1,4 @@
-/* $Id: SdifFWrite.c,v 3.19 2004-07-22 14:47:56 bogaards Exp $
+/* $Id: SdifFWrite.c,v 3.20 2004-09-09 17:37:42 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -31,6 +31,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.19  2004/07/22 14:47:56  bogaards
+ * removed many global variables, moved some into the thread-safe SdifGlobals structure, added HAVE_PTHREAD define, reorganized the code for selection, made some arguments const, new version 3.8.6
+ *
  * Revision 3.18  2003/11/07 21:47:18  roebel
  * removed XpGuiCalls.h and replaced preinclude.h  by local files
  *
@@ -127,9 +130,8 @@
  *
  * Revision 2.2  1999/01/23  13:57:30  virolle
  * General Lists, and special chunk preparation to become frames
- *
- *
  */
+
 
 #include "sdif_portability.h"
 
@@ -141,6 +143,7 @@
 #include "SdifFPut.h"
 #include "SdifErrMess.h"
 #include <string.h>
+
 
 void
 SdifUpdateChunkSize(SdifFileT *SdifF, size_t ChunkSize)
@@ -653,28 +656,6 @@ SdifFWriteFrameAndOneMatrix (SdifFileT	    *f,
 
     return (fsz);
 }
-
-
-size_t
-SdifSizeOfFrameHeader (void)
-{
-    return (sizeof(SdifFloat8) + 2 * sizeof(SdifUInt4));
-}
-
-
-size_t
-SdifSizeOfMatrix (SdifDataTypeET DataType,
-		  SdifUInt4      NbRow,
-		  SdifUInt4      NbCol)
-{
-    SdifUInt4 msz = 
-           /* matrix header  */ sizeof(SdifSignature) + 3 * sizeof(SdifUInt4) +
-           /* matrix data    */ NbRow * NbCol * SdifSizeofDataType (DataType);
-    msz += /* matrix padding */ SdifPaddingCalculate (msz);
-    return (msz);
-}
-
-
 
 
 
