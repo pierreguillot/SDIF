@@ -1,3 +1,12 @@
+2003-05-01  Axel Röbel  <roebel@ircam.fr>
+
+	* Removed the declarations from SdifRWLowLevel.h that are in
+	sdif.h
+
+	* For improved integration into Easdif SdifStringToSignature 
+	takes now "const char *" as argument
+
+	
 Version 3.7.3	2003-03-07  Axel Roebel  <roebel@kempyang.ircam.fr>
 
         * maintenance release for Easdif integration
@@ -8,7 +17,7 @@ Version 3.7.3	2003-03-07  Axel Roebel  <roebel@kempyang.ircam.fr>
         is not used for instalation.
 
 
-$Id: ChangeLog,v 1.14 2003-03-07 17:43:06 roebel Exp $
+$Id: ChangeLog,v 1.15 2003-05-01 18:55:39 roebel Exp $
 	
 Version 3.7.2	2002-12-17  Axel Roebel, Patrice Tisserand
 
