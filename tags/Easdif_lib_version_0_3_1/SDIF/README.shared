@@ -1,0 +1,9 @@
+Support for shared libraries
+============================
+
+The default behavior of the configure script is to disable 
+the use of shared librairies due to problems with libtool under 
+Mac OSX. If you are not using Mac OSX you may consider
+to switch on the cration of shared libraries by means of
+adding the flag --enable-shared when calling the configure script.
+
