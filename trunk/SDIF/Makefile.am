@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.13 2002-10-30 17:25:33 schwarz Exp $
+# $Id: Makefile.am,v 1.14 2002-10-31 16:35:36 schwarz Exp $
 #
 # ./Makefile.am		September 2000			Patrice Tisserand
 #
@@ -30,6 +30,11 @@
 
 
 # $Log: not supported by cvs2svn $
+# Revision 1.13  2002/10/30 17:25:33  schwarz
+# Ouf, finally proper distribution building: a src.tar.gz and a binary
+# rpm (thanks to Patrice, but use with caution).
+# publish-ftp doesn't actually work...
+#
 # Revision 1.12  2002/10/30 16:09:20  schwarz
 # Better src dependency.
 # No doc included in dist (wants to make old cocoon doc...)
@@ -104,21 +109,16 @@ test:	check
 
 
 #
-# DISTRIBUTION / PUBLISH (on server)
+# DISTRIBUTION
 #
 
-# use this to check if the distribution works, tag the cvs project, 
-# make a source distribution and rpm, and copy it to the web server
-publish:	distcheck cvstag dist rpm publish-ftp
+# more files to include in dist
+EXTRA_DIST	  = sdif.vcproj
 
-# this makes a source distribution! (override automake generated variable)
+# base name of distribution (override automake generated variable to make source distribution!)
 distdir		  = $(PACKAGE)-$(VERSION)-src
 PUBLISH_FILE      = $(distdir).tar.gz
 PUBLISH_RPM	  = $(PACKAGE)-$(VERSION)-1.i386.rpm
-
-# more files to publish (on server)
-EXTRA_PUBLISH     = README COPYING AUTHORS INSTALL ChangeLog #  doc
-
 
 # make a binary rpm (experimental)
 rpm:		$(rpmdir) sdif.spec dist
@@ -132,6 +132,17 @@ rpmdir = /tmp/$(USER)-rpm
 $(rpmdir):
 		cp -rf /usr/src/redhat/ $@
 
+
+#
+# PUBLISH (on server)
+#
+
+# use this to check if the distribution works, tag the cvs project, 
+# make a source distribution and rpm, and copy it to the web server
+publish:	distcheck cvstag dist rpm publish-ftp
+
+# more files to publish (on server)
+EXTRA_PUBLISH     = README COPYING AUTHORS INSTALL ChangeLog #  doc
 
 # call this as "make PUBLISH_HOST=yourwebhost publish" to publish a new version
 # this might work differently for other places
