@@ -23,7 +23,9 @@
  * The EASDIF library provides an Easy Api for IRCAMs SDIF library. 
  *
  */
-#include "sdifinit.h"
+
+#include "easdif/easdif_config.h"
+#include "easdif/sdifinit.h"
 
 namespace Easdif {
 

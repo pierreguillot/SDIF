@@ -32,9 +32,13 @@
  * 
  * 
  * 
- * $Id: sdifnamevaluetable.cpp,v 1.3 2003-04-29 15:41:30 schwarz Exp $ 
+ * $Id: sdifnamevaluetable.cpp,v 1.4 2003-05-19 13:59:11 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.3  2003/04/29 15:41:30  schwarz
+ * Changed all names View* to Print* and *Info to *Header for consistency
+ * with SDIF library.
+ *
  * Revision 1.2  2003/04/06 16:31:08  roebel
  * Added license info
  *
@@ -66,6 +70,8 @@
  */
 
 #include <iostream>
+
+#include "easdif/easdif_config.h"
 #include "easdif/sdifnamevaluetable.h"
 
 namespace Easdif {

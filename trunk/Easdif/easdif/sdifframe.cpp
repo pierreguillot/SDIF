@@ -32,9 +32,14 @@
  * 
  * 
  * 
- * $Id: sdifframe.cpp,v 1.5 2003-05-18 21:08:37 roebel Exp $ 
+ * $Id: sdifframe.cpp,v 1.6 2003-05-19 14:00:20 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.5  2003/05/18 21:08:37  roebel
+ * Added appropriate const methods.
+ * For proper swig access GetMatrixWithSignature does no longer take
+ * a reference as argument.
+ *
  * Revision 1.4  2003/04/29 15:41:30  schwarz
  * Changed all names View* to Print* and *Info to *Header for consistency
  * with SDIF library.
@@ -75,6 +80,7 @@
  * 
  */
 
+#include "easdif/easdif_config.h"
 #include "easdif/sdifframe.h"
 #include "easdif/sdifentity.h"
 
