@@ -1,4 +1,4 @@
-/* $Id: sdifextract.c,v 1.6 2001-05-04 11:32:40 lambert Exp $
+/* $Id: sdifextract.c,v 1.7 2001-07-02 15:31:16 lambert Exp $
  
                 Copyright (c) 1998 by IRCAM - Centre Pompidou
                            All rights reserved.
@@ -13,6 +13,15 @@
    Extract data from an SDIF-file.  
    
    $Log: not supported by cvs2svn $
+   Revision 1.6  2001/05/04 11:32:40  lambert
+   Little modifications for Win32:
+     - <io.h> included for this platform.
+     - <get> define renamed to <hard_defined_get>.
+     - <maxintsel> defined to 32768 (overflow on Windows NT with the old value,
+       65536).
+
+   => TODO: get rid of theses defines.
+
    Revision 1.5  2001/02/08 15:26:56  tisseran
    Add a test on memory allocation in SdifStringNew (call perror if malloc return a NULL pointer).
    Note on sdifextract.c:
@@ -173,7 +182,7 @@ void usage (char *msg, char *arg, int longhelp)
     }
     if (longhelp)
     {
-    	fprintf (SdifStdErr, "\n" PROG "version $Revision: 1.6 $\n\n");
+    	fprintf (SdifStdErr, "\n" PROG "version $Revision: 1.7 $\n\n");
     
     	if (types)
     	{
@@ -322,6 +331,7 @@ outsdif (OutAction what, double data)
 	    save = *out;
 	    out->NameValues       = in->NameValues;
 	    out->MatrixTypesTable = in->MatrixTypesTable;
+	    out->FrameTypesTable  = in->FrameTypesTable; 
 	    out->StreamIDsTable   = in->StreamIDsTable;
 
 	    /* write header information.  
