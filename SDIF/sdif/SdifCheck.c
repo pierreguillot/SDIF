@@ -1,4 +1,4 @@
-/* $Id: SdifCheck.c,v 3.2 2000-05-15 16:22:02 schwarz Exp $
+/* $Id: SdifCheck.c,v 3.2.2.1 2000-08-21 18:48:44 tisseran Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -13,6 +13,15 @@
  * File test functions.
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.2  2000/05/15  16:22:02  schwarz
+ * Changed prototypes of existing functions (we apologize for the inconvenience)
+ * SdifFCurrFrameIsSelected and SdifFCurrMatrixIsSelected.
+ * They now take only an SdifFileT as parameter, no longer a selection.
+ * If you don't want to test the file selection (automatically
+ * parsed from the filename), use these new functions like this:
+ * SdifFrameIsSelected  (file->CurrFramH, myselection) and
+ * SdifMatrixIsSelected (file->CurrMtrxH, myselection).
+ *
  * Revision 3.1  2000/05/04  14:59:34  schwarz
  * Added modules SdifCheck and SdifSignatureTab, containing functions
  * formerly in SdifFile.
@@ -110,7 +119,7 @@ SdifCheckNextFrame (/*in*/  SdifFileT *in, const SdifSignatureTabT *frames,
 	}
 	
 	/* Skip frame and read next sig in any case */
-	SdifSkipFrameData (in);
+	SdifFSkipFrameData (in);
 	SdifFGetSignature (in, &bytesread);
     }   /* end while frames */
     if (index)	*index = ret;
