@@ -10,7 +10,7 @@
 # even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 # PARTICULAR PURPOSE.
 
-# $Id: Makefile.in,v 1.19 2000-12-20 15:57:14 roebel Exp $
+# $Id: Makefile.in,v 1.20 2001-04-20 14:04:07 tisseran Exp $
 #
 # ./sdif/Makefile.am		September 2000			Patrice Tisserand
 #
@@ -149,12 +149,12 @@ lib_LIBRARIES = @SELLIB@
 FORMES_H = host_architecture.h preincluded.h UniversalEnvVar.h  XpGuiCalls.h
 FORMES_INCLUDE = /u/formes/share/include
 
-SDIF_H = $(top_srcdir)/include/sdif.h 	SdifCheck.h 	SdifErrMess.h	SdifConvToText.h 		SdifError.h 	SdifFGet.h 	SdifFPrint.h 			SdifFPut.h 	SdifFRead.h	SdifFScan.h 			SdifFWrite.h 	SdifFile.h	SdifTimePosition.h 		SdifFrame.h 	SdifFrameType.h SdifGlobals.h 			SdifHard_OS.h 	SdifHash.h	SdifHighLevel.h 		SdifList.h 	SdifMatrix.h 	SdifMatrixType.h		SdifMemory.h	SdifNameValue.h	SdifPreTypes.h 			SdifPrint.h 	SdifSelect.h	SdifRWLowLevel.h		SdifStreamID.h	SdifString.h 	SdifSignatureTab.h		SdifTest.h 	SdifTextConv.h 					$(top_srcdir)/sdif/SdifVersion.h project_preinclude.h config.h
+SDIF_H = $(top_srcdir)/include/sdif.h 	SdifCheck.h 	SdifErrMess.h	SdifConvToText.h 		SdifError.h 	SdifFGet.h 	SdifFPrint.h 			SdifFPut.h 	SdifFRead.h	SdifFScan.h 			SdifFWrite.h 	SdifFile.h	SdifTimePosition.h 		SdifFrame.h 	SdifFrameType.h SdifGlobals.h 			SdifHard_OS.h 	SdifHash.h	SdifHighLevel.h 		SdifList.h 	SdifMatrix.h 	SdifMatrixType.h		SdifMemory.h	SdifNameValue.h	SdifPreTypes.h 			SdifPrint.h 	SdifSelect.h	SdifRWLowLevel.h		SdifStreamID.h	SdifString.h 	SdifSignatureTab.h		SdifTest.h 	SdifTextConv.h 	SdifFSelect.h			sdiftypes.h							$(top_srcdir)/sdif/SdifVersion.h project_preinclude.h config.h
 
 
 noinst_HEADERS = $(SDIF_H) $(addprefix $(top_srcdir)/sdif/,${FORMES_H})
 
-libsdif_a_SOURCES = SdifHash.c       SdifGlobals.c      SdifSignatureTab.c   		     SdifMemory.c     SdifNameValue.c    SdifMatrixType.c     		     SdifStreamID.c   SdifMatrix.c       SdifFrame.c          		     SdifTest.c       SdifTimePosition.c SdifFile.c           		     SdifFGet.c       SdifFRead.c        SdifFScan.c          		     SdifFPrint.c     SdifFWrite.c       SdifTextConv.c       		     SdifHard_OS.c    SdifErrMess.c      SdifList.c           		     SdifSelect.c     SdifHighLevel.c    SdifCheck.c          		     SdifString.c     SdifError.c        SdifFrameType.c      		     SdifPrint.c      SdifRWLowLevel.c   SdifFPut.c           		     SdifConvToText.c SdifPreTypes.c    
+libsdif_a_SOURCES = SdifHash.c       SdifGlobals.c      SdifSignatureTab.c   		     SdifMemory.c     SdifNameValue.c    SdifMatrixType.c     		     SdifStreamID.c   SdifMatrix.c       SdifFrame.c          		     SdifTest.c       SdifTimePosition.c SdifFile.c           		     SdifFGet.c       SdifFRead.c        SdifFScan.c          		     SdifFPrint.c     SdifFWrite.c       SdifTextConv.c       		     SdifHard_OS.c    SdifErrMess.c      SdifList.c           		     SdifSelect.c     SdifHighLevel.c    SdifCheck.c          		     SdifString.c     SdifError.c        SdifFrameType.c      		     SdifPrint.c      SdifRWLowLevel.c   SdifFPut.c           		     SdifConvToText.c SdifPreTypes.c     SdifFSelect.c
 
 
 libsdif_debug_a_SOURCES = $(libsdif_a_SOURCES)
@@ -181,7 +181,8 @@ SdifMatrix.o SdifFrame.o SdifTest.o SdifTimePosition.o SdifFile.o \
 SdifFGet.o SdifFRead.o SdifFScan.o SdifFPrint.o SdifFWrite.o \
 SdifTextConv.o SdifHard_OS.o SdifErrMess.o SdifList.o SdifSelect.o \
 SdifHighLevel.o SdifCheck.o SdifString.o SdifError.o SdifFrameType.o \
-SdifPrint.o SdifRWLowLevel.o SdifFPut.o SdifConvToText.o SdifPreTypes.o
+SdifPrint.o SdifRWLowLevel.o SdifFPut.o SdifConvToText.o SdifPreTypes.o \
+SdifFSelect.o
 libsdif_debug_a_LIBADD = 
 libsdif_debug_a_OBJECTS =  SdifHash.o SdifGlobals.o SdifSignatureTab.o \
 SdifMemory.o SdifNameValue.o SdifMatrixType.o SdifStreamID.o \
@@ -189,7 +190,8 @@ SdifMatrix.o SdifFrame.o SdifTest.o SdifTimePosition.o SdifFile.o \
 SdifFGet.o SdifFRead.o SdifFScan.o SdifFPrint.o SdifFWrite.o \
 SdifTextConv.o SdifHard_OS.o SdifErrMess.o SdifList.o SdifSelect.o \
 SdifHighLevel.o SdifCheck.o SdifString.o SdifError.o SdifFrameType.o \
-SdifPrint.o SdifRWLowLevel.o SdifFPut.o SdifConvToText.o SdifPreTypes.o
+SdifPrint.o SdifRWLowLevel.o SdifFPut.o SdifConvToText.o SdifPreTypes.o \
+SdifFSelect.o
 AR = ar
 CFLAGS = @CFLAGS@
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
@@ -207,14 +209,14 @@ GZIP_ENV = --best
 DEP_FILES =  .deps/SdifCheck.P .deps/SdifConvToText.P \
 .deps/SdifErrMess.P .deps/SdifError.P .deps/SdifFGet.P \
 .deps/SdifFPrint.P .deps/SdifFPut.P .deps/SdifFRead.P .deps/SdifFScan.P \
-.deps/SdifFWrite.P .deps/SdifFile.P .deps/SdifFrame.P \
-.deps/SdifFrameType.P .deps/SdifGlobals.P .deps/SdifHard_OS.P \
-.deps/SdifHash.P .deps/SdifHighLevel.P .deps/SdifList.P \
-.deps/SdifMatrix.P .deps/SdifMatrixType.P .deps/SdifMemory.P \
-.deps/SdifNameValue.P .deps/SdifPreTypes.P .deps/SdifPrint.P \
-.deps/SdifRWLowLevel.P .deps/SdifSelect.P .deps/SdifSignatureTab.P \
-.deps/SdifStreamID.P .deps/SdifString.P .deps/SdifTest.P \
-.deps/SdifTextConv.P .deps/SdifTimePosition.P
+.deps/SdifFSelect.P .deps/SdifFWrite.P .deps/SdifFile.P \
+.deps/SdifFrame.P .deps/SdifFrameType.P .deps/SdifGlobals.P \
+.deps/SdifHard_OS.P .deps/SdifHash.P .deps/SdifHighLevel.P \
+.deps/SdifList.P .deps/SdifMatrix.P .deps/SdifMatrixType.P \
+.deps/SdifMemory.P .deps/SdifNameValue.P .deps/SdifPreTypes.P \
+.deps/SdifPrint.P .deps/SdifRWLowLevel.P .deps/SdifSelect.P \
+.deps/SdifSignatureTab.P .deps/SdifStreamID.P .deps/SdifString.P \
+.deps/SdifTest.P .deps/SdifTextConv.P .deps/SdifTimePosition.P
 SOURCES = $(libsdif_a_SOURCES) $(libsdif_debug_a_SOURCES)
 OBJECTS = $(libsdif_a_OBJECTS) $(libsdif_debug_a_OBJECTS)
 

@@ -1,5 +1,5 @@
 dnl -*-m4-*- (He emacs, it's a m4 file)
-dnl $Id: configure.in,v 1.10 2000-12-20 15:57:11 roebel Exp $
+dnl $Id: configure.in,v 1.11 2001-04-20 14:04:04 tisseran Exp $
 dnl
 dnl configure.in		September 2000		Patrice Tisserand
 dnl
@@ -30,6 +30,9 @@ dnl For any information regarding this and other IRCAM software, please
 dnl send email to:  sdif@ircam.fr
 dnl
 dnl $Log: not supported by cvs2svn $
+dnl Revision 1.10  2000/12/20 15:57:11  roebel
+dnl Changed Version to 3.2.2. Added missing test files to distribution
+dnl
 dnl Revision 1.9  2000/11/21 16:34:45  roebel
 dnl New SdifSignatureConst builds integer signature according to
 dnl endianess of machine. Multicharacter constants are no longer
@@ -71,7 +74,7 @@ dnl ############################################################
 dnl PACKAGE NAME AND VERSION
 AC_MSG_RESULT(PACKAGE NAME AND VERSION)
 PACKAGE=SDIF
-VERSION=3.2.2
+VERSION=3.3
 AC_SUBST(PACKAGE)
 AC_SUBST(VERSION)
 AM_INIT_AUTOMAKE($PACKAGE,$VERSION)

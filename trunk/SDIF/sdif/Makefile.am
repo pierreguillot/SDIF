@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.12 2000-12-07 13:42:21 roebel Exp $
+# $Id: Makefile.am,v 1.13 2001-04-20 14:04:07 tisseran Exp $
 #
 # ./sdif/Makefile.am		September 2000			Patrice Tisserand
 #
@@ -29,6 +29,9 @@
 # send email to:  sdif@ircam.fr
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.12  2000/12/07 13:42:21  roebel
+# small reorganization of sdif/Makefile.am
+#
 # Revision 1.11  2000/12/06 15:01:14  roebel
 # removed host_configure.h from makefiles
 #
@@ -87,7 +90,7 @@ SDIF_H = $(top_srcdir)/include/sdif.h \
 	SdifMemory.h	SdifNameValue.h	SdifPreTypes.h 		\
 	SdifPrint.h 	SdifSelect.h	SdifRWLowLevel.h	\
 	SdifStreamID.h	SdifString.h 	SdifSignatureTab.h	\
-	SdifTest.h 	SdifTextConv.h 				\
+	SdifTest.h 	SdifTextConv.h 	sdiftypes.h		\
 	$(top_srcdir)/sdif/SdifVersion.h project_preinclude.h config.h
 
 noinst_HEADERS = $(SDIF_H) $(addprefix $(top_srcdir)/sdif/,${FORMES_H})
@@ -102,7 +105,7 @@ libsdif_a_SOURCES =  SdifHash.c       SdifGlobals.c      SdifSignatureTab.c   \
 		     SdifSelect.c     SdifHighLevel.c    SdifCheck.c          \
 		     SdifString.c     SdifError.c        SdifFrameType.c      \
 		     SdifPrint.c      SdifRWLowLevel.c   SdifFPut.c           \
-		     SdifConvToText.c SdifPreTypes.c    
+		     SdifConvToText.c SdifPreTypes.c
 
 libsdif_debug_a_SOURCES = $(libsdif_a_SOURCES)
 
