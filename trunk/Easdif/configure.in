@@ -1,12 +1,48 @@
 dnl -*-autoconf-*-  (No, it's an autoconf file!)
 dnl -*-m4-*- (He emacs, it's a m4 file)
-dnl $Id: configure.in,v 1.8 2003-04-03 13:35:21 schwarz Exp $
+dnl $Id: configure.in,v 1.9 2003-04-06 16:43:30 roebel Exp $
 dnl
 dnl configure.in		Feb 2003      Axel Roebel
 dnl
 dnl Source file for GNU autoconf, generates configure script.
 dnl
+dnl
+dnl This file is part of the IRCAM EASDIF Library (http://www.ircam.fr/sdif)
+dnl
+dnl Copyright (C) 2002-2003 by IRCAM-Centre Georges Pompidou, Paris, France.
+dnl
+dnl This program is free software; you can redistribute it and/or
+dnl modify it under the terms of the GNU Lesser General Public License
+dnl as published by the Free Software Foundation; either version 2
+dnl of the License, or (at your option) any later version.
+dnl
+dnl See file COPYING for further informations on licensing terms.
+dnl
+dnl This program is distributed in the hope that it will be useful,
+dnl but WITHOUT ANY WARRANTY; without even the implied warranty of
+dnl MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+dnl GNU Lesser General Public License for more details.
+dnl
+dnl You should have received a copy of the GNU Lesser General Public License
+dnl along with this program; if not, write to the Free Software
+dnl Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+dnl
+dnl
+dnl The EASDIF library provides an Easy Api for IRCAMs SDIF library. 
+dnl
+dnl
+
 dnl $Log: not supported by cvs2svn $
+dnl Revision 1.8  2003/04/03 13:35:21  schwarz
+dnl Version number set in configure.in, generates Doxyfile with correct number.
+dnl Version numbering scheme with 3 fields:
+dnl - first  number: major version, only gigantic changes
+dnl - second number: minor version, records changes in API
+dnl 		 (added/removed functions, changed prototypes)
+dnl - third  number: release number, for intermediate releases,
+dnl 		 bug fixes, etc. that don't change the API
+dnl
+
 
 
 dnl To check if directory is present
@@ -43,17 +79,10 @@ AC_PROG_INSTALL
 AC_PROG_RANLIB
 
 dnl Check for libtool
-dnl disable shared libraries on darwin
-dnl they do not work there
+dnl disable shared libraries by default because they do
+dnl not work reliably on MacOSX darwin
 
-AC_CHECK_PROG(uname_available, uname, yes,no)
-if test "$uname_available" = "yes" ;then
-   AC_MSG_CHECKING(Check for MacOSX Darwin)
-   if test `uname -s` = Darwin ;then
-      AC_MSG_RESULT(yes)
-      AC_DISABLE_SHARED	
-   fi
-fi
+AC_DISABLE_SHARED	
 AC_PROG_LIBTOOL
 
 dnl Configure SDIF
@@ -92,9 +121,6 @@ dnl find SDIF objects that have to be included into Easdif
 AC_MSG_RESULT(FIND SDIF FILES)
 AC_SUBST(SDIFCPPLIB)
 SDIFCPPLIB=../SDIF/sdifcpp/libsdif-cpp.la
-#for ss in SDIF/sdif/*.c ; do
-#    SDIFOBJECTS="$SDIFOBJECTS ../SDIF/sdifcpp/`basename $ss .c`.lo"
-#done
 
 dnl ############################################################
 dnl CREATE OUTPUT FILES
