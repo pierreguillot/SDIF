@@ -10,7 +10,7 @@
 # even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 # PARTICULAR PURPOSE.
 
-# $Id: Makefile.in,v 1.8 2000-10-31 10:56:54 roebel Exp $
+# $Id: Makefile.in,v 1.9 2000-10-31 10:58:37 roebel Exp $
 #
 # ./doc/extern/Makefile.am		September 2000			Patrice Tisserand
 #
