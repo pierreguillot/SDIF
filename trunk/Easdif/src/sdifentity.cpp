@@ -7,9 +7,12 @@
  * 
  * 
  * 
- * $Id: sdifentity.cpp,v 1.3 2002-08-28 16:46:53 roebel Exp $ 
+ * $Id: sdifentity.cpp,v 1.4 2002-10-03 11:26:56 tisseran Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.3  2002/08/28 16:46:53  roebel
+ * Internal reorganization and name changes.
+ *
  * Revision 1.2  2002/07/12 10:34:08  ftissera
  * *** empty log message ***
  *
@@ -35,7 +38,7 @@
 //  SdifSetErrorFunc(ExceptionThrower);
 //}
 
-SDIFEntity::SDIFEntity(): mSize(0), mEof(0), mNbNVT(0), 
+SDIFEntity::SDIFEntity(): efile(0), mSize(0), mEof(0), mNbNVT(0), 
     mOpen(0), generalHeader(0), asciiChunks(0), bytesread(0)
 {
     mDescription = SdifStringNew();
@@ -215,7 +218,11 @@ SDIFNameValueTable& SDIFEntity::GetNVT(unsigned int i)
 
 int SDIFEntity::Close()
 {
-    SdifFClose(efile);
+    if (0 != efile)
+    {
+	SdifFClose(efile);
+	efile = 0;
+    }
     return 1;
 }
 

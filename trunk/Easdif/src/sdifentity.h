@@ -7,9 +7,12 @@
  * 
  * 
  * 
- * $Id: sdifentity.h,v 1.3 2002-08-28 16:46:53 roebel Exp $ 
+ * $Id: sdifentity.h,v 1.4 2002-10-03 11:26:56 tisseran Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.3  2002/08/28 16:46:53  roebel
+ * Internal reorganization and name changes.
+ *
  * Revision 1.2  2002/07/12 10:33:56  ftissera
  * *** empty log message ***
  *
@@ -76,7 +79,11 @@ public:
     ~SDIFEntity()
 	{
 	    SdifStringFree(mDescription);
-	    SdifFClose(efile);
+	    if (0 != efile)
+	    {
+		SdifFClose(efile);
+		efile = 0;
+	    }
 	};
 
 
