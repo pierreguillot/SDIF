@@ -4,6 +4,13 @@ if [ ! -d $SYS ]; then
 mkdir $SYS
 fi
 
+if [ `hostname` = "bonang" ];then
+CC=/usr/local/bin/gcc
+export CC
+fi
+
+
+
 INSTALL="`pwd`/install-sh -c"
 export INSTALL 
 
