@@ -74,6 +74,102 @@ LIB32=link.exe -lib
 
 # Name "Sdif - Win32 Release"
 # Name "Sdif - Win32 Debug"
+# Begin Group "doc"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=.\doc\index.html
+# End Source File
+# Begin Source File
+
+SOURCE=.\doc\indexManuel.html
+# End Source File
+# Begin Source File
+
+SOURCE=.\doc\indexNorm.html
+# End Source File
+# Begin Source File
+
+SOURCE=.\doc\indexProg.html
+# End Source File
+# Begin Source File
+
+SOURCE=.\doc\Patch.html
+# End Source File
+# Begin Source File
+
+SOURCE=.\doc\SdifManuelBar.html
+# End Source File
+# Begin Source File
+
+SOURCE=.\doc\SdifManuelDoc.html
+# End Source File
+# Begin Source File
+
+SOURCE=.\doc\SdifNormBar.html
+# End Source File
+# Begin Source File
+
+SOURCE=.\doc\SdifNormDoc.html
+# End Source File
+# Begin Source File
+
+SOURCE=.\doc\SdifNormDocFr.html
+# End Source File
+# Begin Source File
+
+SOURCE=.\doc\SdifProgBar.html
+# End Source File
+# Begin Source File
+
+SOURCE=.\doc\SdifProgDoc.html
+# End Source File
+# End Group
+# Begin Group "predefined types"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=.\sdif\SdifTypes.STYP
+# End Source File
+# End Group
+# Begin Group "Unix Makefiles"
+
+# PROP Default_Filter ""
+# Begin Group "sdif"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=.\sdif\Makefile
+# End Source File
+# Begin Source File
+
+SOURCE=.\sdif\Makefile.headers
+# End Source File
+# Begin Source File
+
+SOURCE=.\sdif\Makefile.src
+# End Source File
+# End Group
+# Begin Source File
+
+SOURCE=.\Makefile
+# End Source File
+# Begin Source File
+
+SOURCE=.\Makefile.postamble
+# End Source File
+# Begin Source File
+
+SOURCE=.\Makefile.preamble
+# End Source File
+# Begin Source File
+
+SOURCE=.\Readme
+# End Source File
+# End Group
 # Begin Source File
 
 SOURCE=.\sdif\sdif.h
