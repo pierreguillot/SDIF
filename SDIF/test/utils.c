@@ -34,9 +34,13 @@ int writeFrameHeader(SdifFileT *fileToWrite)
 int readFileHeader(SdifFileT *fileToRead)
 {
   size_t nbBytesRead = 0;
-  fprintf(stderr,"Read General Header (SdifFReadGeneralHeader) \n");
+
+  fprintf(stderr, "Read General Header (SdifFReadGeneralHeader) --> ");
   nbBytesRead += SdifFReadGeneralHeader(fileToRead);
-  fprintf(stderr,"Number of bytes read: %d\n",nbBytesRead);
+  fprintf(stderr, "%s\nNumber of bytes read: %d\n", 
+	  SdifSignatureToString(fileToRead->CurrSignature), 
+	  nbBytesRead);
+
   return nbBytesRead;
 }
 

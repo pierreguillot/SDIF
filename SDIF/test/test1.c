@@ -31,6 +31,7 @@ main(void)
   fprintf(stderr,"***             Output File: %s           ***\n",FILE_NAME);
   fprintf(stderr,"**********************************************************\n");
   
+  /* init */
   fprintf(stderr,"\nLibrary Initialisation (SdifGenInit)\n");
   if (!types)
   {
@@ -41,7 +42,8 @@ main(void)
   {
       SdifGenInit (types);
   }
-  
+
+  /* write */
   fprintf(stderr,"\nWRITE SEQUENCE\n");
   fprintf(stderr,"Open file %s in write mode (SdifFOpen) \n",FILE_NAME);
   MySdifFileToWrite = SdifFOpen(FILE_NAME,eWriteFile);
@@ -50,8 +52,9 @@ main(void)
   
   fprintf(stderr,"Close File (SdifFClose) \n");
   SdifFClose(MySdifFileToWrite);
-  fprintf(stderr,"\nREAD SEQUENCE \n");
 
+  /* read */
+  fprintf(stderr,"\nREAD SEQUENCE \n");
   fprintf(stderr,"Open file %s in read mode (SdifFOpen)\n",FILE_NAME);
   MySdifFileToRead = SdifFOpen(FILE_NAME,eReadFile);
 
@@ -60,6 +63,7 @@ main(void)
   fprintf(stderr,"Close File (SdifFClose)\n");
   SdifFClose(MySdifFileToRead);
 
+  /* check */
   fprintf(stderr,"\nCHECK DIFFERENCIES: ");
   if (bytesWritten == bytesRead)
     fprintf(stderr,"NUMBER OF BYTES WRITTEN AND READ ARE THE SAME\n");
@@ -71,12 +75,12 @@ main(void)
       return 1;
     }
 
+  /* deinit */
   fprintf(stderr,"Librairy Deinitialisation\n");
   SdifGenKill();
 
   fprintf(stderr,"\n");
   return 0;
-  
 }
 
   
