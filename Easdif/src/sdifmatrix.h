@@ -8,9 +8,12 @@
  * 
  * 
  * 
- * $Id: sdifmatrix.h,v 1.1.1.1 2002-04-11 16:13:31 ftissera Exp $ 
+ * $Id: sdifmatrix.h,v 1.2 2002-06-18 14:48:30 ftissera Exp $ 
  * 
- * $Log: not supported by cvs2svn $ 
+ * $Log: not supported by cvs2svn $
+ * Revision 1.1.1.1  2002/04/11 16:13:31  ftissera
+ * Project for new SDIF API	
+ * 
  * 
  */
 
@@ -24,19 +27,19 @@
 #include "sdifmatrixdatainterface.h"
 #include "sdifmatrixdata.h"
 
+
 class SDIFMatrix
 {
 private:
-    std::string m_Signature;    
     SdifMatrixDataInterface* mInter;
 
     int bytesread;
+    std::string m_Signature;
     SdifSignature mSig;
     SdifDataTypeET mType;
 
 public:
     SDIFMatrix();
-
     SDIFMatrix(const SDIFMatrix& aMatrix);
 
     ~SDIFMatrix(){
@@ -55,6 +58,11 @@ public:
     int GetSize() const;
     int GetNbRows();
     int GetNbCols();
+
+    /* adding for selection */
+    SdifSignature GetSignature();
+    std::string GetStringSignature();
+    SdifDataTypeET GetType();
 
     int GetInt(int i, int j);
     float GetFloat(int i, int j);
