@@ -14,6 +14,13 @@ function testrw (i)	% i = intrusion of other data
     end
     
     fprintf (1, '\nfinished, %d of %d tests passed\n\n', passed, length(i));
+
+    % for indicating an error 
+    if(passed < length(i))
+      tt = 1;
+      save error.found tt;
+    end
+    
 return
 
 
