@@ -32,9 +32,15 @@
  * 
  * 
  * 
- * $Id: sdifentity.cpp,v 1.3 2003-04-18 16:44:00 schwarz Exp $ 
+ * $Id: sdifentity.cpp,v 1.4 2003-04-18 17:43:22 schwarz Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.3  2003/04/18 16:44:00  schwarz
+ * Small changes to make easdif swiggable:
+ * - name change for swig-generated classes
+ * - eof() returns bool, not bool&
+ * - Matrix::Set takes int/float, not int&/float&
+ *
  * Revision 1.2  2003/04/06 16:31:08  roebel
  * Added license info
  *
@@ -304,9 +310,11 @@ SdifErrorT* SDIFEntity::LastError()
 }
 
 
-bool SDIFEntity::eof() {
+bool SDIFEntity::eof() const 
+{
     return mEof;
 }
+
 
 int SDIFEntity::ReadNextFrame(SDIFFrame& frame)
 {
