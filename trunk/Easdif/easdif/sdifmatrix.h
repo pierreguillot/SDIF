@@ -33,9 +33,12 @@
  * 
  * 
  * 
- * $Id: sdifmatrix.h,v 1.11 2003-07-07 10:29:46 roebel Exp $ 
+ * $Id: sdifmatrix.h,v 1.12 2003-07-10 16:14:03 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.11  2003/07/07 10:29:46  roebel
+ * Added support for eInt1 and eUInt1 data types, resize of matrix now reinitializes all elements to 0
+ *
  * Revision 1.10  2003/06/09 21:13:36  schwarz
  * Implemented Set(const std::string& str), redoes
  * Init(mSig, str.length(), 1, eText) and sets data.
@@ -142,17 +145,73 @@ private:
   SdifFileT * mFile;
 
 public:
+  /**
+   * \defgroup create SDIFMatrix - Construction
+   */
+
+  /** 
+   * \ingroup create
+   * \brief default constructor
+   * 
+   * Constructs matrix without allocating memory. However, the type
+   * for internal data representation is fixed.
+   *
+   * @param _type data type for internal representation
+   *  defaults to: eFloat <br>
+   *  supported types: eChar, eInt2, eUInt2, eInt4, eUInt4, eFloat4 , eFloat8.<br>
+   *  type extensions: eInt1, eUInt1.<br> Attention the types eInt1 and eUInt1
+   *  are not yet
+   *  in the sdif standard and if you use them only the IRCAM sdif library will
+   *  be able to read your data.
+   */
     SDIFMatrix(const SdifDataTypeET _type=eFloat4);
     SDIFMatrix(const SDIFMatrix& aMatrix);
 
-    // constructor with space initialisation, default singleton float matrix
+
+  /** 
+   * \ingroup create
+   * \brief constructor that allocates internal memory
+   * 
+   * Constructs matrix with given signature
+   * to hold given number of rows and columns. The type
+   * for internal data representation is fixed.
+   *
+   * \param sig     Matrix signature
+   * \param nrows   number of rows allocated
+   * \param ncols   number of cols allocated
+   * \param type data type for internal representation
+   *  defaults to: eFloat <br>
+   *  supported types: eChar, eInt2, eUInt2, eInt4, eUInt4, eFloat4 , eFloat8.<br>
+   *  type extensions: eInt1, eUInt1.<br> Attention the types eInt1 and eUInt1
+   *  are not yet
+   *  in the sdif standard and if you use them only the IRCAM sdif library will
+   *  be able to read your data.
+   */
     SDIFMatrix(SdifSignature sig, int nrows = 1, int ncols = 1, 
 	       SdifDataTypeET type = eFloat4)
     {
       Init(sig, nrows, ncols, type);
     }
 
-    // constructor with space initialisation, default singleton float matrix
+  /** 
+   * \ingroup create
+   * \brief constructor that allocates internal memory
+   * 
+   * Constructs matrix with given signature
+   * to hold given number of rows and columns. The type
+   * for internal data representation is fixed.
+   *
+   * \param sig     4 element string specifying Matrix signature
+   * \param nrows   number of rows allocated
+   * \param ncols   number of cols allocated
+   * \param type data type for internal representation
+   *  defaults to: eFloat <br>
+   *  supported types: eChar, eInt2, eUInt2, eInt4, eUInt4, eFloat4 , eFloat8.<br>
+   *  type extensions: eInt1, eUInt1.<br> Attention the types eInt1 and eUInt1
+   *  are not yet
+   *  in the sdif standard and if you use them only the IRCAM sdif library will
+   *  be able to read your data.
+   */
     SDIFMatrix(std::string& sig, int nrows = 1, int ncols = 1, 
 	       SdifDataTypeET type = eFloat4)
     {
@@ -176,7 +235,7 @@ public:
 
 /** 
  * \ingroup print
- * to see the matrix
+ * print matrix values
  */
     void Print();
 
