@@ -1,3 +1,8 @@
+2003-06-24  Axel Roebel  <Axel.Roebel@ircam.fr>
+
+	* sdif/SdifConvToText.c, sdif/SdifFile.c, sdif/SdifTextConv.c
+	removed unnecessary include of UniversalEnvVar.h
+
 2003-06-13  Diemo Schwarz  <schwarz@ligeti.ircam.fr>
 
 	Library version is 3.8.0-beta until we decide to announce the
@@ -198,4 +203,4 @@ Version 3.3:
 	  Operating System.
 
 	
-$Id: ChangeLog,v 1.22 2003-06-13 10:09:14 schwarz Exp $
+$Id: ChangeLog,v 1.23 2003-06-24 16:55:40 roebel Exp $
