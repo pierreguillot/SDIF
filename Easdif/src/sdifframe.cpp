@@ -7,13 +7,17 @@
  * 
  * 
  * 
- * $Id: sdifframe.cpp,v 1.2 2002-05-17 20:20:56 ftissera Exp $ 
+ * $Id: sdifframe.cpp,v 1.3 2002-06-18 14:50:19 ftissera Exp $ 
  * 
- * $Log: not supported by cvs2svn $ 
+ * $Log: not supported by cvs2svn $
+ * Revision 1.2  2002/05/17 20:20:56  ftissera
+ * Add doxygen header
+ * 
  * 
  */
 
 #include "sdifframe.h"
+#include "sdifentity.h"
 
 /* for the frame selection */
 int SDIFFrame::Selected()
@@ -29,16 +33,35 @@ void SDIFFrame::Read(SdifFileT* file)
     ReadData(file);    
 }
 
-void SDIFFrame::ReadData(SdifFileT* file)
+/* for reading with SDIFEntity */
+void SDIFFrame::Read(const SDIFEntity& entity)
 {
-    for (int m = 0; m < mNbMatrix; m++)
-	mBytesRead += mv_Matrix[m].Read(file);
+    SdifFileT* file = entity.GetFile();
+    ReadInfo(file);   
+    Resize(file);
+    ReadData(file);    
 }
 
+/* reading the data */
+void SDIFFrame::ReadData(SdifFileT* file)
+{
+    for (mIndex = 0; mIndex < mNbMatrix; mIndex++)
+	mFrameBytesRead += mv_Matrix[mIndex].Read(file);
+}
+
+/* reading the data with SDIFEntity*/
+void SDIFFrame::ReadData(const SDIFEntity& entity)
+{
+    SdifFileT* file = entity.GetFile();
+    for (mIndex = 0; mIndex < mNbMatrix; mIndex++)
+	mFrameBytesRead += mv_Matrix[mIndex].Read(file);
+}
+
+/* reading the informations */
 void SDIFFrame::ReadInfo(SdifFileT* file)
 {
-    mBytesRead = 0;
-    mBytesRead += SdifFReadFrameHeader(file);
+    mFrameBytesRead = 0;
+    mFrameBytesRead += SdifFReadFrameHeader(file);
     
     mTime    = SdifFCurrTime(file);
     mSig      = SdifFCurrFrameSignature(file);
@@ -46,35 +69,67 @@ void SDIFFrame::ReadInfo(SdifFileT* file)
     mNbMatrix  = SdifFCurrNbMatrix(file);
 }
 
+
+/* reading the informations with SDIFEntity */
+void SDIFFrame::ReadInfo(const SDIFEntity& entity)
+{
+    SdifFileT* file = entity.GetFile();
+    mFrameBytesRead = 0;
+    mFrameBytesRead += SdifFReadFrameHeader(file);
+    
+    mTime    = SdifFCurrTime(file);
+    mSig      = SdifFCurrFrameSignature(file);
+    mStreamID = SdifFCurrID(file);
+    mNbMatrix  = SdifFCurrNbMatrix(file);
+}
+
+
 /* for writing */
 void SDIFFrame::Write(SdifFileT* file)
 {       
     WriteInfo(file);
-    for (int m = 0; m < mNbMatrix; m++)	    
-	mv_Matrix[m].Write(file);      
+    for (mIndex = 0; mIndex < mNbMatrix; mIndex++)	    
+	mv_Matrix[mIndex].Write(file);      
 }
 
+/* for writing with SDIFEntity */
+void SDIFFrame::Write(const SDIFEntity& entity)
+{       
+    SdifFileT* file = entity.GetFile();
+    WriteInfo(file);
+    for (mIndex = 0; mIndex < mNbMatrix; mIndex++)	    
+	mv_Matrix[mIndex].Write(file);  
+    // entity.SetFile(file);
+}
+
+/* writing informations */
 void SDIFFrame::WriteInfo(SdifFileT* file)
 {
     mSize += SdifSizeOfFrameHeader();
     SdifFSetCurrFrameHeader(file,mSig, mSize,mNbMatrix,mStreamID,mTime);	           SdifFWriteFrameHeader(file);    
 }
 
+/* writing informations with SDIFEntity*/
+void SDIFFrame::WriteInfo(const SDIFEntity& entity)
+{
+    WriteInfo(entity.GetFile());
+}
+
 /* to see */
 void SDIFFrame::ViewInfo()
 {
-    std::cout << "\n Signature de la frame : " << SdifSignatureToString(mSig)
+    std::cout << "\nFrame signature : " << SdifSignatureToString(mSig)
 	      << std::endl;
-    std::cout << "sID: " << mStreamID;
-    std::cout << " Tps=" << mTime;
-    std::cout << " nbreMat ds Frame : " << mNbMatrix << std::endl; 
+    std::cout << "StreamID: " << mStreamID;
+    std::cout << " Time=" << mTime;
+    std::cout << " number of Matrix in current Frame : " << mNbMatrix << std::endl; 
 }
 
 void SDIFFrame::View()
 {
     ViewInfo();
-    for (int m = 0; m < mNbMatrix; m++)
-	mv_Matrix[m].View();		  
+    for (mIndex = 0; mIndex < mNbMatrix; mIndex++)
+	mv_Matrix[mIndex].View();		  
 }
 
 /* to Set */
@@ -145,6 +200,9 @@ SdifFloat8 SDIFFrame::GetTime()
 /* clean */
 void SDIFFrame::ClearData()
 {
+    mStreamID = 0;
+    mSize = 0;
+    mNbMatrix = 0;
     mv_Matrix.clear();
 }
 
@@ -162,7 +220,11 @@ void SDIFFrame::Resize(SdifFileT* file)
     mv_Matrix.resize(mNbMatrix);    
 }
 
-
+/* resize with SDIFEntity */
+void SDIFFrame::Resize(const SDIFEntity& entity)
+{
+    Resize(entity.GetFile());   
+}
 
 
 
