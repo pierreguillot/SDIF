@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.6 2003-04-08 18:27:36 roebel Exp $
+# $Id: Makefile.am,v 1.7 2003-04-08 23:22:34 roebel Exp $
 #
 # ./Makefile.am		Feb. 2003     Axel Roebel
 #
@@ -30,6 +30,13 @@
 # 
 
 # $Log: not supported by cvs2svn $
+# Revision 1.6  2003/04/08 18:27:36  roebel
+# Added doc tar to published files.
+# Changed name of published tar to include SDIF with version.
+# Configured PUBLISH_HOST
+# Rename conflicting files that have common names in SDIF and Easdif
+# to coexist in download directory.
+#
 # Revision 1.5  2003/04/06 16:47:51  roebel
 # Added copyright notice.
 #
@@ -71,7 +78,9 @@ pubdoc: doc
 #
 
 # base name of distribution (override automake generated variable to make source distribution!)
-distdir		  = $(PACKAGE)-$(VERSION)-SDIF-@SDIFVERSION@-src
+SDIFVERSION=$(shell grep "\#define VERSION" SDIF/sdif/config.h | cut -d\" -f2)
+
+distdir		  = $(PACKAGE)-$(VERSION)-SDIF-$(SDIFVERSION)-src
 PUBLISH_FILE      = $(distdir).tar.gz
 
 #
