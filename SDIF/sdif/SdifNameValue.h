@@ -1,4 +1,4 @@
-/* $Id: SdifNameValue.h,v 3.4 1999-10-13 16:05:54 schwarz Exp $
+/* $Id: SdifNameValue.h,v 3.5 1999-10-15 12:26:54 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -17,6 +17,15 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.4  1999/10/13  16:05:54  schwarz
+ * Changed data type codes (SdifDataTypeET) to SDIF format version 3, as
+ * decided with Matt Wright June 1999, added integer data types.
+ * Added writing of 1NVT with real frame header (but data is still not in
+ * matrices).
+ * The data type handling makes heavy use of code-generating macros,
+ * called for all data types with the sdif_foralltypes macro, thus
+ * adding new data types is easy.
+ *
  * Revision 3.3  1999/09/28  13:09:07  schwarz
  * Included #include <preincluded.h> for cross-platform uniformisation,
  * which in turn includes host_architecture.h and SDIF's project_preinclude.h.
@@ -100,21 +109,19 @@ struct SdifNameValueTableS
 {
     SdifHashTableT* NVHT;
     SdifUInt4       NumTable;
-    SdifUInt4       NumIDLink;	/* id of stream the table belongs to */
-    SdifFloat8      Time;	/* time at which the table will be
-				   written (must be lower than any
-				   frame time in the file) */
+    SdifUInt4       StreamID;	/* id of stream the table belongs to */
 } ;
 
 
-SdifNameValueTableT* SdifCreateNameValueTable(  SdifUInt4 NumIDLink, SdifFloat8 Time,
-                                                SdifUInt4 HashSize, SdifUInt4 NumTable);
+SdifNameValueTableT* SdifCreateNameValueTable(  SdifUInt4 StreamID, 
+                                                SdifUInt4 HashSize, 
+						SdifUInt4 NumTable);
 void            SdifKillNameValueTable          (SdifNameValueTableT* NVTable);
 SdifNameValueT* SdifNameValueTableGetNV         (SdifNameValueTableT* NVTable, const char *Name);
 SdifNameValueT* SdifNameValueTablePutNV         (SdifNameValueTableT* NVTable, const char *Name,  const char *Value);
 SdifFloat8      SdifNameValueTableGetTime       (SdifNameValueTableT* NVTable);
 SdifUInt4       SdifNameValueTableGetNumTable   (SdifNameValueTableT* NVTable);
-SdifUInt4       SdifNameValueTableGetNumIDLink  (SdifNameValueTableT* NVTable);
+SdifUInt4       SdifNameValueTableGetStreamID  (SdifNameValueTableT* NVTable);
 
 
 
@@ -141,7 +148,7 @@ void                SdifKillNameValuesL         (SdifNameValuesLT *NameValuesL);
   Attention, à l'ouverture de SdifF, il n'y a aucune table dans
   SdifF->NamefValues. Il faudra donc au moins en ajouter une pour
   pouvoir y mettre des NameValue.  */
-SdifNameValuesLT*   SdifNameValuesLNewTable     (SdifNameValuesLT *NameValuesL, SdifUInt4 NumIDLink, SdifFloat8 Time);
+SdifNameValuesLT*   SdifNameValuesLNewTable     (SdifNameValuesLT *NameValuesL, SdifUInt4 StreamID);
 
 /*DOC: 
   Cette fonction permet de définir la nième NVT de la liste des
