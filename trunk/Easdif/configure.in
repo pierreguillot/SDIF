@@ -1,6 +1,6 @@
 dnl -*-autoconf-*-  (No, it's an autoconf file!)
 dnl -*-m4-*- (He emacs, it's a m4 file)
-dnl $Id: configure.in,v 1.9 2003-04-06 16:43:30 roebel Exp $
+dnl $Id: configure.in,v 1.10 2003-04-08 18:28:27 roebel Exp $
 dnl
 dnl configure.in		Feb 2003      Axel Roebel
 dnl
@@ -33,6 +33,9 @@ dnl
 dnl
 
 dnl $Log: not supported by cvs2svn $
+dnl Revision 1.9  2003/04/06 16:43:30  roebel
+dnl Added copyright info.
+dnl
 dnl Revision 1.8  2003/04/03 13:35:21  schwarz
 dnl Version number set in configure.in, generates Doxyfile with correct number.
 dnl Version numbering scheme with 3 fields:
@@ -88,6 +91,9 @@ AC_PROG_LIBTOOL
 dnl Configure SDIF
 export enable_cpp=yes
 AC_CONFIG_SUBDIRS(SDIF)
+
+AC_SUBST(SDIFVERSION)
+SDIFVERSION=`grep "#define VERSION" SDIF/sdif/config.h | cut -d\" -f2`
 
 dnl Check for headers
 AC_MSG_RESULT(CHECK FOR HEADERS)
