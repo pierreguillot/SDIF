@@ -1,4 +1,4 @@
-/* $Id: loadsdif-subs.c,v 1.12 2001-07-23 10:58:09 tisseran Exp $
+/* $Id: loadsdif-subs.c,v 1.13 2003-09-15 15:57:08 schwarz Exp $
 
    loadsdif_subs.c	25. January 2000	Diemo Schwarz
 
@@ -14,6 +14,10 @@
    endread ('close')
 
   $Log: not supported by cvs2svn $
+  Revision 1.12  2001/07/23 10:58:09  tisseran
+  Now loadsdif can read SdifFloat8 data. (readMatrix).
+  Need to change writesdif, to enable writing of SdifFloat8 data.
+
   Revision 1.11  2001/05/29 13:24:23  roebel
   fixed problem for sdif files without ascii chunks
 
@@ -76,7 +80,6 @@ static void   exitread (void);
 static int    matricesleft    = 0, /* determines action in readframe */
 	      matricesread    = 0, /* counters for reporting, */
 	      matricesskipped = 0; /* reset by beginread */
-static int    eof = 1;		   /* reset by beginread */
 
 
 SdifFileT *beginread (int nlhs, mxArray *plhs [], char *filename, char *types)
@@ -91,13 +94,8 @@ SdifFileT *beginread (int nlhs, mxArray *plhs [], char *filename, char *types)
 
     if ((input    = SdifFOpen (filename, eReadFile)))
     {
-	if (!(SdifListIsEmpty(input->Selection->row)  &&  
-	      SdifListIsEmpty(input->Selection->column)))
-	    mexErrMsgTxt ("Can't handle row or column selection yet.");
-    
 	SdifFReadGeneralHeader  (input);
 	SdifFReadAllASCIIChunks (input);
-	eof = SdifFCurrSignature(input) == eEmptySignature;
 	  
 	/* return some header data */
 	if (nlhs > 0)
@@ -181,31 +179,16 @@ int readframe (int nlhs, mxArray *plhs [], SdifFileT *f)
     mxArray	  *mxarray [MaxNumOut];
     int		  matrixfound = 0, m;
 
-    /* Changed to be
-       consistent with the behavior of sdifextract
-
-       if (eof  ||  SdifFLastError(f))   return (0);	*/
-
-    if (eof)   return (0);	/*  eof */
-
-    while (!matrixfound  &&  !eof)
+    while (!matrixfound  
+	   &&  SdifFCurrSignature(f) != eEmptySignature
+	   &&  SdifFNumErrors(f, eError) == 0)
     {
 	/* are there any matrices left in the frame to read? */
 	if (matricesleft == 0)
 	{   /* no: read next frame header */
-	    bytesread = SdifFReadFrameHeader(f);
+	    if (!(bytesread = SdifFReadNextSelectedFrameHeader(f)))
+		return (0);
 
-	    /* search for a frame we're interested in 
-	       TODO: heed max time */
-	    while (!SdifFCurrFrameIsSelected (f))
-	    {
-		size_t   numread;
-		SdifFSkipFrameData (f);
-		if ((eof = SdifFGetSignature(f, &numread) == eEof))
-		    return 0;
-		bytesread += numread + SdifFReadFrameHeader(f);
-	    }
-	    
 	    /* re-initialise matrices left to read */
 	    matricesleft = SdifFCurrNbMatrix (f);
 	}
@@ -233,28 +216,24 @@ int readframe (int nlhs, mxArray *plhs [], SdifFileT *f)
 
 	if (matricesleft == 0)
 	{   /* no matrices left in frame to read, read next frame signature */
-	    eof = SdifFGetSignature(f, &bytesread) == eEof;
+	    SdifFGetSignature(f, &bytesread);
 	}
     }
 
     /* assign to output parameters */
-    if(matrixfound) {
-      for (m = 0; m < nlhs; m++)	{
-	plhs [m] = mxarray [m];
-      }
-    }
-    else{
-      for (m = 0; m < nlhs; m++)	{
-	  plhs [m] = mxCreateDoubleMatrix (0, 0, mxREAL);
-      }
-    }
+    if (matrixfound) 
+	for (m = 0; m < nlhs; m++)	
+	{
+	    plhs [m] = mxarray [m];
+	}
+    else
+	for (m = 0; m < nlhs; m++)	
+	{
+	    plhs [m] = mxCreateDoubleMatrix (0, 0, mxREAL);
+	}
+
     /* return true even on eof: we want to return the last matrix read */
-
-    /* Changed to be
-       consistent with the behavior of sdifextract
-       return (SdifFLastError (f) == NULL); */
-
-    return (1);
+    return (matrixfound);		       /* 0 on error */
 }
 
 
@@ -262,14 +241,18 @@ static size_t readmatrix (SdifFileT *f, mxArray *mxarray [MaxNumOut])
 {
     size_t	 bytesread = 0;
     double	*prmtx;
-    int		 row, col,
-		 ncol = SdifFCurrNbCol(f),
-		 nrow = SdifFCurrNbRow(f);
+    int		 row, col, outrow, outcol;
+    int		 ncol = SdifFCurrNbCol(f);
+    int		 nrow = SdifFCurrNbRow(f);
+    int		 nselrow = SdifFNumRowsSelected(f);
+    int		 nselcol = SdifFNumColumnsSelected(f);
 
     SdifDataTypeET DataType = SdifFCurrDataType(f);
 
-    switch (DataType){
-    case eText:{
+    switch (DataType)
+    {
+    case eText:
+    {
       char *str = calloc(nrow*ncol+1,1);
       double matData;
 
@@ -277,10 +260,10 @@ static size_t readmatrix (SdifFileT *f, mxArray *mxarray [MaxNumOut])
       *(mxGetPr (mxarray [1])) = SdifFCurrTime (f);
       mxarray [2] = mxCreateDoubleMatrix (1, 1, mxREAL);
       *(mxGetPr (mxarray [2])) = SdifFCurrID (f);
-      mxarray [3] = mxCreateString(
-				   SdifSignatureToString (SdifFCurrFrameSignature(f)));
-      mxarray [4] = mxCreateString(
-				   SdifSignatureToString (SdifFCurrMatrixSignature(f)));
+      mxarray [3] = mxCreateString (
+			SdifSignatureToString(SdifFCurrFrameSignature(f)));
+      mxarray [4] = mxCreateString (
+			SdifSignatureToString(SdifFCurrMatrixSignature(f)));
     
       for (row = 0; row < nrow; row++)
 	{
@@ -303,31 +286,43 @@ static size_t readmatrix (SdifFileT *f, mxArray *mxarray [MaxNumOut])
     case eFloat4:
     case eFloat8:
       /* alloc output array and scalars */
-
 	
-      mxarray [0] = mxCreateDoubleMatrix (nrow, ncol, mxREAL);
+      mxarray [0] = mxCreateDoubleMatrix (nselrow, nselcol, mxREAL);
       mxarray [1] = mxCreateDoubleMatrix (1, 1, mxREAL);
       mxarray [2] = mxCreateDoubleMatrix (1, 1, mxREAL);
       mxarray [3] = mxCreateString (
-				    SdifSignatureToString (SdifFCurrFrameSignature(f)));
+			SdifSignatureToString (SdifFCurrFrameSignature(f)));
       mxarray [4] = mxCreateString (
-				    SdifSignatureToString (SdifFCurrMatrixSignature(f)));
+			SdifSignatureToString (SdifFCurrMatrixSignature(f)));
     
       prmtx		     = mxGetPr (mxarray [0]);
-      *(mxGetPr (mxarray [1])) = SdifFCurrTime (f);
-      *(mxGetPr (mxarray [2])) = SdifFCurrID (f);
+      *(mxGetPr(mxarray[1])) = SdifFCurrTime (f);
+      *(mxGetPr(mxarray[2])) = SdifFCurrID (f);
       
-      for (row = 0; row < nrow; row++)
-	{
-	  bytesread += SdifFReadOneRow (f);
-	  for (col = 0; col < ncol; col++)
-	    /* transpose to matlab column-major order */
-	    prmtx [row + col * nrow] = SdifFCurrOneRowCol(f, col+1);
-	}
+      for (row = 0, outrow = 0; row < nrow; row++)
+      {
+	  if (SdifFRowIsSelected(f, row + 1))
+	  {
+	      bytesread += SdifFReadOneRow(f);	
+
+	      for (col = 0, outcol = 0; col < ncol; col++)
+		  if (SdifFColumnIsSelected(f, col + 1))
+		  {
+		      /* transpose to matlab column-major order */
+		      prmtx [outrow + outcol * nselrow] 
+			  = SdifFCurrOneRowCol(f, col + 1);
+		      outcol++;
+		  }
+
+	      outrow++;
+	  }
+	  else
+	      SdifFSkipOneRow(f);
+      }
       
       bytesread += SdifFReadPadding (f, SdifFPaddingCalculate (f->Stream, 
 							     bytesread));
-      break;
+    break;
 
     default :
       printf("Unknown type of matrix data skipped !!\n");
@@ -337,12 +332,12 @@ static size_t readmatrix (SdifFileT *f, mxArray *mxarray [MaxNumOut])
       mxarray [2] = mxCreateDoubleMatrix (1, 1, mxREAL);
       *(mxGetPr (mxarray [2])) = SdifFCurrID (f);
       mxarray [3] = mxCreateString (
-				    SdifSignatureToString (SdifFCurrFrameSignature(f)));
+			SdifSignatureToString (SdifFCurrFrameSignature(f)));
       mxarray [4] = mxCreateString (
-				    SdifSignatureToString (SdifFCurrMatrixSignature(f)));
+			SdifSignatureToString (SdifFCurrMatrixSignature(f)));
       bytesread   += SdifFSkipMatrixData(f);
 
-      break;
+    break;
     }
     return (bytesread);
 }
