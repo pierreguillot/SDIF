@@ -1,4 +1,4 @@
-/* $Id: sdifextract.c,v 1.7 2001-07-02 15:31:16 lambert Exp $
+/* $Id: sdifextract.c,v 1.8 2001-07-19 14:24:36 lefevre Exp $
  
                 Copyright (c) 1998 by IRCAM - Centre Pompidou
                            All rights reserved.
@@ -13,6 +13,10 @@
    Extract data from an SDIF-file.  
    
    $Log: not supported by cvs2svn $
+ * Revision 1.7  2001/07/02  15:31:16  lambert
+ * Added frame types table to the output file header cpoied from the input
+ * file.
+ *
    Revision 1.6  2001/05/04 11:32:40  lambert
    Little modifications for Win32:
      - <io.h> included for this platform.
@@ -138,7 +142,7 @@
 #if defined(HOST_OS_UNIX)
 #include <unistd.h>
 #elif defined(HOST_OS_MAC)
-#include <unix.h>
+#include <unistd.h>
 #elif defined(WIN32)
 #include <io.h>
 #endif
@@ -182,7 +186,7 @@ void usage (char *msg, char *arg, int longhelp)
     }
     if (longhelp)
     {
-    	fprintf (SdifStdErr, "\n" PROG "version $Revision: 1.7 $\n\n");
+    	fprintf (SdifStdErr, "\n" PROG "version $Revision: 1.8 $\n\n");
     
     	if (types)
     	{

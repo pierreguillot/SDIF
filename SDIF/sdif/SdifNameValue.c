@@ -1,4 +1,4 @@
-/* $Id: SdifNameValue.c,v 3.9 2001-05-04 18:14:18 schwarz Exp $
+/* $Id: SdifNameValue.c,v 3.10 2001-07-19 14:24:34 lefevre Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -34,6 +34,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.9  2001/05/04  18:14:18  schwarz
+ * Comments for last checkin.
+ *
  * Revision 3.8  2001/05/04 18:09:18  schwarz
  * Added function SdifNameValuesLPutCurrNVTTranslate.
  *
@@ -96,6 +99,7 @@
 #include <preincluded.h>
 
 #include "SdifNameValue.h"
+#include <string.h>
 #include <stdlib.h>
 
 
@@ -380,8 +384,11 @@ SdifNameValuesLPutCurrNVTTranslate(SdifNameValuesLT *NameValuesL,
 				   const char *Name,  const char *Value)
 {
     SdifNameValueT* ret;
-    char *tname  = strdup(Name);
-    char *tvalue = strdup(Value);
+	char *tname  = malloc(strlen(Name)  + 4);
+	char *tvalue = malloc(strlen(Value) + 4);
+
+	strcpy(tname,  Name);
+	strcpy(tvalue, Value);
 
     SdifStringToNV(tname);
     SdifStringToNV(tvalue);
