@@ -1,15 +1,15 @@
 
 /* Complete version number */
-#undef EASDIF_VERSION
+#define EASDIF_VERSION_STRING "@VERSION@"
 
 /* Major version number of easdif lib */
-#undef EASDIF_VERSION_MAJ
+#define EASDIF_VERSION_MAJ @EASDIF_VERSION_MAJ@
 
 /* Minor version number of easdif lib */
-#undef EASDIF_VERSION_MIN
+#define EASDIF_VERSION_MIN @EASDIF_VERSION_MIN@
 
 /* Release number of easdif lib */
-#undef EASDIF_VERSION_RELEASE
+#define EASDIF_VERSION_RELEASE @EASDIF_VERSION_RELEASE@
 
 
 

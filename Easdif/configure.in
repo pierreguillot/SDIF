@@ -1,6 +1,6 @@
 dnl -*-autoconf-*-  (No, it's an autoconf file!)
 dnl -*-m4-*- (He emacs, it's a m4 file)
-dnl $Id: configure.in,v 1.19 2003-05-24 00:28:34 roebel Exp $
+dnl $Id: configure.in,v 1.20 2003-05-26 16:10:17 roebel Exp $
 dnl
 dnl configure.in		Feb 2003      Axel Roebel
 dnl
@@ -33,6 +33,9 @@ dnl
 dnl
 
 dnl $Log: not supported by cvs2svn $
+dnl Revision 1.19  2003/05/24 00:28:34  roebel
+dnl Version 0.7.0
+dnl
 dnl Revision 1.18  2003/05/22 21:37:53  roebel
 dnl version 0.6.0
 dnl
@@ -91,19 +94,19 @@ AC_MSG_RESULT(PACKAGE NAME)
 
 PACKAGE=Easdif
 
-versmaj=0
-versmin=7
-versrel=0
-VERSION="${versmaj}.${versmin}.${versrel}"
+EASDIF_VERSION_MAJ=0
+EASDIF_VERSION_MIN=7
+EASDIF_VERSION_RELEASE=1
+
+VERSION="${EASDIF_VERSION_MAJ}.${EASDIF_VERSION_MIN}.${EASDIF_VERSION_RELEASE}"
 
 AC_SUBST(PACKAGE)
+AC_SUBST(VERSION)
 AC_SUBST(EASDIF_VERSION_MAJ)
 AC_SUBST(EASDIF_VERSION_MIN)
 AC_SUBST(EASDIF_VERSION_RELEASE)
 
-AC_DEFINE_UNQUOTED(EASDIF_VERSION_MAJ,$versmaj,[Major version number of easdif lib])
-AC_DEFINE_UNQUOTED(EASDIF_VERSION_MIN,$versmin,[Minor version number of easdif lib])
-AC_DEFINE_UNQUOTED(EASDIF_VERSION_RELEASE,$versrel,[Release number of easdif lib])
+
 
 AM_INIT_AUTOMAKE($PACKAGE,$VERSION)
 
