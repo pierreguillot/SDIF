@@ -1,9 +1,12 @@
-/* SdifFrame.h
+/* $Id: SdifFrame.h,v 1.4 1998-11-10 15:31:46 schwarz Exp $
+ *
+ * SdifFrame.h
  *
  * Frame Header, Frame Data structures management
  *
  * author: Dominique Virolle 1997
  *
+ * $Log: not supported by cvs2svn $
  */
 
 #ifndef _SdifFrame_
@@ -36,35 +39,39 @@ struct SdifFrameDataS
 } ;
 
 
-extern SdifFrameHeaderT* SdifCreateFrameHeader(SdifSignature Signature,
-					       SdifUInt4 Size,
-					       SdifUInt4 NbMatrix,
-					       SdifUInt4 NumID,
-					       SdifFloat8 Time);
+SdifFrameHeaderT* SdifCreateFrameHeader(SdifSignature Signature,
+					SdifUInt4 Size,
+					SdifUInt4 NbMatrix,
+					SdifUInt4 NumID,
+					SdifFloat8 Time);
 
-extern SdifFrameHeaderT* SdifCreateFrameHeaderEmpty(SdifSignature Signature);
+SdifFrameHeaderT* SdifCreateFrameHeaderEmpty(SdifSignature Signature);
 
-extern void              SdifKillFrameHeader  (SdifFrameHeaderT *FrameHeader);
+void              SdifKillFrameHeader  (SdifFrameHeaderT *FrameHeader);
 
-extern SdifFrameDataT* SdifCreateFrameData(SdifHashTableT *FrameTypesTable,
-					   SdifSignature FrameSignature,
-					   SdifUInt4 NumID,
-					   SdifFloat8 Time);
+SdifFrameDataT*   SdifCreateFrameData(SdifHashTableT *FrameTypesTable,
+				      SdifSignature FrameSignature,
+				      SdifUInt4 NumID,
+				      SdifFloat8 Time);
 
-extern void            SdifKillFrameData   (SdifHashTableT *FrameTypesTable, SdifFrameDataT *FrameData);
+void              SdifKillFrameData  (SdifHashTableT *FrameTypesTable, 
+				      SdifFrameDataT *FrameData);
 
-extern SdifFrameDataT* SdifFrameDataPutNthMatrixData(SdifFrameDataT *FrameData, unsigned int NthMatrix,
-						     SdifMatrixDataT *MatrixData);
+SdifFrameDataT*   SdifFrameDataPutNthMatrixData (SdifFrameDataT *FrameData, 
+						 unsigned int NthMatrix,
+						 SdifMatrixDataT *MatrixData);
 
-extern SdifFrameDataT* SdifFrameDataPutComponentMatrixData(SdifHashTableT *FrameTypesTable,
-							   SdifFrameDataT *FrameData,
-							   char *CompoName, SdifMatrixDataT *MatrixData);
+SdifFrameDataT* SdifFrameDataPutComponentMatrixData (SdifHashTableT *FrmTTable,
+						     SdifFrameDataT *FrameData,
+						     char	    *CompoName,
+						     SdifMatrixDataT *MtxData);
 
-extern SdifMatrixDataT* SdifFrameDataGetNthMatrixData(SdifFrameDataT *FrameData, unsigned int NthMatrix);
+SdifMatrixDataT* SdifFrameDataGetNthMatrixData (SdifFrameDataT *FrameData, 
+						unsigned int NthMatrix);
 
-extern SdifMatrixDataT* SdifFrameDataGetComponentMatrixData(SdifHashTableT *FrameTypesTable,
-							    SdifFrameDataT *FrameData,
-							    char *CompoName);
+SdifMatrixDataT* SdifFrameDataGetComponentMatrixData(SdifHashTableT *FrmTTable,
+						     SdifFrameDataT *FrameData,
+						     char *CompoName);
 
 #endif /* _SdifFrame_ */
 

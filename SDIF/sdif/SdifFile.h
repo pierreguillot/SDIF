@@ -1,4 +1,4 @@
-/* $Id: SdifFile.h,v 1.5 1998-07-23 17:02:49 virolle Exp $
+/* $Id: SdifFile.h,v 1.6 1998-11-10 15:31:45 schwarz Exp $
  *
  * SdifFile.h
  *
@@ -8,6 +8,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.5  1998/07/23  17:02:49  virolle
+ * *** empty log message ***
+ *
  * Revision 1.4  1998/05/14  09:50:35  schwarz
  * Added SdifCurrOneRowData to return a pointer to the raw data.
  * This can subsequently be used for SdifSetCurrOneRow.
@@ -22,44 +25,64 @@
 #include "SdifFileStruct.h"
 #include "SdifGlobals.h"
 
-extern SdifFileT*         SdifFOpen                     (const char* Name, SdifFileModeET Mode);
-extern SdifFileT*         SdifOpenFile                  (const char* Name, SdifFileModeET Mode);
-extern SdifFileT*         SdifFOpenText                 (SdifFileT* SdifF, const char* Name, SdifFileModeET Mode);
-extern void               SdifFClose                    (SdifFileT* SdifF);
-extern void               SdifCloseFile                 (SdifFileT* SdifF);
-extern SdifFrameHeaderT*  SdifFileCreateCurrFramH       (SdifFileT* SdifF, SdifSignature Signature);
-extern SdifMatrixHeaderT* SdifFileCreateCurrMtrxH       (SdifFileT* SdifF);
-extern FILE*              SdifFileGetFILE_SwitchVerbose (SdifFileT* SdifF, int Verbose);
-extern void               SdifTakeCodedPredefinedTypes  (SdifFileT *SdifF);
-extern void               SdifFLoadPredefinedTypes      (SdifFileT *SdifF, char *TypesFileName);
+
+SdifFileT*         SdifFOpen                     (const char* Name, 
+						  SdifFileModeET Mode);
+SdifFileT*         SdifOpenFile                  (const char* Name, 
+						  SdifFileModeET Mode);
+SdifFileT*         SdifFOpenText                 (SdifFileT* SdifF, 
+						  const char* Name, 
+						  SdifFileModeET Mode);
+void               SdifFClose                    (SdifFileT* SdifF);
+void               SdifCloseFile                 (SdifFileT* SdifF);
+SdifFrameHeaderT*  SdifFileCreateCurrFramH       (SdifFileT* SdifF, 
+						  SdifSignature Signature);
+SdifMatrixHeaderT* SdifFileCreateCurrMtrxH       (SdifFileT* SdifF);
+FILE*              SdifFileGetFILE_SwitchVerbose (SdifFileT* SdifF, 
+						  int Verbose);
+void               SdifTakeCodedPredefinedTypes  (SdifFileT *SdifF);
+void               SdifFLoadPredefinedTypes      (SdifFileT *SdifF, 
+						  char *TypesFileName);
 
 extern SdifFileT *gSdifPredefinedTypes;
-extern void SdifGenInit (char *PredefinedTypesFile);
-extern void SdifGenKill (void);
-extern void SdifPrintVersion(void);
+void SdifGenInit (char *PredefinedTypesFile);
+void SdifGenKill (void);
+void SdifPrintVersion (void);
 
 
+SdifFrameHeaderT* SdifSetCurrFrameHeader    (SdifFileT *SdifF,
+					     SdifSignature Signature,
+					     SdifUInt4 Size,
+					     SdifUInt4 NbMatrix,
+					     SdifUInt4 NumID,
+					     SdifFloat8 Time);
+SdifMatrixHeaderT* SdifSetCurrMatrixHeader  (SdifFileT *SdifF,
+					     SdifSignature Signature,
+					     SdifDataTypeET DataType,
+					     SdifUInt4 NbRow,
+					     SdifUInt4 NbCol);
 
-extern SdifFrameHeaderT* SdifSetCurrFrameHeader   (SdifFileT *SdifF, SdifSignature Signature, SdifUInt4 Size,
-						   SdifUInt4 NbMatrix, SdifUInt4 NumID, SdifFloat8 Time);
-extern SdifMatrixHeaderT* SdifSetCurrMatrixHeader  (SdifFileT *SdifF, SdifSignature Signature,
-						    SdifDataTypeET DataType, SdifUInt4 NbRow, SdifUInt4 NbCol);
-
-extern SdifOneRowT*  SdifSetCurrOneRow       (SdifFileT *SdifF, void *Values);
-extern SdifOneRowT*  SdifSetCurrOneRowCol    (SdifFileT *SdifF, SdifUInt4 numCol, SdifFloat8 Value);
-extern SdifFloat8    SdifCurrOneRowCol       (SdifFileT *SdifF, SdifUInt4 numCol);
-extern SdifFloat8    SdifCurrOneRowColName   (SdifFileT *SdifF, SdifMatrixTypeT *MatrixType, char *NameCD);
-extern SdifSignature SdifCurrSignature       (SdifFileT *SdifF);
-extern SdifSignature SdifCleanCurrSignature  (SdifFileT *SdifF);
-extern SdifSignature SdifCurrFrameSignature  (SdifFileT *SdifF);
-extern SdifSignature SdifCurrMatrixSignature (SdifFileT *SdifF);
-extern SdifOneRowT*  SdifCurrOneRow          (SdifFileT *SdifF);
-extern void*	     SdifCurrOneRowData	     (SdifFileT *SdifF);
-extern SdifUInt4     SdifCurrNbCol           (SdifFileT *SdifF);
-extern SdifUInt4     SdifCurrNbRow           (SdifFileT *SdifF);
-extern SdifUInt4     SdifCurrNbMatrix        (SdifFileT *SdifF);
-extern SdifUInt4     SdifCurrID              (SdifFileT *SdifF);
-extern SdifFloat8    SdifCurrTime            (SdifFileT *SdifF);
+SdifOneRowT*  SdifSetCurrOneRow       (SdifFileT *SdifF,
+				       void *Values);
+SdifOneRowT*  SdifSetCurrOneRowCol    (SdifFileT *SdifF,
+				       SdifUInt4 numCol,
+				       SdifFloat8 Value);
+SdifFloat8    SdifCurrOneRowCol       (SdifFileT *SdifF,
+				       SdifUInt4 numCol);
+SdifFloat8    SdifCurrOneRowColName   (SdifFileT *SdifF,
+				       SdifMatrixTypeT *MatrixType,
+				       char *NameCD);
+SdifSignature SdifCurrSignature       (SdifFileT *SdifF);
+SdifSignature SdifCleanCurrSignature  (SdifFileT *SdifF);
+SdifSignature SdifCurrFrameSignature  (SdifFileT *SdifF);
+SdifSignature SdifCurrMatrixSignature (SdifFileT *SdifF);
+SdifOneRowT*  SdifCurrOneRow          (SdifFileT *SdifF);
+void*	      SdifCurrOneRowData      (SdifFileT *SdifF);
+SdifUInt4     SdifCurrNbCol           (SdifFileT *SdifF);
+SdifUInt4     SdifCurrNbRow           (SdifFileT *SdifF);
+SdifUInt4     SdifCurrNbMatrix        (SdifFileT *SdifF);
+SdifUInt4     SdifCurrID              (SdifFileT *SdifF);
+SdifFloat8    SdifCurrTime            (SdifFileT *SdifF);
 
 #endif /* _SdifFile_ */
 

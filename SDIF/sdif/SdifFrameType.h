@@ -1,9 +1,12 @@
-/* SdifFrameType.h
+/* $Id: SdifFrameType.h,v 1.4 1998-11-10 15:31:47 schwarz Exp $
+ *
+ * SdifFrameType.h
  *
  * Frame Types management (interpreted sdif frame types)
  *
  * author: Dominique Virolle 1997
  *
+ * $Log: not supported by cvs2svn $
  */
 
 
@@ -48,27 +51,35 @@ struct SdifFrameTypeS
 };
 
 
-extern SdifComponentT*  SdifCreateComponent (SdifSignature MatrixSignature, char *Name, SdifUInt4 Num);
-extern void             SdifKillComponent   (SdifComponentT *Component);
+SdifComponentT*  SdifCreateComponent  (SdifSignature MatrixSignature, 
+				       char *Name, 
+				       SdifUInt4 Num);
+void             SdifKillComponent    (SdifComponentT *Component);
 
-extern SdifComponentNT* SdifCreateComponentN (SdifComponentNT *Next, SdifComponentT *Component);
-extern SdifComponentNT* SdifKillComponentN   (SdifComponentNT *ComponentNode);
+SdifComponentNT* SdifCreateComponentN (SdifComponentNT *Next, 
+				       SdifComponentT *Component);
+SdifComponentNT* SdifKillComponentN   (SdifComponentNT *ComponentNode);
 
-extern SdifFrameTypeT*  SdifCreateFrameType (SdifSignature FrameSignature,
-					     SdifFrameTypeT *PredefinedFrameType);
-extern void             SdifKillFrameType   (SdifFrameTypeT *FrameType);
+SdifFrameTypeT*  SdifCreateFrameType  (SdifSignature FrameSignature,
+				       SdifFrameTypeT *PredefinedFrameType);
+void             SdifKillFrameType    (SdifFrameTypeT *FrameType);
 
-extern SdifUInt4       SdifFrameTypeGetNumComponent (SdifFrameTypeT *FrameType, char *NameCD);
-extern SdifComponentT* SdifFrameTypeGetComponent    (SdifFrameTypeT *FrameType, char *NameCD);
-extern SdifComponentT* SdifFrameTypeGetNthComponent (SdifFrameTypeT *FrameType, SdifUInt4 NumC);
-
-extern SdifFrameTypeT* SdifFrameTypeInsertTailComponent(SdifHashTableT *MatrixTypesTable,
-							SdifFrameTypeT *FrameType,
-							SdifSignature MatrixSignature,
-							char *NameC);
-
-extern SdifFrameTypeT* SdifGetFrameType(SdifHashTableT *FrameTypesTable, SdifSignature FrameSiganture);
-extern void            SdifPutFrameType(SdifHashTableT *FrameTypesTable, SdifFrameTypeT *FrameType);
-extern SdifUInt2       SdifExistUserFrameType(SdifHashTableT *FrameTypesTable);
+SdifUInt4        SdifFrameTypeGetNumComponent (SdifFrameTypeT *FrameType, 
+					       char *NameCD);
+SdifComponentT*  SdifFrameTypeGetComponent    (SdifFrameTypeT *FrameType, 
+					       char *NameCD);
+SdifComponentT*  SdifFrameTypeGetNthComponent (SdifFrameTypeT *FrameType, 
+					       SdifUInt4 NumC);
+ 
+SdifFrameTypeT*  SdifFrameTypeInsertTailComponent(SdifHashTableT *MatrixTTable,
+						  SdifFrameTypeT *FrameType,
+						  SdifSignature MatrixSignatur,
+						  char *NameC);
+ 
+SdifFrameTypeT*  SdifGetFrameType       (SdifHashTableT *FrameTypesTable, 
+				         SdifSignature FrameSiganture);
+void             SdifPutFrameType       (SdifHashTableT *FrameTypesTable, 
+				         SdifFrameTypeT *FrameType);
+SdifUInt2        SdifExistUserFrameType (SdifHashTableT *FrameTypesTable);
 
 #endif /* _SdifFrameType_  */

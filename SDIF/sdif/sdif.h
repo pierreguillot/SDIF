@@ -1,4 +1,6 @@
-/* sdif.h
+/* $Id: sdif.h,v 1.3 1998-11-10 15:31:58 schwarz Exp $
+ *
+ * sdif.h
  *
  * Sound Description Interchange Format
  *
@@ -7,6 +9,7 @@
  *
  * author: Dominique Virolle 1997
  *
+ * $Log: not supported by cvs2svn $
  */
 
 #ifndef _sdif_

@@ -1,11 +1,13 @@
-/* SdifPrint.h
+/* $Id: SdifPrint.h,v 1.3 1998-11-10 15:31:54 schwarz Exp $
+ *
+ * SdifPrint.h
  *
  * for message at sdif interpretation
  * print of structures with some reference
  * FILE* is usually stdout or stderr
  *
  * author: Dominique Virolle 1997
- *
+ * $Log: not supported by cvs2svn $
  */
 
 #ifndef _SdifPrint_
@@ -25,26 +27,26 @@
 
 /*************** Matrix Type ***************/
 
-extern void SdifPrintMatrixType(FILE *fw, SdifMatrixTypeT *MatrixType);
-extern void SdifPrintAllMatrixType(FILE *fw, SdifFileT *SdifF);
+void SdifPrintMatrixType(FILE *fw, SdifMatrixTypeT *MatrixType);
+void SdifPrintAllMatrixType(FILE *fw, SdifFileT *SdifF);
 
 /*************** Frame Type ***************/
 
-extern void SdifPrintFrameType(FILE *fw, SdifFrameTypeT *FrameType);
-extern void SdifPrintAllFrameType(FILE *fw, SdifFileT *SdifF);
+void SdifPrintFrameType(FILE *fw, SdifFrameTypeT *FrameType);
+void SdifPrintAllFrameType(FILE *fw, SdifFileT *SdifF);
 
 /********** Matrix **********/
 
-extern void SdifPrintMatrixHeader(FILE *f, SdifMatrixHeaderT *MatrixHeader);
-extern void SdifPrintOneRow(FILE *f, SdifOneRowT *OneRow);
-extern void SdifPrintMatrixRows(FILE* f, SdifMatrixDataT *MatrixData);
+void SdifPrintMatrixHeader(FILE *f, SdifMatrixHeaderT *MatrixHeader);
+void SdifPrintOneRow(FILE *f, SdifOneRowT *OneRow);
+void SdifPrintMatrixRows(FILE* f, SdifMatrixDataT *MatrixData);
 
 /********** Frame ***********/
 
-extern void SdifPrintFrameHeader(FILE *f, SdifFrameHeaderT* FrameHeader);
+void SdifPrintFrameHeader(FILE *f, SdifFrameHeaderT* FrameHeader);
 
 /************ High ***********/
 
-extern void SdifPrintAllType(FILE *fw, SdifFileT *SdifF);
+void SdifPrintAllType(FILE *fw, SdifFileT *SdifF);
 
 #endif /* _SdifPrint_ */

@@ -1,4 +1,6 @@
-/* SdifPreTypes.h
+/* $Id: SdifPreTypes.h,v 1.2 1998-11-10 15:31:53 schwarz Exp $
+ *
+ * SdifPreTypes.h
  *
  * Compiled Predefined Types. If the predefined types file isn't find or understood,
  * then this types are used. But in this case, some types can miss.
@@ -6,7 +8,7 @@
  * author: Dominique Virolle 1997
  *
  *
- *
+ * $Log: not supported by cvs2svn $
  */
 
 

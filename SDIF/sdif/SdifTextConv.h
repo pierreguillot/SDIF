@@ -1,4 +1,6 @@
-/* SdifTextConv.h
+/* $Id: SdifTextConv.h,v 1.3 1998-11-10 15:31:57 schwarz Exp $
+ *
+ * SdifTextConv.h
  *
  *
  * Convert a pseudo-sdif text file to a sdif file
@@ -6,7 +8,7 @@
  *
  * author: Dominique Virolle 1997
  *
- *
+ * $Log: not supported by cvs2svn $
  */
 
 
@@ -17,16 +19,16 @@
 #include "SdifFileStruct.h"
 
 
-extern size_t SdifFTextConvMatrixData     (SdifFileT *SdifF);
-extern size_t SdifFTextConvMatrix         (SdifFileT *SdifF);
-extern size_t SdifFTextConvFrameData      (SdifFileT *SdifF);
-extern size_t SdifFTextConvFrameHeader    (SdifFileT *SdifF);
-extern size_t SdifFTextConvFrame          (SdifFileT *SdifF);
-extern size_t SdifFTextConvAllFrame       (SdifFileT *SdifF);
-extern size_t SdifFTextConvFramesChunk    (SdifFileT *SdifF);
-extern size_t SdifFTextConv               (SdifFileT *SdifF);
+size_t SdifFTextConvMatrixData     (SdifFileT *SdifF);
+size_t SdifFTextConvMatrix         (SdifFileT *SdifF);
+size_t SdifFTextConvFrameData      (SdifFileT *SdifF);
+size_t SdifFTextConvFrameHeader    (SdifFileT *SdifF);
+size_t SdifFTextConvFrame          (SdifFileT *SdifF);
+size_t SdifFTextConvAllFrame       (SdifFileT *SdifF);
+size_t SdifFTextConvFramesChunk    (SdifFileT *SdifF);
+size_t SdifFTextConv               (SdifFileT *SdifF);
 
 /* upper level : open the text in read mode */
-extern size_t SdifTextToSdif (SdifFileT *SdifF, char *TextStreamName);
+size_t SdifTextToSdif (SdifFileT *SdifF, char *TextStreamName);
 
 #endif   /* _SdifTextConv_ */

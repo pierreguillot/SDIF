@@ -1,4 +1,4 @@
-/* $Id: SdifGlobals.h,v 1.5 1998-07-23 17:02:53 virolle Exp $
+/* $Id: SdifGlobals.h,v 1.6 1998-11-10 15:31:48 schwarz Exp $
  *
  * SdifGlobals.h
  *
@@ -6,9 +6,11 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.5  1998/07/23  17:02:53  virolle
+ * *** empty log message ***
+ *
  * Revision 1.4  1998/04/24  12:40:34  schwarz
  * Made char * arguments constant for SdifNameValuesLPut and functions called by it.
- *
  */
 
 #ifndef _SdifGlobals_
@@ -106,17 +108,18 @@ extern char gSdifErrorMess[_SdifStringLen];
 extern char gSdifStringSignature[_SdifNbMaxPrintSignature][5];
 extern int  CurrStringPosSignature;
 
-extern char*     SdifSignatureToString(SdifSignature Signature);
-extern short     SdifSignatureCmpNoVersion(SdifSignature Signature1, SdifSignature Signature2);
-extern int       SdifStrLen  (const char *s);
-extern int       SdifStrCmp  (const char *s1, const char *s2);
-extern int       SdifStrNCmp (const char *s1, const char *s2, unsigned int n);
-extern char*     SdifStrNCpy (char *s1, const char *s2, unsigned int n);
-extern char*     SdifCreateStrNCpy (const char* Source, size_t Size);
-extern void      SdifKillStr (char* String);
-extern SdifUInt4 SdifSizeofDataType (SdifDataTypeET DataType);
-extern size_t    SdifPaddingCalculate  (size_t NbBytes);
-extern size_t    SdifFPaddingCalculate (FILE *f, size_t NbBytes);
+char*     SdifSignatureToString     (SdifSignature Signature);
+short     SdifSignatureCmpNoVersion (SdifSignature Signature1, 
+				     SdifSignature Signature2);
+int       SdifStrLen  (const char *s);
+int       SdifStrCmp  (const char *s1, const char *s2);
+int       SdifStrNCmp (const char *s1, const char *s2, unsigned int n);
+char*     SdifStrNCpy (char *s1, const char *s2, unsigned int n);
+char*     SdifCreateStrNCpy (const char* Source, size_t Size);
+void      SdifKillStr (char* String);
+SdifUInt4 SdifSizeofDataType (SdifDataTypeET DataType);
+size_t    SdifPaddingCalculate  (size_t NbBytes);
+size_t    SdifFPaddingCalculate (FILE *f, size_t NbBytes);
 
 /* (double f1) == (double f2) with _SdifFloatEps for error */
 extern short SdifFloat8Equ(SdifFloat8 f1, SdifFloat8 f2);

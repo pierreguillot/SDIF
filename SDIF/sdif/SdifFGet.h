@@ -1,4 +1,6 @@
-/* SdifFGet.h
+/* $Id: SdifFGet.h,v 1.2 1998-11-10 15:31:40 schwarz Exp $
+ *
+ * SdifFGet.h
  *
  * F : SdifFileT*, Get : ascii frames reading,
  * common to read a sdif file and a pseudo-sdif text file
@@ -7,7 +9,7 @@
  *
  * author: Dominique Virolle 1997
  *
- *
+ * $Log: not supported by cvs2svn $
  */
 
 
@@ -18,7 +20,7 @@
 #include "SdifFileStruct.h"
 #include <stdio.h>
 
-extern int SdifFGetSignature   (SdifFileT *SdifF, size_t *NbCharRead);
+int    SdifFGetSignature   (SdifFileT *SdifF, size_t *NbCharRead);
 
 int    SdifFGetOneNameValue    (SdifFileT *SdifF, int Verbose, size_t *NbCharRead);
 size_t SdifFGetNameValueCurrHT (SdifFileT *SdifF, int Verbose);
