@@ -1,3 +1,9 @@
+2005-02-04  Axel Roebel  <roebel@sam.local>
+Version 1.0.2beta
+
+	* easdif/sdifentity.cpp 
+	WriteFrame would not return frame size written.
+
 2004-09-10  Axel Roebel  <roebel@localdomain>
 Version 1.0.1beta
 
@@ -592,4 +598,4 @@ Version 0.21
 	* ChangeLog: Added changelog to repository.
 
 
-$Id: ChangeLog,v 1.43 2004-09-10 09:20:53 roebel Exp $
+$Id: ChangeLog,v 1.44 2005-02-04 12:31:42 roebel Exp $
