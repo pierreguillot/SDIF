@@ -1,4 +1,4 @@
-/* $Id: SdifFGet.c,v 3.15 2004-07-22 14:47:56 bogaards Exp $
+/* $Id: SdifFGet.c,v 3.16 2004-09-09 17:29:00 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -32,6 +32,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.15  2004/07/22 14:47:56  bogaards
+ * removed many global variables, moved some into the thread-safe SdifGlobals structure, added HAVE_PTHREAD define, reorganized the code for selection, made some arguments const, new version 3.8.6
+ *
  * Revision 3.14  2004/06/03 11:18:00  schwarz
  * Profiling showed some waste of cycles in byte swapping and signature reading:
  * - byte swapping now array-wise, not element-wise in SdifSwap<N>[Copy] routines:   -> from 0.24 s (18.5%) to 0.14s
@@ -494,6 +497,9 @@ SdifFGetOneComponent(SdifFileT *SdifF, int Verbose,
 
 
 /*DOC:
+  Return the current component from a SdifStringT:
+  parses signature componentname ; 
+
   Remark:
          This function implements the new SDIF Specification (June 1999):
 	 Name Value Table, Matrix and Frame Type declaration, Stream ID declaration are
@@ -501,11 +507,11 @@ SdifFGetOneComponent(SdifFileT *SdifF, int Verbose,
 	 1NVT 1NVT
 	 1TYP 1TYP
 	 1IDS 1IDS
-  Return the current component from a SdifStringT
 */
 int
 SdifFGetOneComponentfromSdifString(SdifFileT *SdifF, SdifStringT *SdifString,
-				   SdifSignature *MatrixSignature, char *ComponentName)
+				   SdifSignature *MatrixSignature, 
+				   char *ComponentName)
 {
   int   CharEnd;
   char errorMess[_SdifStringLen];
@@ -517,32 +523,34 @@ SdifFGetOneComponentfromSdifString(SdifFileT *SdifF, SdifStringT *SdifString,
   CharEnd = SdiffGetSignaturefromSdifString(SdifString, MatrixSignature); 
   
   if (CharEnd == (unsigned) '}')
-    {
+  {
       /* no more Component */
-      if  (*MatrixSignature == 0) 
-	return  CharEnd;
+      if (*MatrixSignature == 0) 
+	  return  CharEnd;
       else
-	{
-	  sprintf(errorMess,
-		  "Incomplete Component : '%s%c'",
-		  SdifSignatureToString(*MatrixSignature),
-		  CharEnd);
+      {
+	  sprintf(errorMess, "Incomplete Component : '%s%c'",
+		  SdifSignatureToString(*MatrixSignature), CharEnd);
 	  _SdifFError(SdifF, eSyntax, errorMess);
 	  return CharEnd;
-	}
-    }
+      }
+  }
   else
-    if (SdifTestSignature(SdifF, CharEnd, *MatrixSignature, "matrix signature of Component")
-	== eFalse)
-      return CharEnd;
-  
+      if (SdifTestSignature(SdifF, CharEnd, *MatrixSignature, 
+			    "matrix signature of Component") == eFalse)
+      {
+	  return CharEnd;
+      }
+
   /* Component Name */
   CharEnd = SdiffGetStringUntilfromSdifString(SdifString, ComponentName,
-				_SdifStringLen, _SdifReservedChars);
+		_SdifStringLen, _SdifReservedChars);
   if (SdifTestCharEnd(SdifF, CharEnd, ';', ComponentName, eFalse,
 		      "Component must be finished by ';'") == eFalse)
-    return  CharEnd;
-  
+  {
+      return  CharEnd;
+  }
+
   return CharEnd;
 }
 
@@ -650,61 +658,56 @@ SdifFGetOneFrameTypefromSdifString(SdifFileT *SdifF, SdifStringT *SdifString)
   /* FramSignature */
   CharEnd = SdiffGetSignaturefromSdifString(SdifString, &FramSignature);
   if (SdifTestSignature(SdifF, CharEnd, FramSignature, "Frame")== eFalse)
-    {
+  {
       return SizeR;
-    }
+  }
  
 
   /* Frame type Creation, Put or Recuperation from SdifF->FrameTypesTable */
   FramT =  SdifGetFrameType(SdifF->FrameTypesTable, FramSignature);
   if (! FramT)
-    {
+  {
       FramT = SdifCreateFrameType(FramSignature,
-				  SdifGetFrameType(gSdifPredefinedTypes->FrameTypesTable, FramSignature));
+		  SdifGetFrameType(gSdifPredefinedTypes->FrameTypesTable, 
+				   FramSignature));
       SdifPutFrameType(SdifF->FrameTypesTable, FramT);
-    }
+  }
   else
-    if (SdifTestFrameTypeModifMode(SdifF, FramT)== eFalse)
+  {
+      if (SdifTestFrameTypeModifMode(SdifF, FramT) == eFalse)
       {
-	/* Skip frame type def, search '}' */
-	SdifTestCharEnd(SdifF,
-			SdifSkipASCIIUntilfromSdifString(SdifString, &SizeR, "}:[]"),
-			'}', "", eFalse,
-			"end of frame type skiped missing");
-	return SizeR;
+	  /* Skip frame type def, search '}' */
+	  SdifTestCharEnd(SdifF,
+	      SdifSkipASCIIUntilfromSdifString(SdifString, &SizeR, "}:[]"),
+	      '}', "", eFalse, "end of frame type skiped missing");
+	  return SizeR;
       }
-
+  }
 
 
   /* Components */
   CharEnd = SdiffGetStringUntilfromSdifString(SdifString, sdifString,
 				_SdifStringLen, _SdifReservedChars);
-  if (   SdifTestCharEnd(SdifF, CharEnd, '{',
-			 sdifString, SdifStrLen(sdifString) != 0,
-			 "Frame")
-	 ==eFalse   )
-    {
+  if (SdifTestCharEnd(SdifF, CharEnd, '{', sdifString, 
+		      SdifStrLen(sdifString) != 0, "Frame") == eFalse)
+  {
       return SizeR;
-    }
+  }
   else
-    {
-      while ( SdifFGetOneComponentfromSdifString(SdifF,
-						 SdifString,
-						 &MtrxSignature,
-						 sdifString)
-              != (unsigned) '}'  )
-        {
+  {
+      while (SdifFGetOneComponentfromSdifString(SdifF, 
+	         SdifString, &MtrxSignature, sdifString) != (unsigned) '}')
+      {
           if (SdifTestMatrixType(SdifF, MtrxSignature))
-	        {
-	          SdifFrameTypePutComponent(FramT, MtrxSignature, sdifString);
-	          MtrxSignature = 0;
-	        }
-	    }
-    }
-
+	  {
+	      SdifFrameTypePutComponent(FramT, MtrxSignature, sdifString);
+	      MtrxSignature = 0;
+	  }
+      }
+  }
 
   FramT->ModifMode = eNoModif;
-    
+  
   return SizeR;
 }
 
@@ -779,8 +782,11 @@ SdifFGetAllType(SdifFileT *SdifF, int Verbose)
   
   return SizeR;
 }
+
   
 /*DOC:
+  Parse Matrix or Frame type definitions from SdifString 
+
   Remark:
          This function implements the new SDIF Specification (June 1999):
 	 Name Value Table, Matrix and Frame Type declaration, Stream ID declaration are
@@ -788,37 +794,42 @@ SdifFGetAllType(SdifFileT *SdifF, int Verbose)
 	 1NVT 1NVT
 	 1TYP 1TYP
 	 1IDS 1IDS
-  Get  Matrix and Frame type from SdifString */
+*/
 size_t 
 SdifFGetAllTypefromSdifString(SdifFileT *SdifF, SdifStringT *SdifString)
 {
- size_t SizeR = 0;
- int CharEnd;
- SdifSignature TypeOfType = 0;
-  char errorMess[_SdifStringLen];
+    size_t SizeR = 0;
+    int CharEnd;
+    SdifSignature TypeOfType = 0;
+    char errorMess[_SdifStringLen];
 
- while (( (CharEnd = SdiffGetSignaturefromSdifString(SdifString, &TypeOfType))
-	  != (unsigned) '}' ) && (!SdifStringIsEOS(SdifString)))
-   {
-     switch (TypeOfType)
-       {
-       case e1MTD :
-	 SizeR += SdifFGetOneMatrixTypefromSdifString(SdifF, SdifString);
-	 break;
-       case e1FTD :
-	 SizeR += SdifFGetOneFrameTypefromSdifString(SdifF, SdifString);
-	 break;
-       default :
-	 sprintf(errorMess, "Wait '%s' or '%s' : '%s'",
-		 SdifSignatureToString(e1MTD),
-		 SdifSignatureToString(e1FTD),
-		 SdifSignatureToString(TypeOfType));
-	 _SdifFError(SdifF, eSyntax, errorMess);
-	 break;
-       }
-     TypeOfType = 0;
-   }
- return SizeR;
+    while ((CharEnd = SdiffGetSignaturefromSdifString(SdifString, &TypeOfType))
+	   != (unsigned) '}'  &&  !SdifStringIsEOS(SdifString))
+    {
+	switch (TypeOfType)
+	{
+	  case e1MTD:
+	    SizeR += SdifFGetOneMatrixTypefromSdifString(SdifF, SdifString);
+	  break;
+
+	  case e1FTD:
+	    SizeR += SdifFGetOneFrameTypefromSdifString(SdifF, SdifString);
+	  break;
+
+	  default:
+	    sprintf(errorMess, "Waiting for signature '%s' or '%s', read '%s' (end char %c=%d) at position %d, \nremaining input '%s'",
+		    SdifSignatureToString(e1MTD),
+		    SdifSignatureToString(e1FTD),
+		    SdifSignatureToString(TypeOfType), CharEnd, CharEnd,
+		    SdifString->NbCharRead, 
+		    SdifString->str + SdifString->NbCharRead);
+	    _SdifFError(SdifF, eSyntax, errorMess);
+	    /* return SizeR; */
+	  break;
+	}
+	TypeOfType = 0;
+    }
+    return SizeR;
 }
 
 
