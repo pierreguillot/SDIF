@@ -1,4 +1,4 @@
-/* $Id: SdifFWrite.c,v 3.7 2000-03-01 11:19:45 schwarz Exp $
+/* $Id: SdifFWrite.c,v 3.8 2000-04-11 13:25:39 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -14,6 +14,10 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.7  2000/03/01  11:19:45  schwarz
+ * Added functions for matrix-wise writing:  SdifUpdateFrameHeader,
+ * SdifFWriteMatrixData, SdifFWriteMatrix, SdifFWriteFrameAndOneMatrix
+ *
  * Revision 3.6  1999/11/03  16:42:34  schwarz
  * Use _SdifNVTStreamID for stream ID of 1NVT frames because of CNMAT
  * restriction of only one frame type per stream.
@@ -211,23 +215,28 @@ SdifFWriteOneNameValue(SdifFileT *SdifF, SdifNameValueT *NameValue)
 
 
 
-
+/* write one 1NVT frame */
 size_t
 SdifFWriteNameValueLCurrNVT (SdifFileT *f)
 {
+  char nvtstring [_SdifStringLen];
+  int  nvtlength;
+ 
   SdiffGetPos(f->Stream, &(f->StartChunkPos));
 
 #if (_SdifFormatVersion >= 3)
-  /* write NVT as frame (for now with no matrices, but ascii data) */
-  SdifFSetCurrFrameHeader (f, e1NVT, _SdifUnknownSize, 0, 
-			   f->NameValues->CurrNVT->StreamID, _SdifNoTime);
+  /* write NVT as frame with 1 text matrix */
+  SdifFSetCurrFrameHeader  (f, e1NVT, _SdifUnknownSize, 1, 
+			    f->NameValues->CurrNVT->StreamID, _SdifNoTime);
   f->ChunkSize  = SdifFWriteFrameHeader (f);
+  nvtlength     = SdifFNameValueLCurrNVTtoString(f, nvtstring, _SdifStringLen);
+  f->ChunkSize += SdifFWriteTextMatrix (f, e1NVT, nvtlength, nvtstring);
 #else
   f->ChunkSize  = SdifFWriteChunkHeader (f, e1NVT, _SdifUnknownSize);
-#endif
   f->ChunkSize += SdifFPutNameValueLCurrNVT (f, 's');
   f->ChunkSize += SdifFWritePadding (f, SdifFPaddingCalculate (f->Stream, 
 							       f->ChunkSize));
+#endif
   SdifUpdateChunkSize (f, f->ChunkSize - sizeof (SdifSignature) 
 				       - sizeof (SdifInt4));
 
@@ -305,6 +314,8 @@ size_t
 SdifFWriteAllType (SdifFileT *SdifF)
 {
   size_t SizeW = 0;
+  char typstr [_SdifStringLen];
+  int  typlen;
 
   if ((SdifF->TypeDefPass == eNotPass) || (SdifF->TypeDefPass == eReadPass))
     {      
@@ -315,10 +326,17 @@ SdifFWriteAllType (SdifFileT *SdifF)
       SdifFSetCurrFrameHeader (SdifF, e1TYP, _SdifUnknownSize, 0, 
 			       _SdifNoStreamID, _SdifNoTime);
       SizeW  = SdifFWriteFrameHeader (SdifF);
+ /*
+      SdifFSetCurrFrameHeader (SdifF, e1TYP, _SdifUnknownSize, 1, 
+			       _SdifNoStreamID, _SdifNoTime);
+      SizeW  = SdifFWriteFrameHeader (SdifF);
+      typlen = SdifFAllTypeToString(f, typstr, _SdifStringLen);
+      SizeW += SdifFWriteTextMatrix (f, e1NVT, nvtlength, nvtstring);
+ */
 #else
       SizeW  = SdifFWriteChunkHeader(SdifF, e1TYP, _SdifUnknownSize);
-#endif
       SizeW += SdifFPutAllType(SdifF, 's');
+#endif
       SizeW += SdifFWritePadding(SdifF, SdifFPaddingCalculate(SdifF->Stream, SizeW));
       SdifUpdateChunkSize(SdifF, SizeW -sizeof(SdifSignature) -sizeof(SdifInt4));
       SdifF->ChunkSize = SizeW;
@@ -389,7 +407,7 @@ SdifFWriteAllASCIIChunks(SdifFileT *SdifF)
     SizeW += SdifFWriteAllNameValueNVT(SdifF);
 
   if (   (SdifExistUserMatrixType(SdifF->MatrixTypesTable))
-      || (SdifExistUserFrameType(SdifF->MatrixTypesTable)) )
+      || (SdifExistUserFrameType(SdifF->FrameTypesTable)) )
     SizeW += SdifFWriteAllType(SdifF);
   
   if (SdifStreamIDTableGetNbData  (SdifF->StreamIDsTable) > 0)
@@ -489,10 +507,31 @@ SdifFWriteMatrix (SdifFileT     *f,
 		  SdifUInt4      NbCol,
 		  void		*Data)
 {
-    int		i;
     size_t	bytes = 0;
 
     SdifFSetCurrMatrixHeader(f, Signature, DataType, NbRow, NbCol);
+    bytes += SdifFWriteMatrixHeader (f);
+    bytes += SdifFWriteMatrixData (f, Data);
+    bytes += SdifFWritePadding (f, SdifFPaddingCalculate (f->Stream, bytes));
+
+    return (bytes);
+}
+
+
+/* Write a matrix with datatype text (header, data, and padding).
+   Data points to Length bytes(!) of UTF-8 encoded text.  Length
+   includes the terminating '\0' character!!!  That is, to write a
+   C-String, use SdifFWriteTextMatrix (f, sig, strlen (str) + 1, str);
+   to include it. */
+size_t 
+SdifFWriteTextMatrix (SdifFileT     *f,
+		      SdifSignature  Signature,
+		      SdifUInt4      Length,
+		      char	    *Data)
+{
+    size_t	bytes = 0;
+
+    SdifFSetCurrMatrixHeader (f, Signature, eText, Length, 1);
     bytes += SdifFWriteMatrixHeader (f);
     bytes += SdifFWriteMatrixData (f, Data);
     bytes += SdifFWritePadding (f, SdifFPaddingCalculate (f->Stream, bytes));
