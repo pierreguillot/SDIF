@@ -1,4 +1,4 @@
-/* $Id: sdif.h,v 1.37 2003-12-15 13:13:44 schwarz Exp $
+/* $Id: sdif.h,v 1.38 2004-01-09 11:29:24 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -30,6 +30,10 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.37  2003/12/15 13:13:44  schwarz
+ * Added SdifFileT based functions SdifFSetPos, SdifFGetPos around the
+ * Sdiff* Macros, to be callable from OpenMusic.
+ *
  * Revision 1.36  2003/11/18 18:14:01  roebel
  * Added alias for typo in SdifErrorTagE.
  *
@@ -186,7 +190,7 @@
  * Revision 1.1.2.1  2000/08/21  13:07:41  tisseran
  * *** empty log message ***
  *
- * $Date: 2003-12-15 13:13:44 $
+ * $Date: 2004-01-09 11:29:24 $
  *
  */
 
@@ -201,7 +205,7 @@ extern "C" {
 #endif
 
 
-static const char _sdif_h_cvs_revision_ [] = "$Id: sdif.h,v 1.37 2003-12-15 13:13:44 schwarz Exp $";
+static const char _sdif_h_cvs_revision_ [] = "$Id: sdif.h,v 1.38 2004-01-09 11:29:24 schwarz Exp $";
 
 
 #include <stdio.h>
@@ -2233,30 +2237,12 @@ size_t    SdifFGetAllTypefromSdifString   (SdifFileT *SdifF, SdifStringT *SdifSt
 SdifHashTableT *SdifFGetMatrixTypesTable(SdifFileT *file);
 
 /**
- * Get table of frame type definitions, 
+ * Get table of frame type definitions declare in this file's header only, 
  * useful for SdifGetFrameType. 
  *
  * @ingroup types
  */
 SdifHashTableT *SdifFGetFrameTypesTable(SdifFileT *file);
-
-/**
- * Get a matrix type definition from an SDIF file.  You have to have
- * loaded the ASCII chunks before to catch types defined in the file
- * itself.
- *
- * @ingroup types
- */
-SdifMatrixTypeT *SdifFGetMatrixType(SdifFileT *file, SdifSignature sig);
-
-/**
- * Get a frame type definition from an SDIF file.  You have to have
- * loaded the ASCII chunks before to catch types defined in the file
- * itself.
- *
- * @ingroup types
- */
-SdifFrameTypeT* SdifFGetFrameType(SdifFileT *file, SdifSignature sig);
 
 
 
