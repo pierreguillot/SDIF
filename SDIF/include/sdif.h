@@ -1,4 +1,4 @@
-/* $Id: sdif.h,v 1.35 2003-11-07 12:09:07 ellis Exp $
+/* $Id: sdif.h,v 1.36 2003-11-18 18:14:01 roebel Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -30,6 +30,10 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.35  2003/11/07 12:09:07  ellis
+ * Added the declaration of of two functions in the header file
+ * SdifFAllFrameTypeToSdifString and SdifFAllMatrixTypeToSdifString
+ *
  * Revision 1.34  2003/10/14 10:10:18  schwarz
  * SdifMatrixTypeGetColumnName returns pointer to name of column at index.
  *
@@ -179,7 +183,7 @@
  * Revision 1.1.2.1  2000/08/21  13:07:41  tisseran
  * *** empty log message ***
  *
- * $Date: 2003-11-07 12:09:07 $
+ * $Date: 2003-11-18 18:14:01 $
  *
  */
 
@@ -194,7 +198,7 @@ extern "C" {
 #endif
 
 
-static const char _sdif_h_cvs_revision_ [] = "$Id: sdif.h,v 1.35 2003-11-07 12:09:07 ellis Exp $";
+static const char _sdif_h_cvs_revision_ [] = "$Id: sdif.h,v 1.36 2003-11-18 18:14:01 roebel Exp $";
 
 
 #include <stdio.h>
@@ -819,6 +823,7 @@ typedef struct
 typedef enum SdifErrorTagE
 {
 	eUnknow,
+	eUnknown=eUnknow,
 	eNoError,
 	eTypeDataNotSupported,
 	eNameLength,
