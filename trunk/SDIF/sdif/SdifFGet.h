@@ -1,4 +1,4 @@
-/* $Id: SdifFGet.h,v 3.3 1999-09-28 13:08:52 schwarz Exp $
+/* $Id: SdifFGet.h,v 3.4 2000-04-11 14:31:20 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -27,6 +27,10 @@ DESCRIPTION
 
 LOG
  * $Log: not supported by cvs2svn $
+ * Revision 3.3  1999/09/28  13:08:52  schwarz
+ * Included #include <preincluded.h> for cross-platform uniformisation,
+ * which in turn includes host_architecture.h and SDIF's project_preinclude.h.
+ *
  * Revision 3.2  1999/08/25  18:32:34  schwarz
  * Added cocoon-able comments with sentinel "DOC:" (on a single line).
  *
@@ -72,10 +76,11 @@ LOG
   Lit 4 bytes, les considère comme une signature qui est placée dans
   SdifF->CurrSignature, incrémente NbCharRead du nombre de bytes lus
   et renvoie le dernier caractère lu convert en int (-1 si erreur).  */
-int SdifFGetSignature   (SdifFileT *SdifF, size_t *NbCharRead);
+int    SdifFGetSignature	(SdifFileT *SdifF, size_t *NbCharRead);
 
 int    SdifFGetOneNameValue     (SdifFileT *SdifF, int Verbose, size_t *NbCharRead);
 size_t SdifFGetNameValueLCurrNVT(SdifFileT *SdifF, int Verbose);
+int    SdifFNameValueLCurrNVTfromString (SdifFileT *SdifF, char *str);
 size_t SdifFGetOneMatrixType    (SdifFileT *SdifF, int Verbose);
 int    SdifFGetOneComponent     (SdifFileT *SdifF, int Verbose,
 				SdifSignature *MatrixSignature,
