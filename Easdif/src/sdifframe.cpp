@@ -7,9 +7,12 @@
  * 
  * 
  * 
- * $Id: sdifframe.cpp,v 1.3 2002-06-18 14:50:19 ftissera Exp $ 
+ * $Id: sdifframe.cpp,v 1.4 2002-07-12 10:18:17 ftissera Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.3  2002/06/18 14:50:19  ftissera
+ * add methods with SDIFEntity for reading and writing
+ *
  * Revision 1.2  2002/05/17 20:20:56  ftissera
  * Add doxygen header
  * 
@@ -20,53 +23,101 @@
 #include "sdifentity.h"
 
 /* for the frame selection */
-int SDIFFrame::Selected()
+int SDIFFrame::Select()
 {
    return  mSelected = 1;
 }
 
-/* for reading */
-void SDIFFrame::Read(SdifFileT* file)
+int SDIFFrame::DeSelect()
 {
-    ReadInfo(file);   
+    return mSelected = 0;
+}
+
+int SDIFFrame::IsSelected()
+{
+    return mSelected;
+}
+
+/* for reading */
+int SDIFFrame::Read(SdifFileT* file)
+{
+    mFrameBytesRead = 0;
+    // int eof = 0;//
+
+    mFrameBytesRead += ReadInfo(file);
+    /* for selection */
+    if (mFrameBytesRead == 0)
+    {
+	SdifFSkipFrameData (file);
+	//eof = SdifFGetSignature (file, &mFrameBytesRead) == eEof;
+	SdifFGetSignature (file, &mFrameBytesRead);
+	return 0;
+    }
+
     Resize(file);
-    ReadData(file);    
+    mFrameBytesRead += ReadData(file);
+
+    return mFrameBytesRead;    
 }
 
 /* for reading with SDIFEntity */
-void SDIFFrame::Read(const SDIFEntity& entity)
+//void SDIFFrame::Read(const SDIFEntity& entity)
+int SDIFFrame::Read(const SDIFEntity& entity)
 {
+    mFrameBytesRead = 0;
+    SdifFileT* file = entity.GetFile();
+    return Read(file);
+
+/*
     SdifFileT* file = entity.GetFile();
     ReadInfo(file);   
     Resize(file);
-    ReadData(file);    
+    ReadData(file);
+*/
 }
 
 /* reading the data */
-void SDIFFrame::ReadData(SdifFileT* file)
+int SDIFFrame::ReadData(SdifFileT* file)
 {
-    for (mIndex = 0; mIndex < mNbMatrix; mIndex++)
-	mFrameBytesRead += mv_Matrix[mIndex].Read(file);
+    int BytesRead = 0;
+    SdifUInt4 index;
+    for (index = 0; index < mNbMatrix; index++)
+	BytesRead += mv_Matrix[index].Read(file);
+
+    return BytesRead;
 }
 
 /* reading the data with SDIFEntity*/
 void SDIFFrame::ReadData(const SDIFEntity& entity)
 {
+    SdifUInt4 index;
     SdifFileT* file = entity.GetFile();
-    for (mIndex = 0; mIndex < mNbMatrix; mIndex++)
-	mFrameBytesRead += mv_Matrix[mIndex].Read(file);
+    for (index = 0; index < mNbMatrix; index++)
+	mFrameBytesRead += mv_Matrix[index].Read(file);
 }
 
 /* reading the informations */
-void SDIFFrame::ReadInfo(SdifFileT* file)
+int SDIFFrame::ReadInfo(SdifFileT* file)
 {
-    mFrameBytesRead = 0;
-    mFrameBytesRead += SdifFReadFrameHeader(file);
-    
+    int BytesRead = 0;  
+
+    BytesRead += SdifFReadFrameHeader(file);
+
+    /* for selection*/
+       if (!SdifFCurrFrameIsSelected (file))
+	  {
+	//SdifFSkipFrameData (file);
+	    //    eof = SdifFGetSignature (file, &bytesread) == eEof;
+	 return 0;
+	  }
+
     mTime    = SdifFCurrTime(file);
     mSig      = SdifFCurrFrameSignature(file);
     mStreamID = SdifFCurrID(file);
     mNbMatrix  = SdifFCurrNbMatrix(file);
+
+    return BytesRead;
+//    return 0;
 }
 
 
@@ -85,28 +136,34 @@ void SDIFFrame::ReadInfo(const SDIFEntity& entity)
 
 
 /* for writing */
-void SDIFFrame::Write(SdifFileT* file)
-{       
+int SDIFFrame::Write(SdifFileT* file)
+{        
+    SdifUInt4 index;
     WriteInfo(file);
-    for (mIndex = 0; mIndex < mNbMatrix; mIndex++)	    
-	mv_Matrix[mIndex].Write(file);      
+    for (index = 0; index < mNbMatrix; index++)	    
+	mSize += mv_Matrix[index].Write(file);     
+
+    return mSize; 
 }
 
 /* for writing with SDIFEntity */
 void SDIFFrame::Write(const SDIFEntity& entity)
 {       
+    SdifUInt4 index;
     SdifFileT* file = entity.GetFile();
     WriteInfo(file);
-    for (mIndex = 0; mIndex < mNbMatrix; mIndex++)	    
-	mv_Matrix[mIndex].Write(file);  
+    for (index = 0; index < mNbMatrix; index++)	    
+	mv_Matrix[index].Write(file);  
     // entity.SetFile(file);
 }
 
 /* writing informations */
-void SDIFFrame::WriteInfo(SdifFileT* file)
+int SDIFFrame::WriteInfo(SdifFileT* file)
 {
     mSize += SdifSizeOfFrameHeader();
-    SdifFSetCurrFrameHeader(file,mSig, mSize,mNbMatrix,mStreamID,mTime);	           SdifFWriteFrameHeader(file);    
+    SdifFSetCurrFrameHeader(file, mSig, mSize, mNbMatrix, mStreamID, mTime);	           SdifFWriteFrameHeader(file);    
+
+    return mSize;
 }
 
 /* writing informations with SDIFEntity*/
@@ -127,9 +184,10 @@ void SDIFFrame::ViewInfo()
 
 void SDIFFrame::View()
 {
+    SdifUInt4 index;
     ViewInfo();
-    for (mIndex = 0; mIndex < mNbMatrix; mIndex++)
-	mv_Matrix[mIndex].View();		  
+    for (index = 0; index < mNbMatrix; index++)
+	mv_Matrix[index].View();		  
 }
 
 /* to Set */
@@ -197,6 +255,11 @@ SdifFloat8 SDIFFrame::GetTime()
     return mTime;
 }
 
+SdifUInt4 SDIFFrame::GetSize()
+{
+    return mSize;
+}
+
 /* clean */
 void SDIFFrame::ClearData()
 {
@@ -227,8 +290,76 @@ void SDIFFrame::Resize(const SDIFEntity& entity)
 }
 
 
+bool SDIFFrame::MatrixExists(const SdifSignature& sig)
+{ 
+    bool test = false;
+    SdifUInt4 index = 0;    
+
+    while (!test && (index < mNbMatrix))
+    {
+	test = (mv_Matrix[index].GetSignature() == sig);
+	++index;
+    }
+    return test;
+}
+
+bool SDIFFrame::MatrixExists(const std::string& signature)
+{
+    SdifSignature sig = SdifStringToSignature(const_cast<char*>
+					      (signature.c_str()));
+    return MatrixExists(sig);
+}
 
 
+SDIFMatrix& SDIFFrame::GetMatrixWithSig(const SdifSignature& sig)
+{
+    bool test = false;    
+    SdifUInt4 index = 0;
+
+    while (!test && (index < mNbMatrix))
+    {
+	test = (mv_Matrix[index].GetSignature() == sig);
+	++index;
+    }
+
+    if (test)
+	return mv_Matrix[index-1];
+    else
+    {
+	std::cerr << " No such matrix " << std::endl;
+	return mv_Matrix[0];
+    }
+}
+
+
+SDIFMatrix& SDIFFrame::GetMatrix(const std::string& signature)
+{   
+    /*
+      bool test = false;    
+      SdifUInt4 index = 0;
+    */
+
+    SdifSignature sig = SdifStringToSignature(const_cast<char*>
+					      (signature.c_str()));
+/* with GetMatrixWithSig(sig) */
+    return GetMatrixWithSig(sig);
+
+/*
+  while (!test && (index < mNbMatrix))
+  {
+  test = (mv_Matrix[index].GetSignature() == sig);
+  ++index;
+  }
+
+  if (test)
+  return mv_Matrix[index-1];
+  else
+  {
+  std::cerr << " No such matrix " << std::endl;
+  return mv_Matrix[0];
+  }
+*/
+}
 
 
 
