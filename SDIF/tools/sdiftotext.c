@@ -1,4 +1,4 @@
-/* $Id: sdiftotext.c,v 1.5 2003-11-07 21:47:20 roebel Exp $
+/* $Id: sdiftotext.c,v 1.6 2003-11-07 22:25:20 roebel Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -11,6 +11,9 @@
  * sdiftotext.c
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.5  2003/11/07 21:47:20  roebel
+ * removed XpGuiCalls.h and replaced preinclude.h  by local files
+ *
  * Revision 1.4  2003/11/07 12:09:09  ellis
  * Added the declaration of of two functions in the header file
  * SdifFAllFrameTypeToSdifString and SdifFAllMatrixTypeToSdifString
@@ -59,7 +62,6 @@
 
 
 #include "sdif_portability.h"
-#include "XpGuiCalls.h"
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -77,7 +79,7 @@ usage(void)
  o :   output file (default is \"stdout\")\n\
  e :   error file (default is \"stderr\")\n\
  t :   sdif types file (default is env SDIFTYPES\n\t\tor \"SdifTypes.STYP\" in current dir)\n");
-  XpExit(1);
+  exit(1);
 }
 
 
