@@ -1,6 +1,6 @@
 dnl -*-autoconf-*-  (No, it's an autoconf file!)
 dnl -*-m4-*- (He emacs, it's a m4 file)
-dnl $Id: configure.in,v 1.6 2003-03-18 15:23:21 roebel Exp $
+dnl $Id: configure.in,v 1.7 2003-04-03 13:15:23 schwarz Exp $
 dnl
 dnl configure.in		Feb 2003      Axel Roebel
 dnl
@@ -100,8 +100,9 @@ AC_MSG_RESULT(CREATE OUTPUT FILES)
 AC_OUTPUT(Makefile 
 easdif/Makefile 
 test/Makefile
-Easdif.pc)
+Easdif.pc
+Doxyfile)
 
-AC_MSG_RESULT(END OF CONFIGURATION)
+AC_MSG_RESULT(END OF ${PACKAGE} CONFIGURATION)
 
 
