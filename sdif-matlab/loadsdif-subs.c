@@ -1,4 +1,4 @@
-/* $Id: loadsdif-subs.c,v 1.7 2000-12-19 16:44:10 roebel Exp $
+/* $Id: loadsdif-subs.c,v 1.8 2001-04-19 18:28:29 roebel Exp $
 
    loadsdif_subs.c	25. January 2000	Diemo Schwarz
 
@@ -14,6 +14,12 @@
    endread ('close')
 
   $Log: not supported by cvs2svn $
+  Revision 1.7  2000/12/19 16:44:10  roebel
+  Fixed Bug in loadsdif - crash when last matrix was not selected
+  Moved test file sequence4seg1.energy.sdif into repository
+  Corrected sgi mex extension to mexsg such that sgi is now in
+  distribution
+
   Revision 1.6  2000/08/08 17:26:58  schwarz
   Fixed 'last matrix not returned' bug.
   More test cases t0, t1.
@@ -107,7 +113,12 @@ int readframe (int nlhs, mxArray *plhs [], SdifFileT *f)
     mxArray	  *mxarray [MaxNumOut];
     int		  matrixfound = 0, m;
 
-    if (eof  ||  SdifFLastError(f))   return (0);	/* error or eof */
+    /* Changed to be
+       consistent with the behavior of sdifextract
+
+       if (eof  ||  SdifFLastError(f))   return (0);	*/
+
+    if (eof)   return (0);	/*  eof */
 
     while (!matrixfound  &&  !eof)
     {
@@ -170,7 +181,12 @@ int readframe (int nlhs, mxArray *plhs [], SdifFileT *f)
       }
     }
     /* return true even on eof: we want to return the last matrix read */
-    return (SdifFLastError (f) == NULL);
+
+    /* Changed to be
+       consistent with the behavior of sdifextract
+       return (SdifFLastError (f) == NULL); */
+
+    return (1);
 }
 
 
