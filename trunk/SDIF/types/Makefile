@@ -1,6 +1,13 @@
-# $Id: Makefile,v 1.7 2001-04-18 16:24:52 schwarz Exp $
+# $Id: Makefile,v 1.8 2001-04-27 13:38:36 schwarz Exp $
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.7  2001/04/18 16:24:52  schwarz
+# Generate ../sdif/sdiftypes.h with xmltostyp.pl to include standard types
+# into the code as #define'd string SDIFTYPES_STRING
+# (--> no need to install SdifTypes.STYP)
+# Generate ../sdif/SdifTypes.STYP directly.
+# Changed usage of xmltostyp.pl, added help.
+#
 # Revision 1.6  2000/08/22 16:19:54  schwarz
 # Generate HTML here and in doc.  clean.
 #
@@ -31,8 +38,12 @@ PERL		= perl $(PERLFLAGS)
 HTMLDIR		= ../doc/standard
 htmldoc		= $(HTMLDIR)/types-doc.html
 htmltoc		= $(HTMLDIR)/types-toc.html
-sdiftypes_h	= ../sdif/sdiftypes.h
-sdiftypes_styp  = ../sdif/SdifTypes.STYP
+
+# where the generated SdifTypes.STYP and sdiftypes.h go
+STYPDIR		= ../data
+HTYPDIR		= ../sdif
+sdiftypes_styp  = $(STYPDIR)/SdifTypes.STYP
+sdiftypes_h	= $(HTYPDIR)/sdiftypes.h
 
 genfiles	= $(sdiftypes_styp) $(sdiftypes_h) sdiftypes.html toc.html \
 		  $(htmldoc) $(htmltoc)
