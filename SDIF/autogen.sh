@@ -1,5 +1,5 @@
 #!/bin/sh
-rm aclocal.m4 config.* install-sh libtool ltconfig ltmain.sh missing mkinstalldirs
+rm -f aclocal.m4 config.* install-sh libtool ltconfig ltmain.sh missing mkinstalldirs
 set -x
 #aclocal -I m4
 aclocal
