@@ -1,10 +1,13 @@
-/* $Id: testselect.c,v 1.2 2000-10-27 20:04:03 roebel Exp $
+/* $Id: testselect.c,v 1.3 2002-08-05 14:22:05 roebel Exp $
  *
  * testselect		30. August 1999		Diemo Schwarz
  *
  * Test functions from SdifSelect.c
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  2000/10/27 20:04:03  roebel
+ * autoconf merged back to main trunk
+ *
  * Revision 1.1.2.2  2000/08/21  17:00:54  tisseran
  * *** empty log message ***
  *
@@ -62,11 +65,11 @@ main (int argc, char *argv [])
 	printf ("\n  stream\t%d - %d ", intrange.value, intrange.range);
 
     SdifListInitLoop (sel.frame);
-    while (sig = SdifSelectGetNextSignature (sel.frame))
+    while ((sig = SdifSelectGetNextSignature (sel.frame)))
 	printf ("\n  frame\t'%s' ", SdifSignatureToString (sig));
 
     SdifListInitLoop (sel.matrix);
-    while (sig = SdifSelectGetNextSignature (sel.matrix))
+    while ((sig = SdifSelectGetNextSignature (sel.matrix)))
 	printf ("\n  matrix\t'%s' ", SdifSignatureToString (sig));
 
     SdifListInitLoop (sel.column);
