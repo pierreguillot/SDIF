@@ -17,6 +17,11 @@
 %   parameter. For using writesdif on multiple files you may have
 %   give an empty string for the types definition file 
 %
+%   writing a type definition could be done as follows:
+%   typ=sprintf(['1MTD 1EHR '...
+%	   '{ Index, Frequency, Amplitude, Phase, FreqSlope }\n',...
+%	    '1FTD 1EHR {1EHR ExtendedHarmonicPartials;}\n'])
+%   writesdif(file,'',typ);
 %
 % - To write a data frame containing any number of matrices to the SDIF file, 
 %   use:
@@ -47,13 +52,17 @@
 %        written in Information Value Table
 
 
-% $Id: writesdif.m,v 1.6 2003-04-22 16:08:59 roebel Exp $
+% $Id: writesdif.m,v 1.7 2003-04-22 16:10:22 roebel Exp $
 %
 % writesdif.m	12. May 2000	Patrice Tisserand
 %
 % Matlab mex extension and support functions to write SDIF files.
 
 % $Log: not supported by cvs2svn $
+% Revision 1.6  2003/04/22 16:08:59  roebel
+% Added possibility for writing local type declaration to
+% sdif file.
+%
 % Revision 1.5  2001/05/14 17:31:48  roebel
 % Upgraded documentation for char matrix data and 1NVT matrix support.
 %
