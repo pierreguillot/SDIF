@@ -10,7 +10,7 @@
 # even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 # PARTICULAR PURPOSE.
 
-# $Id: Makefile.in,v 1.17 2000-12-07 13:42:21 roebel Exp $
+# $Id: Makefile.in,v 1.18 2000-12-07 13:43:04 roebel Exp $
 #
 # ./sdif/Makefile.am		September 2000			Patrice Tisserand
 #
@@ -41,6 +41,9 @@
 # send email to:  sdif@ircam.fr
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.12  2000/12/07 13:42:21  roebel
+# small reorganization of sdif/Makefile.am
+#
 # Revision 1.11  2000/12/06 15:01:14  roebel
 # removed host_configure.h from makefiles
 #
@@ -146,11 +149,10 @@ lib_LIBRARIES = @SELLIB@
 FORMES_H = host_architecture.h preincluded.h UniversalEnvVar.h  XpGuiCalls.h
 FORMES_INCLUDE = /u/formes/share/include
 
-SDIF_H = $(top_srcdir)/include/sdif.h 
-LSDIF_H = SdifCheck.h 	SdifErrMess.h	SdifConvToText.h 		SdifError.h 	SdifFGet.h 	SdifFPrint.h 			SdifFPut.h 	SdifFRead.h	SdifFScan.h 			SdifFWrite.h 	SdifFile.h	SdifTimePosition.h 		SdifFrame.h 	SdifFrameType.h SdifGlobals.h 			SdifHard_OS.h 	SdifHash.h	SdifHighLevel.h 		SdifList.h 	SdifMatrix.h 	SdifMatrixType.h		SdifMemory.h	SdifNameValue.h	SdifPreTypes.h 			SdifPrint.h 	SdifSelect.h	SdifRWLowLevel.h		SdifStreamID.h	SdifString.h 	SdifSignatureTab.h		SdifTest.h 	SdifTextConv.h 					$(top_srcdir)/sdif/SdifVersion.h project_preinclude.h config.h
+SDIF_H = $(top_srcdir)/include/sdif.h 	SdifCheck.h 	SdifErrMess.h	SdifConvToText.h 		SdifError.h 	SdifFGet.h 	SdifFPrint.h 			SdifFPut.h 	SdifFRead.h	SdifFScan.h 			SdifFWrite.h 	SdifFile.h	SdifTimePosition.h 		SdifFrame.h 	SdifFrameType.h SdifGlobals.h 			SdifHard_OS.h 	SdifHash.h	SdifHighLevel.h 		SdifList.h 	SdifMatrix.h 	SdifMatrixType.h		SdifMemory.h	SdifNameValue.h	SdifPreTypes.h 			SdifPrint.h 	SdifSelect.h	SdifRWLowLevel.h		SdifStreamID.h	SdifString.h 	SdifSignatureTab.h		SdifTest.h 	SdifTextConv.h 					$(top_srcdir)/sdif/SdifVersion.h project_preinclude.h config.h
 
 
-noinst_HEADERS = $(LSDIF_H) $(addprefix $(top_srcdir)/sdif/,${FORMES_H})
+noinst_HEADERS = $(SDIF_H) $(addprefix $(top_srcdir)/sdif/,${FORMES_H})
 
 libsdif_a_SOURCES = SdifHash.c       SdifGlobals.c      SdifSignatureTab.c   		     SdifMemory.c     SdifNameValue.c    SdifMatrixType.c     		     SdifStreamID.c   SdifMatrix.c       SdifFrame.c          		     SdifTest.c       SdifTimePosition.c SdifFile.c           		     SdifFGet.c       SdifFRead.c        SdifFScan.c          		     SdifFPrint.c     SdifFWrite.c       SdifTextConv.c       		     SdifHard_OS.c    SdifErrMess.c      SdifList.c           		     SdifSelect.c     SdifHighLevel.c    SdifCheck.c          		     SdifString.c     SdifError.c        SdifFrameType.c      		     SdifPrint.c      SdifRWLowLevel.c   SdifFPut.c           		     SdifConvToText.c SdifPreTypes.c    
 
@@ -161,7 +163,7 @@ sdiftype = $(datadir)/SdifTypes.STYP
 
 INCLUDES = -I$(top_srcdir)/include -D_SdifTypesFileName=\"$(sdiftype)\" -DUSE_CONFIGURE
 
-Versionsrc := $(libsdif_a_SOURCES) $(subst config.h,,$(subst $(top_srcdir)/sdif/SdifVersion.h,,$(noinst_HEADERS) )) $(SDIF_H)
+Versionsrc := $(libsdif_a_SOURCES) $(subst config.h,,$(subst $(top_srcdir)/sdif/SdifVersion.h,,$(noinst_HEADERS) )) 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = config.h
 CONFIG_CLEAN_FILES = 
