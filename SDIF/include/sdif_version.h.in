@@ -1,3 +1,9 @@
+/* $Id: sdif_version.h.in,v 1.3 2003-05-23 16:14:43 schwarz Exp $ -*-c-*-
+
+   $Log: not supported by cvs2svn $
+*/
+
+
 #ifndef _SDIF_VERSION_H
 #define _SDIF_VERSION_H 1
 
@@ -9,6 +15,10 @@
 
 /* release number of current version of sdif library */
 #define SDIF_VERSION_RELEASE @SDIF_VERSION_RELEASE@
+
+/* current version of sdif library */
+#define VERSION		     "@VERSION@"
+
 
 #define TOSTRING(x) #x
 
