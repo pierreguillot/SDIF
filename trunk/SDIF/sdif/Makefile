@@ -1,8 +1,20 @@
-# $Id: Makefile,v 2.1 1998-12-03 18:10:47 schwarz Exp $
+# $Id: Makefile,v 2.2 1998-12-21 18:26:56 schwarz Exp $
+#
+#               Copyright (c) 1998 by IRCAM - Centre Pompidou
+#                          All rights reserved.
+#
+#  For any information regarding this and other IRCAM software, please
+#  send email to:
+#                            manager@ircam.fr
+#
 #
 # Makefile only for .o files of sdif library
 #
 # $Log: not supported by cvs2svn $
+# Revision 2.1  1998/12/03  18:10:47  schwarz
+# Corrected and simplified generation of output directories,
+# added missing header files to list to be installed.
+#
 
 PRJ_DIR := $(shell pwd)/..
 

@@ -1,4 +1,12 @@
-/* $Id: SdifFile.c,v 2.1 1998-12-09 15:05:25 virolle Exp $
+/* $Id: SdifFile.c,v 2.2 1998-12-21 18:27:15 schwarz Exp $
+ *
+ *               Copyright (c) 1998 by IRCAM - Centre Pompidou
+ *                          All rights reserved.
+ *
+ *  For any information regarding this and other IRCAM software, please
+ *  send email to:
+ *                            manager@ircam.fr
+ *
  *
  * SdifFile.c
  *
@@ -8,6 +16,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 2.1  1998/12/09  15:05:25  virolle
+ * no segmentation fault when opening failed.
+ *
  * Revision 2.0  1998/11/29  11:41:40  virolle
  * - New management of interpretation errors.
  * - Alignement of frames with CNMAT (execpt specials Chunk 1NVT, 1TYP, 1IDS).
@@ -531,7 +542,7 @@ SdifGenKill(void)
 void SdifPrintVersion(void)
 {
 #ifndef lint
-  static char rcsid[]= "$Revision: 2.1 $ IRCAM $Date: 1998-12-09 15:05:25 $";
+  static char rcsid[]= "$Revision: 2.2 $ IRCAM $Date: 1998-12-21 18:27:15 $";
 #endif
 
 

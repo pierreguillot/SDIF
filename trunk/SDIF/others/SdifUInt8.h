@@ -1,4 +1,12 @@
-/* SdifUInt8.h
+/* $Id: SdifUInt8.h,v 2.1 1998-12-21 18:26:52 schwarz Exp $
+ *
+ *               Copyright (c) 1998 by IRCAM - Centre Pompidou
+ *                          All rights reserved.
+ *
+ *  For any information regarding this and other IRCAM software, please
+ *  send email to:
+ *                            manager@ircam.fr
+ *
  *
  * Type Unsigned Int depending on machine
  * if machine has 64 bits long then SdifUInt8 is unsigned long

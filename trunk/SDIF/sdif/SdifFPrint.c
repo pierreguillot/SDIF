@@ -1,4 +1,12 @@
-/* SdifFPrint.c
+/* $Id: SdifFPrint.c,v 2.1 1998-12-21 18:27:06 schwarz Exp $
+ *
+ *               Copyright (c) 1998 by IRCAM - Centre Pompidou
+ *                          All rights reserved.
+ *
+ *  For any information regarding this and other IRCAM software, please
+ *  send email to:
+ *                            manager@ircam.fr
+ *
  *
  * F : SdifFileT* SdifF, Print : write only into the pseudo-sdif text file, SdifF->TextStream.
  *

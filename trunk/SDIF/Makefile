@@ -1,8 +1,19 @@
-# $Id: Makefile,v 2.0 1998-11-29 11:28:29 virolle Exp $
+# $Id: Makefile,v 2.1 1998-12-21 18:26:39 schwarz Exp $
+#
+#               Copyright (c) 1998 by IRCAM - Centre Pompidou
+#                          All rights reserved.
+#
+#  For any information regarding this and other IRCAM software, please
+#  send email to:
+#                            manager@ircam.fr
+#
 #
 # make general	
 #
 # $Log: not supported by cvs2svn $
+# Revision 2.0  1998/11/29  11:28:29  virolle
+# Added Visual C++ projects.
+#
 # Revision 1.3  1998/11/10  15:36:15  schwarz
 # Added sdifextract.
 #

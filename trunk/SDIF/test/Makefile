@@ -47,6 +47,15 @@ clean:
 	rm -f $(PROG)
 	rm -f $(OBJS)
 	rm -f *~
+# $Id: Makefile,v 2.1 1998-12-21 18:28:03 schwarz Exp $
+#
+#               Copyright (c) 1998 by IRCAM - Centre Pompidou
+#                          All rights reserved.
+#
+#  For any information regarding this and other IRCAM software, please
+#  send email to:
+#                            manager@ircam.fr
+#
 	rm -f #*
 	rm -f core
 
