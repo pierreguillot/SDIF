@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.2 2000-10-27 20:04:01 roebel Exp $
+# $Id: Makefile.am,v 1.3 2000-10-30 16:30:00 roebel Exp $
 #
 # ./test/Makefile.am		September 2000			Patrice Tisserand
 #
@@ -29,6 +29,9 @@
 # send email to:  sdif@ircam.fr
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.2  2000/10/27  20:04:01  roebel
+# autoconf merged back to main trunk
+#
 # Revision 1.1.2.2  2000/10/26  17:27:40  schwarz
 # Added header with copyright and links to all Makefile.am and configure.in.
 #
@@ -44,6 +47,7 @@ testselect_SOURCES = testselect.c
 
 LDADD = -lsdif
 LDFLAGS = -L../sdif
+INCLUDES = -I../include
 
 TESTS_ENVIRONMENT = SDIFTYPES=../data/SdifTypes.STYP
 TESTS = test_conv test_cmpsdif headerTest NVTTest cmd_testcheck
