@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.32 2003-11-07 21:47:18 roebel Exp $
+# $Id: Makefile.am,v 1.33 2004-06-03 11:18:00 schwarz Exp $
 #
 # ./sdif/Makefile.am		September 2000		Patrice Tisserand
 #
@@ -30,6 +30,9 @@
 
 
 # $Log: not supported by cvs2svn $
+# Revision 1.32  2003/11/07 21:47:18  roebel
+# removed XpGuiCalls.h and replaced preinclude.h  by local files
+#
 # Revision 1.31  2003/11/07 15:27:33  tisseran
 # Removed CKSUM computing.
 # Removed generation of SdifFile.h
@@ -146,8 +149,8 @@
 # Added header with copyright and links to all Makefile.am and configure.in.
 
 
-# EXTRA_LIBRARIES = libsdif.a libsdif-debug.a libsdif-cpp.a
-EXTRA_LTLIBRARIES = libsdif.la libsdif-debug.la
+EXTRA_LIBRARIES   = libsdif.a  libsdif-debug.a  libsdif-profile.a
+EXTRA_LTLIBRARIES = libsdif.la libsdif-debug.la libsdif-profile.la
 
 # lib_LIBRARIES = @SELLIB@
 lib_LTLIBRARIES = @SELLIB@
@@ -181,9 +184,11 @@ libsdif_la_SOURCES = SdifHash.c       SdifGlobals.c      SdifSignatureTab.c   \
 		     SdifConvToText.c SdifPreTypes.c
 
 libsdif_debug_la_SOURCES = $(libsdif_la_SOURCES)
+libsdif_profile_la_SOURCES = $(libsdif_la_SOURCES)
 
 libsdif_la_LDFLAGS = -no-undefined -release @VERSION@ -rpath $(libdir)
 libsdif_debug_la_LDFLAGS = $(libsdif_la_LDFLAGS) -rpath $(libdir)
+libsdif_profile_la_LDFLAGS = $(libsdif_la_LDFLAGS) -rpath $(libdir) -pg
 
 sdiftype = $(datadir)/SdifTypes.STYP
 
@@ -194,6 +199,3 @@ INCLUDES = -I../include -I$(top_srcdir)/include -D_SdifTypesFileName=\"$(sdiftyp
 
 $(libsdif_a_SOURCES) :  $(FORMES_H:%=$(top_srcdir)/sdif/%)
 $(libsdif_la_SOURCES) : $(FORMES_H:%=$(top_srcdir)/sdif/%)
-
-
-

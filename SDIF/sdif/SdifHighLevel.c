@@ -1,4 +1,4 @@
-/* $Id: SdifHighLevel.c,v 3.8 2003-11-07 21:47:18 roebel Exp $
+/* $Id: SdifHighLevel.c,v 3.9 2004-06-03 11:18:00 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -29,6 +29,9 @@
  * SdifHighLevel.c	8.12.1999	Diemo Schwarz
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.8  2003/11/07 21:47:18  roebel
+ * removed XpGuiCalls.h and replaced preinclude.h  by local files
+ *
  * Revision 3.7  2002/08/28 16:52:39  schwarz
  * Fixed bug that end of file was not recognised:
  * signature is then eEmptySignature, and not eEof.
@@ -90,7 +93,8 @@ int SdifFReadNextSelectedFrameHeader (SdifFileT *f)
 	    return 0;	/* EXIT RETURN EOF */
 
 	/* TODO: 
-	   first check: if frame sig not selected, don't read frame header */
+	   first check: if frame sig not selected, don't read frame header
+	   --> SdifFCurrSignatureIsSelected() */
 	if (!(numread = SdifFReadFrameHeader(f)))
 	    return 0;	/* EXIT RETURN ERROR */
 	else

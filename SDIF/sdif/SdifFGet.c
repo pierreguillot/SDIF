@@ -1,4 +1,4 @@
-/* $Id: SdifFGet.c,v 3.13 2004-05-03 18:07:27 schwarz Exp $
+/* $Id: SdifFGet.c,v 3.14 2004-06-03 11:18:00 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -32,6 +32,13 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.13  2004/05/03 18:07:27  schwarz
+ * Fixed bugs in padding calculation for ascii chunks:
+ * 1. DON'T PAD FRAMES!
+ * 2. SdifFReadMatrixHeader already accounts for read signature
+ * Now, calculating padding from ftell is redundant, but we leave it in,
+ * with a warning, until everyone's code is tested.
+ *
  * Revision 3.12  2003/11/07 21:47:18  roebel
  * removed XpGuiCalls.h and replaced preinclude.h  by local files
  *
@@ -123,10 +130,12 @@
 
 
 
-int
-SdifFGetSignature(SdifFileT *SdifF, size_t *NbCharRead)
+int SdifFGetSignature (SdifFileT *SdifF, size_t *nread)
 {
-  return SdiffGetSignature(SdifF->Stream, &(SdifF->CurrSignature), NbCharRead);
+    /* ASCII!!!
+       SdiffGetSignature(SdifF->Stream, &(SdifF->CurrSignature), NbCharRead);
+    */
+    return SdiffReadSignature(&SdifF->CurrSignature, SdifF->Stream, nread);
 }
 
 

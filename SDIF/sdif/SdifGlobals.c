@@ -1,4 +1,4 @@
-/* $Id: SdifGlobals.c,v 3.14 2004-05-03 18:07:26 schwarz Exp $
+/* $Id: SdifGlobals.c,v 3.15 2004-06-03 11:18:00 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -31,6 +31,13 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.14  2004/05/03 18:07:26  schwarz
+ * Fixed bugs in padding calculation for ascii chunks:
+ * 1. DON'T PAD FRAMES!
+ * 2. SdifFReadMatrixHeader already accounts for read signature
+ * Now, calculating padding from ftell is redundant, but we leave it in,
+ * with a warning, until everyone's code is tested.
+ *
  * Revision 3.13  2003/11/07 21:47:18  roebel
  * removed XpGuiCalls.h and replaced preinclude.h  by local files
  *
@@ -139,33 +146,31 @@ char gSdifStringSignature[_SdifNbMaxPrintSignature][5];
 
 
 #include "SdifRWLowLevel.h"
-char *
-SdifSignatureToString(SdifSignature Signature)
-{
-  char *pS, *Ret;
-  SdifSignature SignW;
 
-  switch (gSdifMachineType)
+char *SdifSignatureToString (SdifSignature Signature)
+{
+    char *pS, *Ret;
+
+    switch (gSdifMachineType)
     {     
-    case eLittleEndian :
-    case eLittleEndian64 :
-      SdifLittleToBig(&SignW, &Signature, sizeof(SdifSignature));
-      break;
-    default :
-	  SignW = Signature; 
+      case eLittleEndian :
+      case eLittleEndian64 :
+	  SdifSwap4(&Signature, 1);
       break;
     }
 
-  pS = (char*) &SignW;
-  /* string affectation with 'sprintf' is important for release in Win/Dos32
-   */
-  sprintf(gSdifStringSignature[CurrStringPosSignature],
-			"%c%c%c%c", pS[0], pS[1], pS[2], pS[3]);
+    pS = (char *) &Signature;
+    gSdifStringSignature[CurrStringPosSignature][0] = pS[0];
+    gSdifStringSignature[CurrStringPosSignature][1] = pS[1];
+    gSdifStringSignature[CurrStringPosSignature][2] = pS[2];
+    gSdifStringSignature[CurrStringPosSignature][3] = pS[3];
+    gSdifStringSignature[CurrStringPosSignature][4] = 0;
 
-  Ret = gSdifStringSignature[CurrStringPosSignature];
-  CurrStringPosSignature = (CurrStringPosSignature+1) % _SdifNbMaxPrintSignature;
-  return Ret;
+    Ret = gSdifStringSignature[CurrStringPosSignature];
+    CurrStringPosSignature = (CurrStringPosSignature + 1) % _SdifNbMaxPrintSignature;
+    return Ret;
 }
+
 
 int
 SdifSignatureCmpNoVersion(SdifSignature Signature1, SdifSignature Signature2)
