@@ -1,4 +1,4 @@
-/* $Id: SdifError.c,v 3.12 2002-08-05 14:21:08 roebel Exp $
+/* $Id: SdifError.c,v 3.13 2003-11-07 12:09:08 ellis Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -31,6 +31,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.12  2002/08/05 14:21:08  roebel
+ * Comment changed.
+ *
  * Revision 3.11  2002/06/18 13:55:11  ftissera
  * Append inErrorMess to outErrorMess in SdifErrorWarning
  *
@@ -175,10 +178,9 @@ SdifErrorWarning(SdifErrorEnum Error, const char *inErrorMess)
 {
   int exitit = 0;
   int outMessageLength = 0;
-  // char* outErrorMess = NULL;
   char outErrorMess [4096];
 
-  // fprintf(SdifStdErr, "*Sdif* Error (%s, %d)\n  ", SdifErrorFile, SdifErrorLine);
+  /* fprintf(SdifStdErr, "*Sdif* Error (%s, %d)\n  ", SdifErrorFile, SdifErrorLine);*/
   /*
     outMessageLength += strlen(inErrorMess);
   */
@@ -186,14 +188,7 @@ SdifErrorWarning(SdifErrorEnum Error, const char *inErrorMess)
   switch(Error)
     {
     case  eFalse :
-	/*
-	outMessageLength += strlen("False : '%s'\n");
-	outErrorMess = (char*)malloc(outMessageLength * sizeof(char));
-	if (outErrorMess != NULL)
-	{
-	*/
 	    sprintf (outErrorMess, "False : '%s\n", inErrorMess);
-/*	}*/
 	    break;
     case  eTrue :
 	    sprintf (outErrorMess, "True : '%s'\n", inErrorMess);

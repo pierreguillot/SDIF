@@ -1,4 +1,4 @@
-/* $Id: sdif.h,v 1.34 2003-10-14 10:10:18 schwarz Exp $
+/* $Id: sdif.h,v 1.35 2003-11-07 12:09:07 ellis Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -30,6 +30,9 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.34  2003/10/14 10:10:18  schwarz
+ * SdifMatrixTypeGetColumnName returns pointer to name of column at index.
+ *
  * Revision 1.33  2003/08/06 15:08:11  schwarz
  * SdifSelectIntMask added for all integer selections, new functions:
  * - SdifSelectTestIntMask
@@ -176,7 +179,7 @@
  * Revision 1.1.2.1  2000/08/21  13:07:41  tisseran
  * *** empty log message ***
  *
- * $Date: 2003-10-14 10:10:18 $
+ * $Date: 2003-11-07 12:09:07 $
  *
  */
 
@@ -191,7 +194,7 @@ extern "C" {
 #endif
 
 
-static const char _sdif_h_cvs_revision_ [] = "$Id: sdif.h,v 1.34 2003-10-14 10:10:18 schwarz Exp $";
+static const char _sdif_h_cvs_revision_ [] = "$Id: sdif.h,v 1.35 2003-11-07 12:09:07 ellis Exp $";
 
 
 #include <stdio.h>
@@ -3125,7 +3128,10 @@ size_t SdifFPrintOneRow             (SdifFileT *SdifF);
 size_t SdifFPrintMatrixType         (SdifFileT *SdifF, SdifMatrixTypeT *MatrixType);
 size_t SdifFPrintFrameType          (SdifFileT *SdifF, SdifFrameTypeT  *FrameType);
 
+/* SdifFPut */
 
+int SdifFAllFrameTypeToSdifString   (SdifFileT *SdifF, SdifStringT *SdifString);
+int SdifFAllMatrixTypeToSdifString  (SdifFileT *SdifF, SdifStringT *SdifSTring);
 
 #ifdef __cplusplus
 }

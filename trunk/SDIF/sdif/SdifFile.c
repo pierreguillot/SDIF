@@ -1,4 +1,4 @@
-/* $Id: SdifFile.c,v 3.35 2003-08-06 15:10:46 schwarz Exp $
+/* $Id: SdifFile.c,v 3.36 2003-11-07 12:09:08 ellis Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -33,6 +33,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.35  2003/08/06 15:10:46  schwarz
+ * Finally removed obsolete functions (like SdifSkip...).
+ *
  * Revision 3.34  2003/06/24 16:01:32  roebel
  * permanently removed references to UniversalEnvVar.h
  *
@@ -246,10 +249,11 @@
 #include <sys/stat.h>
 #endif
 
+
 #include "SdifVersion.h"
 
 #ifndef AUTOCKSUM
-#define AUTOCKSUM "$Checksum: not available$ IRCAM $Date: 2003-08-06 15:10:46 $" 
+#define AUTOCKSUM "$Checksum: not available$ IRCAM $Date: 2003-11-07 12:09:08 $" 
 #endif
 
 #ifndef lint
