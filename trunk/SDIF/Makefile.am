@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.19 2003-04-09 16:36:11 roebel Exp $
+# $Id: Makefile.am,v 1.20 2003-05-01 18:51:59 roebel Exp $
 #
 # ./Makefile.am		September 2000			Patrice Tisserand
 #
@@ -30,6 +30,9 @@
 
 
 # $Log: not supported by cvs2svn $
+# Revision 1.19  2003/04/09 16:36:11  roebel
+# Fixed publish-ftp target.
+#
 # Revision 1.18  2003/04/09 12:28:25  roebel
 # Changed default configuration back to enable-shared but added
 # README.MacOSX to announce problems with shared libraries to users.
@@ -111,7 +114,6 @@ DOC_SRC_DIR =
 endif 
 
 SUBDIRS = sdif include tools data test sdifcpp $(DOC_SRC_DIR)
-EXTRA_DIST = README.MacOSX
 
 sdifincdir = @top_srcdir@/include
 
@@ -136,7 +138,8 @@ test:	check
 #
 
 # more files to include in dist
-EXTRA_DIST	  = sdif.vcproj
+EXTRA_DIST	  = sdif.vcproj  README.MacOSX
+
 
 # base name of distribution (override automake generated variable to make source distribution!)
 distdir		  = $(PACKAGE)-$(VERSION)-src
