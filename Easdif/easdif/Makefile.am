@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.9 2003-05-19 13:55:47 roebel Exp $
+# $Id: Makefile.am,v 1.10 2003-05-22 21:22:53 roebel Exp $
 #
 # ./Easdif/src/Makefile.am	Feb. 2003 Axel Roebel
 #
@@ -31,6 +31,9 @@
 
 
 # $Log: not supported by cvs2svn $
+# Revision 1.9  2003/05/19 13:55:47  roebel
+# Added new header easdif_config.h.in .
+#
 # Revision 1.8  2003/04/09 11:48:40  roebel
 # Added missing easdifintro.h to dsitributed files.
 #
@@ -82,7 +85,7 @@ libEasdif_la_LIBADD  = @SDIFCPPLIB@
 libEasdif_la_LDFLAGS = -no-undefined  -release @VERSION@ -rpath $(libdir)
 
 
-INCLUDES = -I$(top_srcdir) -I../SDIF/include -I$(top_srcdir)/SDIF/include -I$(top_srcdir)/SDIF/sdif   -DUSE_CONFIGURE
+INCLUDES = -I.. -I$(top_srcdir) -I../SDIF/include -I$(top_srcdir)/SDIF/include -I../SDIF/sdif -I$(top_srcdir)/SDIF/sdif   -DUSE_CONFIGURE
 
 
 #
