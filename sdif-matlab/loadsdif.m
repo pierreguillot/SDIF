@@ -22,10 +22,14 @@
 % 
 % AUTHOR
 %     Diemo Schwarz (schwarz@ircam.fr), 25. January 2000
-%
-% CVS REVISION
-%     $Id: loadsdif.m,v 1.1 2000-07-27 18:22:32 schwarz Exp $
 
 % This file contains only the help message!
 %
+% No CVS REVISION in help, since it won't change very much, but will be
+% misleading.  (We'd really like to see the current version of loadsdif.c.)
+%     $Id: loadsdif.m,v 1.2 2000-07-27 18:30:35 schwarz Exp $
+%
 % $Log: not supported by cvs2svn $
+% Revision 1.1  2000/07/27  18:22:32  schwarz
+% man-style comments, better makedefs.
+
