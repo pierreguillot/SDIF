@@ -1,6 +1,6 @@
 dnl -*-autoconf-*-  (No, it's an autoconf file!)
 dnl -*-m4-*- (He emacs, it's a m4 file)
-dnl $Id: configure.in,v 1.23 2003-07-10 17:19:42 roebel Exp $
+dnl $Id: configure.in,v 1.24 2003-08-06 18:03:03 roebel Exp $
 dnl
 dnl configure.in		Feb 2003      Axel Roebel
 dnl
@@ -33,6 +33,9 @@ dnl
 dnl
 
 dnl $Log: not supported by cvs2svn $
+dnl Revision 1.23  2003/07/10 17:19:42  roebel
+dnl Finished gcc3_2 suffix support for test programs
+dnl
 dnl Revision 1.22  2003/07/09 21:19:47  roebel
 dnl Provide configure switch to add gccversion to library name to distinguish
 dnl gcc3.2 from gcc2.96 compiled libraries.
@@ -197,6 +200,7 @@ AC_MSG_RESULT(CREATE OUTPUT FILES)
 AC_OUTPUT(Makefile 
 easdif/Makefile 
 easdif/easdif_version.h
+easdif/easdifintro.h
 test/Makefile
 Easdif.pc
 Doxyfile

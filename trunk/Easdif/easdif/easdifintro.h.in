@@ -233,7 +233,7 @@ int main(int argc, char** argv)
 * This example compiles with the command
 * 
 \code
-g++ -I@includedir@ testeas.cpp -otesteas -L@libdir@  -lEasdif
+g++ -I@prefix@/include testeas.cpp -otesteas -L@prefix@/lib  -lEasdif
 \endcode
 *
 * provided you have stored the code under filename testeas.cpp. It will add 
