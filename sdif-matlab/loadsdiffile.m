@@ -1,15 +1,26 @@
-% Load a complete SDIF file.
+% NAME
+%     loadsdiffile  -  Load a complete SDIF file
 %
-% Usage:   [ data, header, frame, matrix ] = loadsdiffile (name)
+% USAGE 
+%     [ data, header, frame, matrix ] = loadsdiffile (name)
 %
-% where data{i} is the matrix at time header(i, 1) in stream header(i, 2) 
-% with signatures frame(i), matrix(i).
+%     where data{i} is the matrix at time header(i, 1) in stream header(i, 2) 
+%     with signatures char(frame(i)), char(matrix(i)).
+%
+% SEE ALSO
+%     loadsdifflat, loadsdif, sdifexist
+% 
+% AUTHOR
+%     Diemo Schwarz (schwarz@ircam.fr), 31. January 2000
+%
+% CVS REVISION
+%     $Id: loadsdiffile.m,v 1.3 2000-07-27 18:22:33 schwarz Exp $
 
-% $Id: loadsdiffile.m,v 1.2 2000-05-11 12:37:17 schwarz Exp $
-%
-% loadsdiffile.m	31. January 2000	Diemo Schwarz
-%
 % $Log: not supported by cvs2svn $
+% Revision 1.2  2000/05/11  12:37:17  schwarz
+% Init of output variables to avoid 'output argument not assigned' warning.
+% Optional types file argument.
+%
 % Revision 1.1  2000/05/04  13:24:06  schwarz
 % Matlab mex extension and support functions to load SDIF files.
 

@@ -1,8 +1,12 @@
-# -*-makefile-*- $Id: mex.makedefs,v 1.1 2000-07-19 16:32:44 schwarz Exp $
+# -*-makefile-*- $Id: mex.makedefs,v 1.2 2000-07-27 18:22:34 schwarz Exp $
 #
 # Commonly used settings for compiling matlab mex extensions.
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.1  2000/07/19  16:32:44  schwarz
+# Factored out commonly used make-definitions for mex compilation,
+# put into mex.makedefs make-include file.
+#
 
 
 #
@@ -68,7 +72,7 @@ PM_LIB_BASE	 = Pm
 PM_LIB   	 = $(PM_LIB_DIR)/lib$(PM_LIB_BASE).a
 
 # include paths
-INCL	   	 = -I$(GLOBAL_INCL) -I$(MEXINCL) -I/usr/include -I/usr/local/include/ 
+INCL	   	+= -I$(GLOBAL_INCL) -I$(MEXINCL) -I/usr/include -I/usr/local/include/ 
 
 
 #
@@ -87,5 +91,5 @@ define MEX-COMPILE
 endef
 
 define MEX-LINK
-	$(MEX) -g $(MEXFLAGS) $(INCL) $(LFLAGS) $($(@F)_mexflags) $^
+	$(MEX) -g $(MEXFLAGS) $(INCL) $(LFLAGS) $(mexflags-$(@F)) $^
 endef
