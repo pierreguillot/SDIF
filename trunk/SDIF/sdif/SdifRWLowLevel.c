@@ -1,4 +1,4 @@
-/* $Id: SdifRWLowLevel.c,v 3.22 2004-06-09 10:54:43 schwarz Exp $
+/* $Id: SdifRWLowLevel.c,v 3.23 2004-06-14 15:52:04 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -32,6 +32,12 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.22  2004/06/09 10:54:43  schwarz
+ * Fixed compilation problems on Windows (thanks Jean Bresson):
+ * - void pointer arithmetic not allowed
+ * - open is a Unix system call, use fopen instead
+ * - strdup does not exists, so compile with -Dstrdup=_strdup
+ *
  * Revision 3.21  2004/06/03 11:18:00  schwarz
  * Profiling showed some waste of cycles in byte swapping and signature reading:
  * - byte swapping now array-wise, not element-wise in SdifSwap* routines:
@@ -1196,9 +1202,9 @@ static const char *formatUInt8    = "%lu";
 
 /* generate scan functions */
 
-/* Not for all types, char is special */
-
-/* generate template for all types */
+/* define new local generating macro, called by sdif_foralltypes:
+   Not for all types, char is special */
+#undef  sdif__foralltypes
 #define sdif__foralltypes(macro, post)  macro(Float4)post \
                                         macro(Float8)post \
                                         macro(Int1  )post \
@@ -1207,8 +1213,10 @@ static const char *formatUInt8    = "%lu";
                                         macro(UInt1 )post \
                                         macro(UInt2 )post \
                                         macro(UInt4 )post 
-
+/* generate functions */
 sdif_foralltypes (scan);
+
+#undef  sdif__foralltypes
 
 size_t SdiffScanChar (FILE *stream, SdifChar *ptr, size_t nobj)
 {
