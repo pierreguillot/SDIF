@@ -1,3 +1,12 @@
+2004-10-07  Axel Roebel  <Axel.Roebel@ircam.fr>
+Version 3.9.1
+
+	* sdif/SdifFGet.c
+	Fixed SdifFGetOneNameValue to properly read NVTs from text files.
+
+	* sdif/SdifRWLowLevel.c
+	Fixed SdifStringToNV to only convrt \t and \n.
+	
 2004-09-09  Diemo Schwarz  <schwarz@ligeti.ircam.fr>
 Version 3.9.0 rc1
 	
@@ -516,4 +525,4 @@ Version 3.3:
 	  Operating System.
 
 	
-$Id: ChangeLog,v 1.41 2004-09-09 18:14:48 schwarz Exp $
+$Id: ChangeLog,v 1.42 2004-10-07 14:53:27 roebel Exp $
