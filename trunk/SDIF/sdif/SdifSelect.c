@@ -1,4 +1,4 @@
-/* $Id: SdifSelect.c,v 3.5 1999-10-15 12:21:48 schwarz Exp $
+/* $Id: SdifSelect.c,v 3.6 2000-03-01 11:18:45 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -69,9 +69,20 @@ TODO
     write ordered expanded list of int selection 
     (ranges/deltas x-y expanded to x..y)
     return number of selection written to array, not more than nummax.
+  - keep signature selections parallely as hash tables for fast lookup
+  - optimize selecttestint/real: loop from current 
+  - SdifSelectionT: array of select elements
+      struct { SdifListP list; SdifSelectElementT minmax; } elem [eSelNum];
+    indexed by
+      enum   { eTime, eStream, eFrame, eMatrix, eColumn, eRow, eSelNum }
+    to use in all API functions instead of SdifListP.
 
 LOG
   $Log: not supported by cvs2svn $
+  Revision 3.5  1999/10/15  12:21:48  schwarz
+  Changed min/max to upper case.
+  Test frame takes _SdifAllStreamID into account.
+
   Revision 3.4  1999/10/07  15:06:42  schwarz
   Added SdifSelectGetFirst<type>, SdifSelectGetNext(Int|Real).
 
@@ -186,8 +197,6 @@ SdifInitSelection (SdifSelectionT *sel, const char *filename, int namelen)
 	filename = "";
 	
     /* copy and null-terminate filename */
-    if (namelen < 0)
-	namelen = strlen (filename);
     sel->filename = SdifCreateStrNCpy (filename, namelen + 1);
     sel->filename [namelen] = 0;
     sel->basename = basename (sel->filename);
@@ -201,6 +210,14 @@ SdifInitSelection (SdifSelectionT *sel, const char *filename, int namelen)
     
     return (1);
 }
+
+
+SdifSelectionT *
+SdifCreateSelection ()
+{
+    return (SdifMalloc (SdifSelectionT));
+}
+
 
 int 
 SdifFreeSelection (SdifSelectionT *sel)
@@ -520,9 +537,10 @@ char *
 SdifGetFilenameAndSelection (/*in*/  const char *filename, 
 			     /*out*/ SdifSelectionT *sel)
 {
-    char *spec = SdifSelectFindSelection (filename);
+    const char *spec = SdifSelectFindSelection (filename);
 
-    SdifInitSelection  (sel, filename, spec - filename);
+    SdifInitSelection  (sel, filename, spec  ?  spec - filename 
+					     :  strlen (filename));
     if (spec)
 	SdifParseSelection (sel, spec + symlen (sst_specsep));
     return (sel->filename);
@@ -736,6 +754,16 @@ SdifSelectGetNextSignature (/*in*/  SdifListP list)
 }
 
 
+/* define code for:
+int	       SdifSelectGetFirstInt       (SdifListP l, int defval);
+double	       SdifSelectGetFirstReal      (SdifListP l, double defval);
+char	      *SdifSelectGetFirstString    (SdifListP l, char *defval);
+SdifSignature  SdifSelectGetFirstSignature (SdifListP l, SdifSignature defval);
+
+Return value of first selection (ignoring range).
+*/
+
+
 #define _getfirst(name, type, field)					     \
 type SdifSelectGetFirst##name (/*in*/ SdifListP list, type defval)	     \
 {    SdifListInitLoop (list);						     \
@@ -755,6 +783,8 @@ _foralltypes (_getfirst)
 int
 SdifSelectTestIntRange (SdifSelectElementT *elem, int cand)
 {
+    if (!elem)   return (0);
+
     switch (elem->rangetype)
     {
     	case sst_norange: 
@@ -775,6 +805,8 @@ SdifSelectTestIntRange (SdifSelectElementT *elem, int cand)
 int
 SdifSelectTestRealRange (SdifSelectElementT *elem, double cand)
 {
+    if (!elem)   return (0);
+
     switch (elem->rangetype)
     {
     	case sst_norange: 
@@ -809,8 +841,15 @@ SdifSelectTestInt (SdifListT *list, int cand)
 int
 SdifSelectTestReal (SdifListT *list, double cand)
 {
+    SdifSelectElementT *first;
+
     if (SdifListIsEmpty (list))
 	return (1);	/* no select spec means: take everything */
+
+    /* first test from current select element onwards */
+    if (SdifSelectTestRealRange (SdifListGetCurr (list), cand))
+        return (1);
+
     SdifListInitLoop (list);
     while (SdifListIsNext (list))
     {
