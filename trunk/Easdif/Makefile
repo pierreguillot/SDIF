@@ -13,7 +13,7 @@ VERSMINOR=$(strip $(shell grep ^PROJECT_NUMBER  Doxyfile | cut -d"=" -f2| cut -d
 LINK:
 	if [ ! -L easdif ];then ln -s src easdif;fi
 
-lib: LINK SDIF/compile.$(SYS)/sdif/libsdif-cpp.a src/easdif_version.h
+lib: LINK SDIF/compile.$(SYS)/sdif/.libs/libsdif-cpp.a src/easdif_version.h
 	make -C src
 
 
@@ -23,7 +23,7 @@ vers:
 src/easdif_version.h: Doxyfile
 	make -C src VERSIONMAJ=$(VERSMAJOR) VERSIONMIN=$(VERSMINOR) easdif_version
 
-SDIF/compile.$(SYS)/sdif/libsdif-cpp.a: 
+SDIF/compile.$(SYS)/sdif/.libs/libsdif-cpp.a: 
 	cd SDIF; if [ ! -f ./configure ]; then autoconf;fi ; mkdir -p compile.$(SYS); cd compile.$(SYS);../configure --enable-cpp `if [ -d /u/formes/share/include ]; then echo --prefix=/u/formes/share;fi`; make 
 
 test:
