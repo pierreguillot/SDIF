@@ -1,4 +1,4 @@
-/* $Id: SdifTextConv.c,v 3.4 2000-10-27 20:03:45 roebel Exp $
+/* $Id: SdifTextConv.c,v 3.5 2000-11-14 10:42:27 lefevre Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -32,6 +32,9 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.4  2000/10/27  20:03:45  roebel
+ * autoconf merged back to main trunk
+ *
  * Revision 3.3.2.1  2000/08/21  21:35:55  tisseran
  * *** empty log message ***
  *
@@ -350,7 +353,6 @@ SdifTextToSdif(SdifFileT *SdifF, char *TextStreamName)
           FileSizeW = SdifFTextConv(SdifF);
           fflush(SdifF->Stream);
  
-          XpSetFileAttribute(SdifF->Name, FileType_Sdif, 0);
           return FileSizeW;
         }
     }

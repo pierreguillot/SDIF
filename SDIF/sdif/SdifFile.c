@@ -1,4 +1,4 @@
-/* $Id: SdifFile.c,v 3.17 2000-11-09 15:59:15 schwarz Exp $
+/* $Id: SdifFile.c,v 3.18 2000-11-14 10:42:26 lefevre Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -33,6 +33,10 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.17  2000/11/09  15:59:15  schwarz
+ * Added lost function SdifFStreamIDTable that returns the file's
+ * stream ID table.
+ *
  * Revision 3.16  2000/10/27 18:55:49  roebel
  * moved identstring to SdifFile again
  * otherwise no identification of linked programs
@@ -155,6 +159,8 @@
 
 #include <preincluded.h>
 #include "XpGuiCalls.h"
+#include "UniversalEnvVar.h"
+
 #include "SdifFile.h"
 #include "SdifTest.h"
 #include "SdifSelect.h"
@@ -178,7 +184,7 @@
 #include "SdifVersion.h"
 
 #ifndef AUTOCKSUM
-#define AUTOCKSUM "$Checksum: not available$ IRCAM $Date: 2000-11-09 15:59:15 $" 
+#define AUTOCKSUM "$Checksum: not available$ IRCAM $Date: 2000-11-14 10:42:26 $" 
 #endif
 
 #ifndef lint
@@ -306,6 +312,10 @@ SdifFOpen(const char* Name, SdifFileModeET Mode)
 		      _SdifFError(SdifF, eBadStdFile, SdifF->Name);
 		  break;
               }
+            /* Mac file attribute (for icon) */  
+			if(SdifF->Stream != NULL)
+			{	XpSetFileAttribute(SdifF->Name, FileType_Sdif, 0);
+			}
 	  break;
 
           case ePredefinedTypes: /* special case:		  */
@@ -429,6 +439,8 @@ SdifFOpenText(SdifFileT *SdifF, const char* Name, SdifFileModeET Mode)
 			}
 	        else
 			{
+		      /* Mac file attribute (for icon) */  
+		      XpSetFileAttribute(Name, FileType_Text, 0);
 		      return SdifF;
 			}
 		  }
