@@ -8,9 +8,15 @@
  * 
  *
  * 
- * $Id: sdifnamevaluetable.h,v 1.4 2002-11-27 20:10:39 roebel Exp $ 
+ * $Id: sdifnamevaluetable.h,v 1.5 2002-11-28 21:16:56 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.4  2002/11/27 20:10:39  roebel
+ * Fixed NVT to keep ordering as defined by the sequence of additions to the table.
+ * Added begin/end iterator.
+ * Added global functions to get name and value from SDIFNameValueTable iterators.
+ * Removed member that redundantly indicated size of map.
+ *
  * Revision 1.3  2002/10/10 10:49:09  roebel
  * Now using namespace Easdif.
  * Fixed handling of zero pointer arguments in initException.
@@ -47,33 +53,8 @@ class SDIFNameValueTable
 {
  private:
 
-    SdifUInt4 mStreamID;
-
-    /* temporarily not used */
-    SdifUInt4	     FormatVersion;	/* version of the SDIF format itself */
-    SdifUInt4	     TypesVersion;	/* version of the description 
-					   type collection */
-
-
-  typedef std::pair<const std::string,const int> Key;
-
-  struct nvtcmp {
-    bool operator()(const Key& s1, 
-		    const Key& s2) const
-    {
-      // either use ordering by strings for retrieval
-      if(s1.second <0 || s2.second <0)
-	return s1.first < s2.first;
-
-      //or ordering by index for keeping NVT in sequence
-      //defined by adding the name values.
-
-      return s1.second < s2.second;
-
-    }
-  };
-
-
+  SdifUInt4 mStreamID;
+  
   /** 
    * @brief map of string which are containing the Name Values
    *
@@ -81,10 +62,10 @@ class SDIFNameValueTable
    * is always scanned in the same order that has been
    * used to  add the entries.
    */
-  std::map<Key,std::string,nvtcmp> map_NameValues;
+  std::map<std::string,std::string> map_NameValues;
 
 
- public:
+public:
 
     /* construct a NameValueTable*/
     SDIFNameValueTable() {};
@@ -145,8 +126,8 @@ class SDIFNameValueTable
   */
 
   
-  typedef map<Key,std::string,nvtcmp>::iterator iterator;
-  typedef map<Key,std::string,nvtcmp>::const_iterator const_iterator;
+  typedef std::map<std::string,std::string>::iterator iterator;
+  typedef std::map<std::string,std::string>::const_iterator const_iterator;
 
 
   /** 
