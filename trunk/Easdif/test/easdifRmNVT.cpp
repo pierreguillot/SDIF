@@ -16,7 +16,8 @@ int main(int argc, char** argv)
 
 
     if(argc <3){
-      std::cerr << "usage: rmNVT filin fileout \n";
+      std::cerr << "usage: easdifRmNVT filin fileout \n";
+      std::cerr << "copy content but remove all NVTs \n";
       exit(1);
     }
 
