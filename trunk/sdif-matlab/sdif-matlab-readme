@@ -1,4 +1,4 @@
-$Id: sdif-matlab-readme,v 1.4 2001-02-07 16:00:17 roebel Exp $
+$Id: sdif-matlab-readme,v 1.5 2001-04-20 14:40:56 roebel Exp $
 
 sdif-matlab-README	8.8.2000	Diemo Schwarz (schwarz@ircam.fr)
 -------------------------------------------------------------------------------
@@ -20,6 +20,12 @@ with documentation and support functions.
 
 
 RELEASES
+
+0.1.8   20.03.2001   added a source distribution. New makefile
+                     with only three parameters to be adjusted
+		     to support compilation in different environments.
+		     reliability of "make test" improved. 
+		     binary distribution linked with sdif 3.3
 
 0.1.7b  07.02.2001   Added README.first for clarification of
                      proper library initialization
