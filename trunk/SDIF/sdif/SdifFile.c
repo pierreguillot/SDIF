@@ -1,4 +1,4 @@
-/* $Id: SdifFile.c,v 3.25 2002-08-28 17:08:54 roebel Exp $
+/* $Id: SdifFile.c,v 3.26 2002-11-27 17:54:46 roebel Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -33,6 +33,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.25  2002/08/28 17:08:54  roebel
+ * Fixed missing include file for function ftruncate.
+ *
  * Revision 3.24  2002/08/28 14:07:27  schwarz
  * New function SdifFRewind.
  * Unified return values for SdifFTruncate.
@@ -216,7 +219,7 @@
 #include "SdifVersion.h"
 
 #ifndef AUTOCKSUM
-#define AUTOCKSUM "$Checksum: not available$ IRCAM $Date: 2002-08-28 17:08:54 $" 
+#define AUTOCKSUM "$Checksum: not available$ IRCAM $Date: 2002-11-27 17:54:46 $" 
 #endif
 
 #ifndef lint
@@ -1107,6 +1110,7 @@ int SdifFRewind(SdifFileT *file)
     return (SdiffSetPos(file->Stream, &zero) == 0);
 }
 
+#ifdef HAVE_FTRUNCATE
 /* Truncate file at current position */
 int SdifFTruncate(SdifFileT *file)
 {
@@ -1114,3 +1118,4 @@ int SdifFTruncate(SdifFileT *file)
     SdiffGetPos(file->Stream, &pos);
     return (ftruncate(fileno(file->Stream), pos) == 0);
 }
+#endif
