@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.11 2002-12-02 17:33:50 tisseran Exp $
+# $Id: Makefile.am,v 1.12 2003-05-26 08:16:17 tisseran Exp $
 #
 # ./tools/Makefile.am		September 2000			Patrice Tisserand
 #
@@ -29,6 +29,9 @@
 # send email to:  sdif@ircam.fr
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.11  2002/12/02 17:33:50  tisseran
+# Fix link in debug mode
+#
 # Revision 1.10  2002/10/10 10:40:10  roebel
 # Added support for c++ compilation.
 #
@@ -99,3 +102,5 @@ tosdif_DEPENDENCIES=../sdif/@SELLIB@
 
 INCLUDES  = -I../include -I$(top_srcdir)/include -I$(top_srcdir)/sdif
 CFLAGS   = @CFLAGS@ '-DVERSION="$(VERSION)"'
+
+EXTRA_DIST=querysdif.dsp sdifextract.dsp sdiftotext.dsp sdifusage.dsp tosdif.dsp
