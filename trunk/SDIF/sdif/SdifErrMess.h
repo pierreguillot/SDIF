@@ -1,4 +1,4 @@
-/* $Id: SdifErrMess.h,v 3.11 2002-05-24 19:36:38 ftissera Exp $
+/* $Id: SdifErrMess.h,v 3.12 2004-07-22 14:47:55 bogaards Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -32,6 +32,9 @@
  * author: Dominique Virolle 1998
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 3.11  2002/05/24 19:36:38  ftissera
+ * Change SdifFError to use new error and warning handlers.
+ *
  * Revision 3.10  2001/07/12 14:15:31  roebel
  * Removed warning due to more columns then expected from the list
  * possible warnings. In fact this is allowed by the standard and should
@@ -128,7 +131,7 @@ void	SdifEnableErrorOutput  (void);
 void	SdifDisableErrorOutput (void);
 
 
-extern char	gSdifBufferError[4096];
+/*extern char	gSdifBufferError[4096];*/
 extern int	gSdifErrorOutputEnabled;
 
 

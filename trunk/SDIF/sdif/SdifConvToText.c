@@ -1,4 +1,4 @@
-/* $Id: SdifConvToText.c,v 3.10 2003-11-07 21:47:18 roebel Exp $
+/* $Id: SdifConvToText.c,v 3.11 2004-07-22 14:47:55 bogaards Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -30,6 +30,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.10  2003/11/07 21:47:18  roebel
+ * removed XpGuiCalls.h and replaced preinclude.h  by local files
+ *
  * Revision 3.9  2003/06/24 16:01:32  roebel
  * permanently removed references to UniversalEnvVar.h
  *
@@ -278,6 +281,7 @@ size_t
 SdifToText(SdifFileT *SdifF, char *TextStreamName)
 {
   size_t SizeR = 0;
+  char errorMess[_SdifStringLen];
   
   if (SdifF->Mode != eReadFile)
       _SdifFError(SdifF, eBadMode, "it must be eReadFile");
@@ -294,8 +298,8 @@ SdifToText(SdifFileT *SdifF, char *TextStreamName)
 
   if (SdifStrCmp(SdifF->TextStreamName, SdifF->Name) == 0)
     {
-      sprintf(gSdifErrorMess, "Write=%s, Read=%s.", SdifF->TextStreamName, SdifF->Name);
-      _SdifFError(SdifF, eReadWriteOnSameFile, gSdifErrorMess);
+      sprintf(errorMess, "Write=%s, Read=%s.", SdifF->TextStreamName, SdifF->Name);
+      _SdifFError(SdifF, eReadWriteOnSameFile, errorMess);
       return SizeR;
     }
   else

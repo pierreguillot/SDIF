@@ -1,4 +1,4 @@
-/* $Id: SdifMatrixType.c,v 3.9 2003-11-07 21:47:18 roebel Exp $
+/* $Id: SdifMatrixType.c,v 3.10 2004-07-22 14:47:56 bogaards Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -37,6 +37,9 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.9  2003/11/07 21:47:18  roebel
+ * removed XpGuiCalls.h and replaced preinclude.h  by local files
+ *
  * Revision 3.8  2003/10/14 10:10:37  schwarz
  * SdifMatrixTypeGetColumnName returns pointer to name of column at index.
  *
@@ -138,6 +141,7 @@ SdifMatrixTypeT*
 SdifCreateMatrixType(SdifSignature Signature, SdifMatrixTypeT *PredefinedMatrixType)
 {
   SdifMatrixTypeT *NewMatrixType = NULL;
+	char errorMess[_SdifStringLen];
 
   NewMatrixType = SdifMalloc(SdifMatrixTypeT);
   if (NewMatrixType)
@@ -151,10 +155,10 @@ SdifCreateMatrixType(SdifSignature Signature, SdifMatrixTypeT *PredefinedMatrixT
 	{
 	  if (PredefinedMatrixType->Signature != Signature)
 	    {
-	      sprintf(gSdifErrorMess, "'%s'(Pre) != '%s'",
+	      sprintf(errorMess, "'%s'(Pre) != '%s'",
 		      SdifSignatureToString(PredefinedMatrixType->Signature),
 		      SdifSignatureToString(Signature));
-	      _SdifError(eInvalidPreType, gSdifErrorMess);
+	      _SdifError(eInvalidPreType, errorMess);
 	    }
 	  else
 	    {

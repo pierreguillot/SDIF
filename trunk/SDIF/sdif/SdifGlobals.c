@@ -1,4 +1,4 @@
-/* $Id: SdifGlobals.c,v 3.15 2004-06-03 11:18:00 schwarz Exp $
+/* $Id: SdifGlobals.c,v 3.16 2004-07-22 14:47:56 bogaards Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -31,6 +31,16 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.15  2004/06/03 11:18:00  schwarz
+ * Profiling showed some waste of cycles in byte swapping and signature reading:
+ * - byte swapping now array-wise, not element-wise in SdifSwap<N>[Copy] routines:   -> from 0.24 s (18.5%) to 0.14s
+ * - ASCII signature reading function SdiffGetSignature replaced by new binary
+ *   function SdiffReadSignature (also in SdifFGetSignature, so the change is
+ *   mostly transparent):
+ *   -> from 0.11 s (9.6%)  to 0.01 s
+ * - overall run time improvement with test case sdifextractall_a01:
+ *   -> from 1.20 s         to 0.86 s (40% faster)
+ *
  * Revision 3.14  2004/05/03 18:07:26  schwarz
  * Fixed bugs in padding calculation for ascii chunks:
  * 1. DON'T PAD FRAMES!
@@ -132,17 +142,61 @@
 #include <stdlib.h>
 #include <ctype.h>
 
-char gSdifString[_SdifStringLen];
-char gSdifString2[_SdifStringLen];
-char gSdifErrorMess[_SdifStringLen];
+#ifdef HAVE_PTHREAD
+#include <pthread.h>
+#endif
 
+/* backward compatibility; these global buffers should not be used anymore */
+char gSdifString[_SdifStringLen] = "unused buffer";
+char gSdifString2[_SdifStringLen] = "unused buffer";
+char gSdifErrorMess[_SdifStringLen] = "unused buffer";
+
+/* these are not used */
 char gSdifStringSignature[_SdifNbMaxPrintSignature][5];
+int CurrStringPosSignature = 0;
+
+
+#ifdef HAVE_PTHREAD
+
+pthread_key_t tGlobalsKey;
+
+#else
+
+struct SdifGlobals gGlobals;
+
+/*char *gSdifStringSignature[_SdifNbMaxPrintSignature] = gGlobals.stringSignature;
+int  CurrStringPosSignature = gGlobals.currStringPosSignature;*/
+
+#endif
+
 /* [_SdifNbMaxPrintSignature] : it's possible to print  _SdifNbMaxPrintSignature
  * signatures on stream in an unique expression but not more.
  */
 
-/*static*/ int  CurrStringPosSignature = 0;
+/*static*/ 
 
+
+struct SdifGlobals* GetSdifGlobals(){
+#ifndef HAVE_PTHREAD
+	return &gGlobals;
+#else
+	void* ptr;
+	if((ptr = pthread_getspecific(tGlobalsKey)) == NULL){
+		
+		ptr = calloc(1,sizeof(struct SdifGlobals));
+		pthread_setspecific(tGlobalsKey,ptr);
+		SdifInitListNodeStock(_SdifListNodeStockSize);		
+	}
+	return (struct SdifGlobals *) ptr;
+#endif
+}
+
+void FreeGlobals(void *inGlobals){
+	struct SdifGlobals* globals = (struct SdifGlobals*) inGlobals;
+	
+	SdifDrainListNodeStock();
+	free(globals);
+}
 
 
 #include "SdifRWLowLevel.h"
@@ -150,6 +204,8 @@ char gSdifStringSignature[_SdifNbMaxPrintSignature][5];
 char *SdifSignatureToString (SdifSignature Signature)
 {
     char *pS, *Ret;
+
+	struct SdifGlobals *globals = GetSdifGlobals();
 
     switch (gSdifMachineType)
     {     
@@ -160,14 +216,14 @@ char *SdifSignatureToString (SdifSignature Signature)
     }
 
     pS = (char *) &Signature;
-    gSdifStringSignature[CurrStringPosSignature][0] = pS[0];
-    gSdifStringSignature[CurrStringPosSignature][1] = pS[1];
-    gSdifStringSignature[CurrStringPosSignature][2] = pS[2];
-    gSdifStringSignature[CurrStringPosSignature][3] = pS[3];
-    gSdifStringSignature[CurrStringPosSignature][4] = 0;
+    globals->stringSignature[globals->currStringPosSignature][0] = pS[0];
+    globals->stringSignature[globals->currStringPosSignature][1] = pS[1];
+    globals->stringSignature[globals->currStringPosSignature][2] = pS[2];
+    globals->stringSignature[globals->currStringPosSignature][3] = pS[3];
+    globals->stringSignature[globals->currStringPosSignature][4] = 0;
 
-    Ret = gSdifStringSignature[CurrStringPosSignature];
-    CurrStringPosSignature = (CurrStringPosSignature + 1) % _SdifNbMaxPrintSignature;
+    Ret = globals->stringSignature[globals->currStringPosSignature];
+    globals->currStringPosSignature = (globals->currStringPosSignature + 1) % _SdifNbMaxPrintSignature;
     return Ret;
 }
 

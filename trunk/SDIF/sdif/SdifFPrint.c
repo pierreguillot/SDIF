@@ -1,4 +1,4 @@
-/* $Id: SdifFPrint.c,v 3.12 2003-11-07 21:47:18 roebel Exp $
+/* $Id: SdifFPrint.c,v 3.13 2004-07-22 14:47:56 bogaards Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -31,6 +31,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.12  2003/11/07 21:47:18  roebel
+ * removed XpGuiCalls.h and replaced preinclude.h  by local files
+ *
  * Revision 3.11  2003/08/06 15:11:45  schwarz
  * Finally removed obsolete functions (like SdifSkip...).
  *
@@ -262,10 +265,9 @@ SdifFPrintMatrixHeader(SdifFileT *SdifF)
 size_t
 SdifFPrintOneRow(SdifFileT *SdifF)
 {
-  unsigned int
-    iCol;
-  size_t
-    SizeW = 0;
+  unsigned int iCol;
+  size_t SizeW = 0;
+  char errorMess[_SdifStringLen];
   
   switch (SdifF->CurrOneRow->DataType)
   {
@@ -326,8 +328,8 @@ SdifFPrintOneRow(SdifFileT *SdifF)
     break;
 
     default:
-	sprintf(gSdifErrorMess, "OneRow 0x%04x, then Float4 used", SdifF->CurrOneRow->DataType);
-	_SdifFError(SdifF, eTypeDataNotSupported, gSdifErrorMess);
+	sprintf(errorMess, "OneRow 0x%04x, then Float4 used", SdifF->CurrOneRow->DataType);
+	_SdifFError(SdifF, eTypeDataNotSupported, errorMess);
 	/* then values are considered as Float4 */
 	for (iCol = 0; iCol < SdifF->CurrOneRow->NbData; iCol++)
 	    SizeW += fprintf(SdifF->TextStream, "\t%g", 

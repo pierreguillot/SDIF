@@ -1,4 +1,4 @@
-/* $Id: sdif.h,v 1.40 2004-06-14 15:56:29 schwarz Exp $
+/* $Id: sdif.h,v 1.41 2004-07-22 14:47:55 bogaards Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -30,6 +30,10 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.40  2004/06/14 15:56:29  schwarz
+ * Padding mask, other constants?
+ * More doc for sdif_foralltypes macros.
+ *
  * Revision 1.39  2004/06/03 11:39:57  schwarz
  * added array swapping and binary signature reading functions.
  *
@@ -198,7 +202,7 @@
  * Revision 1.1.2.1  2000/08/21  13:07:41  tisseran
  * *** empty log message ***
  *
- * $Date: 2004-06-14 15:56:29 $
+ * $Date: 2004-07-22 14:47:55 $
  *
  */
 
@@ -213,7 +217,7 @@ extern "C" {
 #endif
 
 
-static const char _sdif_h_cvs_revision_ [] = "$Id: sdif.h,v 1.40 2004-06-14 15:56:29 schwarz Exp $";
+static const char _sdif_h_cvs_revision_ [] = "$Id: sdif.h,v 1.41 2004-07-22 14:47:55 bogaards Exp $";
 
 
 #include <stdio.h>
@@ -2584,25 +2588,25 @@ int SdiffGetSignature   (FILE* fr, SdifSignature *Signature, size_t *NbCharRead)
 */
 int SdiffGetSignaturefromSdifString(SdifStringT *SdifString, SdifSignature *Signature);
 
-int SdiffGetWordUntil   (FILE* fr, char* s, size_t ncMax, size_t *NbCharRead, char *CharsEnd);
+int SdiffGetWordUntil   (FILE* fr, char* s, size_t ncMax, size_t *NbCharRead, const char *CharsEnd);
 /*DOC:
   Function return the word until in a SdifStringT
 */
-int SdiffGetWordUntilfromSdifString(SdifStringT *SdifString, char* s, size_t ncMax,char *CharsEnd);
+int SdiffGetWordUntilfromSdifString(SdifStringT *SdifString, char* s, size_t ncMax,const char *CharsEnd);
 
-int SdiffGetStringUntil (FILE* fr, char* s, size_t ncMax, size_t *NbCharRead, char *CharsEnd);
+int SdiffGetStringUntil (FILE* fr, char* s, size_t ncMax, size_t *NbCharRead, const char *CharsEnd);
 /*DOC:
   Function return the string until in a SdifStringT
  */
 int SdiffGetStringUntilfromSdifString(SdifStringT *SdifString, char *s, size_t ncMax,
-				      char *CharsEnd);
+				     const char *CharsEnd);
 
-int SdiffGetStringWeakUntil(FILE* fr, char* s, size_t ncMax, size_t *NbCharRead, char *CharsEnd);
+int SdiffGetStringWeakUntil(FILE* fr, char* s, size_t ncMax, size_t *NbCharRead, const char *CharsEnd);
 /*DOC:
   Return the weak string until in a SdifStringT
 */
 int SdiffGetStringWeakUntilfromSdifString(SdifStringT *SdifString, char* s,
-					  size_t ncMax, char *CharsEnd);
+					  size_t ncMax, const char *CharsEnd);
 
 int SdifSkipASCIIUntil  (FILE* fr, size_t *NbCharRead, char *CharsEnd);
 int SdifSkipASCIIUntilfromSdifString  (SdifStringT *SdifString, size_t *NbCharRead, char *CharsEnd);

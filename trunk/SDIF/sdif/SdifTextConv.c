@@ -1,4 +1,4 @@
-/* $Id: SdifTextConv.c,v 3.11 2003-11-07 21:47:18 roebel Exp $
+/* $Id: SdifTextConv.c,v 3.12 2004-07-22 14:47:56 bogaards Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -32,6 +32,9 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.11  2003/11/07 21:47:18  roebel
+ * removed XpGuiCalls.h and replaced preinclude.h  by local files
+ *
  * Revision 3.10  2003/06/24 16:01:32  roebel
  * permanently removed references to UniversalEnvVar.h
  *
@@ -224,6 +227,7 @@ SdifFTextConvAllFrame(SdifFileT *SdifF)
     SizeR = 0,
     SizeW = 0;
   int CharEnd = 0;
+  char errorMess[_SdifStringLen];
 
   while ((CharEnd != eEof) && (SdifFCurrSignature(SdifF) != eENDC))
     {
@@ -241,7 +245,7 @@ SdifFTextConvAllFrame(SdifFileT *SdifF)
     }
 
   if (CharEnd == eEof)
-    _SdifError(eEof, gSdifErrorMess);
+    _SdifError(eEof, errorMess);
 
   return SizeW;
 }
@@ -287,6 +291,7 @@ size_t
 SdifFTextConv(SdifFileT *SdifF)
 {
   size_t  SizeW = 0;
+  char errorMess[_SdifStringLen];
     
   SdifFScanGeneralHeader(SdifF);  
   
@@ -307,10 +312,10 @@ SdifFTextConv(SdifFileT *SdifF)
       return SdifF->FileSize;
 
     default:
-      sprintf(gSdifErrorMess,
+      sprintf(errorMess,
 	      "It is not a chunk signature : '%s'",
 	      SdifSignatureToString(SdifFCurrSignature(SdifF)));
-      _SdifFError(SdifF, eSyntax, gSdifErrorMess);
+      _SdifFError(SdifF, eSyntax, errorMess);
       break;
     }
     
@@ -334,6 +339,7 @@ size_t
 SdifTextToSdif(SdifFileT *SdifF, char *TextStreamName)
 {
   size_t FileSizeW = 0;
+  char errorMess[_SdifStringLen];
 
   if (SdifF->Mode != eWriteFile)
     _SdifFError(SdifF, eBadMode, "it must be eWriteFile");
@@ -348,8 +354,8 @@ SdifTextToSdif(SdifFileT *SdifF, char *TextStreamName)
   
   if (SdifStrCmp(TextStreamName, SdifF->Name) == 0)
     {
-      sprintf(gSdifErrorMess, "Read=%s, Write=%s.", TextStreamName, SdifF->Name);
-      _SdifFError(SdifF, eReadWriteOnSameFile, gSdifErrorMess);
+      sprintf(errorMess, "Read=%s, Write=%s.", TextStreamName, SdifF->Name);
+      _SdifFError(SdifF, eReadWriteOnSameFile, errorMess);
       return FileSizeW;
     }
   else

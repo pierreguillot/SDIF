@@ -1,4 +1,4 @@
-/* $Id: SdifFrameType.c,v 3.7 2003-11-07 21:47:18 roebel Exp $
+/* $Id: SdifFrameType.c,v 3.8 2004-07-22 14:47:56 bogaards Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -37,6 +37,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.7  2003/11/07 21:47:18  roebel
+ * removed XpGuiCalls.h and replaced preinclude.h  by local files
+ *
  * Revision 3.6  2002/05/24 19:37:52  ftissera
  * Change code to be compatible with C++
  * Cast pointers to correct type.
@@ -124,6 +127,7 @@ SdifFrameTypeT*
 SdifCreateFrameType(SdifSignature FramS, SdifFrameTypeT *PredefinedFrameType)
 {
   SdifFrameTypeT *NewFrameType = NULL;
+	char errorMess[_SdifStringLen];
   
   NewFrameType = SdifMalloc(SdifFrameTypeT);
   if (NewFrameType)
@@ -138,10 +142,10 @@ SdifCreateFrameType(SdifSignature FramS, SdifFrameTypeT *PredefinedFrameType)
       {
 	    if (PredefinedFrameType->Signature != FramS)
 	    {
-	      sprintf(gSdifErrorMess, "'%s'(Pre) != '%s'",
+	      sprintf(errorMess, "'%s'(Pre) != '%s'",
 		      SdifSignatureToString(PredefinedFrameType->Signature),
 		      SdifSignatureToString(FramS));
-	      _SdifError(eInvalidPreType, gSdifErrorMess);
+	      _SdifError(eInvalidPreType, errorMess);
 	    }
 	  else
 	    {

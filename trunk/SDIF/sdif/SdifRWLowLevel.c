@@ -1,4 +1,4 @@
-/* $Id: SdifRWLowLevel.c,v 3.25 2004-07-13 18:03:16 roebel Exp $
+/* $Id: SdifRWLowLevel.c,v 3.26 2004-07-22 14:47:56 bogaards Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -32,6 +32,9 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.25  2004/07/13 18:03:16  roebel
+ * Forget to fix the byteoffset for the return value.
+ *
  * Revision 3.24  2004/07/13 15:10:24  roebel
  * Fixed SdiffReadSignature to not override the btesread variable
  * but to add the number of  bytes read.
@@ -171,20 +174,18 @@
 extern int        gSdifInitialised;	/* can't include SdifFile.h */
 
 #define     _SdifBSLittleE   4096
-static char gSdifLittleToBig [_SdifBSLittleE];
-
-
 
 /* fread encapsulation with error check */
 size_t Sdiffread(void *ptr, size_t size, size_t nobj, FILE *stream)
 {
   size_t nobjread;
+	char errorMess[_SdifStringLen];
 
   nobjread = fread(ptr, size, nobj, stream);
   if (nobjread != nobj)
     {
-      sprintf(gSdifErrorMess, "Sdiffread %ld", ftell(stream));
-      _SdifError(eEof, gSdifErrorMess);
+      sprintf(errorMess, "Sdiffread %ld", ftell(stream));
+      _SdifError(eEof, errorMess);
     }
   
   return nobjread;
@@ -199,12 +200,13 @@ size_t
 Sdiffwrite(void *ptr, size_t size, size_t nobj, FILE *stream)
 {
   size_t nobjwrite;
+	char errorMess[_SdifStringLen];
 
   nobjwrite = fwrite(ptr, size, nobj, stream);
   if (nobjwrite != nobj)
     {
-      sprintf(gSdifErrorMess, "Sdiffwrite %ld", ftell(stream));
-      _SdifError(eEof, gSdifErrorMess);
+      sprintf(errorMess, "Sdiffwrite %ld", ftell(stream));
+      _SdifError(eEof, errorMess);
     }
 
   return nobjwrite;
@@ -267,13 +269,14 @@ size_t SdiffwriteLittleEndian2 (void *ptr, size_t nobj, FILE *stream)
 {
 #   define nblock     (_SdifBSLittleE / 2)
     size_t nwritten = 0;
+	char sdifLittleToBig [_SdifBSLittleE];
 
     while (nobj > 0)
     {
 	size_t ntowrite = nobj > nblock  ?  nblock  :  nobj;
 
-	SdifSwap2Copy(ptr, gSdifLittleToBig, ntowrite);
-	nwritten += Sdiffwrite(gSdifLittleToBig, 2, ntowrite, stream);
+	SdifSwap2Copy(ptr, sdifLittleToBig, ntowrite);
+	nwritten += Sdiffwrite(sdifLittleToBig, 2, ntowrite, stream);
 	nobj     -= ntowrite; 
 	ptr	  = (char *) ptr + _SdifBSLittleE;
     }
@@ -288,13 +291,14 @@ size_t SdiffwriteLittleEndian4 (void *ptr, size_t nobj, FILE *stream)
 {
 #   define nblock     (_SdifBSLittleE / 4)
     size_t nwritten = 0;
+	char sdifLittleToBig [_SdifBSLittleE];
 
     while (nobj > 0)
     {
 	size_t ntowrite = nobj > nblock  ?  nblock  :  nobj;
 
-	SdifSwap4Copy(ptr, gSdifLittleToBig, ntowrite);
-	nwritten += Sdiffwrite(gSdifLittleToBig, 4, ntowrite, stream);
+	SdifSwap4Copy(ptr, sdifLittleToBig, ntowrite);
+	nwritten += Sdiffwrite(sdifLittleToBig, 4, ntowrite, stream);
 	nobj     -= ntowrite; 
 	ptr	  = (char *) ptr +  _SdifBSLittleE;
     }
@@ -309,13 +313,14 @@ size_t SdiffwriteLittleEndian8 (void *ptr, size_t nobj, FILE *stream)
 {
 #   define nblock     (_SdifBSLittleE / 8)
     size_t nwritten = 0;
+	char sdifLittleToBig [_SdifBSLittleE];
 
     while (nobj > 0)
     {
 	size_t ntowrite = nobj > nblock  ?  nblock  :  nobj;
 
-	SdifSwap8Copy(ptr, gSdifLittleToBig, ntowrite);
-	nwritten += Sdiffwrite(gSdifLittleToBig, 8, ntowrite, stream);
+	SdifSwap8Copy(ptr, sdifLittleToBig, ntowrite);
+	nwritten += Sdiffwrite(sdifLittleToBig, 8, ntowrite, stream);
 	nobj     -= ntowrite; 
 	ptr	  = (char *) ptr +  _SdifBSLittleE;
     }
@@ -901,6 +906,7 @@ size_t
 SdiffReadSpace(FILE* fr)
 {
   size_t NbCharRead = 0;
+ 	char errorMess[_SdifStringLen];
   char c;
 
   while ( isspace(c= (char) fgetc(fr)) )
@@ -922,8 +928,8 @@ SdiffReadSpace(FILE* fr)
         return NbCharRead;
       else
         {
-	      sprintf(gSdifErrorMess, "ungetc failed : (%d,%c) ", c, c);
-	      _SdifError(eEof, gSdifErrorMess);
+	      sprintf(errorMess, "ungetc failed : (%d,%c) ", c, c);
+	      _SdifError(eEof, errorMess);
         }
     }
   return NbCharRead;
@@ -935,6 +941,7 @@ SdiffReadSpacefromSdifString(SdifStringT *SdifString)
 {
   char c;
   size_t NbCharRead = 0;
+	char errorMess[_SdifStringLen];
   
   while ( isspace(c = (char) SdifStringGetC(SdifString)))
     {
@@ -950,8 +957,8 @@ SdiffReadSpacefromSdifString(SdifStringT *SdifString)
 	return NbCharRead;
       else
 	{
-	  sprintf(gSdifErrorMess, "ungetc failed : (%d,%c) ", c, c);
-	  _SdifError(eEof, gSdifErrorMess);
+	  sprintf(errorMess, "ungetc failed : (%d,%c) ", c, c);
+	  _SdifError(eEof, errorMess);
 	}
     }
   return NbCharRead;
@@ -967,7 +974,7 @@ SdiffReadSpacefromSdifString(SdifStringT *SdifString)
  * "(*NbCharRead)" is increased by each byte read into "fr".
  */
 int
-SdiffGetWordUntil(FILE* fr, char* s, size_t ncMax, size_t *NbCharRead, char *CharsEnd)
+SdiffGetWordUntil(FILE* fr, char* s, size_t ncMax, size_t *NbCharRead, const char *CharsEnd)
 {
   char c=0;
   char *cs;
@@ -1028,7 +1035,7 @@ SdiffGetWordUntil(FILE* fr, char* s, size_t ncMax, size_t *NbCharRead, char *Cha
  * it return the final char.
  */
 int
-SdiffGetWordUntilfromSdifString(SdifStringT *SdifString, char* s, size_t ncMax,char *CharsEnd)
+SdiffGetWordUntilfromSdifString(SdifStringT *SdifString, char* s, size_t ncMax,const char *CharsEnd)
 {
   char c=0;
   char *cs;
@@ -1087,7 +1094,7 @@ SdiffGetWordUntilfromSdifString(SdifStringT *SdifString, char* s, size_t ncMax,c
  * but the space chars before the word are ignored.
  */
 int
-SdiffGetStringUntil(FILE* fr, char* s, size_t ncMax, size_t *NbCharRead, char *CharsEnd)
+SdiffGetStringUntil(FILE* fr, char* s, size_t ncMax, size_t *NbCharRead, const char *CharsEnd)
 {
   *NbCharRead += SdiffReadSpace(fr);
   return SdiffGetWordUntil(fr, s, ncMax, NbCharRead, CharsEnd);
@@ -1097,7 +1104,7 @@ SdiffGetStringUntil(FILE* fr, char* s, size_t ncMax, size_t *NbCharRead, char *C
  * but the space chars before the word are ignored.
  */
 int
-SdiffGetStringUntilfromSdifString(SdifStringT *SdifString, char *s, size_t ncMax, char *CharsEnd)
+SdiffGetStringUntilfromSdifString(SdifStringT *SdifString, char *s, size_t ncMax, const char *CharsEnd)
 {
   size_t SizeR = 0;
   SizeR += SdiffReadSpacefromSdifString(SdifString);
@@ -1111,7 +1118,7 @@ SdiffGetStringUntilfromSdifString(SdifStringT *SdifString, char *s, size_t ncMax
  * but all chars (spaces too) are valid before CharsEnd.
  */
 int
-SdiffGetStringWeakUntil(FILE* fr, char* s, size_t ncMax, size_t *NbCharRead, char *CharsEnd)
+SdiffGetStringWeakUntil(FILE* fr, char* s, size_t ncMax, size_t *NbCharRead, const char *CharsEnd)
 {
   char c=0;
   char *cs;
@@ -1148,7 +1155,7 @@ SdiffGetStringWeakUntil(FILE* fr, char* s, size_t ncMax, size_t *NbCharRead, cha
 
 int
 SdiffGetStringWeakUntilfromSdifString(SdifStringT *SdifString, char* s,
-				      size_t ncMax, char *CharsEnd)
+				      size_t ncMax, const char *CharsEnd)
 {
   char c=0;
   char *cs;
@@ -1225,7 +1232,7 @@ static const char *formatUInt8    = "%lu";
                                         macro(UInt2 )post \
                                         macro(UInt4 )post 
 /* generate functions */
-sdif_foralltypes (scan);
+sdif_foralltypes (scan)
 
 #undef  sdif__foralltypes
 

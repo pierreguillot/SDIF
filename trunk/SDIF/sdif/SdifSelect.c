@@ -1,4 +1,4 @@
-/* $Id: SdifSelect.c,v 3.19 2003-11-07 21:47:18 roebel Exp $
+/* $Id: SdifSelect.c,v 3.20 2004-07-22 14:47:56 bogaards Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -96,6 +96,9 @@ TODO
 
 LOG
   $Log: not supported by cvs2svn $
+  Revision 3.19  2003/11/07 21:47:18  roebel
+  removed XpGuiCalls.h and replaced preinclude.h  by local files
+
   Revision 3.18  2003/08/06 15:20:45  schwarz
   SdifSelectIntMask added for more efficient integer selections, new functions:
   - SdifInitIntMask, SdifGetIntMask
@@ -195,6 +198,17 @@ LOG
 #include "SdifSelect.h"
 
 
+typedef struct SdifSelectContextS{
+	const char *mInput;
+	const char *mSymbol;
+	const char *mOriginal;
+	SdifSelectTokens mToken;
+}SdifSelectContext;
+
+#define INPUT 	context->mInput
+#define SYMBOL 	context->mSymbol
+#define ORIG 	context->mOriginal
+#define TOKEN 	context->mToken
 
 static int debug = 0;
 
@@ -219,26 +233,26 @@ void SdifInitIntMask (SdifSelectIntMaskP mask);
 /* terminal symbols (strings) for SdifSelectTokens, MUST follow that order!
    N.B.: When symbols have common prefixes (e.g. "::" and ":"),
    the longer symbol must come first. */
-char *SdifSelectSeparators   [sst_num + 1] = { "::", "#", ":", "/", ".", 
+const char *SdifSelectSeparators   [sst_num + 1] = { "::", "#", ":", "/", ".", 
 					       "_",  "@", ",", "-", "+", "??"};
 int   SdifSelectSeparatorLen [sst_num + 1];
 char  sep_first		     [sst_num + 1]; /* first chars of all separators */
-char *SdifSelectWhitespace = " \t\r\n";	    /* chars considered as space */
+const char *SdifSelectWhitespace = " \t\r\n";	    /* chars considered as space */
 /* todo: build charmap for first and whitespace */
 
 
 /* static prototypes (to be warning free) */
-static SdifSelectTokens findtoken (void); 
-static void skipspace (void);
-static SdifSelectTokens parsenexttoken (void);
+static SdifSelectTokens findtoken (SdifSelectContext *context); 
+static void skipspace (SdifSelectContext *context);
+static SdifSelectTokens parsenexttoken (SdifSelectContext *context);
 
-static int parseint	  (SdifSelectValueT *valu);
-static int parsereal      (SdifSelectValueT *valu);
-static int parsestring	  (void);
-static int parsesig	  (SdifSelectValueT *valu);
-static int parsecol	  (SdifSelectValueT *valu);
-static int parse	  (int (*parseval) (SdifSelectValueT *valu),
-			   SdifListP list, int range_allowed, char *name);
+static int parseint	  (SdifSelectValueT *valu,SdifSelectContext *context);
+static int parsereal      (SdifSelectValueT *valu,SdifSelectContext *context);
+static int parsestring	  (SdifSelectContext *context);
+static int parsesig	  (SdifSelectValueT *valu,SdifSelectContext *context);
+static int parsecol	  (SdifSelectValueT *valu,SdifSelectContext *context);
+static int parse	  (int (*parseval) (SdifSelectValueT *valu, SdifSelectContext *context),
+			   SdifListP list, int range_allowed, char *name,SdifSelectContext *context);
 
 static int getint (SdifSelectValueT val);
 static double getreal (SdifSelectValueT val);
@@ -413,11 +427,13 @@ void SdifSelectGetIntMask (SdifListP list, SdifSelectIntMaskP mask)
 			 SdifSelectSeparatorLen [token])
 
 
-static SdifSelectTokens	TOKEN;
-static const char	*INPUT, *SYMBOL, *ORIG;
+/*static SdifSelectTokens	TOKEN;
+static const char	*INPUT, *SYMBOL, *ORIG;*/
 
 
-static SdifSelectTokens findtoken ()
+
+
+static SdifSelectTokens findtoken (SdifSelectContext *context)
 {
     SdifSelectTokens t = sst_norange;
     while (t < sst_num  &&  strncmp (INPUT, symbol(t), symlen(t)) != 0) {
@@ -432,7 +448,7 @@ static SdifSelectTokens findtoken ()
 
 
 /* skip space by advancing INPUT to first non-space character */
-static void skipspace (void)
+static void skipspace (SdifSelectContext *context)
 {
     INPUT += strspn (INPUT, SdifSelectWhitespace);
 }
@@ -441,10 +457,10 @@ static void skipspace (void)
 /* Sets TOKEN to next token read.  Consumes INPUT, when token found
    (if not, caller has to advance).  Returns true if a token from
    SdifSelectTokens was found. */
-static SdifSelectTokens parsenexttoken ()
+static SdifSelectTokens parsenexttoken (SdifSelectContext *context)
 {
-    skipspace ();
-    TOKEN  = findtoken ();				/* find token */
+    skipspace (context);
+    TOKEN  = findtoken (context);/* find token */
     SYMBOL = INPUT;			  /* points to token's symbol */
     INPUT += symlen(TOKEN);	  /* advance INPUT, when token found. */
 
@@ -462,7 +478,7 @@ static SdifSelectTokens parsenexttoken ()
    for error output.)  They return true on success 
 */
 
-static int parseint (SdifSelectValueT *valu)
+static int parseint (SdifSelectValueT *valu,SdifSelectContext *context)
 {
     SYMBOL = INPUT;
     valu->integer = strtol (SYMBOL, (/*not const*/ char **) &INPUT, 10);
@@ -473,7 +489,7 @@ static int parseint (SdifSelectValueT *valu)
 				   successfully parsed something */
 }
 
-static int parsereal (SdifSelectValueT *valu)
+static int parsereal (SdifSelectValueT *valu,SdifSelectContext *context)
 {
     SYMBOL = INPUT;
     valu->real = strtod (SYMBOL, (/*not const*/ char **) &INPUT);
@@ -486,11 +502,11 @@ static int parsereal (SdifSelectValueT *valu)
    Later: handle quoting "..." or '...'
    Set SYMBOL to string read (non-terminated!), return length, advance INPUT.
 */
-static int parsestring ()
+static int parsestring (SdifSelectContext *context)
 {
     int len;
 
-    skipspace ();	/* advance INPUT to first non-space character */
+    skipspace (context);/* advance INPUT to first non-space character */
     SYMBOL = INPUT;
 
     /* find first separator character (NULL if string ended) */
@@ -503,10 +519,10 @@ static int parsestring ()
 
 /* read until next separator character
    Later: read only allowed chars for signature, handle "...". */
-static int parsesig (SdifSelectValueT *valu)
+static int parsesig (SdifSelectValueT *valu, SdifSelectContext *context)
 {
     char sigstr [4];
-    int	 siglen = parsestring ();
+    int	 siglen = parsestring (context);
 
     memset(sigstr,0,4);
 
@@ -525,14 +541,14 @@ static int parsesig (SdifSelectValueT *valu)
 /* read either column name (later) or number
    Later: handle quotes "...". 
 */
-static int parsecol (SdifSelectValueT *valu)
+static int parsecol (SdifSelectValueT *valu, SdifSelectContext *context)
 {
-    if (parseint (valu))	/* see if we can find a number */
+    if (parseint (valu, context))	/* see if we can find a number */
 	return (1);
     else
     {	/* no, parse column name and later find column index from types */
 	SdifColumnDefT  *col   = NULL;
-	int		len    = parsestring ();
+	int		len    = parsestring (context);
 	char		*cname = SdifCalloc (char, 100);
 
 	strncpy (cname, SYMBOL, len);
@@ -555,8 +571,8 @@ static int parsecol (SdifSelectValueT *valu)
 
 /* Parse one element's list of values plus range or delta.  
    Return true if ok. */
-static int parse (int (*parseval) (SdifSelectValueT *valu), SdifListP list, 
-		  int range_allowed, char *name)
+static int parse (int (*parseval) (SdifSelectValueT *valu, SdifSelectContext *context), SdifListP list, 
+		  int range_allowed, char *name, SdifSelectContext *context)
 {
 #   define print_error1(msg, arg)	/* todo: use sdiferr... */       \
 	   fprintf (stderr,						 \
@@ -570,20 +586,20 @@ static int parse (int (*parseval) (SdifSelectValueT *valu), SdifListP list,
     SdifSelectElementT *elem = SdifMalloc (SdifSelectElementT);
     elem->rangetype = sst_norange;
 
-    if (parseval (&elem->value))
+    if (parseval (&elem->value, context))
     {	
-	switch (parsenexttoken ())
+	switch (parsenexttoken (context))
 	{
 	    case sst_range:
 	    case sst_delta:	/* add elem only if range ok */
 		if (range_allowed)
 		{
-		    if (parseval (&elem->range))
+		    if (parseval (&elem->range, context))
 		    {   /* add elem and continue looking for list */
 			elem->rangetype = TOKEN;
 			SdifListPutTail (list, elem);
-			if (parsenexttoken () == sst_list)
-			    ret = parse (parseval, list, range_allowed, name);
+			if (parsenexttoken (context) == sst_list)
+			    ret = parse (parseval, list, range_allowed, name, context);
 			else
 			    if (!(ret = TOKEN != sst_range  &&  TOKEN != sst_delta))
 				print_error1 ("Another range symbol '%s' after complete range", symbol(TOKEN));
@@ -598,7 +614,7 @@ static int parse (int (*parseval) (SdifSelectValueT *valu), SdifListP list,
 	
 	    case sst_list:	/* add elem and recursively read comma-list */
 		SdifListPutTail (list, elem);
-		ret = parse (parseval, list, range_allowed, name);
+		ret = parse (parseval, list, range_allowed, name, context);
 	    break;
 
 	    case sst_num:	/* next token is no separator */
@@ -636,30 +652,33 @@ int SdifParseSelection (SdifSelectionT *sel, const char *str)
 {
     int ret = 2;	/* first iteration */
 
+    SdifSelectContext theContext;
+	SdifSelectContext *context = &theContext;
     INPUT = ORIG = str;	/* set input to parse from */
+	
     if (INPUT)
-	parsenexttoken ();
+	parsenexttoken (context);
     while (ret  &&  INPUT  &&  *INPUT)
     {
 	switch (TOKEN)
 	{
 	    case sst_stream: 
-		ret = parse (parseint,  sel->stream, 1, "stream"); break;
+		ret = parse (parseint,  sel->stream, 1, "stream", context); break;
 	    case sst_frame:  
-		ret = parse (parsesig,  sel->frame,  0, "frame");  break;
+		ret = parse (parsesig,  sel->frame,  0, "frame", context);  break;
 	    case sst_matrix: 
-		ret = parse (parsesig,  sel->matrix, 0, "matrix"); break;
+		ret = parse (parsesig,  sel->matrix, 0, "matrix", context); break;
 	    case sst_column: 
-		ret = parse (parsecol,  sel->column, 1, "column"); break;
+		ret = parse (parsecol,  sel->column, 1, "column", context); break;
 	    case sst_row:    
-		ret = parse (parseint,  sel->row,    1, "row");    break;
+		ret = parse (parseint,  sel->row,    1, "row", context);    break;
 	    case sst_time:   
-		ret = parse (parsereal, sel->time,   1, "time");   break;
+		ret = parse (parsereal, sel->time,   1, "time", context);   break;
 	    default:
 		if (ret == 2  &&  *INPUT)
 		{   /* special case: if frame is first element, don't
 		       need to use symbol : to avoid ":::1FRM" */
-		    ret = parse (parsesig, sel->frame, 0, "frame");
+		    ret = parse (parsesig, sel->frame, 0, "frame", context);
 		}
 	    break;
 	}
@@ -678,8 +697,11 @@ int SdifParseSelection (SdifSelectionT *sel, const char *str)
    return true if ok */
 int SdifParseSignatureList (SdifListT *list, const char *str)
 {
-    INPUT = ORIG = str;
-    return (parse (parsesig,  list,  0, "signature-list"));
+    SdifSelectContext context;
+
+	context.mInput = str;
+	context.mOriginal = str;
+    return (parse (parsesig,  list,  0, "signature-list",&context));
 }
 
 
@@ -849,7 +871,7 @@ int SdifSelectGetNextIntRange  (/*in*/  SdifListP list,
 	    	break;
     
 	    	case sst_delta:
-		    delta        = abs (elem->range.integer);
+		    delta        = abs ((int)elem->range.integer);
 		    range->value = elem->value.integer - delta;
 		    range->range = elem->value.integer + delta;
 	    	break;
@@ -981,7 +1003,7 @@ int SdifSelectTestIntRange (SdifSelectElementT *elem, SdifUInt4 cand)
 	    else
 	        return (elem->value.integer >= cand  &&  cand >= elem->range.integer);	    
     	case sst_delta: 
-	    return (abs (elem->value.integer - cand) <= abs (elem->range.integer));
+	    return (abs (((int)elem->value.integer - (int)cand)) <= elem->range.integer);
         default:
 	    assert (!"corrupt rangetype");
 	    return (0);

@@ -1,4 +1,4 @@
-/* $Id: SdifFRead.c,v 3.19 2004-06-03 11:18:00 schwarz Exp $
+/* $Id: SdifFRead.c,v 3.20 2004-07-22 14:47:56 bogaards Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -31,6 +31,16 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.19  2004/06/03 11:18:00  schwarz
+ * Profiling showed some waste of cycles in byte swapping and signature reading:
+ * - byte swapping now array-wise, not element-wise in SdifSwap<N>[Copy] routines:   -> from 0.24 s (18.5%) to 0.14s
+ * - ASCII signature reading function SdiffGetSignature replaced by new binary
+ *   function SdiffReadSignature (also in SdifFGetSignature, so the change is
+ *   mostly transparent):
+ *   -> from 0.11 s (9.6%)  to 0.01 s
+ * - overall run time improvement with test case sdifextractall_a01:
+ *   -> from 1.20 s         to 0.86 s (40% faster)
+ *
  * Revision 3.18  2004/05/03 18:07:27  schwarz
  * Fixed bugs in padding calculation for ascii chunks:
  * 1. DON'T PAD FRAMES!
@@ -184,6 +194,7 @@ SdifFReadGeneralHeader(SdifFileT *SdifF)
 {
   size_t SizeR = 0;
   size_t SizeS = 0;
+	char errorMess[_SdifStringLen];
 
   SdiffGetPos(SdifF->Stream, &(SdifF->StartChunkPos));
 
@@ -194,9 +205,9 @@ SdifFReadGeneralHeader(SdifFileT *SdifF)
   
   if (SdifF->CurrSignature != eSDIF)
     {
-      sprintf(gSdifErrorMess, "%s not correctly read", 
+      sprintf(errorMess, "%s not correctly read", 
 	      SdifSignatureToString(eSDIF));
-      _SdifFError(SdifF, eBadHeader, gSdifErrorMess);
+      _SdifFError(SdifF, eBadHeader, errorMess);
     }
 
   /* read rest of header chunk (might contain additional data) */
@@ -209,8 +220,8 @@ SdifFReadGeneralHeader(SdifFileT *SdifF)
 	: "File is in an old SDIF format version (%d).  "
 	  "The library (version %d) is not backwards compatible.";
 
-      sprintf (gSdifErrorMess, mfmt, SdifF->FormatVersion, _SdifFormatVersion);
-      _SdifFError(SdifF, eBadFormatVersion, gSdifErrorMess);
+      sprintf (errorMess, mfmt, SdifF->FormatVersion, _SdifFormatVersion);
+      _SdifFError(SdifF, eBadFormatVersion, errorMess);
     }
     
   return SizeR;
@@ -223,6 +234,7 @@ SdifFReadNameValueLCurrNVT(SdifFileT *SdifF)
 {
   /* Signature of chunck already read and checked for 1NVT */
   size_t SizeR = 0;
+	char errorMess[_SdifStringLen];
   
   SdiffGetPos(SdifF->Stream, &(SdifF->StartChunkPos));
   SdifF->StartChunkPos -= sizeof(SdifSignature);
@@ -239,11 +251,11 @@ SdifFReadNameValueLCurrNVT(SdifFileT *SdifF)
   if (    (SizeR != SdifF->ChunkSize + sizeof(SdifInt4))
        && ((unsigned) SdifF->ChunkSize != (unsigned) _SdifUnknownSize))
     {
-      sprintf(gSdifErrorMess,
+      sprintf(errorMess,
 	      "erreur size 1NVT: lu: %u  Attendu: %u\n",
 	      SizeR - sizeof(SdifInt4),
 	      SdifF->ChunkSize);
-      _SdifRemark(gSdifErrorMess);
+      _SdifRemark(errorMess);
     }
 
   return SizeR;
@@ -276,6 +288,7 @@ size_t
 SdifFReadAllType(SdifFileT *SdifF)
 {
   size_t  SizeR = 0;
+  char errorMess[_SdifStringLen];
   
   SdiffGetPos(SdifF->Stream, &(SdifF->StartChunkPos));
   SdifF->StartChunkPos -= sizeof(SdifSignature);
@@ -303,11 +316,11 @@ SdifFReadAllType(SdifFileT *SdifF)
   if (    (SizeR != SdifF->ChunkSize + sizeof(SdifInt4))
        && ((unsigned) SdifF->ChunkSize != (unsigned) _SdifUnknownSize))
     {
-      sprintf(gSdifErrorMess,
+      sprintf(errorMess,
 	      "erreur size 1TYP: lu: %u  Attendu: %u\n",
 	      SizeR - sizeof(SdifInt4),
 	      SdifF->ChunkSize);
-      _SdifRemark(gSdifErrorMess);
+      _SdifRemark(errorMess);
     }
   
   return SizeR;
@@ -327,6 +340,7 @@ size_t
 SdifFReadAllStreamID(SdifFileT *SdifF)
 {
   size_t SizeR = 0;
+  char errorMess[_SdifStringLen];
   
   SdiffGetPos(SdifF->Stream, &(SdifF->StartChunkPos));
   SdifF->StartChunkPos -= sizeof(SdifSignature);
@@ -354,11 +368,11 @@ SdifFReadAllStreamID(SdifFileT *SdifF)
   if (    (SizeR != SdifF->ChunkSize + sizeof(SdifInt4))
        && ((unsigned) SdifF->ChunkSize != (unsigned) _SdifUnknownSize))
     {
-      sprintf(gSdifErrorMess,
+      sprintf(errorMess,
 	      "erreur size 1IDS: lu: %u  Attendu: %u\n",
 	      SizeR - sizeof(SdifInt4),
 	      SdifF->ChunkSize);
-      _SdifRemark(gSdifErrorMess);
+      _SdifRemark(errorMess);
     }
 
   return SizeR;
@@ -433,6 +447,8 @@ SdifFReadMatrixHeader(SdifFileT *SdifF)
 size_t
 SdifFReadOneRow(SdifFileT *SdifF)
 {
+  char errorMess[_SdifStringLen];
+
     /* case template for type from SdifDataTypeET */
 #   define readrowcase(type) \
     case e##type:  return (sizeof (Sdif##type) *			  \
@@ -446,9 +462,9 @@ SdifFReadOneRow(SdifFileT *SdifF)
 	sdif_foralltypes (readrowcase);
 
 	default :
-	    sprintf(gSdifErrorMess, "OneRow 0x%04x, then Float4 used", 
+	    sprintf(errorMess, "OneRow 0x%04x, then Float4 used", 
 		    SdifF->CurrOneRow->DataType);
-	    _SdifFError(SdifF, eTypeDataNotSupported, gSdifErrorMess);
+	    _SdifFError(SdifF, eTypeDataNotSupported, errorMess);
 	    return (sizeof(SdifFloat4) * 
 		    SdiffReadFloat4(SdifF->CurrOneRow->Data.Float4,
 				    SdifF->CurrOneRow->NbData,
@@ -501,8 +517,9 @@ SdifFReadFrameHeader(SdifFileT *SdifF)
 size_t
 SdifFReadPadding (SdifFileT *SdifF, size_t Padding)
 {
+	char sdifString[_SdifStringLen];
     assert (Padding <= _SdifStringLen);
-    return sizeof(char) * Sdiffread(gSdifString, sizeof(char), Padding, SdifF->Stream);
+    return sizeof(char) * Sdiffread(sdifString, sizeof(char), Padding, SdifF->Stream);
 }
 
 
@@ -607,6 +624,7 @@ size_t SdifFSkipFrameData(SdifFileT *SdifF)
     size_t    SizeR = 0, Boo, NbBytesToSkip;
     SdifUInt4 iMtrx;
     SdiffPosT Pos;
+	char errorMess[_SdifStringLen];
     
     if (SdifF->CurrFramH->Size != _SdifUnknownSize)
     {
@@ -615,10 +633,10 @@ size_t SdifFSkipFrameData(SdifFileT *SdifF)
 	Pos += NbBytesToSkip;
 	if (SdiffSetPos(SdifF->Stream, &Pos) != 0)
 	{
-	    sprintf(gSdifErrorMess, "Skip FrameData %s ID:%u T:%g\n",
+	    sprintf(errorMess, "Skip FrameData %s ID:%u T:%g\n",
 		    SdifSignatureToString(SdifF->CurrFramH->Signature),
 		    SdifF->CurrFramH->NumID, SdifF->CurrFramH->Time);
-	    _SdifError(eEof, gSdifErrorMess);
+	    _SdifError(eEof, errorMess);
 	    return ((size_t) -1);
 	}
 	else
@@ -631,11 +649,11 @@ size_t SdifFSkipFrameData(SdifFileT *SdifF)
 	    Boo = SdifFSkipMatrix(SdifF);
 	    if (Boo == -1)
 	    {
-		sprintf(gSdifErrorMess,
+		sprintf(errorMess,
 			"Skip Matrix %d in FrameData %s ID:%u T:%g\n", iMtrx, 
 			SdifSignatureToString(SdifF->CurrFramH->Signature),
 			SdifF->CurrFramH->NumID, SdifF->CurrFramH->Time);
-		_SdifError(eEof, gSdifErrorMess);
+		_SdifError(eEof, errorMess);
 		return ((size_t) -1);
 	    }
 	    else
