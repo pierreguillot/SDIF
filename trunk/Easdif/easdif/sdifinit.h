@@ -38,8 +38,12 @@ namespace Easdif {
   <b>This function has to be called once and only once per process 
   before any other call to the SDIF library.</b> 
 */
-
   /**
+   * \defgroup initialization Init/Deinit of Easdif library
+   */
+
+  /** 
+   * \ingroup initialization
    * \brief initialize Easdif and sdif library
    *
    * @param PredefinedType 
@@ -47,13 +51,19 @@ namespace Easdif {
    void EasdifInit(const std::string& PredefinedType = "");
 
   /** 
+   * \ingroup initialization
    * \brief initialize Easdif and sdif library
    * 
    * @param PredefinedType 
    */
   void EasdifInit(const char *PredefinedType);
 
-void EasdifEnd();
+  /** 
+   * \ingroup initialization
+   * \brief deinitialize Easdif and sdif library
+   * 
+   */
+  void EasdifEnd();
 
 } // end of namespace Easdif
 
