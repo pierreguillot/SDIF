@@ -1,6 +1,6 @@
 dnl -*-autoconf-*-  (No, it's an autoconf file!)
 dnl -*-m4-*- (He emacs, it's a m4 file)
-dnl $Id: configure.in,v 1.42 2004-09-10 09:20:53 roebel Exp $
+dnl $Id: configure.in,v 1.43 2005-02-01 09:58:02 roebel Exp $
 dnl
 dnl configure.in		Feb 2003      Axel Roebel
 dnl
@@ -33,6 +33,10 @@ dnl
 dnl
 
 dnl $Log: not supported by cvs2svn $
+dnl Revision 1.42  2004/09/10 09:20:53  roebel
+dnl Extend frame directory to contain the matrix signatures for each frame.
+dnl No longer needs to re read the frame to decide whether frame is selected.
+dnl
 dnl Revision 1.41  2004/09/09 19:17:39  roebel
 dnl Version 1.0.0beta:
 dnl First complete version of iterator access when reading files. Frame-Iterators use the
@@ -233,8 +237,8 @@ dnl DEBUG feature
 AC_SUBST(SELLIB)
 AC_SUBST(SELPROG)
 AC_SUBST(NOINSTSELPROGS)
-SELPROG=easdifRmNVT
-NOINSTSELPROGS="tutofini tutorini"
+SELPROG="easdifRmNVT\$(EXEEXT)"
+NOINSTSELPROGS="tutofini\$(EXEEXT) tutorini\$(EXEEXT)"
 
 AC_ARG_ENABLE(suffix,
 [  --enable-suffix         add suffix _gcc3_2 to library name to distinguish between old and new C++ ABI],
@@ -257,16 +261,16 @@ AC_ARG_ENABLE(debug,
 [  --enable-debug          compile with debug enabled],
 [echo FEATURE enable-debug... $enableval; 
 if test "$enableval" = "yes"; then
-	CXXFLAGS="-g2";
+	CXXFLAGS="$CXXFLAGS -g2";
 	SELLIB=libEasdif-debug.la;
-	SELPROG=easdifRmNVT-debug
-	NOINSTSELPROGS="tutofini-debug tutorini-debug"
+	SELPROG="easdifRmNVT-debug\$(EXEEXT)"
+	NOINSTSELPROGS="tutofini-debug\$(EXEEXT tutorini-debug\$(EXEEXT"
 	PKGDEBUG="-debug";
 else 
-	CXXFLAGS="-O3";
+	CXXFLAGS="$CXXFLAGS -O3";
 fi ],
 [
-CXXFLAGS="-O3";
+CXXFLAGS="$CXXFLAGS -O3";
 ])
 
 
