@@ -1,5 +1,8 @@
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.1.2.2  2000/08/21  17:00:52  tisseran
+ * *** empty log message ***
+ *
  * Revision 1.1.2.1  2000/08/21  13:55:43  tisseran
  * *** empty log message ***
  *
@@ -7,7 +10,7 @@
  * This program test the matrix and frame type declaration in SDIF file.
  * 
  *
- * $Id: test2.c,v 1.1.2.2 2000-08-21 17:00:52 tisseran Exp $
+ * $Id: test2.c,v 1.1.2.3 2000-08-21 18:34:26 tisseran Exp $
  *
  */
 #include <stdlib.h>
@@ -36,7 +39,7 @@ main(void)
 {
   SdifFileT *MySdifFileToWrite;
   SdifFileT *MySdifFileToRead;
-  int eof;
+
   char num[10];
   time_t now = time(NULL); /* For Date in 1NVT */
   int nbuser;
