@@ -1,4 +1,4 @@
-/* $Id: loadsdif-subs.c,v 1.13 2003-09-15 15:57:08 schwarz Exp $
+/* $Id: loadsdif-subs.c,v 1.14 2004-07-20 11:18:51 roebel Exp $
 
    loadsdif_subs.c	25. January 2000	Diemo Schwarz
 
@@ -14,6 +14,9 @@
    endread ('close')
 
   $Log: not supported by cvs2svn $
+  Revision 1.13  2003/09/15 15:57:08  schwarz
+  Use matrix row/column selection, SdifFReadNextSelectedFrameHeader.
+
   Revision 1.12  2001/07/23 10:58:09  tisseran
   Now loadsdif can read SdifFloat8 data. (readMatrix).
   Need to change writesdif, to enable writing of SdifFloat8 data.
@@ -91,8 +94,8 @@ SdifFileT *beginread (int nlhs, mxArray *plhs [], char *filename, char *types)
         SdifGenInit (types);
 	SdifSetExitFunc (exitread);
     }
-
-    if ((input    = SdifFOpen (filename, eReadFile)))
+    
+    if (SdifCheckFileFormat(filename) && (input    = SdifFOpen (filename, eReadFile)))
     {
 	SdifFReadGeneralHeader  (input);
 	SdifFReadAllASCIIChunks (input);
