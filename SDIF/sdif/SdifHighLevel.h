@@ -1,4 +1,4 @@
-/* $Id: SdifHighLevel.h,v 3.2 2000-04-11 14:44:28 schwarz Exp $
+/* $Id: SdifHighLevel.h,v 3.3 2000-08-22 13:38:34 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -14,6 +14,9 @@ LIBRARY
  *
 LOG
  * $Log: not supported by cvs2svn $
+ * Revision 3.2  2000/04/11  14:44:28  schwarz
+ * SdifFWriteTextMatrix, more docs.
+ *
  * Revision 3.1  2000/03/01  11:20:21  schwarz
  * Added preliminary sketch of SdifHighLevel
  *
@@ -26,6 +29,18 @@ LOG
 
 #include "SdifGlobals.h"
 #include "SdifFileStruct.h"
+
+
+/*
+//FUNCTION GROUP:  High-Level I/O Functions
+*/
+
+/*DOC: 
+  Read frame headers until a frame matching the file selection
+  has been found or the end of the file has been reached.
+
+  [] Return false if end of file was reached, true if data has been read. */
+int SdifFReadNextSelectedFrameHeader (SdifFileT *file);
 
 
 
