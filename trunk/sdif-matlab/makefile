@@ -1,10 +1,13 @@
-# $Id: makefile,v 1.29 2001-05-29 13:27:20 roebel Exp $
+# $Id: makefile,v 1.30 2001-07-23 11:07:26 roebel Exp $
 #
 # makefile	26. January 2000	Diemo Schwarz
 #
 # formesutils matlab library
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.29  2001/05/29 13:27:20  roebel
+# Version 0.2.1b
+#
 # Revision 1.28  2001/05/29 09:55:38  roebel
 # Version 0.2.1
 #
@@ -290,6 +293,7 @@ t1.sdif:  gen
 	done
 
 install:	all $(INSTALL_DIR)
+	rm -f $(INSTALLED_FILES)
 	cp -f $(INSTALL_FILES) $(INSTALL_DIR)
 	chmod g+w $(INSTALLED_FILES) # assure ownership-change
 
