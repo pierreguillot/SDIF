@@ -1,4 +1,4 @@
-/* $Id: SdifFile.c,v 3.27 2002-11-28 19:57:39 roebel Exp $
+/* $Id: SdifFile.c,v 3.28 2003-01-16 15:31:16 tisseran Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -33,6 +33,11 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.27  2002/11/28 19:57:39  roebel
+ * Fixed some const arguments.
+ * Make SdifFtruncte return SDIF_FTRUNCATE_NOT_AVAILABLE if
+ * this is the case.
+ *
  * Revision 3.26  2002/11/27 17:54:46  roebel
  * ftruncate only included if available.
  *
@@ -205,7 +210,9 @@
 #include "SdifFRead.h"		/* for SdifFReadGeneralHeader */
 #include <stdlib.h>
 #include <stdio.h>
-#include <unistd.h>
+#ifdef HAVE_UNISTD_H
+#include <unistd.h> /* use for ftruncate */
+#endif
 #include <string.h>
 #include <assert.h>
 #include "SdifError.h"
@@ -222,7 +229,7 @@
 #include "SdifVersion.h"
 
 #ifndef AUTOCKSUM
-#define AUTOCKSUM "$Checksum: not available$ IRCAM $Date: 2002-11-28 19:57:39 $" 
+#define AUTOCKSUM "$Checksum: not available$ IRCAM $Date: 2003-01-16 15:31:16 $" 
 #endif
 
 #ifndef lint
