@@ -1,4 +1,4 @@
-/* $Id: SdifHard_OS.c,v 3.10 2002-05-24 19:37:52 ftissera Exp $
+/* $Id: SdifHard_OS.c,v 3.11 2003-06-06 10:25:44 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -28,6 +28,10 @@
  *
  * author: Dominique Virolle 1998
  * $Log: not supported by cvs2svn $
+ * Revision 3.10  2002/05/24 19:37:52  ftissera
+ * Change code to be compatible with C++
+ * Cast pointers to correct type.
+ *
  * Revision 3.9  2001/05/02 09:34:44  tisseran
  * Change License from GNU Public License to GNU Lesser Public License.
  *
@@ -350,6 +354,8 @@ FILE* SdiffBinOpen(const char * Name, SdifBinaryModeET Mode)
         return fopen (Name, "rb");
     case eBinaryModeWrite :
         return fopen (Name, "wb");
+    case eBinaryModeReadWrite :
+        return fopen (Name, "rb+");
     case eBinaryModeStdInput:
         return stdin;
     case eBinaryModeStdOutput:

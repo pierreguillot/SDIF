@@ -1,4 +1,4 @@
-/* $Id: sdif.h,v 1.29 2003-05-30 17:42:04 schwarz Exp $
+/* $Id: sdif.h,v 1.30 2003-06-06 10:25:40 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -30,6 +30,9 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.29  2003/05/30 17:42:04  schwarz
+ * Added SdifFGetMatrixType and SdifFGetFrameType.
+ *
  * Revision 1.28  2003/05/27 16:08:49  schwarz
  * Added SdifFGetMatrixTypesTable and SdifFGetFrameTypesTable.
  * Documented other type access functions.
@@ -154,7 +157,7 @@
  * Revision 1.1.2.1  2000/08/21  13:07:41  tisseran
  * *** empty log message ***
  *
- * $Date: 2003-05-30 17:42:04 $
+ * $Date: 2003-06-06 10:25:40 $
  *
  */
 
@@ -169,7 +172,7 @@ extern "C" {
 #endif
 
 
-static const char _sdif_h_cvs_revision_ [] = "$Id: sdif.h,v 1.29 2003-05-30 17:42:04 schwarz Exp $";
+static const char _sdif_h_cvs_revision_ [] = "$Id: sdif.h,v 1.30 2003-06-06 10:25:40 schwarz Exp $";
 
 
 #include <stdio.h>
@@ -349,6 +352,7 @@ typedef enum SdifBinaryMode
   eBinaryModeUnknown,
   eBinaryModeWrite,
   eBinaryModeRead,
+  eBinaryModeReadWrite,
   eBinaryModeStdInput,
   eBinaryModeStdOutput,
   eBinaryModeStdError
@@ -871,7 +875,8 @@ typedef enum SdifFileModeE
   eUnknownFileMode,	/* 0 */
   eWriteFile,
   eReadFile,
-  ePredefinedTypes,	/* 3 */
+  eReadWriteFile,
+  ePredefinedTypes,	/* 4 */
 
   eModeMask = 7,	/* get rid of flags */
 
