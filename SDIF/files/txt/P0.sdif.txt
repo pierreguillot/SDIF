@@ -1,6 +1,6 @@
 SDIF
 
-SITC
+1NVT
 {
 BufferSize	512;
 NumberOfChannels	1;
@@ -11,19 +11,9 @@ Author	CHANT;
 SamplingRate	44100.;
 ChantMaxNbSubObjs	5;
 }
-
-STYP
+1IDS
 {
-  Mtrx	EHIT	{mode, hit}
-  Fram	1FOB
-	{
-	  EHIT	modehit;
-	}
-}
-
-SSIC
-{
-  0	Chant:Patch0/1/FOB/1/5/0./2.;
+  0 Chant:Patch0/1/FOB/1/5/0./2.;
 }
 
 SDFC
@@ -157,6 +147,4 @@ SDFC
 	1
 
 ENDC
-
 ENDF
-

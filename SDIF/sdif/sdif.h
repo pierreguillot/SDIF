@@ -1,5 +1,11 @@
 /* sdif.h
  *
+ * Sound Description Interchange Format
+ *
+ * sdif library for management.
+ *
+ *
+ * author: Dominique Virolle 1997
  *
  */
 
@@ -10,25 +16,43 @@
 extern "C" {
 #endif
 
-#include "SdifUInt8.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <ctype.h>
+#include <string.h>
+
 #include "SdifHash.h"
 #include "SdifError.h"
 #include "SdifGlobals.h"
+#include "SdifRWLowLevel.h"
 
-#include "SdifStreamID.h"
 #include "SdifNameValue.h"
-
+#include "SdifStreamID.h"
 #include "SdifMatrixType.h"
-#include "SdifMatrix.h"
-
 #include "SdifFrameType.h"
+
+#include "SdifMatrix.h"
 #include "SdifFrame.h"
 
-#include "SdifRWLowLevel.h"
-#include "SdifRWHighLevel.h"
+#include "SdifTimePosition.h"
+#include "SdifFileStruct.h"
+#include "SdifTest.h"
+#include "SdifFile.h"
+
+#include "SdifPrint.h"
+
+#include "SdifFGet.h"
+#include "SdifFRead.h"
+#include "SdifFScan.h"
+
+#include "SdifFPut.h"
+#include "SdifFPrint.h"
+#include "SdifFWrite.h"
 
 #include "SdifTextConv.h"
 #include "SdifConvToText.h"
+
+#include "SdifPreTypes.h"
 
 #ifdef __cplusplus
 }

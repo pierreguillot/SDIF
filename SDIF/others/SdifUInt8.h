@@ -8,6 +8,11 @@
  *
  * Macros have some arguments which must be a variable name (== left value)
  * Consider that these return nothing.
+ *
+ * author: Dominique Virolle 1997
+ *
+ * remove form project Nov97
+ *
  */
 
 

@@ -1,26 +1,24 @@
 /* SdifGlobals.h
  *
  *
+ * author: Dominique Virolle 1997
  *
  */
 
 #ifndef _SdifGlobals_
 #define _SdifGlobals_
 
-#include "SdifHash.h"
+#include <stdio.h>
 #include "SdifError.h"
 
-#include <stdio.h>
-#include "SdifUInt8.h"
-
-#define _SdifLibraryVersion "1.00.alpha"
-#define _SdifTypesVersion   "1.00.alpha"
+#define _SdifLibraryVersion "1.00"
+#define _SdifTypesVersion   "1.00"
 #define _SdifTypesFileName  "SdifTypes.STYP"
 
 #define _SdifGenHashSize 127
-#define _SdifNameLen  4
-#define _SdifUnknownSize 0xffffffff   /* except UnknowFileSize which is in 64 bits */
+#define _SdifUnknownSize 0xffffffff
 #define _SdifPadding 8
+#define _SdifGranule 1024 /* for OneRow allocation in bytes */
 
 #define _SdifFloat8Error 0xffffffff
 
@@ -30,16 +28,45 @@ typedef int            SdifInt4;
 typedef unsigned int   SdifUInt4;
 typedef float          SdifFloat4;
 typedef double         SdifFloat8;
-/* SdifUInt8 type declaration into SdifUInt8.h depending machine */
+typedef unsigned int   SdifSignature;
+
+
+/* to do fpos_t compatible on MacinTosh */
+#ifdef MACINTOSH
+#define SdifFPosT long
+#define SdifFGetPos(f,p)    ((((*(p)) = ftell(f)) == -1) ? -1 : 0)
+#define SdifFSetPos(f,p)    fseek(f, (*(p)), SEEK_SET)
+#else
+#define SdifFPosT fpos_t
+#define SdifFGetPos(f,p)    fgetpos((f),(p))
+#define SdifFSetPos(f,p)    fsetpos((f),(p))
+#endif
+
+
+
+typedef enum SdifSignatureE
+{
+  eSDIF = 'SDIF' ,         /* SDIF header */
+  e1NVT = '1NVT' ,         /* Name Value Table */
+  e1TYP = '1TYP' ,         /* TYPe declarations */
+  e1MTD = '1MTD' ,         /* Matrix Type Declaration */
+  e1FTD = '1FTD' ,         /* Frame Type Declaration */
+  e1IDS = '1IDS' ,         /* ID Stream Table */
+  eSDFC = 'SDFC' ,         /* Start Data Frame Chunk (text files) */
+  eENDC = 'ENDC' ,         /* END Chunk (text files) */
+  eENDF = 'ENDF' ,         /* END File (text files) */
+  eFORM = 'FORM' ,         /* FORM for IFF compatibility (obsolete ?) */
+  eEmptySignature = '\0\0\0\0'
+} SdifSignatureET;
+
 
 #define _SdifFloatEps  1.0e-20
 
-typedef enum SdifPredefinedE
+typedef enum SdifModifModeE
 {
-  eUserdefined,
-  ePredefined
-} SdifPredefinedEnum;
-
+  eNoModif,
+  eCanModif
+} SdifModifModeET;
 
 /* DataTypeEnum
  * 8 bits at zero
@@ -56,12 +83,8 @@ typedef enum SdifDataTypeE
   eInt4   = 0x1020,
   eUInt4  = 0x1120,
   eChar4  = 0x2020
-} SdifDataTypeEnum;
+} SdifDataTypeET;
 
-
-extern SdifHashTableType* gSdifMatrixTypesTable;
-extern SdifHashTableType* gSdifFrameTypesTable;
-extern SdifHashTableType* gSdifStreamIDsTable;
 
 #define _SdifStringLen 1024
 
@@ -69,69 +92,23 @@ extern char gSdifString[_SdifStringLen];
 extern char gSdifString2[_SdifStringLen];
 extern char gSdifErrorMess[_SdifStringLen];
 
-extern void
-SdifInitAllHashTables(unsigned int HashSize);
+#define _SdifNbMaxPrintSignature 8
+extern char gSdifStringSignature[_SdifNbMaxPrintSignature][5];
 
-extern void
-SdifKillAllHashTables(void);
-
-extern int
-SdifPrintName(FILE* fw, char *Name);
-
-extern int
-SdifStrLen(const char *s);
-
-extern int
-SdifStrCmp(const char *s1, const char *s2);
-
-extern int
-SdifStrNCmp(const char *s1, const char *s2, unsigned int n);
-
-extern int
-SdifNameCmpWithoutVersion(const char NToTest[],
-			  const char WithN[]);
-
-extern char*
-SdifStrNCpy(char *s1, const char *s2, unsigned int n);
-
-extern char*
-SdifCreateStrNCpy(char* Source, unsigned int Size);
-
-extern void
-SdifKillStr(char* String);
-
-extern SdifUInt4
-SdifSizeofDataType(SdifDataTypeEnum DataType);
-
-extern unsigned int
-SdifPaddingCalculate(int NbBytes);
-
-extern unsigned int
-SdifFPaddingCalculate(FILE *f, int NbBytes);
-
-
-#define _SDIF "SDIF"
-#define _FORM "FORM"
-#define _SITC "SITC"
-#define _STYP "STYP"
-#define _SSIC "SSIC"
-#define _SDFC "SDFC"
-#define _Fram "Fram"
-#define _Mtrx "Mtrx"
-#define _ENDF "ENDF"
-#define _ENDC "ENDC"
-
-
-
-extern void
-SdifGenInit(unsigned int HashSize, char* TypesFileName);
-
-extern void
-SdifGenKill(void);
-
+extern char*     SdifSignatureToString(SdifSignature Signature);
+extern short     SdifSignatureCmpNoVersion(SdifSignature Signature1, SdifSignature Signature2);
+extern int       SdifStrLen  (const char *s);
+extern int       SdifStrCmp  (const char *s1, const char *s2);
+extern int       SdifStrNCmp (const char *s1, const char *s2, unsigned int n);
+extern char*     SdifStrNCpy (char *s1, const char *s2, unsigned int n);
+extern char*     SdifCreateStrNCpy (char* Source, size_t Size);
+extern void      SdifKillStr (char* String);
+extern SdifUInt4 SdifSizeofDataType (SdifDataTypeET DataType);
+extern size_t    SdifPaddingCalculate  (size_t NbBytes);
+extern size_t    SdifFPaddingCalculate (FILE *f, size_t NbBytes);
 
 /* (double f1) == (double f2) with _SdifFloatEps for error */
-extern short
-SdifFloat8Equ(SdifFloat8 f1, SdifFloat8 f2);
+extern short SdifFloat8Equ(SdifFloat8 f1, SdifFloat8 f2);
+
 
 #endif /* _SdifGlobals_ */

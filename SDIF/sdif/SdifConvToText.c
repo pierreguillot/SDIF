@@ -1,86 +1,43 @@
 /* SdifConvToText.c
  *
+ * functions to convert an sdif file into a pseudo-sdif text file.
  *
+ * author: Dominique Virolle 1997
  *
  *
  */
 
 #include "SdifConvToText.h"
-
+#include "SdifFile.h"
+#include "SdifTest.h"
 
 #include "SdifRWLowLevel.h"
-#include "SdifRWHighLevel.h"
-#include "SdifFrame.h"
-#include "SdifNameValue.h"
-#include "SdifHash.h"
+
+#include "SdifFGet.h"
+#include "SdifFRead.h"
+#include "SdifFPrint.h"
+
+#include <stdlib.h>
 
 
-#include <string.h>
 
 
 
-int
-SdifFConvRowsFloat4ToText(SdifMatrixHeaderType *MtrxH, FILE *fsdif, FILE *ftext)
+size_t
+SdifFConvToTextMatrixData(SdifFileT *SdifF)
 {
-  int
+  size_t
     SizeR = 0;
-  SdifOneRowType
-    *Row;
   SdifUInt4
     iRow;
-  
-  if ( (MtrxH->NbCol > 0) && (MtrxH->NbRow > 0) )
+
+  if ( (SdifCurrNbCol(SdifF) > 0) && (SdifCurrNbRow(SdifF) > 0) )
     {
-      Row = SdifCreateOneRow(eFloat4, MtrxH->NbCol);
-      
-      for(iRow=0; iRow<MtrxH->NbRow; iRow++)
+      for(iRow=0; iRow<SdifCurrNbRow(SdifF); iRow++)
 	{
-	  SizeR += SdifFReadOneRow(Row, fsdif);
-	  SdifFPrintOneRow(ftext, Row);
+	  SizeR += SdifFReadOneRow(SdifF);
+	  SdifFPrintOneRow(SdifF);
 	}
-      
-      SdifKillOneRow(Row);
-      
-      SizeR += SdifFReadPadding(SdifFPaddingCalculate(fsdif, SizeR), fsdif);
-      return SizeR;
-    }
-  else
-    return 0; /* empty matrix */
-}
-
-
-
-
-
-
-
-
-
-
-int
-SdifFConvRowsFloat8ToText(SdifMatrixHeaderType *MtrxH, FILE *fsdif, FILE *ftext)
-{
-  int
-    SizeR = 0;
-  SdifOneRowType
-    *Row;
-  SdifUInt4
-    iRow;
-  
-  
-  if ( (MtrxH->NbCol > 0) && (MtrxH->NbRow > 0) )
-    {
-      Row = SdifCreateOneRow(eFloat8, MtrxH->NbCol);
-      
-      for(iRow=0; iRow<MtrxH->NbRow; iRow++)
-	{
-	  SizeR += SdifFReadOneRow(Row, fsdif);
-	  SdifFPrintOneRow(ftext, Row);
-	}
-      
-      SdifKillOneRow(Row);
-      
-      SizeR += SdifFReadPadding(SdifFPaddingCalculate(fsdif, SizeR), fsdif);
       
       return SizeR;
     }
@@ -94,55 +51,15 @@ SdifFConvRowsFloat8ToText(SdifMatrixHeaderType *MtrxH, FILE *fsdif, FILE *ftext)
 
 
 
-
-
-int
-SdifFConvFrameToText(char *Name, FILE *fsdif, FILE *ftext)
+size_t
+SdifFConvToTextMatrixHeader(SdifFileT *SdifF)
 {
-  SdifFrameHeaderType
-    FramH;
-  SdifMatrixHeaderType
-    MtrxH;
-  int
-    iMtrx,
-    SizeR = 0;
+  size_t SizeR = 0;
 
+  SizeR += SdifFReadMatrixHeader(SdifF);
+  SdifTestMatrixHeader(SdifF);
+  SdifFPrintMatrixHeader(SdifF);
 
-  SizeR += SdifFReadFrameHeader(Name, &FramH, fsdif);
-  SdifFPrintFrameHeader(ftext, &FramH);
-  
-  for(iMtrx=0; iMtrx<FramH.NbMatrix; iMtrx++)
-    {
-      SizeR += SdifFReadMatrixHeader(&MtrxH, fsdif);
-      SdifFPrintMatrixHeader(ftext, &MtrxH);
-  
-      switch (MtrxH.DataType)
-	{
-	case eFloat4 :
-	  SizeR += SdifFConvRowsFloat4ToText(&MtrxH, fsdif, ftext);
-	  break;
-	  
-	case eFloat8 :
-	  SizeR += SdifFConvRowsFloat8ToText(&MtrxH, fsdif, ftext);
-	  break;
-	  
-	default :
-	  sprintf(gSdifErrorMess,
-		  "Data of a OneRow : 0x%x\n  F:%c%c%c%c ID:%d T:%g Mtrx_num:%d, at %d",
-		  MtrxH.DataType,
-		  FramH.FrameName[0],
-		  FramH.FrameName[1],
-		  FramH.FrameName[2],
-		  FramH.FrameName[3],
-		  FramH.NumID,
-		  FramH.Time,
-		  iMtrx,
-		  ftell(fsdif));
-	  _SdifError(eTypeDataNotSupported, gSdifErrorMess);
-	  break;
-	}
-    }
-  fprintf(ftext,"\n");
   return SizeR;
 }
 
@@ -154,35 +71,100 @@ SdifFConvFrameToText(char *Name, FILE *fsdif, FILE *ftext)
 
 
 
-
-
-int
-SdifFConvFramesChunkToText(FILE *fsdif, FILE *ftext)
+size_t
+SdifFConvToTextMatrix(SdifFileT *SdifF)
 {
-  int
-    CharEnd,
-    SizeR = 0;
-  unsigned int
-    ChunkSize = 0;
-  char
-    Name[_SdifNameLen];
+  size_t SizeR = 0;
+
+  SizeR += SdifFConvToTextMatrixHeader(SdifF);
+  SizeR += SdifFConvToTextMatrixData(SdifF);
+  SizeR += SdifFReadPadding(SdifF, SdifFPaddingCalculate(SdifF->Stream, SizeR));
+
+  return SizeR;
+}
 
 
-  SizeR += sizeof(SdifUInt4) * SdifFReadUInt4(&ChunkSize, 1, fsdif);
+
+
+
+
+
+
+
+size_t
+SdifFConvToTextFrameData(SdifFileT *SdifF)
+{
+  size_t SizeR = 0;
+  SdifUInt4  iMtrx;
+
+  for(iMtrx=1; iMtrx<=SdifCurrNbMatrix(SdifF); iMtrx++)
+    {
+      SizeR += SdifFConvToTextMatrix(SdifF);
+      SdifTestFrameWithMatrixHeader(SdifF, iMtrx);
+    }
   
-  while(    (SizeR < ChunkSize-_SdifNameLen)
-         && (CharEnd = SdifFGetName(Name, fsdif, &SizeR) != eEof) )
-    {      
-      if (    (SdifStrNCmp(Name, _STYP, _SdifNameLen)==0)
-	   || (SdifStrNCmp(Name, _SSIC, _SdifNameLen)==0)
-	   || (SdifStrNCmp(Name, _SITC, _SdifNameLen)==0)
-	   || (SdifStrNCmp(Name, _SDFC, _SdifNameLen)==0) )
+  return SizeR;
+}
+
+
+
+
+size_t
+SdifFConvToTextFrameHeader(SdifFileT *SdifF)
+{
+  size_t SizeR = 0;
+
+  SizeR += SdifFReadFrameHeader(SdifF);
+
+  fprintf(SdifF->TextStream, "\n"); /* only for presentation */
+  SdifFPrintFrameHeader(SdifF);
+
+  return SizeR;
+}
+
+
+
+
+
+
+
+
+size_t
+SdifFConvToTextFrame(SdifFileT *SdifF)
+{
+  size_t SizeR = 0;
+
+  SizeR += SdifFConvToTextFrameHeader(SdifF);
+  SizeR += SdifFConvToTextFrameData(SdifF);
+
+  return SizeR;
+}
+
+
+
+
+
+
+
+
+size_t
+SdifFConvToTextAllFrame(SdifFileT *SdifF)
+{
+  size_t
+    SizeRSign = 0,
+    SizeR = 0;
+  int CharEnd = 0;
+
+  while (CharEnd != eEof)
+    {
+      SizeR += SdifFConvToTextFrame(SdifF);
+      SdifCleanCurrSignature(SdifF);
+      CharEnd = SdifFGetSignature(SdifF, &SizeRSign);
+      if (CharEnd != eEof)
 	{
-	  fseek(fsdif, -(_SdifNameLen), SEEK_CUR);
-	  return SizeR-_SdifNameLen;
+	  SizeR += SizeRSign;
+	  SizeRSign = 0;
 	}
-      else    
-	SizeR += SdifFConvFrameToText(Name, fsdif, ftext);
     }
 
   return SizeR;
@@ -192,181 +174,83 @@ SdifFConvFramesChunkToText(FILE *fsdif, FILE *ftext)
 
 
 
-static SdifUInt2 STYPpass;
-static SdifUInt2 SSICpass;
 
 
-
-int
-SdifFConvChunkToText(char *Name, FILE *fsdif, FILE *ftext)
+size_t
+SdifFConvToText(SdifFileT *SdifF)
 {
-  int
-    SizeR = 0;
+  size_t  SizeR = 0;
+  
 
-  if (SdifStrNCmp(Name, _STYP, _SdifNameLen)==0)
+  SizeR += SdifFReadGeneralHeader(SdifF);
+  SdifFPrintGeneralHeader(SdifF);
+
+  SizeR += SdifFReadAllASCIIChunks(SdifF);
+  SdifFPrintAllASCIIChunks(SdifF);
+
+  if (SdifCurrSignature(SdifF) != eEmptySignature)
     {
-      if (STYPpass == 0)
-	{
-	  SizeR += SdifFReadAllType(eUserdefined, fsdif);
-	  SdifFPrintAllType(ftext, eUserdefined);
-	  STYPpass = 1;
-	}
-      else
-	_SdifError(eOnlyOneChunkOf, _STYP);
+      fprintf(SdifF->TextStream, "\n%s\n", SdifSignatureToString(eSDFC));
+      SizeR += SdifFConvToTextAllFrame(SdifF);
+      fprintf(SdifF->TextStream, "\n%s\n", SdifSignatureToString(eENDC));
+    }
+      
+  fprintf(SdifF->TextStream, "%s\n", SdifSignatureToString(eENDF));
+
+  return SizeR;
+}
+
+
+
+
+
+
+
+
+/* upper level : open the text in write mode */
+size_t
+SdifToText(SdifFileT *SdifF, char *TextStreamName)
+{
+  size_t  SizeR = 0;
+  
+  if (SdifF->Mode != eReadFile)
+    _SdifFileMess(SdifF, eBadMode, "it must be eReadFile");
+
+  if (SdifF->TextStream)
+    {
+      fclose(SdifF->TextStream);
+      if (SdifF->TextStreamName)
+	free(SdifF->TextStreamName);
+      _SdifRemark("TextStream Re-initialisation\n");
+    }
+  
+  SdifF->TextStreamName = SdifCreateStrNCpy(TextStreamName, SdifStrLen(TextStreamName)+1);
+  
+  if (SdifStrCmp(SdifF->TextStreamName, SdifF->Name) == 0)
+    {
+      sprintf(gSdifErrorMess, "Write=%s, Read=%s.", SdifF->TextStreamName, SdifF->Name);
+      _SdifFileMess(SdifF, eReadWriteOnSameFile, gSdifErrorMess);
+      return SizeR;
     }
   else
-    
-    if (SdifStrNCmp(Name, _SSIC, _SdifNameLen)==0)
-      {
-	if (SSICpass == 0)
-	  {
-	    SizeR += SdifFReadAllStreamID(fsdif);
-	    SdifFPrintAllStreamID(ftext);
-	    SSICpass = 1;
-	  }
-	else
-	  _SdifError(eOnlyOneChunkOf, _SSIC);
-      }
+    if (SdifStrCmp(TextStreamName, "stdin")==0)
+      _SdifFileMess(SdifF, eBadStdFile, "write on stdin forbidden");
     else
-      
-      if  (SdifStrNCmp(Name, _SITC, _SdifNameLen)==0)
-	{
-	  SdifNameValuesLNewHT(gSdifNameValues);
-	  SizeR += SdifFReadNameValueCurrHT(fsdif);
-	  SdifFPrintNameValueCurrHT(ftext);
-	}
+      if (SdifStrCmp(TextStreamName, "stdout")==0)
+	SdifF->TextStream = stdout;
       else
-	
-	if  (SdifStrNCmp(Name, _SDFC, _SdifNameLen)==0)      
+	if (! (SdifF->TextStream = fopen(SdifF->TextStreamName, "w")) )
 	  {
-	    fprintf(ftext, "%s\n\n", _SDFC);
-	    SizeR += SdifFConvFramesChunkToText(fsdif, ftext);
-	    fprintf(ftext, "%s\n\n", _ENDC);
-	    fflush(ftext);
+	    _SdifError(eFileNotFound, TextStreamName);
+	    free(SdifF->TextStreamName);
+	    return  SizeR;
 	  }
-	else
-	  {
-	    sprintf(gSdifErrorMess,
-		    "It is not a chunk name : '%c%c%c%c'",
-		    Name[0],
-		    Name[1],
-		    Name[2],
-		    Name[3]);
-	    _SdifError(eSyntax, gSdifErrorMess);
-	  }
-  
+
+  if ( (SdifF->TextStream) && (SdifF->Stream) )
+    {
+      SizeR = SdifFConvToText(SdifF);
+      fflush(SdifF->TextStream);
+    }
   
   return SizeR;
-}
-
-
-
-
-
-SdifUInt8
-SdifFConvToText(FILE *fsdif, FILE *ftext)
-{
-  char
-    Name[_SdifNameLen];
-  int
-    CharEnd,
-    SizeW = 0,
-    SizeR = 0;
-  SdifUInt8
-    SizeR8,
-    TotalSize;
-
-
-
-  _SdifUInt8Set(TotalSize, _ZeroUInt4, _ZeroUInt4);
-  _SdifUInt8Set(SizeR8, _ZeroUInt4, _ZeroUInt4);
-
-  
-
-  _SdifUInt8Incr(SizeR8, SdifFReadGeneralHeader(&TotalSize, fsdif));
-  fprintf(ftext, "%s\n\n", _SDIF);
-
-  SizeR = 0;
-  while ( (_SdifUInt8Inf(SizeR8, TotalSize)) && (CharEnd = SdifFGetName(Name, fsdif, &SizeR)!=eEof) )
-    {
-      _SdifUInt8Incr(SizeR8, SizeR);
-      SizeR = 0;
-      _SdifUInt8Incr(SizeR8, SdifFConvChunkToText(Name, fsdif, ftext));
-    }
-
-  fprintf(ftext, "%s\n\n", _ENDF);
-  return SizeR8;
-}
-
-
-
-
-
-
-
-
-
-SdifUInt8
-SdifConvToText(char *NameFSdif, char *NameFText)
-{
-  FILE
-    *fsdif,
-    *ftext;
-  SdifUInt8
-    FileSizeR;
-  
-
-
-  _SdifUInt8Set(FileSizeR, _ZeroUInt4, _ZeroUInt4);
-  
-  STYPpass = 0;
-  SSICpass = 0;
-  
-  
-  if (SdifStrCmp(NameFText, "stdout")!=0)
-    {
-      ftext = fopen(NameFText, "w");
-      
-      if (SdifStrCmp(NameFSdif, "stdin")!=0)
-	{
-	  if (fsdif = fopen(NameFSdif, "r"))
-	    {
-	      _SdifUInt8Cpy(FileSizeR, SdifFConvToText(fsdif, ftext));
-	      fflush(ftext);
-	      
-	      fclose(fsdif);
-	    }
-	  else
-	    _SdifError(eFileNotFound, NameFSdif);	    
-	}
-      else
-	{
-	  _SdifUInt8Cpy(FileSizeR, SdifFConvToText(stdin, ftext));
-	  fflush(ftext);
-	}
-      
-      fclose(ftext);
-    }
-  else
-    {
-      if (SdifStrCmp(NameFSdif, "stdin")!=0)
-	{
-	  if (fsdif = fopen(NameFSdif, "r"))
-	    {
-	      _SdifUInt8Cpy(FileSizeR, SdifFConvToText(fsdif, stdout));
-	      fflush(stdout);
-	      
-	      fclose(fsdif);
-	    }
-	  else
-	    _SdifError(eFileNotFound, NameFSdif);
-	}
-      else
-	{
-	  _SdifUInt8Cpy(FileSizeR, SdifFConvToText(stdin, stdout));  
-	  fflush(stdout);
-	}
-    }
-  
-  return FileSizeR;
 }

@@ -1,6 +1,6 @@
 SDIF
 
-SITC
+1NVT
 {
 BufferSize	512;
 NumberOfChannels	1;
@@ -11,28 +11,18 @@ Author	CHANT;
 SamplingRate	44100.;
 ChantMaxNbSubObjs	5;
 }
-
-STYP
+1IDS
 {
-  Mtrx	EHIT	{mode, hit}
-  Fram	1FOB
-	{
-	  EHIT	modehit;
-	}
-}
-
-SSIC
-{
-  0	Chant:Patch1/1/FOB/1/5/0./2.5;
-  1	Chant:Patch1/1/REB/1/5/0./2.5;
-  2	Chant:Patch1/1/NOI/1/0/0./2.5;
+  0 Chant:Patch1/1/FOB/1/5/0./2.5;
+  1 Chant:Patch1/1/REB/1/5/0./2.5;
+  2 Chant:Patch1/1/NOI/1/0/0./2.5;
 }
 
 SDFC
 
-1FOB	4	0	0
-  1FQ0	32	1	1
-	164
+1FOB	3	0	0
+  1FQ0	32	1	3
+	164	1	1
   1FOF	32	5	7
 	609	0	78	0.002	0.05	0.004	0
 	1000	0	88	0.002	0.05	0.004	0.25
@@ -45,8 +35,6 @@ SDFC
 	0
 	0
 	0
-  EHIT	32	1	2
-	1	1
 
 1REB	2	1	0
   1RES	32	5	5
@@ -63,8 +51,8 @@ SDFC
 	1
 
 1NOI	1	2	0
-  1DIS	32	1	1
-	60
+  1DIS	32	1	2
+	0	60
 
 1FOB	1	0	0.1
   1FQ0	32	1	1
@@ -78,9 +66,9 @@ SDFC
   1FQ0	32	1	1
 	160
 
-1FOB	4	0	0.4
-  1FQ0	32	1	1
-	164
+1FOB	3	0	0.4
+  1FQ0	32	1	3
+	164	2	1
   1FOF	32	5	2
 	609	80
 	1000	53.9
@@ -93,8 +81,6 @@ SDFC
 	1
 	1
 	1
-  EHIT	32	1	2
-	2	1
 
 1FOB	1	0	0.4
   1FQ0	32	1	1
@@ -105,12 +91,12 @@ SDFC
 	160
 
 1NOI	1	2	0.5
-  1DIS	32	1	1
-	60
+  1DIS	32	1	2
+	0	60
 
 1NOI	1	2	0.6
-  1DIS	32	1	1
-	0
+  1DIS	32	1	2
+	0	0
 
 1FOB	1	0	0.6
   1FQ0	32	1	1
@@ -172,7 +158,7 @@ SDFC
   1FQ0	32	1	1
 	113
 
-1FOB	4	0	2
+1FOB	3	0	2
   1FQ0	32	1	1
 	107
   1FOF	32	5	1
@@ -186,8 +172,6 @@ SDFC
 	1
 	1
 	1
-	1
-  EHIT	32	1	1
 	1
 
 1REB	2	1	2
@@ -204,9 +188,9 @@ SDFC
 	1
 	1
 
-1FOB	4	0	2.1
-  1FQ0	32	1	1
-	107
+1FOB	3	0	2.1
+  1FQ0	32	1	3
+	107	1	1
   1FOF	32	5	1
 	700
 	800
@@ -219,12 +203,10 @@ SDFC
 	1
 	1
 	1
-  EHIT	32	1	2
-	1	1
 
-1FOB	4	0	2.2
-  1FQ0	32	1	1
-	107
+1FOB	3	0	2.2
+  1FQ0	32	1	3
+	107	1	1
   1FOF	32	5	1
 	700
 	800
@@ -237,12 +219,10 @@ SDFC
 	1
 	1
 	1
-  EHIT	32	1	2
-	1	1
 
-1FOB	4	0	2.3
-  1FQ0	32	1	1
-	107
+1FOB	3	0	2.3
+  1FQ0	32	1	3
+	107	1	1
   1FOF	32	5	1
 	700
 	800
@@ -255,12 +235,10 @@ SDFC
 	1
 	1
 	1
-  EHIT	32	1	2
-	1	1
 
-1FOB	4	0	2.4
-  1FQ0	32	1	1
-	107
+1FOB	3	0	2.4
+  1FQ0	32	1	3
+	107	0	1
   1FOF	32	5	1
 	700
 	800
@@ -273,8 +251,6 @@ SDFC
 	1
 	1
 	1
-  EHIT	32	1	2
-	0	1
 
 1REB	2	1	2.5
   1RES	32	5	5
@@ -291,6 +267,4 @@ SDFC
 	0
 
 ENDC
-
 ENDF
-

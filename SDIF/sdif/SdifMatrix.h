@@ -1,6 +1,12 @@
 /* SdifMatrix.h
  *
+ * Matrix Header, Data, Rows structure management.
  *
+ * Memory allocation of SdifOneRowT* depend on size of one granule.
+ * if nb rows or data type (float4 or float8),
+ * then SdifReInitOneRow makes a realloc. Then think to use it before write.
+ *
+ * author: Dominique Virolle 1997
  *
  */
 
@@ -10,144 +16,59 @@
 #include "SdifGlobals.h"
 #include "SdifMatrixType.h"
 
-#include <stdio.h>
-
-
-
-
-
-typedef struct SdifMatrixHeaderT
+typedef struct SdifMatrixHeaderS
 {
-  char MatrixName[_SdifNameLen];
-  SdifDataTypeEnum DataType; /* Low level data type */
-  SdifUInt4 NbRow;
-  SdifUInt4 NbCol;
-} SdifMatrixHeaderType;
-
-extern SdifMatrixHeaderType*
-SdifCreateMatrixHeader(char *MatrixName,
-		       SdifUInt4 DataType,
-		       SdifUInt4 NbRow,
-		       SdifUInt4 NbCol);
-
-extern SdifMatrixHeaderType*
-SdifCreateMatrixHeaderEmpty(void);
-
-extern void
-SdifKillMatrixHeader(SdifMatrixHeaderType *MatrixHeader);
-
-extern int
-SdifFReadMatrixHeader(SdifMatrixHeaderType* MatrixHeader, FILE *fr);
-
-extern int
-SdifFPrintMatrixHeader(FILE *f, SdifMatrixHeaderType *MatrixHeader);
-
-extern void
-SdifFScanMatrixHeader(FILE *fr, char *MatrixName, SdifMatrixHeaderType* MatrixHeader);
-
-extern int
-SdifFWriteMatrixHeader(SdifMatrixHeaderType* MatrixHeader, FILE *fw);
-
-
+  SdifSignature  Signature;
+  SdifDataTypeET DataType; /* Low level data type */
+  SdifUInt4      NbRow;
+  SdifUInt4      NbCol;
+} SdifMatrixHeaderT;
 
 typedef union DataTypeU
 {
   SdifFloat4 *F4;
   SdifFloat8 *F8;
-} DataTypeUnion;
+} DataTypeUT;
 
 
-typedef struct SdifOneRowT
+typedef struct SdifOneRowS
 {
-  SdifDataTypeEnum DataType;
-  SdifUInt4  NbData;
-  DataTypeUnion Data;
-} SdifOneRowType;
+  SdifDataTypeET DataType;
+  SdifUInt4      NbData;
+  DataTypeUT     Data;
+  SdifUInt4      NbGranuleAlloc;
+} SdifOneRowT;
 
-extern SdifOneRowType*
-SdifCreateOneRow(SdifDataTypeEnum DataType, SdifUInt4  NbData);
-
-extern void
-SdifKillOneRow(SdifOneRowType *OneRow);
-
-extern int
-SdifFPrintOneRow(FILE *f, SdifOneRowType *OneRow);
-
-extern SdifOneRowType*
-SdifOneRowPutValue(SdifOneRowType *OneRow, SdifUInt4 numCol, SdifFloat8 Value);
-
-extern SdifFloat8
-SdifOneRowGetValue(SdifOneRowType *OneRow, SdifUInt4 numCol);
-
-extern SdifFloat8
-SdifOneRowGetValueColName(SdifOneRowType *OneRow,
-			  SdifMatrixTypeType *MatrixType,
-			  char * NameCD);
-
-extern int
-SdifFReadOneRow(SdifOneRowType *OneRow, FILE* fr);
-
-extern int
-SdifFWriteOneRow(SdifOneRowType *OneRow, FILE* fw);
-
-
-
-
-typedef struct SdifMatrixDataT
+typedef struct SdifMatrixDataS
 {
-  SdifMatrixHeaderType *Header;
-  SdifOneRowType       **Rows;
-  SdifUInt4            Size;
-} SdifMatrixDataType;
+  SdifMatrixHeaderT *Header;
+  SdifOneRowT       **Rows;
+  SdifUInt4         Size;
+} SdifMatrixDataT;
 
-SdifMatrixDataType*
-SdifCreateMatrixData(char *MatrixName,
-		     SdifDataTypeEnum DataType,
-		     SdifUInt4 NbRow,
-		     SdifUInt4 NbCol);
 
-extern void
-SdifKillMatrixData(SdifMatrixDataType *MatrixData);
 
-extern int
-SdifFPrintMatrixRows(FILE* f, SdifMatrixDataType *MatrixData);
+extern SdifMatrixHeaderT* SdifCreateMatrixHeader    (SdifSignature Signature, SdifUInt4 DataType,
+						     SdifUInt4 NbRow, SdifUInt4 NbCol);
 
-extern int
-SdifFWriteMatrixRows(SdifMatrixDataType *MatrixData, FILE* fw);
+extern SdifMatrixHeaderT* SdifCreateMatrixHeaderEmpty (void);
+extern void               SdifKillMatrixHeader        (SdifMatrixHeaderT *MatrixHeader);
 
-extern int
-SdifFReadMatrixRows(SdifMatrixDataType *MatrixData, FILE* fw);
+extern SdifOneRowT*       SdifCreateOneRow          (SdifDataTypeET DataType, SdifUInt4  NbGranuleAlloc);
+extern SdifOneRowT*       SdifReInitOneRow          (SdifOneRowT *OneRow, SdifDataTypeET DataType, SdifUInt4 NbData);
+extern void               SdifKillOneRow            (SdifOneRowT *OneRow);
+extern SdifOneRowT*       SdifOneRowPutValue        (SdifOneRowT *OneRow, SdifUInt4 numCol, SdifFloat8 Value);
+extern SdifFloat8         SdifOneRowGetValue        (SdifOneRowT *OneRow, SdifUInt4 numCol);
+extern SdifFloat8         SdifOneRowGetValueColName (SdifOneRowT *OneRow, SdifMatrixTypeT *MatrixType, char * NameCD);
 
-extern int
-SdifFWriteMatrixData(SdifMatrixDataType *MatrixData, FILE* fw);
+extern SdifMatrixDataT*   SdifCreateMatrixData      (SdifSignature Signature, SdifDataTypeET DataType,
+						     SdifUInt4 NbRow, SdifUInt4 NbCol);
 
-extern SdifMatrixDataType*
-SdifMatrixDataPutValue(SdifMatrixDataType *MatrixData,
-		       SdifUInt4  numRow,
-		       SdifUInt4  numCol,
-		       SdifFloat8 Value);
+extern void               SdifKillMatrixData        (SdifMatrixDataT *MatrixData);
+extern SdifMatrixDataT*   SdifMatrixDataPutValue    (SdifMatrixDataT *MatrixData,
+						     SdifUInt4  numRow, SdifUInt4  numCol, SdifFloat8 Value);
 
-extern SdifFloat8
-SdifMatrixDataGetValue(SdifMatrixDataType *MatrixData,
-		       SdifUInt4  numRow,
-		       SdifUInt4  numCol);
-
-extern SdifMatrixDataType*
-SdifMatrixDataColNamePutValue(SdifMatrixDataType *MatrixData,
-			      SdifUInt4  numRow,
-			      char *ColName,
-			      SdifFloat8 Value);
-
-extern SdifFloat8
-SdifMatrixDataColNameGetValue(SdifMatrixDataType *MatrixData,
-			      SdifUInt4  numRow,
-			      char *ColName);
-
-extern int
-SdifSkipMatrixData(SdifMatrixHeaderType *MtrxH, FILE *fr);
-
-extern int
-SdifSkipMatrix(FILE *fr);
+extern SdifFloat8         SdifMatrixDataGetValue    (SdifMatrixDataT *MatrixData,
+						     SdifUInt4  numRow, SdifUInt4  numCol);
 
 #endif /* _SdifMatrix_ */
-
