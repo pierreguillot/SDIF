@@ -13,6 +13,8 @@ dnl Init automake
 AM_INIT_AUTOMAKE(${PACKAGE_NAME}, ${PACKAGE_VERSION})
 
 AC_SUBST(HAVESWIG)
+AC_SUBST(SWIG_HAVE_STL)
+SWIG_SUPPORTS_STL=no
 AC_CHECK_PROG(HAVESWIG,swig,yes,no)
 if test $HAVESWIG = yes;then
    AC_MSG_CHECKING(swig version)
@@ -30,13 +32,22 @@ if test $HAVESWIG = yes;then
    if test $swigversionmajor == 1 -a $swigversionminor \< 3 ;then
      AC_MSG_ERROR([$swigversionmajor.$swigversionminor.$swigversionrelease < 1.3.18] )
    fi	    
-   if test $swigversionmajor == 1 -a $swigversionminor == 3 -a $swigversionrelease \< 18 ;then
+   if test $swigversionmajor == 1 -a $swigversionminor == 3 -a $swigversionrelease \< 12 ;then
      AC_MSG_ERROR([$swigversionmajor.$swigversionminor.$swigversionrelease < 1.3.18] )
    fi	    
-   AC_MSG_RESULT([$swigversionmajor.$swigversionminor.$swigversionrelease >= 1.3.18] )
+   if test $swigversionmajor == 1 -a $swigversionminor == 3 -a $swigversionrelease \> 17 ;then
+	SWIG_SUPPORTS_STL=yes
+        AC_MSG_RESULT([$swigversionmajor.$swigversionminor.$swigversionrelease >= 1.3.18 (stl map enabled)] )
+   else
+      AC_MSG_RESULT([$swigversionmajor.$swigversionminor.$swigversionrelease >= 1.3.12] )
+   fi
 else
    AC_MSG_ERROR(not found)
 fi
+
+
+AM_CONDITIONAL(SWIG_HAVE_STL, test "$SWIG_SUPPORTS_STL" = "yes" )
+
 
 EASDIF_INC_DIR="../.."
 AC_SUBST(EASDIF_INC_DIR)
