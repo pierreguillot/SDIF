@@ -11,7 +11,11 @@ INCL		= -I/usr/local/include -I$(PYTHON_INCLUDE) \
 EASDIF_LIB_PATH	= @EASDIF_LIB_PATH@
 # dbflag = -g
 
-
+if SWIG_HAVE_STL
+HAVE_STL        = -DSWIG_HAVE_STLMAP
+else
+HAVE_STL        = 
+endif
 modules		= eaSDIF SDIF
 incfiles	= ../easdif-common.i ../easdif-defines.i sdiftypemap-python.i
 easdifincbase	= entity frame matrix namevaluetable
@@ -19,7 +23,7 @@ easdifincfiles	= $(easdifincbase:%=@EASDIF_INC_DIR@/easdif/sdif%.h)
 sdifincfiles	= @SDIF_INC_DIR@/sdif.h
 
 define swig
-	swig -c++ -python -shadow -o $@ $<
+	swig $(HAVE_STL) -c++ -python -shadow -o $@ $<
 endef
 
 
