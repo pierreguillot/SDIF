@@ -47,16 +47,22 @@ namespace Easdif {
    * \brief initialize Easdif and sdif library
    *
    * @param PredefinedType 
+   * 
+   * @return true if sdif has been initialized /false if SDIF was already initialized
+   *    such that types could not be changed.
    */
-   void EasdifInit(const std::string& PredefinedType = "");
+   bool EasdifInit(const std::string& PredefinedType = "");
 
   /** 
    * \ingroup initialization
    * \brief initialize Easdif and sdif library
    * 
    * @param PredefinedType 
+   *
+   * @return true if sdif has been initialized /false if SDIF was already initialized
+   *    such that types could not be changed.
    */
-  void EasdifInit(const char *PredefinedType);
+  bool EasdifInit(const char *PredefinedType);
 
   /** 
    * \ingroup initialization
