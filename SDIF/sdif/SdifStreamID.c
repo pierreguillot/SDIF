@@ -1,4 +1,4 @@
-/* $Id: SdifStreamID.c,v 3.3 1999-10-15 12:26:55 schwarz Exp $
+/* $Id: SdifStreamID.c,v 3.4 2000-05-22 15:23:17 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -15,6 +15,11 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.3  1999/10/15  12:26:55  schwarz
+ * No time parameter for name value tables and stream ID tables, since
+ * this decision is better left to the library.  (It uses the _SdifNoTime
+ * constant, which happens to be _Sdif_MIN_DOUBLE_.)
+ *
  * Revision 3.2  1999/09/28  13:09:13  schwarz
  * Included #include <preincluded.h> for cross-platform uniformisation,
  * which in turn includes host_architecture.h and SDIF's project_preinclude.h.
@@ -159,3 +164,20 @@ SdifStreamIDTableGetNbData(SdifStreamIDTableT* SIDTable)
 
 
 
+SdifUInt4
+SdifStreamIDEntryGetSID	(SdifStreamIDT *SID)
+{
+    return SID->NumID;
+}
+
+char *
+SdifStreamIDEntryGetSource (SdifStreamIDT *SID)
+{
+    return SID->Source;
+}
+
+char *
+SdifStreamIDEntryGetTreeWay (SdifStreamIDT *SID)
+{
+    return SID->TreeWay;
+}
