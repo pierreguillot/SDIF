@@ -1,4 +1,4 @@
-/* $Id: SdifFPut.c,v 3.5 2000-05-12 14:41:45 schwarz Exp $
+/* $Id: SdifFPut.c,v 3.6 2000-07-06 19:01:46 tisseran Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -16,6 +16,14 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.5  2000/05/12  14:41:45  schwarz
+ * On behalf of Adrien, synchronisation with Mac sources, with some slight
+ * changes because of cross-platform issues:
+ * - Mac only stuff: XpSetFileAttribute XpFileSize
+ * - Cross platform wrapper: XpGetenv XpExit
+ * - Dangerous: strings.h (and thus bzero, bcopy) is not ANSI and thus doesn't
+ *   exist on Mac.  Use string.h and memset, memcpy.
+ *
  * Revision 3.4  2000/05/04  15:03:58  schwarz
  * Avoid strlen warning.
  *
@@ -97,15 +105,23 @@ SdifFPutNameValueLCurrNVT (SdifFileT *SdifF, int Verbose)
 
 
 
-
-size_t
-SdifFNameValueLCurrNVTtoString (SdifFileT *SdifF, char *str, int maxlen)
+char *
+SdifFNameValueLCurrNVTtoString (SdifFileT *SdifF)
 {
   size_t          SizeW = 0;
   SdifUInt4       iNV;
   SdifHashNT     *pNV;
   SdifHashTableT *HTable;
 
+  /* For memory reallocation */
+  int             memorySizeNeeded = 0;
+  char           *newStr;
+  char           *tmpStr; /* To conserve value if the reallocation
+			     is impossible */
+  
+  /* Memory allocation */
+  newStr = (char *)malloc(_SdifStringLen * sizeof(char));
+  
   HTable = SdifF->NameValues->CurrNVT->NVHT;
   
   for(iNV=0; iNV<HTable->HashSize; iNV++)
@@ -113,19 +129,35 @@ SdifFNameValueLCurrNVTtoString (SdifFileT *SdifF, char *str, int maxlen)
       {
 	SdifNameValueT *NameValue = pNV->Data;
 	
-	/* TODO: realloc according to size */
-	if (SizeW + strlen (NameValue->Name) + strlen (NameValue->Value) + 3 < maxlen)
+	/* Memory reallocation according to size */
+	if (SizeW + strlen (NameValue->Name) + strlen (NameValue->Value) + 3 < _SdifStringLen)
 	  {
-	    SizeW += sprintf (str + SizeW, "%s\t", NameValue->Name);
-	    SizeW += sprintf (str + SizeW, "%s\n", NameValue->Value);
+	    SizeW += sprintf (newStr + SizeW, "%s\t", NameValue->Name);
+	    SizeW += sprintf (newStr + SizeW, "%s\n", NameValue->Value);
 	  }
-	else
-	  /*SdifErrMess*/ 
-	  _SdifRemark ("SdifFNameValueLCurrNVTtoString: NVT string too large, "
-		       "dropping some values.");
+	else /* Not enough memory space */
+	  {
+	    memorySizeNeeded = SizeW + strlen (NameValue->Name) + strlen (NameValue->Value) + 3;
+	    tmpStr = (char *)realloc(newStr, memorySizeNeeded * sizeof(char));
+
+	    if (!tmpStr)
+	      {
+		/*
+		  _SdifFError(SdifStdErr, eBadMode, "Cannot allocate memory");
+		*/
+		fprintf(stderr,"%s:%d Cannot allocate more memory!!\n",__FILE__,__LINE__);
+
+		return newStr;
+	      }
+	    newStr = tmpStr;
+	    SizeW += sprintf (newStr + SizeW, "%s\t", NameValue->Name);
+	    SizeW += sprintf (newStr + SizeW, "%s\n", NameValue->Value);  
+
+	  }
+
       }
 
-  return SizeW;
+  return newStr;
 }
 
 

@@ -1,4 +1,4 @@
-/* $Id: SdifFWrite.c,v 3.10 2000-05-15 16:23:09 schwarz Exp $
+/* $Id: SdifFWrite.c,v 3.11 2000-07-06 19:01:47 tisseran Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -14,6 +14,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.10  2000/05/15  16:23:09  schwarz
+ * Avoided avoidable warnings.
+ *
  * Revision 3.9  2000/05/10  15:32:12  schwarz
  * Added functions to calculate the Size argument for SdifFSetCurrFrameHeader:
  * SdifSizeOfFrameHeader and SdifSizeOfMatrix
@@ -77,10 +80,7 @@
 #include "SdifRWLowLevel.h"
 #include "SdifFPut.h"
 #include "SdifErrMess.h"
-
 #include <string.h>
-
-
 
 void
 SdifUpdateChunkSize(SdifFileT *SdifF, size_t ChunkSize)
@@ -229,27 +229,25 @@ SdifFWriteOneNameValue(SdifFileT *SdifF, SdifNameValueT *NameValue)
 size_t
 SdifFWriteNameValueLCurrNVT (SdifFileT *f)
 {
-  char nvtstring [_SdifStringLen];
+  char  *nvtstring; /* For memory reallocation
+		       if string is greater than _SdifStringLen */
   int  nvtlength;
- 
+
   SdiffGetPos(f->Stream, &(f->StartChunkPos));
 
-#if (_SdifFormatVersion >= 3)
   /* write NVT as frame with 1 text matrix */
   SdifFSetCurrFrameHeader  (f, e1NVT, _SdifUnknownSize, 1, 
 			    f->NameValues->CurrNVT->StreamID, _SdifNoTime);
   f->ChunkSize  = SdifFWriteFrameHeader (f);
-  nvtlength     = SdifFNameValueLCurrNVTtoString(f, nvtstring, _SdifStringLen);
-  f->ChunkSize += SdifFWriteTextMatrix (f, e1NVT, nvtlength, nvtstring);
-#else
-  f->ChunkSize  = SdifFWriteChunkHeader (f, e1NVT, _SdifUnknownSize);
-  f->ChunkSize += SdifFPutNameValueLCurrNVT (f, 's');
-  f->ChunkSize += SdifFWritePadding (f, SdifFPaddingCalculate (f->Stream, 
-							       f->ChunkSize));
-#endif
+  nvtstring  = SdifFNameValueLCurrNVTtoString(f);
+  f->ChunkSize += SdifFWriteTextMatrix (f, e1NVT, strlen(nvtstring), nvtstring);
+
   SdifUpdateChunkSize (f, f->ChunkSize - sizeof (SdifSignature) 
 				       - sizeof (SdifInt4));
 
+  /* Free memory allocated */
+  SdifFree(nvtstring);
+  
   return f->ChunkSize;  
 }
 
@@ -324,30 +322,34 @@ size_t
 SdifFWriteAllType (SdifFileT *SdifF)
 {
   size_t SizeW = 0;
-  /* char typstr [_SdifStringLen];
-     int  typlen; */
+  char typstr [_SdifStringLen];
+  int  typlen;
 
   if ((SdifF->TypeDefPass == eNotPass) || (SdifF->TypeDefPass == eReadPass))
     {      
       SdiffGetPos(SdifF->Stream, &(SdifF->StartChunkPos));
 
-#if (_SdifFormatVersion >= 3)
-      /* write types as frame (for now with no matrices, but ascii data) */
+      /* Write types as frame (for now with no matrices, but ascii data) */
       SdifFSetCurrFrameHeader (SdifF, e1TYP, _SdifUnknownSize, 0, 
 			       _SdifNoStreamID, _SdifNoTime);
+
       SizeW  = SdifFWriteFrameHeader (SdifF);
- /*
-      SdifFSetCurrFrameHeader (SdifF, e1TYP, _SdifUnknownSize, 1, 
-			       _SdifNoStreamID, _SdifNoTime);
-      SizeW  = SdifFWriteFrameHeader (SdifF);
-      typlen = SdifFAllTypeToString(f, typstr, _SdifStringLen);
-      SizeW += SdifFWriteTextMatrix (f, e1NVT, nvtlength, nvtstring);
- */
-#else
-      SizeW  = SdifFWriteChunkHeader(SdifF, e1TYP, _SdifUnknownSize);
+
+      /* Return number of characters written in file
+	 This function use fprintf to write { and } : ARRGGHH!!!
+      */
       SizeW += SdifFPutAllType(SdifF, 's');
-#endif
+      
+      /* We don't need an extra 1NVT (text) matrix
+	 We must use it for write Frame and Type declaration
+	 in text as Informations Values Tables
+	 
+	 SizeW += SdifFWriteTextMatrix (SdifF, e1NVT, typlen, typstr);
+      */
+      
       SizeW += SdifFWritePadding(SdifF, SdifFPaddingCalculate(SdifF->Stream, SizeW));
+
+      /* To update the size in the frame header */
       SdifUpdateChunkSize(SdifF, SizeW -sizeof(SdifSignature) -sizeof(SdifInt4));
       SdifF->ChunkSize = SizeW;
       SdifF->TypeDefPass = eWritePass;

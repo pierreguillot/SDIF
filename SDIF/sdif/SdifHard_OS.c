@@ -1,4 +1,4 @@
-/* $Id: SdifHard_OS.c,v 3.4 1999-10-07 15:12:24 schwarz Exp $
+/* $Id: SdifHard_OS.c,v 3.5 2000-07-06 19:01:48 tisseran Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -11,6 +11,11 @@
  *
  * author: Dominique Virolle 1998
  * $Log: not supported by cvs2svn $
+ * Revision 3.4  1999/10/07  15:12:24  schwarz
+ * Added isSeekable flag in SdifFileT struct.  This allows to simplify the
+ * many tests for stdio on opening the stream.
+ * Added SdifStrEq utility function.
+ *
  * Revision 3.3  1999/09/28  13:09:01  schwarz
  * Included #include <preincluded.h> for cross-platform uniformisation,
  * which in turn includes host_architecture.h and SDIF's project_preinclude.h.
@@ -41,6 +46,7 @@
 #include "SdifError.h"
 
 #include <string.h>
+
 #include <ctype.h>
 #include <stdlib.h>
 
