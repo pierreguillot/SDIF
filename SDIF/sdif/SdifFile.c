@@ -1,4 +1,4 @@
-/* $Id: SdifFile.c,v 3.23 2002-08-27 10:53:48 schwarz Exp $
+/* $Id: SdifFile.c,v 3.24 2002-08-28 14:07:27 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -33,6 +33,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.23  2002/08/27 10:53:48  schwarz
+ * New file truncate function.
+ *
  * Revision 3.22  2002/05/24 19:37:52  ftissera
  * Change code to be compatible with C++
  * Cast pointers to correct type.
@@ -208,7 +211,7 @@
 #include "SdifVersion.h"
 
 #ifndef AUTOCKSUM
-#define AUTOCKSUM "$Checksum: not available$ IRCAM $Date: 2002-08-27 10:53:48 $" 
+#define AUTOCKSUM "$Checksum: not available$ IRCAM $Date: 2002-08-28 14:07:27 $" 
 #endif
 
 #ifndef lint
@@ -1092,10 +1095,17 @@ SdifFGetUserData (SdifFileT *file, int index)
     return (file->UserData [index]);
 }
 
+/* Rewind to start of file (before header!) */
+int SdifFRewind(SdifFileT *file)
+{
+    SdiffPosT zero = 0;
+    return (SdiffSetPos(file->Stream, &zero) == 0);
+}
+
 /* Truncate file at current position */
 int SdifFTruncate(SdifFileT *file)
 {
     SdiffPosT pos;
     SdiffGetPos(file->Stream, &pos);
-    ftruncate(fileno(file->Stream), pos);
+    return (ftruncate(fileno(file->Stream), pos) == 0);
 }
