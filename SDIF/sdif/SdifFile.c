@@ -1,4 +1,4 @@
-/* $Id: SdifFile.c,v 3.43 2004-02-11 16:24:11 roebel Exp $
+/* $Id: SdifFile.c,v 3.44 2004-05-27 13:35:53 ellis Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -33,6 +33,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.43  2004/02/11 16:24:11  roebel
+ * And once again, fixed conditions for warning message.
+ *
  * Revision 3.42  2004/02/11 15:44:05  roebel
  * Again an update of handling of the warning for missing types file.
  *
@@ -926,6 +929,9 @@ SdifGenInitCond (const char *pfile)
 void
 SdifGenKill(void)
 {
+
+  if( ! gSdifInitialised ) return  ;
+
   SdifFClose(gSdifPredefinedTypes);
   SdifDrainListNodeStock();
 
