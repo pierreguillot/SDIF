@@ -35,6 +35,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.6  2001/05/02 09:34:45  tisseran
+ * Change License from GNU Public License to GNU Lesser Public License.
+ *
  * Revision 3.5  2000/11/15 14:53:31  lefevre
  * no message
  *
@@ -67,7 +70,7 @@
  *
  */
 
-#include <preincluded.h>
+#include "sdif_portability.h"
 
 #include "SdifList.h"
 #include <stdio.h>

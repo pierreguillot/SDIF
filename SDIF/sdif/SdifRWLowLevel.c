@@ -1,4 +1,4 @@
-/* $Id: SdifRWLowLevel.c,v 3.17 2003-07-07 10:27:01 roebel Exp $
+/* $Id: SdifRWLowLevel.c,v 3.18 2003-11-07 21:47:18 roebel Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -32,6 +32,9 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.17  2003/07/07 10:27:01  roebel
+ * Added support for eInt1 and eUInt1 data types
+ *
  * Revision 3.16  2003/05/01 18:50:32  roebel
  * SdifStringToSignature takes now const char * as argument.
  *
@@ -120,7 +123,7 @@
  */
 
 
-#include <preincluded.h>
+#include "sdif_portability.h"
 
 #include <string.h>
 #include <ctype.h>

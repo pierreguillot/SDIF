@@ -1,4 +1,4 @@
-/* $Id: SdifNameValue.c,v 3.14 2003-08-06 15:10:47 schwarz Exp $
+/* $Id: SdifNameValue.c,v 3.15 2003-11-07 21:47:18 roebel Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -34,6 +34,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.14  2003/08/06 15:10:47  schwarz
+ * Finally removed obsolete functions (like SdifSkip...).
+ *
  * Revision 3.13  2002/12/17 15:56:52  roebel
  * Comment changed.
  *
@@ -110,7 +113,7 @@
  */
 
 
-#include <preincluded.h>
+#include "sdif_portability.h"
 
 #include "SdifNameValue.h"
 #include <string.h>

@@ -1,4 +1,4 @@
-/* $Id: SdifPreTypes.c,v 3.7 2001-05-02 09:34:46 tisseran Exp $
+/* $Id: SdifPreTypes.c,v 3.8 2003-11-07 21:47:18 roebel Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -33,6 +33,9 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.7  2001/05/02 09:34:46  tisseran
+ * Change License from GNU Public License to GNU Lesser Public License.
+ *
  * Revision 3.6  2000/11/21 16:34:50  roebel
  * New SdifSignatureConst builds integer signature according to
  * endianess of machine. Multicharacter constants are no longer
@@ -76,7 +79,7 @@
  */
 
 
-#include <preincluded.h>
+#include "sdif_portability.h"
 
 #include "SdifPreTypes.h"
 #include "SdifHash.h"

@@ -1,13 +1,13 @@
-/* $Id: project_preinclude.h,v 1.2 2000-10-27 20:03:05 roebel Exp $
+/* $Id: project_preinclude.h,v 1.3 2003-11-07 21:47:17 roebel Exp $
 
    SDIF/sdif/project_preinclude.h	28. Sep 1999	Diemo Schwarz
 
-   This file "project_preinclude.h" is #included by preincluded.h into
+   This file "project_preinclude.h" is #included by sdif_portability.h into
    every source file of your project.  You should add here any
    project-specific information, macro definitions and conditionals.
 	
    Generic stuff (valid for all projects and all architectures) should
-   be added to preincluded.h.  Platform-specific stuff should be added
+   be added to sdif_portability.h.  Platform-specific stuff should be added
    to host_architecture.h.
   
    You will usually have one project_preinclude.h file per project,
@@ -20,6 +20,9 @@
    use Makefiles and such declarations would therefore get lost.
   
    $Log: not supported by cvs2svn $
+   Revision 1.2  2000/10/27 20:03:05  roebel
+   autoconf merged back to main trunk
+
  * Revision 1.1.2.1  2000/08/21  17:48:36  tisseran
  * *** empty log message ***
  *

@@ -1,4 +1,4 @@
-/* $Id: SdifMatrixType.c,v 3.8 2003-10-14 10:10:37 schwarz Exp $
+/* $Id: SdifMatrixType.c,v 3.9 2003-11-07 21:47:18 roebel Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -37,6 +37,9 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.8  2003/10/14 10:10:37  schwarz
+ * SdifMatrixTypeGetColumnName returns pointer to name of column at index.
+ *
  * Revision 3.7  2002/05/24 19:37:52  ftissera
  * Change code to be compatible with C++
  * Cast pointers to correct type.
@@ -78,7 +81,7 @@
  */
 
 
-#include <preincluded.h>
+#include "sdif_portability.h"
 
 #include "SdifMatrixType.h"
 #include <stdlib.h>

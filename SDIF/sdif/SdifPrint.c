@@ -1,4 +1,4 @@
-/* $Id: SdifPrint.c,v 3.9 2003-07-07 10:27:01 roebel Exp $
+/* $Id: SdifPrint.c,v 3.10 2003-11-07 21:47:18 roebel Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -33,6 +33,9 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.9  2003/07/07 10:27:01  roebel
+ * Added support for eInt1 and eUInt1 data types
+ *
  * Revision 3.8  2002/05/24 19:37:52  ftissera
  * Change code to be compatible with C++
  * Cast pointers to correct type.
@@ -80,7 +83,7 @@
  */
 
 
-#include <preincluded.h>
+#include "sdif_portability.h"
 
 #include "SdifPrint.h"
 

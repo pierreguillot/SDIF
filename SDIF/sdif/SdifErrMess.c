@@ -1,4 +1,4 @@
-/* $Id: SdifErrMess.c,v 3.16 2003-11-07 12:09:08 ellis Exp $
+/* $Id: SdifErrMess.c,v 3.17 2003-11-07 21:47:18 roebel Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -31,6 +31,10 @@
  * author: Dominique Virolle 1998
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.16  2003/11/07 12:09:08  ellis
+ * Added the declaration of of two functions in the header file
+ * SdifFAllFrameTypeToSdifString and SdifFAllMatrixTypeToSdifString
+ *
  * Revision 3.15  2002/05/24 20:08:31  ftissera
  * Comment alternative to print error/warning message
  *
@@ -102,7 +106,7 @@
  */
 
 
-#include <preincluded.h>
+#include "sdif_portability.h"
 
 #include "SdifErrMess.h"
 #include "SdifFile.h"

@@ -1,4 +1,4 @@
-/* $Id: SdifFWrite.c,v 3.17 2003-08-06 15:11:45 schwarz Exp $
+/* $Id: SdifFWrite.c,v 3.18 2003-11-07 21:47:18 roebel Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -31,6 +31,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.17  2003/08/06 15:11:45  schwarz
+ * Finally removed obsolete functions (like SdifSkip...).
+ *
  * Revision 3.16  2002/05/24 19:37:52  ftissera
  * Change code to be compatible with C++
  * Cast pointers to correct type.
@@ -125,7 +128,7 @@
  *
  */
 
-#include <preincluded.h>
+#include "sdif_portability.h"
 
 #include "SdifFWrite.h"
 #include "SdifFile.h"

@@ -1,3 +1,10 @@
+2003-11-07  Axel Roebel  <Axel.Roebel@ircam.fr>
+3.8.0-beta3
+
+	* reorganized Mac related portability code
+	removed all XpGuiCalls, rename preincluded.h to sdif_portability.h
+
+	
 2003-08-06  Diemo Schwarz  <schwarz@ligeti.ircam.fr>
 
 	* SdifSelect.c, SdifSelect.h:
@@ -239,4 +246,4 @@ Version 3.3:
 	  Operating System.
 
 	
-$Id: ChangeLog,v 1.27 2003-08-06 18:17:22 schwarz Exp $
+$Id: ChangeLog,v 1.28 2003-11-07 21:47:16 roebel Exp $

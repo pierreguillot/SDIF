@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.4 2003-08-07 16:20:44 roebel Exp $
+# $Id: Makefile.am,v 1.5 2003-11-07 21:47:19 roebel Exp $
 #
 # ./sdifcpp/Makefile.am		March 2003		Axel Roebel
 #
@@ -30,6 +30,9 @@
 
 
 # $Log: not supported by cvs2svn $
+# Revision 1.4  2003/08/07 16:20:44  roebel
+# Fixed the fix: we do not want to install the cpp version of libsdif and we only want a static library!
+#
 # Revision 1.3  2003/07/21 13:41:35  tisseran
 # Fixed conditionnal compilation/installation of libsdif-cpp.
 #
@@ -45,9 +48,6 @@
 EXTRA_LTLIBRARIES = libsdif-cpp.la 
 noinst_LTLIBRARIES = @SELLIBCPP@
 
-FORMES_H=host_architecture.h  preincluded.h UniversalEnvVar.h  XpGuiCalls.h
-FORMES_INCLUDE=/u/formes/share/include
-
 SDIF_H = ../include/sdif_version.h $(top_srcdir)/include/sdif.h \
 	$(addprefix $(top_srcdir)/sdif/,SdifCheck.h 	SdifErrMess.h	\
 	SdifConvToText.h 	\
@@ -61,10 +61,10 @@ SDIF_H = ../include/sdif_version.h $(top_srcdir)/include/sdif.h \
 	SdifPrint.h 	SdifSelect.h	SdifRWLowLevel.h	\
 	SdifStreamID.h	SdifString.h 	SdifSignatureTab.h	\
 	SdifTest.h 	SdifTextConv.h 	sdiftypes.h	        \
-	project_preinclude.h )	../sdif/config.h \
-	$(top_srcdir)/sdif/SdifVersion.h 
+	sdif_portability.h host_architecture.h ) ../sdif/config.h 
 
-noinst_HEADERS = $(SDIF_H) $(addprefix $(top_srcdir)/sdif/,${FORMES_H})
+
+noinst_HEADERS = $(SDIF_H) 
 
 libsdif_cpp_la_SOURCES = \
 	SdifHash.cpp       SdifGlobals.cpp      SdifSignatureTab.cpp   \
@@ -86,7 +86,6 @@ sdiftype = $(datadir)/SdifTypes.STYP
 INCLUDES = -I../include -I$(top_srcdir)/include -I../sdif -I$(top_srcdir)/sdif -D_SdifTypesFileName=\"$(sdiftype)\" -DUSE_CONFIGURE
 
 
-$(libsdif_cpp_la_SOURCES) : $(FORMES_H:%=$(top_srcdir)/sdif/%)
 
 $(libsdif_cpp_la_SOURCES) : %.cpp : ../sdif/%.c 
 	cp  $< $@
@@ -95,33 +94,4 @@ BUILT_SOURCES = $(libsdif_cpp_la_SOURCES)
 
 # dont use c compiler implicite rule which would override use of c++ 
 %.o : %.c
-
-#
-# EXTRA rules and dependencies to generate the checksum file SdifVersion.h
-#
-
-SdifFile.o : SdifVersion.h
-
-# Versionsrc := $(libsdif_a_SOURCES) $(subst config.h,,$(subst $(top_srcdir)/sdif/SdifVersion.h,,$(noinst_HEADERS) )) 
-Versionsrc := $(libsdif_cpp_la_SOURCES) $(subst ../sdif/config.h,,$(subst $(top_srcdir)/sdif/SdifVersion.h,,$(noinst_HEADERS) )) 
-
-
-SdifVersion.h : $(Versionsrc)
-	@echo  "Updating  Library CKSUM"
-	@echo "/* Automatically generated File do not edit */" >$@
-	@echo '#define AUTOCKSUM "$$SDIFChecksum: '$(shell CMD_ENV=xpg4;export CMD_ENV;cksum $^ | cut -f1 -d' '|cksum |cut -f1 -d' ')' $$ IRCAM $$SDIFdate: "__DATE__" $$"'>>$@
-
-
-#
-# EXTRA FOR IRCAM STUFF
-#
-
-if ISATIRCAM
-ircam_cmp = $(FORMES_INCLUDE)/$(notdir $(1))
-else
-ircam_cmp = 
-endif
-
-$(FORMES_H:%=$(top_srcdir)/sdif/%) : $(top_srcdir)/sdif/% : $(call ircam_cmp,%)
-	cp $< $@
 

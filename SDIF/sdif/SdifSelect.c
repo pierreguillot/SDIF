@@ -1,4 +1,4 @@
-/* $Id: SdifSelect.c,v 3.18 2003-08-06 15:20:45 schwarz Exp $
+/* $Id: SdifSelect.c,v 3.19 2003-11-07 21:47:18 roebel Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -96,6 +96,14 @@ TODO
 
 LOG
   $Log: not supported by cvs2svn $
+  Revision 3.18  2003/08/06 15:20:45  schwarz
+  SdifSelectIntMask added for more efficient integer selections, new functions:
+  - SdifInitIntMask, SdifGetIntMask
+  - SdifSelectTestIntMask
+  - SdifFNumStreamsSelected, SdifFNumRowsSelected, SdifFNumColumnsSelected
+  - SdifFRowIsSelected, SdifFColumnIsSelected
+  int value/range had to be changed to SdifUInt4 for this
+
   Revision 3.17  2002/09/20 14:43:03  schwarz
   - SdifParseSignatureList Parse comma-separated list of signatures
   - SdifKillSelectElement  now public
@@ -170,7 +178,7 @@ LOG
 
 
 /* include */		 /* to get these definitions: */
-#include <preincluded.h>
+#include "sdif_portability.h"
 
 #include <stdio.h>
 #include <string.h>	 /* string functions */

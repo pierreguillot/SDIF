@@ -1,4 +1,4 @@
-/* $Id: SdifFrameType.c,v 3.6 2002-05-24 19:37:52 ftissera Exp $
+/* $Id: SdifFrameType.c,v 3.7 2003-11-07 21:47:18 roebel Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -37,6 +37,10 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.6  2002/05/24 19:37:52  ftissera
+ * Change code to be compatible with C++
+ * Cast pointers to correct type.
+ *
  * Revision 3.5  2001/05/02 09:34:43  tisseran
  * Change License from GNU Public License to GNU Lesser Public License.
  *
@@ -61,7 +65,7 @@
 
 
 
-#include <preincluded.h>
+#include "sdif_portability.h"
 
 #include "SdifFrameType.h"
 #include <stdlib.h>
