@@ -9,9 +9,12 @@
  * sdifframe.h is composed of the different methods which are using to 
  * manipulate the frame.
  * 
- * $Id: sdifframe.h,v 1.2 2002-06-18 14:51:13 ftissera Exp $ 
+ * $Id: sdifframe.h,v 1.3 2002-07-12 10:19:03 ftissera Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  2002/06/18 14:51:13  ftissera
+ * add methods with SDIFEntity for reading and writing
+ *
  * Revision 1.1.1.1  2002/04/11 16:13:31  ftissera
  * Project for new SDIF API	
  * 
@@ -35,17 +38,18 @@ private:
 /*for SDIFStream file's operations, it become public.
 size_t  mBytesRead;
 */
-    int mSelected;// if is selected = 1 else = 0
+    //int mSelected;// if is selected = 1 else = 0
 
     SdifFloat8      mTime;
     SdifSignature   mSig;
     SdifUInt4       mStreamID;
     SdifUInt4 mSize;// keep the size of the frame
     SdifUInt4 mNbMatrix;
-    SdifUInt4 mIndex;
+    SdifUInt4 mSelected;
+    //  SdifUInt4 mIndex;
 
 public: 
-    SDIFFrame(): mStreamID(0), mSize(0), mNbMatrix(0)
+    SDIFFrame(): mStreamID(0), mSize(0), mNbMatrix(0), mSelected(0)
 	{};
     size_t  mFrameBytesRead;
 
@@ -63,17 +67,17 @@ public:
  * @param file 
  */
     
-    void Read(SdifFileT* file);
-    void ReadData(SdifFileT* file);
-    void ReadInfo(SdifFileT* file);
-    void Write(SdifFileT* file);
-    void WriteInfo(SdifFileT* file);
+    int Read(SdifFileT* file);
+    int ReadData(SdifFileT* file);
+    int ReadInfo(SdifFileT* file);
+    int Write(SdifFileT* file);
+    int WriteInfo(SdifFileT* file);
     void View();
     void ViewInfo();
 
-/* for SDIFEntity*/
-
-    void Read(const SDIFEntity& entity);
+    /* for SDIFEntity*/
+    //  void Read(const SDIFEntity& entity);
+    int Read(const SDIFEntity& entity);
     void ReadData(const SDIFEntity& entity);
     void ReadInfo(const SDIFEntity& entity);
     void Write(const SDIFEntity& entity);
@@ -84,16 +88,30 @@ public:
     void AddMatrix(const SDIFMatrix& aMatrix);    
     void ClearData();
     void Resize(SdifFileT* file);
-    int Selected();// return 1 if selected
 
+    /* for the selection */
+    int Select();
+    int DeSelect();
+    int IsSelected();
+
+    /* to get a matrix */
     SDIFMatrix& GetMatrix(unsigned int index);
-    // SDIFMatrix& GetMatrix(SdifSignature sig);
-    bool MatrixExists(SdifSignature sig);// TO DO
+    /*ambiguity between signature and int  -> other name : GetMatrixwithSig()*/
+    SDIFMatrix& GetMatrixWithSig(const SdifSignature& sig); 
+    SDIFMatrix& GetMatrix(const std::string& signature);
+
+    /* check if a matrix type exist in the frame  */
+    bool MatrixExists(const SdifSignature& sig);
+    bool MatrixExists(const std::string& signature);
+
+    /* to get the informations of the frame */
     SdifUInt4 GetNbMatrix();
     SdifSignature GetSignature();
     SdifUInt4 GetStreamID();
     SdifFloat8 GetTime();
+    SdifUInt4 GetSize();
 
+    /* to set the informations of the frames  */
     void SetInfo(SdifSignature sig, SdifUInt4 streamID, float time);//, SdifUInt4 nbMatrix);
     void SetNbMatrix(SdifUInt4 nbMatrix);
     void SetSignature(SdifSignature sig);
