@@ -46,6 +46,9 @@ SDIF
   1FTD  1STF    { ISTF Info;
                   1STF FourierTransform; }
 
+  1MTD  1GAI    { Gain } 
+  1FTD  1GAI    { 1GAI Gain; } 
+
   1MTD  IENV    { HighestBinFrequency, Scale, BreakFreq }
   1MTD  1ENV    { amplitude }
   1FTD  1ENV    { 1ENV Envelope; }
