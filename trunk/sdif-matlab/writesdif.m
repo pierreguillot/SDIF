@@ -20,9 +20,13 @@
 %                 MatrixSignature2, MatrixData2, ...)
 %
 %   Time and StreamID are double values, FrameSignature and MatrixSignature
-%   are strings, MatrixData must be double for the moment.  (Later, the Matlab
-%   matrix data type will determine the SDIF matrix data type, so that you can
-%   write text and integer matrices as well.)
+%   are strings, MatrixData is for the moment restricted to be double 
+%   or char.  (Later, the Matlab matrix data type will determine the 
+%   SDIF matrix data type, so that you can write integer matrices as well.)
+%
+%   Special case are 1NVT matrices which need to be cell arrays of 
+%   strings with size Nx2 (N rows and 2 columns). The first column gives 
+%   the name the second column gives the value.
 %
 %  - To close the SDIF file, use:
 %
@@ -37,13 +41,16 @@
 %        written in Information Value Table
 
 
-% $Id: writesdif.m,v 1.4 2001-05-14 11:20:15 schwarz Exp $
+% $Id: writesdif.m,v 1.5 2001-05-14 17:31:48 roebel Exp $
 %
 % writesdif.m	12. May 2000	Patrice Tisserand
 %
 % Matlab mex extension and support functions to write SDIF files.
 
 % $Log: not supported by cvs2svn $
+% Revision 1.4  2001/05/14 11:20:15  schwarz
+% Updated and corrected help.
+%
 % Revision 1.3  2000/05/15  13:11:59  tisseran
 % Corrected comments style
 %
