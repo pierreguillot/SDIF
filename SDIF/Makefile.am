@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.24 2004-01-29 14:20:16 schwarz Exp $
+# $Id: Makefile.am,v 1.25 2004-02-02 19:09:28 schwarz Exp $
 #
 # ./Makefile.am		September 2000			Patrice Tisserand
 #
@@ -30,6 +30,10 @@
 
 
 # $Log: not supported by cvs2svn $
+# Revision 1.24  2004/01/29 14:20:16  schwarz
+# update ChangeLog
+# use rpmbuild -ba for rpm -ba on RH 9, should be configured
+#
 # Revision 1.23  2003/07/21 13:40:45  tisseran
 # Fixed conditionnalk compilation/installation of libsdif-cpp.
 #
@@ -164,20 +168,26 @@ EXTRA_DIST	  = sdif.vcproj sdif.dsw
 
 # base name of distribution (override automake generated variable to make source distribution!)
 distdir		  = $(PACKAGE)-$(VERSION)-src
-PUBLISH_FILE      = $(distdir).tar.gz
-PUBLISH_RPM	  = $(PACKAGE)-$(VERSION)-1.i386.rpm
+PUBLISH_DIST      = $(distdir).tar.gz
+PUBLISH_RPM	  = $(PACKAGE)-$(VERSION)-1.*.rpm
+PUBLISH_SRPM	  = $(PACKAGE)-$(VERSION)-1.src.rpm
+
+# build optimised for these platforms:
+PUBLISH_ARCH	  = i386,i486,i586,i686,athlon
+
 
 # make a binary rpm (experimental)
 rpm:		$(rpmdir) sdif.spec dist
-		cp $(PUBLISH_FILE) $(rpmdir)/SOURCES
-		cp sdif.spec       $(rpmdir)/SPECS
-		cd $(rpmdir)/SPECS; rpmbuild -ba sdif.spec
-		cp $(rpmdir)/RPMS/i386/$(PUBLISH_RPM) $(top_builddir)
+		cp $(PUBLISH_DIST) $(rpmdir)/SOURCES
+		rpmbuild --define="_topdir $(rpmdir)" --target $(PUBLISH_ARCH) \
+			 -ba $(top_builddir)/sdif.spec
+		cp $(rpmdir)/RPMS/{$(PUBLISH_ARCH)}/$(PUBLISH_RPM) $(top_builddir)
+		cp $(rpmdir)/SRPMS/$(PUBLISH_SRPM) $(top_builddir)
 
-# this must be in your .rpmmacros file: %_topdir /tmp/<your username>-rpm
+# create directory structure necessary for rpmbuild to work
 rpmdir = /tmp/$(USER)-rpm
 $(rpmdir):
-		cp -rf /usr/src/redhat/ $@
+		mkdir -p $@/{BUILD,RPMS/{noarch,$(PUBLISH_ARCH)},SOURCES,SPECS,SRPMS}
 
 
 #
@@ -195,14 +205,17 @@ EXTRA_PUBLISH     = README COPYING AUTHORS INSTALL ChangeLog #  doc
 # to publish a new version on an ftp server
 # this might work differently for other places
 # todo: configure PUBLISH_HOST
-PUBLISH_DIR       = sdif/download
-PUBLISH_FILES     = $(PUBLISH_FILE) $(PUBLISH_RPM) $(EXTRA_PUBLISH)
+PUBLISH_ROOT      = sdif
+PUBLISH_DIR       = $(PUBLISH_ROOT)/download
+PUBLISH_FILES_R   = doc/index.html
+PUBLISH_FILES_DL  = doc/download/index.html $(EXTRA_PUBLISH) \
+		    $(PUBLISH_DIST) $(PUBLISH_RPM) $(PUBLISH_SRPM) 
 PUBLISH_HOST      = www.ircam.fr
 PUBLISH_USER      = wwwas
 
 publish-ftp:	# (experimental)
-	echo -e put $(PUBLISH_FILES)  | ncftp -u$(PUBLISH_USER) -p$(PW) ftp://$(PUBLISH_HOST)/$(PUBLISH_DIR)
-
+	echo -e put $(PUBLISH_FILES_DL) | ncftp -u$(PUBLISH_USER) -p$(PW) ftp://$(PUBLISH_HOST)/$(PUBLISH_DIR)
+	echo -e put $(PUBLISH_FILES_R)  | ncftp -u$(PUBLISH_USER) -p$(PW) ftp://$(PUBLISH_HOST)/$(PUBLISH_ROOT)
 
 # tag the cvsrepository with the current version 
 # (to exactly reconstitute a published version)
