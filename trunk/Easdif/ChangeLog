@@ -1,4 +1,15 @@
+2003-05-01  Axel Röbel  <roebel@ircam.fr>
 
+	* avoid const_cast in CreateMatrixData and
+	only initialize members in SDIFMatrix if valid type is given.
+
+	* replaced cout in sdifmatrix.h by exception
+	to prevent the need to include iostream to use easdif.
+
+	* adapted documentation example and test programs to new
+	method names.
+
+	
 2003-04-29  Diemo Schwarz  <schwarz@ligeti.ircam.fr>
 
 	* Changed all names View* to Print* and *Info to *Header for
@@ -20,13 +31,13 @@
 	- Matrix::Set takes int/float, not int&/float&
 
 	
-2003-04-10  Axel Roebel  <roebel@ligeti.ircam.fr>
+2003-04-10  Axel Roebel  <roebel@ircam.fr>
 
 	* Makefile.am:
 	Change name of doc directory in doc distribution to Easdif-VERSION.doc.
 
 	
-2003-04-09  Axel Roebel  <roebel@ligeti.ircam.fr>
+2003-04-09  Axel Roebel  <roebel@ircam.fr>
 
 	* Makefile.am:
 	Because Easdif has its own subdir in the download directory
@@ -291,4 +302,4 @@ Version 0.21
 	* ChangeLog: Added changelog to repository.
 
 
-$Id: ChangeLog,v 1.7 2003-04-29 15:44:47 schwarz Exp $
+$Id: ChangeLog,v 1.8 2003-05-01 19:09:09 roebel Exp $
