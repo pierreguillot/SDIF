@@ -1,0 +1,353 @@
+<head>
+   <title>Programmation SDIF en C</title>
+   <!-- crée le 23/09/1997, Dominique Virolle -->
+
+</head>
+<!-- <body BGCOLOR="white"> -->
+<p>
+<img src="logo.gif" alt="Image logo.gif" height=22 witdh=276 align=lefttop>
+</p>
+<p><hr width="100%"></p>
+<h1>LA LIBRAIRIE SDIF</h1>
+<h1>Documentation du code C</h1>
+
+<em>
+<p>Avril 1997 Analyse/Synthèse <br>
+<!--#echo var="LAST_MODIFIED"-->
+</p>
+</em>
+<au>Dominique Virolle</au>
+<p><hr width="100%"></p>
+
+
+<a name="Index"></a>
+
+
+
+
+  <p><hr width="100%"></p>
+  <a name="Types de bas niveau, Valeurs et Variables Globales">
+  <h1>Types de bas niveau, Valeurs et Variables Globales</h1></a>
+
+
+
+
+  <a name="Types de bas Niveau"><h2>Types de bas Niveau</h2></a>
+
+
+<p> SdifGlobals.h : Sont définis des types de très bas niveau représentant
+ les <code>int</code>, <code>float</code> (<code>unsigned</code>) sur 2, 4,
+ 8 bytes. Cela sous-entend que le matèriel satitsfait :
+<ul>
+  <li>sizeof(short)  == 2,</li>
+  <li>sizeof(int)    == 4,</li>
+  <li>sizeof(float)  == 4,</li>
+  <li>sizeof(double) == 8.</li>
+</ul>
+La librairie Sdif ne fait pas de test mais ces expressions sont vraies sur
+Apple MacOs 7.5 et 8, Dec Alpha OSF1 4.0, Silicon Graphics IRIX 5.3, 6.2 et
+Compatible IBM sous WindowsNT 4.0 et Linux 2.*.
+</p>
+
+<pre>  
+typedef short          SdifInt2;
+typedef unsigned short SdifUInt2;
+typedef int            SdifInt4;
+typedef unsigned int   SdifUInt4;
+typedef float          SdifFloat4;
+typedef double         SdifFloat8;
+</pre>
+<p> Est associé aux différents types de bas niveau, un type d'énumération
+ qui permet de représenter les différents types avec un codage sur 4 bytes.
+<ul>
+  <li>Le premier byte représente une sémantique:</li>
+  <ul>
+    <li>0x0 => <code>float</code>,</li>
+    <li>0x1 => <code>int</code>,</li>
+    <li>0x2 => <code>char</code></li>
+  </ul>
+  <li>Le second indique si le type est signé:</li>
+  <ul>
+    <li>0x0 => <code>signed</code>,</li>
+    <li>0x1 => <code>unsigned</code></li>
+  </ul>
+  <li>Les deux autres bytes donne le nombre de bits de la donnée</li>
+  <ul>
+    <li>0x10 => 16 bits,</li>
+    <li>0x20 => 32 bits,</li>
+    <li>0x40 => 64 bits</li>
+  </ul>
+</ul>
+</p>
+<pre>
+typedef enum SdifDataTypeE
+{
+  eFloat4 = 0x20,
+  eFloat8 = 0x40,
+  eInt2   = 0x1010,
+  eUInt2  = 0x1110,
+  eInt4   = 0x1020,
+  eUInt4  = 0x1120,
+  eChar4  = 0x2020
+} SdifDataTypeEnum;
+</pre>
+
+
+<p> SdifHash.h :<br> <code>SdifHashIndexUnion</code> est un type qui permet de
+ définir le type d'index d'une table de hashage. On peut en effet avoir des
+ tables indexée par des chaînes de caratères (méthode classique) et d'autres
+ directement par des entiers. Le type est défini par un <code>union</code> qui
+ est soit un <code>unsigned int</code> sur 4 bytes soit un tableau de 1 pointeur
+ (4 bytes sauf Dec Alpha 8 bytes) sur un chaine de caractère. La représentation
+ sous forme de tableau sert uniquement à fixer la taille d'une variable
+ de <code>SdifHashIndexUnion</code> à 4 bytes (ou 8 si la machine est 64 bits
+ comme Dec Alpha).
+</p>
+<pre>  
+typedef union SdifHashIndexU
+{
+  (char*) Char[1]; /* tab of one pointer to fixe union size at 4 or 8 bytes */
+  unsigned int  Int4;
+} SdifHashIndexUnion;
+</pre>
+
+<p> <code>SdifHashIndexTypeEnum</code> est un <code>enum</code> qui permet
+ de dire quel type de l'<code>union</code> est utilisé dans une table de hashage.
+</p>
+<pre>
+typedef enum SdifHashIndexTypeE
+{
+  eHashChar,
+  eHashInt4
+} SdifHashIndexTypeEnum;
+</pre>
+
+
+  <a name="Constantes Précompilées"><h2>Constantes Précompilées</h2></a>
+
+<table border=1 bordercolor="black" cellpadding=2>
+<tr><th>Token</th>                 <th>Valeur</th>          <th>Fichier</th>         <th>Définition</th></tr>
+<tr><td>_SdifNameLen</td>          <td>4</td>               <td>SdifGlobals.h</td>   <td>Taille des noms de types de Chunks, Frames, Matrix.</td></tr>
+<tr><td>_SdifUnknownSize</td>      <td>0xffffffff</td>      <td>SdifGlobals.h</td>   <td>Valeur donnée à un champ indiquant une taille de bloc inconnue.</td></tr>
+<tr><td>_SdifPadding</td>          <td>8</td>               <td>SdifGlobals.h</td>   <td>Nombre de bytes d'alignement : 8 bytes => alignement sur 64 bits.</td></tr>
+<tr><td>_SdifFloat8Error</td>      <td>0xffffffff</td>      <td>SdifGlobals.h</td>   <td>Retour erronée de lecture d'un float (à modifier).</td></tr>
+<tr><td>_SdifStringLen</td>        <td>1024</td>            <td>SdifGlobals.h</td>   <td>Taille d'une chaine de caractère à memoire statique</td></tr>
+<tr><td>_SdifTypesFileName</td>    <td>"SdifTypes.STYP"</td><td>SdifGlobals.h</td>   <td>Nom du fichier contenant la base de données des types prédéfinis</td></tr>
+<tr><td>_SdifBSLittleE</td>        <td>4096</td>            <td>SdifRWLowLevel.h</td><td>Taille du buffer maximum pour les lectures, écritures binaires sur fichier.</td></tr>
+<tr><td>_SdifPaddingChar</td>      <td>'\0'</td>            <td>SdifRWLowLevel.h</td><td>Caractère utilisé pour le Padding</td></tr>
+<tr><td>_SdifReservedChars</td>    <td><code>",;{}[]:"</code></td>       <td>SdifRWLowLevel.h</td><td>Chaine de caractères contenant les caractères résevés de Sdif</td></tr>
+<tr><td>_SdifFrameHeaderSize</td>  <td>24</td>              <td>SdifFrame.h</td>     <td>Taille de l'entête d'un frame (constant pour le format).</td></tr>
+<tr><td>_SdifGenHashSize</td>      <td>127</td>             <td>SdifGlobals.h</td>   <td>Taille des tables de hashage globales (doit être un nombre premier)</td></tr>
+<tr><td>_SdifNameValueHashSize</td><td>31</td>              <td>SdifNameValue.h</td> <td>Taille des tables de hashage d'informations</td></tr>
+<tr><td>_FORM</td>                 <td> "FORM"</td>         <td>SdifGlobals.h</td>   <td>Token de début de fichier IFF (Sdif)</td></tr>
+<tr><td>_SDIF</td>                 <td> "SDIF"</td>         <td>SdifGlobals.h</td>   <td>Token désignant le format Sdif (Sdif)</td></tr>
+<tr><td>_SITC</td>                 <td> "SITC"</td>         <td>SdifGlobals.h</td>   <td>Token Information Table Chunk (Sdif)</td></tr>
+<tr><td>_SSIC</td>                 <td> "SSIC"</td>         <td>SdifGlobals.h</td>   <td>Token Stream ID Chunk (Sdif)</td></tr>
+<tr><td>_SDFC</td>                 <td> "SDFC"</td>         <td>SdifGlobals.h</td>   <td>Token Data Frames Chunk (Sdif)</td></tr>
+<tr><td>_STYP</td>                 <td> "STYP"</td>         <td>SdifGlobals.h</td>   <td>Token Types Declarations (Sdif)</td></tr>
+<tr><td>_Fram</td>                 <td> "Fram"</td>         <td>SdifGlobals.h</td>   <td>Token déclaration de Frame (Sdif)</td></tr>
+<tr><td>_Mtrx</td>                 <td> "Mtrx"</td>         <td>SdifGlobals.h</td>   <td>Token déclaration de Matrix (Sdif)</td></tr>
+<tr><td>_ENDF</td>                 <td> "ENDF"</td>         <td>SdifGlobals.h</td>   <td>Token de fin de fichier Sdif en texte (pas Sdif)</td></tr>
+<tr><td>_ENDC</td>                 <td> "ENDC"</td>         <td>SdifGlobals.h</td>   <td>Token de fin de chunk d'un fichier Sdif en texte (pas Sdif)</td></tr>
+</table>
+
+
+  <a name="Variables Globales"><h2>Variables Globales</h2></a>
+
+     <a name="Type de Machine gSdifMachineType">
+           <h3>Type de Machine gSdifMachineType</h3></a>
+
+<p> Le type de la machine (BigEndian ou LittleEndian) est détermineé par
+ la librairie Sdif à l'exécution d'un programme et non en précompilation
+ des sources sdif. Ainsi, on a une variable globale <code>gSdifMachineType</code>
+ accessible partout. Sa valeur est d'un type énuméré  <code>SdifMachineEnum</code>
+ qui propose plusieurs type de machines (SdifRWLowLevel.h). Une fois que cette
+ variable est affectée, il n'est plus nécessaire de la modifier. La fonction
+ assiociée à la détermination du type de machine est <code>SdifMachineEnum
+ SdifGetMachineType(void)</code>.
+</p>
+<pre>
+typedef enum SdifMachineE
+{
+  eUndefinedMachine,
+  eBigEndian,
+  eLittleEndian,
+  eBigEndian64,
+  eLittleEndian64,
+  ePDPEndian
+} SdifMachineEnum;
+
+extern SdifMachineEnum gSdifMachineType;
+</pre>
+
+
+     <a name="Chaines de caractères de transfert">
+          <h3>Chaines de caractères de transfert</h3></a>
+
+<p> Il est souvent nécessaire de lire ou d'écrire des chaines de caractères
+ dans un fichier et de les recopier dans des pointeurs de <code>char</code>
+ alloués à la taille ajustée.
+</p>
+<pre>
+extern char gSdifString[_SdifStringLen];
+extern char gSdifString2[_SdifStringLen];
+extern char gSdifErrorMess[_SdifStringLen];
+</pre>
+<p>
+ <code>gSdifString</code> et <code>gSdifString2</code> sont utilisées
+ pour les lectures essentiellement. Elle sont déclarées en taille
+ statique (<code>_SdifStringLen == 1024</code>).<br>
+ <code>gSdifErrorMess</code> est déclarée comme les précédentes mais
+ est utilisée exclusivement pour les constructions de messages d'erreur
+ par des <code>sprintf</code>.
+</p>
+
+
+     <a name="Erreurs"><h3>Erreurs</h3></a>
+
+<p>cf : SdifError.h et  SdifError.c</p>
+<pre>
+extern char *SdifErrorFile;
+extern int SdifErrorLine;
+
+typedef enum eOutReport
+{
+  eFalse = 256,
+  eTrue,
+  eFreeNull,
+  eAllocFail,
+  eUserdefBefore,
+  eTypeDataNotSupported,
+  eArrayPosition,
+  eWordCut,
+  eEof,
+  eTokenLength,
+  eNameLength,
+  eReDefined,
+  eUnDefined,
+  eSyntax,
+  eAffectationOrder,
+  eRecursiveDetect,
+  eBadType,
+  eBadHeader,
+  eBadTypesFile,
+  eInfoTableMissing,
+  eOnlyOneChunkOf,
+  eFileNotFound,
+  eUnInterpreted
+} SdifOutReportType;
+</pre>
+
+
+  <a name="Variables Base de données"><h2>Base de données</h2></a>
+
+<p> La base de données (bdd) de la librairie Sdif est spécifique à chaque fichier
+ que ce soit à écrire ou à lire. Le cas particulier est la conversion de fichiers
+ texte et sdif puisqu'il s'agit des mêmes données pour les 2 fichiers. Sinon,
+ il faudra reconstruire la bdd à chaque traitement de fichier.
+</p>
+<p> La bdd est constituée de 3 tables de hashage et d'une liste de tables de
+ hashage. Ces tables correspondent aux divers chunk sdif dont les données sont
+ en ASCII. Elles contiennent aussi les définitions de types prédéfinis.<br>
+ Remarque : la librairie sdif est conçue pour que le traitement des types
+ prédéfinis et des types ajoutés ou complétés soit toujours le même. Ceci
+ en raison de la possibilité de complétion qui rapproche les types prédéfinis
+ et les types déclarés dans un fichier sdif. 
+</p>
+<p>
+ Le type <code>SdifHashTableType</code> est défini dans SdifHash.*.<br>
+ Le type <code>SdifNameValuesLType</code> est défini dans SdifNameValues.*.
+</p>
+
+
+
+    <a name="Variable Globale gSdifNameValues">
+         <h3>gSdifNameValues</h3></a>
+
+
+<p>Déclaré dans SdifNameValue.h<br>
+<code>extern SdifNameValuesLType* gSdifNameValues;</code><br>
+ Liste de tables de hashage de type <code>SdifHashTableType*</code>, où chaque
+ table correspond à un chunk d'informations.
+</p>
+<p> L'indexation des tables est par le nom de l'information et les données sont
+ du type <code>SdifNameValueType*</code> dont le destructeur est
+ <code>SdifKillNameValue(*)</code>. La taille de chaque petite table d'information
+ est <code>_SdifNameValueHashSize</code>.
+</p>
+
+
+
+    <a name="Variable Globale gSdifStreamIDsTable">
+         <h3>gSdifStreamIDsTable</h3></a>
+
+<p>Déclaré dans SdifGlobals.h<br>
+<code>extern SdifHashTableType* gSdifStreamIDsTable;</code><br>
+Table contenant tous les Stream IDs associés à un fichier.
+</p>
+<p> L'indexation est par l'entier <code>numID</code> des Stream IDs. Le type de
+ la table est donc désignée par eHashInt4. La taille de la table de hashage est
+ 1, donc il y a continuellement colision, il s'agit ainsi d'une liste triée par
+ les IDs. Ceci uniquement pour que les fichiers sdif est ses Stream IDs triés.
+ Aussi, pour des renumérotations des IDs, on pourrait préférer cette structure
+ triée.
+</p>
+<p> Les données de la table sont de type <code>SdifStreamIDType*</code> dont
+ le destructeur est <code>SdifKillStreamID(*)</code> (SdifStreamID.*).
+</p>
+
+
+
+  <a name="Variable Globale gSdifMatrixTypesTable">
+       <h3>gSdifMatrixTypesTable</h3></a>
+
+<p>Déclaré dans SdifGlobals.h<br>
+<code>extern SdifHashTableType* gSdifMatrixTypesTable;</code><br>
+Table contenant tout les types de matrices associées à un fichier.
+</p>
+<p>L'indexation de la table est par un tableau de <code>_SdifNamLen</code> 
+ caractères (le nom du type, pas de '\0'). Les données de cette table sont
+ de type <code>SdifMatrixTypeType*</code> dont le destructeur est
+ <code>SdifKillMatrixType(*)</code> (SdifMatrixType.*).
+</p>
+<p> Ne pas confondre <code>SdifMatrixTypeType</code> avec
+ <code>SdifMatrixType</code>: Le premier type (au sens C) représente les types
+ de matrices (au sens Sdif), le second est un type (au sens C) représentant les
+ matrices (les données sdif).
+</p>
+
+
+
+
+
+  <a name="Variable Globale gSdifFrameTypesTable">
+       <h3>gSdifFrameTypesTable</h3></a>
+
+
+<p>Déclaré dans SdifGlobals.h<br>
+<code>extern SdifHashTableType* gSdifFrameTypesTable;</code><br>
+Table contenant tout les types de frames associés à un fichier.
+</p>
+<p>L'indexation de la table est par un tableau de <code>_SdifNameLen</code> 
+ caractères (le nom du type, pas de '\0'). Les données de cette table sont
+ de type <code>SdifFrameTypeType*</code> dont le destructeur est
+ <code>SdifKillFrameType(*)</code> (SdifFrameType.*).
+</p>
+<p> Ne pas confondre <code>SdifFrameTypeType</code> avec
+ <code>SdifFrameType</code>: Le premier type (au sens C) représente les types
+ de frames (au sens Sdif), le second est un type (au sens C) représentant les
+ frames (les blocs données de matrices sdif).
+</p>
+
+
+
+
+</body>
+<p>
+</p>
+<code></code>
+<strong></strong>
+<pre>
+</pre>
+  <a name=""><h></h></a>
+  <p><hr width="100%"></p>

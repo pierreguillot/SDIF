@@ -1,0 +1,116 @@
+#
+#	architechture
+#
+
+SYSTEM := $(shell uname -s)
+SYSVERS := $(shell uname -r)
+ARCH := $(shell arch)
+
+
+
+ifeq ($(ARCH),sgi)
+	SHELL = /bin/tcsh
+endif
+
+ifeq ($(ARCH),alpha)
+	SHELL = /usr/local/bin/tcsh
+endif
+
+ifeq ($(ARCH), mips)
+	SHELL = /u/formes/virolle/bin/mips/tcsh
+endif
+
+
+#
+#	vars
+#
+
+DOFLAGS = -O
+ifeq ($(DEBUG),1) 
+	DOFLAGS = -g
+endif
+
+
+
+
+ifeq ($(SYSTEM), IRIX)
+	CC = cc
+	CAFLAGS =  -fullwarn
+	LFLAGS =
+	RANLIB = 0
+	INSTALL = /sbin/install
+	LIBS = -lm
+endif
+
+
+
+
+#ifeq ($(SYSTEM), IRIX) 
+#	CC = gcc
+#	CAFLAGS =  -ansi -pedantic
+#	LFLAGS =
+#	RANLIB = 0
+#	INSTALL = /sbin/install
+#	LIBS = -lm
+#endif
+
+
+
+
+ifeq ($(SYSTEM), ULTRIX) 
+	CC = gcc
+	CAFLAGS =  -ansi -pedantic
+	RANLIB = 0
+	INSTALL = /sbin/install
+	LIBS = -lm
+endif
+
+
+
+
+ifeq ($(SYSTEM), IRIX64) 
+	CC = cc
+	CAFLAGS =  -64 -mips4 -D__mips64 
+	LFLAGS = -64 -mips4
+	RANLIB = 0
+	INSTALL = /sbin/install
+	LIBS = -lm
+endif
+
+
+
+
+ifeq ($(SYSTEM), OSF1) 
+	CC = cc
+	CAFLAGS = -Dmips -fullwarn
+	LFLAGS =
+
+	ifeq ($(DEBUG),1) 
+		DOFLAGS = -g3
+	endif
+
+	RANLIB = ranlib
+	INSTALL = /usr/bin/install
+	LIBS = -lm
+#	LIBS = -L/u/formes/lebrun/lib -lm -lefence
+endif
+
+
+
+INCLUDE_DIR = /usr/include
+
+PROJECT := sdif
+PRJ_DIR := $(HOME)/src/SDIF
+
+SDIF_OBJ_DIR := $(PRJ_DIR)/obj/$(SYSTEM)_$(SYSVERS)
+SDIF_SRC_DIR := $(PRJ_DIR)/$(PROJECT)
+SDIF_LIB_DIR := $(PRJ_DIR)/lib$(PROJECT)/$(SYSTEM)_$(SYSVERS)
+
+LIBNAME := sdif
+SDIF_LIB = $(SDIF_LIB_DIR)/lib$(LIBNAME).a
+
+include $(SDIF_SRC_DIR)/Makefile.src
+SDIF_OBJS = $(SDIF_SRC:%.c=$(SDIF_OBJ_DIR)/%.o)
+
+
+VERSION := $(SYSTEM)_$(SYSVERS)_1.00
