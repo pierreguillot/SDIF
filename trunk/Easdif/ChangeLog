@@ -1,3 +1,16 @@
+2003-05-24  Axel Röbel  <roebel@ircam.fr>
+Version 0.7.0
+	
+	* easdif/sdifentity.h,cpp
+	Internal representation of types now using std::string.
+	Parameters for type handling routines completely moved
+	to std::string
+
+	SDIFEntity::SetTypeString no longer appends but sets
+	the internal string. In fact there was now way to reset
+	the type string before.
+	
+
 2003-05-22  Axel Roebel  <Axel.Roebel@ircam.fr>
 Version 0.6.0
 	
@@ -365,4 +378,4 @@ Version 0.21
 	* ChangeLog: Added changelog to repository.
 
 
-$Id: ChangeLog,v 1.15 2003-05-22 21:37:53 roebel Exp $
+$Id: ChangeLog,v 1.16 2003-05-24 00:28:00 roebel Exp $
