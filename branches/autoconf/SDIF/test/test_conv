@@ -14,7 +14,10 @@ echo \*************************************************************************
 echo "***    Convert txt->sdif, txt->sdif->txt and txt->sdif->txt->sdif     ***"
 echo \*************************************************************************
 echo
-
+echo \************************************************************
+echo "****   BEWARE : t.txt t2.txt are wrong files => Error   ****"
+echo \************************************************************
+echo 
 for namein in $Files_Txt_Dir/*.txt; do
     base=`basename $namein`
     echo
