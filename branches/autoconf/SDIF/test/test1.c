@@ -14,7 +14,6 @@
 int
 main(void)
 {
-  int eof;
   char *types = NULL;
   
   SdifFileT *MySdifFileToWrite;
