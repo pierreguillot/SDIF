@@ -1,4 +1,4 @@
-/* $Id: SdifErrMess.c,v 3.12 2001-05-02 09:34:40 tisseran Exp $
+/* $Id: SdifErrMess.c,v 3.13 2001-07-12 14:15:31 roebel Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -31,6 +31,9 @@
  * author: Dominique Virolle 1998
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.12  2001/05/02 09:34:40  tisseran
+ * Change License from GNU Public License to GNU Lesser Public License.
+ *
  * Revision 3.11  2000/11/15 14:53:24  lefevre
  * no message
  *
@@ -128,7 +131,6 @@ const SdifErrorT gSdifErrMessFormat[] = {
 { eUserDefInFileYet,	eWarning,	"%s has been completed in this file yet\n"},
 { eBadMode,				eError,		"Bad mode at sdif file opening (%d), %s\n"},
 { eBadStdFile,			eError,		"Bad standart file or bad mode (%d), %s\n"},
-{ eBadNbData,			eWarning,	"Number of rows or columns too big : %s\n"},
 { eReadWriteOnSameFile,	eError,		"Read file and Write file are the same file : %s"},
 { eBadFormatVersion,	eError,		"Bad Format Version : %s"},
 { eMtrxUsedYet,			eWarning,	"Matrix has been used in this frame yet : %s\n"},
@@ -225,14 +227,18 @@ SdifKillErrorL(SdifErrorLT *ErrorL)
 
 
 
-SdifUInt4 SdifInsertTailError (SdifErrorLT* ErrorL, unsigned int ErrorCount [], 
-			       SdifErrorTagET Tag, const char* UserMess)
+SdifUInt4 SdifInsertTailError(SdifErrorLT* ErrorL, unsigned int ErrorCount [], 
+			      SdifErrorTagET Tag, const char* UserMess, 
+			      SdifErrorT**  NewError)
 {
     SdifErrorLevelET	Level    = gSdifErrMessFormat[Tag].Level;
     SdifUInt4		Count    = ++ErrorCount [Level];
-    SdifErrorT*		NewError = SdifCreateError(Tag, Level, UserMess);
 
-    SdifListPutTail(ErrorL->ErrorList, NewError);
+    *NewError = SdifCreateError(Tag, Level, UserMess);
+
+    /*    if(Level <= eError) {      */
+      SdifListPutTail(ErrorL->ErrorList, *NewError);
+      /*    } */
     return Count;
 }
 
@@ -264,9 +270,12 @@ SdifUInt4 SdifFError (SdifFileT* SdifF, SdifErrorTagET ErrorTag,
 		      const char *UserMess, const char *file, const int line)
 {
     /* add to list and count error */
-    SdifUInt4 count = SdifInsertTailError (SdifF->Errors, SdifF->ErrorCount, 
-					   ErrorTag, UserMess);
-    SdifFsPrintError (gSdifBufferError, SdifF, SdifLastError(SdifF->Errors), 
+
+  SdifErrorT*  Error;
+  SdifUInt4 count = SdifInsertTailError (SdifF->Errors, SdifF->ErrorCount, 
+					 ErrorTag, UserMess, &Error);
+
+    SdifFsPrintError (gSdifBufferError, SdifF, Error, 
 		      __FILE__, __LINE__);
     if (gSdifErrorOutputEnabled)
 	fprintf (SdifStdErr, "%s", gSdifBufferError);

@@ -1,4 +1,4 @@
-/* $Id: SdifTest.c,v 3.8 2001-05-02 09:34:48 tisseran Exp $
+/* $Id: SdifTest.c,v 3.9 2001-07-12 14:15:31 roebel Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -33,6 +33,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.8  2001/05/02 09:34:48  tisseran
+ * Change License from GNU Public License to GNU Lesser Public License.
+ *
  * Revision 3.7  2000/11/15 14:53:36  lefevre
  * no message
  *
@@ -166,6 +169,12 @@ SdifFTestDataType(SdifFileT* SdifF)
 
 int SdifFTestNbColumns(SdifFileT* SdifF)
 {
+
+
+#if 0
+  /* Due to user complaints we shut down the warning
+   * regarding the wrong number of columns which 
+   * is supported in the standard anyway */
   if (SdifF->CurrMtrxT->NbColumnDef < SdifF->CurrMtrxH->NbCol)
     {
       sprintf(gSdifErrorMess, "%d maximum, %d in the header",
@@ -176,6 +185,7 @@ int SdifFTestNbColumns(SdifFileT* SdifF)
                       of columns is read */
     }
   else
+#endif
     return eTrue;
 }
 
