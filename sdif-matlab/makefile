@@ -1,10 +1,14 @@
-# $Id: makefile,v 1.9 2000-08-08 17:26:59 schwarz Exp $
+# $Id: makefile,v 1.10 2000-08-08 17:47:48 schwarz Exp $
 #
 # makefile	26. January 2000	Diemo Schwarz
 #
 # formesutils matlab library
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.9  2000/08/08  17:26:59  schwarz
+# Fixed 'last matrix not returned' bug.
+# More test cases t0, t1.
+#
 # Revision 1.8  2000/08/04  14:42:31  schwarz
 # Added reset of file variable, prevents crash on double-close.
 # Version number is written in NVTs, and is used for distribution,
@@ -77,13 +81,15 @@ VPATH		 = $(OBJ_DIR)
 # FILES
 #
 
-base		= loadsdif writesdif
+mexbase		= loadsdif writesdif
 loadsdif_src	= loadsdif-subs.c
 writesdif_src	= writesdif-subs.c
 loadsdif_obj	= $(loadsdif_src:%.c=$(OBJ_DIR)/%.o)
 writesdif_obj	= $(writesdif_src:%.c=$(OBJ_DIR)/%.o)
-cfiles		= $(base:%=%.c) $(loadsdif_src) $(writesdif_src) 
-mexfiles	= $(notdir $(base:%=%.$(MEXSUF)))
+cfiles		= $(mexbase:%=%.c) $(loadsdif_src) $(writesdif_src) 
+mexfiles	= $(notdir $(mexbase:%=%.$(MEXSUF)))
+mfiles		= loadsdif.m loadsdiffile.m loadsdifflat.m \
+		  writesdif.m sdifexist.m 
 allsrc		= $(cfiles)
 
 
@@ -93,14 +99,15 @@ allsrc		= $(cfiles)
 
 # install mex files and supporting m-files INSTALL_FILES into INSTALL_DIR
 INSTALL_DIR	= /u/formes/lib/matlab
-CORE_FILES	= $(mexfiles) sdifexist.m \
-		  loadsdif.m loadsdiffile.m loadsdifflat.m \
-		  writesdif.m
-INSTALL_FILES	= $(CORE_FILES) mex.makedefs
+INSTALL_FILES	= $(mexfiles) $(mfiles) mex.makedefs
 INSTALLED_FILES = $(INSTALL_FILES:%=$(INSTALL_DIR)/%)
-DISTFILES	= $(CORE_FILES) -C $(SDIF_TYPES_DIR) $(SDIF_TYPES_FILE) \
-		  -C $(subst /lib/,/bin/,$(SDIF_LIB_DIR)) querysdif #sdifextract
-DISTBASE	= sdif-matlab-$(VERSION)
+
+DIST_DIR	= /usr/local/www/ircam/equipes/analyse-synthese/sdif/download
+DIST_FILES	= $(foreach s, $(ALLMEXSUF), $(mexbase:%=%.$s)) $(mfiles) \
+		  -C $(SDIF_TYPES_DIR)                    $(SDIF_TYPES_FILE) \
+		  -C $(subst /lib/,/bin/,$(SDIF_LIB_DIR)) querysdif
+DIST_HOST	= maelzel
+DIST_BASE	= sdif-matlab-$(VERSION)
 
 
 #
@@ -151,13 +158,13 @@ t1.sdif:
 		sdiftotext -i $@
 
 install:	all $(INSTALL_DIR)
-		cp -fp $(INSTALL_FILES) $(INSTALL_DIR)
+		cp -f $(INSTALL_FILES) $(INSTALL_DIR)
 		chmod g-w $(INSTALLED_FILES) # assure ownership-change
 dist:		all
-		tar cvfz $(DISTBASE).tar.gz $(DISTFILES)
+		tar cvfz $(DIST_BASE).tar.gz $(DIST_FILES)
 		@echo now do: cvs tag $(CVSTAG)
 publish:	dist
-		rsh maelzel cp -p $(PWD)/$(DISTBASE).tar.gz /usr/local/www/ircam/equipes/analyse-synthese/sdif/download
+		rsh $(DIST_HOST) cp -p $(PWD)/$(DIST_BASE).tar.gz $(DIST_DIR)
 
 clean mexclean cl:
 		-rm -f $(mexfiles) $(loadsdif_obj) $(writesdif_obj) 
