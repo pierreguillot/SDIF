@@ -1,3 +1,18 @@
+/**
+ * @file   sdifframe.cpp
+ * @author Fabien Tisserand
+ * @date   Thu Apr 11 18:44:52 2002
+ * 
+ * @brief  
+ * 
+ * 
+ * 
+ * $Id: sdifframe.cpp,v 1.2 2002-05-17 20:20:56 ftissera Exp $ 
+ * 
+ * $Log: not supported by cvs2svn $ 
+ * 
+ */
+
 #include "sdifframe.h"
 
 /* for the frame selection */
