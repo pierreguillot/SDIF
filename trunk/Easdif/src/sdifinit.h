@@ -14,7 +14,7 @@ namespace Easdif {
 */
 
 
-void EasdifInit(std::string PredefinedType = "");
+void EasdifInit(const std::string& PredefinedType = "");
 
 void EasdifEnd();
 
