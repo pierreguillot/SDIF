@@ -1,4 +1,4 @@
-/* $Id: SdifError.c,v 3.11 2002-06-18 13:55:11 ftissera Exp $
+/* $Id: SdifError.c,v 3.12 2002-08-05 14:21:08 roebel Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -31,6 +31,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.11  2002/06/18 13:55:11  ftissera
+ * Append inErrorMess to outErrorMess in SdifErrorWarning
+ *
  * Revision 3.10  2002/05/24 19:35:24  ftissera
  * Change fprintf into sprintf
  * Add error and warning handler
@@ -282,7 +285,6 @@ SdifDefaultWarningFunc (int errnum, SdifErrorLevelET errlev,
     if (gSdifErrorOutputEnabled)
     {
 	fprintf(SdifStdErr, msg);
-	//ff
 	fflush(SdifStdErr);
     } 
 }
