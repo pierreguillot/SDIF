@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.14 2003-04-10 14:06:03 roebel Exp $
+# $Id: Makefile.am,v 1.15 2003-05-02 13:39:25 roebel Exp $
 #
 # ./Makefile.am		Feb. 2003     Axel Roebel
 #
@@ -30,6 +30,9 @@
 # 
 
 # $Log: not supported by cvs2svn $
+# Revision 1.14  2003/04/10 14:06:03  roebel
+# Change name of doc directory in doc distribution to Easdif-VERSION.doc.
+#
 # Revision 1.13  2003/04/09 16:54:00  roebel
 # Because Easdif has its own subdir in the download directory
 # no need to map filenames.
@@ -84,6 +87,16 @@ pkgconfig_DATA = Easdif.pc
 
 doc:
 	doxygen Doxyfile
+
+
+# only useful for IRCAM
+IRCAMDOCDIR = /usr/local/www/iii/analyse_synthese/documentation/easdif
+IRCAMDOCSERVER = maelzel
+
+ircam_install_doc: doc
+	chmod -R g+w doc/html
+	rsync -avpz --delete doc/html/* $(IRCAMDOCSERVER):$(IRCAMDOCDIR)
+	chmod -R g-w doc/html
 
 test:	check
 
@@ -141,5 +154,5 @@ cvstag:
 		cvs tag -F $(CVSTAG)
 
 
-.PHONY:		grep doc ircam_deps test publish pubdoc publish-ftp  cvstag
+.PHONY:		grep doc ircam_install_doc test publish pubdoc publish-ftp  cvstag
 
