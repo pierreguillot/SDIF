@@ -1,4 +1,4 @@
-/* $Id: sdif.h,v 1.33 2003-08-06 15:08:11 schwarz Exp $
+/* $Id: sdif.h,v 1.34 2003-10-14 10:10:18 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -30,6 +30,16 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.33  2003/08/06 15:08:11  schwarz
+ * SdifSelectIntMask added for all integer selections, new functions:
+ * - SdifSelectTestIntMask
+ * - SdifFNumStreamsSelected, SdifFNumRowsSelected, SdifFNumColumnsSelected
+ * - SdifFRowIsSelected, SdifFColumnIsSelected
+ * int value/range had to be changed to SdifUInt4 for this
+ *
+ * SdifCalloc now does what it appears to do: clear memory
+ * Finally removed obsolete functions (like SdifSkip...).
+ *
  * Revision 1.32  2003/07/21 15:46:47  roebel
  * Removed C++ comment.
  *
@@ -166,7 +176,7 @@
  * Revision 1.1.2.1  2000/08/21  13:07:41  tisseran
  * *** empty log message ***
  *
- * $Date: 2003-08-06 15:08:11 $
+ * $Date: 2003-10-14 10:10:18 $
  *
  */
 
@@ -181,7 +191,7 @@ extern "C" {
 #endif
 
 
-static const char _sdif_h_cvs_revision_ [] = "$Id: sdif.h,v 1.33 2003-08-06 15:08:11 schwarz Exp $";
+static const char _sdif_h_cvs_revision_ [] = "$Id: sdif.h,v 1.34 2003-10-14 10:10:18 schwarz Exp $";
 
 
 #include <stdio.h>
@@ -2046,6 +2056,7 @@ SdifListNT* SdifKillListNode    (SdifListNT *Node, KillerFT Killer);
 
 SdifListT*  SdifCreateList      (KillerFT Killer);
 SdifListT*  SdifKillListHead    (SdifListT* List);
+SdifListT*  SdifKillListCurr    (SdifListT* List);
 SdifListT*  SdifMakeEmptyList   (SdifListT* List);
 void        SdifKillList        (SdifListT* List);
 
@@ -2143,6 +2154,11 @@ SdifColumnDefT*  SdifMatrixTypeGetColumnDef        (SdifMatrixTypeT *MatrixType,
   renvoie la définition de la colonne (numéro, nom) en fonction
   du numero.(NULL si introuvable) */
 SdifColumnDefT*  SdifMatrixTypeGetNthColumnDef     (SdifMatrixTypeT *MatrixType, SdifUInt4 NumCD);
+
+
+/*DOC: 
+  Return pointer to name of column at index, NULL if it doesn't exist. */
+const char*  SdifMatrixTypeGetColumnName           (SdifMatrixTypeT *MatrixType, int index);
 
 
 /*DOC: 
@@ -2334,6 +2350,14 @@ SdifNameValuesLT*   SdifNameValuesLNewTable     (SdifNameValuesLT *NameValuesL, 
   Cette fonction permet de définir la nième NVT de la liste des
   tables comme NVT courante.  */
 SdifNameValueTableT*SdifNameValuesLSetCurrNVT   (SdifNameValuesLT *NameValuesL, SdifUInt4 NumCurrNVT);
+
+
+/*DOC:
+  Kill current NVT from list of NVTs.  
+  Warning: current nvt is no longer valid afterwards. 
+           call SdifNameValuesLSetCurrNVT again */
+void SdifNameValuesLKillCurrNVT(SdifNameValuesLT *NameValuesL);
+
 
 /*DOC: 
   Cette fonction permet de récupérer une Name-Value de la liste
