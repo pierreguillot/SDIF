@@ -1,4 +1,4 @@
-/* $Id: SdifRWLowLevel.c,v 3.5 1999-09-28 13:09:10 schwarz Exp $
+/* $Id: SdifRWLowLevel.c,v 3.6 1999-10-07 15:05:53 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -15,6 +15,10 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.5  1999/09/28  13:09:10  schwarz
+ * Included #include <preincluded.h> for cross-platform uniformisation,
+ * which in turn includes host_architecture.h and SDIF's project_preinclude.h.
+ *
  * Revision 3.4  1999/09/23  16:06:50  schwarz
  * Fixed bug with size of signature (was 8 on alpha!).
  *
@@ -754,7 +758,6 @@ size_t
 SdiffReadSpace(FILE* fr)
 {
   size_t NbCharRead = 0;
-  SdiffPosT Pos = 0;
   char c;
 
   while ( isspace(c= (char) fgetc(fr)) )
@@ -766,9 +769,12 @@ SdiffReadSpace(FILE* fr)
     _SdifError(eEof, "SdiffReadSpace");
   else
     {
+/*
+      SdiffPosT Pos = 0;
       SdiffGetPos(fr, &Pos);
       Pos --;
-      /* if (SdiffSetPos(fr, &Pos)==0) ::: it is a bad solution with stdin, virolle 99/01 */
+      if (SdiffSetPos(fr, &Pos)==0) ::: it is a bad solution with stdin, virolle 99/01 
+*/
       if (c = (char) ungetc(c, fr))
         return NbCharRead;
       else
