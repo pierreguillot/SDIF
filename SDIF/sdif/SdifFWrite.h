@@ -1,4 +1,4 @@
-/* $Id: SdifFWrite.h,v 3.3 1999-09-28 13:08:56 schwarz Exp $
+/* $Id: SdifFWrite.h,v 3.4 2000-03-01 11:19:46 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -105,6 +105,10 @@ void main(void)
 
 LOG
  * $Log: not supported by cvs2svn $
+ * Revision 3.3  1999/09/28  13:08:56  schwarz
+ * Included #include <preincluded.h> for cross-platform uniformisation,
+ * which in turn includes host_architecture.h and SDIF's project_preinclude.h.
+ *
  * Revision 3.2  1999/08/25  18:32:35  schwarz
  * Added cocoon-able comments with sentinel "DOC:" (on a single line).
  *
@@ -154,32 +158,25 @@ LOG
 
 
 
-
-
-/*DOC: 
-  Execute un retour fichier de ChunkSize bytes et l'écrit, donc on
-  écrase la taille du chunk ou du frame.  Dans le cas où le fichier
-  est stderr ou stdout, l'action n'est pas réalisée.  */
-void    SdifUpdateChunkSize       (SdifFileT *SdifF, size_t ChunkSize);
+/*
+//FUNCTION GROUP:	Writing Header and Init-Frames
+*/
 
 /*DOC: 
-  Cette fonction permet en fin d'écriture de matrice d'ajouter le
-  Padding nécessaire. Il faut cependant avoir la taille de ce
-  Padding. On utilise SdifFPaddingCalculate(SdifF->Stream,
-  SizeSinceAlignement) où SizeSinceAllignement est un
-  <code>size_t</code> désignant le nombre de bytes qui sépare la
-  position actuelle d'écriture avec une position connue où le fichier
-  est aligné sur 64 bits (en général, c'est la taille de la matrice en
-  cours d'écriture: NbRow*NbCol*DatWitdh).  */
-size_t  SdifFWritePadding         (SdifFileT *SdifF, size_t Padding);
-
-/*DOC: 
-  écrit sur le fichier 'SDIF' puis 4 bytes à 0.  */
+  écrit sur le fichier 'SDIF' puis 4 bytes chunk size.  */
 size_t  SdifFWriteGeneralHeader   (SdifFileT *SdifF);
 
 size_t  SdifFWriteChunkHeader     (SdifFileT *SdifF, SdifSignature ChunkSignature, size_t ChunkSize);
 size_t  SdifFWriteNameValueLCurrNVT (SdifFileT *SdifF);
 size_t  SdifFWriteAllNameValueNVT   (SdifFileT *SdifF);
+
+
+size_t  SdifFWriteOneNameValue    (SdifFileT *SdifF, SdifNameValueT  *NameValue);
+size_t  SdifFWriteOneMatrixType   (SdifFileT *SdifF, SdifMatrixTypeT *MatrixType);
+size_t  SdifFWriteOneComponent    (SdifFileT *SdifF, SdifComponentT  *Component);
+size_t  SdifFWriteOneFrameType    (SdifFileT *SdifF, SdifFrameTypeT  *FrameType);
+size_t  SdifFWriteOneStreamID     (SdifFileT *SdifF, SdifStreamIDT   *StreamID);
+
 
 /*
  * obsolete
@@ -200,6 +197,13 @@ size_t  SdifFWriteAllStreamID     (SdifFileT *SdifF);
   durant une écriture.  */
 size_t  SdifFWriteAllASCIIChunks  (SdifFileT *SdifF);
 
+
+
+
+/*
+//FUNCTION GROUP:	Writing Matrices
+*/
+
 /*DOC: 
   Après avoir donner une valeur à chaque champ de SdifF->CurrMtrxH
   gràce à la fonction SdifFSetCurrMatrixHeader, SdifFWriteMatrixHeader
@@ -217,6 +221,43 @@ size_t  SdifFWriteMatrixHeader    (SdifFileT *SdifF);
 size_t  SdifFWriteOneRow          (SdifFileT *SdifF);
 
 /*DOC: 
+  Write whole matrix data, (after having set the matrix header with 
+  SdifFSetCurrMatrixHeader (file, matrixsig, datatype, nrow, ncol).
+  Data points to nbrow * nbcol * SdifSizeofDataType (datatype) bytes in 
+  row-major order.  Padding still has to be written.  */
+size_t SdifFWriteMatrixData (SdifFileT *SdifF, void *Data);
+
+/*DOC:
+  Write whole matrix: header, data, and padding.
+  Data points to NbRow * NbCol * SdifSizeofDataType (DataType) bytes in
+  row-major order. 
+*/
+size_t SdifFWriteMatrix (SdifFileT     *file,
+			 SdifSignature  Signature,
+			 SdifDataTypeET DataType,
+			 SdifUInt4      NbRow,
+			 SdifUInt4      NbCol,
+			 void		*Data);
+
+/*DOC: 
+  Cette fonction permet en fin d'écriture de matrice d'ajouter le
+  Padding nécessaire. Il faut cependant avoir la taille de ce
+  Padding. On utilise SdifFPaddingCalculate(SdifF->Stream,
+  SizeSinceAlignement) où SizeSinceAllignement est un
+  <code>size_t</code> désignant le nombre de bytes qui sépare la
+  position actuelle d'écriture avec une position connue où le fichier
+  est aligné sur 64 bits (en général, c'est la taille de la matrice en
+  cours d'écriture: NbRow*NbCol*DatWitdh).  */
+size_t  SdifFWritePadding         (SdifFileT *SdifF, size_t Padding);
+
+
+
+
+/*
+//FUNCTION GROUP:	Writing Frames
+*/
+
+/*DOC: 
   Après avoir donner une valueur à chaque champ de SdifF->CurrFramH
   gràce à la fonction SdifFSetCurrFrameHeader, SdifFWriteFrameHeader
   écrit toute l'entête de frame.  Lorsque la taille est inconnue au
@@ -225,12 +266,37 @@ size_t  SdifFWriteOneRow          (SdifFileT *SdifF);
   SdifUpdateChunkSize avec la taille calculée.  */
 size_t  SdifFWriteFrameHeader     (SdifFileT *SdifF);
 
+/*DOC: 
+  Execute un retour fichier de ChunkSize bytes et l'écrit, donc on
+  écrase la taille du chunk ou du frame.  Dans le cas où le fichier
+  est stderr ou stdout, l'action n'est pas réalisée.  */
+void    SdifUpdateChunkSize       (SdifFileT *SdifF, size_t ChunkSize);
 
-size_t  SdifFWriteOneNameValue    (SdifFileT *SdifF, SdifNameValueT  *NameValue);
-size_t  SdifFWriteOneMatrixType   (SdifFileT *SdifF, SdifMatrixTypeT *MatrixType);
-size_t  SdifFWriteOneComponent    (SdifFileT *SdifF, SdifComponentT  *Component);
-size_t  SdifFWriteOneFrameType    (SdifFileT *SdifF, SdifFrameTypeT  *FrameType);
-size_t  SdifFWriteOneStreamID     (SdifFileT *SdifF, SdifStreamIDT   *StreamID);
+/*DOC: 
+  Rewrite given frame size and number of matrices in frame header.
+  Return -1 on error or if file is not seekable (stdout or stderr). */
+int     SdifUpdateFrameHeader	  (SdifFileT *SdifF, size_t ChunkSize, 
+				   SdifInt4 NumMatrix);
+
+/*DOC:
+  Write a whole frame containing one matrix: 
+  frame header, matrix header, matrix data, and padding.
+  Data points to NbRow * NbCol * SdifSizeofDataType (DataType) bytes in
+  row-major order. 
+
+  This function has the big advantage that the frame size is known in
+  advance, so there's no need to rewind and update after the matrix
+  has been written.  */
+size_t  SdifFWriteFrameAndOneMatrix (SdifFileT	    *SdifF,
+				     SdifSignature  FrameSignature,
+				     SdifUInt4      NumID,
+				     SdifFloat8     Time,
+				     SdifSignature  MatrixSignature,
+				     SdifDataTypeET DataType,
+				     SdifUInt4      NbRow,
+				     SdifUInt4      NbCol,
+				     void	    *Data);
+
 
 
 #endif /* _SdifFWrite_ */
