@@ -1,4 +1,4 @@
-/* $Id: SdifHard_OS.h,v 3.6 2000-10-27 20:03:34 roebel Exp $
+/* $Id: SdifHard_OS.h,v 3.7 2000-11-21 09:00:45 roebel Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -33,6 +33,9 @@
  * author: Dominique Virolle 1998
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.6  2000/10/27 20:03:34  roebel
+ * autoconf merged back to main trunk
+ *
  * Revision 3.5.2.2  2000/08/21  21:35:26  tisseran
  * *** empty log message ***
  *
@@ -122,9 +125,15 @@
 #   define SdiffSetPos(f,p)	SdiffIsFile(f)  \
 				    ?  fseek(f, (long)(*(p)), SEEK_SET)  :  0
 #else
+#if 1
+#   define SdiffPosT		long
+#   define SdiffGetPos(f,p)	((*(p) = ftell(f)) == -1  ?  -1  :  0)
+#   define SdiffSetPos(f,p)	fseek(f, (long)(*(p)), SEEK_SET) 
+#else
 #   define SdiffPosT		fpos_t
 #   define SdiffGetPos(f,p)     fgetpos((f),(p))
 #   define SdiffSetPos(f,p)     fsetpos((f),(p))
+#endif
 #endif
 
 
