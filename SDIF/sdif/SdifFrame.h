@@ -1,4 +1,4 @@
-/* $Id: SdifFrame.h,v 3.2 2000-10-27 20:03:32 roebel Exp $
+/* $Id: SdifFrame.h,v 3.3 2000-11-21 14:51:49 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -32,6 +32,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.2  2000/10/27 20:03:32  roebel
+ * autoconf merged back to main trunk
+ *
  * Revision 3.1.2.2  2000/08/21  21:35:19  tisseran
  * *** empty log message ***
  *
@@ -70,26 +73,6 @@
 #include "SdifMatrix.h"
 
 #define _SdifFrameHeaderSize 16  /* (ID=4)+(size=4)+(time=8) */
-
-
-
-typedef struct SdifFrameHeaderS SdifFrameHeaderT;
-struct SdifFrameHeaderS
-{
-  SdifSignature Signature;
-  SdifUInt4  Size;
-  SdifUInt4  NbMatrix;
-  SdifUInt4  NumID;
-  SdifFloat8 Time;
-} ;
-
-
-typedef struct SdifFrameDataS SdifFrameDataT;
-struct SdifFrameDataS
-{
-  SdifFrameHeaderT *Header;
-  SdifMatrixDataT* *Matrix_s;
-} ;
 
 
 SdifFrameHeaderT* SdifCreateFrameHeader(SdifSignature Signature,

@@ -1,4 +1,4 @@
-/* $Id: SdifPreTypes.h,v 3.2 2000-10-27 20:03:41 roebel Exp $
+/* $Id: SdifPreTypes.h,v 3.3 2000-11-21 14:51:50 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -34,6 +34,9 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.2  2000/10/27 20:03:41  roebel
+ * autoconf merged back to main trunk
+ *
  * Revision 3.1.2.1  2000/08/21  21:35:41  tisseran
  * *** empty log message ***
  *
@@ -71,7 +74,6 @@
 #include "SdifMatrixType.h"
 #include "SdifFrameType.h"
 #include "SdifGlobals.h"
-#include "SdifFileStruct.h"
 
 
 #define   M_1FQ0_Frequency  "Frequency"

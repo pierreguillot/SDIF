@@ -1,4 +1,4 @@
-/* $Id: SdifFPut.h,v 3.6 2000-10-27 20:03:28 roebel Exp $
+/* $Id: SdifFPut.h,v 3.7 2000-11-21 14:51:48 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -36,6 +36,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.6  2000/10/27 20:03:28  roebel
+ * autoconf merged back to main trunk
+ *
  * Revision 3.5.2.2  2000/08/21  21:35:08  tisseran
  * *** empty log message ***
  *
@@ -100,7 +103,6 @@
 #define _SDIFFPUT_H 1
 
 #include "SdifGlobals.h"
-#include "SdifFileStruct.h"
 #include <stdio.h>
 #include "SdifNameValue.h"
 #include "SdifMatrixType.h"

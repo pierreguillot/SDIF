@@ -36,6 +36,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.5  2000/10/27 20:03:37  roebel
+ * autoconf merged back to main trunk
+ *
  * Revision 3.4.2.1  2000/08/21  21:35:32  tisseran
  * *** empty log message ***
  *
@@ -67,38 +70,7 @@
 #define _SdifList_
 
 
-
-typedef void (*KillerFT) (void *);
-
-
-typedef struct SdifListNS SdifListNT;
-
-struct SdifListNS 
-{
-  SdifListNT *Next;
-  void* Data;
-};
-
-
-
-
-
-
-typedef struct SdifListNStockS SdifListNStockT;
-
-struct SdifListNStockS
-{
-    SdifListNT*  StockList; /* list of arrays of nodes, the first node is used to chain arrays */
-    unsigned int SizeOfOneStock; /* must be > 1 */
-    unsigned int NbStock;
-
-    unsigned int NbNodesUsedInCurrStock;
-
-    SdifListNT* Trash; /* to recycle nodes */
-
-};
-
-
+#include <sdif.h>
 
 
 /* stocks management */
@@ -130,20 +102,6 @@ SdifListNT* SdifKillListNode    (SdifListNT *Node, KillerFT Killer);
 
 
 /* lists management */
-
-typedef struct SdifListS SdifListT;
-typedef SdifListT	*SdifListP;
-
-struct SdifListS
-{
-  /* fifo list */
-  SdifListNT *Head;
-  SdifListNT *Tail;
-  SdifListNT *Curr;  /* pointer before the next */
-  void (*Killer)();  /* no verification of arguments */
-  unsigned int NbData;
-} ;
-
 
 SdifListT*  SdifCreateList      (KillerFT Killer);
 SdifListT*  SdifKillListHead    (SdifListT* List);

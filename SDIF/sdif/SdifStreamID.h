@@ -1,4 +1,4 @@
-/* $Id: SdifStreamID.h,v 3.6 2000-10-27 20:03:44 roebel Exp $
+/* $Id: SdifStreamID.h,v 3.7 2000-11-21 14:51:51 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -33,6 +33,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.6  2000/10/27 20:03:44  roebel
+ * autoconf merged back to main trunk
+ *
  * Revision 3.5.2.1  2000/08/21  21:35:51  tisseran
  * *** empty log message ***
  *
@@ -88,32 +91,6 @@
 #include "SdifGlobals.h"
 #include "SdifHash.h"
 
-
-
-/*
-// DATA GROUP:		Stream ID Table and Entries for 1IDS ASCII chunk
-*/
-
-/*DOC:
-  Stream ID Table Entry */
-typedef struct SdifStreamIDS SdifStreamIDT;
-struct SdifStreamIDS
-{
-  SdifUInt4     NumID;
-  char *Source;
-  char *TreeWay; /* for the moment or to be general*/
-} ;
-
-
-/*DOC:
-  Stream ID Table, holds SdifStreamIDT stream ID table entries */
-typedef struct SdifStreamIDTableS SdifStreamIDTableT;
-struct SdifStreamIDTableS
-{
-    SdifHashTableT* SIDHT;
-    SdifUInt4       StreamID;
-    SdifFloat8      Time;	/* always _SdifNoTime */
-} ;
 
 
 /*

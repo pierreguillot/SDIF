@@ -1,4 +1,4 @@
-/* $Id: SdifGlobals.h,v 3.10 2000-11-15 14:53:30 lefevre Exp $
+/* $Id: SdifGlobals.h,v 3.11 2000-11-21 14:51:49 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -31,6 +31,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.10  2000/11/15 14:53:30  lefevre
+ * no message
+ *
  * Revision 3.9  2000/10/27  20:03:34  roebel
  * autoconf merged back to main trunk
  *
@@ -192,70 +195,10 @@ SdifUInt4 SdifSignatureConst (SdifUInt4 four_char_code);
 
 
 
-typedef enum SdifSignatureE
-{
-  eSDIF = SdifSignatureConst('SDIF'), /* SDIF header */
-  e1NVT = SdifSignatureConst('1NVT'), /* Name Value Table */
-  e1TYP = SdifSignatureConst('1TYP'), /* TYPe declarations */
-  e1MTD = SdifSignatureConst('1MTD'), /* Matrix Type Declaration */
-  e1FTD = SdifSignatureConst('1FTD'), /* Frame Type Declaration */
-  e1IDS = SdifSignatureConst('1IDS'), /* ID Stream Table */
-  eSDFC = SdifSignatureConst('SDFC'), /* Start Data Frame Chunk (text files) */
-  eENDC = SdifSignatureConst('ENDC'), /* END Chunk (text files) */
-  eENDF = SdifSignatureConst('ENDF'), /* END File (text files) */
-  eFORM = SdifSignatureConst('FORM'), /* FORM for IFF compatibility (obsolete ?) */
-  eEmptySignature = SdifSignatureConst('\0\0\0\0')
-} SdifSignatureET;
-
-
-
-
 #define _SdifFloatEps  FLT_EPSILON
 
-typedef enum SdifModifModeE
-{
-  eNoModif,
-  eCanModif
-} SdifModifModeET;
-
-
-/* DataTypeEnum
-
-   On Matt Wright's visit at IRCAM June 1999, we defined a new
-   encoding for the MatrixDataType field with the feature that the low
-   order byte encodes the number of bytes taken by each matrix
-   element.  
-
-   Low order byte encodes the number of bytes 
-   High order bytes come from this (extensible) enum:
-
-        0 : Float
-        1 : Signed integer
-        2 : Unsigned integer
-        3 : Text (UTF-8 when 1 byte)
-        4 : arbitrary/void
-*/
 
 #if (_SdifFormatVersion >= 3)
-
-typedef enum SdifDataTypeE
-{
-  eText	    = 0x0301,
-  eChar     = 0x0301,
-  eFloat4   = 0x0004,
-  eFloat8   = 0x0008,
-  eInt2     = 0x0102,
-  eInt4     = 0x0104,
-  eInt8     = 0x0108,
-  eUInt2    = 0x0202,
-  eUInt4    = 0x0204,
-  eUInt8    = 0x0208,
- 	    
-  eFloat4a  = 0x0001,	/* =  1 */    /* Backwards compatibility with old */
-  eFloat4b  = 0x0010,	/* = 32 */    /* IRCAM versions < 3 of SDIF */
-  eFloat8a  = 0x0002,	/* =  2 */    /* IN TEXT MODE ONLY! */
-  eFloat8b  = 0x0020	/* = 64 */
-} SdifDataTypeET;
 
 #ifdef STDC_HEADERS  /* Is the compiler ANSI? */
 
@@ -316,13 +259,6 @@ extern int  CurrStringPosSignature;
 char*     SdifSignatureToString(SdifSignature Signature);
 
 /*DOC: 
-  Compare two signatures, ignoring the first character which
-  encodes the type version.  Note that comparison of full signatures
-  can be done simply with '=='. 
-*/
-short     SdifSignatureCmpNoVersion(SdifSignature Signature1, SdifSignature Signature2);
-
-/*DOC: 
   Returns size of SDIF data type in bytes
   (which is always the low-order byte).  
 */
@@ -340,9 +276,6 @@ size_t    SdifPaddingCalculate  (size_t NbBytes);
 /*DOC:
 */
 size_t    SdifFPaddingCalculate (FILE *f, size_t NbBytes);
-
-/* (double f1) == (double f2) with _SdifFloatEps for error */
-short SdifFloat8Equ(SdifFloat8 f1, SdifFloat8 f2);
 
 
 #ifndef MIN

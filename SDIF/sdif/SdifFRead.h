@@ -1,4 +1,4 @@
-/* $Id: SdifFRead.h,v 3.8 2000-10-27 20:03:29 roebel Exp $
+/* $Id: SdifFRead.h,v 3.9 2000-11-21 14:51:48 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -33,6 +33,9 @@ LIBRARY
 
 LOG
  * $Log: not supported by cvs2svn $
+ * Revision 3.8  2000/10/27 20:03:29  roebel
+ * autoconf merged back to main trunk
+ *
  * Revision 3.7  2000/08/22  13:38:23  schwarz
  * SdifSkip... renamed to SdifFSkip... to follow nomenclature.
  *
@@ -108,7 +111,6 @@ LOG
 #define _SDIFFREAD_H 1
 
 #include "SdifGlobals.h"
-#include "SdifFileStruct.h"
 #include <stdio.h>
 #include "SdifMatrix.h"
 #include "SdifFrame.h"

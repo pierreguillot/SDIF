@@ -1,4 +1,4 @@
-/* $Id: SdifSignatureTab.h,v 3.2 2000-10-27 20:03:44 roebel Exp $
+/* $Id: SdifSignatureTab.h,v 3.3 2000-11-21 14:51:51 schwarz Exp $
   
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -31,6 +31,9 @@ LIBRARY
 
 LOG
     $Log: not supported by cvs2svn $
+    Revision 3.2  2000/10/27 20:03:44  roebel
+    autoconf merged back to main trunk
+
  * Revision 3.1.2.1  2000/08/21  21:35:49  tisseran
  * *** empty log message ***
  *
@@ -51,14 +54,6 @@ LOG
 /* Growth steps for reallocation */
 #define _SdifSignatureTabGranule 16
 
-
-typedef struct SdifSignatureTabS SdifSignatureTabT;
-struct SdifSignatureTabS
-{
-  SdifUInt4 NbSignMax;
-  SdifUInt4 NbSign;
-  SdifSignature* Tab;
-};
 
 
 /*

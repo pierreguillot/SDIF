@@ -1,4 +1,4 @@
-/* $Id: SdifFile.h,v 3.11 2000-11-15 14:53:29 lefevre Exp $
+/* $Id: SdifFile.h,v 3.12 2000-11-21 14:51:49 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -34,6 +34,9 @@ LIBRARY
 
 LOG
  * $Log: not supported by cvs2svn $
+ * Revision 3.11  2000/11/15 14:53:29  lefevre
+ * no message
+ *
  * Revision 3.10  2000/10/27  20:03:31  roebel
  * autoconf merged back to main trunk
  *
@@ -113,7 +116,7 @@ LOG
 #ifndef _SDIFFILE_H
 #define _SDIFFILE_H
 
-#include "SdifFileStruct.h"
+#include "config.h" /* For _SDIF_VERSION declaration (made by autoconf) */
 #include "SdifGlobals.h"
 
 

@@ -1,4 +1,4 @@
-/* $Id: SdifFScan.h,v 3.2 2000-10-27 20:03:30 roebel Exp $
+/* $Id: SdifFScan.h,v 3.3 2000-11-21 14:51:49 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -33,6 +33,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.2  2000/10/27 20:03:30  roebel
+ * autoconf merged back to main trunk
+ *
  * Revision 3.1.2.2  2000/08/21  21:35:11  tisseran
  * *** empty log message ***
  *
@@ -74,7 +77,6 @@
 #define _SDIFFSCAN_H 1
 
 #include "SdifGlobals.h"
-#include "SdifFileStruct.h"
 #include <stdio.h>
 #include "SdifMatrix.h"
 #include "SdifFrame.h"

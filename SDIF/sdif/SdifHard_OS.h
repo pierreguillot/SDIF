@@ -1,4 +1,4 @@
-/* $Id: SdifHard_OS.h,v 3.7 2000-11-21 09:00:45 roebel Exp $
+/* $Id: SdifHard_OS.h,v 3.8 2000-11-21 14:51:49 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -33,6 +33,10 @@
  * author: Dominique Virolle 1998
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.7  2000/11/21 09:00:45  roebel
+ * replaced fgetpos/fsetpos by ftell/fseek for Unix
+ * because fpos_t is no longer an int for some systems
+ *
  * Revision 3.6  2000/10/27 20:03:34  roebel
  * autoconf merged back to main trunk
  *
@@ -100,64 +104,12 @@
 
 #include <stdio.h>
 #include <float.h>
+#include <sdif.h>
 
 /* _Sdif_MIN_DOUBLE_ tested on SGI, DEC alpha, PCWin95 as 0xffefffffffffffff
  * include may be limits.h (float.h is sure with VisualC++5 Win 95 or NT)
  */
 #define _Sdif_MIN_DOUBLE_ (- DBL_MAX)
-
-
-
-/*  #if defined(__mips64) || defined(__alpha) */
-/*  #define _LONG64BITS_ */
-/*  #else */
-/*  #define _LONG32BITS_ */
-/*  #endif */
-
-/* to do fpos_t compatible on MacinTosh */
-#if defined(MACINTOSH) || defined(WIN32)
-    /* on mac or windows, seeking on a stream is always considered
-       successful (return 0)! */
-#   define SdiffPosT		long
-#   define SdiffIsFile(f)	((f)!=stdin && (f)!=stdout && (f)!=stderr)
-#   define Sdiffftell(f)	(SdiffIsFile(f)  ?  ftell(f)  :  0)
-#   define SdiffGetPos(f,p)	((*(p) = Sdiffftell(f)) == -1  ?  -1  :  0)
-#   define SdiffSetPos(f,p)	SdiffIsFile(f)  \
-				    ?  fseek(f, (long)(*(p)), SEEK_SET)  :  0
-#else
-#if 1
-#   define SdiffPosT		long
-#   define SdiffGetPos(f,p)	((*(p) = ftell(f)) == -1  ?  -1  :  0)
-#   define SdiffSetPos(f,p)	fseek(f, (long)(*(p)), SEEK_SET) 
-#else
-#   define SdiffPosT		fpos_t
-#   define SdiffGetPos(f,p)     fgetpos((f),(p))
-#   define SdiffSetPos(f,p)     fsetpos((f),(p))
-#endif
-#endif
-
-
-typedef char           SdifChar;
-typedef short          SdifInt2;
-typedef unsigned short SdifUInt2;
-typedef int            SdifInt4;
-typedef unsigned int   SdifUInt4;
-typedef float          SdifFloat4;
-typedef double         SdifFloat8;
-typedef unsigned int   SdifSignature;
-
-
-typedef enum SdifMachineE
-{
-  eUndefinedMachine,
-  eBigEndian,
-  eLittleEndian,
-  eLittleEndianLittleConst,
-  eBigEndian64,
-  eLittleEndian64,
-  eLittleEndianLittleConst64,
-  ePDPEndian
-} SdifMachineET;
 
 SdifMachineET SdifGetMachineType(void);
 extern SdifMachineET gSdifMachineType;
@@ -179,18 +131,6 @@ int       SdifStrNCmp (const char *s1, const char *s2, unsigned int n);
 char*     SdifStrNCpy (char *s1, const char *s2, unsigned int n);
 char*     SdifCreateStrNCpy (const char* Source, size_t Size);
 void      SdifKillStr (char* String);
-
-
-
-typedef enum SdifBinaryMode
-{
-  eBinaryModeUnknown,
-  eBinaryModeWrite,
-  eBinaryModeRead,
-  eBinaryModeStdInput,
-  eBinaryModeStdOutput,
-  eBinaryModeStdError
-} SdifBinaryModeET ;
 
 
 void     SdifSetStdIOBinary (void);

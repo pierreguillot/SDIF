@@ -1,4 +1,4 @@
-/* $Id: SdifFrameType.h,v 3.2 2000-10-27 20:03:33 roebel Exp $
+/* $Id: SdifFrameType.h,v 3.3 2000-11-21 14:51:49 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -32,6 +32,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.2  2000/10/27 20:03:33  roebel
+ * autoconf merged back to main trunk
+ *
  * Revision 3.1.2.2  2000/08/21  21:35:22  tisseran
  * *** empty log message ***
  *
@@ -68,30 +71,6 @@
 
 #include "SdifGlobals.h"
 #include "SdifHash.h"
-
-typedef struct SdifComponentS SdifComponentT;
-struct SdifComponentS
-{
-  SdifSignature MtrxS;
-  char *Name;
-  SdifUInt4  Num;
-} ;
-
-
-
-typedef struct SdifFrameTypeS SdifFrameTypeT;
-struct SdifFrameTypeS
-{
-  SdifSignature Signature;
-
-  SdifFrameTypeT* FrameTypePre;
-
-  SdifHashTableT *ComponentUseHT;
-  SdifUInt4       NbComponentUse;
-
-  SdifUInt4       NbComponent;
-  SdifModifModeET ModifMode;
-};
 
 
 SdifComponentT* SdifCreateComponent (SdifSignature MtrxS, char *Name, SdifUInt4 Num);

@@ -1,4 +1,4 @@
-/* $Id: SdifHighLevel.h,v 3.4 2000-10-27 20:03:36 roebel Exp $
+/* $Id: SdifHighLevel.h,v 3.5 2000-11-21 14:51:50 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -31,6 +31,9 @@ LIBRARY
  *
 LOG
  * $Log: not supported by cvs2svn $
+ * Revision 3.4  2000/10/27 20:03:36  roebel
+ * autoconf merged back to main trunk
+ *
  * Revision 3.3  2000/08/22  13:38:34  schwarz
  * First alpha version of SdifFReadNextSelectedFrameHeader.
  *
@@ -51,7 +54,6 @@ LOG
 
 
 #include "SdifGlobals.h"
-#include "SdifFileStruct.h"
 
 
 /*

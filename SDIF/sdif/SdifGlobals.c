@@ -1,4 +1,4 @@
-/* $Id: SdifGlobals.c,v 3.7 2000-11-15 14:53:29 lefevre Exp $
+/* $Id: SdifGlobals.c,v 3.8 2000-11-21 14:51:49 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -31,6 +31,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.7  2000/11/15 14:53:29  lefevre
+ * no message
+ *
  * Revision 3.6  2000/10/27  20:03:33  roebel
  * autoconf merged back to main trunk
  *
@@ -134,7 +137,7 @@ SdifSignatureToString(SdifSignature Signature)
   return Ret;
 }
 
-short
+int
 SdifSignatureCmpNoVersion(SdifSignature Signature1, SdifSignature Signature2)
 {
   SdifUInt4 S1, S2;
@@ -142,7 +145,7 @@ SdifSignatureCmpNoVersion(SdifSignature Signature1, SdifSignature Signature2)
   S1 = Signature1 & gSdifSignatureVersionMask;
   S2 = Signature2 & gSdifSignatureVersionMask;
 
-  return (short)(S1 == S2);
+  return (S1 == S2);
 }
 
 
@@ -225,7 +228,7 @@ SdifFPaddingCalculate(FILE *f, size_t NbBytes)
 }
 
 
-short
+int
 SdifFloat8Equ(SdifFloat8 f1, SdifFloat8 f2)
 {
   if (f1 >= f2)
