@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.10 2004-07-26 11:29:58 roebel Exp $
+# $Id: Makefile.am,v 1.11 2005-02-01 09:59:29 roebel Exp $
 #
 # ./Easdif/test/Makefile.am	Feb. 2003 Axel Roebel
 #
@@ -29,6 +29,9 @@
 # 
 
 # $Log: not supported by cvs2svn $
+# Revision 1.10  2004/07/26 11:29:58  roebel
+# Fixed debug version of non installable (demo) files.
+#
 # Revision 1.9  2004/07/26 10:28:16  roebel
 # Fixed hardcoded CXXFLAGS to take into account the configured value of
 # CXXFLAGS.
@@ -71,33 +74,33 @@ endif
 
 EASDIR=../easdif
 easdifRmNVT_SOURCES = easdifRmNVT.cpp
-easdifRmNVT_LDADD = -lEasdif$(GCCSUFFIX) -lm
-easdifRmNVT_LDFLAGS = -L$(EASDIR)
+easdifRmNVT_LDADD = $(EASDIR)/@SELLIB@
+easdifRmNVT_LDFLAGS = -L$(EASDIR)  -lm
 easdifRmNVT_DEPENDENCIES=$(EASDIR)/@SELLIB@
 
 easdifRmNVT_debug_SOURCES = easdifRmNVT.cpp
-easdifRmNVT_debug_LDADD = -lEasdif-debug -lm
-easdifRmNVT_debug_LDFLAGS = -L$(EASDIR)
+easdifRmNVT_debug_LDADD = $(EASDIR)/@SELLIB@ 
+easdifRmNVT_debug_LDFLAGS = -L$(EASDIR) -lm
 easdifRmNVT_debug_DEPENDENCIES=$(EASDIR)/@SELLIB@
 
 tutorini_SOURCES = tutorini.cpp
-tutorini_LDADD = -lEasdif$(GCCSUFFIX) -lm
-tutorini_LDFLAGS = -L$(EASDIR)
+tutorini_LDADD = $(EASDIR)/@SELLIB@
+tutorini_LDFLAGS = -L$(EASDIR) -lm
 tutorini_DEPENDENCIES=$(EASDIR)/@SELLIB@
 
 tutofini_SOURCES = tutofini.cpp
-tutofini_LDADD = -lEasdif$(GCCSUFFIX) -lm
-tutofini_LDFLAGS = -L$(EASDIR)
+tutofini_LDADD = $(EASDIR)/@SELLIB@
+tutofini_LDFLAGS = -L$(EASDIR) -lm
 tutofini_DEPENDENCIES=$(EASDIR)/@SELLIB@
 
 tutorini_debug_SOURCES = tutorini.cpp
-tutorini_debug_LDADD = -lEasdif-debug -lm
-tutorini_debug_LDFLAGS = -L$(EASDIR)
+tutorini_debug_LDADD = $(EASDIR)/@SELLIB@
+tutorini_debug_LDFLAGS = -L$(EASDIR) -lm
 tutorini_debug_DEPENDENCIES=$(EASDIR)/@SELLIB@
 
 tutofini_debug_SOURCES = tutofini.cpp
-tutofini_debug_LDADD = -lEasdif-debug -lm
-tutofini_debug_LDFLAGS = -L$(EASDIR)
+tutofini_debug_LDADD = $(EASDIR)/@SELLIB@
+tutofini_debug_LDFLAGS = -L$(EASDIR) -lm
 tutofini_debug_DEPENDENCIES=$(EASDIR)/@SELLIB@
 
 
