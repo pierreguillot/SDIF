@@ -62,7 +62,7 @@ int main(int argc, char** argv)
 	exit(1);
       }
 
-    SdifStringT *type = readentity.GetTypeString();
+    std::string type ( readentity.GetTypeString());
     entity.SetTypeString(type);
     /* to open a file for writing */
     
