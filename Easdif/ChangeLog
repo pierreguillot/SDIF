@@ -1,3 +1,12 @@
+2004-09-08  Axel Roebel  <roebel@localdomain>
+Version 0.11.1
+	
+	* easdif/sdifentity.h, easdif/sdifentity.cpp
+	improved efficiency of frame directory.
+
+	* easdif/sdifmatrix.h
+	fixed bug in GetNbCols which would return the number of rows
+	
 2004-08-25  Axel Roebel  <Axel.Roebel@ircam.fr>
 Version 0.11.0
 
@@ -566,4 +575,4 @@ Version 0.21
 	* ChangeLog: Added changelog to repository.
 
 
-$Id: ChangeLog,v 1.40 2004-08-26 09:33:12 roebel Exp $
+$Id: ChangeLog,v 1.41 2004-09-08 09:18:16 roebel Exp $
