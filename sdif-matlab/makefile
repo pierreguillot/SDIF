@@ -1,10 +1,13 @@
-# $Id: makefile,v 1.17 2001-02-07 15:54:13 roebel Exp $
+# $Id: makefile,v 1.18 2001-02-07 15:56:42 roebel Exp $
 #
 # makefile	26. January 2000	Diemo Schwarz
 #
 # formesutils matlab library
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.17  2001/02/07 15:54:13  roebel
+# Added support for matlab 6
+#
 # Revision 1.16  2000/12/19 16:44:11  roebel
 # Fixed Bug in loadsdif - crash when last matrix was not selected
 # Moved test file sequence4seg1.energy.sdif into repository
@@ -141,7 +144,7 @@ INSTALLED_FILES = $(INSTALL_FILES:%=$(INSTALL_DIR)/%)
 
 DIST_DIR	= /usr/local/www/ircam/equipes/analyse-synthese/sdif/download
 DIST_FILES	= $(foreach s, $(ALLMEXSUF), $(mexbase:%=%.$s)) \
-		  sdif-matlab-readme $(mfiles) \
+		  sdif-matlab-readme README.first $(mfiles) \
 		  -C $(SDIF_TYPES_DIR) $(SDIF_TYPES_FILE) \
 #		  -C $(subst /lib/,/bin/,$(SDIF_LIB_DIR)) querysdif
 DIST_HOST	= maelzel
