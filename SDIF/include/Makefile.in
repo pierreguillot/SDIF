@@ -20,7 +20,7 @@
 # *** empty log message ***
 #
 
-# $Date: 2000-08-21 21:34:51 $
+# $Date: 2000-10-25 18:36:37 $
 
 
 SHELL = @SHELL@
@@ -70,6 +70,7 @@ NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
 CC = @CC@
+IRCAMDEPS = @IRCAMDEPS@
 MAKEINFO = @MAKEINFO@
 PACKAGE = @PACKAGE@
 RANLIB = @RANLIB@

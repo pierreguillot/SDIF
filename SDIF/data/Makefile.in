@@ -10,14 +10,14 @@
 # even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 # PARTICULAR PURPOSE.
 
-# $Id: Makefile.in,v 1.1.2.4 2000-08-21 21:34:50 tisseran Exp $
+# $Id: Makefile.in,v 1.1.2.5 2000-10-25 18:36:33 roebel Exp $
 
 # $Log: not supported by cvs2svn $
 # Revision 1.1.2.1  2000/08/21  13:07:31  tisseran
 # *** empty log message ***
 #
 
-# $Date: 2000-08-21 21:34:50 $
+# $Date: 2000-10-25 18:36:33 $
 
 
 SHELL = @SHELL@
@@ -67,6 +67,7 @@ NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
 CC = @CC@
+IRCAMDEPS = @IRCAMDEPS@
 MAKEINFO = @MAKEINFO@
 PACKAGE = @PACKAGE@
 RANLIB = @RANLIB@
