@@ -1,11 +1,15 @@
+# $Id: Makefile.headers,v 2.1 1998-12-03 18:10:49 schwarz Exp $
+#
 # headers of sdif library
-
-
+#
+# $Log: not supported by cvs2svn $
 
 SDIF_HEADERS = \
 	SdifHash.h \
 	SdifGlobals.h \
+	SdifHard_OS.h \
 	SdifError.h \
+	SdifErrMess.h \
 	SdifNameValue.h \
 	SdifMatrixType.h \
 	SdifFrameType.h \
