@@ -1,4 +1,4 @@
-# $Id: Makefile,v 3.6 2000-08-07 15:12:04 schwarz Exp $
+# $Id: Makefile,v 3.7 2000-08-22 16:34:16 schwarz Exp $
 #
 #               Copyright (c) 1998 by IRCAM - Centre Pompidou
 #                          All rights reserved.
@@ -13,6 +13,9 @@
 # Makefile for automatic documentation.
 #
 # $Log: not supported by cvs2svn $
+# Revision 3.6  2000/08/07  15:12:04  schwarz
+# Cocoon is installed for groups now, more docs.
+#
 # Revision 3.5  2000/07/19  18:10:13  schwarz
 # Added todo section to internal doc.
 #
@@ -93,13 +96,24 @@ matlabdlbase	= loadsdif writesdif
 matlabdlfiles	= $(foreach sufx,m mexaxp mexlx,$(matlabdlbase:%=%.$(sufx))) \
 		  loadsdiffile.m loadsdifflat.m sdifexist.m
 
-
 VPATH		= pics intern extern
 
+.PHONY:		tutorial
+
+%.html:		%.tex Makefile
+		hevea -exec xxdate.exe $< -o $@
 
 all:		cocoon eframes iframes
 .PHONY:		cocoon eframes iframes abc new clean iclean eclean
 
+tut:		tutc tutorial reload
+tutc:		tutorial.c $(HOME)/src/SDIF/autoconf/SDIF-3.2.0/include/sdif.h
+		gcc -I$(HOME)/src/SDIF/autoconf/SDIF-3.2.0/include \
+		    -L$(HOME)/src/SDIF/autoconf/SDIF-3.2.0/sdif \
+		    $< -lsdif
+#		gcc -I/u/formes/include/sdif -L$(HOME)/lib/i686/Linux_2.2.5 \
+
+tutorial:	extern/tutorial-doc.html
 
 #
 # cocoon
@@ -109,6 +123,8 @@ cocoon:		ext extern/alpha-toc.html int intern/alpha-toc.html
 abc:		extern/alpha-toc.html intern/alpha-toc.html
 new:		clean all
 
+reload:
+		netscape -remote 'reload()'
 show:		showintern
 show%:		%
 		netscape -remote 'openURL(file:$(WEBROOT)/SDIF.html)'
@@ -170,7 +186,8 @@ eindsuf		= by-subject alpha tutorial utilities
 iindsuf		= by-subject alpha todo
 emain		= $(eindsuf:%=extern/%-main.html)
 esec		= $(eindsuf:%=extern/%-sec.html)
-egenerated	= $(emain) $(esec) extern/by-subject-doc.html
+egenerated	= $(emain) $(esec) extern/by-subject-doc.html \
+				   extern/tutorial-doc.html
 imain		= $(iindsuf:%=intern/%-main.html)
 isuf		= $(iindsuf:%=intern/%-sec.html)
 igenerated	= $(imain) $(isuf) intern/by-subject-doc.html
@@ -229,14 +246,16 @@ $(isec):	intern/default-sec.html
 
 install:	$(INSTALLSRC) 
 		rsh $(INSTALLHOST) \
-		  	cp -pr $(INSTALLSRC:%=$(PWD)/%) $(INSTALLDIR) \; \
+		  	cp -prf $(INSTALLSRC:%=$(PWD)/%) $(INSTALLDIR) \; \
 		  	$(MAKE) -C $(INSTALLDIR) URLBASE=$(URLBASE) \
-				postinst-intern postinst-extern $(matlabdlarch)
+				postinst-intern postinst-extern \
+#				$(matlabdlarch)
+
 installdl:
 		rsh $(INSTALLHOST) \
-		  	cp -pr $(PWD)/Makefile $(INSTALLDIR) \; \
+		  	cp -prf $(PWD)/Makefile $(INSTALLDIR) \; \
 		  	$(MAKE) -C $(INSTALLDIR) URLBASE=$(URLBASE) \
-				$(matlabdlarch)
+#				$(matlabdlarch)
 
 
 # this is running on INSTALLHOST!
@@ -245,8 +264,8 @@ postinst-%:
 		@find $(INSTALLDIR)/$* -name \*.html -print \
 		| xargs $(INSTALLHTML) 
 
-$(matlabdlarch): download $(matlabdlfiles:%=$(matlabdldir)/%)
-		tar cvf - -C $(matlabdldir) $(matlabdlfiles) | gzip -9 >$@
+#$(matlabdlarch): download $(matlabdlfiles:%=$(matlabdldir)/%)
+#		tar cvf - -C $(matlabdldir) $(matlabdlfiles) | gzip -9 >$@
 
 #
 # Misc
