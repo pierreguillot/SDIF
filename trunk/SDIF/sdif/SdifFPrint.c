@@ -1,4 +1,4 @@
-/* $Id: SdifFPrint.c,v 3.9 2003-05-30 14:33:44 schwarz Exp $
+/* $Id: SdifFPrint.c,v 3.10 2003-07-21 09:59:08 roebel Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -31,6 +31,10 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.9  2003/05/30 14:33:44  schwarz
+ * Added text matrix case to SdifFPrintOneRow for sdiftotext conversion
+ * (called from SdifConvToText.c)
+ *
  * Revision 3.8  2002/05/24 19:37:52  ftissera
  * Change code to be compatible with C++
  * Cast pointers to correct type.
@@ -269,6 +273,44 @@ SdifFPrintOneRow(SdifFileT *SdifF)
 	for (iCol = 0; iCol < SdifF->CurrOneRow->NbData; iCol++)
 	    SizeW += fprintf(SdifF->TextStream, "\t%g", 
 			     SdifF->CurrOneRow->Data.Float4[iCol]);
+    break;
+
+    case eInt1:
+	for (iCol = 0; iCol < SdifF->CurrOneRow->NbData; iCol++)
+	    SizeW += fprintf(SdifF->TextStream, "\t%d", 
+			     SdifF->CurrOneRow->Data.Int1[iCol]);
+    break;
+
+    case eInt2:
+	for (iCol = 0; iCol < SdifF->CurrOneRow->NbData; iCol++)
+	    SizeW += fprintf(SdifF->TextStream, "\t%d", 
+			     SdifF->CurrOneRow->Data.Int2[iCol]);
+    break;
+
+    case eInt4:
+	for (iCol = 0; iCol < SdifF->CurrOneRow->NbData; iCol++)
+	    SizeW += fprintf(SdifF->TextStream, "\t%d", 
+			     SdifF->CurrOneRow->Data.Int4[iCol]);
+    break;
+
+    case eUInt1:
+	for (iCol = 0; iCol < SdifF->CurrOneRow->NbData; iCol++)
+	    SizeW += fprintf(SdifF->TextStream, "\t%u", 
+			     SdifF->CurrOneRow->Data.UInt1[iCol]);
+    break;
+
+
+    case eUInt2:
+	for (iCol = 0; iCol < SdifF->CurrOneRow->NbData; iCol++)
+	    SizeW += fprintf(SdifF->TextStream, "\t%u", 
+			     SdifF->CurrOneRow->Data.UInt2[iCol]);
+    break;
+
+
+    case eUInt4:
+	for (iCol = 0; iCol < SdifF->CurrOneRow->NbData; iCol++)
+	    SizeW += fprintf(SdifF->TextStream, "\t%u", 
+			     SdifF->CurrOneRow->Data.UInt4[iCol]);
     break;
 
     case eText:
