@@ -1,10 +1,13 @@
-// $Id: easdif.i,v 1.4 2003-04-17 11:15:01 schwarz Exp $ -*-c-*-
+// $Id: easdif.i,v 1.5 2003-04-17 12:20:39 schwarz Exp $ -*-c-*-
 //
 // easdif.i		16.04.2003		Diemo Schwarz
 //
 // Interface file for swig, defining the callable easdif functions
 //
 // $Log: not supported by cvs2svn $
+// Revision 1.4  2003/04/17 11:15:01  schwarz
+// Swigging sdif.h works (with some warnings), but that's not yet it...
+//
 // Revision 1.3  2003/04/17 11:03:52  schwarz
 // Swigged all easdif classes!
 // Now going on to map sdif basic types.
@@ -16,10 +19,12 @@
 // First working swig generated perl extension!
 // Classes re-declared in easdif.i, simple method without shadow classes.
 // Doesn't do much except counting frames.
-//
+
 
 // generate perl module named 'SDIF'
 %module SDIF
+
+%include sdifsignature.i
 
 
 // include header to make wrapper compile

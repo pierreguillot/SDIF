@@ -1,8 +1,11 @@
 #!/usr/bin/perl
 
-# $Id: test.pl,v 1.5 2003-04-17 11:15:01 schwarz Exp $
+# $Id: test.pl,v 1.6 2003-04-17 12:20:39 schwarz Exp $
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.5  2003/04/17 11:15:01  schwarz
+# Swigging sdif.h works (with some warnings), but that's not yet it...
+#
 # Revision 1.4  2003/04/17 11:03:52  schwarz
 # Swigged all easdif classes!
 # Now going on to map sdif basic types.
@@ -40,9 +43,14 @@ while (!$file->SDIF::Entity::eof())
     $count{$frame->GetSignature}++;
 
     # print frame to stdout
-    $frame->View();
+    #$frame->View();
 
-    #print "reading frame $count: $res\n";
+    $mat  = $frame->GetMatrix(0);
+    $msig = $mat->GetSignature();
+    $nrow = $mat->GetNbRows();
+    $ncol = $mat->GetNbCols();
+    $val  = $mat->GetDouble(0, 0);
+    print "matrix $msig($nrow, $ncol) = $val\n";
 }
 
 print $file->ViewTypes(), " types\n";
