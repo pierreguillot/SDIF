@@ -1,10 +1,13 @@
-# $Id: makefile,v 1.35 2004-07-20 14:48:39 roebel Exp $
+# $Id: makefile,v 1.36 2004-07-20 16:07:52 roebel Exp $
 #
 # makefile	26. January 2000	Diemo Schwarz
 #
 # formesutils matlab library
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.35  2004/07/20 14:48:39  roebel
+# Added new target issdiffile.mexglx
+#
 # Revision 1.34  2004/03/30 18:10:44  roebel
 # Improved dist creation when not all binaries are available.
 #
@@ -164,7 +167,7 @@ endif
 #
 
 V_MAJOR 	= 0
-V_MINOR 	= 3
+V_MINOR 	= 4
 V_RELEASE	= 0
 VERSION		= $(V_MAJOR).$(V_MINOR).$(V_RELEASE)
 CVSTAG		= sdif_matlab_v$(V_MAJOR)_$(V_MINOR)_$(V_RELEASE)
