@@ -1,4 +1,4 @@
-/* $Id: SdifFile.c,v 3.26 2002-11-27 17:54:46 roebel Exp $
+/* $Id: SdifFile.c,v 3.27 2002-11-28 19:57:39 roebel Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -33,6 +33,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.26  2002/11/27 17:54:46  roebel
+ * ftruncate only included if available.
+ *
  * Revision 3.25  2002/08/28 17:08:54  roebel
  * Fixed missing include file for function ftruncate.
  *
@@ -219,7 +222,7 @@
 #include "SdifVersion.h"
 
 #ifndef AUTOCKSUM
-#define AUTOCKSUM "$Checksum: not available$ IRCAM $Date: 2002-11-27 17:54:46 $" 
+#define AUTOCKSUM "$Checksum: not available$ IRCAM $Date: 2002-11-28 19:57:39 $" 
 #endif
 
 #ifndef lint
@@ -701,7 +704,7 @@ SdifTakeCodedPredefinedTypesfromString(SdifFileT *SdifF)
 /* TextStream becomes temporaly the file whih contains predefined types.
  */
 void
-SdifFLoadPredefinedTypes(SdifFileT *SdifF, char *TypesFileName)
+SdifFLoadPredefinedTypes(SdifFileT *SdifF, const char *TypesFileName)
 {
   if (SdifStrEq(TypesFileName, ""))
     {
@@ -753,7 +756,7 @@ SdifFileT *gSdifPredefinedTypes;
 #endif
 
 void
-SdifGenInit(char *PredefinedTypesFile)
+SdifGenInit(const char *PredefinedTypesFile)
 {
     char *PreTypesEnvVar=NULL;
 
@@ -787,7 +790,7 @@ SdifGenInit(char *PredefinedTypesFile)
 
 
 void 
-SdifGenInitCond (char *pfile)
+SdifGenInitCond (const char *pfile)
 {
     if (!gSdifInitialised)
         SdifGenInit (pfile);
@@ -1110,12 +1113,16 @@ int SdifFRewind(SdifFileT *file)
     return (SdiffSetPos(file->Stream, &zero) == 0);
 }
 
-#ifdef HAVE_FTRUNCATE
+
 /* Truncate file at current position */
 int SdifFTruncate(SdifFileT *file)
 {
-    SdiffPosT pos;
-    SdiffGetPos(file->Stream, &pos);
-    return (ftruncate(fileno(file->Stream), pos) == 0);
-}
+#ifdef HAVE_FTRUNCATE
+  SdiffPosT pos;
+  SdiffGetPos(file->Stream, &pos);
+  return (ftruncate(fileno(file->Stream), pos) == 0);
+#else
+  return SDIFFTRUNCATE_NOT_AVAILABLE;
 #endif
+
+}

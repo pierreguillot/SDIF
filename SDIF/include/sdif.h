@@ -1,4 +1,4 @@
-/* $Id: sdif.h,v 1.23 2002-11-27 17:53:24 roebel Exp $
+/* $Id: sdif.h,v 1.24 2002-11-28 19:56:21 roebel Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -30,6 +30,9 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.23  2002/11/27 17:53:24  roebel
+ * Improved documentation.
+ *
  * Revision 1.22  2002/09/20 14:34:41  schwarz
  * New functions:
  * - SdifParseSignatureList Parse comma-separated list of signatures
@@ -131,7 +134,7 @@
  * Revision 1.1.2.1  2000/08/21  13:07:41  tisseran
  * *** empty log message ***
  *
- * $Date: 2002-11-27 17:53:24 $
+ * $Date: 2002-11-28 19:56:21 $
  *
  */
 
@@ -146,7 +149,7 @@ extern "C" {
 #endif
 
 
-static const char _sdif_h_cvs_revision_ [] = "$Id: sdif.h,v 1.23 2002-11-27 17:53:24 roebel Exp $";
+static const char _sdif_h_cvs_revision_ [] = "$Id: sdif.h,v 1.24 2002-11-28 19:56:21 roebel Exp $";
 
 
 #include <stdio.h>
@@ -225,15 +228,18 @@ struct SdifBlockListS
 
 /*DOC:
   Rewind to start of file (before header!) 
-  [return] success flag
+  [return] 1 on success, 0 on error
 */
 int SdifFRewind(SdifFileT *file);
 
+
+#define SDIFFTRUNCATE_NOT_AVAILABLE -2
 /*DOC:
   Truncate file at current position
   This function is only available on certain systems that have the
-  ftruncate function in their system libraries.   
-  [return] success flag
+  ftruncate function in their system libraries. 
+  [return] 1 on success, 0 for error (check errno),  
+        MACRO SDIFFTRUNCATE_NOT_AVAILABLE if function is not available.
 */
 int SdifFTruncate(SdifFileT *file);
 
@@ -1292,7 +1298,7 @@ SdifFrameHeaderT*  SdifFCreateCurrFramH         (SdifFileT *SdifF, SdifSignature
 SdifMatrixHeaderT* SdifFCreateCurrMtrxH         (SdifFileT *SdifF);
 FILE*              SdifFGetFILE_SwitchVerbose   (SdifFileT *SdifF, int Verbose);
 void               SdifTakeCodedPredefinedTypes (SdifFileT *SdifF);
-void               SdifFLoadPredefinedTypes     (SdifFileT *SdifF, char *TypesFileName);
+void               SdifFLoadPredefinedTypes     (SdifFileT *SdifF, const char *TypesFileName);
 
 extern int	  gSdifInitialised;
 extern SdifFileT *gSdifPredefinedTypes;
@@ -1308,7 +1314,7 @@ extern SdifFileT *gSdifPredefinedTypes;
   file with type definitions or "".
   <b>This function has to be called once and only once per process 
   before any other call to the SDIF library.</b> */
-void SdifGenInit (char *PredefinedTypesFile); 
+void SdifGenInit (const char *PredefinedTypesFile); 
 
 /*DOC:
   Initialise the SDIF library if it has not been initialised before.
@@ -1317,7 +1323,7 @@ void SdifGenInit (char *PredefinedTypesFile);
 
   [in] PredefinedTypesFile:
 	name for an optional additional file with type definitions or "". */
-void SdifGenInitCond (char *PredefinedTypesFile);
+void SdifGenInitCond (const char *PredefinedTypesFile);
 
 /*DOC:
   Deinitialise the SDIF library */
