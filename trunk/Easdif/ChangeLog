@@ -1,3 +1,17 @@
+2003-05-18  Axel Röbel  <roebel@ircam.fr>
+Version 0.5.0
+	
+	* easdif/sdifframe.h,cpp
+	Added appropriate const methods.
+	For proper sw1ig access GetMatrixWithSignature does no longer take
+	a reference as argument.
+
+	* easdif/sdifmatrix.h,cpp:
+	Added method to read column names of matrix. For this the 
+	current SdifFile is now stored in the matrix.
+	Improved documentation.
+	Added support for sdif data types eChar and eInt2.
+	
 2003-05-01  Axel Röbel  <roebel@ircam.fr>
 
 	* easdif/sdifmatrix.h/cpp:
@@ -311,4 +325,4 @@ Version 0.21
 	* ChangeLog: Added changelog to repository.
 
 
-$Id: ChangeLog,v 1.11 2003-05-02 13:40:36 roebel Exp $
+$Id: ChangeLog,v 1.12 2003-05-18 21:18:29 roebel Exp $
