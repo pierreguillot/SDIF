@@ -1,4 +1,4 @@
-/* $Id: SdifGlobals.c,v 3.11 2001-05-02 09:34:43 tisseran Exp $
+/* $Id: SdifGlobals.c,v 3.12 2003-07-18 21:08:55 roebel Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -31,6 +31,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.11  2001/05/02 09:34:43  tisseran
+ * Change License from GNU Public License to GNU Lesser Public License.
+ *
  * Revision 3.10  2001/02/08 15:26:56  tisseran
  * Add a test on memory allocation in SdifStringNew (call perror if malloc return a NULL pointer).
  * Note on sdifextract.c:
@@ -204,8 +207,10 @@ SdifDataTypeKnown (SdifDataTypeET DataType)
         case eChar  :	  /* same as case eText  : */
         case eFloat4:
         case eFloat8:
+        case eInt1  :
         case eInt2  :
         case eInt4  :
+        case eUInt1 :
         case eUInt2 :
         case eUInt4 :
 	    return eTrue;
