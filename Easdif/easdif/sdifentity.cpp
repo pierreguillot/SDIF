@@ -32,9 +32,12 @@
  * 
  * 
  * 
- * $Id: sdifentity.cpp,v 1.14 2004-01-19 15:49:55 bogaards Exp $ 
+ * $Id: sdifentity.cpp,v 1.15 2004-01-24 18:51:19 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.14  2004/01/19 15:49:55  bogaards
+ * Added Rewind and ReadNextSelectedFrame methods to Entity
+ *
  * Revision 1.13  2003/12/05 13:53:14  ellis
  *
  * including <iostream> for the use of std::cout, cerr...
@@ -219,7 +222,6 @@ bool SDIFEntity::OpenWrite(const char* filename)
     mOpen = 1; 
  
     SdiffGetPos(GetFile()->Stream,&mFirstFramePos);
-    mFirstFramePos -= 4;	// substract the first 4 read chars of the already read signature
     return true; 
 }
 
@@ -251,10 +253,22 @@ bool SDIFEntity::Open(const char* filename, SdifFileModeET Mode)
 }
 bool SDIFEntity::Rewind()
 {
-	SdiffSetPos(GetFile()->Stream,&mFirstFramePos);
-	size_t SizeR = 0;
-	SdifFGetSignature(GetFile(), &SizeR);
-	return (SizeR > 0);
+  SdifUInt4 readpos;
+
+  SdiffSetPos(GetFile()->Stream,&mFirstFramePos);
+  SdiffGetPos(GetFile()->Stream,&readpos);
+  if(readpos != mFirstFramePos)
+    return false;
+
+  if(mOpen & 2) {
+    size_t SizeR = 0;
+    SdifFGetSignature(GetFile(), &SizeR);
+
+    return (SizeR > 0);
+  }
+  
+  return true;
+	  
 }
 SdifFileT* SDIFEntity::GetFile() const
 {
