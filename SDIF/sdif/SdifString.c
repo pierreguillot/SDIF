@@ -1,4 +1,4 @@
-/* $Id: SdifString.c,v 3.8 2002-06-18 13:55:27 ftissera Exp $
+/* $Id: SdifString.c,v 3.9 2002-08-27 10:52:52 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -32,6 +32,9 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.8  2002/06/18 13:55:27  ftissera
+ * Change malloc to calloc in SdifStringNew to get an empty string
+ *
  * Revision 3.7  2001/05/02 09:34:48  tisseran
  * Change License from GNU Public License to GNU Lesser Public License.
  *
@@ -120,20 +123,21 @@ void SdifStringFree(SdifStringT *SdifString)
   Manage memory reallocation.
   Return a boolean for the succes of the function's call.
 */
-int SdifStringAppend(SdifStringT * SdifString ,char *strToAppend)
+int SdifStringAppend(SdifStringT * SdifString, const char *strToAppend)
 {
   char   *tmpStr; /* Temporary string for memory allocation */
   char   *str = SdifString->str;
   size_t SizeW = SdifString->SizeW;
   size_t TotalSize = SdifString->TotalSize;
+  size_t strToAppendLen = strlen(strToAppend);
   size_t memoryNeeded;
   int    memoryQuantuum;
 
   /* enough space to append (including terminating zero)? */
-  if ((TotalSize - SizeW) < strlen(strToAppend) + 1) 
+  if ((TotalSize - SizeW) < strToAppendLen + 1) 
     {
       /* Need a memory reallocation */
-      memoryQuantuum =(int) ((SizeW - TotalSize + strlen(strToAppend)) / _SdifStringGranule) ;
+      memoryQuantuum =(int) ((SizeW - TotalSize + strToAppendLen) / _SdifStringGranule) ;
       memoryNeeded = (memoryQuantuum + 1) * _SdifStringGranule; 
       tmpStr = (char *)realloc(str, TotalSize + memoryNeeded);
       if (!tmpStr)
@@ -144,7 +148,10 @@ int SdifStringAppend(SdifStringT * SdifString ,char *strToAppend)
       str = tmpStr;
       TotalSize += memoryNeeded;
     }
-  SizeW += sprintf(str + SizeW, "%s", strToAppend);
+
+  /* actually append string */
+  strcpy(str + SizeW, strToAppend);
+  SizeW += strToAppendLen;
 
   /* Variable reaffectation */
   SdifString->str = str;

@@ -1,4 +1,4 @@
-/* $Id: SdifString.h,v 3.5 2001-05-02 09:34:48 tisseran Exp $
+/* $Id: SdifString.h,v 3.6 2002-08-27 10:52:53 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -32,6 +32,9 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.5  2001/05/02 09:34:48  tisseran
+ * Change License from GNU Public License to GNU Lesser Public License.
+ *
  * Revision 3.4  2001/02/08 15:26:56  tisseran
  * Add a test on memory allocation in SdifStringNew (call perror if malloc return a NULL pointer).
  * Note on sdifextract.c:
@@ -79,48 +82,6 @@
 
 #include <sdif.h>
 
-
 #define _SdifStringGranule 128 /* Default memory size allocated for string */
 
-/* Function declaration */
-
-/*DOC:
-  Make a memory allocation for a SdifStringT structure.
-  The size for the string is defined in SdifString.h; define _SdifStringGranule 128.
-*/
-SdifStringT * SdifStringNew(void);
-
-
-/*DOC:
-  Free memory allocated for SdifString.
-*/
-void SdifStringFree(SdifStringT * SdifString);
-
-
-/*DOC:
-  Append a string to another one.
-  Manage memory reallocation.
-  Return a boolean for the succes of the function's call.
-*/
-int SdifStringAppend(SdifStringT * SdifString ,char *strToAppend);
-
-
-/*DOC:
-  Read the current char (= fgetc).
-*/
-int SdifStringGetC(SdifStringT * SdifString);
-
-
-/*DOC:
-  Equivalent of ungetc
-*/
-int SdifStringUngetC(SdifStringT * SdifString);
-
-
-/*DOC:
-  Test the end of the string (= feof)
-*/
-int SdifStringIsEOS(SdifStringT *SdifString);
-
 #endif /* _SDIFSTRING_H */
-
