@@ -32,5 +32,3 @@ rm -rf $RPM_BUILD_ROOT
 /usr/lib/
 /usr/share/
 /usr/include/
-
-
