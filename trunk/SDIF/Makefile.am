@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.6 2001-04-26 14:47:01 tisseran Exp $
+# $Id: Makefile.am,v 1.7 2001-04-26 14:51:59 tisseran Exp $
 #
 # ./Makefile.am		September 2000			Patrice Tisserand
 #
@@ -29,6 +29,13 @@
 # send email to:  sdif@ircam.fr
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.6  2001/04/26 14:47:01  tisseran
+# Correct a stupid error in previous log (arrggghh DON'T USE C COMMENTARY in cvs log).
+# Correct Makefile.am, change cvstag rules:
+# cvstags:
+# 	cvs -F tags $(CVSTAGS)
+# Add some explication in file ChangeLog
+#
 # Revision 1.5  2001/04/20 17:55:07  schwarz
 # Added publish target that sets the cvs tag, generates the distribution
 # and copies it to the download directory on the web host.
@@ -71,7 +78,7 @@ test	:	check
 # (to exactly reconstitute a published version)
 CVSTAG	      = $(shell echo $(PACKAGE)_lib_version_$(VERSION) | tr . _)
 cvstag:
-		cvs -F tag $(CVSTAG)
+		cvs tag -F $(CVSTAG)
 
 # call this as "make DISTHOST=yourwebhost publish" to publish a new version
 # we publish by copying to DISTDIR, logged on DISTHOST
