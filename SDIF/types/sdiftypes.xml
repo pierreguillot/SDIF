@@ -1,9 +1,16 @@
-<sdif-tdl types-version="0.1.test">
-<!-- $Id: sdiftypes.xml,v 1.1 2000-07-27 13:32:02 schwarz Exp $
+<sdif-tdl version="0.2">
 
-     $Log: not supported by cvs2svn $
+<!-- $Log: not supported by cvs2svn $
+ Revision 1.1  2000/07/27  13:32:02  schwarz
+ First preliminary trial test version of SDIF types definition using XML:
+ xmltostyp.pl generates library-types file sdiftypes.styp from sdiftypes.xml,
+ xmltohtml.pl generates documentation file sdiftypes.html from sdiftypes.xml.
 -->
 
+
+<types-version>0.2</types-version>
+<types-revision>$Id: sdiftypes.xml,v 1.2 2000-08-08 15:59:08 schwarz Exp $
+</types-revision>
 
 
 <section>Sinusoidal Modeling</section>
@@ -15,7 +22,7 @@
   <column name="Index">			partial index		</column>
   <column name="Frequency" unit="Hz">	partial frequency	</column>
   <column name="Amplitude">		partial amplitude	</column>
-  <column name="Phase">			partial phase, between 0 and 2 * pi
+  <column name="Phase">			partial phase, between -pi and pi
 								</column>
 </matrix>
 
@@ -28,7 +35,10 @@
 
 <section>Spectral Envelopes</section>
 <!-- we don't use 
-<section title="Spectral Envelopes">...</section> 
+<section title="Spectral Envelopes">
+  <matrix>...</matrix>
+  <frame>...</frame>
+</section> 
 because types don't need to be in sections!
 -->
 
@@ -81,7 +91,7 @@ because types don't need to be in sections!
 <frame signature="1ENV" name="SpectralEnvelope" status="proposed">
   <matrixref signature="IENV" occurrence="optional"/>
   <matrixref signature="1ENV" occurrence="required"/>
-  <matrixref signature="1GAI" occurrence="optional" role="DesiredGain">
+  <matrixref signature="1GAI" occurrence="optional">
     gain of the original signal = desired gain for the synthesised signal
   </matrixref>
 </frame>
