@@ -1,9 +1,11 @@
-/* SdifTimePosition.h
+/* $Id: SdifTimePosition.h,v 1.3 1998-11-10 15:31:57 schwarz Exp $
+ *
+ * SdifTimePosition.h
  *
  *  NOT INCLUDE IN THE SDIF PROJECT AT NOV 1997
  * author: Dominique Virolle 1997
  *
- *
+ * $Log: not supported by cvs2svn $
  */
 
 
@@ -24,11 +26,8 @@ struct SdifTimePositionS
   SdiffPosT     Position;
 } ;
 
-extern SdifTimePositionT* SdifCreateTimePosition(SdifFloat8 Time, SdiffPosT Position);
-extern void               SdifKillTimePosition(SdifTimePositionT* TimePosition);
-
-
-
+SdifTimePositionT* SdifCreateTimePosition(SdifFloat8 Time, SdiffPosT Position);
+void               SdifKillTimePosition(SdifTimePositionT* TimePosition);
 
 
 typedef struct SdifTimePositionNS SdifTimePositionNT;
@@ -39,8 +38,8 @@ struct SdifTimePositionNS
   SdifTimePositionT  *TP;
 };
 
-extern SdifTimePositionNT* SdifCreateTimePositionN(SdifTimePositionNT* Next, SdifTimePositionT* TimePosition);
-extern SdifTimePositionNT* SdifKillTimePositionN  (SdifTimePositionNT* TPNode);
+SdifTimePositionNT* SdifCreateTimePositionN(SdifTimePositionNT* Next, SdifTimePositionT* TimePosition);
+SdifTimePositionNT* SdifKillTimePositionN  (SdifTimePositionNT* TPNode);
 
 
 
@@ -54,10 +53,10 @@ struct SdifTimePositionLS
   SdifUInt4 NbTimePosition;
 } ;
 
-extern SdifTimePositionLT* SdifCreateTimePositionL(void);
-extern void                SdifKillTimePositionL  (SdifTimePositionLT *TimePositionL);
-extern SdifTimePositionLT* SdifTimePositionLPut   (SdifTimePositionLT* TimePositionL,
+SdifTimePositionLT* SdifCreateTimePositionL(void);
+void                SdifKillTimePositionL  (SdifTimePositionLT *TimePositionL);
+SdifTimePositionLT* SdifTimePositionLPut   (SdifTimePositionLT* TimePositionL,
 						   SdifFloat8 Time, SdiffPosT Position);
-extern SdifTimePositionT*  SdifTimePositionLGet   (SdifTimePositionLT* TimePositionL, SdifFloat8 Time);
+SdifTimePositionT*  SdifTimePositionLGet   (SdifTimePositionLT* TimePositionL, SdifFloat8 Time);
 
 #endif /* _SdifTimePosition_ */

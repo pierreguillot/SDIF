@@ -1,4 +1,4 @@
-/* $Id: SdifError.h,v 1.3 1998-04-24 12:40:32 schwarz Exp $
+/* $Id: SdifError.h,v 1.4 1998-11-10 15:31:39 schwarz Exp $
  * 
  * SdifError.h
  *
@@ -7,6 +7,9 @@
  * author: Dominique Virolle 1997
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.3  1998/04/24  12:40:32  schwarz
+ * Made char * arguments constant for SdifNameValuesLPut and functions called by it.
+ *
  */
 
 
@@ -35,7 +38,7 @@ typedef enum SdifErrorE
 extern char *SdifErrorFile;
 extern int SdifErrorLine;
 
-extern void SdifErrorWarning(SdifErrorEnum Error, const void *ErrorMess);
+void SdifErrorWarning(SdifErrorEnum Error, const void *ErrorMess);
 
 #define _SdifError(error, mess) \
 (SdifErrorFile = __FILE__, SdifErrorLine = __LINE__, SdifErrorWarning((error), (mess)))

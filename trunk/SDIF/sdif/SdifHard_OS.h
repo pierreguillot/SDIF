@@ -1,10 +1,13 @@
-/* SdifHard_OS.h
+/* $Id: SdifHard_OS.h,v 1.2 1998-11-10 15:31:49 schwarz Exp $
+ *
+ * SdifHard_OS.h
  *
  *
  *
  *
  * author: Dominique Virolle 1998
  *
+ * $Log: not supported by cvs2svn $
  */
 
 #ifndef _SdifHard_OS_
@@ -45,11 +48,11 @@ typedef enum SdifMachineE
   ePDPEndian
 } SdifMachineET;
 
-extern SdifMachineET SdifGetMachineType(void);
 extern SdifMachineET gSdifMachineType;
-extern SdifMachineET SdifInitMachineType(void);
+SdifMachineET SdifGetMachineType(void);
+SdifMachineET SdifInitMachineType(void);
 
-extern void SdifLittleToBig(void *ptr, size_t size);
-extern void SdifBigToLittle(void *ptr, size_t size);
+void SdifLittleToBig(void *ptr, size_t size);
+void SdifBigToLittle(void *ptr, size_t size);
 
 #endif /* _SdifHard_OS_ */

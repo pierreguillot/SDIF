@@ -1,4 +1,4 @@
-/* $Id: SdifHash.h,v 1.4 1998-07-23 17:02:55 virolle Exp $
+/* $Id: SdifHash.h,v 1.5 1998-11-10 15:31:50 schwarz Exp $
  *
  * SdifHash.h
  *
@@ -10,6 +10,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.4  1998/07/23  17:02:55  virolle
+ * *** empty log message ***
+ *
  * Revision 1.3  1998/05/04  15:44:18  schwarz
  * Replaced constant char* args by const char* (also some void*).
  *
@@ -66,32 +69,48 @@ struct SdifHashTableS
 } ;
 
 
-extern SdifHashTableT* SdifCreateHashTable(unsigned int HashSize, SdifHashIndexTypeET IndexType, void (*Killer)());
-
-extern void SdifMakeEmptyHashTable (SdifHashTableT* HTable);
-extern void SdifKillHashTable      (SdifHashTableT* HTable);
+SdifHashTableT* SdifCreateHashTable    (unsigned int HashSize, 
+					SdifHashIndexTypeET IndexType, 
+					void (*Killer)());
+void		SdifMakeEmptyHashTable (SdifHashTableT* HTable);
+void		SdifKillHashTable      (SdifHashTableT* HTable);
 
 
 
 /******************  eHashChar ****************/
 
-extern unsigned int SdifHashChar(const char* s, unsigned int nchar, unsigned int HashSize);
+unsigned int    SdifHashChar		(const char* s, 
+					 unsigned int nchar, 
+					 unsigned int HashSize);
 
-extern void*           SdifHashTableSearchChar(SdifHashTableT* HTable, const char *s, unsigned int nchar);
-extern SdifHashTableT* SdifHashTablePutChar   (SdifHashTableT* HTable, const char *s, unsigned int nchar, void* Data);
+void*           SdifHashTableSearchChar (SdifHashTableT* HTable, 
+					 const char *s, 
+					 unsigned int nchar);
+SdifHashTableT* SdifHashTablePutChar    (SdifHashTableT* HTable, 
+					 const char *s, 
+					 unsigned int nchar, 
+					 void* Data);
 
 
 /***************** eHashInt4 **********************/
 
-extern unsigned int SdifHashInt4(unsigned int i, unsigned int HashSize);
-
-extern void*           SdifHashTableSearchInt4(SdifHashTableT* HTable, unsigned int i);
-extern SdifHashTableT* SdifHashTablePutInt4   (SdifHashTableT* HTable, const unsigned int i, void* Data);
+unsigned int    SdifHashInt4	        (unsigned int i, 
+					 unsigned int HashSize);
+void*           SdifHashTableSearchInt4 (SdifHashTableT* HTable, 
+					 unsigned int i);
+SdifHashTableT* SdifHashTablePutInt4    (SdifHashTableT* HTable, 
+					 const unsigned int i, 
+					 void* Data);
 
 
 /*************************** for all ***********************/
 
-extern void*           SdifHashTableSearch (SdifHashTableT* HTable, void *ptr, unsigned int nobj);
-extern SdifHashTableT* SdifHashTablePut    (SdifHashTableT* HTable, const void *ptr, unsigned int nobj, void* Data);
+void*           SdifHashTableSearch (SdifHashTableT* HTable, 
+				     void *ptr, 
+				     unsigned int nobj);
+SdifHashTableT* SdifHashTablePut    (SdifHashTableT* HTable, 
+				     const void *ptr, 
+				     unsigned int nobj, 
+				     void* Data);
 
 #endif /* _SdifHash_ */

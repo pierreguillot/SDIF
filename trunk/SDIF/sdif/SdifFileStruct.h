@@ -1,11 +1,12 @@
-/* SdifFileStruct.h
+/* $Id: SdifFileStruct.h,v 1.3 1998-11-10 15:31:45 schwarz Exp $
  *
- *
+ * SdifFileStruct.h
  *
  * Upper level structure
  *
  * author: Dominique Virolle 1997
  *
+ * $Log: not supported by cvs2svn $
  */
 
 #ifndef _SdifFileStruct_

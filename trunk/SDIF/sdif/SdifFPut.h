@@ -1,4 +1,6 @@
-/* SdifFPut.h
+/* $Id: SdifFPut.h,v 1.2 1998-11-10 15:31:42 schwarz Exp $
+ *
+ * SdifFPut.h
  *
  *
  * F : SdifFileT* SdifF, Put : write ascii frames into pseudo-sdif text file,
@@ -8,7 +10,7 @@
  *
  * author: Dominique Virolle 1997
  *
- *
+ * $Log: not supported by cvs2svn $
  */
 
 

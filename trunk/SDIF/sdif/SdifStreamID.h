@@ -1,10 +1,13 @@
-/* SdifStreamID.h
+/* $Id: SdifStreamID.h,v 1.4 1998-11-10 15:31:55 schwarz Exp $
+ *
+ * SdifStreamID.h
  *
  * StreamID structures management
  *
  *
  * author: Dominique Virolle 1997
  *
+ * $Log: not supported by cvs2svn $
  */
 
 
@@ -22,7 +25,7 @@ struct SdifStreamIDS
   char *TreeWay; /* for the moment or to be general*/
 } ;
 
-extern SdifStreamIDT* SdifCreateStreamID(SdifUInt4 NumID, char *Source, char *TreeWay);
-extern void           SdifKillStreamID(SdifStreamIDT *StreamID);
+SdifStreamIDT* SdifCreateStreamID(SdifUInt4 NumID, char *Source, char *TreeWay);
+void           SdifKillStreamID(SdifStreamIDT *StreamID);
 
 #endif /* _SdifStreamID_ */
