@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.6 2000-12-07 12:59:58 roebel Exp $
+# $Id: Makefile.am,v 1.7 2000-12-07 13:42:21 roebel Exp $
 #
 # ./test/Makefile.am		September 2000			Patrice Tisserand
 #
@@ -29,6 +29,9 @@
 # send email to:  sdif@ircam.fr
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.6  2000/12/07 12:59:58  roebel
+# Reorganized test suite to be sensitive to wrong endianness
+#
 # Revision 1.5  2000/10/31 11:46:28  roebel
 # Added makefile dependency of all progs from generated library
 #
@@ -48,7 +51,7 @@
 # Added header with copyright and links to all Makefile.am and configure.in.
 #
 SUBDIRS = files
-EXTRA_DIST = test_conv test_cmpsdif cmd_testcheck xpianoRes.m5.FIL.sdif
+EXTRA_DIST = test_conv2  cmd_testcheck xpianoRes.m5.FIL.sdif
 
 noinst_PROGRAMS = headerTest NVTTest testcheck testselect
 noinst_HEADERS = utils.h
