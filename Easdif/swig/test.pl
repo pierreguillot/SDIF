@@ -1,8 +1,11 @@
 #!/usr/bin/perl
 
-# $Id: test.pl,v 1.6 2003-04-17 12:20:39 schwarz Exp $
+# $Id: test.pl,v 1.7 2003-04-17 14:45:28 schwarz Exp $
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.6  2003/04/17 12:20:39  schwarz
+# Output (return value) mapping for SdifSignature works!
+#
 # Revision 1.5  2003/04/17 11:15:01  schwarz
 # Swigging sdif.h works (with some warnings), but that's not yet it...
 #
@@ -21,8 +24,8 @@
 # Classes re-declared in easdif.i, simple method without shadow classes.
 # Doesn't do much except counting frames.
 
+
 use SDIF;
-use Data::Dumper;
 
 $file = new SDIF::Entity;
 print "created new SDIFEntity $file\n";
@@ -32,15 +35,16 @@ $frame = new SDIF::Frame;
 print "created new SDIFFrame $frame\n";
 
 #with shadow class: 
-$res = $file->SDIF::Entity::OpenRead("../test/lic.sdif");
+$res = $file->OpenRead("../test/lic.sdif");
 print "open...$res\n";
 
 %count = ();
 
-while (!$file->SDIF::Entity::eof())
+while (!$file->eof())
 {
-    $res = $file->SDIF::Entity::ReadNextFrame($frame);
-    $count{$frame->GetSignature}++;
+    $res  = $file->ReadNextFrame($frame);
+    $fsig = $frame->GetSignature();
+    $count{$fsig}++;
 
     # print frame to stdout
     #$frame->View();
@@ -50,12 +54,13 @@ while (!$file->SDIF::Entity::eof())
     $nrow = $mat->GetNbRows();
     $ncol = $mat->GetNbCols();
     $val  = $mat->GetDouble(0, 0);
-    print "matrix $msig($nrow, $ncol) = $val\n";
+    print "frame $fsig matrix $msig($nrow, $ncol) = $val\n";
 }
 
-print $file->ViewTypes(), " types\n";
+print "\ntypes defined in file:\n";
+$file->ViewTypes();
 
 while (my ($ft, $c) = each %count)
 {
-    print "found $c frames of type ", SDIF::SdifSignatureToString($ft), "\n";
+    print "found $c frames of type $ft\n";
 }
