@@ -1,0 +1,127 @@
+# $Id: makefile,v 1.1 2000-05-04 13:24:08 schwarz Exp $
+#
+# makefile	26. January 2000	Diemo Schwarz
+#
+# formesutils matlab library
+#
+# $Log: not supported by cvs2svn $
+
+
+#
+# settings	TODO: Linux
+#
+
+ARCH 		:= $(shell arch)
+# we don't care for IRIX64
+SYSNAME		:= $(subst IRIX64,IRIX,$(shell uname -s))
+SYSVERS		:= $(shell uname -r)
+SYS		:= $(SYSNAME)_$(SYSVERS)
+USER 		:= $(shell whoami)
+
+mex-alpha	 = mexaxp
+mexsuf     	 = $(mex-$(ARCH))
+#mex	   	 = /usr/LOCAL/matlab5/bin/mex
+mex	   	 = mex
+matlabincl	 = /usr/LOCAL/matlab-5.2/extern/include
+
+
+ifeq ($(DEBUG),1)
+  VERS		 = -debug
+  VERSION	 = -debug
+else
+  VERS		 = 
+  VERSION	 = -release
+endif
+
+# under IMPORT_ROOT, imported lib and include directories are used
+ifeq ($(USER),schwarz)
+  IMPORT_ROOT	 = $(HOME)
+else 
+  IMPORT_ROOT	 = /u/formes
+endif
+
+GLOBAL_ROOT	= /u/formes
+GLOBAL_INCL 	 = $(IMPORT_ROOT)/include 
+GLOBAL_LIB	 = $(IMPORT_ROOT)/lib/$(ARCH)
+
+SDIF_LIB_DIR   = $(GLOBAL_LIB)/$(SYS)$(VERSION)
+SDIF_LIB_BASE  = sdif$(VERS)
+SDIF_LIB_PATH  = $(SDIF_LIB_DIR)/lib$(SDIF_LIB_BASE).a
+
+PM_LIB_DIR	= $(GLOBAL_LIB)
+PM_LIB_BASE	= Pm
+PM_LIB_PATH	= $(PM_LIB_DIR)/lib$(PM_LIB_BASE).a
+
+pm_sdif		= $(PM_LIB_PATH) $(SDIF_LIB_PATH)
+INCL	   	= -I$(GLOBAL_INCL) -I/usr/include -I/usr/local/include/
+CFLAGS	   	= -g -ansi -Wall -DTEST $(INCL)
+LFLAGS		= 
+MEXFLAGS	= -g
+
+OBJ_DIR	   	= obj/$(ARCH)
+OUT_DIRS	= $(OBJ_DIR)
+
+#
+# rules
+#
+
+.SUFFIXES:	.c .$(mexsuf)
+
+.c.$(mexsuf):
+	$(mex) $(MEXFLAGS) $(INCL) $(LFLAGS) $($(@F)_mexflags) $^
+
+$(OBJ_DIR)/%.o:	%.c
+	gcc -c $(CFLAGS) -I$(matlabincl) $< -o $@
+
+
+#
+# files
+#
+
+base		= loadsdif
+loadsdif_src	= loadsdif-subs.c
+loadsdif_obj	= $(loadsdif_src:%.c=$(OBJ_DIR)/%.o)
+cfiles		= $(base:%=%.c) $(loadsdif_src)
+mexfiles	= $(notdir $(base:%=%.$(mexsuf)))
+allsrc		= $(cfiles)
+
+
+#
+# targets
+#
+
+all:			$(OUT_DIRS) $(mexfiles)
+loadsdif:		loadsdif.$(mexsuf)
+
+# dependencies
+loadsdif.$(mexsuf):	loadsdif.c $(loadsdif_obj) $(pm_sdif)
+loadsdif.c:		loadsdif.h 
+$(loadsdif_obj):	$(loadsdif_src) loadsdif.h
+
+# external builds
+sdif:
+			$(MAKE) -C $(HOME)/src/SDIF
+
+# test
+# testl.m
+
+clean mexclean cl:
+		-rm -f $(mexfiles)
+ls:	   
+		@echo $(mexfiles)
+ll:	   
+		@echo $(CFLAGS)
+		@echo $(INCL)
+		@echo $(INCLUDE)
+		@echo $(udidepend)
+
+mis missing:	$(mexfiles)
+		@echo; echo [missing objects in loadsdif]
+		nm loadsdif.$(mexsuf) | grep '| U | 0*$$'
+
+tags:		TAGS
+TAGS:		$(allsrc)
+		etags $(allsrc)
+
+$(OUT_DIRS):
+		mkdir -p $@
