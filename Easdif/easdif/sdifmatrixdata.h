@@ -33,9 +33,12 @@
  * 
  * 
  * 
- * $Id: sdifmatrixdata.h,v 1.4 2003-05-18 23:14:10 roebel Exp $ 
+ * $Id: sdifmatrixdata.h,v 1.5 2003-07-07 10:29:46 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.4  2003/05/18 23:14:10  roebel
+ * Improved error message should be an exception
+ *
  * Revision 1.3  2003/04/29 15:41:30  schwarz
  * Changed all names View* to Print* and *Info to *Header for consistency
  * with SDIF library.
@@ -322,16 +325,19 @@ public:
 
 /** 
  * \ingroup otherdata
- * resize the vector
+ * resize the matrix and clear all data 
  * 
  * @param nrows 
  * @param ncols 
  */
     void Resize(int nrows, int ncols)
 	{
-	    m_Nrows = nrows;
-	    m_Ncols = ncols;
-	    m_Data.resize(m_Nrows*m_Ncols);
+	  std::fill(m_Data.begin(),
+		    m_Data.begin()+std::min(nrows*ncols,m_Nrows*m_Ncols),
+		    T(0));
+	  m_Nrows = nrows;
+	  m_Ncols = ncols;
+	  m_Data.resize(m_Nrows*m_Ncols);
 	}
 
 

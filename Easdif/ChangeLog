@@ -1,3 +1,16 @@
+2003-07-05  Axel Röbel  <roebel@ircam.fr>
+Version 0.7.2
+
+	* easdif/sdifmatrix.cpp
+	Added support for sdif data types eUint1 and eInt1.
+	Reinitialising a matrix will now first test whether
+	the current type matches the new one and in this case do
+	a resize instead of deleting and reallocating.
+
+	* easdif/sdifmatrix.h, easdif/sdifmatrixdata.h
+	After Resize-ing a matrix all elements are set to zero.
+	
+
 2003-05-28  Axel Roebel  <Axel.Roebel@ircam.fr>
 
 	* Added configuration dependend map support for swig.
@@ -388,4 +401,4 @@ Version 0.21
 	* ChangeLog: Added changelog to repository.
 
 
-$Id: ChangeLog,v 1.18 2003-05-28 16:58:24 roebel Exp $
+$Id: ChangeLog,v 1.19 2003-07-07 10:29:46 roebel Exp $

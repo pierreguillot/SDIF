@@ -33,9 +33,14 @@
  * 
  * 
  * 
- * $Id: sdifmatrix.h,v 1.10 2003-06-09 21:13:36 schwarz Exp $ 
+ * $Id: sdifmatrix.h,v 1.11 2003-07-07 10:29:46 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.10  2003/06/09 21:13:36  schwarz
+ * Implemented Set(const std::string& str), redoes
+ * Init(mSig, str.length(), 1, eText) and sets data.
+ * Better: check if matrix was declared eText?
+ *
  * Revision 1.9  2003/05/19 14:00:00  roebel
  * swig rename moved to swig  interface desription.
  *
@@ -224,6 +229,8 @@ public:
  * \ingroup rwmat
  * \brief Resize matrix to hold rowsxcolumns
  * 
+ * After resizing all data is cleared!
+ *
  * @param nrows  Number of rows fo the matrix
  * @param ncols  Number of columns of the matrix
  *
