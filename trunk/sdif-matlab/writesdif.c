@@ -1,4 +1,4 @@
-/* $Id: writesdif.c,v 1.4 2001-05-29 10:02:26 roebel Exp $
+/* $Id: writesdif.c,v 1.5 2003-04-22 16:08:56 roebel Exp $
 
    writesdif.c       12. May 2000      Patrice Tisserand
 
@@ -6,6 +6,13 @@
    No SDIF depencies here! (-->writesdif-subs.c)
    
    $Log: not supported by cvs2svn $
+   Revision 1.4  2001/05/29 10:02:26  roebel
+   Added cleanup rountine that close the sdif file in case of
+   matlab clear function commands. Added automatic file closing in case
+   of opening a new file while old sdif file is still open.
+   moved static variables outside mex function to have access from
+   cleanup function.
+
    Revision 1.3  2000/08/04 14:42:34  schwarz
    Added reset of file variable, prevents crash on double-close.
    Version number is written in NVTs, and is used for distribution,
@@ -52,6 +59,7 @@ void cleanup(void) {
     return;
 }
 
+#define LOCALTYPEMAX 4096
 
 void
 mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
@@ -60,6 +68,8 @@ mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
               types    [PATH_MAX] = "";
   char        framesig [PATH_MAX],
               matrixsig[PATH_MAX];
+  char        localtypes [LOCALTYPEMAX] = "";
+
   int         i, nbMatrixData, nbMatrixSignature;
 
   /* Switch to appropriate subroutine according to number of input
@@ -106,7 +116,7 @@ mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
 	    input = endwrite (input);
 	  }
 
-	  if (!(input = beginwrite(nrhs, prhs, filename, types)))
+	  if (!(input = beginwrite(nrhs, prhs, filename, types,localtypes)))
 	    mexErrMsgTxt ("Can't open SDIF input file");
 	}
       break;
@@ -115,13 +125,13 @@ mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
       if ((!mxIsChar(prhs[0]))||(!mxIsChar(prhs[1])))
 	mexErrMsgTxt("Wrong type of input argument: want char");
 
-      if (!mxIsNumeric(prhs[2]))
-	mexErrMsgTxt("Wrong type of input argument: want int");
-      
+      if (mxIsChar(prhs[2]))
+	mxGetString (prhs[2], localtypes, LOCALTYPEMAX);
+
       mxGetString (prhs[0], filename, PATH_MAX);
       mxGetString (prhs[1], types, PATH_MAX);
 
-      if (!(input = beginwrite(nrhs, prhs, filename, types)))
+      if (!(input = beginwrite(nrhs, prhs, filename, types,localtypes)))
 	mexErrMsgTxt("Can't open SDIF input file");
 
       break;

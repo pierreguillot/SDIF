@@ -8,9 +8,15 @@
 %
 %	writesdif(filename)
 %	writesdif(filename, SDIF types definition file)
+%	writesdif(filename, SDIF types definition file,localtypesstring)
 %
 %   The optional types definition file can only be given at the very first
-%   call of writesdif and stays valid from then on, until restarting Matlab.
+%   call of writesdif and stays valid from then on, until restarting
+%   Matlab. To have a local type definition stored in the sdif file
+%   you provide a string that contains the type declaration as third 
+%   parameter. For using writesdif on multiple files you may have
+%   give an empty string for the types definition file 
+%
 %
 % - To write a data frame containing any number of matrices to the SDIF file, 
 %   use:
@@ -41,13 +47,16 @@
 %        written in Information Value Table
 
 
-% $Id: writesdif.m,v 1.5 2001-05-14 17:31:48 roebel Exp $
+% $Id: writesdif.m,v 1.6 2003-04-22 16:08:59 roebel Exp $
 %
 % writesdif.m	12. May 2000	Patrice Tisserand
 %
 % Matlab mex extension and support functions to write SDIF files.
 
 % $Log: not supported by cvs2svn $
+% Revision 1.5  2001/05/14 17:31:48  roebel
+% Upgraded documentation for char matrix data and 1NVT matrix support.
+%
 % Revision 1.4  2001/05/14 11:20:15  schwarz
 % Updated and corrected help.
 %
