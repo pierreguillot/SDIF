@@ -1,4 +1,4 @@
-/* $Id: SdifErrMess.c,v 3.14 2002-05-24 19:36:38 ftissera Exp $
+/* $Id: SdifErrMess.c,v 3.15 2002-05-24 20:08:31 ftissera Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -31,6 +31,9 @@
  * author: Dominique Virolle 1998
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.14  2002/05/24 19:36:38  ftissera
+ * Change SdifFError to use new error and warning handlers.
+ *
  * Revision 3.13  2001/07/12 14:15:31  roebel
  * Removed warning due to more columns then expected from the list
  * possible warnings. In fact this is allowed by the standard and should
@@ -282,15 +285,15 @@ SdifUInt4 SdifFError (SdifFileT* SdifF, SdifErrorTagET ErrorTag,
   SdifErrorT*  Error;
   SdifUInt4 count = SdifInsertTailError (SdifF->Errors, SdifF->ErrorCount, 
 					 ErrorTag, UserMess, &Error);
+					 					 
   SdifFsPrintError (gSdifBufferError, SdifF, Error, 
-    __FILE__, __LINE__);
+  __FILE__, __LINE__);
 */
 
     SdifUInt4 count = SdifInsertTailError (SdifF->Errors, SdifF->ErrorCount,  
 					   ErrorTag, UserMess);
     SdifErrorT* Error = SdifLastError(SdifF->Errors);
 
-//essai
     SdifFsPrintError (gSdifBufferError, SdifF, Error, __FILE__, __LINE__);
 
     /* call error/warning callback that handles printing */
@@ -308,6 +311,11 @@ SdifUInt4 SdifFError (SdifFileT* SdifF, SdifErrorTagET ErrorTag,
 				 SdifF, Error, (char *)file, line);
 	break;
 
+/*
+  default:
+  _SdifError(eUnknow, "Unknown error level");
+  break;
+*/
         default:
 	    if (gSdifErrorOutputEnabled)
 		fprintf (SdifStdErr, "%s", gSdifBufferError);
