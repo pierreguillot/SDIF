@@ -33,9 +33,12 @@
  * 
  * 
  * 
- * $Id: sdifmatrix.h,v 1.9 2003-05-19 14:00:00 roebel Exp $ 
+ * $Id: sdifmatrix.h,v 1.10 2003-06-09 21:13:36 schwarz Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.9  2003/05/19 14:00:00  roebel
+ * swig rename moved to swig  interface desription.
+ *
  * Revision 1.8  2003/05/18 20:46:46  roebel
  * Added method to read column names of matrix. For this the current sdiffile is stored in the matrix.
  * Improved documentation.
@@ -354,11 +357,13 @@ public:
   }
 
 
-/*************************************************************************/
-/* Set the values of the matrix */
+/*************************************************************************
+ * Set the values of the matrix  
+ */
+
 /**
-* \defgroup setmat SDIFMatrix - Set values of the SDIFMatrix 
-*/
+ * \defgroup setmat SDIFMatrix - Set values of the SDIFMatrix 
+ */
 
   /** 
    * \ingroup setmat
@@ -385,16 +390,18 @@ public:
     mInter->Set(i, j, value);
   }
 
-  // Set matrix type to eText, change matrix size to num. of bytes in
-  // string and set string data
-  void Set(const std::string& value)
+  /** 
+   * Set matrix type to eText, change matrix size to num. of bytes in
+   * string and set string data
+   */
+  void Set(const std::string& str)
   {
-    SDIFMatrixDataError exc;
-    exc.initException(eError,
-		      "Error in  SDIFMatrix::!!! string matrix access to be implemented !!!",
-		      0,0,0,0);      
+      int i;
 
-    throw exc; // to be implemented
+      Init(mSig, str.length(), 1, eText);
+
+      for (i = 0; i < str.length(); i++)
+	  mInter->Set(i, 0, str[i]);
   }
 
 };
@@ -402,5 +409,3 @@ public:
 } // end of namespace Easdif
 
 #endif
-
-
