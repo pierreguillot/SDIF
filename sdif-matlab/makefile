@@ -1,10 +1,13 @@
-# $Id: makefile,v 1.32 2003-09-15 17:29:12 schwarz Exp $
+# $Id: makefile,v 1.33 2004-02-19 10:56:32 schwarz Exp $
 #
 # makefile	26. January 2000	Diemo Schwarz
 #
 # formesutils matlab library
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.32  2003/09/15 17:29:12  schwarz
+# Me too says it's version 0.3!
+#
 # Revision 1.31  2003/04/22 16:08:54  roebel
 # Added possibility for writing local type declaration to
 # sdif file.
@@ -202,7 +205,7 @@ cfiles		= $(mexbase:%=%.c) $(loadsdif_src) $(writesdif_src)
 hfiles		= $(mexbase:%=%.h)
 mexfiles	= $(loadsdif_mex)  $(writesdif_mex) 
 
-mfiles		= loadsdif.m loadsdiffile.m loadsdifflat.m \
+mfiles		= loadsdif.m loadsdiffile.m loadsdifflat.m loadsdifbpf.m \
 		  writesdif.m sdifexist.m 
 allsrc		= $(cfiles) $(hfiles) testmexext.c
 srcmfiles       = $(mfiles) tt.m testl.m sdifexist.m testreadwrite.m testrw.m \
