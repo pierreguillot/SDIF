@@ -1,4 +1,4 @@
-# $Id: Makefile.preamble,v 3.5 2000-02-22 15:45:18 schwarz Exp $
+# $Id: Makefile.preamble,v 3.6 2000-07-06 18:59:01 tisseran Exp $
 #
 #               Copyright (c) 1998 by IRCAM - Centre Pompidou
 #                          All rights reserved.
@@ -11,6 +11,9 @@
 # 
 #
 # $Log: not supported by cvs2svn $
+# Revision 3.5  2000/02/22  15:45:18  schwarz
+# Added settings for Linux port by Patrice Tisserand.
+#
 # Revision 3.4  1999/10/07  15:22:53  schwarz
 # Factoring of commonly used path part $(ARCHDIR).
 # User option for me to compile into my $(HOME)/xxx.
@@ -49,12 +52,13 @@ ifeq ($(ARCH),sgi)
 endif
 ifeq ($(ARCH),alpha)
 	SHELL = /usr/local/bin/tcsh
+endif
+
 # AMD K6 = 586
 ifeq ($(ARCH),Linux)	
 	SHELL=/bin/tcsh
 endif
 
-endif
 ifeq ($(ARCH), mips)
 	SHELL = /u/formes/virolle/bin/mips/tcsh
 endif
@@ -92,8 +96,8 @@ RELEASE := 2.00.01
 # pour la compatibilite des frames ASCII, il faudra sans doute avoir une RELEASE 4.00
 
 # INSTALL_ROOT doit etre changer par l'installateur
-# INSTALL_ROOT := $(HOME)
-INSTALL_ROOT := /u/formes
+INSTALL_ROOT := $(HOME)
+#INSTALL_ROOT := /u/formes
 #INSTALL_ROOT := /usr/local
 INSTALL_LIB := $(INSTALL_ROOT)/lib/$(ARCH)/$(SYS)
 INSTALL_BIN := $(INSTALL_ROOT)/bin/$(ARCH)/$(SYS)
@@ -158,8 +162,8 @@ LIBS 	  = -l$(LIBNAME)
 #
 ifeq ($(SYSTEM), IRIX)
 	CC = cc
-	CAFLAGS =  -fullwarn
-	LFLAGS =
+	CAFLAGS =  -fullwarn -n32 -r10000 -mips4
+	LFLAGS = -n32 -mips4
 	LIBS	+= -lgen
 	RANLIB = echo no ranlib
 	INSTALL := /usr/local/bin/install -c 
@@ -227,7 +231,7 @@ endif
 VERSION := $(PROJECT) $(SYS)$(TARGET) $(RELEASE) compiled by $(USER) $(DATE)
 
 INCLUDE_DIR 	= /usr/include
-INCLUDE_DIRS 	= $(INCLUDE_DIR) /usr/include /u/formes/include
+INCLUDE_DIRS 	= $(INCLUDE_DIR) /usr/include /u/formes/tisseran/src/formesutils/include
 INCLUDE		= $(INCLUDE_DIRS:%=-I%)
 D_SDIF_FLAG := -D_SdifTypesFileName='"$(PRE_TYPES_SDIF)"' -D_SDIF_VERSION='"$(VERSION)"' 
 
