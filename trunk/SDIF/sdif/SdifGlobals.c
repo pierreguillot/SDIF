@@ -1,4 +1,4 @@
-/* $Id: SdifGlobals.c,v 3.2 1999-06-18 16:23:55 schwarz Exp $
+/* $Id: SdifGlobals.c,v 3.3 1999-09-28 13:09:00 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -14,6 +14,11 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.2  1999/06/18  16:23:55  schwarz
+ * SdifSignatureCmpNoVersion dropped LAST byte on alpha, because the mask
+ * 0x00ffffff was not byteswapped.  Introduced gSdifSignatureVersionMask,
+ * which is initialised in SdifInitMachineType to appropriate value.
+ *
  * Revision 3.1  1999/03/14  10:56:57  virolle
  * SdifStdErr add
  *
@@ -41,6 +46,7 @@
  *
  */
 
+#include <preincluded.h>
 #include "SdifGlobals.h"
 #include <string.h>
 #include <stdlib.h>

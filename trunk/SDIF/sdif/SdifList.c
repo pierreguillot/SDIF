@@ -18,6 +18,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.1  1999/03/14  10:57:03  virolle
+ * SdifStdErr add
+ *
  * Revision 2.3  1999/02/28  12:16:49  virolle
  * memory report
  *
@@ -30,6 +33,7 @@
  *
  */
 
+#include <preincluded.h>
 #include "SdifList.h"
 
 #include <stdio.h>

@@ -1,4 +1,4 @@
-/* $Id: SdifHard_OS.c,v 3.2 1999-06-18 16:23:57 schwarz Exp $
+/* $Id: SdifHard_OS.c,v 3.3 1999-09-28 13:09:01 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -11,6 +11,11 @@
  *
  * author: Dominique Virolle 1998
  * $Log: not supported by cvs2svn $
+ * Revision 3.2  1999/06/18  16:23:57  schwarz
+ * SdifSignatureCmpNoVersion dropped LAST byte on alpha, because the mask
+ * 0x00ffffff was not byteswapped.  Introduced gSdifSignatureVersionMask,
+ * which is initialised in SdifInitMachineType to appropriate value.
+ *
  * Revision 3.1  1999/03/14  10:56:59  virolle
  * SdifStdErr add
  *
@@ -27,6 +32,7 @@
  */
 
 
+#include <preincluded.h>
 #include "SdifHard_OS.h"
 #include "SdifError.h"
 

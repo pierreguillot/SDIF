@@ -1,4 +1,4 @@
-/* $Id: SdifRWLowLevel.h,v 3.3 1999-09-20 13:23:35 schwarz Exp $
+/* $Id: SdifRWLowLevel.h,v 3.4 1999-09-28 13:09:11 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -17,6 +17,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.3  1999/09/20  13:23:35  schwarz
+ * Optimized SdifStringToSignature.
+ *
  * Revision 3.2  1999/08/31  10:05:48  schwarz
  * Extracted function SdifStringToSignature from SdiffGetSignature.
  *

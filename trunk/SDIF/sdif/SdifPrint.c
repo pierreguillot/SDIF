@@ -1,4 +1,4 @@
-/* $Id: SdifPrint.c,v 3.1 1999-03-14 10:57:16 virolle Exp $
+/* $Id: SdifPrint.c,v 3.2 1999-09-28 13:09:09 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -16,6 +16,9 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.1  1999/03/14  10:57:16  virolle
+ * SdifStdErr add
+ *
  * Revision 2.3  1999/01/23  15:55:58  virolle
  * add querysdif.dsp, delete '\r' chars from previous commit
  *
@@ -28,6 +31,7 @@
  */
 
 
+#include <preincluded.h>
 #include "SdifPrint.h"
 
 

@@ -19,6 +19,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.1  1999/03/14  10:57:05  virolle
+ * SdifStdErr add
+ *
  * Revision 2.2  1999/01/23  15:55:53  virolle
  * add querysdif.dsp, delete '\r' chars from previous commit
  *
@@ -97,6 +100,7 @@ SdifListNT* SdifKillListNode    (SdifListNT *Node, KillerFT Killer);
 /* lists management */
 
 typedef struct SdifListS SdifListT;
+typedef SdifListT	*SdifListP;
 
 struct SdifListS
 {

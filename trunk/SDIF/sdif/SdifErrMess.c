@@ -1,4 +1,4 @@
-/* $Id: SdifErrMess.c,v 3.2 1999-09-28 10:34:47 schwarz Exp $
+/* $Id: SdifErrMess.c,v 3.3 1999-09-28 13:08:49 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -15,12 +15,17 @@
  * author: Dominique Virolle 1998
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.2  1999/09/28  10:34:47  schwarz
+ * Added SdifEnableErrorOutput/SdifDisableErrorOutput to temporarily
+ * switch off error messages when doing things that might fail.
+ *
  * Revision 3.1  1999/03/14  10:56:33  virolle
  * SdifStdErr add
  *
  */
 
 
+#include <preincluded.h>
 #include "SdifErrMess.h"
 #include "SdifFile.h"
 #include <string.h>

@@ -1,4 +1,4 @@
-/* $Id: SdifFrameType.c,v 3.1 1999-03-14 10:56:55 virolle Exp $
+/* $Id: SdifFrameType.c,v 3.2 1999-09-28 13:08:59 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -20,11 +20,15 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.1  1999/03/14  10:56:55  virolle
+ * SdifStdErr add
+ *
  *
  */
 
 
 
+#include <preincluded.h>
 #include "SdifFrameType.h"
 #include <stdlib.h>
 

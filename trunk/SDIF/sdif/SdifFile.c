@@ -1,4 +1,4 @@
-/* $Id: SdifFile.c,v 3.3 1999-09-28 10:36:59 schwarz Exp $
+/* $Id: SdifFile.c,v 3.4 1999-09-28 13:08:57 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -16,6 +16,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.3  1999/09/28  10:36:59  schwarz
+ * Added SdifCheckFileFormat to test if a file is in SDIF.
+ *
  * Revision 3.2  1999/09/20  13:21:57  schwarz
  * Introduced user data and access functions SdifFAddUserData/GetUserData.
  *
@@ -57,6 +60,7 @@
 
 
 
+#include <preincluded.h>
 #include "SdifFile.h"
 #include "SdifTest.h"
 #include "SdifSelect.h"
@@ -602,7 +606,7 @@ SdifGenKill(void)
 void SdifPrintVersion(void)
 {
 #ifndef lint
-    static char rcsid[]= "$Revision: 3.3 $ IRCAM $Date: 1999-09-28 10:36:59 $";
+    static char rcsid[]= "$Revision: 3.4 $ IRCAM $Date: 1999-09-28 13:08:57 $";
 #endif
 
     if (SdifStdErr == NULL)

@@ -1,4 +1,4 @@
-# $Id: Makefile,v 3.1 1999-03-14 10:56:28 virolle Exp $
+# $Id: Makefile,v 3.2 1999-09-28 13:08:47 schwarz Exp $
 #
 #               Copyright (c) 1998 by IRCAM - Centre Pompidou
 #                          All rights reserved.
@@ -11,6 +11,9 @@
 # Makefile only for .o files of sdif library
 #
 # $Log: not supported by cvs2svn $
+# Revision 3.1  1999/03/14  10:56:28  virolle
+# SdifStdErr add
+#
 # Revision 2.2  1998/12/21  18:26:56  schwarz
 # Inserted copyright message.
 #
@@ -24,7 +27,7 @@ PRJ_DIR := $(shell pwd)/..
 
 include ../Makefile.preamble
 
-CFLAGS := $(CAFLAGS) $(DOFLAGS) $(D_SDIF_FLAG) -I$(SDIF_SRC_DIR) -I$(INCLUDE_DIR)
+CFLAGS := $(CAFLAGS) $(DOFLAGS) $(D_SDIF_FLAG) -I$(SDIF_SRC_DIR) $(INCLUDE)
 OUTDIRS = $(SDIF_OBJ_DIR)
 
 
@@ -40,13 +43,15 @@ objects: $(OUTDIRS) $(SDIF_OBJS)
 	@echo objects
 
 semiclean:
-	-rm -f *~
-	-rm -f #*
+	-rm -f *~ #*
 
 clean:
-	-rm -f $(SDIF_OBJS)
-	-rm -f *~
-	-rm -f #*
-	-rm -f *.i
+	-rm -f $(SDIF_OBJS) *~ #* *.i
+
+preinc:
+	perl -i.bak -p -e '\
+	    if (/#\s*include/  &&  ! $$f{$$ARGV}) \
+		{ $$f{$$ARGV}=1; print "#include <preincluded.h>\n"; }' *.c
+
 
 include ../Makefile.postamble

@@ -1,4 +1,4 @@
-/* $Id: SdifSelect.c,v 3.2 1999-09-20 13:23:02 schwarz Exp $
+/* $Id: SdifSelect.c,v 3.3 1999-09-28 13:09:11 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -72,6 +72,9 @@ TODO
 
 LOG
   $Log: not supported by cvs2svn $
+  Revision 3.2  1999/09/20  13:23:02  schwarz
+  First finished version, API to be improved.
+
   Revision 3.1  1999/08/31  10:02:59  schwarz
   Added module SdifSelect which parses an access specification to a
   chosen part of SDIF data.  Can be added to a file name.  */
@@ -79,6 +82,7 @@ LOG
 
 
 /* include */		 /* to get these definitions: */
+#include <preincluded.h>
 #include <stdio.h>
 #include <string.h>	 /* string functions */
 #include <math.h>	 /* fabs */
@@ -582,7 +586,8 @@ static char	     *getstring	   (SdifSelectValueT val)
 // FUNCTION GROUP:	Add Selections to Element Lists
 */
 
-#define _addrange(name, type, field) _addrangeproto (name, type, field) \
+#define _addrange(name, type, field) \
+_addrangeproto   (name, type, field) \
 {   SdifSelectElementT *elem = SdifMalloc (SdifSelectElementT);	        \
     elem->value.field = value;     \
     elem->range.field = range;     \
@@ -590,7 +595,8 @@ static char	     *getstring	   (SdifSelectValueT val)
     SdifListPutTail (list, elem);  \
 }
 
-#define _addsimple(name, type, field) _addsimpleproto (name, type, field) \
+#define _addsimple(name, type, field) \
+_addsimpleproto   (name, type, field) \
 {   SdifSelectAdd##name##Range (list, value, sst_norange, (type) 0);   }
 
 #define _add(name, type, field) \
