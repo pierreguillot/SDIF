@@ -32,9 +32,12 @@
  * 
  * 
  * 
- * $Id: sdifentity.cpp,v 1.7 2003-05-19 13:58:03 roebel Exp $ 
+ * $Id: sdifentity.cpp,v 1.8 2003-05-21 20:36:23 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.7  2003/05/19 13:58:03  roebel
+ * Include new easdif_config.h.
+ *
  * Revision 1.6  2003/05/01 18:58:43  roebel
  * eof now true for uninitialized entity. eof is properly reset
  * when opening for reading.
@@ -120,6 +123,10 @@ SDIFEntity::SDIFEntity(): efile(0), mSize(0), mEof(true),
 bool SDIFEntity::OpenRead(const char* filename)
 {
     int n;
+
+    // close file in case it was already open
+    Close();
+      
     efile = SdifFOpen (filename, eReadFile);
 
     if(!efile)
@@ -127,8 +134,7 @@ bool SDIFEntity::OpenRead(const char* filename)
 
     generalHeader = SdifFReadGeneralHeader(efile);
     if(!generalHeader){
-      SdifFClose(efile);
-      efile = 0;
+      Close();
       return false;
     }
 
@@ -167,15 +173,16 @@ bool SDIFEntity::OpenRead(const char* filename)
 /* to open a file in mode Write  */
 bool SDIFEntity::OpenWrite(const char* filename)
 {
-    efile = SdifFOpen ( filename, eWriteFile);
+    // close file in case it was already open
+    Close();
+    efile = SdifFOpen (filename, eWriteFile);
 
     if(!efile)
       return false;
 
    /* write on the file 'SDIF' and 4 bytes chunk size */
     if(!(generalHeader = SdifFWriteGeneralHeader(efile))){
-      SdifFClose(efile);
-      efile = 0;
+      Close();
       return false;
     }
 
@@ -194,7 +201,6 @@ bool SDIFEntity::OpenWrite(const char* filename)
 /* to open completely (with Header and ASCII Chunks)  a file in mode : Mode  */
 bool SDIFEntity::Open(const char* filename, SdifFileModeET Mode)
 {
-    efile = SdifFOpen (filename, Mode);
     switch(Mode)
     {
     case eReadFile:
@@ -212,9 +218,13 @@ bool SDIFEntity::Open(const char* filename, SdifFileModeET Mode)
      *case ePredefinedTypes, case eModeMask, case eParseSelection:
      */
     default:
-	std::cerr << " SDIFEntity::Open:: Mode specification error" << std::endl;
-	//_SdifFError(file, eBadMode, "Default in Opening");
-	break;
+
+      SDIFBadMode exc;
+      exc.initException(eError,
+			"Error in SDIFEntity::Open:: Mode specification error",
+			0,0,0,0);      
+      throw exc;
+      break;
     }
     return false;
 }
@@ -311,6 +321,13 @@ bool SDIFEntity::Close()
     if (0 != efile)
     {
 	SdifFClose(efile);
+	efile=0;
+	mSize=0;
+	mEof = true; 
+	mOpen = 0; 
+	generalHeader = 0; 
+	asciiChunks =0;
+	bytesread =0;
 	efile = 0;
 	return true;
     }
