@@ -1,4 +1,4 @@
-/* $Id: SdifFileStruct.h,v 3.4 1999-10-13 16:05:46 schwarz Exp $
+/* $Id: SdifFileStruct.h,v 3.5 2000-05-04 15:06:42 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -15,6 +15,15 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.4  1999/10/13  16:05:46  schwarz
+ * Changed data type codes (SdifDataTypeET) to SDIF format version 3, as
+ * decided with Matt Wright June 1999, added integer data types.
+ * Added writing of 1NVT with real frame header (but data is still not in
+ * matrices).
+ * The data type handling makes heavy use of code-generating macros,
+ * called for all data types with the sdif_foralltypes macro, thus
+ * adding new data types is easy.
+ *
  * Revision 3.3  1999/10/07  15:12:23  schwarz
  * Added isSeekable flag in SdifFileT struct.  This allows to simplify the
  * many tests for stdio on opening the stream.
@@ -60,7 +69,7 @@
 #define _SdifFileStruct_
 
 #include "SdifGlobals.h"
-
+#include "SdifSignatureTab.h"
 #include "SdifList.h"
 #include "SdifSelect.h"
 #include "SdifNameValue.h"
@@ -103,15 +112,6 @@ enum SdifPassE
   eWritePass
 };
   
-
-typedef struct SdifSignatureTabS SdifSignatureTabT;
-struct SdifSignatureTabS
-{
-  SdifUInt4 NbSignMax;
-  SdifUInt4 NbSign;
-  SdifSignature* Tab;
-};
-
 
 
 #ifndef SdifFileT_
