@@ -1,4 +1,4 @@
-/* $Id: writesdif-subs.c,v 1.5 2000-12-19 16:44:11 roebel Exp $
+/* $Id: writesdif-subs.c,v 1.6 2001-04-20 14:37:48 roebel Exp $
    writesdif-subs.c     12. May 2000           Patrice Tisserand
 
    Subroutines for writesdif, function to write an SDIF file.
@@ -33,6 +33,12 @@
                      Close the sdif file
 		     
    $Log: not supported by cvs2svn $
+   Revision 1.5  2000/12/19 16:44:11  roebel
+   Fixed Bug in loadsdif - crash when last matrix was not selected
+   Moved test file sequence4seg1.energy.sdif into repository
+   Corrected sgi mex extension to mexsg such that sgi is now in
+   distribution
+
    Revision 1.4  2000/08/04 14:42:33  schwarz
    Added reset of file variable, prevents crash on double-close.
    Version number is written in NVTs, and is used for distribution,
@@ -89,7 +95,7 @@ beginwrite (int nrhs, const mxArray *prhs [], char *filename, char *types)
       SdifNameValuesLPutCurrNVT(output->NameValues, 
 				"WrittenBy", "MatlabSdifWriter");
       SdifNameValuesLPutCurrNVT(output->NameValues, 
-				"Version",   VERSION);
+				"Version",  VERS);
 
       /* Now we must add number of parameters in sdif file 
 	 for use with jmax sdifplayer */
