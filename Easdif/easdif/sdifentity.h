@@ -32,9 +32,12 @@
  * 
  * 
  * 
- * $Id: sdifentity.h,v 1.12 2003-07-18 21:19:36 roebel Exp $ 
+ * $Id: sdifentity.h,v 1.13 2003-08-06 18:00:33 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.12  2003/07/18 21:19:36  roebel
+ * Made WriteNVTs private. It is for internal use only.
+ *
  * Revision 1.11  2003/07/18 20:39:35  roebel
  * Improved documentation
  *
@@ -182,8 +185,10 @@ public:
 
 /** 
  * \ingroup description
- * add the description type to the frame "1TYP". (for internal used in the
- * Opening)
+ * \brief write type info
+ *
+ * add the description type to the frame "1TYP". (for internal use when
+ * opening the file )
  */
  private:
     bool WriteTypes();
