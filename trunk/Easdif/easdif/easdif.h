@@ -33,9 +33,12 @@
  * 
  * 
  * 
- * $Id: easdif.h,v 1.2 2003-04-06 16:31:08 roebel Exp $ 
+ * $Id: easdif.h,v 1.3 2003-08-06 17:59:58 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  2003/04/06 16:31:08  roebel
+ * Added license info
+ *
  * Revision 1.1  2003/03/03 19:00:16  roebel
  * Moved src directory to new name easdif
  *
@@ -55,6 +58,23 @@
 #include <string>
 #include <vector>
 #include <sdif.h>
+
+/**
+* \defgroup  sdifsupport Sdif Support Functions
+*/
+
+/** 
+ * \ingroup sdifsupport
+ * \brief test file for sdif format
+ * 
+ * @param name filename to test
+ * 
+ * @return true if filename contains sdif data 
+ */
+bool SdifCheckFileFormat (const std::string &name) {
+  return SdifCheckFileFormat(name.c_str());
+}
+
 
 #include "easdif/easdif_version.h"
 #include "easdif/sdifentity.h"
