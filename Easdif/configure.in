@@ -1,6 +1,6 @@
 dnl -*-autoconf-*-  (No, it's an autoconf file!)
 dnl -*-m4-*- (He emacs, it's a m4 file)
-dnl $Id: configure.in,v 1.3 2003-03-04 00:53:23 roebel Exp $
+dnl $Id: configure.in,v 1.4 2003-03-05 19:47:54 roebel Exp $
 dnl
 dnl configure.in		Feb 2003      Axel Roebel
 dnl
@@ -41,6 +41,14 @@ AC_PROG_INSTALL
 AC_PROG_RANLIB
 
 dnl Check for libtool
+dnl disable shared libraries on darwin
+dnl they do not work there
+AC_CHECK_PROG (uname_available, uname, "yes","no")
+if [ "$uname_available" = "yes" ];then
+   if [ `uname -s` = Darwin ];then
+      AC_DISABLE_SHARED
+   fi
+fi
 AC_PROG_LIBTOOL
 
 dnl Configure SDIF
