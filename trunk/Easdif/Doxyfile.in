@@ -1,7 +1,12 @@
 # Doxyfile 1.2.12
-# $Id: Doxyfile.in,v 1.1 2003-04-03 13:01:52 schwarz Exp $
+# $Id: Doxyfile.in,v 1.2 2003-04-08 18:22:31 roebel Exp $
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.1  2003/04/03 13:01:52  schwarz
+# Doxyfile created from Doxyfile.in
+# Version from configure.in
+# Corrected input file location
+#
 
 # This file describes the settings to be used by the documentation system
 # doxygen (www.doxygen.org) for a project
@@ -291,7 +296,7 @@ WARN_LOGFILE           =
 # directories like "/usr/src/myproject". Separate the files or directories 
 # with spaces.
 
-INPUT                  = easdif
+INPUT                  = @top_srcdir@/easdif
 
 # If the value of the INPUT tag contains directories, you can use the 
 # FILE_PATTERNS tag to specify one or more wildcard pattern (like *.cpp 
