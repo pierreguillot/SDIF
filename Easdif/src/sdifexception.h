@@ -5,16 +5,26 @@
 #include <iostream>
 #include <string>
 #include <sdif.h>
-//#include "SdifErrMess.h"
-//#include "SdifError.h"
 
-/*
-in this class, we are interested just in errors (not warnings)
-*/
-class SDIFException
-{
-public:
+namespace Easdif {
+
+  /*
+    in this class, we are interested just in errors (not warnings)
+  */
+  class SDIFException
+  {
+  public:
     SDIFException(): mIsInit(false) {};
+    
+    SDIFException(SdifErrorLevelET level,
+		  char* message,
+		  SdifFileT* sdifFile,	
+		  SdifErrorT* error,
+		  char* sourceFileName,
+		  int sourceFileLine) {
+      initException(level,message,sdifFile,error,
+		    sourceFileName,sourceFileLine);
+    };
 
     ~SDIFException() 
 	{
@@ -30,8 +40,16 @@ public:
 	    if (!mIsInit)
 	    {
 		mSourceFileLine = sourceFileLine;
-		mSourceFileName = std::string(sourceFileName);
-		mMessage = std::string(message);
+		if(sourceFileName)
+		  mSourceFileName = std::string(sourceFileName);
+		else
+		  mSourceFileName = std::string("");
+
+		if(message)
+		  mMessage = std::string(message);
+		else
+		  mMessage = std::string("");
+
 		mLevel = level;
 		mSdifFile = sdifFile;
 		mError = error;
@@ -42,12 +60,16 @@ public:
 
     void ErrorMessage()
 	{
-	    std::cerr << "Error in file : "
+
+	  if (mMessage != "")
+	    std::cerr << mMessage << std::endl;
+
+	    
+	  if (mSourceFileName != "")
+	    std::cerr << "Source file : "
 		      << mSourceFileName 
 		      << "\nat line : "
 		      << mSourceFileLine
-		      << std::endl
-		      << mMessage 
 		      << std::endl;
 /*		    
 		    << "\nError Level : "	
@@ -89,6 +111,7 @@ protected:
 */
 
 };
+
 
 /****************** FILE ERRORS  *************************/
 class SDIFFileError : public SDIFException
@@ -222,4 +245,6 @@ ExceptionThrower(int errnum,
 		 char* sourcefilename, 
 		 int sourcefileline);
 };
+
+} // end of namespace Easdif
 #endif

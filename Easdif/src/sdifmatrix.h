@@ -8,9 +8,12 @@
  * 
  * 
  * 
- * $Id: sdifmatrix.h,v 1.4 2002-08-28 16:46:53 roebel Exp $ 
+ * $Id: sdifmatrix.h,v 1.5 2002-10-10 10:49:09 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.4  2002/08/28 16:46:53  roebel
+ * Internal reorganization and name changes.
+ *
  * Revision 1.3  2002/07/12 10:25:14  ftissera
  * Add comments
  *
@@ -32,6 +35,9 @@
 #include <sdif.h>
 #include "easdif/sdifmatrixdatainterface.h"
 #include "easdif/sdifmatrixdata.h"
+
+
+namespace Easdif {
 
 /** 
  * @brief class which can be associated with a matrix
@@ -210,5 +216,7 @@ public:
  */
     int Set(int i, int j, const double& value);
 };
+
+} // end of namespace Easdif
 
 #endif

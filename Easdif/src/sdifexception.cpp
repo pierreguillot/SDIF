@@ -1,8 +1,9 @@
 #include <iostream>
 #include "easdif/sdifexception.h"
 
-extern "C" {
-
+namespace Easdif {
+  extern "C" {
+    
     void
     ExceptionThrower(int errnum, 
 		     SdifErrorLevelET errlev, 
@@ -12,11 +13,11 @@ extern "C" {
 		     char* sourcefilename, 
 		     int sourcefileline)
     {   
-	switch(errnum)
+      switch(errnum)
 	{
-	/* the SdifError.c errors :*/
+	  /* the SdifError.c errors :*/
 	case eFreeNull:
-	{
+	  {
 	    SDIFFreeNull exc;
 	    /* initialise the SDFIFreeNull object (substitute the constructor,
 	     * this is more efficient for the SdifFileT and SdifErrorT 
@@ -24,11 +25,11 @@ extern "C" {
 	    exc.initException(errlev, msg, file, error, 
 			      sourcefilename, sourcefileline);
 	    throw exc;	
-	}
-	break;
-
+	  }
+	  break;
+	  
 	case eAllocFail :
-	{
+	  {
 	    SDIFAllocFail exc;
 	    exc.initException(errlev, msg, file, error, 
 			      sourcefilename, sourcefileline);
@@ -154,3 +155,4 @@ extern "C" {
     }
 
 }
+} // end of namespace Easdif

@@ -7,9 +7,13 @@
  * 
  * 
  * 
- * $Id: sdifentity.h,v 1.4 2002-10-03 11:26:56 tisseran Exp $ 
+ * $Id: sdifentity.h,v 1.5 2002-10-10 10:49:09 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.4  2002/10/03 11:26:56  tisseran
+ * Check if efile is not null before trying to close it.
+ * Initialize efile to 0 by sdifentity::sdifentity()
+ *
  * Revision 1.3  2002/08/28 16:46:53  roebel
  * Internal reorganization and name changes.
  *
@@ -37,6 +41,8 @@
 /* for initialise SDIF library and install exception*/
 #include "easdif/sdifinit.h"
 
+namespace Easdif {
+
 /** 
  * @brief class which can be associated with a file
  *
@@ -62,7 +68,7 @@ private:
     SdifUInt4 mNbFrame;
     SdifUInt4 mSize;
 
-    int mEof;
+    bool mEof;
     int mNbNVT;
     int mOpen;
     size_t generalHeader;
@@ -284,7 +290,12 @@ public:
  */
     int ReadNextFrame(SDIFFrame& frame);
 
-    int& eof();
+
+/**
+ * \ingroup rnwentity
+ * true if file is at eof
+ */
+    bool& eof();
 
 /** 
  * \ingroup rnwentity
@@ -301,6 +312,8 @@ public:
 
 
 };
+
+} // end of namespace Easdif
 
 #endif
 
