@@ -5,14 +5,17 @@
 % Usage:   [ data, frames, signatures ] = loadsdifflat (name)
 %
 % where data(n), n = frames(i, 3), is the matrix at time frames(i, 1) in
-% stream frames(i, 2) of height frames(i, 4) with frame type 
+% stream frames(i, 2) having frames(i, 4) rows (can be 0!) with frame type 
 % signatures(i, 1:4) and matrix type signatures(i, 5:8).
 
-% $Id: loadsdifflat.m,v 1.3 2000-05-12 14:03:54 schwarz Exp $
+% $Id: loadsdifflat.m,v 1.4 2000-08-27 14:24:11 schwarz Exp $
 %
 % loadsdifflat.m	31. January 2000	Diemo Schwarz
 %
 % $Log: not supported by cvs2svn $
+% Revision 1.3  2000/05/12  14:03:54  schwarz
+% Oops-style errors.
+%
 % Revision 1.2  2000/05/11  12:37:19  schwarz
 % Init of output variables to avoid 'output argument not assigned' warning.
 % Optional types file argument.
@@ -34,15 +37,18 @@ function [ data, frames, signatures ] = loadsdifflat (name, types)
 	NVTinfo = loadsdif (name, types);
     end
 
-    di = 1;	% data index
-    fi = 1;	% frame index
+    di = 0;	% data index
+    fi = 0;	% frame index
 
     while (1)				% read frame by frame
 	[ d, t, s, f, m ] = loadsdif;
 
-	if isempty (d),  break;  end
+	if isempty (t),  break;  end
     
 	[ rows, cols ]	    = size(d);
+	fi = fi + 1;
+	di = di + rows;
+
 	frames(fi, 1)       = t;
 	frames(fi, 2)       = s;
 	frames(fi, 3)       = di;
@@ -50,9 +56,6 @@ function [ data, frames, signatures ] = loadsdifflat (name, types)
 	signatures(fi, 1:4) = f;
 	signatures(fi, 5:8) = m;
 	data(di, 1:cols)    = d;
-    
-	fi = fi + 1;
-	di = di + rows;
     end
     
     loadsdif ('close');			% close files

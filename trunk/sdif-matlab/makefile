@@ -1,10 +1,13 @@
-# $Id: makefile,v 1.12 2000-08-23 15:03:20 schwarz Exp $
+# $Id: makefile,v 1.13 2000-08-27 14:24:12 schwarz Exp $
 #
 # makefile	26. January 2000	Diemo Schwarz
 #
 # formesutils matlab library
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.12  2000/08/23  15:03:20  schwarz
+# Read/write test testrw with intrusion/selection of other data.
+#
 # Revision 1.11  2000/08/08  18:07:30  schwarz
 # Added README with release notes to distribution.
 #
@@ -83,7 +86,7 @@ LFLAGS		 =
 CC		 = gcc
 
 OBJ_DIR	   	 = obj/$(ARCH)
-OUT_DIRS	 = $(OBJ_DIR) $(INSTALL_DIR)
+OUT_DIRS	 = $(OBJ_DIR) $(INSTALL_DIR) gen
 VPATH		 = $(OBJ_DIR)
 
 
@@ -114,12 +117,12 @@ INSTALLED_FILES = $(INSTALL_FILES:%=$(INSTALL_DIR)/%)
 
 DIST_DIR	= /usr/local/www/ircam/equipes/analyse-synthese/sdif/download
 DIST_FILES	= $(foreach s, $(ALLMEXSUF), $(mexbase:%=%.$s)) \
-		  README $(mfiles) \
+		  sdif-matlab-readme $(mfiles) \
 		  -C $(SDIF_TYPES_DIR) $(SDIF_TYPES_FILE) \
 		  -C $(subst /lib/,/bin/,$(SDIF_LIB_DIR)) querysdif
 DIST_HOST	= maelzel
 DIST_BASE	= sdif-matlab-$(VERSION)
-DIST_COPYFILES  = $(DIST_BASE).tar.gz README readme.txt
+DIST_COPYFILES  = $(DIST_BASE).tar.gz sdif-matlab-readme
 
 
 #
@@ -158,9 +161,8 @@ db:
 
 test:		$(mexfiles) testrw testl t1.sdif
 
-testrw rw:
-		echo 'testrw(0), testrw(1), testrw(2), testrw(3)' \
-		| matlab -nosplash
+testrw rw:	gen
+		echo 'testrw'  |  matlab -nosplash
 testl:
 		echo testl     | matlab -nosplash
 t1t:	
@@ -177,9 +179,7 @@ dist:		all
 		tar cvfz $(DIST_BASE).tar.gz $(DIST_FILES)
 		@echo now do: cvs tag $(CVSTAG)
 publish:	dist
-		cp -p README readme.txt	  # bloody webserver ignores uppercaase
 		rsh $(DIST_HOST) cp -f $(DIST_COPYFILES:%=$(PWD)/%) $(DIST_DIR)
-		rm readme.txt
 
 clean mexclean cl:
 		-rm -f $(mexfiles) $(loadsdif_obj) $(writesdif_obj) 

@@ -20,7 +20,13 @@
 %     optionally the frame time, stream, and the frame and matrix 4-char 
 %     signatures.
 %
-%     Returns an empty matrix on end-of-file.
+%     Returns empty values on end-of-file.  (matrix can be empty anytime,
+%     the other values are empty only on eof.)
+%
+%     Example:  while(1),  
+%			[d, t, s, f, m] = loadsdif;
+%			if isempty (t),  break;  end
+%		end
 %
 %   loadsdif('close')
 %	Close file.
@@ -35,9 +41,15 @@
 %
 % No CVS REVISION in help, since it won't change very much, but will be
 % misleading.  (We'd really like to see the current version of loadsdif.c.)
-%     $Id: loadsdif.m,v 1.3 2000-08-04 14:42:30 schwarz Exp $
+%     $Id: loadsdif.m,v 1.4 2000-08-27 14:24:12 schwarz Exp $
 %
 % $Log: not supported by cvs2svn $
+% Revision 1.3  2000/08/04  14:42:30  schwarz
+% Added reset of file variable, prevents crash on double-close.
+% Version number is written in NVTs, and is used for distribution,
+% defined in makefile (major.minor.release).
+% Types file now included in distribution and documentation.
+%
 % Revision 1.2  2000/07/27  18:30:35  schwarz
 % @$#%^^!&* comment leader!
 %
