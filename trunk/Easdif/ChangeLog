@@ -1,5 +1,15 @@
-2003-07-05  Axel Röbel  <roebel@ircam.fr>
+2003-07-17  Axel Roebel  <Axel.Roebel@ircam.fr>
 Version 0.7.2
+
+	* easdif/sdifmatrix.cpp, easdif/sdifmatrix.h, easdif/sdifmatrixdata.h,easdif/sdifmatrixdatainterface.h
+	Updated Resize method to properly
+	reorganize (and no longer clear) data.
+	Added new method Clear to set all matrix elements to zero.
+	Added assignment operator that does a proper deep copy
+	of the matrx data.
+	
+	
+2003-07-05  Axel Röbel  <roebel@ircam.fr>
 
 	* easdif/sdifmatrix.cpp
 	Added support for sdif data types eUint1 and eInt1.
@@ -401,4 +411,4 @@ Version 0.21
 	* ChangeLog: Added changelog to repository.
 
 
-$Id: ChangeLog,v 1.19 2003-07-07 10:29:46 roebel Exp $
+$Id: ChangeLog,v 1.20 2003-07-17 18:09:35 roebel Exp $
