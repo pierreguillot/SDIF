@@ -9,9 +9,12 @@
  * sdifframe.h is composed of the different methods which are using to 
  * manipulate the frame.
  * 
- * $Id: sdifframe.h,v 1.1.1.1 2002-04-11 16:13:31 ftissera Exp $ 
+ * $Id: sdifframe.h,v 1.2 2002-06-18 14:51:13 ftissera Exp $ 
  * 
- * $Log: not supported by cvs2svn $ 
+ * $Log: not supported by cvs2svn $
+ * Revision 1.1.1.1  2002/04/11 16:13:31  ftissera
+ * Project for new SDIF API	
+ * 
  * 
  */
 
@@ -22,24 +25,29 @@
 #include <sdif.h>
 #include "sdifmatrix.h"
 
+class SDIFEntity;
+
 class SDIFFrame
 {
 private:
     //SDIFMatrix matrix;
     std::vector<SDIFMatrix> mv_Matrix;
-    size_t  mBytesRead;
-    
+/*for SDIFStream file's operations, it become public.
+size_t  mBytesRead;
+*/
     int mSelected;// if is selected = 1 else = 0
 
     SdifFloat8      mTime;
     SdifSignature   mSig;
     SdifUInt4       mStreamID;
-    SdifUInt4 mSize;
+    SdifUInt4 mSize;// keep the size of the frame
     SdifUInt4 mNbMatrix;
+    SdifUInt4 mIndex;
 
 public: 
     SDIFFrame(): mStreamID(0), mSize(0), mNbMatrix(0)
 	{};
+    size_t  mFrameBytesRead;
 
 /** 
  * Read : permit to read completly a frame : the header and the data
@@ -63,12 +71,24 @@ public:
     void View();
     void ViewInfo();
 
+/* for SDIFEntity*/
+
+    void Read(const SDIFEntity& entity);
+    void ReadData(const SDIFEntity& entity);
+    void ReadInfo(const SDIFEntity& entity);
+    void Write(const SDIFEntity& entity);
+    void WriteInfo(const SDIFEntity& entity);
+    void Resize(const SDIFEntity& entity);
+
+
     void AddMatrix(const SDIFMatrix& aMatrix);    
     void ClearData();
     void Resize(SdifFileT* file);
     int Selected();// return 1 if selected
 
     SDIFMatrix& GetMatrix(unsigned int index);
+    // SDIFMatrix& GetMatrix(SdifSignature sig);
+    bool MatrixExists(SdifSignature sig);// TO DO
     SdifUInt4 GetNbMatrix();
     SdifSignature GetSignature();
     SdifUInt4 GetStreamID();
