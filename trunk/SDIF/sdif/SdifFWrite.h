@@ -1,4 +1,4 @@
-/* $Id: SdifFWrite.h,v 3.10 2001-05-02 09:34:42 tisseran Exp $
+/* $Id: SdifFWrite.h,v 3.11 2003-08-06 15:11:45 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -122,6 +122,9 @@ void main(void)
 
 LOG
  * $Log: not supported by cvs2svn $
+ * Revision 3.10  2001/05/02 09:34:42  tisseran
+ * Change License from GNU Public License to GNU Lesser Public License.
+ *
  * Revision 3.9  2000/11/21 14:51:49  schwarz
  * - sdif.h is now included by all sdif/Sdif*.c files.
  * - Removed all public typedefs, enums, structs, and defines from the
@@ -414,13 +417,6 @@ size_t SdifFWriteTextFrameSdifString(SdifFileT     *SdifF,
 				     SdifFloat8    Time,
 				     SdifSignature MatrixSignature,
 				     SdifStringT   *SdifString);
-
-
-/*
- * obsolete
- */
-size_t  SdifFWriteNameValueCurrHT (SdifFileT *SdifF);
-size_t  SdifFWriteAllNameValueHT  (SdifFileT *SdifF);
 
 #endif /* _SdifFWrite_ */
 

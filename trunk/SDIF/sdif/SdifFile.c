@@ -1,4 +1,4 @@
-/* $Id: SdifFile.c,v 3.34 2003-06-24 16:01:32 roebel Exp $
+/* $Id: SdifFile.c,v 3.35 2003-08-06 15:10:46 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -33,6 +33,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.34  2003/06/24 16:01:32  roebel
+ * permanently removed references to UniversalEnvVar.h
+ *
  * Revision 3.33  2003/06/24 15:24:58  roebel
  * Removed UniversalEnvVar.h which in fact has never been used in SDIF.
  *
@@ -246,7 +249,7 @@
 #include "SdifVersion.h"
 
 #ifndef AUTOCKSUM
-#define AUTOCKSUM "$Checksum: not available$ IRCAM $Date: 2003-06-24 16:01:32 $" 
+#define AUTOCKSUM "$Checksum: not available$ IRCAM $Date: 2003-08-06 15:10:46 $" 
 #endif
 
 #ifndef lint
@@ -432,26 +435,6 @@ SdifFOpen(const char* Name, SdifFileModeET Mode)
 
 
 
-
-
-
-
-SdifFileT*
-SdifOpenFile(const char* Name, SdifFileModeET Mode)
-{
-    /* obsolete */
-    _Debug("SdifOpenFile is obsolete, use SdifFOpen(SdifFileT* SdifF)");
-	return SdifFOpen(Name, Mode);
-}
-
-
-
-
-
-
-
-
-
 SdifFileT*
 SdifFOpenText(SdifFileT *SdifF, const char* Name, SdifFileModeET Mode)
 {
@@ -625,25 +608,6 @@ SdifFClose(SdifFileT* SdifF)
     }
     
 }
-
-
-
-
-
-
-
-void
-SdifCloseFile(SdifFileT* SdifF)
-{
-    /* obsolete */
-    _Debug("SdifCloseFile is obsolete, use SdifFClose(SdifFileT* SdifF)");
-	SdifFClose(SdifF);
-}
-
-
-
-
-
 
 
 

@@ -1,4 +1,4 @@
-/* $Id: SdifFGet.h,v 3.9 2002-06-18 13:55:54 ftissera Exp $
+/* $Id: SdifFGet.h,v 3.10 2003-08-06 15:11:45 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -44,6 +44,9 @@ DESCRIPTION
 
 LOG
  * $Log: not supported by cvs2svn $
+ * Revision 3.9  2002/06/18 13:55:54  ftissera
+ * Move SdifFGetAllTypefromSdifString declaration from SdifFGet.h to sdif.h
+ *
  * Revision 3.8  2001/05/02 09:34:41  tisseran
  * Change License from GNU Public License to GNU Lesser Public License.
  *
@@ -244,10 +247,5 @@ size_t SdifFGetAllStreamID      (SdifFileT *SdifF, int Verbose);
   Get the current Stream ID from a SdifStringT
 */
 size_t SdifFGetAllStreamIDfromSdifString(SdifFileT *SdifF, SdifStringT *SdifString);
-
-/*
- * obsolete
- */
-size_t SdifFGetNameValueCurrHT (SdifFileT *SdifF, int Verbose);
 
 #endif /* _SdifFGet_ */

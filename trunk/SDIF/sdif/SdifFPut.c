@@ -1,4 +1,4 @@
-/* $Id: SdifFPut.c,v 3.12 2002-05-24 19:37:52 ftissera Exp $
+/* $Id: SdifFPut.c,v 3.13 2003-08-06 15:11:45 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -33,6 +33,10 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.12  2002/05/24 19:37:52  ftissera
+ * Change code to be compatible with C++
+ * Cast pointers to correct type.
+ *
  * Revision 3.11  2001/05/02 09:34:41  tisseran
  * Change License from GNU Public License to GNU Lesser Public License.
  *
@@ -572,23 +576,3 @@ SdifFAllStreamIDToSdifString(SdifFileT *SdifF, SdifStringT *SdifString)
 
   return success;
 }
-
-
-/*
- * obsolete
- */
-
-size_t
-SdifFPutNameValueCurrHT (SdifFileT *SdifF, int Verbose)
-{
-    /* obsolete */
-    _Debug("SdifFPutNameValueCurrHT is obsolete, use SdifFPutNameValueLCurrNVT");
-    return SdifFPutNameValueLCurrNVT(SdifF, Verbose);
-}
-
-
-
-
-
-
-

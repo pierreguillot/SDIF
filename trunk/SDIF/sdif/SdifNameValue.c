@@ -1,4 +1,4 @@
-/* $Id: SdifNameValue.c,v 3.13 2002-12-17 15:56:52 roebel Exp $
+/* $Id: SdifNameValue.c,v 3.14 2003-08-06 15:10:47 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -34,6 +34,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.13  2002/12/17 15:56:52  roebel
+ * Comment changed.
+ *
  * Revision 3.12  2002/12/13 15:58:12  roebel
  * Fixed two bugs in SdifNameValuesLSetCurrNVT. Name table access would change
  * the name table indexes due to faulty assignment instead of comparison.
@@ -456,56 +459,3 @@ SdifNameValuesLIsNotEmpty(SdifNameValuesLT *NameValuesL)
     }
   return 0;
 }
-
-
-
-
-/*
- * Obsolete
- */
-
-
-
-SdifNameValuesLT*
-SdifNameValuesLNewHT(SdifNameValuesLT *NameValuesL)
-{
-    /* obsolete */
-    _Debug("SdifNameValuesLNewHT is obsolete, use SdifNameValuesLNewTable(<args have changed!!>) ");
-    return SdifNameValuesLNewTable(NameValuesL, _SdifNoStreamID);
-}
-
-
-
-SdifHashTableT*
-SdifNameValuesLSetCurrHT(SdifNameValuesLT *NameValuesL, SdifUInt4 NumCurrHT)
-{
-    /* obsolete */
-    SdifNameValueTableT* NVT=NULL;
-
-    _Debug("SdifNameValuesLSetCurrHT is obsolete, use SdifNameValuesLSetCurrNVT(<same args>) : result has changed ");
-
-    NVT = SdifNameValuesLSetCurrNVT(NameValuesL, NumCurrHT);
-    return NVT->NVHT;
-}
-
-
-
-SdifNameValueT*
-SdifNameValuesLGetCurrHT(SdifNameValuesLT *NameValuesL, char *Name)
-{
-    /* obsolete */
-    _Debug("SdifNameValuesLGetCurrHT is obsolete, use SdifNameValuesLGetCurrNVT");
-    return SdifNameValuesLGetCurrNVT(NameValuesL, Name);
-}
-
-
-SdifNameValueT*
-SdifNameValuesLPutCurrHT(SdifNameValuesLT *NameValuesL, 
-		   const char *Name,  const char *Value)
-{
-    /* obsolete */
-    _Debug("SdifNameValuesLPutCurrHT is obsolete, use SdifNameValuesLPutCurrNVT");
-    return SdifNameValuesLPutCurrNVT(NameValuesL, Name, Value);
-}
-
-

@@ -1,4 +1,4 @@
-/* $Id: SdifFScan.c,v 3.13 2002-05-24 19:37:07 ftissera Exp $
+/* $Id: SdifFScan.c,v 3.14 2003-08-06 15:11:45 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -31,6 +31,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.13  2002/05/24 19:37:07  ftissera
+ * Add include "sdif.h" to be compatible with C++
+ *
  * Revision 3.12  2001/05/02 09:34:42  tisseran
  * Change License from GNU Public License to GNU Lesser Public License.
  *
@@ -346,18 +349,3 @@ SdifFScanFrameHeader(SdifFileT *SdifF)
   if (SdifF->CurrFramT)
     SdifFReInitMtrxUsed(SdifF);
 }
-
-/*
- * obsolete
- */
-
-
-size_t
-SdifFScanNameValueCurrHT(SdifFileT *SdifF)
-{
-    /* obsolete */
-    _Debug("SdifFScanNameValueCurrHT is obsolete, use SdifFScantNameValueLCurrNVT");
-    return SdifFScanNameValueLCurrNVT(SdifF);
-}
-
-

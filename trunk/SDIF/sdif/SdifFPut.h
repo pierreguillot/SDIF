@@ -1,4 +1,4 @@
-/* $Id: SdifFPut.h,v 3.8 2001-05-02 09:34:42 tisseran Exp $
+/* $Id: SdifFPut.h,v 3.9 2003-08-06 15:11:45 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -36,6 +36,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.8  2001/05/02 09:34:42  tisseran
+ * Change License from GNU Public License to GNU Lesser Public License.
+ *
  * Revision 3.7  2000/11/21 14:51:48  schwarz
  * - sdif.h is now included by all sdif/Sdif*.c files.
  * - Removed all public typedefs, enums, structs, and defines from the
@@ -243,11 +246,6 @@ size_t SdifFPutAllStreamID          (SdifFileT *SdifF, int Verbose);
   Write all StreamID in SdifString
 */
 int SdifFAllStreamIDToSdifString (SdifFileT *SdifF, SdifStringT *SdifString);
-
-/*
- * obsolete
- */
-size_t SdifFPutNameValueCurrHT      (SdifFileT *SdifF, int Verbose);
 
 #endif /* _SdifFPut_ */
 

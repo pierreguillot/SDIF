@@ -1,4 +1,4 @@
-/* $Id: SdifFScan.h,v 3.4 2001-05-02 09:34:42 tisseran Exp $
+/* $Id: SdifFScan.h,v 3.5 2003-08-06 15:11:45 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -33,6 +33,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.4  2001/05/02 09:34:42  tisseran
+ * Change License from GNU Public License to GNU Lesser Public License.
+ *
  * Revision 3.3  2000/11/21 14:51:49  schwarz
  * - sdif.h is now included by all sdif/Sdif*.c files.
  * - Removed all public typedefs, enums, structs, and defines from the
@@ -102,11 +105,5 @@ void    SdifFScanOneRow             (SdifFileT *SdifF);
 
 size_t  SdifFScanMatrixType         (SdifFileT *SdifF);
 size_t  SdifFScanFrameType          (SdifFileT *SdifF);
-
-
-/*
- * obsolete
- */
-size_t  SdifFScanNameValueCurrHT    (SdifFileT *SdifF);
 
 #endif /* _SdifFScan_ */

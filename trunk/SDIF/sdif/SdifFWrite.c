@@ -1,4 +1,4 @@
-/* $Id: SdifFWrite.c,v 3.16 2002-05-24 19:37:52 ftissera Exp $
+/* $Id: SdifFWrite.c,v 3.17 2003-08-06 15:11:45 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -31,6 +31,10 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.16  2002/05/24 19:37:52  ftissera
+ * Change code to be compatible with C++
+ * Cast pointers to correct type.
+ *
  * Revision 3.15  2001/05/02 09:34:42  tisseran
  * Change License from GNU Public License to GNU Lesser Public License.
  *
@@ -723,28 +727,3 @@ size_t SdifFWriteTextFrameSdifString(SdifFileT     *SdifF,
   
   return SizeW;
 }
-
-
-/*
- * obsolete
- */
-
-size_t
-SdifFWriteNameValueCurrHT (SdifFileT *SdifF)
-{
-    /* obsolete */
-    _Debug("SdifFWriteNameValueCurrHT is obsolete, use SdifFWriteValueLCurrNVT");
-    return SdifFWriteNameValueLCurrNVT(SdifF);
-}
-
-
-size_t
-SdifFWriteAllNameValueHT(SdifFileT *SdifF)
-{
-    /* obsolete */
-    _Debug("SdifFWriteAllNameValueHT is obsolete, use SdifFWriteAllNameValueNVT");
-    return SdifFWriteAllNameValueNVT(SdifF);
-}
-
-
-
