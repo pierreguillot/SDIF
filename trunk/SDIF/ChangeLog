@@ -61,6 +61,8 @@ Version 3.8.0
 	* reorganized Mac related portability code
 	removed all XpGuiCalls, rename preincluded.h to sdif_portability.h
 
+	* include/sdif.h
+	added alias for typo in enum eUnknow=eUnknown
 	
 2003-08-06  Diemo Schwarz  <schwarz@ligeti.ircam.fr>
 
@@ -303,4 +305,4 @@ Version 3.3:
 	  Operating System.
 
 	
-$Id: ChangeLog,v 1.29 2004-01-29 14:20:16 schwarz Exp $
+$Id: ChangeLog,v 1.30 2004-02-02 18:04:53 roebel Exp $
