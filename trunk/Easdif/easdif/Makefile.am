@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.1 2003-03-03 10:03:50 roebel Exp $
+# $Id: Makefile.am,v 1.1 2003-03-03 19:00:16 roebel Exp $
 #
 # ./Easdif/src/Makefile.am	Feb. 2003 Axel Roebel
 #
@@ -6,6 +6,9 @@
 #
 
 # $Log: not supported by cvs2svn $
+# Revision 1.1  2003/03/03 10:03:50  roebel
+# Adapted for autoconf/automake...
+#
 
 # EXTRA_LIBRARIES to provide knowledge about possible substitutions
 # in lib_LTLIBRARIES

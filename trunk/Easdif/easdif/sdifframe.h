@@ -9,9 +9,14 @@
  * sdifframe.h is composed of the different methods which are using to 
  * manipulate the frame.
  * 
- * $Id: sdifframe.h,v 1.5 2002-10-10 10:49:09 roebel Exp $ 
+ * $Id: sdifframe.h,v 1.1 2003-03-03 19:00:16 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.5  2002/10/10 10:49:09  roebel
+ * Now using namespace Easdif.
+ * Fixed handling of zero pointer arguments in initException.
+ * Reading past end of file now throws an exception.
+ *
  * Revision 1.4  2002/08/28 16:46:53  roebel
  * Internal reorganization and name changes.
  *
