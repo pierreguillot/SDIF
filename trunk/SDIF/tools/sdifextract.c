@@ -1,4 +1,4 @@
-/* $Id: sdifextract.c,v 1.1 2000-10-30 14:44:03 roebel Exp $
+/* $Id: sdifextract.c,v 1.2 2000-10-30 16:22:11 roebel Exp $
  
                 Copyright (c) 1998 by IRCAM - Centre Pompidou
                            All rights reserved.
@@ -13,6 +13,9 @@
    Extract data from an SDIF-file.  
    
    $Log: not supported by cvs2svn $
+ * Revision 1.1  2000/10/30  14:44:03  roebel
+ * Moved all tool sources into central tools directory and added config.h to sources
+ *
  * Revision 1.2  2000/10/27  20:04:20  roebel
  * autoconf merged back to main trunk
  *
@@ -146,7 +149,7 @@ void usage (char *msg, char *arg, int longhelp)
     }
     if (longhelp)
     {
-    	fprintf (SdifStdErr, "\n" PROG "version %s\n\n", VERSION);
+    	fprintf (SdifStdErr, "\n" PROG "version $Revision: 1.2 $\n\n");
     
     	if (types)
     	{
@@ -451,8 +454,7 @@ main (int argc, char **argv)
 
 #   define	maxintsel	65536	/* todo: make dynamic */
 #   define	get(arr, ind)	((ind) < maxintsel  ?  arr [ind]  :  	      \
-		    (_SdifFError (in, eBadNbData, "exiting"), exit (9),	      \
-		     _SdifFError (in, eBadNbData, "exiting")))
+		   (fprintf(stderr, PROG "Number of columns out of bounds, exiting\n"), exit (9), 0))
     int		flatcol [maxintsel], cumulcol [maxintsel + 1], numcolsel,
     		flatrow [maxintsel], cumulrow [maxintsel + 1], numrowsel;
 
@@ -647,7 +649,7 @@ main (int argc, char **argv)
 	    }
 	    
 	    /* a frame type we're not interested in, so we skip it */
-	    SdifSkipFrameData (in);
+	    SdifFSkipFrameData (in);
 	    eof = SdifFGetSignature (in, &bytesread) == eEof;
 	    continue;		/* START NEXT ITERATION of while frames loop */
 	}
