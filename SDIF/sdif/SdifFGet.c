@@ -1,4 +1,4 @@
-/* $Id: SdifFGet.c,v 2.2 1999-01-23 13:57:22 virolle Exp $
+/* $Id: SdifFGet.c,v 2.3 1999-01-23 15:55:39 virolle Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.

@@ -1,4 +1,4 @@
-/* $Id: SdifErrMess.h,v 2.3 1999-01-23 13:57:20 virolle Exp $
+/* $Id: SdifErrMess.h,v 2.4 1999-01-23 15:55:37 virolle Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
