@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.26 2004-07-13 15:28:16 roebel Exp $
+# $Id: Makefile.am,v 1.27 2004-08-26 17:12:54 schwarz Exp $
 #
 # ./Makefile.am		September 2000			Patrice Tisserand
 #
@@ -30,6 +30,10 @@
 
 
 # $Log: not supported by cvs2svn $
+# Revision 1.26  2004/07/13 15:28:16  roebel
+# Fixed cvstag target to be able to use it from working directories that are not the top
+# source directory.
+#
 # Revision 1.25  2004/02/02 19:09:28  schwarz
 # Fix rpm build target, thanks to Patrice.
 # Build ALL archs.
@@ -167,7 +171,7 @@ test:	check
 #
 
 # more files to include in dist
-EXTRA_DIST	  = sdif.vcproj sdif.dsw
+EXTRA_DIST	  = ReleaseNotes sdif.vcproj sdif.dsw
 
 
 # base name of distribution (override automake generated variable to make source distribution!)
@@ -218,8 +222,8 @@ PUBLISH_HOST      = www.ircam.fr
 PUBLISH_USER      = wwwas
 
 publish-ftp:	# (experimental)
-	echo -e put $(PUBLISH_FILES_DL) | ncftp -u$(PUBLISH_USER) -p$(PW) ftp://$(PUBLISH_HOST)/$(PUBLISH_DIR)
-	echo -e put $(PUBLISH_FILES_R)  | ncftp -u$(PUBLISH_USER) -p$(PW) ftp://$(PUBLISH_HOST)/$(PUBLISH_ROOT)
+	echo put $(PUBLISH_FILES_DL) | ncftp -u$(PUBLISH_USER) -p$(PW) ftp://$(PUBLISH_HOST)/$(PUBLISH_DIR)
+	echo put $(PUBLISH_FILES_R)  | ncftp -u$(PUBLISH_USER) -p$(PW) ftp://$(PUBLISH_HOST)/$(PUBLISH_ROOT)
 
 # tag the cvsrepository with the current version 
 # (to exactly reconstitute a published version)
