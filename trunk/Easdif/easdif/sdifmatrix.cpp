@@ -32,9 +32,12 @@
  * 
  * 
  * 
- * $Id: sdifmatrix.cpp,v 1.18 2003-12-05 13:36:58 roebel Exp $ 
+ * $Id: sdifmatrix.cpp,v 1.19 2004-07-13 15:02:00 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.18  2003/12/05 13:36:58  roebel
+ * Added proper initialization for bytesread variable
+ *
  * Revision 1.17  2003/11/25 10:55:42  roebel
  * Added missing namespace qualifier for exceptions.
  *
@@ -285,23 +288,23 @@ int SDIFMatrix::Read(SdifFileT* file)
   // remember file that we read from
   mFile = file;
 
-    int bytesread = 0;
-    bytesread += SdifFReadMatrixHeader(file);
-    /* for selection */
-    if (!SdifFCurrMatrixIsSelected (file))
-	  {
-	      //bytesread += SdifFSkipMatrixData(file);
-	      SdifFSkipMatrixData(file);
-
-/*
-	      bytesread += SdifFReadPadding(file,
-	      SdifFPaddingCalculate
-	      (file->Stream, bytesread));
-*/
-	      //return bytesread;
-	      return 0;
-	  }
-
+  bytesread = 0;
+  bytesread += SdifFReadMatrixHeader(file);
+  /* for selection */
+  if (!SdifFCurrMatrixIsSelected (file))
+    {
+      //bytesread += SdifFSkipMatrixData(file);
+      SdifFSkipMatrixData(file);
+      
+      /*
+	bytesread += SdifFReadPadding(file,
+	SdifFPaddingCalculate
+	(file->Stream, bytesread));
+      */
+      //return bytesread;
+      return 0;
+    }
+  
     mSig = SdifFCurrMatrixSignature(file);
     int nrows = SdifFCurrNbRow(file);
     int ncols = SdifFCurrNbCol(file);
