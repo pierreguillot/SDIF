@@ -1,4 +1,4 @@
-/* $Id: SdifFile.c,v 3.6 1999-10-13 16:05:45 schwarz Exp $
+/* $Id: SdifFile.c,v 3.7 1999-11-17 16:22:37 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -16,6 +16,15 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.6  1999/10/13  16:05:45  schwarz
+ * Changed data type codes (SdifDataTypeET) to SDIF format version 3, as
+ * decided with Matt Wright June 1999, added integer data types.
+ * Added writing of 1NVT with real frame header (but data is still not in
+ * matrices).
+ * The data type handling makes heavy use of code-generating macros,
+ * called for all data types with the sdif_foralltypes macro, thus
+ * adding new data types is easy.
+ *
  * Revision 3.5  1999/10/07  15:12:22  schwarz
  * Added isSeekable flag in SdifFileT struct.  This allows to simplify the
  * many tests for stdio on opening the stream.
@@ -89,14 +98,13 @@
 int
 SdifCheckFileFormat (char *name)
 {
-    int		ret = 0;
+    int		ret = 0, size;
     SdifFileT	*file;
-    
+
     SdifDisableErrorOutput ();
     if (file = SdifFOpen (name, eReadFile))
     {
-        SdifFReadGeneralHeader (file);
-	ret = SdifFCurrSignature (file) == eSDIF;
+        ret  = SdifFGetSignature (file, &size) == eSDIF;
 	SdifFClose (file);
     }
     SdifEnableErrorOutput ();
@@ -614,7 +622,7 @@ SdifGenKill(void)
 void SdifPrintVersion(void)
 {
 #ifndef lint
-    static char rcsid[]= "$Revision: 3.6 $ IRCAM $Date: 1999-10-13 16:05:45 $";
+    static char rcsid[]= "$Revision: 3.7 $ IRCAM $Date: 1999-11-17 16:22:37 $";
 #endif
 
     if (SdifStdErr == NULL)
