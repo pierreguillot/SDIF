@@ -1,4 +1,4 @@
-/* $Id: SdifFile.c,v 3.28 2003-01-16 15:31:16 tisseran Exp $
+/* $Id: SdifFile.c,v 3.29 2003-05-26 16:12:47 roebel Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -33,6 +33,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.28  2003/01/16 15:31:16  tisseran
+ * Check if host have unistd.h before included it
+ *
  * Revision 3.27  2002/11/28 19:57:39  roebel
  * Fixed some const arguments.
  * Make SdifFtruncte return SDIF_FTRUNCATE_NOT_AVAILABLE if
@@ -229,7 +232,7 @@
 #include "SdifVersion.h"
 
 #ifndef AUTOCKSUM
-#define AUTOCKSUM "$Checksum: not available$ IRCAM $Date: 2003-01-16 15:31:16 $" 
+#define AUTOCKSUM "$Checksum: not available$ IRCAM $Date: 2003-05-26 16:12:47 $" 
 #endif
 
 #ifndef lint
@@ -829,7 +832,7 @@ void SdifPrintVersion(void)
     fprintf(SdifStdErr, "SDIF Library\n");
     fprintf(SdifStdErr, "Format version : %d\n", _SdifFormatVersion);
 
-    fprintf(SdifStdErr, "Release: %s, %s\n", VERSION, __DATE__);
+    fprintf(SdifStdErr, "Release: %s, %s\n", SDIF_VERSION_STRING, __DATE__);
 }
 
 
