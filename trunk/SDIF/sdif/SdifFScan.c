@@ -1,4 +1,4 @@
-/* $Id: SdifFScan.c,v 3.7 2000-05-15 16:23:08 schwarz Exp $
+/* $Id: SdifFScan.c,v 3.8 2000-05-15 16:25:55 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -14,6 +14,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.7  2000/05/15  16:23:08  schwarz
+ * Avoided avoidable warnings.
+ *
  * Revision 3.6  2000/03/01  11:17:35  schwarz
  * Backwards compatibility of data types for reading text.
  *
@@ -239,7 +242,7 @@ SdifFScanMatrixHeader(SdifFileT *SdifF)
       case eFloat8b:
 	  DataType = eFloat8;
       break;
-      default: /* all is fine! */
+      default: /* all is fine! */;
   }
 
   SdifF->CurrMtrxH->DataType = (SdifDataTypeET) (int) DataType;
