@@ -1,0 +1,15 @@
+
+/* Complete version number */
+#undef EASDIF_VERSION
+
+/* Major version number of easdif lib */
+#undef EASDIF_VERSION_MAJ
+
+/* Minor version number of easdif lib */
+#undef EASDIF_VERSION_MIN
+
+/* Release number of easdif lib */
+#undef EASDIF_VERSION_RELEASE
+
+
+
