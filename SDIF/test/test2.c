@@ -1,5 +1,8 @@
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.4  2002/05/24 19:41:34  ftissera
+ * Change code to be compatible with C++
+ *
  * Revision 1.3  2001/05/04 18:08:01  schwarz
  * Added test for SdifNameValuesLPutCurrNVTTranslate.
  *
@@ -19,7 +22,7 @@
  * This program test the matrix and frame type declaration in SDIF file.
  * 
  *
- * $Id: test2.c,v 1.4 2002-05-24 19:41:34 ftissera Exp $
+ * $Id: test2.c,v 1.5 2004-10-07 15:37:30 roebel Exp $
  *
  */
 #include <stdlib.h>
@@ -99,7 +102,7 @@ main(void)
 
   SdifNameValuesLPutCurrNVT(MySdifFileToWrite->NameValues,FIELD1,"prefere");
   SdifNameValuesLPutCurrNVT(MySdifFileToWrite->NameValues,FIELD2,num);
-  SdifNameValuesLPutCurrNVTTranslate(MySdifFileToWrite->NameValues,FIELD3,"test 2,;{}:x");
+  SdifNameValuesLPutCurrNVTTranslate(MySdifFileToWrite->NameValues,FIELD3,"test 2,;\n\t{}:x");
   SdifNameValuesLPutCurrNVTTranslate(MySdifFileToWrite->NameValues,FIELD4,ctime(&now));
 
   bytesWritten += writeFileHeader(MySdifFileToWrite);
@@ -122,7 +125,7 @@ main(void)
 
   fprintf(stderr,"\nCHECK NVT: ");
   nv = SdifNameValuesLGet(SdifFNameValueList(MySdifFileToRead), FIELD3);
-  if (strcmp(nv->Value, "test_2.....x") != 0)
+  if (strcmp(nv->Value, "test 2,;  {}:x") != 0)
   {
       fprintf(stderr,"Difference in NVT: %s unexpected\n", nv->Value);
       SdifGenKill();
