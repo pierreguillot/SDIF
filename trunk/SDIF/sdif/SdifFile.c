@@ -1,4 +1,4 @@
-/* $Id: SdifFile.c,v 3.8 2000-03-01 11:19:36 schwarz Exp $
+/* $Id: SdifFile.c,v 3.9 2000-04-26 15:31:23 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -16,6 +16,10 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.8  2000/03/01  11:19:36  schwarz
+ * Tough check for pipe on open.
+ * Added SdifFCurrDataType.
+ *
  * Revision 3.7  1999/11/17  16:22:37  schwarz
  * SdifCheckFileFormat now only reads the first 4 bytes.  This avoids a
  * subtle bug if the file was shorter than 16 bytes, as e.g. with f0
@@ -550,8 +554,6 @@ SdifTakeCodedPredefinedTypes(SdifFileT *SdifF)
 void
 SdifFLoadPredefinedTypes(SdifFileT *SdifF, char *TypesFileName)
 {
-  size_t SizeR =0;
-
   if (SdifStrEq(TypesFileName, ""))
     {
       _SdifRemark("Load Coded Predefinied Types, it can be incomplete (file name null)\n");
@@ -623,6 +625,13 @@ SdifGenInit(char *PredefinedTypesFile)
 }
 
 
+void 
+SdifGenInitCond (char *pfile)
+{
+    if (!gSdifInitialised)
+        SdifGenInit (pfile);
+}
+
 
 
 
@@ -642,7 +651,7 @@ SdifGenKill(void)
 void SdifPrintVersion(void)
 {
 #ifndef lint
-    static char rcsid[]= "$Revision: 3.8 $ IRCAM $Date: 2000-03-01 11:19:36 $";
+    static char rcsid[]= "$Revision: 3.9 $ IRCAM $Date: 2000-04-26 15:31:23 $";
 #endif
 
     if (SdifStdErr == NULL)
