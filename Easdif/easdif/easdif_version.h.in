@@ -12,6 +12,9 @@
 /* Minor version number of easdif lib */
 #undef EASDIF_VERSION_MIN
 
+/* Release number of easdif lib */
+#undef EASDIF_VERSION_RELEASE
+
 /* Name of package */
 #undef PACKAGE
 
