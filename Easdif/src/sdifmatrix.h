@@ -8,9 +8,14 @@
  * 
  * 
  * 
- * $Id: sdifmatrix.h,v 1.5 2002-10-10 10:49:09 roebel Exp $ 
+ * $Id: sdifmatrix.h,v 1.6 2002-11-07 21:07:24 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.5  2002/10/10 10:49:09  roebel
+ * Now using namespace Easdif.
+ * Fixed handling of zero pointer arguments in initException.
+ * Reading past end of file now throws an exception.
+ *
  * Revision 1.4  2002/08/28 16:46:53  roebel
  * Internal reorganization and name changes.
  *
@@ -56,7 +61,7 @@ private:
     SdifDataTypeET mType;
 
 public:
-    SDIFMatrix();
+    SDIFMatrix(const SdifDataTypeET &_type=eFloat4);
     SDIFMatrix(const SDIFMatrix& aMatrix);
 
     ~SDIFMatrix(){
@@ -174,23 +179,32 @@ public:
  */
     double GetDouble(int i, int j);
 
-/** 
- * \ingroup valmat 
- * get a value in : int
- */
-    int Get(int i, int j, int& value);
+  /** 
+   * \ingroup valmat 
+   * \brief get a value in form of given type
+   * 
+   * @param i row    index
+   * @param j column index
+   * @param value reference of variable to store value in 
+   * 
+   */
+  template<typename Tout>
+  void SDIFMatrix::Get(int i, int j, Tout& value)
+  {
+    value = static_cast<Tout>(mInter->GetDouble(i, j));
+  }
+  // specialization for float that does not use cast
+  void SDIFMatrix::Get(int i, int j, float& value)
+  {
+    value = mInter->GetFloat(i, j);
+  }
+  
+  // specialization for int that does not use cast
+  void SDIFMatrix::Get(int i, int j, int& value)
+  {
+    value = mInter->GetInt(i, j);
+  }
 
-/** 
- * \ingroup valmat 
- * get a value in : float
- */
-    float Get(int i, int j, float& value);
-
-/** 
- * \ingroup valmat 
- * get a value in : double
- */
-    double Get(int i, int j, double& value);
 
 /*************************************************************************/
 /* Set the values of the matrix */
@@ -198,25 +212,36 @@ public:
 * \defgroup setmat SDIFMatrix - Set values of the SDIFMatrix 
 */
 
-/** 
- * \ingroup setmat
- * set a value in : int
- */
-    int Set(int i, int j, const int& value);
+  /** 
+   * \ingroup setmat
+   * \brief set a value using arbitrary input type
+   * 
+   * @param i    row    index
+   * @param j    column index
+   * @param value 
+   * 
+   */
+  template<typename Tin>
+  void Set(int i, int j, const Tin& value)
+  {
+    mInter->Set(i, j, static_cast<double>(value) );
+  }
+  
+  void
+  Set(int i, int j, const float& value)
+  {
+    mInter->Set(i, j, value);
+  }
+  
+  void Set(int i, int j, const int& value)
+  {
+    mInter->Set(i, j, value);
+  }
 
-/**
- * \ingroup setmat 
- * set a value in : float
- */
-    int Set(int i, int j, const float& value);
-
-/**
- * \ingroup setmat 
- * set a value in : double
- */
-    int Set(int i, int j, const double& value);
 };
 
 } // end of namespace Easdif
 
 #endif
+
+
