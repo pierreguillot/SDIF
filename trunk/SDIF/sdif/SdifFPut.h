@@ -1,4 +1,4 @@
-/* $Id: SdifFPut.h,v 3.3 2000-07-06 19:01:46 tisseran Exp $
+/* $Id: SdifFPut.h,v 3.4 2000-07-18 15:08:30 tisseran Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -19,6 +19,12 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.3  2000/07/06  19:01:46  tisseran
+ * Add function for frame and matrix type declaration
+ * Remove string size limitation for NameValueTable
+ * TODO: 1TYP and 1IDS frame must contain an 1NVT (text) matrix
+ *       Actually, data are written with fprintf.
+ *
  * Revision 3.2  2000/04/11  14:31:22  schwarz
  * Read/write NVT as frame with 1 text matrix, conforming to SDIF spec.
  *
@@ -64,6 +70,8 @@
 #include "SdifFrameType.h"
 #include "SdifStreamID.h"
 
+#include "SdifString.h"
+
 size_t SdifFPutOneNameValue         (SdifFileT *SdifF, int Verbose, SdifNameValueT *NameValue);
 size_t SdifFPutNameValueLCurrNVT    (SdifFileT *SdifF, int Verbose);
 
@@ -73,14 +81,126 @@ size_t SdifFPutNameValueLCurrNVT    (SdifFileT *SdifF, int Verbose);
    Now, limits depend only on avaluable memory
 */
 char * SdifFNameValueLCurrNVTtoString(SdifFileT *SdifF);
-size_t SdifFPutOneMatrixType        (SdifFileT *SdifF, int Verbose, SdifMatrixTypeT *MatrixType);
+
+
+/*DOC:
+  Remark:
+         This function implements the new SDIF Specification (June 1999):
+	 Name Value Table, Matrix and Frame Type declaration, Stream ID declaration are
+	 defined in text matrix:
+	 1NVT 1NVT
+	 1TYP 1TYP
+	 1IDS 1IDS
+  This function put NameValue to SdifString
+*/
+int SdifFNameValueLCurrNVTtoSdifString(SdifFileT *SdifF, SdifStringT *SdifString);
+
+
+size_t SdifFPutOneMatrixType        (SdifFileT *SdifF, int Verbose,
+				     SdifMatrixTypeT *MatrixType);
+/*DOC:
+  Remark:
+         This function implements the new SDIF Specification (June 1999):
+	 Name Value Table, Matrix and Frame Type declaration, Stream ID declaration are
+	 defined in text matrix:
+	 1NVT 1NVT
+	 1TYP 1TYP
+	 1IDS 1IDS
+  Append matrix type declaration in SdifString
+*/
+int SdifFOneMatrixTypeToSdifString(SdifMatrixTypeT *MatrixType, SdifStringT *SdifString);
+
 size_t SdifFPutAllMatrixType        (SdifFileT *SdifF, int Verbose);
-size_t SdifFPutOneComponent         (SdifFileT *SdifF, int Verbose, SdifComponentT *Component);
-size_t SdifFPutOneFrameType         (SdifFileT *SdifF, int Verbose, SdifFrameTypeT *FrameType);
+
+
+/*DOC:
+  Remark:
+         This function implements the new SDIF Specification (June 1999):
+	 Name Value Table, Matrix and Frame Type declaration, Stream ID declaration are
+	 defined in text matrix:
+	 1NVT 1NVT
+	 1TYP 1TYP
+	 1IDS 1IDS
+  Write all Matrix type in SdifString
+*/
+int SdifFAllMatrixTypeToSdifString(SdifFileT *SdifF, SdifStringT *SdifSTring);
+
+size_t SdifFPutOneComponent(SdifFileT *SdifF, int Verbose, SdifComponentT *Component);
+
+
+/*DOC:
+  Remark:
+         This function implements the new SDIF Specification (June 1999):
+	 Name Value Table, Matrix and Frame Type declaration, Stream ID declaration are
+	 defined in text matrix:
+	 1NVT 1NVT
+	 1TYP 1TYP
+	 1IDS 1IDS
+  Append one Component to SdifString
+*/
+int SdifFOneComponentToSdifString(SdifComponentT *Component, SdifStringT *SdifString);
+
+size_t SdifFPutOneFrameType(SdifFileT *SdifF, int Verbose, SdifFrameTypeT *FrameType);
+
+/*DOC:
+  Remark:
+         This function implements the new SDIF Specification (June 1999):
+	 Name Value Table, Matrix and Frame Type declaration, Stream ID declaration are
+	 defined in text matrix:
+	 1NVT 1NVT
+	 1TYP 1TYP
+	 1IDS 1IDS
+  Append one frame type to SdifString
+*/
+int SdifFOneFrameTypeToSdifString(SdifFrameTypeT *FrameType, SdifStringT *SdifString);
+
 size_t SdifFPutAllFrameType         (SdifFileT *SdifF, int Verbose);
+
+
+/*DOC:
+  Remark:
+         This function implements the new SDIF Specification (June 1999):
+	 Name Value Table, Matrix and Frame Type declaration, Stream ID declaration are
+	 defined in text matrix:
+	 1NVT 1NVT
+	 1TYP 1TYP
+	 1IDS 1IDS
+  Write all frame type in SdifString
+*/
+int SdifFAllFrameTypeToSdifString   (SdifFileT *SdifF, SdifStringT *SdifString);
+
 size_t SdifFPutAllType              (SdifFileT *SdifF, int Verbose);
+
+
 size_t SdifFPutOneStreamID          (SdifFileT *SdifF, int Verbose, SdifStreamIDT *StreamID);
+
+
+/*DOC:
+  Remark:
+         This function implements the new SDIF Specification (June 1999):
+	 Name Value Table, Matrix and Frame Type declaration, Stream ID declaration are
+	 defined in text matrix:
+	 1NVT 1NVT
+	 1TYP 1TYP
+	 1IDS 1IDS
+  Append one StreamID to SdifString
+*/
+int SdifFOneStreamIDToSDifString (SdifStringT *SdifString, SdifStreamIDT *StreamID);
+
 size_t SdifFPutAllStreamID          (SdifFileT *SdifF, int Verbose);
+
+
+/*DOC:
+  Remark:
+         This function implements the new SDIF Specification (June 1999):
+	 Name Value Table, Matrix and Frame Type declaration, Stream ID declaration are
+	 defined in text matrix:
+	 1NVT 1NVT
+	 1TYP 1TYP
+	 1IDS 1IDS
+  Write all StreamID in SdifString
+*/
+int SdifFAllStreamIDToSdifString (SdifFileT *SdifF, SdifStringT *SdifString);
 
 /*
  * obsolete

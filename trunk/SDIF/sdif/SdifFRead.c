@@ -1,4 +1,4 @@
-/* $Id: SdifFRead.c,v 3.8 2000-05-12 14:41:46 schwarz Exp $
+/* $Id: SdifFRead.c,v 3.9 2000-07-18 15:08:32 tisseran Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -14,6 +14,14 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.8  2000/05/12  14:41:46  schwarz
+ * On behalf of Adrien, synchronisation with Mac sources, with some slight
+ * changes because of cross-platform issues:
+ * - Mac only stuff: XpSetFileAttribute XpFileSize
+ * - Cross platform wrapper: XpGetenv XpExit
+ * - Dangerous: strings.h (and thus bzero, bcopy) is not ANSI and thus doesn't
+ *   exist on Mac.  Use string.h and memset, memcpy.
+ *
  * Revision 3.7  2000/04/11  14:31:41  schwarz
  * Read/write NVT as frame with 1 text matrix, conforming to SDIF spec.
  * Read rest of general header chunk (might contain additional data).
@@ -172,12 +180,6 @@ SdifFReadNameValueLCurrNVT(SdifFileT *SdifF)
 
 
 
-
-
-
-
-
-
 size_t
 SdifFReadOneMatrixType(SdifFileT *SdifF)
 {
@@ -186,20 +188,14 @@ SdifFReadOneMatrixType(SdifFileT *SdifF)
 
 
 
-
-
-
-
 size_t SdifFReadOneFrameType(SdifFileT *SdifF)
 {
   return SdifFGetOneFrameType(SdifF, 's');
 }
 
-
-
-
-
-
+/*************************************************************************************/
+/* THE FOLLOWING FUNCTION DOESN'T TAKE CARE ANYMORE ABOUT THE OLD SDIF SPECIFICATION */
+/*************************************************************************************/
 
 /* SdifFReadAllType ne lit pas "1TYP" puisque l'on sera aiguillie sur cette fonction 
  * apres lecture de "1TYP"
@@ -213,13 +209,26 @@ SdifFReadAllType(SdifFileT *SdifF)
   SdiffGetPos(SdifF->Stream, &(SdifF->StartChunkPos));
   SdifF->StartChunkPos -= sizeof(SdifSignature);
   
-#if (_SdifFormatVersion >= 3)	/* read frame header (with no matrices) */
   SizeR += SdifFReadFrameHeader (SdifF);
   SdifF->ChunkSize = SdifF->CurrFramH->Size;
-#else
-  SizeR += SdifFReadChunkSize(SdifF);
-#endif
-  SizeR += SdifFGetAllType(SdifF, 's');
+
+  if (SdifF->CurrFramH && SdifFCurrNbMatrix(SdifF))
+    /* For the new version of SDIF specification (June 1999) */
+    {
+      SdifStringT *SdifString;
+
+      SdifString = SdifStringNew();
+      
+      SizeR += SdifFReadTextMatrix(SdifF, SdifString);
+      SizeR += SdifFGetAllTypefromSdifString(SdifF, SdifString);
+
+      SdifStringFree(SdifString);
+    }
+  else
+    {
+      SizeR += SdifFGetAllType(SdifF, 's');
+    }
+  
   SizeR += SdifFReadPadding(SdifF, SdifFPaddingCalculate(SdifF->Stream, SizeR + sizeof(SdifSignature)));
   
   if (    (SizeR != SdifF->ChunkSize + sizeof(SdifInt4))
@@ -237,31 +246,42 @@ SdifFReadAllType(SdifFileT *SdifF)
 
 
 
+
+/*************************************************************************************/
+/* THE FOLLOWING FUNCTION DOESN'T TAKE CARE ANYMORE ABOUT THE OLD SDIF SPECIFICATION */
+/*************************************************************************************/
   
-
-
-
-
-
 /* SdifFReadAllStreamID ne lit pas "SSIC" puisque l'on sera aiguillie sur cette fonction 
  * apres lecture de "SSIC"
  */
 size_t
 SdifFReadAllStreamID(SdifFileT *SdifF)
 {
-  size_t
-    SizeR = 0;
+  size_t SizeR = 0;
   
   SdiffGetPos(SdifF->Stream, &(SdifF->StartChunkPos));
   SdifF->StartChunkPos -= sizeof(SdifSignature);
   
-#if (_SdifFormatVersion >= 3)	/* read frame header (with no matrices) */
   SizeR += SdifFReadFrameHeader (SdifF);
   SdifF->ChunkSize = SdifF->CurrFramH->Size;
-#else
-  SizeR += SdifFReadChunkSize(SdifF);
-#endif
-  SizeR += SdifFGetAllStreamID(SdifF, 's');
+
+  if (SdifF->CurrFramH && SdifFCurrNbMatrix(SdifF))
+    {
+      /* For the new version of SDIF specification (June 1999) */
+      SdifStringT *SdifString;
+
+      SdifString = SdifStringNew();
+
+      SizeR += SdifFReadTextMatrix(SdifF, SdifString);
+      SizeR += SdifFGetAllStreamIDfromSdifString(SdifF, SdifString);
+
+      SdifStringFree(SdifString);
+    }
+  else
+    {
+      SizeR += SdifFGetAllStreamID(SdifF, 's');
+    }
+  
   SizeR += SdifFReadPadding(SdifF, SdifFPaddingCalculate(SdifF->Stream, SizeR + sizeof(SdifSignature)));
   
   if (    (SizeR != SdifF->ChunkSize + sizeof(SdifInt4))
@@ -276,10 +296,6 @@ SdifFReadAllStreamID(SdifFileT *SdifF)
 
   return SizeR;
 }
-
-
-
-
 
 
 
@@ -318,12 +334,6 @@ SdifFReadAllASCIIChunks(SdifFileT *SdifF)
 
 
 
-
-
-
-
-
-
 size_t
 SdifFReadMatrixHeader(SdifFileT *SdifF)
 {
@@ -358,9 +368,6 @@ SdifFReadMatrixHeader(SdifFileT *SdifF)
 
 
 
-
-
-
 size_t
 SdifFReadOneRow(SdifFileT *SdifF)
 {
@@ -386,8 +393,6 @@ SdifFReadOneRow(SdifFileT *SdifF)
 				    SdifF->Stream));
     }
 }
-
-
 
 
 
@@ -424,8 +429,6 @@ SdifFReadFrameHeader(SdifFileT *SdifF)
 
 
 
-
-
 size_t
 SdifFReadPadding (SdifFileT *SdifF, size_t Padding)
 {
@@ -454,6 +457,7 @@ SdifFReadUndeterminatedPadding(SdifFileT *SdifF)
 }
 
 
+
 /* read and throw away bytes data. */
 size_t
 SdifFReadAndIgnore (SdifFileT *SdifF, size_t bytes)
@@ -471,7 +475,6 @@ SdifFReadAndIgnore (SdifFileT *SdifF, size_t bytes)
 
 
 
-
 /* SdifSkipMatrix read entire matrix header. */
 size_t
 SdifSkipMatrix(SdifFileT *SdifF)
@@ -483,9 +486,6 @@ SdifSkipMatrix(SdifFileT *SdifF)
   SizeR += SdifSkipMatrixData(SdifF);
   return SizeR;
 }
-
-
-
 
 
 
@@ -527,9 +527,6 @@ SdifSkipMatrixData(SdifFileT *SdifF)
       return SizeR;
   }
 }
-
-
-
 
 
 
@@ -583,6 +580,58 @@ SdifSkipFrameData(SdifFileT *SdifF)
 	}
       return SizeR;
     }
+}
+
+
+
+/*DOC:
+  Function to read text matrix.
+  Read header.
+  Call SdifFReadTextMatrixData.
+  Read padding.
+*/
+size_t SdifFReadTextMatrix(SdifFileT *SdifF, SdifStringT *SdifString)
+{
+  size_t SizeR = 0;
+  FILE *file;
+
+  file = SdifF->Stream;
+  
+  SizeR += SdifFReadMatrixHeader (SdifF);
+  SizeR += SdifFReadTextMatrixData(SdifF, SdifString);
+
+  /* Number of bytes written */
+  SizeR += SdifFReadPadding(SdifF, SdifFPaddingCalculate (file,
+					 SizeR + sizeof(SdifSignature)));
+  return SizeR;
+}
+
+
+
+/*DOC:
+  Function to read text matrix data.
+  Make reallocation.
+  Read data.
+*/
+size_t SdifFReadTextMatrixData(SdifFileT *SdifF, SdifStringT *SdifString)
+{
+  int nrow;
+  char *str;
+  size_t SizeR = 0;
+  int success = 1;
+  FILE *file;
+
+  file = SdifF->Stream;
+  
+  nrow = SdifFCurrNbRow(SdifF);
+  str = SdifCalloc(char, nrow * SdifFCurrNbCol(SdifF));
+  SizeR += SdiffReadChar(str, nrow, file);
+
+  /* Append string in SdifString */
+  success = SdifStringAppend(SdifString, str);
+  
+  SdifFree(str);
+  return SizeR;
 }
 
 

@@ -1,4 +1,4 @@
-/* $Id: sdif.h,v 3.5 2000-07-06 19:01:50 tisseran Exp $
+/* $Id: sdif.h,v 3.6 2000-07-18 15:08:42 tisseran Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -18,6 +18,12 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.5  2000/07/06  19:01:50  tisseran
+ * Add function for frame and matrix type declaration
+ * Remove string size limitation for NameValueTable
+ * TODO: 1TYP and 1IDS frame must contain an 1NVT (text) matrix
+ *       Actually, data are written with fprintf.
+ *
  * Revision 3.4  2000/05/04  15:03:43  schwarz
  * Added modules SdifCheck and SdifSignatureTab.
  *
@@ -101,6 +107,8 @@ extern "C" {
 #include "SdifSelect.h"
 #include "SdifCheck.h"
 
+#include "SdifString.h"
+  
 #ifdef __cplusplus
 }
 #endif

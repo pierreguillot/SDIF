@@ -1,4 +1,4 @@
-/* $Id: SdifFRead.h,v 3.5 2000-05-15 16:23:07 schwarz Exp $
+/* $Id: SdifFRead.h,v 3.6 2000-07-18 15:08:33 tisseran Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -16,6 +16,9 @@ LIBRARY
 
 LOG
  * $Log: not supported by cvs2svn $
+ * Revision 3.5  2000/05/15  16:23:07  schwarz
+ * Avoided avoidable warnings.
+ *
  * Revision 3.4  2000/03/01  11:19:58  schwarz
  * Assert Padding, added SdifFReadAndIgnore.
  * SdiffSetPos checks for pipe and then uses SdifFReadAndIgnore to seek forward.
@@ -67,6 +70,7 @@ LOG
 #include "SdifFrame.h"
 #include "SdifFGet.h"
 
+#include "SdifString.h" /* Need for SdifStringT definition */
 
 /*DOC: 
   Lit l'entête du fichier, c'est à dire 'SDIF' puis 4 bytes.  affiche
@@ -153,6 +157,22 @@ size_t SdifFReadAndIgnore (SdifFileT *SdifF, size_t bytes);
 
 size_t SdifFReadOneMatrixType    (SdifFileT *SdifF);
 size_t SdifFReadOneFrameType     (SdifFileT *SdifF);
+
+/*DOC:
+  Function to read text matrix.
+  Read header.
+  Read data.
+  Read padding.
+*/
+size_t SdifFReadTextMatrix(SdifFileT *SdifF, SdifStringT *SdifString);
+
+/*DOC:
+  Function to read text matrix data.
+  Make reallocation.
+  Read data.
+  Read padding.
+*/
+size_t SdifFReadTextMatrixData(SdifFileT *SdifF, SdifStringT *SdifString);
 
 /*
  * obsolete

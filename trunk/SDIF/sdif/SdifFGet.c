@@ -1,4 +1,4 @@
-/* $Id: SdifFGet.c,v 3.4 2000-05-12 14:41:45 schwarz Exp $
+/* $Id: SdifFGet.c,v 3.5 2000-07-18 15:08:28 tisseran Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -15,6 +15,14 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.4  2000/05/12  14:41:45  schwarz
+ * On behalf of Adrien, synchronisation with Mac sources, with some slight
+ * changes because of cross-platform issues:
+ * - Mac only stuff: XpSetFileAttribute XpFileSize
+ * - Cross platform wrapper: XpGetenv XpExit
+ * - Dangerous: strings.h (and thus bzero, bcopy) is not ANSI and thus doesn't
+ *   exist on Mac.  Use string.h and memset, memcpy.
+ *
  * Revision 3.3  2000/04/11  14:31:19  schwarz
  * Read/write NVT as frame with 1 text matrix, conforming to SDIF spec.
  *
@@ -48,6 +56,7 @@
 
 #include "SdifTimePosition.h"
 
+#include "SdifString.h"
 
 #include <ctype.h>
 #include <stdlib.h>
@@ -129,46 +138,46 @@ SdifFGetNameValueLCurrNVT(SdifFileT *SdifF, int Verbose)
   /* nb of matrices > 0: proper SDIF, read text matrices
      else: intermediate format, read pure data in frame */
   if (SdifF->CurrFramH  &&  SdifFCurrNbMatrix (SdifF) > 0) 
-  {
+    {
       int   i, nrow;
       char *str;
-
+      
       for (i = 0; i < SdifFCurrNbMatrix (SdifF); i++)
-      {
+	{
 	  SizeR += SdifFReadMatrixHeader (SdifF);
 	  nrow   = SdifFCurrNbRow (SdifF);
 	  if (SdifFCurrNbCol (SdifF) != 1)
 	      _SdifFError (SdifF, eSyntax, "Name-Value Table text matrix must "
-					   "have exactly one column!");
+			   "have exactly one column!");
 	  str    = SdifCalloc (char, nrow * SdifFCurrNbCol (SdifF));
 	  SizeR += SdiffReadChar (str, nrow, file);
 	  SizeR += SdifFReadPadding(SdifF, SdifFPaddingCalculate (file, 
-					       SizeR + sizeof(SdifSignature)));
+								  SizeR + sizeof(SdifSignature)));
 	  SdifFNameValueLCurrNVTfromString (SdifF, str);
 	  SdifFree (str);
-      }
-  }
+	}
+    }
   else
-  {
+    {
       int CharEnd;
 
       if (Verbose != 't')
-	  _SdifRemark ("Warning, this file uses an intermediate format for "
-		       "the Name-Value Table.  Portablity with programs not "
-		       "using the IRCAM SDIF library is not guaranteed.  "
-		       "Tip: Use 'sdifextract file newfile' to convert to "
-		       "compliant format.");
+	_SdifRemark ("Warning, this file uses an intermediate format for "
+		     "the Name-Value Table.  Portablity with programs not "
+		     "using the IRCAM SDIF library is not guaranteed.  "
+		     "Tip: Use 'sdifextract file newfile' to convert to "
+		     "compliant format.");
       CharEnd = SdiffGetStringUntil (file, gSdifString, _SdifStringLen, 
 				     &SizeR, _SdifReservedChars);
       if (SdifTestCharEnd (SdifF, CharEnd, '{', gSdifString, 
 			   (short) (SdifStrLen (gSdifString) != 0),
 			   "Begin of NameValue Table declarations") != eFalse)
-      {
+	{
 	  while (SdifFGetOneNameValue(SdifF, Verbose, &SizeR) != (int) '}')
-	      /*loop*/;
-      }
-  }
-
+	    /*loop*/;
+	}
+    }
+  
   return SizeR;
 }
 
@@ -274,7 +283,80 @@ SdifFGetOneMatrixType(SdifFileT *SdifF, int Verbose)
 
 
 
+/*DOC:
+  Remark:
+         This function implements the new SDIF Specification (June 1999):
+	 Name Value Table, Matrix and Frame Type declaration, Stream ID declaration are
+	 defined in text matrix:
+	 1NVT 1NVT
+	 1TYP 1TYP
+	 1IDS 1IDS
+  Return the current matrix type from a SdifStringT
+*/
+size_t
+SdifFGetOneMatrixTypefromSdifString(SdifFileT *SdifF, SdifStringT *SdifString)
+{
+  SdifMatrixTypeT  *MatrixType;
+  int              CharEnd;
+  SdifSignature    Signature = 0;
+  FILE *file;
+  size_t SizeR = 0;
+  
+  
+  CharEnd = SdiffGetSignaturefromSdifString(SdifString, &Signature);
 
+  if (SdifTestSignature(SdifF, CharEnd, Signature, "Matrix")== eFalse)
+    return SizeR;
+  
+  
+  /* Matrix type Creation, Put or Recuperation from SdifF->MatrixTypesTable */
+  MatrixType = SdifGetMatrixType(SdifF->MatrixTypesTable, Signature);
+  if (! MatrixType)
+    {
+      MatrixType = SdifCreateMatrixType(Signature,
+					SdifGetMatrixType(gSdifPredefinedTypes->MatrixTypesTable, Signature));
+      SdifPutMatrixType(SdifF->MatrixTypesTable, MatrixType);
+    }
+  else
+    {
+      if (SdifTestMatrixTypeModifMode(SdifF, MatrixType)== eFalse)
+	{
+	  /* Skip matrix type def, search '}' */
+	  SdifTestCharEnd(SdifF,
+			  SdifSkipASCIIUntil(file, &SizeR, "}:[];"),
+			  '}', "", eFalse,
+			  "end of matrix type skiped missing");
+	  return SizeR;
+	}
+    }
+
+
+  /* ColumnDefs */
+  CharEnd = SdiffGetStringUntilfromSdifString(SdifString, gSdifString, _SdifStringLen,
+					      _SdifReservedChars);
+  if (SdifTestCharEnd(SdifF, CharEnd, '{', gSdifString,
+              (short)(SdifStrLen(gSdifString)!=0), "Matrix Type") == eFalse)
+    return SizeR;
+  else
+    {
+      while ((CharEnd = SdiffGetStringUntilfromSdifString(SdifString, gSdifString,
+					    _SdifStringLen, _SdifReservedChars))
+	     == (int) ','  )
+	{
+	  SdifMatrixTypeInsertTailColumnDef(MatrixType, gSdifString);
+	}
+
+      if (SdifTestCharEnd(SdifF, CharEnd, '}', gSdifString, eFalse, "end of matrix type missing") == eFalse)
+	return SizeR;
+      else
+	if (SdifStrLen(gSdifString) != 0)
+	  SdifMatrixTypeInsertTailColumnDef(MatrixType, gSdifString);
+    }
+
+  MatrixType->ModifMode = eNoModif;
+
+  return SizeR;
+}
 
 
 
@@ -327,12 +409,56 @@ SdifFGetOneComponent(SdifFileT *SdifF, int Verbose,
 }
 
 
+/*DOC:
+  Remark:
+         This function implements the new SDIF Specification (June 1999):
+	 Name Value Table, Matrix and Frame Type declaration, Stream ID declaration are
+	 defined in text matrix:
+	 1NVT 1NVT
+	 1TYP 1TYP
+	 1IDS 1IDS
+  Return the current component from a SdifStringT
+*/
+int
+SdifFGetOneComponentfromSdifString(SdifFileT *SdifF, SdifStringT *SdifString,
+				   SdifSignature *MatrixSignature, char *ComponentName)
+{
+  int   CharEnd;
+  ComponentName[0]= '\0';
+  *MatrixSignature = eEmptySignature;
 
-
-
-
-
-
+  /* Matrix Signature */
+  CharEnd = SdiffGetSignaturefromSdifString(SdifString, MatrixSignature); 
+  
+  if (CharEnd == (unsigned) '}')
+    {
+      /* no more Component */
+      if  (*MatrixSignature == 0) 
+	return  CharEnd;
+      else
+	{
+	  sprintf(gSdifErrorMess,
+		  "Incomplete Component : '%s%c'",
+		  SdifSignatureToString(*MatrixSignature),
+		  CharEnd);
+	  _SdifFError(SdifF, eSyntax, gSdifErrorMess);
+	  return CharEnd;
+	}
+    }
+  else
+    if (SdifTestSignature(SdifF, CharEnd, *MatrixSignature, "matrix signature of Component")
+	== eFalse)
+      return CharEnd;
+  
+  /* Component Name */
+  CharEnd = SdiffGetStringUntilfromSdifString(SdifString, gSdifString,
+				_SdifStringLen, _SdifReservedChars);
+  if (SdifTestCharEnd(SdifF, CharEnd, ';', gSdifString, eFalse,
+		      "Component must be finished by ';'") == eFalse)
+    return  CharEnd;
+  
+  return CharEnd;
+}
 
 
 size_t
@@ -413,7 +539,87 @@ SdifFGetOneFrameType(SdifFileT *SdifF, int Verbose)
 
 
 
+/*DOC:
+  Remark:
+         This function implements the new SDIF Specification (June 1999):
+	 Name Value Table, Matrix and Frame Type declaration, Stream ID declaration are
+	 defined in text matrix:
+	 1NVT 1NVT
+	 1TYP 1TYP
+	 1IDS 1IDS
+  Return the current frame type from a SdifStringT
+*/
+size_t
+SdifFGetOneFrameTypefromSdifString(SdifFileT *SdifF, SdifStringT *SdifString)
+{
+  size_t          SizeR = 0;
+  int             CharEnd;
+  SdifFrameTypeT  *FramT;
+  SdifSignature   FramSignature = 0;
+  SdifSignature   MtrxSignature = 0;  
+  FILE            *file;
 
+
+  /* FramSignature */
+  CharEnd = SdiffGetSignaturefromSdifString(SdifString, &FramSignature);
+  if (SdifTestSignature(SdifF, CharEnd, FramSignature, "Frame")== eFalse)
+    {
+      return SizeR;
+    }
+ 
+
+  /* Frame type Creation, Put or Recuperation from SdifF->FrameTypesTable */
+  FramT =  SdifGetFrameType(SdifF->FrameTypesTable, FramSignature);
+  if (! FramT)
+    {
+      FramT = SdifCreateFrameType(FramSignature,
+				  SdifGetFrameType(gSdifPredefinedTypes->FrameTypesTable, FramSignature));
+      SdifPutFrameType(SdifF->FrameTypesTable, FramT);
+    }
+  else
+    if (SdifTestFrameTypeModifMode(SdifF, FramT)== eFalse)
+      {
+	/* Skip frame type def, search '}' */
+	SdifTestCharEnd(SdifF,
+			SdifSkipASCIIUntil(file, &SizeR, "}:[]"),
+			'}', "", eFalse,
+			"end of frame type skiped missing");
+	return SizeR;
+      }
+
+
+
+  /* Components */
+  CharEnd = SdiffGetStringUntilfromSdifString(SdifString, gSdifString,
+				_SdifStringLen, _SdifReservedChars);
+  if (   SdifTestCharEnd(SdifF, CharEnd, '{',
+			 gSdifString, (short)(SdifStrLen(gSdifString)!=0) ,
+			 "Frame")
+	 ==eFalse   )
+    {
+      return SizeR;
+    }
+  else
+    {
+      while ( SdifFGetOneComponentfromSdifString(SdifF,
+						 SdifString,
+						 &MtrxSignature,
+						 gSdifString)
+              != (unsigned) '}'  )
+        {
+          if (SdifTestMatrixType(SdifF, MtrxSignature))
+	        {
+	          SdifFrameTypePutComponent(FramT, MtrxSignature, gSdifString);
+	          MtrxSignature = 0;
+	        }
+	    }
+    }
+
+
+  FramT->ModifMode = eNoModif;
+    
+  return SizeR;
+}
 
 
 
@@ -427,15 +633,17 @@ SdifFGetAllType(SdifFileT *SdifF, int Verbose)
   size_t         SizeR = 0;
   SdifSignature  TypeOfType = 0;
   FILE          *file;
+
   
 
   file = SdifFGetFILE_SwitchVerbose(SdifF, Verbose);
-  
+
   if (Verbose != 't')
     _SdifRemark ("Warning, this file uses an intermediate format for "
 		 "the user defined types.  Portablity with programs not "
 		 "using the IRCAM SDIF library is not guaranteed.");
-
+  
+  
   if (SdifF->TypeDefPass != eNotPass)
     _SdifFError(SdifF, eOnlyOneChunkOf, SdifSignatureToString(e1TYP));
   /* Read anyway */
@@ -481,13 +689,49 @@ SdifFGetAllType(SdifFileT *SdifF, int Verbose)
     }
   
   SdifF->TypeDefPass = eReadPass;
-
+  
   return SizeR;
 }
+  
+/*DOC:
+  Remark:
+         This function implements the new SDIF Specification (June 1999):
+	 Name Value Table, Matrix and Frame Type declaration, Stream ID declaration are
+	 defined in text matrix:
+	 1NVT 1NVT
+	 1TYP 1TYP
+	 1IDS 1IDS
+  Get  Matrix and Frame type from SdifString */
+size_t 
+SdifFGetAllTypefromSdifString(SdifFileT *SdifF, SdifStringT *SdifString)
+{
+ size_t SizeR = 0;
+ int CharEnd;
+ SdifSignature TypeOfType = 0;
 
-
-
-
+ while (( (CharEnd = SdiffGetSignaturefromSdifString(SdifString, &TypeOfType))
+	  != (unsigned) '}' ) && (!SdifStringIsEOS(SdifString)))
+   {
+     switch (TypeOfType)
+       {
+       case e1MTD :
+	 SizeR += SdifFGetOneMatrixTypefromSdifString(SdifF, SdifString);
+	 break;
+       case e1FTD :
+	 SizeR += SdifFGetOneFrameTypefromSdifString(SdifF, SdifString);
+	 break;
+       default :
+	 sprintf(gSdifErrorMess, "Wait '%s' or '%s' : '%s'",
+		 SdifSignatureToString(e1MTD),
+		 SdifSignatureToString(e1FTD),
+		 SdifSignatureToString(TypeOfType));
+	 _SdifFError(SdifF, eSyntax, gSdifErrorMess);
+	 break;
+       }
+     TypeOfType = 0;
+   }
+ return SizeR;
+}
 
 
 
@@ -573,9 +817,105 @@ SdifFGetOneStreamID(SdifFileT *SdifF, int Verbose, size_t *SizeR)
 }
 
 
+/*DOC:
+  Remark:
+         This function implements the new SDIF Specification (June 1999):
+	 Name Value Table, Matrix and Frame Type declaration, Stream ID declaration are
+	 defined in text matrix:
+	 1NVT 1NVT
+	 1TYP 1TYP
+	 1IDS 1IDS
+  Get the current Stream ID from a SdifStringT
+*/
+int
+SdifFGetOneStreamIDfromSdifString(SdifFileT *SdifF, SdifStringT *SdifString)
+{
+  SdifUInt4        NumID;
+  char             CharEnd;
+  int              ReturnChar;
+  FILE            *file;
+  static char      CharsEnd[] =  " \t\n\f\r\v{},;:";
+  size_t SizeR = 0;
+
+
+  ReturnChar = SdiffGetStringUntilfromSdifString(SdifString, gSdifString,
+					      _SdifStringLen, CharsEnd);
 
 
 
+
+  /* test if it's the last or not */
+  if ((ReturnChar == eEof))
+    {
+      /* no more IDStream */
+      return  CharEnd;
+    }
+  
+  CharEnd = (char) ReturnChar;
+  if (! isspace(CharEnd))
+    {
+      sprintf(gSdifErrorMess,
+	      "Wait a space_char after NumId '%s', read char: (%d) '%c'",
+	      gSdifString, CharEnd, CharEnd);
+      _SdifFError(SdifF, eSyntax, gSdifErrorMess);
+      if (CharEnd != (unsigned)';')
+	SdifTestCharEnd(SdifF,
+			SdifSkipASCIIUntil(file, &SizeR, ";"),
+			';',
+			"", eFalse, "end of Stream ID skiped missing");
+      return  CharEnd;
+    }
+
+  /* ID */
+  NumID = atoi(gSdifString);
+  if (SdifStreamIDTableGetSID(SdifF->StreamIDsTable, NumID))
+    {
+      sprintf(gSdifErrorMess, "StreamID : %u ", NumID);
+      _SdifFError(SdifF, eReDefined, gSdifErrorMess);
+      if (CharEnd != (unsigned)';')
+	SdifTestCharEnd(SdifF,
+			SdifSkipASCIIUntil(file, &SizeR, ";"),
+			';',
+			"", eFalse, "end of Stream ID skiped missing");
+      return  CharEnd;
+    }
+  
+
+
+  /* source */
+  CharEnd = (char) SdiffGetStringUntilfromSdifString(SdifString, gSdifString,
+						     _SdifStringLen, CharsEnd);
+  if (SdifTestCharEnd(SdifF, CharEnd, ':', gSdifString, eFalse, "Stream ID Source") == eFalse)
+    {
+      if (CharEnd != (unsigned) ';')
+	SdifTestCharEnd(SdifF,
+			SdifSkipASCIIUntil(file, &SizeR, ";"),
+			';',
+			"", eFalse, "end of Stream ID skiped missing");
+      return  CharEnd;
+    }
+  
+
+  /* TreeWay : simple string pour le moment */
+  CharEnd = (char) SdiffGetStringWeakUntilfromSdifString(SdifString, gSdifString2,
+							 _SdifStringLen, ";");
+  /*CharEnd = SdiffGetStringUntil    (file, gSdifString2, _SdifStringLen, SizeR, _SdifReservedChars);*/
+  if (SdifTestCharEnd(SdifF, CharEnd, ';', gSdifString2, eFalse, "end of Stream ID TreeWay") == eFalse)
+    {
+      return  CharEnd;
+    }
+  
+
+  SdifStreamIDTablePutSID(SdifF->StreamIDsTable, NumID, gSdifString, gSdifString2);
+  return  CharEnd;
+}
+
+
+/*DOC:
+  Remark:
+         This function implements the old SDIF Specification (before June 1999)
+  Get all Stream ID from a file
+*/
 size_t
 SdifFGetAllStreamID(SdifFileT *SdifF, int Verbose)
 {
@@ -613,7 +953,30 @@ SdifFGetAllStreamID(SdifFileT *SdifF, int Verbose)
 }
 
 
+/*DOC:
+  Remark:
+         This function implements the new SDIF Specification (June 1999):
+	 Name Value Table, Matrix and Frame Type declaration, Stream ID declaration are
+	 defined in text matrix:
+	 1NVT 1NVT
+	 1TYP 1TYP
+	 1IDS 1IDS
+  Get all Stream ID from a SdifStringT
+*/
+size_t
+SdifFGetAllStreamIDfromSdifString(SdifFileT *SdifF, SdifStringT *SdifString)
+{
+  size_t SizeR = 0;
 
+  while (!SdifStringIsEOS(SdifString))
+    SdifFGetOneStreamIDfromSdifString(SdifF, SdifString);
+	 
+
+  
+  SdifF->StreamIDPass = eReadPass; 
+  
+  return SizeR;
+}
 
 
 

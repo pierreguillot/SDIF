@@ -1,4 +1,4 @@
-/* $Id: SdifRWLowLevel.h,v 3.7 2000-05-15 16:23:11 schwarz Exp $
+/* $Id: SdifRWLowLevel.h,v 3.8 2000-07-18 15:08:39 tisseran Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -17,6 +17,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.7  2000/05/15  16:23:11  schwarz
+ * Avoided avoidable warnings.
+ *
  * Revision 3.6  1999/10/15  12:23:48  schwarz
  * Added SdifStringToNV.
  *
@@ -69,6 +72,7 @@
 
 #include "SdifGlobals.h"
 #include <stdio.h>
+#include "SdifString.h"
 
 #define _SdifBSLittleE 4096
 
@@ -116,6 +120,8 @@ size_t SdiffWriteString (char* ptr, FILE *stream);
  */
 size_t SdiffReadSpace   (FILE* fr);
 
+size_t SdiffReadSpacefromSdifString(SdifStringT *SdifString);
+
 /*DOC:
   Return c if it is a reserved char, -1 otherwise.
 */
@@ -141,9 +147,31 @@ int SdiffGetString      (FILE* fr, char* s, size_t ncMax, size_t *NbCharRead);
 
 /* retourne le caractere d'erreur */
 int SdiffGetSignature   (FILE* fr, SdifSignature *Signature, size_t *NbCharRead);
+/*DOC:
+  Function return the signature in a SdifStringT
+*/
+int SdiffGetSignaturefromSdifString(SdifStringT *SdifString, SdifSignature *Signature);
+
 int SdiffGetWordUntil   (FILE* fr, char* s, size_t ncMax, size_t *NbCharRead, char *CharsEnd);
+/*DOC:
+  Function return the word until in a SdifStringT
+*/
+int SdiffGetWordUntilfromSdifString(SdifStringT *SdifString, char* s, size_t ncMax,char *CharsEnd);
+
 int SdiffGetStringUntil (FILE* fr, char* s, size_t ncMax, size_t *NbCharRead, char *CharsEnd);
+/*DOC:
+  Function return the string until in a SdifStringT
+ */
+int SdiffGetStringUntilfromSdifString(SdifStringT *SdifString, char *s, size_t ncMax,
+				      char *CharsEnd);
+
 int SdiffGetStringWeakUntil(FILE* fr, char* s, size_t ncMax, size_t *NbCharRead, char *CharsEnd);
+/*DOC:
+  Return the weak string until in a SdifStringT
+*/
+int SdiffGetStringWeakUntilfromSdifString(SdifStringT *SdifString, char* s,
+					  size_t ncMax, char *CharsEnd);
+
 int SdifSkipASCIIUntil  (FILE* fr, size_t *NbCharRead, char *CharsEnd);
 
 

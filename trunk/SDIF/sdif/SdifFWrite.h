@@ -1,4 +1,4 @@
-/* $Id: SdifFWrite.h,v 3.6 2000-05-10 15:32:13 schwarz Exp $
+/* $Id: SdifFWrite.h,v 3.7 2000-07-18 15:08:35 tisseran Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -105,6 +105,10 @@ void main(void)
 
 LOG
  * $Log: not supported by cvs2svn $
+ * Revision 3.6  2000/05/10  15:32:13  schwarz
+ * Added functions to calculate the Size argument for SdifFSetCurrFrameHeader:
+ * SdifSizeOfFrameHeader and SdifSizeOfMatrix
+ *
  * Revision 3.5  2000/04/11  14:31:57  schwarz
  * SdifFWriteTextMatrix
  *
@@ -163,7 +167,8 @@ LOG
 #include "SdifMatrix.h"
 #include "SdifFrame.h"
 
-
+#include "SdifString.h"
+ 
 
 /*
 //FUNCTION GROUP:	Writing Header and Init-Frames
@@ -185,15 +190,22 @@ size_t  SdifFWriteOneFrameType    (SdifFileT *SdifF, SdifFrameTypeT  *FrameType)
 size_t  SdifFWriteOneStreamID     (SdifFileT *SdifF, SdifStreamIDT   *StreamID);
 
 
-/*
- * obsolete
- */
-size_t  SdifFWriteNameValueCurrHT (SdifFileT *SdifF);
-size_t  SdifFWriteAllNameValueHT  (SdifFileT *SdifF);
 
 size_t  SdifFWriteAllMatrixType   (SdifFileT* SdifF);
 size_t  SdifFWriteAllFrameType    (SdifFileT *SdifF);
 size_t  SdifFWriteAllType         (SdifFileT *SdifF);
+
+/*DOC:
+  Remark:
+         This function implements the new SDIF Specification (June 1999):
+	 Name Value Table, Matrix and Frame Type declaration, Stream ID declaration are
+	 defined in text matrix:
+	 1NVT 1NVT
+	 1TYP 1TYP
+	 1IDS 1IDS
+  Removed test for _SdifFormatVersion
+  Now we write type in 1IDS frame which contains a 1IDS matrix
+*/
 size_t  SdifFWriteAllStreamID     (SdifFileT *SdifF);
 
 /*DOC: 
@@ -332,4 +344,35 @@ size_t SdifSizeOfMatrix (SdifDataTypeET DataType,
 			 SdifUInt4      NbRow,
 			 SdifUInt4      NbCol);
 
+/*DOC:
+  Write a text matrix using a string.
+  Return number of bytes written.
+*/
+size_t SdifFWriteTextFrame(SdifFileT     *SdifF,
+			   SdifSignature FrameSignature,
+			   SdifUInt4     NumID,
+			   SdifFloat8    Time,
+			   SdifSignature MatrixSignature,
+			   char          *str,
+			   size_t        length);
+
+/*DOC:
+  Write a text matrix using a SdifString.
+  Return number of bytes written.
+*/
+size_t SdifFWriteTextFrameSdifString(SdifFileT     *SdifF,
+				     SdifSignature FrameSignature,
+				     SdifUInt4     NumID,
+				     SdifFloat8    Time,
+				     SdifSignature MatrixSignature,
+				     SdifStringT   *SdifString);
+
+
+/*
+ * obsolete
+ */
+size_t  SdifFWriteNameValueCurrHT (SdifFileT *SdifF);
+size_t  SdifFWriteAllNameValueHT  (SdifFileT *SdifF);
+
 #endif /* _SdifFWrite_ */
+
