@@ -32,9 +32,12 @@
  * 
  * 
  * 
- * $Id: sdifmatrix.cpp,v 1.7 2003-05-19 14:00:20 roebel Exp $ 
+ * $Id: sdifmatrix.cpp,v 1.8 2003-05-22 17:58:12 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.7  2003/05/19 14:00:20  roebel
+ * Include new easdif_config.h.
+ *
  * Revision 1.6  2003/05/18 20:46:46  roebel
  * Added method to read column names of matrix. For this the current sdiffile is stored in the matrix.
  * Improved documentation.
@@ -294,12 +297,12 @@ std::string SDIFMatrix::GetStringSignature() const
 /* Get name of column of current matrix */
 std::string SDIFMatrix::GetColName(int col) const {
 
-  if(mFile) {
+  if(mFile && mFile->MatrixTypesTable) {
    SdifMatrixTypeT *tt= SdifGetMatrixType(mFile->MatrixTypesTable, 
 					 mSig);
    if(tt) {
      SdifColumnDefT*tt2 =  SdifMatrixTypeGetNthColumnDef (tt, col);
-     if(tt2) {
+     if(tt2 && tt2->Name) {
        return std::string(tt2->Name);
      }
    }
