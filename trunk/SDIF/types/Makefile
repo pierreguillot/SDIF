@@ -1,6 +1,9 @@
-# $Id: Makefile,v 1.6 2000-08-22 16:19:54 schwarz Exp $
+# $Id: Makefile,v 1.7 2001-04-18 16:24:52 schwarz Exp $
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.6  2000/08/22 16:19:54  schwarz
+# Generate HTML here and in doc.  clean.
+#
 # Revision 1.5  2000/08/17  14:34:45  schwarz
 # HTML table of contents is generated!  Use file index.html to get
 # the generated navigation frame toc.html and sdiftypes.html.
@@ -28,8 +31,11 @@ PERL		= perl $(PERLFLAGS)
 HTMLDIR		= ../doc/standard
 htmldoc		= $(HTMLDIR)/types-doc.html
 htmltoc		= $(HTMLDIR)/types-toc.html
+sdiftypes_h	= ../sdif/sdiftypes.h
+sdiftypes_styp  = ../sdif/SdifTypes.STYP
 
-genfiles	= sdiftypes.styp sdiftypes.html toc.html $(htmldoc) $(htmltoc)
+genfiles	= $(sdiftypes_styp) $(sdiftypes_h) sdiftypes.html toc.html \
+		  $(htmldoc) $(htmltoc)
 
 .DELETE_ON_ERROR:	# remove targets when the command failed
 
@@ -37,18 +43,18 @@ genfiles	= sdiftypes.styp sdiftypes.html toc.html $(htmldoc) $(htmltoc)
 all:		$(genfiles)
 new:		clean all
 
-sdiftypes.styp:	sdiftypes.xml xmltostyp.pl
-		$(PERL) xmltostyp.pl $< >$@
+$(sdiftypes_styp) $(sdiftypes_h):	sdiftypes.xml xmltostyp.pl
+		$(PERL) xmltostyp.pl $< $@ $(sdiftypes_h)
 
+# generate in doc
+$(htmldoc) $(htmltoc): sdiftypes.xml xmltohtml.pl $(HTMLDIR)
+		$(PERL) xmltohtml.pl $< $@ $(htmltoc)
+
+# test: generate here
 sdiftypes.html:	sdiftypes.xml xmltohtml.pl
 		$(PERL) xmltohtml.pl $< $@ toc.html
 
-# generate in doc
-$(htmldoc):	sdiftypes.xml xmltohtml.pl
-		$(PERL) xmltohtml.pl $< $@ $(htmltoc)
-
-install:	sdiftypes.styp
-#		cp -p ...
+# no install, sdiftypes.styp is generated where it belongs
 
 clean:
 		rm -f $(genfiles)
@@ -65,3 +71,6 @@ test:		all
 db:
 		DEBUG=1 $(PERL) xmltohtml.pl sdiftypes.xml >sdiftypes.html
 		netscape -remote 'reload(file:$(PWD)/sdiftypes.html)'
+
+$(HTMLDIR):
+		mkdir -p $@
