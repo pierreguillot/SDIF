@@ -140,6 +140,10 @@ class SDIFHeaderError : public SDIFFileError
 {
 };
 
+class SDIFFrameHeaderSizeError : public SDIFFileError
+{
+};
+
 class SDIFBadFormatVersion : public SDIFHeaderError
 {
 };
