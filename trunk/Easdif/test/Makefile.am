@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.5 2003-04-08 23:53:02 roebel Exp $
+# $Id: Makefile.am,v 1.6 2003-07-09 21:19:55 roebel Exp $
 #
 # ./Easdif/test/Makefile.am	Feb. 2003 Axel Roebel
 #
@@ -29,6 +29,9 @@
 # 
 
 # $Log: not supported by cvs2svn $
+# Revision 1.5  2003/04/08 23:53:02  roebel
+# Dont install test programs
+#
 # Revision 1.4  2003/04/06 16:30:53  roebel
 # Added license info
 #
@@ -50,17 +53,17 @@ EASDIR=../easdif
 easdifRmNVT_SOURCES = easdifRmNVT.cpp
 easdifRmNVT_LDADD = -lEasdif -lm
 easdifRmNVT_LDFLAGS = -L$(EASDIR)
-easdifRmNVT_DEPENDENCIES=$(EASDIR)/libEasdif.la
+easdifRmNVT_DEPENDENCIES=$(EASDIR)/$(SELLIB)
 
 tutorini_SOURCES = tutorini.cpp
 tutorini_LDADD = -lEasdif -lm
 tutorini_LDFLAGS = -L$(EASDIR)
-tutorini_DEPENDENCIES=$(EASDIR)/libEasdif.la
+tutorini_DEPENDENCIES=$(EASDIR)/$(SELLIB)
 
 tutofini_SOURCES = tutofini.cpp
 tutofini_LDADD = -lEasdif -lm
 tutofini_LDFLAGS = -L$(EASDIR)
-tutofini_DEPENDENCIES=$(EASDIR)/libEasdif.la
+tutofini_DEPENDENCIES=$(EASDIR)/$(SELLIB)
 
 
 CXXFLAGS = -g -I$(top_srcdir) -I..  -I../SDIF/include -I$(top_srcdir)/SDIF/include 
