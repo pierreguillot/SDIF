@@ -5,7 +5,7 @@ mkdir $SYS
 fi
 
 cd $SYS
-rm -f config.cache.$SYS
+rm -rf *
 ../configure --prefix=/u/formes/share --bindir=/u/formes/share/bin/$SYS --libdir=/u/formes/share/lib/$SYS  --cache-file=config.cache.$SYS 
 
 make 
