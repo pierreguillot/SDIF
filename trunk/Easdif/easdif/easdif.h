@@ -33,9 +33,12 @@
  * 
  * 
  * 
- * $Id: easdif.h,v 1.7 2004-07-27 17:40:19 roebel Exp $ 
+ * $Id: easdif.h,v 1.8 2004-09-10 14:44:32 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.7  2004/07/27 17:40:19  roebel
+ * Changed include directive to use user path and not system path for sdif.h
+ *
  * Revision 1.6  2003/11/19 11:59:20  roebel
  * Put SdifCheckFileFormat which is a variant of
  * a standard sdif function back into global namespace.
@@ -90,7 +93,7 @@
  */
   inline 
   bool SdifCheckFileFormat (const std::string &name) {
-    return SdifCheckFileFormat(name.c_str());
+    return static_cast<bool>(SdifCheckFileFormat(name.c_str()));
   }
 
 
