@@ -1,6 +1,6 @@
 dnl -*-autoconf-*-  (No, it's an autoconf file!)
 dnl -*-m4-*- (He emacs, it's a m4 file)
-dnl $Id: configure.in,v 1.5 2003-03-07 17:38:41 roebel Exp $
+dnl $Id: configure.in,v 1.6 2003-03-18 15:23:21 roebel Exp $
 dnl
 dnl configure.in		Feb 2003      Axel Roebel
 dnl
@@ -46,8 +46,10 @@ dnl they do not work there
 
 AC_CHECK_PROG(uname_available, uname, yes,no)
 if test "$uname_available" = "yes" ;then
+   AC_MSG_CHECKING(Check for MacOSX Darwin)
    if test `uname -s` = Darwin ;then
-      AC_DISABLE_SHARED
+      AC_MSG_RESULT(yes)
+      AC_DISABLE_SHARED	
    fi
 fi
 AC_PROG_LIBTOOL
@@ -86,10 +88,11 @@ CXXFLAGS="-O3";
 dnl ############################################################
 dnl find SDIF objects that have to be included into Easdif
 AC_MSG_RESULT(FIND SDIF FILES)
-AC_SUBST(SDIFOBJECTS)
-for ss in SDIF/sdif/*.c ; do
-    SDIFOBJECTS="$SDIFOBJECTS ../SDIF/sdifcpp/`basename $ss .c`.o"
-done
+AC_SUBST(SDIFCPPLIB)
+SDIFCPPLIB=../SDIF/sdifcpp/libsdif-cpp.la
+#for ss in SDIF/sdif/*.c ; do
+#    SDIFOBJECTS="$SDIFOBJECTS ../SDIF/sdifcpp/`basename $ss .c`.lo"
+#done
 
 dnl ############################################################
 dnl CREATE OUTPUT FILES
