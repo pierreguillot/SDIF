@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.13 2003-04-09 16:54:00 roebel Exp $
+# $Id: Makefile.am,v 1.14 2003-04-10 14:06:03 roebel Exp $
 #
 # ./Makefile.am		Feb. 2003     Axel Roebel
 #
@@ -30,6 +30,10 @@
 # 
 
 # $Log: not supported by cvs2svn $
+# Revision 1.13  2003/04/09 16:54:00  roebel
+# Because Easdif has its own subdir in the download directory
+# no need to map filenames.
+#
 # Revision 1.12  2003/04/09 16:33:44  roebel
 # Changed publish directory to be special sub directory for Easdif.
 #
@@ -90,8 +94,9 @@ grep:
 DOCTAR = $(PACKAGE)-$(VERSION).doc.tgz
 
 pubdoc: doc
-	tar -cvzf $(DOCTAR) doc 
-
+	cp -r doc   $(PACKAGE)-$(VERSION).doc
+	tar -cvzf $(DOCTAR) $(PACKAGE)-$(VERSION).doc
+	rm -rf $(PACKAGE)-$(VERSION).doc
 #
 # DISTRIBUTION
 #
