@@ -1,6 +1,6 @@
 dnl -*-autoconf-*-  (No, it's an autoconf file!)
 dnl -*-m4-*- (He emacs, it's a m4 file)
-dnl $Id: configure.in,v 1.38 2003-04-09 12:28:28 roebel Exp $
+dnl $Id: configure.in,v 1.39 2003-04-18 16:50:07 schwarz Exp $
 dnl
 dnl configure.in		September 2000		Patrice Tisserand
 dnl
@@ -32,6 +32,10 @@ dnl send email to:  sdif@ircam.fr
 
 
 dnl $Log: not supported by cvs2svn $
+dnl Revision 1.38  2003/04/09 12:28:28  roebel
+dnl Changed default configuration back to enable-shared but added
+dnl README.MacOSX to announce problems with shared libraries to users.
+dnl
 dnl Revision 1.37  2003/04/06 16:30:17  roebel
 dnl Disable shared libraries by default due to problmes on Mac OSX
 dnl
@@ -183,7 +187,7 @@ PACKAGE=SDIF
 
 SDIF_VERSION_MAJOR=3
 SDIF_VERSION_MINOR=7
-SDIF_VERSION_RELEASE=3
+SDIF_VERSION_RELEASE=4
 
 VERSION=$SDIF_VERSION_MAJOR.$SDIF_VERSION_MINOR.$SDIF_VERSION_RELEASE
 
@@ -353,6 +357,4 @@ sdif.pc
 sdif.spec)
 
 
-AC_MSG_RESULT(END OF CONFIGURATION)
-
-
+AC_MSG_RESULT(END OF $PACKAGE CONFIGURATION)
