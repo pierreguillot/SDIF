@@ -1,8 +1,13 @@
-/* $Id: sdif.h,v 1.15 2002-05-24 19:40:43 ftissera Exp $
+/* $Id: sdif.h,v 1.16 2002-06-18 13:56:23 ftissera Exp $
  *
  * This file contains type declaration of variables used in SDIF library.
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.15  2002/05/24 19:40:43  ftissera
+ * Change code to be compatible with C++
+ * Add two handlers for error and warning.
+ * Create two default handlers and set functions
+ *
  * Revision 1.14  2001/07/19 14:24:33  lefevre
  * Macintosh Compilation
  *
@@ -73,7 +78,7 @@
  * Revision 1.1.2.1  2000/08/21  13:07:41  tisseran
  * *** empty log message ***
  *
- * $Date: 2002-05-24 19:40:43 $
+ * $Date: 2002-06-18 13:56:23 $
  *
  */
 
@@ -89,7 +94,7 @@ extern "C" {
 #endif
 
 
-static const char _sdif_h_cvs_revision_ [] = "$Id: sdif.h,v 1.15 2002-05-24 19:40:43 ftissera Exp $";
+static const char _sdif_h_cvs_revision_ [] = "$Id: sdif.h,v 1.16 2002-06-18 13:56:23 ftissera Exp $";
 
 
 #include <stdio.h>
@@ -1969,6 +1974,17 @@ SdifMatrixTypeT* SdifGetMatrixType		   (SdifHashTableT *MatrixTypesTable,
 void             SdifPutMatrixType(SdifHashTableT *MatrixTypesTable, SdifMatrixTypeT* MatrixType);
 SdifUInt2        SdifExistUserMatrixType(SdifHashTableT *MatrixTypesTable);
 
+/*DOC:
+  Remark:
+         This function implements the new SDIF Specification (June 1999):
+       Name Value Table, Matrix and Frame Type declaration, Stream ID declaration are
+       defined in text matrix:
+       1NVT 1NVT
+       1TYP 1TYP
+       1IDS 1IDS
+  Get all types from a SdifStringT
+*/
+size_t    SdifFGetAllTypefromSdifString   (SdifFileT *SdifF, SdifStringT *SdifString);
 
 
 /*

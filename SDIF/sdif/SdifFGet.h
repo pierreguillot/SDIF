@@ -1,4 +1,4 @@
-/* $Id: SdifFGet.h,v 3.8 2001-05-02 09:34:41 tisseran Exp $
+/* $Id: SdifFGet.h,v 3.9 2002-06-18 13:55:54 ftissera Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -44,6 +44,9 @@ DESCRIPTION
 
 LOG
  * $Log: not supported by cvs2svn $
+ * Revision 3.8  2001/05/02 09:34:41  tisseran
+ * Change License from GNU Public License to GNU Lesser Public License.
+ *
  * Revision 3.7  2000/11/21 14:51:48  schwarz
  * - sdif.h is now included by all sdif/Sdif*.c files.
  * - Removed all public typedefs, enums, structs, and defines from the
@@ -120,16 +123,13 @@ LOG
 #ifndef _SDIFFGET_H
 #define _SDIFFGET_H
 
+#include <sdif.h>
+
 #include "SdifGlobals.h"
 #include "SdifString.h"
 #include <stdio.h>
 
 
-/*DOC: 
-  Lit 4 bytes, les considère comme une signature qui est placée dans
-  SdifF->CurrSignature, incrémente NbCharRead du nombre de bytes lus
-  et renvoie le dernier caractère lu convert en int (-1 si erreur).  */
-int    SdifFGetSignature	(SdifFileT *SdifF, size_t *NbCharRead);
 
 int    SdifFGetOneNameValue     (SdifFileT *SdifF, int Verbose, size_t *NbCharRead);
 size_t SdifFGetNameValueLCurrNVT(SdifFileT *SdifF, int Verbose);
@@ -206,17 +206,6 @@ size_t SdifFGetOneFrameTypefromSdifString(SdifFileT *SdifF, SdifStringT *SdifStr
 */
 size_t SdifFGetAllType          (SdifFileT *SdifF, int Verbose);
 
-/*DOC:
-  Remark:
-         This function implements the new SDIF Specification (June 1999):
-	 Name Value Table, Matrix and Frame Type declaration, Stream ID declaration are
-	 defined in text matrix:
-	 1NVT 1NVT
-	 1TYP 1TYP
-	 1IDS 1IDS
-  Get all types from a SdifStringT
-*/
-size_t    SdifFGetAllTypefromSdifString   (SdifFileT *SdifF, SdifStringT *SdifString);
 
 /*DOC:
   Remark:
