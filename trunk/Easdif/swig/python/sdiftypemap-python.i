@@ -1,10 +1,14 @@
-// $Id: sdiftypemap-python.i,v 1.1 2003-04-30 11:45:48 tisseran Exp $
+// $Id: sdiftypemap-python.i,v 1.2 2003-05-18 21:10:55 roebel Exp $
 //
 // sdiftypemap-python.i		30.04.2003		Patrice Tisserand
 //
 // typemaps for SWIG to map SdifSignature to strings and back
 //
 // $Log: not supported by cvs2svn $
+// Revision 1.1  2003/04/30 11:45:48  tisseran
+// Added swig python stuff
+// Started autoconfiscation of swig
+//
 
 // include typemap for std::string from SWIG library
 %include std_string.i
@@ -19,7 +23,11 @@
     {
 	$1 = SdifStringToSignature(PyString_AsString($input));
     }
-    else
+    else if (PyInt_Check($input))
+    {
+	$1 = PyInt_AS_LONG($input);
+    }
+    else  
     {
 	PyErr_SetString(PyExc_TypeError, "not a String");
 	return NULL;
