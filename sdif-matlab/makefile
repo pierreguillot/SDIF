@@ -1,10 +1,13 @@
-# $Id: makefile,v 1.33 2004-02-19 10:56:32 schwarz Exp $
+# $Id: makefile,v 1.34 2004-03-30 18:10:44 roebel Exp $
 #
 # makefile	26. January 2000	Diemo Schwarz
 #
 # formesutils matlab library
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.33  2004/02/19 10:56:32  schwarz
+# install loadsdifbpf
+#
 # Revision 1.32  2003/09/15 17:29:12  schwarz
 # Me too says it's version 0.3!
 #
@@ -229,7 +232,7 @@ DIST_FILES	= $(foreach s, $(ALLMEXSUF), $(mexbase:%=%.$s)) \
 SRC_DIST_FILES	=  $(allsrc) $(srcmfiles) $(datadir) \
 		  sdif-matlab-readme README.first INSTALL makefile \
 		  testtypes.styp -C $(SDIF_TYPES_DIR) $(SDIF_TYPES_FILE) 
-DIST_HOST	= maelzel
+DIST_HOST	= infirme
 DIST_BASE	= sdif-matlab-$(VERSION)
 DIST_COPYFILES  = $(DIST_BASE).tar.gz $(DIST_BASE)-src.tar.gz sdif-matlab-readme
 
@@ -311,11 +314,11 @@ instdef installdef installdefs:
 	cp -f mex.makedefs $(INSTALL_DIR)
 
 dist:		all
-	tar cvfz $(DIST_BASE).tar.gz $(DIST_FILES)
+	-tar cvfz $(DIST_BASE).tar.gz $(DIST_FILES)
 	tar cvfz $(DIST_BASE)-src.tar.gz $(SRC_DIST_FILES)
 	@echo now do: cvs tag $(CVSTAG)
 publish:	dist
-	rsh $(DIST_HOST) cp -f $(DIST_COPYFILES:%=$(PWD)/%) $(DIST_DIR)
+	ssh $(DIST_HOST) cp -f $(DIST_COPYFILES:%=$(PWD)/%) $(DIST_DIR)
 
 clean: mexclean
 	-rm -f mexsuf.inc.$(ARCH) gen/*
