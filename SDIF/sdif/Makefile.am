@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.6 2000-10-30 20:28:33 roebel Exp $
+# $Id: Makefile.am,v 1.7 2000-10-31 10:56:56 roebel Exp $
 #
 # ./sdif/Makefile.am		September 2000			Patrice Tisserand
 #
@@ -29,6 +29,9 @@
 # send email to:  sdif@ircam.fr
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.6  2000/10/30  20:28:33  roebel
+# removed config.h from version cksum
+#
 # Revision 1.5  2000/10/30  19:05:48  roebel
 # Added support for relative path compilation (VPATH)
 # Added support for debugging feature in configure.in and Makefiles
@@ -57,9 +60,9 @@ SDIF_H = SdifCheck.h 	SdifConvToText.h 	SdifErrMess.h 	SdifError.h 	SdifFGet.h \
 	SdifMatrixType.h SdifMemory.h 		SdifNameValue.h	SdifPreTypes.h 	SdifPrint.h \
 	SdifRWLowLevel.h SdifSelect.h		SdifSignatureTab.h 		SdifStreamID.h \
 	SdifString.h 	SdifTest.h 		SdifTextConv.h 	SdifTimePosition.h \
-	SdifVersion.h project_preinclude.h config.h
+	$(top_srcdir)/sdif/SdifVersion.h project_preinclude.h config.h
 
-noinst_HEADERS = $(SDIF_H) ${FORMES_H}
+noinst_HEADERS = $(SDIF_H) $(addprefix $(top_srcdir)/sdif/,${FORMES_H})
 
 libsdif_a_SOURCES =  SdifString.c      SdifHash.c     SdifGlobals.c      SdifSignatureTab.c \
 		     SdifError.c       SdifMemory.c   SdifNameValue.c    SdifMatrixType.c \
@@ -85,29 +88,29 @@ INCLUDES = -D_SdifTypesFileName=\"$(sdiftype)\" -DUSE_CONFIGURE
 
 $(libsdif_a_SOURCES) :  @IRCAMDEPS@
 
-SdifFile.o : SdifVersion.h
+SdifFile.o : $(top_srcdir)/sdif/SdifVersion.h
 
-Versionsrc := $(libsdif_a_SOURCES) $(subst config.h,,$(subst SdifVersion.h,,$(noinst_HEADERS)))
-SdifVersion.h : $(Versionsrc)
+Versionsrc := $(libsdif_a_SOURCES) $(subst config.h,,$(subst $(top_srcdir)/sdif/SdifVersion.h,,$(noinst_HEADERS)))
+$(top_srcdir)/sdif/SdifVersion.h : $(Versionsrc)
 	@echo  "Updating  Library CKSUM"
-	@echo "/* Automatically generated File do not edit */" >SdifVersion.h
-	@echo '#define AUTOCKSUM "$$Checksum: SRC '$(shell CMD_ENV=xpg4;export CMD_ENV;cksum $^ | cut -f1 -d' '|cksum |cut -f1 -d' ')' $$ IRCAM $$Date: 2000-10-30 20:28:33 $$"'>>SdifVersion.h
+	@echo "/* Automatically generated File do not edit */" >$@
+	@echo '#define AUTOCKSUM "$$Checksum: '$(shell CMD_ENV=xpg4;export CMD_ENV;cksum $^ | cut -f1 -d' '|cksum |cut -f1 -d' ')' $$ IRCAM $$date: "__DATE__" $$"'>>$@
 
 
 # EXTRA FOR IRCAM STUFF
 ircam_deps : ${FORMES_H}
 
-host_architecture.h:
-	cp ${FORMES_INCLUDE}/host_architecture.h .
+$(top_srcdir)/sdif/host_architecture.h:
+	cp -p ${FORMES_INCLUDE}/host_architecture.h $@
 
-preincluded.h :
-	cp ${FORMES_INCLUDE}/preincluded.h .
+$(top_srcdir)/sdif/preincluded.h :
+	cp -p ${FORMES_INCLUDE}/preincluded.h $@
 
-UniversalEnvVar.h : 
-	cp ${FORMES_INCLUDE}/UniversalEnvVar.h .
+$(top_srcdir)/sdif/UniversalEnvVar.h : 
+	cp -p ${FORMES_INCLUDE}/UniversalEnvVar.h $@
 
-host_configure.h: 
-	cp ${FORMES_INCLUDE}/host_configure.h .
+$(top_srcdir)/sdif/host_configure.h: 
+	cp -p ${FORMES_INCLUDE}/host_configure.h $@
 
-XpGuiCalls.h:
-	cp ${FORMES_INCLUDE}/XpGuiCalls.h .
+$(top_srcdir)/sdif/XpGuiCalls.h:
+	cp -p ${FORMES_INCLUDE}/XpGuiCalls.h $@
