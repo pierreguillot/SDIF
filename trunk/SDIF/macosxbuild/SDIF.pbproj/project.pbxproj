@@ -1222,4 +1222,46 @@
 		};
 		F70D0C740496241101664058 = {
 			fileRef = F70D0C280496241101664058;
-			isa = PBXBuildF
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F70D0C750496241101664058 = {
+			fileRef = F70D0C290496241101664058;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F70D0C760496243D01664058 = {
+			isa = PBXFileReference;
+			name = sdif_version.h;
+			path = ../include/sdif_version.h;
+			refType = 2;
+		};
+		F70D0C770496243D01664058 = {
+			isa = PBXFileReference;
+			name = sdif.h;
+			path = ../include/sdif.h;
+			refType = 2;
+		};
+		F70D0C780496243D01664058 = {
+			fileRef = F70D0C760496243D01664058;
+			isa = PBXBuildFile;
+			settings = {
+				ATTRIBUTES = (
+					Public,
+				);
+			};
+		};
+		F70D0C790496243D01664058 = {
+			fileRef = F70D0C770496243D01664058;
+			isa = PBXBuildFile;
+			settings = {
+				ATTRIBUTES = (
+					Public,
+				);
+			};
+		};
+	};
+	rootObject = 0F5C28A9047E732E006640BC;
+}
