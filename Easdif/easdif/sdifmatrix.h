@@ -33,9 +33,12 @@
  * 
  * 
  * 
- * $Id: sdifmatrix.h,v 1.2 2003-04-06 16:31:08 roebel Exp $ 
+ * $Id: sdifmatrix.h,v 1.3 2003-04-18 16:44:00 schwarz Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  2003/04/06 16:31:08  roebel
+ * Added license info
+ *
  * Revision 1.1  2003/03/03 19:00:16  roebel
  * Moved src directory to new name easdif
  *
@@ -86,6 +89,12 @@ namespace Easdif {
  * SDIFMatrix is composed of different methods which permits to manipulate a
  * matrix.
  */
+
+// shorten SWIG class names because we prefix with SDIF:: anyway
+#ifdef SWIG
+%name(Matrix)
+#endif
+
 class SDIFMatrix
 {
 private:
@@ -264,13 +273,12 @@ public:
     mInter->Set(i, j, static_cast<double>(value) );
   }
   
-  void
-  Set(int i, int j, const float& value)
+  void Set(int i, int j, const float value)
   {
     mInter->Set(i, j, value);
   }
   
-  void Set(int i, int j, const int& value)
+  void Set(int i, int j, const int value)
   {
     mInter->Set(i, j, value);
   }

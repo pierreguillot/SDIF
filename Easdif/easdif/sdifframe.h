@@ -34,9 +34,12 @@
  * sdifframe.h is composed of the different methods which are using to 
  * manipulate the frame.
  * 
- * $Id: sdifframe.h,v 1.2 2003-04-06 16:31:08 roebel Exp $ 
+ * $Id: sdifframe.h,v 1.3 2003-04-18 16:44:00 schwarz Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  2003/04/06 16:31:08  roebel
+ * Added license info
+ *
  * Revision 1.1  2003/03/03 19:00:16  roebel
  * Moved src directory to new name easdif
  *
@@ -78,6 +81,12 @@ class SDIFEntity;
  * frame. All the methods with a SdifFileT* parameter are surcharged with
  * SDIFEntity parameter.
  */
+
+// change SWIG class names because we prefix with SDIF:: anyway
+#ifdef SWIG
+%name(Frame)
+#endif
+
 class SDIFFrame
 {
 private:

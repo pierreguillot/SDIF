@@ -32,9 +32,12 @@
  * 
  * 
  * 
- * $Id: sdifentity.cpp,v 1.2 2003-04-06 16:31:08 roebel Exp $ 
+ * $Id: sdifentity.cpp,v 1.3 2003-04-18 16:44:00 schwarz Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  2003/04/06 16:31:08  roebel
+ * Added license info
+ *
  * Revision 1.1  2003/03/03 19:00:16  roebel
  * Moved src directory to new name easdif
  *
@@ -301,7 +304,7 @@ SdifErrorT* SDIFEntity::LastError()
 }
 
 
-bool& SDIFEntity::eof() {
+bool SDIFEntity::eof() {
     return mEof;
 }
 

@@ -33,9 +33,12 @@
  * 
  *
  * 
- * $Id: sdifnamevaluetable.h,v 1.2 2003-04-06 16:31:08 roebel Exp $ 
+ * $Id: sdifnamevaluetable.h,v 1.3 2003-04-18 16:44:00 schwarz Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  2003/04/06 16:31:08  roebel
+ * Added license info
+ *
  * Revision 1.1  2003/03/03 19:00:16  roebel
  * Moved src directory to new name easdif
  *
@@ -81,6 +84,12 @@ namespace Easdif {
  * SDIFNameValueTable is composed of different methods which permits to
  * manipulate a Name Value Table.
  */
+
+// shorten SWIG class name because we prefix with SDIF:: anyway
+#ifdef SWIG
+%name(NameValueTable)
+#endif
+
 class SDIFNameValueTable
 {
  private:
