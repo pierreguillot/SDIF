@@ -1,4 +1,4 @@
-$Id: sdif-matlab-readme,v 1.9 2001-05-28 16:40:19 roebel Exp $
+$Id: sdif-matlab-readme,v 1.10 2001-05-29 09:53:50 roebel Exp $
 
 sdif-matlab-README	8.8.2000	Diemo Schwarz (schwarz@ircam.fr)
 -------------------------------------------------------------------------------
@@ -20,6 +20,11 @@ with documentation and support functions.
 
 
 RELEASES
+
+0.2.1   29.05.2001   Fixed memory leak from version 0.2.0. Added automatic
+                     closing of input files if new file is opened and old 
+	             file still not closed. Added cleanup routine that closes
+                     file in case of clear.
 
 0.2.0   28.05.2001   Added support for reading char data and 1NVT frames 
                      and matrices. The initial loadsdif call now returns
