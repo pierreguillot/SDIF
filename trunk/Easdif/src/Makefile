@@ -1,7 +1,7 @@
 FORMESROOT = /u/formes/share
 SDIFROOT = ../SDIF
 CXX = g++
-CXXFLAGS = -Wall -I.. -I$(SDIFROOT)/include -I$(SDIFROOT)/sdif
+CXXFLAGS = -Wall -I.. -I$(SDIFROOT)/include -I$(SDIFROOT)/sdif -I$(SDIFROOT)/compile.$(SYS)/include 
 
 ifeq ($(DEBUG), 1)
 	CXXFLAGS += -g -ggdb
