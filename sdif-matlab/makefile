@@ -1,10 +1,13 @@
-# $Id: makefile,v 1.1 2000-05-04 13:24:08 schwarz Exp $
+# $Id: makefile,v 1.2 2000-05-11 12:38:22 schwarz Exp $
 #
 # makefile	26. January 2000	Diemo Schwarz
 #
 # formesutils matlab library
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.1  2000/05/04  13:24:08  schwarz
+# Matlab mex extension and support functions to load SDIF files.
+#
 
 
 #
@@ -18,11 +21,18 @@ SYSVERS		:= $(shell uname -r)
 SYS		:= $(SYSNAME)_$(SYSVERS)
 USER 		:= $(shell whoami)
 
+# mex suffix per arch
 mex-alpha	 = mexaxp
+mex-i686	 = mexlx
 mexsuf     	 = $(mex-$(ARCH))
+
+# mex compiler
 #mex	   	 = /usr/LOCAL/matlab5/bin/mex
 mex	   	 = mex
-matlabincl	 = /usr/LOCAL/matlab-5.2/extern/include
+
+# mex includes
+matlabincl-alpha = /usr/LOCAL/matlab-5.2/extern/include
+matlabincl-i686  = /usr/local/matlab/extern/include
 
 
 ifeq ($(DEBUG),1)
@@ -56,7 +66,8 @@ pm_sdif		= $(PM_LIB_PATH) $(SDIF_LIB_PATH)
 INCL	   	= -I$(GLOBAL_INCL) -I/usr/include -I/usr/local/include/
 CFLAGS	   	= -g -ansi -Wall -DTEST $(INCL)
 LFLAGS		= 
-MEXFLAGS	= -g
+MEXFLAGS-alpha	= -g
+MEXFLAGS-i686	= -g CC=gcc LD=gcc
 
 OBJ_DIR	   	= obj/$(ARCH)
 OUT_DIRS	= $(OBJ_DIR)
@@ -68,10 +79,10 @@ OUT_DIRS	= $(OBJ_DIR)
 .SUFFIXES:	.c .$(mexsuf)
 
 .c.$(mexsuf):
-	$(mex) $(MEXFLAGS) $(INCL) $(LFLAGS) $($(@F)_mexflags) $^
+	$(mex) $(MEXFLAGS-$(ARCH)) $(INCL) $(LFLAGS) $($(@F)_mexflags) $^
 
 $(OBJ_DIR)/%.o:	%.c
-	gcc -c $(CFLAGS) -I$(matlabincl) $< -o $@
+	gcc -c $(CFLAGS) -I$(matlabincl-$(ARCH)) $< -o $@
 
 
 #
@@ -92,6 +103,9 @@ allsrc		= $(cfiles)
 
 all:			$(OUT_DIRS) $(mexfiles)
 loadsdif:		loadsdif.$(mexsuf)
+
+db:
+	$(MAKE) DEBUG=1
 
 # dependencies
 loadsdif.$(mexsuf):	loadsdif.c $(loadsdif_obj) $(pm_sdif)
