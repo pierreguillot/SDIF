@@ -1,4 +1,4 @@
-# $Id: Makefile.preamble,v 3.7 2000-08-07 12:33:16 schwarz Exp $ -*-makefile-*-
+# $Id: Makefile.preamble,v 3.8 2000-09-27 10:17:41 schwarz Exp $ -*-makefile-*-
 #
 #               Copyright (c) 1998 by IRCAM - Centre Pompidou
 #                          All rights reserved.
@@ -11,6 +11,9 @@
 # 
 #
 # $Log: not supported by cvs2svn $
+# Revision 3.7  2000/08/07  12:33:16  schwarz
+# Install types in INSTALL_TYP := $(INSTALL_ROOT)/lib.
+#
 # Revision 3.6  2000/07/06  18:59:01  tisseran
 # *** empty log message ***
 #
@@ -220,8 +223,8 @@ endif
 
 VERSION := $(PROJECT) $(SYS)$(TARGET) $(RELEASE) compiled by $(USER) $(DATE)
 
-INCLUDE_DIR 	= /usr/include
-INCLUDE_DIRS 	= $(INCLUDE_DIR) /usr/include /u/formes/tisseran/src/formesutils/include
+INCLUDE_DIR 	= /u/formes/include	# some programs want this
+INCLUDE_DIRS 	= $(INCLUDE_DIR) /usr/include
 INCLUDE		= $(INCLUDE_DIRS:%=-I%)
 D_SDIF_FLAG := -D_SdifTypesFileName='"$(PRE_TYPES_SDIF)"' -D_SDIF_VERSION='"$(VERSION)"'
 
@@ -243,7 +246,7 @@ SDIF_INC_INSTALLED 	 = $(SDIF_HEADERS:%.h=$(INSTALL_INC)/%.h)
 
 ifeq ($(USER),schwarz)
 #	compile in path accessible by other projects in development
-	SDIF_LIB_DIR 	= $(HOME)/lib/$(ARCH)/$(SYSDIR)
+	SDIF_LIB_DIR 	= $(HOME)/lib/$(ARCH)/$(SYS)
 endif
 
 ####################################
