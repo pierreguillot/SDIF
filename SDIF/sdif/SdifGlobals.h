@@ -1,4 +1,4 @@
-/* $Id: SdifGlobals.h,v 3.7 2000-03-01 11:17:37 schwarz Exp $
+/* $Id: SdifGlobals.h,v 3.8 2000-04-11 14:44:11 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -14,6 +14,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.7  2000/03/01  11:17:37  schwarz
+ * Backwards compatibility of data types for reading text.
+ *
  * Revision 3.6  1999/11/03  16:42:35  schwarz
  * Use _SdifNVTStreamID for stream ID of 1NVT frames because of CNMAT
  * restriction of only one frame type per stream.
@@ -126,7 +129,16 @@
 #define _SdifTYPStreamID  0xfffffffb		/* unused */
 
 
-/* This seems to be no longer needed with gcc version 2.8.1 */
+
+#if COCOONSEYESONLY
+/*DOC:
+  Macro to generate proper-endianed 4 char SDIF signature from 
+  something like 'ABCD'.
+ */
+SdifUInt4 SdifSignatureConst (SdifUInt4 four_char_code);
+#endif
+
+/* This seems to be no longer necessary with gcc version 2.8.1 on alpha */
 #if 0 && defined (__GNUC__)  &&  defined (__alpha__)
 /* Swap multibyte char constant s with gcc on alpha,
    because gcc builds multi-character constants in inverse oder, as can
@@ -225,10 +237,9 @@ typedef enum SdifDataTypeE
 					macro(Int4  )post \
 					macro(UInt2 )post \
 					macro(UInt4 )post \
+					macro(Char  )post \
 				     /* macro(Int8  )post \
 					macro(UInt8 )post \
-					macro(Char  )post \
-					macro(Text  )post \
 				      */
 
 /* generate template for all types */

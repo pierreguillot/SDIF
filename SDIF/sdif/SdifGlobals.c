@@ -1,4 +1,4 @@
-/* $Id: SdifGlobals.c,v 3.4 1999-10-13 16:05:48 schwarz Exp $
+/* $Id: SdifGlobals.c,v 3.5 2000-04-11 14:44:10 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -14,6 +14,15 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.4  1999/10/13  16:05:48  schwarz
+ * Changed data type codes (SdifDataTypeET) to SDIF format version 3, as
+ * decided with Matt Wright June 1999, added integer data types.
+ * Added writing of 1NVT with real frame header (but data is still not in
+ * matrices).
+ * The data type handling makes heavy use of code-generating macros,
+ * called for all data types with the sdif_foralltypes macro, thus
+ * adding new data types is easy.
+ *
  * Revision 3.3  1999/09/28  13:09:00  schwarz
  * Included #include <preincluded.h> for cross-platform uniformisation,
  * which in turn includes host_architecture.h and SDIF's project_preinclude.h.
@@ -141,6 +150,7 @@ SdifDataTypeKnown (SdifDataTypeET DataType)
 {
     switch (DataType)
     {
+        case eChar  :	  /* same as case eText  : */
         case eFloat4:
         case eFloat8:
         case eInt2  :
@@ -150,7 +160,6 @@ SdifDataTypeKnown (SdifDataTypeET DataType)
 	    return eTrue;
 
 	/* defined in sdif format standard ver. 3 but not yet implemented */
-        case eChar  :	  /* same as case eText  : */
         case eInt8  :
         case eUInt8 :
 	    _SdifRemark ("standard datatypes text, (u)int8 not yet handled");
