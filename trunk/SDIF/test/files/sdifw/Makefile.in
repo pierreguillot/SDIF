@@ -10,7 +10,7 @@
 # even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 # PARTICULAR PURPOSE.
 
-# $Id: Makefile.in,v 1.6 2000-10-30 20:05:15 roebel Exp $
+# $Id: Makefile.in,v 1.7 2000-10-30 20:30:56 roebel Exp $
 #
 # ./test/files/sdifw/Makefile.am		September 2000			Patrice Tisserand
 #
@@ -41,9 +41,6 @@
 # send email to:  sdif@ircam.fr
 #
 # $Log: not supported by cvs2svn $
-# Revision 1.5  2000/10/30  19:15:33  roebel
-# Removed -g and added -O3 flags for configuration without --enable-debug
-#
 # Revision 1.2  2000/10/27  20:04:07  roebel
 # autoconf merged back to main trunk
 #
