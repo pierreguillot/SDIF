@@ -1,12 +1,15 @@
 #!/usr/bin/perl
 #
-# $Id: xmltohtml.pl,v 1.5 2000-08-09 14:55:35 schwarz Exp $
+# $Id: xmltohtml.pl,v 1.6 2000-08-16 16:10:15 schwarz Exp $
 #
 # xmltohtml.pl		6. July 2000		Diemo Schwarz
 #
 # Translate SDIF types description in XML to HTML.
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.5  2000/08/09  14:55:35  schwarz
+# Bloody comment header.
+#
 # Revision 1.4  2000/08/09  14:43:50  schwarz
 # Put all SDIF types into XML format.  Lots of descriptions still missing.
 # Full "about this document" info.
@@ -36,7 +39,7 @@ use XML::Node;
 use HTML::Stream qw(:funcs);
 
 
-my $cvsrev     = '$Id: xmltohtml.pl,v 1.5 2000-08-09 14:55:35 schwarz Exp $ ';
+my $cvsrev     = '$Id: xmltohtml.pl,v 1.6 2000-08-16 16:10:15 schwarz Exp $ ';
 my $tdlversion = '';
 my $version    = 'unknown';
 my $revision   = '';
@@ -67,7 +70,7 @@ $xml = new XML::Node;
 
 
 # html setup
-my @copiedhtmltags = qw(i b emph code);
+my @copiedhtmltags = qw(i b emph code var sub sup);
 my %tagmap = (# section => 'H2', 
 	      map { (uc $_, uc $_, lc $_, uc $_ ) } @copiedhtmltags);
 # register XML->HTML tag mapping handlers
@@ -148,7 +151,6 @@ sub tagmapper
     $h->tag ($tag)      if $tag;
     $h->text($_[1]);
     $h->tag ("_$tag")   if $tag; 
-    $h->text("\n");
 }
 
 
