@@ -1,36 +1,59 @@
-FORMESROOT = /u/formes/share
+SDIFROOT := ../SDIF
 
 CXX = g++
-CXXFLAGS = -g -ggdb -Wall -I../src -I$(FORMESROOT)/include
-LDFLAGS = -L../lib -L$(FORMESROOT)/lib/$(SYS) -lEasdif -lsdif -lm
+CXXFLAGS = -g -ggdb -Wall -I../ -I$(SDIFROOT)/include 
+
+LDFLAGS = -L../lib.$(SYS) -lEasdif   -lm
 
 
-all: virtual classba classbis classbiw classbiww esclass
 
-matrix: matrix.cpp ../lib/libEasdif.a
-	$(CXX) matrix.cpp -o $@ $(CXXFLAGS) $(LDFLAGS)
+all: tutorini tutofini #trytry #try_excep tutorial_fin #rent_sel ent_sel#typty #ent_sel #try_excep ent_sele ent_sel entttselentread try_excep #typty ttyp tetyp testyp testnvt tutname tutmat virtual classba classbis classbiw classbiww esclass new_tutorial try_excep new_try tryfile 
 
-virtual: virtual.cpp ../lib/libEasdif.a
-	$(CXX) virtual.cpp -o $@ $(CXXFLAGS) $(LDFLAGS)
+ent_sele: ent_sele.cpp ../lib/libEasdif.a 
+	$(CXX) ent_sele.cpp  -o $@ $(CXXFLAGS) $(LDFLAGS)
 
-classba: classba.cpp ../lib/libEasdif.a
-	$(CXX) classba.cpp -o $@ $(CXXFLAGS) $(LDFLAGS)
+entttsel: entttsel.cpp ../lib/libEasdif.a 
+	$(CXX) entttsel.cpp  -o $@ $(CXXFLAGS) $(LDFLAGS)
+
+ent_sel: ent_sel.cpp ../lib/libEasdif.a 
+	$(CXX) ent_sel.cpp  -o $@ $(CXXFLAGS) $(LDFLAGS)
+
+try_excep: try_excep.cpp ../lib/libEasdif.a 
+	$(CXX) try_excep.cpp  -o $@ $(CXXFLAGS) $(LDFLAGS)
+
+entread: entread.cpp ../lib/libEasdif.a 
+	$(CXX) entread.cpp  -o $@ $(CXXFLAGS) $(LDFLAGS)
+
+typty: typty.cpp ../lib/libEasdif.a 
+	$(CXX) typty.cpp  -o $@ $(CXXFLAGS) $(LDFLAGS)
+
+rent_sel: rent_sel.cpp ../lib/libEasdif.a 
+	$(CXX) rent_sel.cpp  -o $@ $(CXXFLAGS) $(LDFLAGS)
+
+tutorial_fin: tutorial_fin.cpp ../lib/libEasdif.a 
+	$(CXX) tutorial_fin.cpp  -o $@ $(CXXFLAGS) $(LDFLAGS)
 
 
-classbis: classbis.cpp ../lib/libEasdif.a
-	$(CXX) classbis.cpp -o $@ $(CXXFLAGS) $(LDFLAGS)
+trytry: trytry.cpp ../lib/libEasdif.a 
+	$(CXX) trytry.cpp  -o $@ $(CXXFLAGS) $(LDFLAGS)
 
 
-classbiw: classbiw.cpp ../lib/libEasdif.a
-	$(CXX) classbiw.cpp -o $@ $(CXXFLAGS) $(LDFLAGS)
-
-classbiww: classbiww.cpp ../lib/libEasdif.a 
-	$(CXX) classbiww.cpp -o $@ $(CXXFLAGS) $(LDFLAGS)
+tutofini: tutofini.cpp ../lib/libEasdif.a 
+	$(CXX) tutofini.cpp  -o $@ $(CXXFLAGS) $(LDFLAGS)
 
 
-esclass: esclass.cpp ../lib/libEasdif.a 
-	$(CXX) esclass.cpp -o $@ $(CXXFLAGS) $(LDFLAGS)
+tutorini: tutorini.cpp ../lib/libEasdif.a 
+	$(CXX) tutorini.cpp  -o $@ $(CXXFLAGS) $(LDFLAGS)
 
 clean:
-	-rm matrix virtual classba classbis classbiw classbiww cla esclass $(LIB_OBJ) core
+	-rm -f tutorini tutofini trytry try_excep tutorial_fin rent_sel typty entread try_excep ent_sel entttsel ent_sele #matrix virtual classba classbis classbiw classbiww cla esclass new_tutorial try_excep new_try tryfile tutmat tutname testnvt testyp ttyp#$(LIB_OBJ) core
+
+
+
+
+
+
+
+
+
 
