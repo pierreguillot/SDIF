@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.24 2002-10-24 16:21:19 tisseran Exp $
+# $Id: Makefile.am,v 1.25 2002-10-28 18:03:26 roebel Exp $
 #
 # ./sdif/Makefile.am		September 2000			Patrice Tisserand
 #
@@ -29,6 +29,10 @@
 # send email to:  sdif@ircam.fr
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.24  2002/10/24 16:21:19  tisseran
+# Add rpath flag to lib*_LDFLAGS (need when libraries are determined at configure time)
+# See Automake Manual 9.3
+#
 # Revision 1.23  2002/10/24 15:48:35  tisseran
 # Fix release autoconf variable name
 # Add dependency between lib_sdif_*_la and SdifVersion.h
@@ -206,18 +210,18 @@ ircam_force_cmp:
 
 $(top_srcdir)/sdif/host_architecture.h: @FORCE_CMP@ #${FORMES_INCLUDE}/host_architecture.h
 #	cp ${FORMES_INCLUDE}/host_architecture.h $@
-	@STEM=host_architecture;if cmp --quiet $(top_srcdir)/sdif/$$STEM.h ${FORMES_INCLUDE}/$$STEM.h;then echo $(top_srcdir)/sdif/$$STEM.h up to date;else echo  Updating $(top_srcdir)/sdif/$$STEM.h; cp ${FORMES_INCLUDE}/$$STEM.h $@;fi
+	@STEM=host_architecture;if cmp  $(top_srcdir)/sdif/$$STEM.h ${FORMES_INCLUDE}/$$STEM.h 2>&1 >/dev/null;then echo $(top_srcdir)/sdif/$$STEM.h up to date;else echo  Updating $(top_srcdir)/sdif/$$STEM.h; cp ${FORMES_INCLUDE}/$$STEM.h $@;fi
 
 $(top_srcdir)/sdif/preincluded.h :  @FORCE_CMP@ # ${FORMES_INCLUDE}/preincluded.h
-	@STEM=preincluded;if cmp --quiet $(top_srcdir)/sdif/$$STEM.h ${FORMES_INCLUDE}/$$STEM.h;then echo $(top_srcdir)/sdif/$$STEM.h up to date;else echo  Updating $(top_srcdir)/sdif/$$STEM.h; cp ${FORMES_INCLUDE}/$$STEM.h $@;fi
+	@STEM=preincluded;if cmp  $(top_srcdir)/sdif/$$STEM.h ${FORMES_INCLUDE}/$$STEM.h 2>&1 >/dev/null;then echo $(top_srcdir)/sdif/$$STEM.h up to date;else echo  Updating $(top_srcdir)/sdif/$$STEM.h; cp ${FORMES_INCLUDE}/$$STEM.h $@;fi
 
 
 $(top_srcdir)/sdif/UniversalEnvVar.h :  @FORCE_CMP@ #${FORMES_INCLUDE}/UniversalEnvVar.h
 #	cp ${FORMES_INCLUDE}/UniversalEnvVar.h $@
-	@STEM=UniversalEnvVar;if cmp --quiet $(top_srcdir)/sdif/$$STEM.h ${FORMES_INCLUDE}/$$STEM.h;then echo $(top_srcdir)/sdif/$$STEM.h up to date;else echo  Updating $(top_srcdir)/sdif/$$STEM.h; cp ${FORMES_INCLUDE}/$$STEM.h $@;fi
+	@STEM=UniversalEnvVar;if cmp  $(top_srcdir)/sdif/$$STEM.h ${FORMES_INCLUDE}/$$STEM.h 2>&1 >/dev/null;then echo $(top_srcdir)/sdif/$$STEM.h up to date;else echo  Updating $(top_srcdir)/sdif/$$STEM.h; cp ${FORMES_INCLUDE}/$$STEM.h $@;fi
 
 
 
 $(top_srcdir)/sdif/XpGuiCalls.h:  @FORCE_CMP@ #${FORMES_INCLUDE}/XpGuiCalls.h
 #	cp ${FORMES_INCLUDE}/XpGuiCalls.h $@
-	@STEM=XpGuiCalls;if cmp --quiet $(top_srcdir)/sdif/$$STEM.h ${FORMES_INCLUDE}/$$STEM.h;then echo $(top_srcdir)/sdif/$$STEM.h up to date;else echo  Updating $(top_srcdir)/sdif/$$STEM.h; cp ${FORMES_INCLUDE}/$$STEM.h $@;fi
+	@STEM=XpGuiCalls;if cmp  $(top_srcdir)/sdif/$$STEM.h ${FORMES_INCLUDE}/$$STEM.h 2>&1 >/dev/null;then echo $(top_srcdir)/sdif/$$STEM.h up to date;else echo  Updating $(top_srcdir)/sdif/$$STEM.h; cp ${FORMES_INCLUDE}/$$STEM.h $@;fi
