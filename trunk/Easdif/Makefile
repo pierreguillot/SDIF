@@ -17,7 +17,7 @@ lib: LINK SDIF/sdif/libsdif.a
 
 
 SDIF/sdif/libsdif.a: 
-	cd SDIF; export CC=g++; ./configure; make 
+	cd SDIF; if [ ! -f ./configure ]; then autoconf;fi ; ./configure --enable-cpp; make 
 
 test:
 	make -C test
