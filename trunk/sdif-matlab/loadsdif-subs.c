@@ -1,4 +1,4 @@
-/* $Id: loadsdif-subs.c,v 1.10 2001-05-29 09:55:21 roebel Exp $
+/* $Id: loadsdif-subs.c,v 1.11 2001-05-29 13:24:23 roebel Exp $
 
    loadsdif_subs.c	25. January 2000	Diemo Schwarz
 
@@ -14,6 +14,10 @@
    endread ('close')
 
   $Log: not supported by cvs2svn $
+  Revision 1.10  2001/05/29 09:55:21  roebel
+  fixed memory leak. removed debugging output. Matrices
+  with unknown data were not correctly skipped, fixed now!
+
   Revision 1.9  2001/05/28 16:32:32  roebel
   Added support for reading char data and 1NVT frames
   and matrices. The initial loadsdif call now returns
@@ -138,11 +142,16 @@ SdifFileT *beginread (int nlhs, mxArray *plhs [], char *filename, char *types)
 		
 	      }
 	  }
-	  localstr = calloc(string->SizeW+1,1);
-	  strcpy(localstr,string->str);
-	  plhs[0] = mxCreateString(localstr);
+	  if (string->SizeW) {
+	    localstr = calloc(string->SizeW+1,1);
+	    strcpy(localstr,string->str);
+	    plhs[0] = mxCreateString(localstr);
+	    free(localstr);
+	  }
+	  else
+	    plhs[0] = mxCreateString("");
+
 	  SdifStringFree(string);
-	  free(localstr);
 	}
     }
 
