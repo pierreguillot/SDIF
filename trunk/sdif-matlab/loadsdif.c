@@ -1,4 +1,4 @@
-/* $Id: loadsdif.c,v 1.1 2000-05-04 13:24:05 schwarz Exp $
+/* $Id: loadsdif.c,v 1.2 2000-08-04 14:42:29 schwarz Exp $
 
    loadsdif.c	25. January 2000	Diemo Schwarz
 
@@ -13,7 +13,10 @@
 	Returns an empty matrix on end-of-file.
    end:							loadsdif ('close')
   
-   $Log: not supported by cvs2svn $ 
+   $Log: not supported by cvs2svn $
+ * Revision 1.1  2000/05/04  13:24:05  schwarz
+ * Matlab mex extension and support functions to load SDIF files.
+ * 
 */
 
 #include <stdio.h>
@@ -76,7 +79,7 @@ mexFunction (int nlhs, mxArray *plhs [], int nrhs, const mxArray *prhs [])
 	      if (!input)
 		  mexErrMsgTxt ("No file opened.  Use 'loadsdif (filename)'.");
 
-	      endread (input);
+	      input = endread (input);
 	  }
 	  else
 	  {

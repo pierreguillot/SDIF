@@ -1,8 +1,11 @@
-# -*-makefile-*- $Id: mex.makedefs,v 1.2 2000-07-27 18:22:34 schwarz Exp $
+# -*-makefile-*- $Id: mex.makedefs,v 1.3 2000-08-04 14:42:32 schwarz Exp $
 #
 # Commonly used settings for compiling matlab mex extensions.
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.2  2000/07/27  18:22:34  schwarz
+# man-style comments, better makedefs.
+#
 # Revision 1.1  2000/07/19  16:32:44  schwarz
 # Factored out commonly used make-definitions for mex compilation,
 # put into mex.makedefs make-include file.
@@ -60,12 +63,17 @@ MEXFLAGS	 = $(mexflags-$(ARCH))
 # where to find stuff (you can redefine IMPORT_ROOT!)
 IMPORT_ROOT	 = /u/formes
 GLOBAL_INCL 	 = $(IMPORT_ROOT)/include 
-GLOBAL_LIB	 = $(IMPORT_ROOT)/lib/$(ARCH)
+GLOBAL_LIB_BASE	 = $(IMPORT_ROOT)/lib
+GLOBAL_LIB	 = $(GLOBAL_LIB_BASE)/$(ARCH)
 
 # where to find some frequently used libraries
 SDIF_LIB_DIR     = $(GLOBAL_LIB)/$(SYS)
 SDIF_LIB_BASE    = sdif$(VERS)
 SDIF_LIB	 = $(SDIF_LIB_DIR)/lib$(SDIF_LIB_BASE).a
+
+SDIF_TYPES_DIR   = $(GLOBAL_LIB_BASE)
+SDIF_TYPES_FILE	 = SdifTypes.STYP
+SDIF_TYPES_PATH	 = $(SDIF_TYPES_DIR)/$(SDIF_TYPES_FILE)
 
 PM_LIB_DIR	 = $(GLOBAL_LIB)
 PM_LIB_BASE	 = Pm

@@ -1,4 +1,4 @@
-/* $Id: writesdif-subs.c,v 1.3 2000-07-19 16:32:28 schwarz Exp $
+/* $Id: writesdif-subs.c,v 1.4 2000-08-04 14:42:33 schwarz Exp $
    writesdif-subs.c     12. May 2000           Patrice Tisserand
 
    Subroutines for writesdif, function to write an SDIF file.
@@ -33,6 +33,9 @@
                      Close the sdif file
 		     
    $Log: not supported by cvs2svn $
+ * Revision 1.3  2000/07/19  16:32:28  schwarz
+ * First attempt for writing text matrices doesn't work.
+ *
  * Revision 1.2  2000/05/15  13:07:46  tisseran
  * Added test for input arguments:
  *    Is Matrix Signature a char?
@@ -44,21 +47,13 @@
  * Mexfile to write sdif files in matlab.
  * TODO: add possibility to use several file at same time.
  *       add test on arguments
- *
-
  */
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <strings.h> /* For alpha bzero */
-
-#if defined(__i386) /* For definition of PATH_MAX */
-#include <linux/limits.h>
-#else
-#include <limits.h>
-#endif
-
+#include <strings.h>	/* For alpha bzero */
+#include <limits.h>	/* For definition of PATH_MAX */
 #include <sdif/sdif.h>
 #include "matrix.h"
 #include "writesdif.h"
@@ -86,12 +81,16 @@ beginwrite (int nrhs, const mxArray *prhs [], char *filename, char *types)
     {
       /* Information table chunk creation */
       SdifNameValuesLNewTable(output->NameValues, _SdifNVTStreamID);
-      SdifNameValuesLPutCurrNVT(output->NameValues, "WrittenBy","MatlabSdifWriter");
+      SdifNameValuesLPutCurrNVT(output->NameValues, 
+				"WrittenBy", "MatlabSdifWriter");
+      SdifNameValuesLPutCurrNVT(output->NameValues, 
+				"Version",   VERSION);
 
       /* Now we must add number of parameters in sdif file 
 	 for use with jmax sdifplayer */
       sprintf(nbParamString,"%d",nbParam);
-      SdifNameValuesLPutCurrNVT(output->NameValues,"NumberOfParameters",nbParamString);
+      SdifNameValuesLPutCurrNVT(output->NameValues,
+				"NumberOfParameters", nbParamString);
 
       /* Write general header and ascii chunks */
       SdifFWriteGeneralHeader(output);
@@ -101,12 +100,12 @@ beginwrite (int nrhs, const mxArray *prhs [], char *filename, char *types)
   return(output);
 }
 
-void 
-endwrite (SdifFileT *output)
+SdifFileT *endwrite (SdifFileT *output)
 {
   if (!output)
     mexErrMsgTxt("You must open a file before");
   SdifFClose(output);
+  return NULL;
 }
 
 /* writeframe(time, streamid, framesize, matrixsig1, data1, matrxisig2, data2 ...) */

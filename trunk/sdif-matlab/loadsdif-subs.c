@@ -1,4 +1,4 @@
-/* $Id: loadsdif-subs.c,v 1.4 2000-07-19 16:32:08 schwarz Exp $
+/* $Id: loadsdif-subs.c,v 1.5 2000-08-04 14:42:28 schwarz Exp $
 
    loadsdif_subs.c	25. January 2000	Diemo Schwarz
 
@@ -14,6 +14,10 @@
    endread ('close')
 
   $Log: not supported by cvs2svn $
+  Revision 1.4  2000/07/19  16:32:08  schwarz
+  Updated to new SDIF selection API.
+  Proper handling of matrix selection now.
+
   Revision 1.3  2000/05/12  14:03:53  schwarz
   Oops-style errors.
 
@@ -78,11 +82,12 @@ SdifFileT *beginread (int nlhs, mxArray *plhs [], char *filename, char *types)
 }
 
 
-void endread (SdifFileT *input)
+SdifFileT *endread (SdifFileT *input)
 {
     if (!matricesread  &&  matricesskipped)
         mexWarnMsgTxt ("No Matrices selected!");
     SdifFClose (input);
+    return NULL;
 }
 
 
