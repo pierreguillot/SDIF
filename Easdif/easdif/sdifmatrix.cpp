@@ -32,9 +32,12 @@
  * 
  * 
  * 
- * $Id: sdifmatrix.cpp,v 1.11 2003-07-17 18:09:35 roebel Exp $ 
+ * $Id: sdifmatrix.cpp,v 1.12 2003-07-17 20:00:49 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.11  2003/07/17 18:09:35  roebel
+ * Improved Resize method, added Clear method and proper assigment operator
+ *
  * Revision 1.10  2003/07/09 21:06:55  roebel
  * Added support for eUInt4.
  *
@@ -152,6 +155,7 @@ void SDIFMatrix::Init(SdifSignature sig, int nrows, int ncols, SdifDataTypeET ty
     if(mInter) {
       if(mType == type) {
 	mInter->Resize(nrows,ncols);
+	mInter->Clear();
       }
       else{
 	delete mInter;
