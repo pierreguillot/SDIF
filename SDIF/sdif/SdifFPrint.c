@@ -1,4 +1,4 @@
-/* $Id: SdifFPrint.c,v 3.10 2003-07-21 09:59:08 roebel Exp $
+/* $Id: SdifFPrint.c,v 3.11 2003-08-06 15:11:45 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -31,6 +31,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.10  2003/07/21 09:59:08  roebel
+ * Added support for intreger types to SdifFPrintOneRow
+ *
  * Revision 3.9  2003/05/30 14:33:44  schwarz
  * Added text matrix case to SdifFPrintOneRow for sdiftotext conversion
  * (called from SdifConvToText.c)
@@ -353,30 +356,3 @@ SdifFPrintFrameHeader(SdifFileT *SdifF)
 
   return SizeW;
 }
-
-
-
-/*
- * obsolete
- */
-
-
-size_t
-SdifFPrintNameValueCurrHT(SdifFileT *SdifF)
-{
-    /* obsolete */
-    _Debug("SdifFPrintNameValueCurrHT is obsolete, use SdifFPrintNameValueLCurrNVT");
-    return SdifFPrintNameValueLCurrNVT(SdifF);
-}
-
-
-
-size_t
-SdifFPrintAllNameValueHT(SdifFileT *SdifF)
-{
-    /* obsolete */
-    _Debug("SdifFPrintAllNameValueHT is obsolete, use SdifFPrintAllNameValueNVT");
-    return SdifFPrintAllNameValueNVT(SdifF);
-}
-
-

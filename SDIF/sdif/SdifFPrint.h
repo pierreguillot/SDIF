@@ -1,4 +1,4 @@
-/* $Id: SdifFPrint.h,v 3.4 2001-05-02 09:34:41 tisseran Exp $
+/* $Id: SdifFPrint.h,v 3.5 2003-08-06 15:11:45 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -32,6 +32,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.4  2001/05/02 09:34:41  tisseran
+ * Change License from GNU Public License to GNU Lesser Public License.
+ *
  * Revision 3.3  2000/11/21 14:51:48  schwarz
  * - sdif.h is now included by all sdif/Sdif*.c files.
  * - Removed all public typedefs, enums, structs, and defines from the
@@ -104,12 +107,5 @@ size_t SdifFPrintOneRow             (SdifFileT *SdifF);
 
 size_t SdifFPrintMatrixType         (SdifFileT *SdifF, SdifMatrixTypeT *MatrixType);
 size_t SdifFPrintFrameType          (SdifFileT *SdifF, SdifFrameTypeT  *FrameType);
-
-
-/*
- * obsolete
- */
-size_t SdifFPrintNameValueCurrHT (SdifFileT *SdifF);
-size_t SdifFPrintAllNameValueHT  (SdifFileT *SdifF);
 
 #endif /* _SdifFPrint_ */
