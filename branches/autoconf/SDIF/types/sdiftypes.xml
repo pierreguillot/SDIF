@@ -1,0 +1,575 @@
+<sdif-tdl version="0.2">
+
+<!-- $Log: not supported by cvs2svn $
+ Revision 1.3  2000/08/09  14:43:49  schwarz
+ Put all SDIF types into XML format.  Lots of descriptions still missing.
+ Full "about this document" info.
+
+ Revision 1.2  2000/08/08  15:59:08  schwarz
+ SDIF-TDL version 0.2 (no matrix:role attribute, types-version, types-revision.
+ Generation details in STYP 1NVT / HTML footer.
+
+ Revision 1.1  2000/07/27  13:32:02  schwarz
+ First preliminary trial test version of SDIF types definition using XML:
+ xmltostyp.pl generates library-types file sdiftypes.styp from sdiftypes.xml,
+ xmltohtml.pl generates documentation file sdiftypes.html from sdiftypes.xml.
+-->
+
+
+<types-version>Ircam_1.5</types-version>
+
+<types-revision>
+  $Id: sdiftypes.xml,v 1.4 2000-08-16 16:10:40 schwarz Exp $
+</types-revision>
+
+
+<!-- READ THIS FIRST:
+
+Some points to note about the SDIF types XML format:
+
+- define a matrix before the frame which uses it
+
+- Francophoniephiles: use <description language="fr">...</description>
+  to add french text.
+
+- Find the right section to put your type in, or create a new, meaningful one.
+
+-->
+
+
+<!-- Some open questions about the xml-format:
+
+- Matrix data types are declared like this:
+
+  <float/><double/>
+
+  alternative data type definitions: 
+
+  <type>float</type>   <type>double</type>   <type>float double</type>
+  <data type="float"/> <data type="double"/> <data type="float" type="double"/>
+					     <data type="float|double"/>
+
+
+- Sectioning:
+
+  we use
+
+  <section>Spectral Envelopes</section>
+    <matrix>...</matrix>
+    <frame>...</frame>
+
+  and not
+
+  <section title="Spectral Envelopes">
+    <matrix>...</matrix>
+    <frame>...</frame>
+  </section> 
+  because types don't need to be in sections!
+
+  On the other hand, this slightly defies the tree-structure idea of xml.
+
+-->
+
+
+<section>Supporting Types</section>
+
+
+<matrix signature="1NVT" name="NameValueTable">
+  <description></description>
+  <float/><double/>
+  <rows></rows>
+  <column name="Text"></column>
+</matrix>
+
+<matrix signature="1TYP" name="TypeDefinitions">
+  <description></description>
+  <float/><double/>
+  <rows></rows>
+  <column name="Text"></column>
+</matrix>
+
+<matrix signature="1IDS" name="StreamInfo">
+  <description></description>
+  <float/><double/>
+  <rows></rows>
+  <column name="Text"></column>
+</matrix>
+
+
+<frame signature="1NVT" name="" status="standard">
+  <description></description>
+  <matrixref signature="1NVT" occurrence="required"></matrixref>
+</frame>
+
+<frame signature="1TYP" name="" status="standard">
+  <description></description>
+  <matrixref signature="1TYP" occurrence="required"></matrixref>
+</frame>
+
+<frame signature="1IDS" name="" status="standard">
+  <description></description>
+  <matrixref signature="1IDS" occurrence="required"></matrixref>
+</frame>
+
+
+<matrix signature="1GAI" name="Gain">
+  <description></description>
+  <float/><double/>
+  <rows   num="1"/>
+  <column name="Gain">linear gain value</column>
+</matrix>
+
+<frame signature="1GAI" name="Gain">
+  <description></description>
+  <matrixref signature="1GAI" occurrence="required">Gain</matrixref>
+</frame>
+
+
+
+<section>Pitch Estimation</section>
+
+
+<matrix signature="1FQ0" name="PitchEstimate">
+  <description>Fundamental Frequency <i>f0</i></description>
+  <float/><double/>
+  <rows></rows>
+  <column name="Frequency"></column>
+  <column name="Confidence"></column>
+  <column name="Score"></column>
+  <column name="RealAmplitude"></column>
+</matrix>
+
+<frame signature="1FQ0" name="PitchEstimate">
+  <description>Fundamental Frequency <i>f0</i></description>
+  <matrixref signature="1FQ0" occurrence="required">Pitch estimate</matrixref>
+</frame>
+
+
+
+
+<section>Sinusoidal Modeling</section>
+
+
+
+<matrix signature="1PIC" name="PickedPeaks" status="standard">
+  <description></description>
+  <float/><double/>
+  <rows></rows>
+  <column name="Frequency"></column>
+  <column name="Amplitude"></column>
+  <column name="Phase"></column>
+  <column name="Confidence"></column>
+</matrix>
+
+<matrix signature="1TRC" name="SinusoidalTracks" status="standard">
+  <description></description>
+  <float/><double/>
+  <rows></rows>
+  <column name="Index"></column>
+  <column name="Frequency"></column>
+  <column name="Amplitude"></column>
+  <column name="Phase"></column>
+</matrix>
+
+<matrix signature="1HRM" name="HarmonicPartials" status="standard">
+  <description></description>
+  <float/><double/>
+  <rows>A row describes one harmonic partial</rows>
+  <column name="Index">			partial index		</column>
+  <column name="Frequency" unit="Hz">	partial frequency	</column>
+  <column name="Amplitude">		partial amplitude	</column>
+  <column name="Phase">			partial phase, between -pi and pi
+  </column>
+</matrix>
+
+
+
+<frame signature="1PIC" name="PickedPeaks" status="standard">
+  <description></description>
+  <matrixref signature="1PIC" occurrence="required">PickedPeaks</matrixref>
+ 
+</frame>
+
+<frame signature="1TRC" name="SinusoidalTracks" status="standard">
+  <description></description>
+  <matrixref signature="1TRC" occurrence="required">SinusoidalTracks</matrixref> 
+</frame>
+
+<frame signature="1HRM" name="HarmonicPartials" status="standard">
+  <description></description>
+  <matrixref signature="1HRM" occurrence="required"/>
+</frame>
+
+
+<matrix signature="1HRE" name="HarmonicityEstimate">
+  <description></description>
+  <float/><double/>
+  <rows></rows>
+  <column name="MeanDeltaFrequency"></column>
+  <column name="Harmonicity"></column>
+  <column name="WeightedHarmonicity"></column>
+</matrix>
+
+<frame signature="1HRE" name="HarmonicityEstimate" status="experimental">
+  <description></description>
+  <matrixref signature="1HRE" occurrence="required">Harmonicity</matrixref>
+</frame>
+
+
+
+
+
+<section>Spectral Envelopes</section>
+
+
+<matrix signature="IENV" name="SpectralEnvelopeInfo">
+  <description>
+	Spectral envelopes information matrix, defines interpretation 
+	of following <matrixref signature="1ENV">1ENV matrix</matrixref>
+  </description>
+
+  <float/><double/>
+
+  <rows num="1"/>
+
+  <column name="HighestBinFrequency" unit="Hz">	
+	frequency of the highest bin of the <matrixref signature="1ENV">
+        1ENV matrix</matrixref>
+  </column>
+
+  <column name="ScaleType">
+	0 for linear, 1 for logarithmic scaling
+  </column>
+
+  <column name="BreakFrequency" unit="Hz">
+	break frequency when logarithmic scaling
+  </column>
+</matrix>
+
+<matrix signature="1ENV" name="SpectralEnvelope">
+  <float/><double/>
+  <description>Spectral envelope in sampled representation.</description>
+  <description language="fr">Abradakadabra abrakabum.</description>
+  <rows>A row corresponds to one bin of the spectral envelope</rows>
+  <column name="Env">envelope bin</column>
+</matrix>
+
+<frame signature="1ENV" name="SpectralEnvelope" status="proposed">
+  <description></description>
+  <matrixref signature="IENV" occurrence="optional"/>
+  <matrixref signature="1ENV" occurrence="required"/>
+  <matrixref signature="1GAI" occurrence="optional">
+    gain of the original signal = desired gain for the synthesised signal
+  </matrixref>
+</frame>
+
+
+<matrix signature="1CEC" name="CepstralCoefs">
+  <description>Cepstral coefficients</description>
+  <float/><double/>
+  <rows></rows>
+  <column name="c"></column>
+</matrix>
+
+<frame signature="1CEC" name="CepstralCoefs">
+  <description></description>
+  <matrixref signature="1CEC" occurrence="required">CepstralCoefs</matrixref>
+</frame>
+
+
+<matrix signature="1ARA" name="ARACoefs">
+  <description></description>
+  <float/><double/>
+  <rows>The rows contain <var>p + 1</var> autoregressive coefficients
+    <var>a<sub>0</sub></var> to <var>a<sub>p</sub></var>, where
+    <var>p</var> is the <emph>order</emph> of the LPC.
+  </rows>
+  <column name="AutoRegressiveCoefficients"></column>
+</matrix>
+
+<matrix signature="1ARK" name="ARKCoefs">
+  <description></description>
+  <float/><double/>
+  <rows>The rows contain <var>p</var> reflection coefficients
+    <var>k<sub>1</sub></var> to <var>k<sub>p</sub></var>, where
+    <var>p</var> is the <emph>order</emph> of the LPC.
+  </rows>
+  <column name="ReflectionCoefficients"></column>
+</matrix>
+      
+<matrix signature="1ARR" name="ARRCoefs">
+  <description></description>
+  <float/><double/>
+  <rows>The rows contain <var>p + 1</var> autocorrelation coefficients
+    <var>r<sub>0</sub></var> to <var>r<sub>p</sub></var>, where
+    <var>p</var> is the <emph>order</emph> of the LPC.
+  </rows>
+  <column name="AutoCorrelationCoefficients"></column>
+</matrix>
+
+<frame signature="1ARA" name="ARKCoefs">
+  <description></description>
+  <matrixref signature="1GAI" occurrence="required">Gain</matrixref>
+  <matrixref signature="1ARA" occurrence="required">ARCoefs</matrixref> 
+</frame>
+
+<frame signature="1ARK" name="ARKCoefs">
+  <description></description>
+  <matrixref signature="1GAI" occurrence="required">Gain</matrixref>
+  <matrixref signature="1ARK" occurrence="required">ARCoefs</matrixref> 
+</frame>
+ 
+<frame signature="1ARR" name="ARRCoefs">
+  <description></description>
+  <matrixref signature="1ARR" occurrence="required">ARCoefs</matrixref>
+</frame>
+
+
+
+
+<section>Resonances</section>
+
+
+<matrix signature="1FOF" name="Formants">
+  <description></description>
+  <float/><double/>
+  <rows></rows>
+  <column name="Frequency"></column>
+  <column name="Amplitude"></column>
+  <column name="BandWidth"></column>
+  <column name="Tex"></column>
+  <column name="DebAtt"></column>
+  <column name="Atten"></column>
+  <column name="Phase"></column>
+</matrix>
+
+<matrix signature="1RES" name="Filters">
+  <description></description>
+  <float/><double/>
+  <rows></rows>
+  <column name="Frequency"></column>
+  <column name="Amplitude"></column>
+  <column name="BandWidth"></column>
+  <column name="Saliance"></column>
+  <column name="Correction"></column>
+</matrix>
+
+<matrix signature="1CHA" name="FormantsChannels">
+  <description></description>
+  <float/><double/>
+  <rows></rows>
+  <column name="Channel1"></column>
+  <column name="Channel2"></column>
+  <column name="Channel3"></column>
+  <column name="Channel4"></column>
+</matrix>
+
+<matrix signature="1DIS" name="NoiseInfo">
+  <description></description>
+  <float/><double/>
+  <rows></rows>
+  <column name="Distribution"></column>
+  <column name="Amplitude"></column>
+</matrix>
+
+
+
+<frame signature="1NOI" name="">
+  <description></description>
+  <matrixref signature="1DIS" occurrence="required">NoiseInfo</matrixref> 
+</frame>
+
+		       
+<frame signature="1FOB" name="">
+  <description></description>
+  <matrixref signature="1FQ0" occurrence="required">PitchModeHit</matrixref>
+  <matrixref signature="1FOF" occurrence="required">Formants</matrixref>
+  <matrixref signature="1CHA" occurrence="required">FormantsChannels</matrixref> 
+</frame>
+
+		       
+<frame signature="1REB" name="">
+  <description></description>
+  <matrixref signature="1RES" occurrence="required">Filters</matrixref>
+  <matrixref signature="1CHA" occurrence="required">FiltersChannels</matrixref>
+</frame>
+
+
+
+
+<section>Fourier Transform</section>
+
+
+<matrix signature="ISTF" name="FourierTransformInfo">
+  <description></description>
+  <float/><double/>
+  <rows></rows>
+  <column name="HighestBinFrequency"></column>
+  <column name="FrameDuration"></column>
+  <column name="FFTSize"></column>
+</matrix>
+
+<matrix signature="1STF" name="FourierTransform">
+  <description></description>
+  <float/><double/><int16/><int32/>
+  <rows>Bins</rows>
+  <column name="Real"></column>
+  <column name="Imaginary"></column>
+</matrix>
+
+<frame signature="ISTF" name="FourierTransformInfo">
+  <description></description>
+  <matrixref signature="ISTF" occurrence="required">Info</matrixref>
+</frame>
+
+<frame signature="1STF" name="FourierTransform">
+  <description></description>
+  <matrixref signature="ISTF" occurrence="required">Info</matrixref>
+  <matrixref signature="1STF" occurrence="required">FourierTransform</matrixref> 
+</frame>
+
+
+
+
+<section>Energy</section>
+
+
+<matrix signature="1NRG" name="Energy">
+  <description></description>
+  <float/><double/>
+  <rows></rows>
+  <column name="Energy"></column>
+</matrix>
+
+<matrix signature="INRG" name="ScaleAndFactor">
+  <description></description>
+  <float/><double/>
+  <rows></rows>
+  <column name="Scale"></column>
+  <column name="NormalisationFactor"></column>
+</matrix>
+
+<frame signature="1NRG" name="">
+  <description></description>
+  <matrixref signature="INRG" occurrence="required">ScaleAndFactor</matrixref>
+  <matrixref signature="1NRG" occurrence="required">Energy</matrixref> 
+</frame>
+
+
+<matrix signature="1BND" name="Bands">
+  <description></description>
+  <float/><double/>
+  <rows></rows>
+  <column name="LowerFrequencyLimit"></column>
+  <column name="UpperFrequencyLimit"></column>
+</matrix>
+
+<frame signature="1BND" name="Bands">
+  <description></description>
+  <matrixref signature="1BND" occurrence="required">Bands</matrixref>
+</frame>
+
+
+
+
+<section>Time markers</section>
+
+
+<matrix signature="1PEM" name="PeriodMarker">
+  <description></description>
+  <float/><double/>
+  <rows></rows>
+  <column name="Identifier"></column>
+  <column name="Parameter1"></column>
+  <column name="Parameter2"></column>
+  <column name="Parameter3"></column>
+</matrix>
+
+<matrix signature="ITMR" name="TransientMarkerRepresentation">
+  <description></description>
+  <float/><double/>
+  <rows></rows>
+  <column name="Index"></column>
+  <column name="Frequency"></column>
+  <column name="Amplitude"></column>
+  <column name="Phase"></column>
+</matrix>
+
+<matrix signature="ITMI" name="TransientMarkerIdentifier">
+
+  <description>Matrix identifier for transient in the signal such as
+  occurs at tke beginning of percussive sounds ans which need special
+  care.
+  </description>
+
+  <float/><double/>
+  <rows></rows>
+
+  <column name="Index">Identifier of the method used to detect and
+  estimate this marker</column>
+</matrix>
+
+
+
+
+<section>Voiced-Unvoiced Decision</section>
+
+
+<matrix signature="1VUN" name="VoicedUnvoicedNorm">
+  <description></description>
+  <float/><double/>
+  <rows></rows>
+  <column name="Index"></column>
+</matrix>
+
+<matrix signature="1VUF" name="VoicedUnvoicedFreq">
+  <description></description>
+  <float/><double/>
+  <rows></rows>
+  <column name="CuttingFrequency"></column>
+</matrix>
+
+<frame signature="1MRK" name="Marker" status="proposed">
+  <description></description>
+  <matrixref signature="1PEM" occurrence="required">PeriodMarker</matrixref>
+  <matrixref signature="ITMR" occurrence="required">TransientMarkerRepresentation</matrixref>
+  <matrixref signature="ITMI" occurrence="required">TransientMarkerIdentifier</matrixref> 
+</frame>
+
+
+<frame signature="1VUV" name="VoicedUnvoiced" status="proposed">
+  <description></description>
+  <matrixref signature="1VUN" occurrence="required">VoicedUnvoicedNorm</matrixref>
+  <matrixref signature="1VUF" occurrence="required">VoicedUnvoicedFreq</matrixref> 
+</frame>
+
+
+
+
+<section>jMax Physical Model Parameters</section>
+
+
+<matrix signature="EMPM" name="Tableau">
+  <description></description>
+  <float/><double/>
+  <rows></rows>
+  <column name="Value"></column>
+  <column name="Index"></column>
+</matrix>
+
+<matrix signature="EMJR" name="EndRecording">
+  <description></description>
+  <float/><double/>
+  <rows></rows>
+  <column name="Record"></column>
+</matrix>
+
+<frame signature="EFPM" name="PhysicalModelParameters" status="private">
+  <description></description>
+  <matrixref signature="EMPM" occurrence="required">Tableau</matrixref>
+  <matrixref signature="EMJR" occurrence="required">EndRecording</matrixref>
+</frame>
+
+
+
+</sdif-tdl>
