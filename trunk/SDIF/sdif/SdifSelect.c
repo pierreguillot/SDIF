@@ -1,4 +1,4 @@
-/* $Id: SdifSelect.c,v 3.15 2002-05-24 19:37:52 ftissera Exp $
+/* $Id: SdifSelect.c,v 3.16 2002-08-05 14:20:53 roebel Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -96,6 +96,10 @@ TODO
 
 LOG
   $Log: not supported by cvs2svn $
+  Revision 3.15  2002/05/24 19:37:52  ftissera
+  Change code to be compatible with C++
+  Cast pointers to correct type.
+
   Revision 3.14  2001/05/02 09:34:47  tisseran
   Change License from GNU Public License to GNU Lesser Public License.
 
@@ -190,6 +194,19 @@ SdifBaseName (const char* path)
 	    return ((char *) path);
 }
 
+int 
+SdifFreeSelectionLists (SdifSelectionT *sel)
+{
+
+    SdifKillList (sel->stream);
+    SdifKillList (sel->frame);
+    SdifKillList (sel->matrix);
+    SdifKillList (sel->column);
+    SdifKillList (sel->row);
+    SdifKillList (sel->time);
+    return (1);
+}
+
 
 /*
 // DATA GROUP:		terminal symbols and character classes for parsing
@@ -257,6 +274,19 @@ elimselelem (/*SdifSelectionT*/ void *victim)
     SdifFree (victim);
 }
 
+int 
+SdifInitSelectionLists (SdifSelectionT *sel)
+{
+
+    sel->stream = SdifCreateList (elimselelem);
+    sel->frame  = SdifCreateList (elimselelem);
+    sel->matrix = SdifCreateList (elimselelem);
+    sel->column = SdifCreateList (elimselelem);
+    sel->row    = SdifCreateList (elimselelem);
+    sel->time   = SdifCreateList (elimselelem);
+
+    return (1);
+}
 
 int 
 SdifInitSelection (SdifSelectionT *sel, const char *filename, int namelen)
@@ -271,13 +301,7 @@ SdifInitSelection (SdifSelectionT *sel, const char *filename, int namelen)
     sel->filename [namelen] = 0;
     sel->basename = SdifBaseName (sel->filename);
 
-    sel->stream = SdifCreateList (elimselelem);
-    sel->frame  = SdifCreateList (elimselelem);
-    sel->matrix = SdifCreateList (elimselelem);
-    sel->column = SdifCreateList (elimselelem);
-    sel->row    = SdifCreateList (elimselelem);
-    sel->time   = SdifCreateList (elimselelem);
-    
+    SdifInitSelectionLists(sel);
     return (1);
 }
 
@@ -297,12 +321,8 @@ SdifFreeSelection (SdifSelectionT *sel)
     else
 	_SdifError (eFreeNull, "Selection->filename");
 
-    SdifKillList (sel->stream);
-    SdifKillList (sel->frame);
-    SdifKillList (sel->matrix);
-    SdifKillList (sel->column);
-    SdifKillList (sel->row);
-    SdifKillList (sel->time);
+    SdifFreeSelectionLists (sel);
+
     return (1);
 }
 
@@ -484,6 +504,10 @@ parse (int (*parseval) (SdifSelectValueT *valu), SdifListP list,
 	   fprintf (stderr,						 \
 		    "ERROR: SDIF selection: can't parse %s from '%s'\n(recently read: '%.*s'):\n" msg "\n\n", name, SYMBOL, SYMBOL - ORIG, ORIG, arg)
 
+#   define print_error0(msg)	/* todo: use sdiferr... */       \
+	   fprintf (stderr,						 \
+		    "ERROR: SDIF selection: can't parse %s from '%s'\n(recently read: '%.*s'):\n" msg "\n\n", name, SYMBOL, SYMBOL - ORIG, ORIG)
+
     int		       ret   = 0;	/* being pessimistic */
     SdifSelectElementT *elem = SdifMalloc (SdifSelectElementT);
     elem->rangetype = sst_norange;
@@ -508,10 +532,10 @@ parse (int (*parseval) (SdifSelectValueT *valu), SdifListP list,
 				
 		    }
 		    else
-			print_error1 ("Malformed range expression\n", 0);
+			print_error0 ("Malformed range expression\n");
 		}
 		else
-		    print_error1 ("Range only permitted with numerical values\n", 0);
+		    print_error0 ("Range only permitted with numerical values\n");
 	    break;
 	
 	    case sst_list:	/* add elem and recursively read comma-list */
@@ -622,6 +646,19 @@ SdifGetFilenameAndSelection (/*in*/  const char *filename,
     if (spec)
 	SdifParseSelection (sel, spec + symlen (sst_specsep));
     return (sel->filename);
+}
+
+void
+SdifReplaceSelection (/*in*/  const char *selectionstr, 
+			     /*out*/ SdifSelectionT *sel)
+{
+
+    SdifFreeSelectionLists (sel);
+    SdifInitSelectionLists (sel);
+
+    if(selectionstr)
+	SdifParseSelection (sel, selectionstr );
+    return;
 }
 
 
