@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.3 2000-10-30 14:44:02 roebel Exp $
+# $Id: Makefile.am,v 1.4 2000-10-30 19:05:54 roebel Exp $
 #
 # ./tools/Makefile.am		September 2000			Patrice Tisserand
 #
@@ -29,6 +29,9 @@
 # send email to:  sdif@ircam.fr
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.3  2000/10/30  14:44:02  roebel
+# Moved all tool sources into central tools directory and added config.h to sources
+#
 # Revision 1.2  2000/10/27  20:04:17  roebel
 # autoconf merged back to main trunk
 #
@@ -36,11 +39,31 @@
 # Added header with copyright and links to all Makefile.am and configure.in.
 #
 
-bin_PROGRAMS = querysdif sdifextract sdiftotext tosdif
+EXTRA_PROGRAMS=querysdif-debug sdifextract-debug sdiftotext-debug tosdif-debug querysdif sdifextract sdiftotext tosdif
+bin_PROGRAMS = @PROGLIST@
 
-LDADD = -lsdif
-LDFLAGS = -L../sdif
-INCLUDES = -I../include
+querysdif_debug_SOURCES=querysdif.c
+sdifextract_debug_SOURCES=sdifextract.c
+sdiftotext_debug_SOURCES=sdiftotext.c
+tosdif_debug_SOURCES=tosdif.c
 
+querysdif_debug_LDADD = -lsdif-debug
+querysdif_debug_LDFLAGS = -L../sdif
+sdifextract_debug_LDADD = -lsdif-debug
+sdifextract_debug_LDFLAGS = -L../sdif
+sdiftotext_debug_LDADD = -lsdif-debug
+sdiftotext_debug_LDFLAGS = -L../sdif
+tosdif_debug_LDADD = -lsdif-debug
+tosdif_debug_LDFLAGS = -L../sdif
 
+querysdif_LDADD = -lsdif
+querysdif_LDFLAGS = -L../sdif
+sdifextract_LDADD = -lsdif
+sdifextract_LDFLAGS = -L../sdif
+sdiftotext_LDADD = -lsdif
+sdiftotext_LDFLAGS = -L../sdif
+tosdif_LDADD = -lsdif
+tosdif_LDFLAGS = -L../sdif
+
+INCLUDES = -I$(top_srcdir)/include
 

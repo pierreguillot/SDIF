@@ -10,7 +10,7 @@
 # even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 # PARTICULAR PURPOSE.
 
-# $Id: Makefile.in,v 1.3 2000-10-30 16:58:20 roebel Exp $
+# $Id: Makefile.in,v 1.4 2000-10-30 19:05:49 roebel Exp $
 #
 # ./sdif/Makefile.am		September 2000			Patrice Tisserand
 #
@@ -105,10 +105,14 @@ CC = @CC@
 IRCAMDEPS = @IRCAMDEPS@
 MAKEINFO = @MAKEINFO@
 PACKAGE = @PACKAGE@
+PROGLIST = @PROGLIST@
 RANLIB = @RANLIB@
+SELLIB = @SELLIB@
+TESTLIB = @TESTLIB@
 VERSION = @VERSION@
 
-lib_LIBRARIES = libsdif.a
+EXTRA_LIBRARIES = libsdif.a libsdif-debug.a
+lib_LIBRARIES = @SELLIB@
 FORMES_H = host_architecture.h preincluded.h UniversalEnvVar.h host_configure.h XpGuiCalls.h
 FORMES_INCLUDE = /u/formes/share/include
 
@@ -116,11 +120,13 @@ SDIF_H = SdifCheck.h 	SdifConvToText.h 	SdifErrMess.h 	SdifError.h 	SdifFGet.h 	
 
 
 noinst_HEADERS = $(SDIF_H) ${FORMES_H}
-libsdif_a_dir = $(prefix)/libsdif
 
 libsdif_a_SOURCES = SdifString.c      SdifHash.c     SdifGlobals.c      SdifSignatureTab.c 		     SdifError.c       SdifMemory.c   SdifNameValue.c    SdifMatrixType.c 		     SdifFrameType.c   SdifStreamID.c SdifMatrix.c       SdifFrame.c 		     SdifPrint.c       SdifTest.c     SdifTimePosition.c SdifFile.c 		     SdifRWLowLevel.c  SdifFGet.c     SdifFRead.c        SdifFScan.c 		     SdifFPut.c        SdifFPrint.c   SdifFWrite.c       SdifTextConv.c 		     SdifConvToText.c  SdifHard_OS.c  SdifErrMess.c      SdifList.c 		     SdifPreTypes.c    SdifSelect.c   SdifHighLevel.c    SdifCheck.c 
 
-sdiftype = $(datadir)/SdifTypes.STYP
+
+libsdif_debug_a_SOURCES = SdifString.c      SdifHash.c     SdifGlobals.c      SdifSignatureTab.c 		     SdifError.c       SdifMemory.c   SdifNameValue.c    SdifMatrixType.c 		     SdifFrameType.c   SdifStreamID.c SdifMatrix.c       SdifFrame.c 		     SdifPrint.c       SdifTest.c     SdifTimePosition.c SdifFile.c 		     SdifRWLowLevel.c  SdifFGet.c     SdifFRead.c        SdifFScan.c 		     SdifFPut.c        SdifFPrint.c   SdifFWrite.c       SdifTextConv.c 		     SdifConvToText.c  SdifHard_OS.c  SdifErrMess.c      SdifList.c 		     SdifPreTypes.c    SdifSelect.c   SdifHighLevel.c    SdifCheck.c 
+
+
 INCLUDES = -D_SdifTypesFileName=\"$(sdiftype)\" -DUSE_CONFIGURE
 
 Versionsrc := $(libsdif_a_SOURCES) $(subst SdifVersion.h,,$(noinst_HEADERS))
@@ -136,6 +142,15 @@ LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
 libsdif_a_LIBADD = 
 libsdif_a_OBJECTS =  SdifString.o SdifHash.o SdifGlobals.o \
+SdifSignatureTab.o SdifError.o SdifMemory.o SdifNameValue.o \
+SdifMatrixType.o SdifFrameType.o SdifStreamID.o SdifMatrix.o \
+SdifFrame.o SdifPrint.o SdifTest.o SdifTimePosition.o SdifFile.o \
+SdifRWLowLevel.o SdifFGet.o SdifFRead.o SdifFScan.o SdifFPut.o \
+SdifFPrint.o SdifFWrite.o SdifTextConv.o SdifConvToText.o SdifHard_OS.o \
+SdifErrMess.o SdifList.o SdifPreTypes.o SdifSelect.o SdifHighLevel.o \
+SdifCheck.o
+libsdif_debug_a_LIBADD = 
+libsdif_debug_a_OBJECTS =  SdifString.o SdifHash.o SdifGlobals.o \
 SdifSignatureTab.o SdifError.o SdifMemory.o SdifNameValue.o \
 SdifMatrixType.o SdifFrameType.o SdifStreamID.o SdifMatrix.o \
 SdifFrame.o SdifPrint.o SdifTest.o SdifTimePosition.o SdifFile.o \
@@ -168,8 +183,8 @@ DEP_FILES =  .deps/SdifCheck.P .deps/SdifConvToText.P \
 .deps/SdifRWLowLevel.P .deps/SdifSelect.P .deps/SdifSignatureTab.P \
 .deps/SdifStreamID.P .deps/SdifString.P .deps/SdifTest.P \
 .deps/SdifTextConv.P .deps/SdifTimePosition.P
-SOURCES = $(libsdif_a_SOURCES)
-OBJECTS = $(libsdif_a_OBJECTS)
+SOURCES = $(libsdif_a_SOURCES) $(libsdif_debug_a_SOURCES)
+OBJECTS = $(libsdif_a_OBJECTS) $(libsdif_debug_a_OBJECTS)
 
 all: all-redirect
 .SUFFIXES:
@@ -262,6 +277,11 @@ libsdif.a: $(libsdif_a_OBJECTS) $(libsdif_a_DEPENDENCIES)
 	-rm -f libsdif.a
 	$(AR) cru libsdif.a $(libsdif_a_OBJECTS) $(libsdif_a_LIBADD)
 	$(RANLIB) libsdif.a
+
+libsdif-debug.a: $(libsdif_debug_a_OBJECTS) $(libsdif_debug_a_DEPENDENCIES)
+	-rm -f libsdif-debug.a
+	$(AR) cru libsdif-debug.a $(libsdif_debug_a_OBJECTS) $(libsdif_debug_a_LIBADD)
+	$(RANLIB) libsdif-debug.a
 
 tags: TAGS
 
@@ -424,13 +444,15 @@ mostlyclean-generic distclean-generic clean-generic \
 maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 
 
+		     sdiftype = $(datadir)/SdifTypes.STYP
+
 $(libsdif_a_SOURCES) :  @IRCAMDEPS@
 
 SdifFile.o : SdifVersion.h
 SdifVersion.h : $(Versionsrc)
 	@echo  "Updating  Library CKSUM"
 	@echo "/* Automatically generated File do not edit */" >$@
-	@echo '#define AUTOCKSUM "$$Checksum: SRC '$(shell CMD_ENV=xpg4;export CMD_ENV;cksum $^ | cut -f1 -d' '|cksum |cut -f1 -d' ')' $$ IRCAM $$Date: 2000-10-30 16:58:20 $$"'>>$@
+	@echo '#define AUTOCKSUM "$$Checksum: SRC '$(shell CMD_ENV=xpg4;export CMD_ENV;cksum $^ | cut -f1 -d' '|cksum |cut -f1 -d' ')' $$ IRCAM $$Date: 2000-10-30 19:05:49 $$"'>>$@
 
 # EXTRA FOR IRCAM STUFF
 ircam_deps : ${FORMES_H}

@@ -1,12 +1,30 @@
 #!/bin/sh 
 
-SDIFTOTEXT=../tools/sdiftotext/sdiftotext
-TOSDIF=../tools/tosdif/tosdif
+if [ "$SDIFTYPES" = "" ] ;then
+ echo SDIF not defined
+ exit 1
+fi
 
-Files_Txt_Dir=./files/txt
-Files_Sdif_Dir=./files/sdif
-Files_Txt_Sdif_Txt_Dir=./files/txtw
-Files_Txt_Sdif_Txt_Sdif_Dir=./files/sdifw
+if [  -x ../tools/sdiftotext ]; then
+SDIFTOTEXT=../tools/sdiftotext
+TOSDIF=../tools/tosdif
+fi
+
+if [  -x ../tools/sdiftotext-debug ]; then
+SDIFTOTEXT=../tools/sdiftotext-debug
+TOSDIF=../tools/tosdif-debug
+fi
+
+if [ "$SDIFTOTEXT" = "" -o "$TOSDIF" = "" ]; then
+  echo Programs sdiftotext of tosdif  not found
+  exit 1
+fi
+
+
+Files_Txt_Dir=$srcdir/files/txt
+Files_Sdif_Dir=$srcdir/files/sdif
+Files_Txt_Sdif_Txt_Dir=$srcdir/files/txtw
+Files_Txt_Sdif_Txt_Sdif_Dir=$srcdir/files/sdifw
 
 sleep 1 # Wait one second
 echo
