@@ -1,4 +1,4 @@
-/* $Id: SdifTest.h,v 3.3 1999-09-28 13:09:15 schwarz Exp $
+/* $Id: SdifTest.h,v 3.4 2000-08-22 13:38:42 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -19,6 +19,10 @@ LIBRARY
  *
 LOG
  * $Log: not supported by cvs2svn $
+ * Revision 3.3  1999/09/28  13:09:15  schwarz
+ * Included #include <preincluded.h> for cross-platform uniformisation,
+ * which in turn includes host_architecture.h and SDIF's project_preinclude.h.
+ *
  * Revision 3.2  1999/08/25  18:32:37  schwarz
  * Added cocoon-able comments with sentinel "DOC:" (on a single line).
  *
@@ -98,23 +102,23 @@ SdifFrameTypeT*  SdifTestFrameType  (SdifFileT *SdifF, SdifSignature Signature);
 
 
 
-short SdifFTestMatrixWithFrameHeader (SdifFileT* SdifF);
-short SdifFTestDataType              (SdifFileT* SdifF);
-short SdifFTestNbColumns             (SdifFileT* SdifF);
-short SdifFTestNotEmptyMatrix        (SdifFileT* SdifF);
-short SdifFTestMatrixHeader          (SdifFileT* SdifF);
+int SdifFTestMatrixWithFrameHeader (SdifFileT* SdifF);
+int SdifFTestDataType              (SdifFileT* SdifF);
+int SdifFTestNbColumns             (SdifFileT* SdifF);
+int SdifFTestNotEmptyMatrix        (SdifFileT* SdifF);
+int SdifFTestMatrixHeader          (SdifFileT* SdifF);
 
 
 
 SdifColumnDefT*  SdifTestColumnDef (SdifFileT *SdifF, SdifMatrixTypeT *MtrxT, char *NameCD);
 SdifComponentT*  SdifTestComponent (SdifFileT* SdifF, SdifFrameTypeT *FramT, char *NameCD);
 
-short SdifTestSignature            (SdifFileT *SdifF, int CharEnd, SdifSignature Signature, char *Mess);
-short SdifTestCharEnd              (SdifFileT *SdifF, int CharEnd, char MustBe,
-					   char *StringRead, short ErrCondition, char *Mess);
+int SdifTestSignature            (SdifFileT *SdifF, int CharEnd, SdifSignature Signature, char *Mess);
+int SdifTestCharEnd              (SdifFileT *SdifF, int CharEnd, char MustBe,
+					   char *StringRead, int ErrCondition, char *Mess);
 
 
-short SdifTestMatrixTypeModifMode  (SdifFileT *SdifF, SdifMatrixTypeT *MatrixType);
-short SdifTestFrameTypeModifMode   (SdifFileT *SdifF, SdifFrameTypeT *FrameType);
+int SdifTestMatrixTypeModifMode  (SdifFileT *SdifF, SdifMatrixTypeT *MatrixType);
+int SdifTestFrameTypeModifMode   (SdifFileT *SdifF, SdifFrameTypeT *FrameType);
 
 #endif /* _ SdifTest_ */
