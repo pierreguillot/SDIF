@@ -1,4 +1,4 @@
-/* $Id: sdifextract.c,v 1.3 2000-11-16 12:02:23 lefevre Exp $
+/* $Id: sdifextract.c,v 1.4 2000-12-06 13:43:43 lefevre Exp $
  
                 Copyright (c) 1998 by IRCAM - Centre Pompidou
                            All rights reserved.
@@ -13,6 +13,9 @@
    Extract data from an SDIF-file.  
    
    $Log: not supported by cvs2svn $
+ * Revision 1.3  2000/11/16  12:02:23  lefevre
+ * no message
+ *
  * Revision 1.2  2000/10/30  16:22:11  roebel
  * Merge changes proposed by Schwarz:
  * Removed _SdifFError by fprintf to remove dependency on low-level
@@ -120,10 +123,6 @@
 #include <unix.h>
 #endif
 
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
-
 
 #define  DB	0	/* heavy debugging level 0, 1, 2 */
 
@@ -164,7 +163,7 @@ void usage (char *msg, char *arg, int longhelp)
     }
     if (longhelp)
     {
-    	fprintf (SdifStdErr, "\n" PROG "version $Revision: 1.3 $\n\n");
+    	fprintf (SdifStdErr, "\n" PROG "version $Revision: 1.4 $\n\n");
     
     	if (types)
     	{

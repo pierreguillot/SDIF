@@ -1,4 +1,4 @@
-/* $Id: SdifFile.h,v 3.12 2000-11-21 14:51:49 schwarz Exp $
+/* $Id: SdifFile.h,v 3.13 2000-12-06 13:43:42 lefevre Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -34,6 +34,16 @@ LIBRARY
 
 LOG
  * $Log: not supported by cvs2svn $
+ * Revision 3.12  2000/11/21  14:51:49  schwarz
+ * - sdif.h is now included by all sdif/Sdif*.c files.
+ * - Removed all public typedefs, enums, structs, and defines from the
+ *   individual sdif/Sdif*.h files, because they were duplicated in sdif.h.
+ * - Todo: Do the same for the function prototypes, decide which types and
+ *   prototypes really need to be exported.
+ * - Removed SdifFileStruct.h.
+ * - Preliminary new version of SdiffGetPos, SdiffSetPos.  They used the
+ *   type fpos_t, which is no longer a long on RedHat 7 Linux.
+ *
  * Revision 3.11  2000/11/15 14:53:29  lefevre
  * no message
  *
@@ -116,7 +126,6 @@ LOG
 #ifndef _SDIFFILE_H
 #define _SDIFFILE_H
 
-#include "config.h" /* For _SDIF_VERSION declaration (made by autoconf) */
 #include "SdifGlobals.h"
 
 

@@ -1,4 +1,4 @@
-/* $Id: sdiftotext.c,v 1.2 2000-11-16 12:02:23 lefevre Exp $
+/* $Id: sdiftotext.c,v 1.3 2000-12-06 13:43:44 lefevre Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -11,6 +11,9 @@
  * sdiftotext.c
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  2000/11/16  12:02:23  lefevre
+ * no message
+ *
  * Revision 1.1  2000/10/30  14:44:04  roebel
  * Moved all tool sources into central tools directory and added config.h to sources
  *
@@ -54,10 +57,6 @@
 #include <stdio.h>
 #include <string.h>
 #include "sdif.h"
-
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
 
 
 void
