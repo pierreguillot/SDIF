@@ -1,4 +1,4 @@
-/* $Id: SdifErrMess.h,v 3.7 2000-11-15 14:53:25 lefevre Exp $
+/* $Id: SdifErrMess.h,v 3.8 2000-11-21 14:51:48 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -32,6 +32,9 @@
  * author: Dominique Virolle 1998
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 3.7  2000/11/15 14:53:25  lefevre
+ * no message
+ *
  * Revision 3.6  2000/10/27  20:03:25  roebel
  * autoconf merged back to main trunk
  *
@@ -69,70 +72,8 @@
 #include "SdifError.h"
 
 
-/*#include "SdifFile.h"
- */
-#ifndef SdifFileT_
-#define SdifFileT_
-typedef struct SdifFileS SdifFileT;
-#endif
-
-typedef enum SdifErrorTagE
-{
-	eUnknow,
-	eNoError,
-	eTypeDataNotSupported,
-	eNameLength,
-	eReDefined,
-	eUnDefined,
-	eSyntax,
-	eBadTypesFile,
-	eBadType,
-	eBadHeader,
-	eRecursiveDetect,
-	eUnInterpreted,
-	eOnlyOneChunkOf,
-	eUserDefInFileYet,
-	eBadMode,
-	eBadStdFile,
-	eBadNbData,
-	eReadWriteOnSameFile,
-    eBadFormatVersion,
-    eMtrxUsedYet,
-    eMtrxNotInFrame
-} SdifErrorTagET;
-
-
-typedef enum SdifErrorLevelE
-{
-	eFatal=0,
-	eError,
-	eWarning,
-	eRemark,
-	eNoLevel,
-	eNumLevels	/* level count, must always be last */
-} SdifErrorLevelET;
-
-
-
-
-typedef struct SdifErrorS SdifErrorT;
-struct SdifErrorS
-{
-	SdifErrorTagET		Tag;
-	SdifErrorLevelET	Level;
-	char*				UserMess;
-};
-
 /* Table of error format for the fprintf */
 extern const SdifErrorT gSdifErrMessFormat[];
-
-
-typedef struct SdifErrorLS SdifErrorLT;
-struct SdifErrorLS
-{
-  SdifListT*    ErrorList;
-  SdifFileT*	SdifF; /* only a link */
-};
 
 
 SdifErrorT*	SdifCreateError		(SdifErrorTagET Tag,

@@ -1,4 +1,4 @@
-/* $Id: SdifConvToText.h,v 3.4 2000-10-27 20:03:24 roebel Exp $
+/* $Id: SdifConvToText.h,v 3.5 2000-11-21 14:51:47 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -32,6 +32,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.4  2000/10/27 20:03:24  roebel
+ * autoconf merged back to main trunk
+ *
  * Revision 3.3.2.2  2000/08/21  21:34:58  tisseran
  * *** empty log message ***
  *
@@ -73,8 +76,6 @@
 #define _SDIFCONVTOTEXT_H 1
 
 #include "SdifGlobals.h"
-#include "SdifFileStruct.h"
-
 
 
 size_t SdifFConvToTextMatrixData     (SdifFileT *SdifF);

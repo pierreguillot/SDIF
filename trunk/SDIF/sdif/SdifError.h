@@ -1,4 +1,4 @@
-/* $Id: SdifError.h,v 3.4 2000-10-27 20:03:26 roebel Exp $
+/* $Id: SdifError.h,v 3.5 2000-11-21 14:51:48 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -32,6 +32,9 @@
  * author: Dominique Virolle 1997
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 3.4  2000/10/27 20:03:26  roebel
+ * autoconf merged back to main trunk
+ *
  * Revision 3.3.2.2  2000/08/21  21:35:02  tisseran
  * *** empty log message ***
  *
@@ -79,34 +82,14 @@
 #define _SDIFERROR_H
 
 #include <stdio.h>
+#include <sdif.h>
 
-typedef enum SdifErrorE
-{
-  eFalse = 0,
-  eTrue = 1,
-  eFreeNull = 256,
-  eAllocFail,
-  eArrayPosition,
-  eEof,
-  eFileNotFound,
-  eInvalidPreType,
-  eAffectationOrder,
-  eNoModifErr,
-  eNotInDataTypeUnion,
-  eNotFound,
-  eExistYet,
-  eWordCut,
-  eTokenLength
-} SdifErrorEnum;
-
-typedef void (*SdifExitFuncT) (void);
 
 extern SdifExitFuncT gSdifExitFunc;
 extern char *SdifErrorFile;
 extern int SdifErrorLine;
 extern FILE* SdifStdErr;
 
-void SdifSetExitFunc (SdifExitFuncT func);
 void SdifErrorWarning(SdifErrorEnum Error, const void *ErrorMess);
 
 #define _SdifError(error, mess) \

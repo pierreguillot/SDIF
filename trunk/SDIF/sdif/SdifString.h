@@ -1,4 +1,4 @@
-/* $Id: SdifString.h,v 3.2 2000-10-27 20:03:45 roebel Exp $
+/* $Id: SdifString.h,v 3.3 2000-11-21 14:51:51 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -32,6 +32,9 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.2  2000/10/27 20:03:45  roebel
+ * autoconf merged back to main trunk
+ *
  * Revision 3.1.2.1  2000/08/21  21:35:53  tisseran
  * *** empty log message ***
  *
@@ -58,18 +61,11 @@
 #include <stdio.h>
 #include <string.h>
 
+
+#include <sdif.h>
+
+
 #define _SdifStringGranule 128 /* Default memory size allocated for string */
-
-/* Structure declaration */
-typedef struct SdifStringS SdifStringT;
-struct SdifStringS
-{
-  char   *str; 
-  size_t TotalSize; /* Memory size allocated for str */
-  size_t SizeW; /* Memory size actually used */
-  int    NbCharRead; /* Number of char read */
-};
-
 
 /* Function declaration */
 

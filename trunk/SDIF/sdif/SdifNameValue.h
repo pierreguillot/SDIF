@@ -1,4 +1,4 @@
-/* $Id: SdifNameValue.h,v 3.7 2000-10-27 20:03:40 roebel Exp $
+/* $Id: SdifNameValue.h,v 3.8 2000-11-21 14:51:50 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -34,6 +34,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.7  2000/10/27 20:03:40  roebel
+ * autoconf merged back to main trunk
+ *
  * Revision 3.6.2.1  2000/08/21  21:35:40  tisseran
  * *** empty log message ***
  *
@@ -113,16 +116,6 @@
  * NameValue
  */
 
-
-typedef struct SdifNameValueS SdifNameValueT;
-struct SdifNameValueS
-{
-  char *Name;
-  char *Value;
-} ;
-
-
-
 SdifNameValueT* SdifCreateNameValue(const char *Name,  const char *Value);
 void            SdifKillNameValue(SdifNameValueT *NameValue);
 
@@ -132,15 +125,6 @@ void            SdifKillNameValue(SdifNameValueT *NameValue);
 /*
  * NameValueTable
  */
-
-typedef struct SdifNameValueTableS SdifNameValueTableT;
-struct SdifNameValueTableS
-{
-    SdifHashTableT* NVHT;
-    SdifUInt4       NumTable;
-    SdifUInt4       StreamID;	/* id of stream the table belongs to */
-} ;
-
 
 SdifNameValueTableT* SdifCreateNameValueTable(  SdifUInt4 StreamID, 
                                                 SdifUInt4 HashSize, 
@@ -157,14 +141,6 @@ SdifUInt4       SdifNameValueTableGetStreamID  (SdifNameValueTableT* NVTable);
 /*
  * NameValueTableList
  */
-
-typedef struct SdifNameValuesLS SdifNameValuesLT;
-struct SdifNameValuesLS
-{
-    SdifListT*              NVTList;
-    SdifNameValueTableT*    CurrNVT;
-    SdifUInt4               HashSize;
-};
 
 
 SdifNameValuesLT*   SdifCreateNameValuesL       (SdifUInt4  HashSize);

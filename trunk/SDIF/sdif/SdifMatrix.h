@@ -1,4 +1,4 @@
-/* $Id: SdifMatrix.h,v 3.3 2000-10-27 20:03:38 roebel Exp $
+/* $Id: SdifMatrix.h,v 3.4 2000-11-21 14:51:50 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -36,6 +36,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.3  2000/10/27 20:03:38  roebel
+ * autoconf merged back to main trunk
+ *
  * Revision 3.2.2.1  2000/08/21  21:35:34  tisseran
  * *** empty log message ***
  *
@@ -77,61 +80,6 @@
 
 #include "SdifGlobals.h"
 #include "SdifMatrixType.h"
-
-
-
-typedef struct SdifMatrixHeaderS SdifMatrixHeaderT;
-
-struct SdifMatrixHeaderS
-{
-  SdifSignature  Signature;
-  SdifDataTypeET DataType; /* Low level data type */
-  SdifUInt4      NbRow;
-  SdifUInt4      NbCol;
-} ;
-
-
-
-
-typedef union DataTypeU DataTypeUT;
-
-union DataTypeU
-{
-  SdifFloat4 *Float4;
-  SdifFloat8 *Float8;
-  SdifInt2   *Int2  ;
-  SdifInt4   *Int4  ;
-/*SdifInt8   *Int8  ;*/
-  SdifUInt2  *UInt2 ;
-  SdifUInt4  *UInt4 ;
-/*SdifUInt8  *UInt8 ;*/
-  SdifChar   *Char  ;
-  void	     *Void  ;	/* generic pointer */
-} ;
-
-
-
-
-typedef struct SdifOneRowS SdifOneRowT;
-
-struct SdifOneRowS
-{
-  SdifDataTypeET DataType;
-  SdifUInt4      NbData;
-  DataTypeUT     Data;
-  SdifUInt4      NbGranuleAlloc;
-} ;
-
-
-
-typedef struct SdifMatrixDataS SdifMatrixDataT;
-struct SdifMatrixDataS
-{
-  SdifMatrixHeaderT *Header;
-  SdifOneRowT       **Rows;
-  SdifUInt4         Size;
-} ;
-
 
 
 SdifMatrixHeaderT* SdifCreateMatrixHeader    (SdifSignature Signature, 

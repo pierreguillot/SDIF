@@ -1,4 +1,4 @@
-/* $Id: SdifFWrite.h,v 3.8 2000-10-27 20:03:31 roebel Exp $
+/* $Id: SdifFWrite.h,v 3.9 2000-11-21 14:51:49 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -122,6 +122,9 @@ void main(void)
 
 LOG
  * $Log: not supported by cvs2svn $
+ * Revision 3.8  2000/10/27 20:03:31  roebel
+ * autoconf merged back to main trunk
+ *
  * Revision 3.7.2.2  2000/08/21  21:35:14  tisseran
  * *** empty log message ***
  *
@@ -195,8 +198,6 @@ LOG
 #define _SDIFFWRITE_H 1
 
 #include "SdifGlobals.h"
-#include "SdifFileStruct.h"
-
 #include <stdio.h>
 #include "SdifNameValue.h"
 #include "SdifMatrixType.h"

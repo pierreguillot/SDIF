@@ -1,4 +1,4 @@
-/* $Id: SdifMatrixType.h,v 3.6 2000-10-27 20:03:38 roebel Exp $
+/* $Id: SdifMatrixType.h,v 3.7 2000-11-21 14:51:50 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -65,6 +65,9 @@ EXAMPLE
 
 LOG
  * $Log: not supported by cvs2svn $
+ * Revision 3.6  2000/10/27 20:03:38  roebel
+ * autoconf merged back to main trunk
+ *
  * Revision 3.5.2.1  2000/08/21  21:35:36  tisseran
  * *** empty log message ***
  *
@@ -130,41 +133,6 @@ LOG
 #include "SdifGlobals.h"
 #include "SdifList.h"
 #include "SdifHash.h"
-
-
-
-
-typedef struct SdifColumnDefS SdifColumnDefT;
-
-struct SdifColumnDefS
-{
-  char *Name;
-  SdifUInt4 Num;
-} ;
-
-
-
-
-
-typedef struct SdifMatrixTypeS SdifMatrixTypeT;
-
-struct SdifMatrixTypeS
-{
-  SdifSignature     Signature;
-
-  SdifMatrixTypeT*  MatrixTypePre;
-
-  SdifListT*        ColumnUserList; /* List of columns added by user: 
-				       SdifMatrixTypeInsertTailColumn(MatrixTypeT *)
-				    */
-
-  SdifUInt4       NbColumnDef; /* Number of columns created by user:
-				  SdifMatrixTypeInsertTailColumn(MatrixTypeT *)
-			       */
-  SdifModifModeET ModifMode;
-};
-
-
 
 
 SdifColumnDefT*  SdifCreateColumnDef (char *Name,  unsigned int Num);

@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.9 2000-11-21 09:04:30 roebel Exp $
+# $Id: Makefile.am,v 1.10 2000-11-21 14:51:47 schwarz Exp $
 #
 # ./sdif/Makefile.am		September 2000			Patrice Tisserand
 #
@@ -29,6 +29,10 @@
 # send email to:  sdif@ircam.fr
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.9  2000/11/21 09:04:30  roebel
+# Changed Makefile.am  in tools and sdif to properly use
+# include files in $(topsrcdir)/sdif
+#
 # Revision 1.8  2000/10/31 11:22:25  roebel
 # Added SDIF to Chksum/date identifier for improved retrieval
 #
@@ -59,38 +63,39 @@ lib_LIBRARIES = @SELLIB@
 FORMES_H=host_architecture.h preincluded.h UniversalEnvVar.h host_configure.h XpGuiCalls.h
 FORMES_INCLUDE=/u/formes/share/include
 
-SDIF_H = SdifCheck.h 	SdifConvToText.h 	SdifErrMess.h 	SdifError.h 	SdifFGet.h \
-	SdifFPrint.h 	SdifFPut.h 		SdifFRead.h 	SdifFScan.h 	SdifFWrite.h \
-	SdifFile.h 	SdifFileStruct.h 	SdifFrame.h 	SdifFrameType.h SdifGlobals.h \
-	SdifHard_OS.h 	SdifHash.h	 	SdifHighLevel.h SdifList.h 	SdifMatrix.h \
-	SdifMatrixType.h SdifMemory.h 		SdifNameValue.h	SdifPreTypes.h 	SdifPrint.h \
-	SdifRWLowLevel.h SdifSelect.h		SdifSignatureTab.h 		SdifStreamID.h \
-	SdifString.h 	SdifTest.h 		SdifTextConv.h 	SdifTimePosition.h \
+SDIF_H = $(top_srcdir)/include/sdif.h 				\
+	SdifCheck.h 	SdifErrMess.h	SdifConvToText.h 	\
+	SdifError.h 	SdifFGet.h 	SdifFPrint.h 		\
+	SdifFPut.h 	SdifFRead.h	SdifFScan.h 		\
+	SdifFWrite.h 	SdifFile.h	SdifTimePosition.h 	\
+	SdifFrame.h 	SdifFrameType.h SdifGlobals.h 		\
+	SdifHard_OS.h 	SdifHash.h	SdifHighLevel.h 	\
+	SdifList.h 	SdifMatrix.h 	SdifMatrixType.h	\
+	SdifMemory.h	SdifNameValue.h	SdifPreTypes.h 		\
+	SdifPrint.h 	SdifSelect.h	SdifRWLowLevel.h	\
+	SdifStreamID.h	SdifString.h 	SdifSignatureTab.h	\
+	SdifTest.h 	SdifTextConv.h 				\
 	$(top_srcdir)/sdif/SdifVersion.h project_preinclude.h config.h
 
 noinst_HEADERS = $(SDIF_H) $(addprefix $(top_srcdir)/sdif/,${FORMES_H})
 
-libsdif_a_SOURCES =  SdifString.c      SdifHash.c     SdifGlobals.c      SdifSignatureTab.c \
-		     SdifError.c       SdifMemory.c   SdifNameValue.c    SdifMatrixType.c \
-		     SdifFrameType.c   SdifStreamID.c SdifMatrix.c       SdifFrame.c \
-		     SdifPrint.c       SdifTest.c     SdifTimePosition.c SdifFile.c \
-		     SdifRWLowLevel.c  SdifFGet.c     SdifFRead.c        SdifFScan.c \
-		     SdifFPut.c        SdifFPrint.c   SdifFWrite.c       SdifTextConv.c \
-		     SdifConvToText.c  SdifHard_OS.c  SdifErrMess.c      SdifList.c \
-		     SdifPreTypes.c    SdifSelect.c   SdifHighLevel.c    SdifCheck.c 
+libsdif_a_SOURCES =  SdifHash.c       SdifGlobals.c      SdifSignatureTab.c   \
+		     SdifMemory.c     SdifNameValue.c    SdifMatrixType.c     \
+		     SdifStreamID.c   SdifMatrix.c       SdifFrame.c          \
+		     SdifTest.c       SdifTimePosition.c SdifFile.c           \
+		     SdifFGet.c       SdifFRead.c        SdifFScan.c          \
+		     SdifFPrint.c     SdifFWrite.c       SdifTextConv.c       \
+		     SdifHard_OS.c    SdifErrMess.c      SdifList.c           \
+		     SdifSelect.c     SdifHighLevel.c    SdifCheck.c          \
+		     SdifString.c     SdifError.c        SdifFrameType.c      \
+		     SdifPrint.c      SdifRWLowLevel.c   SdifFPut.c           \
+		     SdifConvToText.c SdifPreTypes.c    
 
-libsdif_debug_a_SOURCES =  SdifString.c      SdifHash.c     SdifGlobals.c      SdifSignatureTab.c \
-		     SdifError.c       SdifMemory.c   SdifNameValue.c    SdifMatrixType.c \
-		     SdifFrameType.c   SdifStreamID.c SdifMatrix.c       SdifFrame.c \
-		     SdifPrint.c       SdifTest.c     SdifTimePosition.c SdifFile.c \
-		     SdifRWLowLevel.c  SdifFGet.c     SdifFRead.c        SdifFScan.c \
-		     SdifFPut.c        SdifFPrint.c   SdifFWrite.c       SdifTextConv.c \
-		     SdifConvToText.c  SdifHard_OS.c  SdifErrMess.c      SdifList.c \
-		     SdifPreTypes.c    SdifSelect.c   SdifHighLevel.c    SdifCheck.c 
-		     
-		     sdiftype = $(datadir)/SdifTypes.STYP
+libsdif_debug_a_SOURCES = $(libsdif_a_SOURCES)
 
-INCLUDES = -D_SdifTypesFileName=\"$(sdiftype)\" -DUSE_CONFIGURE
+sdiftype = $(datadir)/SdifTypes.STYP
+
+INCLUDES = -I$(top_srcdir)/include -D_SdifTypesFileName=\"$(sdiftype)\" -DUSE_CONFIGURE
 
 $(libsdif_a_SOURCES) :  @IRCAMDEPS@
 

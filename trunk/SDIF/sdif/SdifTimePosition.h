@@ -1,4 +1,4 @@
-/* $Id: SdifTimePosition.h,v 3.3 2000-10-27 20:03:47 roebel Exp $
+/* $Id: SdifTimePosition.h,v 3.4 2000-11-21 14:51:51 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -31,6 +31,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.3  2000/10/27 20:03:47  roebel
+ * autoconf merged back to main trunk
+ *
  * Revision 3.2.2.1  2000/08/21  21:35:58  tisseran
  * *** empty log message ***
  *
@@ -79,26 +82,9 @@
 
 #include <stdio.h>
 
-typedef struct SdifTimePositionS SdifTimePositionT;
-
-struct SdifTimePositionS
-{
-  SdifFloat8    Time;
-  SdiffPosT     Position;
-} ;
 
 SdifTimePositionT* SdifCreateTimePosition(SdifFloat8 Time, SdiffPosT Position);
 void               SdifKillTimePosition(void* TimePosition);
-
-
-
-typedef struct SdifTimePositionLS SdifTimePositionLT;
-
-struct SdifTimePositionLS
-{
-    SdifListT*          TimePosList;
-} ;
-
 
 SdifTimePositionLT* SdifCreateTimePositionL(void);
 void                SdifKillTimePositionL  (SdifTimePositionLT *TimePositionL);

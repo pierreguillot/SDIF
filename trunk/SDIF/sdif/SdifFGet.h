@@ -1,4 +1,4 @@
-/* $Id: SdifFGet.h,v 3.6 2000-10-27 20:03:27 roebel Exp $
+/* $Id: SdifFGet.h,v 3.7 2000-11-21 14:51:48 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -44,6 +44,9 @@ DESCRIPTION
 
 LOG
  * $Log: not supported by cvs2svn $
+ * Revision 3.6  2000/10/27 20:03:27  roebel
+ * autoconf merged back to main trunk
+ *
  * Revision 3.5.2.2  2000/08/21  21:35:04  tisseran
  * *** empty log message ***
  *
@@ -108,7 +111,6 @@ LOG
 #define _SDIFFGET_H
 
 #include "SdifGlobals.h"
-#include "SdifFileStruct.h"
 #include "SdifString.h"
 #include <stdio.h>
 

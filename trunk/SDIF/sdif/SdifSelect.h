@@ -1,4 +1,4 @@
-/* $Id: SdifSelect.h,v 3.11 2000-11-15 14:53:35 lefevre Exp $
+/* $Id: SdifSelect.h,v 3.12 2000-11-21 14:51:50 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -88,6 +88,9 @@ TODO
 
 LOG
   $Log: not supported by cvs2svn $
+  Revision 3.11  2000/11/15 14:53:35  lefevre
+  no message
+
   Revision 3.10  2000/10/27  20:03:43  roebel
   autoconf merged back to main trunk
 
@@ -149,85 +152,6 @@ LOG
 #include "SdifList.h"
 
 
-/* tokens (numerical ids) for sdifspec separators */
-typedef enum { sst_specsep, sst_stream, sst_frame, sst_matrix, sst_column, 
-	       sst_row,     sst_time,   sst_list,  sst_range,  sst_delta,
-	       sst_num,	/* number of tokens */	   sst_norange = 0
-} SdifSelectTokens;
-
-
-
-/*DOC: 
-  Selection element interface (returned by SdifGetNextSelection*):
-  One basic data element value, with optional range.  
-  The meaning of range is determined by rangetype: 
-
-  [] 0		no range
-  [] sst_range	range is value..range
-  [] sst_delta	range is value-range..value+range
-*/
-
-typedef struct 
-{
-    int		       value, range;
-    SdifSelectTokens   rangetype; /* 0 for not present, sst_range, sst_delta */
-} SdifSelectElementIntT;
-
-typedef struct 
-{
-    double	       value, range;
-    SdifSelectTokens   rangetype; /* 0 for not present, sst_range, sst_delta */
-} SdifSelectElementRealT;
-
-/* no SdifSelectElementSignatureT or string range, since it makes no sense */
-
-
-
-/*DOC:
-  Internal: one value of different possible types in a selection
-  element (the element list determines which type is actually used).  
-*/
-typedef union SdifSelectValueS 
-{
-    int            integer;
-    double         real;
-    char	   *string;
-    SdifSignature  signature;
-} SdifSelectValueT;
-
-/*DOC: 
-  Selection element internal data structure:
-  One basic data element, with optional <ul>
-  <li> range (value is lower, range is upper bound) or 
-  <li> delta (value-range is lower, value+range is upper bound)
-  </ul>
-*/
-typedef struct SdifSelectElementS
-{
-    SdifSelectValueT value;
-    SdifSelectValueT range;
-    SdifSelectTokens rangetype; /* 0 for not present, sst_range, sst_delta */
-} SdifSelectElementT, *SdifSelectElementP;
-
-/*DOC: 
-  Holds a selection of what data to access in an SDIF file,
-  parsed from a simple regular expression.  
-*/
-typedef struct
-{
-    char	*filename,	/* allocated / freed by 
-				   SdifInitSelection / SdifFreeSelection */
-		*basename;	/* points into filename */
-    SdifListP	stream, frame, matrix, column, row, time;
-} SdifSelectionT;
-/* TODO: array of select elements
-     struct { SdifListP list; SdifSelectElementT minmax; } elem [eSelNum];
-   indexed by
-     enum   { eTime, eStream, eFrame, eMatrix, eColumn, eRow, eSelNum }
-   to use in all API functions instead of SdifListP.
-*/
-
-
 /*DOC:
   Return pointer to start of filename component in path inPathFileName.
  */
@@ -235,7 +159,7 @@ char *SdifBaseName (const char* inPathFileName);
 
 
 /* 
-// FUNCTION GROUP:	Init/Deinit
+// FUNCTION GROUP:	Selection Init/Deinit
  */
 
 /* init module, called by SdifGenInit */
@@ -415,12 +339,6 @@ int SdifSelectTestString (SdifListT *list, const char *cand);
 /*
 // FUNCTION GROUP:	Using a Selection in File I/O.
 */
-
-#ifndef SdifFileT_
-#define SdifFileT_
-typedef struct SdifFileS SdifFileT;
-#endif
-
 
 /*DOC: 
   Test the selection elements from sel applicable to frame FramH:

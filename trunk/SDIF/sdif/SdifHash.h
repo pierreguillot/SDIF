@@ -1,4 +1,4 @@
-/* $Id: SdifHash.h,v 3.2 2000-10-27 20:03:35 roebel Exp $
+/* $Id: SdifHash.h,v 3.3 2000-11-21 14:51:49 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -35,6 +35,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.2  2000/10/27 20:03:35  roebel
+ * autoconf merged back to main trunk
+ *
  * Revision 3.1.2.1  2000/08/21  21:35:28  tisseran
  * *** empty log message ***
  *
@@ -71,53 +74,7 @@
 #ifndef _SdifHash_
 #define _SdifHash_
 
-
-
-typedef enum SdifHashIndexTypeE
-{
-  eHashChar,
-  eHashInt4
-} SdifHashIndexTypeET;
-
-
-
-
-
-typedef union SdifHashIndexU SdifHashIndexUT;
-
-union SdifHashIndexU
-{
-  char* Char[1]; /* tab of one pointer to fixe union size at 4 or 8 bytes */
-  unsigned int  Int4;
-} ;
-
-
-
-
-
-typedef struct SdifHashNS SdifHashNT;
-
-struct SdifHashNS 
-{
-  SdifHashNT *Next;
-  SdifHashIndexUT Index;
-  void* Data;
-};
-
-
-
-
-typedef struct SdifHashTableS SdifHashTableT;
-
-struct SdifHashTableS
-{
-  SdifHashNT* *Table;
-  unsigned int HashSize;
-  SdifHashIndexTypeET IndexType;
-  void (*Killer)();  /* no verification of arguments */
-  unsigned int NbOfData;
-} ;
-
+#include <sdif.h>
 
 SdifHashTableT* SdifCreateHashTable(unsigned int HashSize, SdifHashIndexTypeET IndexType, void (*Killer)());
 
