@@ -7,9 +7,13 @@
  * 
  * 
  * 
- * $Id: sdifentity.cpp,v 1.6 2002-10-30 15:27:32 roebel Exp $ 
+ * $Id: sdifentity.cpp,v 1.7 2002-11-27 20:13:04 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.6  2002/10/30 15:27:32  roebel
+ * Changed return type from int to bool.
+ * Changed error checking in openroutines.
+ *
  * Revision 1.5  2002/10/10 10:49:09  roebel
  * Now using namespace Easdif.
  * Fixed handling of zero pointer arguments in initException.
@@ -49,7 +53,7 @@
 
 namespace Easdif {
 
-SDIFEntity::SDIFEntity(): efile(0), mSize(0), mEof(0), mNbNVT(0), 
+SDIFEntity::SDIFEntity(): efile(0), mSize(0), mEof(0), 
     mOpen(0), generalHeader(0), asciiChunks(0), bytesread(0)
 {
     mDescription = SdifStringNew();
@@ -87,14 +91,8 @@ bool SDIFEntity::OpenRead(const char* filename)
 
 	for (int i = 1 ; i <= n ; i++)
 	{	 
-	    if(i == n)
-		NVlist->CurrNVT = (SdifNameValueTableT*)
-		    SdifListGetNext(NVlist->NVTList);
-	    else
-		SdifNameValuesLSetCurrNVT(NVlist, i);
-
-	    NVT = TakeNVT();
-	    AddNVT(NVT, _SdifNVTStreamID);
+	  SdifNameValuesLSetCurrNVT(NVlist, i);
+	  AddNVT(TakeNVT(), _SdifNVTStreamID);
 	}
     }  
     mOpen = 2;
@@ -117,8 +115,8 @@ bool SDIFEntity::OpenWrite(const char* filename)
     }
 
     /* to add member data (NVTs) to sdif file */
-    if (mNbNVT != 0)	
-	    WriteNVTs();
+    if (mv_NVT.size() != 0)	
+      WriteNVTs();
 
     /* to add Descriptions types to sdif file  */
     WriteTypes();
@@ -169,28 +167,24 @@ int SDIFEntity::SetFile(SdifFileT* SdifFile)
 
 int SDIFEntity::GetNbNVT()const
 {
-    return mNbNVT;
+    return mv_NVT.size();
 }
 
 bool SDIFEntity::AddNVT(const SDIFNameValueTable& nvt, 
 			       SdifUInt4 StreamId)
 {
-    mv_NVT.insert(mv_NVT.end(), nvt);
-    mv_NVT[mNbNVT].SetStreamID(StreamId);
-    //mSize += mv_NVT.GetSize(); like in SDIFFrame
-    mNbNVT++;
+    mv_NVT.push_back(nvt);
+    mv_NVT.back().SetStreamID(StreamId);
+
     return true;
 }
 
 bool SDIFEntity::WriteNVTs()
 {
     SdifNameValuesLT* NVlist;
-    const char* name;
-    const char* value;
-    // size_t asciiChunks;    
-    typedef std::map<std::string, std::string>::const_iterator CI;
 
-    for (int i = 0 ; i < mNbNVT ; i++)
+    int nnvts = mv_NVT.size();
+    for (int i = 0 ; i < nnvts ; i++)
     {
 	NVlist = efile->NameValues;
 	SdifNameValuesLNewTable( NVlist, mv_NVT[i].GetStreamID());
@@ -198,12 +192,12 @@ bool SDIFEntity::WriteNVTs()
 	//NVlist = SdifNameValuesLNewTable( NVlist, StreamID);
 	// NVlist->CurrNVT->NumTable = mNbNVT + 1;
 
-	for (CI p = mv_NVT[i].map_NameValues.begin();
-	     p != mv_NVT[i].map_NameValues.end() ; ++p)
+	for (SDIFNameValueTable::const_iterator p = mv_NVT[i].begin();
+	     p != mv_NVT[i].end() ; ++p)
 	{
-	    name = const_cast<char*>(p->first.c_str());
-	    value = const_cast<char*>(p->second.c_str());
-	    SdifNameValuesLPutCurrNVT   (NVlist, name, value);	
+	    SdifNameValuesLPutCurrNVT(NVlist, 
+				      GetNameFromSDIFNVTIt(p).c_str(), 
+				      GetValueFromSDIFNVTIt(p).c_str());	
 	}
     }
     /* for writing the Name Value Table in the file */
@@ -218,7 +212,6 @@ SDIFNameValueTable SDIFEntity::TakeNVT()
     SdifHashNT     *pNV;
     SdifHashTableT *HTable;
     SDIFNameValueTable nvt;
-    int nbNV = 0;
 
     HTable = efile->NameValues->CurrNVT->NVHT;  
     // a loop to put the NameValues in a SDIFNameValuesTable 
@@ -226,12 +219,12 @@ SDIFNameValueTable SDIFEntity::TakeNVT()
     {
 	for (pNV = HTable->Table[iNV]; pNV; pNV = pNV->Next)
 	{
-	    nvt.map_NameValues[((SdifNameValueT *)pNV->Data)->Name] =
-		((SdifNameValueT *)pNV->Data)->Value;
-	    nbNV ++;
+
+	  nvt.AddNameValue(((SdifNameValueT *)pNV->Data)->Name,
+			   ((SdifNameValueT *)pNV->Data)->Value);
 	}
     }
-    nvt.SetNbNameValue(nbNV);
+
     return nvt;
 }
 
@@ -242,6 +235,7 @@ SDIFNameValueTable& SDIFEntity::GetNVT(unsigned int i)
     if (i > (mv_NVT.size()-1))
     {
 	std::cerr << " No such NameValueTable " << std::endl;
+        mv_NVT.push_back(SDIFNameValueTable());
 	return mv_NVT[0];
     }
     return mv_NVT[i];
@@ -309,7 +303,8 @@ int SDIFEntity::WriteFrame(SDIFFrame& frame)
 
 void SDIFEntity::ViewAllNVTs()
 {
-    for (int n = 0; n < mNbNVT; ++n)
+  int nnvts = mv_NVT.size();
+    for (int n = 0; n < nnvts; ++n)
     {
 	std::cout << std::endl <<"NameValueTable number : " << n+1 
 		  << std::endl;
