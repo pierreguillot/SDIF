@@ -1,5 +1,5 @@
 dnl -*-m4-*- (He emacs, it's a m4 file)
-dnl $Id: configure.in,v 1.7 2000-11-21 09:04:27 roebel Exp $
+dnl $Id: configure.in,v 1.8 2000-11-21 14:48:30 schwarz Exp $
 dnl
 dnl configure.in		September 2000		Patrice Tisserand
 dnl
@@ -30,6 +30,10 @@ dnl For any information regarding this and other IRCAM software, please
 dnl send email to:  sdif@ircam.fr
 dnl
 dnl $Log: not supported by cvs2svn $
+dnl Revision 1.7  2000/11/21 09:04:27  roebel
+dnl Changed Makefile.am  in tools and sdif to properly use
+dnl include files in $(topsrcdir)/sdif
+dnl
 dnl Revision 1.6  2000/10/30 20:05:12  roebel
 dnl Changed debug option switch from -g to -g2
 dnl
@@ -115,6 +119,7 @@ int main()
 }
 
 	], multi_char_inversion=true, multi_char_inversion=false)
+
 if test "$multi_char_inversion" = "true"; then
 	AC_MSG_RESULT(yes)
 	AC_DEFINE(MULTICHAR_CHAR_CONSTANT_INVERSION)
@@ -129,15 +134,19 @@ AC_SUBST(SELLIB)
 AC_SUBST(TESTLIB)
 AC_SUBST(PROGLIST)
 
-AC_ARG_ENABLE(debug,[--enable-debug            support additional library/programs with debug enabled],[echo $enableval; if test "$enableval" = "yes"; then
-SELLIB=libsdif-debug.a; CFLAGS="-g2";
-TESTLIB=sdif-debug; 
-PROGLIST="querysdif-debug sdifextract-debug sdiftotext-debug tosdif-debug";
+AC_ARG_ENABLE(debug,
+[--enable-debug            support additional library/programs with debug enabled],
+[echo FEATURE enable-debug... $enableval; 
+if test "$enableval" = "yes"; then
+	SELLIB=libsdif-debug.a; CFLAGS="-g2";
+	TESTLIB=sdif-debug; 
+	PROGLIST="querysdif-debug sdifextract-debug sdiftotext-debug tosdif-debug";
 else 
-SELLIB=libsdif.a;  CFLAGS="-O3";
-TESTLIB=sdif; 
-PROGLIST="querysdif sdifextract sdiftotext tosdif";
-fi ],[
+	SELLIB=libsdif.a;  CFLAGS="-O3";
+	TESTLIB=sdif; 
+	PROGLIST="querysdif sdifextract sdiftotext tosdif";
+fi ],
+[
 SELLIB=libsdif.a; CFLAGS="-O3";
 TESTLIB=sdif; 
 PROGLIST="querysdif sdifextract sdiftotext tosdif";
