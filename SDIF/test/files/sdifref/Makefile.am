@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.3 2000-12-20 15:57:15 roebel Exp $
+# $Id: Makefile.am,v 1.1 2000-12-20 15:57:16 roebel Exp $
 #
 # ./test/files/sdif/Makefile.am		September 2000			Patrice Tisserand
 #
@@ -35,6 +35,6 @@
 # Revision 1.1.2.2  2000/10/26  17:27:43  schwarz
 # Added header with copyright and links to all Makefile.am and configure.in.
 #
-EXTRA_DIST = README 
+EXTRA_DIST = README *.sdif
 
 
