@@ -1,10 +1,13 @@
-// $Id: easdif.i,v 1.9 2003-04-29 15:20:38 schwarz Exp $ -*-c-*-
+// $Id: easdif.i,v 1.10 2003-04-29 16:28:48 schwarz Exp $ -*-c-*-
 //
 // easdif.i		16.04.2003		Diemo Schwarz
 //
 // Interface file for swig, defining the callable easdif functions
 //
 // $Log: not supported by cvs2svn $
+// Revision 1.9  2003/04/29 15:20:38  schwarz
+// take care of ambiguous definitions (because of swig bug)
+//
 // Revision 1.8  2003/04/18 17:45:23  schwarz
 // Renamed sdifsignature.i to sdiftypemap.i, because all types are in there.
 // Include typemap for std::string from SWIG library
@@ -75,6 +78,7 @@ using namespace Easdif;
 %include sdifdefines.i
 
 // read all class definitions
+#define SWIG_RENAME_EASDIF
 %include "../easdif/sdifmatrix.h"
 %include "../easdif/sdifnamevaluetable.h"
 %include "../easdif/sdifframe.h"
