@@ -1,10 +1,13 @@
-# $Id: sdif.cocoon,v 1.1 1998-11-10 14:56:41 schwarz Exp $
+# $Id: sdif.cocoon,v 2.0 1998-11-29 11:21:58 virolle Exp $
 #
 # sdif.cocoon	4. Nov 1998	Diemo Schwarz
 #
 # cocoon config file for documentation.
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.1  1998/11/10  14:56:41  schwarz
+# Added makefile to generate cocoon documentation.
+#
 
 # basic options
 webroot  /u/formes/schwarz/src/SDIF/doc/html
