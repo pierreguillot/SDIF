@@ -33,9 +33,12 @@
  * 
  * 
  * 
- * $Id: easdif.h,v 1.3 2003-08-06 17:59:58 roebel Exp $ 
+ * $Id: easdif.h,v 1.4 2003-08-06 18:29:11 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.3  2003/08/06 17:59:58  roebel
+ * Added helper function for testing sdiffiles with std::string filename argument
+ *
  * Revision 1.2  2003/04/06 16:31:08  roebel
  * Added license info
  *
@@ -71,6 +74,7 @@
  * 
  * @return true if filename contains sdif data 
  */
+inline 
 bool SdifCheckFileFormat (const std::string &name) {
   return SdifCheckFileFormat(name.c_str());
 }
