@@ -32,9 +32,15 @@
  * 
  * 
  * 
- * $Id: sdifmatrix.cpp,v 1.5 2003-05-01 19:01:39 roebel Exp $ 
+ * $Id: sdifmatrix.cpp,v 1.6 2003-05-18 20:46:46 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.5  2003/05/01 19:01:39  roebel
+ * Renamed CreateMatrixData to Init.
+ * Reorganized Init functions to use only a single argument to specify the matrix signature.
+ * Removed redundant m_Signature from class.
+ * Added Resize method.
+ *
  * Revision 1.4  2003/04/29 15:41:30  schwarz
  * Changed all names View* to Print* and *Info to *Header for consistency
  * with SDIF library.
@@ -93,6 +99,7 @@ SDIFMatrix::SDIFMatrix(const SdifDataTypeET _type):
     //mSig = SdifSignatureConst('1','T','R','C');
     // signifies uninitialized matrix
     mSig = 0;
+    mFile = 0;
     Init(mSig, 1, 1, mType);
 }
 
@@ -102,6 +109,7 @@ SDIFMatrix::SDIFMatrix(const SDIFMatrix& aMatrix):mInter(0)
     mSig = aMatrix.mSig;
     mType = aMatrix.mType;
     bytesread = aMatrix.bytesread;
+    mFile   = aMatrix.mFile;
 
     mInter =   aMatrix.mInter->clone(); 
 }
@@ -115,6 +123,13 @@ void SDIFMatrix::Init(SdifSignature sig, int nrows, int ncols, SdifDataTypeET ty
     }
 
     switch (type){
+
+    case eChar:
+	mInter=static_cast<SDIFMatrixDataInterface*>(new SDIFMatrixData<char>(nrows,ncols));
+	break;
+    case eInt2:
+	mInter=static_cast<SDIFMatrixDataInterface*>(new SDIFMatrixData<short int>(nrows,ncols));
+	break;
     case eInt4:
 	mInter=static_cast<SDIFMatrixDataInterface*>(new SDIFMatrixData<int>(nrows,ncols));
 	break;
@@ -178,6 +193,9 @@ int SDIFMatrix::Write(SdifFileT* file)
 /* when reading a matrix, this return the count of bytes and create a matrix which keep the values  */
 int SDIFMatrix::Read(SdifFileT* file)
 {
+  // remember file that we read from
+  mFile = file;
+
     int bytesread = 0;
     bytesread += SdifFReadMatrixHeader(file);
     /* for selection */
@@ -266,4 +284,21 @@ std::string SDIFMatrix::GetStringSignature() const
 {
     return std::string(SdifSignatureToString(mSig));
 }
+
+/* Get name of column of current matrix */
+std::string SDIFMatrix::GetColName(int col) const {
+
+  if(mFile) {
+   SdifMatrixTypeT *tt= SdifGetMatrixType(mFile->MatrixTypesTable, 
+					 mSig);
+   if(tt) {
+     SdifColumnDefT*tt2 =  SdifMatrixTypeGetNthColumnDef (tt, col);
+     if(tt2) {
+       return std::string(tt2->Name);
+     }
+   }
+  }
+  return std::string("");
+}
+
 } // end of namespace Easdif

@@ -33,9 +33,15 @@
  * 
  * 
  * 
- * $Id: sdifmatrix.h,v 1.7 2003-05-01 19:02:25 roebel Exp $ 
+ * $Id: sdifmatrix.h,v 1.8 2003-05-18 20:46:46 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.7  2003/05/01 19:02:25  roebel
+ * Renamed CreateMatrixData to Init.
+ * Reorganized Init functions to use only a single argument to specify the matrix signature.
+ * Removed redundant m_Signature from class.
+ * Added Resize method.
+ *
  * Revision 1.6  2003/04/29 15:54:07  schwarz
  * Use SWIG_RENAME_EASDIF to control class renaming.
  *
@@ -118,12 +124,13 @@ namespace Easdif {
 class SDIFMatrix
 {
 private:
-    SDIFMatrixDataInterface* mInter;
-
-    int bytesread;
-    SdifSignature mSig;
-    SdifDataTypeET mType;
-
+  SDIFMatrixDataInterface* mInter;
+  
+  int bytesread;
+  SdifSignature mSig;
+  SdifDataTypeET mType;
+  // file matrix was read from
+  SdifFileT * mFile;
 
 public:
     SDIFMatrix(const SdifDataTypeET _type=eFloat4);
@@ -264,6 +271,11 @@ public:
  */
     SdifDataTypeET GetType() const;
 
+/** 
+ * \ingroup membmat
+ * get name of column or empty string if unknown
+ */
+ std::string GetColName(int i) const;
 
 /*************************************************************************/
 /* Get the values of the matrix */
@@ -274,18 +286,31 @@ public:
 /**
  * \ingroup valmat 
  * get a value in : int
+ * @param i row index
+ * @param j column index
+ * 
+ * @return the value
  */
     int GetInt(int i, int j);
 
 /**
  * \ingroup valmat  
  * get a value in : float
+ * @param i row index
+ * @param j column index
+ * 
+ * @return the value
  */
     float GetFloat(int i, int j);
 
 /**
  * \ingroup valmat  
- * get a value in : double
+ * get the value in double
+ * 
+ * @param i row index
+ * @param j column index
+ * 
+ * @return the value
  */
     double GetDouble(int i, int j);
 
