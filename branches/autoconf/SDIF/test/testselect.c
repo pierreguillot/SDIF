@@ -1,10 +1,13 @@
-/* $Id: testselect.c,v 1.1.2.1 2000-08-21 13:55:48 tisseran Exp $
+/* $Id: testselect.c,v 1.1.2.2 2000-08-21 17:00:54 tisseran Exp $
  *
  * testselect		30. August 1999		Diemo Schwarz
  *
  * Test functions from SdifSelect.c
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.1.2.1  2000/08/21  13:55:48  tisseran
+ * *** empty log message ***
+ *
  * Revision 1.3  1999/10/07  15:13:01  schwarz
  * Added SdifSelectGetFirst<type>, SdifSelectGetNext(Int|Real).
  *
@@ -18,10 +21,7 @@
  */
 
 #include <stdio.h>
-/*  #include <SdifFile.h> */
-/*  #include <SdifSelect.h> */
-#include "sdiftypes.h"
-#include "sdifglobals.h"
+#include <sdif.h>
 
 #if HAVE_UNISTD_H
 #include <unistd.h>
