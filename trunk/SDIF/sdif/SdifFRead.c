@@ -1,4 +1,4 @@
-/* $Id: SdifFRead.c,v 3.3 1999-10-13 16:05:41 schwarz Exp $
+/* $Id: SdifFRead.c,v 3.4 1999-10-15 12:28:43 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -14,6 +14,15 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.3  1999/10/13  16:05:41  schwarz
+ * Changed data type codes (SdifDataTypeET) to SDIF format version 3, as
+ * decided with Matt Wright June 1999, added integer data types.
+ * Added writing of 1NVT with real frame header (but data is still not in
+ * matrices).
+ * The data type handling makes heavy use of code-generating macros,
+ * called for all data types with the sdif_foralltypes macro, thus
+ * adding new data types is easy.
+ *
  * Revision 3.2  1999/09/28  13:08:54  schwarz
  * Included #include <preincluded.h> for cross-platform uniformisation,
  * which in turn includes host_architecture.h and SDIF's project_preinclude.h.
@@ -106,30 +115,21 @@ SdifFReadGeneralHeader(SdifFileT *SdifF)
 size_t
 SdifFReadNameValueLCurrNVT(SdifFileT *SdifF)
 {
-  /* Signature of chunck already read */
+  /* Signature of chunck already read and checked for 1NVT */
   size_t SizeR = 0;
   
-#if (_SdifFormatVersion >= 3)
-  SizeR += SdifFReadFrameHeader (SdifF);
-  SdifF->ChunkSize = SdifF->CurrFramH->Size;
-  if (SdifF->CurrSignature != e1NVT)
-  {
-      sprintf (gSdifErrorMess, "expected %s frame, not %s", 
-	       SdifSignatureToString (e1NVT), 
-	       SdifSignatureToString (SdifF->CurrSignature));
-      _SdifError (eInvalidPreType, gSdifErrorMess);
-  }
-  SizeR += SdifFGetNameValueLCurrNVT(SdifF, 's');
-  SizeR += SdifFReadPadding (SdifF, SdifFPaddingCalculate (SdifF->Stream, SizeR + sizeof(SdifSignature)));
-#else
   SdiffGetPos(SdifF->Stream, &(SdifF->StartChunkPos));
   SdifF->StartChunkPos -= sizeof(SdifSignature);
 
+#if (_SdifFormatVersion >= 3)	/* read frame header (with no matrices) */
+  SizeR += SdifFReadFrameHeader (SdifF);
+  SdifF->ChunkSize = SdifF->CurrFramH->Size;
+#else
   SizeR += SdifFReadChunkSize(SdifF);
+#endif
   SizeR += SdifFGetNameValueLCurrNVT(SdifF, 's');
   SizeR += SdifFReadPadding(SdifF,
 			    SdifFPaddingCalculate(SdifF->Stream, SizeR + sizeof(SdifSignature)));
-#endif
   
   if (    (SizeR != SdifF->ChunkSize + sizeof(SdifInt4))
        && ((unsigned) SdifF->ChunkSize != (unsigned) _SdifUnknownSize))
@@ -187,7 +187,12 @@ SdifFReadAllType(SdifFileT *SdifF)
   SdiffGetPos(SdifF->Stream, &(SdifF->StartChunkPos));
   SdifF->StartChunkPos -= sizeof(SdifSignature);
   
+#if (_SdifFormatVersion >= 3)	/* read frame header (with no matrices) */
+  SizeR += SdifFReadFrameHeader (SdifF);
+  SdifF->ChunkSize = SdifF->CurrFramH->Size;
+#else
   SizeR += SdifFReadChunkSize(SdifF);
+#endif
   SizeR += SdifFGetAllType(SdifF, 's');
   SizeR += SdifFReadPadding(SdifF, SdifFPaddingCalculate(SdifF->Stream, SizeR + sizeof(SdifSignature)));
   
@@ -224,7 +229,12 @@ SdifFReadAllStreamID(SdifFileT *SdifF)
   SdiffGetPos(SdifF->Stream, &(SdifF->StartChunkPos));
   SdifF->StartChunkPos -= sizeof(SdifSignature);
   
+#if (_SdifFormatVersion >= 3)	/* read frame header (with no matrices) */
+  SizeR += SdifFReadFrameHeader (SdifF);
+  SdifF->ChunkSize = SdifF->CurrFramH->Size;
+#else
   SizeR += SdifFReadChunkSize(SdifF);
+#endif
   SizeR += SdifFGetAllStreamID(SdifF, 's');
   SizeR += SdifFReadPadding(SdifF, SdifFPaddingCalculate(SdifF->Stream, SizeR + sizeof(SdifSignature)));
   
@@ -260,7 +270,7 @@ SdifFReadAllASCIIChunks(SdifFileT *SdifF)
       switch (SdifF->CurrSignature)
 	{
 	case e1NVT :
-	  SdifNameValuesLNewTable(SdifF->NameValues, _SdifNoStreamID, _Sdif_MIN_DOUBLE_);
+	  SdifNameValuesLNewTable(SdifF->NameValues, _SdifNoStreamID);
 	  SizeR += SdifFReadNameValueLCurrNVT(SdifF);
 	  break;
 	  
