@@ -1,6 +1,9 @@
 <sdif-tdl version="0.2">
 
 <!-- $Log: not supported by cvs2svn $
+ Revision 1.4  2000/08/16  16:10:40  schwarz
+ Description of AR coefficient rows.
+
  Revision 1.3  2000/08/09  14:43:49  schwarz
  Put all SDIF types into XML format.  Lots of descriptions still missing.
  Full "about this document" info.
@@ -19,7 +22,7 @@
 <types-version>Ircam_1.5</types-version>
 
 <types-revision>
-  $Id: sdiftypes.xml,v 1.4 2000-08-16 16:10:40 schwarz Exp $
+  $Id: sdiftypes.xml,v 1.5 2000-08-22 14:32:38 rod Exp $
 </types-revision>
 
 
@@ -111,37 +114,128 @@ Some points to note about the SDIF types XML format:
   <matrixref signature="1IDS" occurrence="required"></matrixref>
 </frame>
 
+<section>Types used in different contexts</section>
 
 <matrix signature="1GAI" name="Gain">
-  <description></description>
+  <description>
+      A linear gain factor for the data to which it is attached,
+      such as an autoregressive filter, i.e. 
+      <matrixref signature="1ARA">1ARA</matrixref>
+ </description>
   <float/><double/>
   <rows   num="1"/>
   <column name="Gain">linear gain value</column>
 </matrix>
 
 <frame signature="1GAI" name="Gain">
-  <description></description>
+  <description> 
+     See matrix <matrixref signature="1GAI" occurrence="required">
+     Gain</matrixref>
+  </description>
   <matrixref signature="1GAI" occurrence="required">Gain</matrixref>
 </frame>
 
 
+<matrix signature="IWIN" name="WindowInfo">
+  <description>
+      Window information matrix.
+      Windows used e.g. in spectral estimation. 
+      A portion of the signal is selected by
+      multiplying it by the window function.
+      The WindowIdentifier is a (usually positive)
+      number which identifies the type of window as specified in:
+      <br/> 
+      http://cnmat.CNMAT.Berkeley.EDU/SDIF/proposals/window-enumeration.text
+      <br/> 
+      The negative number -1 means a not-yet specified window
+      which then must appear in sampled values explictly in
+      a following <matrixref signature="1WIN"> 1WIN </matrixref>
+      matrix. Then the WindowSize should be the same as the
+      number of rows in the following 
+      <matrixref signature="1WIN"> 1WIN </matrixref>.
+ </description>
+  <float/><double/>
+  <rows   num="1"/>
+  <column name="WindowIdentifier">
+     A number which identifies the type of window.
+  </column>
+  <column name="WindowSize"> in samples</column>
+</matrix>
 
-<section>Pitch Estimation</section>
+
+<matrix signature="1WIN" name="Window">
+  <description>
+      Windows used e.g. in spectral estimation. 
+      A portion of the signal is selected by
+      multiplying it by the window function the 
+      samples of which appear in the matrix.
+      It has to be preceeded by a
+      <matrixref signature="IWIN"> IWIN </matrixref> matrix.
+ </description>
+  <float/><double/>
+  <rows>
+    As many as samples describing the window function.
+  </rows>
+  <column name="Samples">Samples </column>
+</matrix>
 
 
-<matrix signature="1FQ0" name="PitchEstimate">
-  <description>Fundamental Frequency <i>f0</i></description>
+<frame signature="1WIN" name="Window">
+  <description>
+     See matrix <matrixref signature="IWIN">
+     IWIN</matrixref>
+  </description>
+  <matrixref signature="IWIN" occurrence="required"></matrixref>
+  <matrixref signature="1WIN" occurrence="optional"></matrixref>
+</frame>
+
+<matrix signature="1CHA" name="Channels">
+  <description>
+    Gain factors to distribute signals among several channels
+    with corresponding gains (simple panning).
+  </description>
+  <float/><double/>
+  <rows> as many as signals to pan</rows>
+  <column name="Channel1" occurrence="required"></column>
+  <column name="Channel2" occurrence="optional">
+  and so on optionally...</column>
+</matrix>
+
+
+
+<section>Fundamental Frequency Estimation</section>
+
+
+<matrix signature="1FQ0" name="FundamentalFrequencyEstimate">
+  <description>
+     The fundamental frequency <i>f0</i> of a signal is the inverse
+     of the most likely (according to the estimation method used)
+     periodicity at which the signal locally (on a short window)
+     repeats nearly identical to itself.
+     For synthesis, the synthesized signal is supposed
+     to locally have the given periodicity (fundamental frequency)
+     at the instant of the frame time.
+     Even though f0 is often
+     very close to the pitch at which the sound is perceived,
+     this is not a psychoacoustic notion but a statistical notion.
+     The psychoacoustic notion should go into a 1PCH or so matrix.
+     Columns 2 to 4 (Confidence, Score, RealAmplitude) are not yet
+     well defined. They are used by the f0 program at Ircam with 
+     the '<i>long output, -L</i>' option.
+  </description>
   <float/><double/>
   <rows></rows>
-  <column name="Frequency"></column>
-  <column name="Confidence"></column>
+  <column name="Frequency" occurrence="required"></column>
+  <column name="Confidence" occurrence="optional"></column>
   <column name="Score"></column>
   <column name="RealAmplitude"></column>
 </matrix>
 
-<frame signature="1FQ0" name="PitchEstimate">
-  <description>Fundamental Frequency <i>f0</i></description>
-  <matrixref signature="1FQ0" occurrence="required">Pitch estimate</matrixref>
+<frame signature="1FQ0" name="FundamentalFrequencyEstimate">
+  <description>
+     Fundamental Frequency <i>f0</i> (see matrix 1FQ0)
+  </description>
+  <matrixref signature="1FQ0" occurrence="required">Fundamental Frequency estimate</matrixref>
 </frame>
 
 
@@ -152,9 +246,16 @@ Some points to note about the SDIF types XML format:
 
 
 <matrix signature="1PIC" name="PickedPeaks" status="standard">
-  <description></description>
+  <description>
+     These are the peaks in a short-time frequency estimate such
+     as the Short Time Fourier Transform. Frequency, Amplitude and 
+     Phase should be that of a constant sinusoid producing such
+     a peak in the frequency estimate. Phase (and Frequency and
+     Amplitude in case of nearly linearly time varying
+     parameters) is relative to the center of the window.
+  </description>
   <float/><double/>
-  <rows></rows>
+  <rows> as many as peaks estimated in the frequency estimate</rows>
   <column name="Frequency"></column>
   <column name="Amplitude"></column>
   <column name="Phase"></column>
@@ -162,9 +263,26 @@ Some points to note about the SDIF types XML format:
 </matrix>
 
 <matrix signature="1TRC" name="SinusoidalTracks" status="standard">
-  <description></description>
+  <description>
+     Sinusoidal tracks are sinsusoids with time-varying Frequency,
+     Amplitude and Phase. Obviusly, giving these values at
+     discrete times (Frame times) only is imprecise unless an 
+     interpolation formula is provided. This is generally not done yet
+     but can easily be added in the name value table 1NVT.
+     One track is described by the rows with same index in successive
+     adjacent frames and that's what index are for, row numbers
+     being arbitrary. When such an index is absent in a frame
+     it means that the track vanishes at the instant of the frame. 
+     Again what happens after the last or before the first occurrence 
+     of that index remains to be precised. The solution adopted at
+     Ircam is to get sure that the first and the last occurrence
+     always have a zero amplitude.
+     
+  </description>
   <float/><double/>
-  <rows></rows>
+  <rows>
+     as many as sinusoidal tracks.
+  </rows>
   <column name="Index"></column>
   <column name="Frequency"></column>
   <column name="Amplitude"></column>
@@ -172,10 +290,24 @@ Some points to note about the SDIF types XML format:
 </matrix>
 
 <matrix signature="1HRM" name="HarmonicPartials" status="standard">
-  <description></description>
+  <description>
+    Harmonic Partials are sinsusoids with time-varying Frequency,
+     Amplitude and Phase and such that each one has a frequency 
+     which is close, or at least related, to the integer ith multiple
+     (harmonic) of a common fundamental frequency (see
+     <matrixref signature="1FQ0"> 1FQ0</matrixref>). 
+     This integer number i, which is usually named the
+     harmonic number, is named 'Index' here and figures in the
+     first column. In a given 1HRM matrix, an index value should
+     not appear more than once. Some Indexes may be absent in
+     certain matrices meaning that the corresponding harmonic
+     partial vanishes or has not been detected.
+     See matrix <matrixref signature="1TRC"> 1TRC</matrixref>
+     for other properties.
+  </description>
   <float/><double/>
   <rows>A row describes one harmonic partial</rows>
-  <column name="Index">			partial index		</column>
+  <column name="Index">			harmonic number of the partial 		</column>
   <column name="Frequency" unit="Hz">	partial frequency	</column>
   <column name="Amplitude">		partial amplitude	</column>
   <column name="Phase">			partial phase, between -pi and pi
@@ -219,13 +351,21 @@ Some points to note about the SDIF types XML format:
 
 
 
-<section>Spectral Envelopes</section>
+<section>Spectral Envelopes, Transfer Functions and Filters</section>
 
 
 <matrix signature="IENV" name="SpectralEnvelopeInfo">
   <description>
 	Spectral envelopes information matrix, defines interpretation 
 	of following <matrixref signature="1ENV">1ENV matrix</matrixref>
+        The linear+logarithmic scaling is linear under a certain
+	frequency called Break Frequency, than logarithmic above.
+        The exact formula is described in 
+	SCHWARZ Diemo, "Spectral Envelopes in Sound Analysis
+        and Synthesis". - Mémoire de stage: Diploma, Université de
+        Stuttgart, Ircam, Septembre 1998,
+        downloadable from
+         http://www.ircam.fr/anasyn/schwarz/da/
   </description>
 
   <float/><double/>
@@ -233,29 +373,44 @@ Some points to note about the SDIF types XML format:
   <rows num="1"/>
 
   <column name="HighestBinFrequency" unit="Hz">	
-	frequency of the highest bin of the <matrixref signature="1ENV">
-        1ENV matrix</matrixref>
+	?? frequency of the highest bin of the <matrixref signature="1ENV">
+        1ENV matrix ??</matrixref>
   </column>
 
   <column name="ScaleType">
-	0 for linear, 1 for logarithmic scaling
+	0 for linear, 1 for linear+logarithmic scaling
   </column>
 
   <column name="BreakFrequency" unit="Hz">
-	break frequency when logarithmic scaling
+	break frequency when linear+logarithmic scaling
   </column>
 </matrix>
 
 <matrix signature="1ENV" name="SpectralEnvelope">
   <float/><double/>
-  <description>Spectral envelope in sampled representation.</description>
-  <description language="fr">Abradakadabra abrakabum.</description>
+  <description>
+     Spectral envelope or magnitude transfer function
+     in sampled representation.
+     A spectral envelope is the envelope of the magnitude of
+     a short-time frequency estimate such
+     as the Short Time Fourier Transform. 
+     See for instance 
+        SCHWARZ Diemo, "Spectral Envelopes in Sound Analysis
+        and Synthesis". - Mémoire de stage: Diploma, Université de
+        Stuttgart, Ircam, Septembre 1998,
+        downloadable from
+         http://www.ircam.fr/anasyn/schwarz/da/
+  </description>
   <rows>A row corresponds to one bin of the spectral envelope</rows>
   <column name="Env">envelope bin</column>
 </matrix>
 
 <frame signature="1ENV" name="SpectralEnvelope" status="proposed">
-  <description></description>
+  <description>
+     The reason for the optional 1GAI matrix is that in some
+     cases it is useful to force the desired gain for the synthesised
+     signal.
+  </description>
   <matrixref signature="IENV" occurrence="optional"/>
   <matrixref signature="1ENV" occurrence="required"/>
   <matrixref signature="1GAI" occurrence="optional">
@@ -264,11 +419,38 @@ Some points to note about the SDIF types XML format:
 </frame>
 
 
-<matrix signature="1CEC" name="CepstralCoefs">
-  <description>Cepstral coefficients</description>
+<matrix signature="ITFC" name="TransferFunctionCoefficientsInfo">
+  <description>
+     Transfer function coefficients information matrix,
+      defines interpretation
+        of following transfer function coefficients matrix such as 
+        <matrixref signature="1CEC"> 1CEC</matrixref>,
+        <matrixref signature="1ARA"> 1ARA</matrixref>,
+        <matrixref signature="1ARR"> 1ARR</matrixref>,
+        <matrixref signature="1ARK"> 1ARK</matrixref>.
+  </description>
   <float/><double/>
-  <rows></rows>
-  <column name="c"></column>
+  <rows num="1"/>
+  <column name="SamplingRate" unit="Hz">
+        SamplingRate corresponding to the transfer 
+        function coefficients.
+  </column>
+
+  <column name="Order">
+        Order of the estimation or number of coefficients of the
+        corresponding filter.
+  </column>
+</matrix>
+
+
+
+<matrix signature="1CEC" name="CepstralCoefs">
+  <description>Cepstral coefficients as in text books</description>
+  <float/><double/>
+  <rows>
+    As many as Cepstral Coefficients wished.
+  </rows>
+  <column name="CepstralCoefficients"></column>
 </matrix>
 
 <frame signature="1CEC" name="CepstralCoefs">
@@ -278,11 +460,13 @@ Some points to note about the SDIF types XML format:
 
 
 <matrix signature="1ARA" name="ARACoefs">
-  <description></description>
+  <description>Autoregressive coefficients  as in text books
+  </description>
   <float/><double/>
   <rows>The rows contain <var>p + 1</var> autoregressive coefficients
     <var>a<sub>0</sub></var> to <var>a<sub>p</sub></var>, where
-    <var>p</var> is the <emph>order</emph> of the LPC.
+    <var>p</var> is the <emph>order</emph> of the 
+    autoregressive filer.
   </rows>
   <column name="AutoRegressiveCoefficients"></column>
 </matrix>
@@ -292,7 +476,8 @@ Some points to note about the SDIF types XML format:
   <float/><double/>
   <rows>The rows contain <var>p</var> reflection coefficients
     <var>k<sub>1</sub></var> to <var>k<sub>p</sub></var>, where
-    <var>p</var> is the <emph>order</emph> of the LPC.
+    <var>p</var> is the <emph>order</emph> of the 
+    lattice filer.
   </rows>
   <column name="ReflectionCoefficients"></column>
 </matrix>
@@ -301,8 +486,7 @@ Some points to note about the SDIF types XML format:
   <description></description>
   <float/><double/>
   <rows>The rows contain <var>p + 1</var> autocorrelation coefficients
-    <var>r<sub>0</sub></var> to <var>r<sub>p</sub></var>, where
-    <var>p</var> is the <emph>order</emph> of the LPC.
+    <var>r<sub>0</sub></var> to <var>r<sub>p</sub></var>.
   </rows>
   <column name="AutoCorrelationCoefficients"></column>
 </matrix>
@@ -331,7 +515,13 @@ Some points to note about the SDIF types XML format:
 
 
 <matrix signature="1FOF" name="Formants">
-  <description></description>
+  <description>
+     Formant Waveforms as described in Chant.
+     <br/>
+     Could be changed sometime to use 2RES plus a new 2FOF which
+     would contain the columns Tex, DebAtt and Atten
+     which are what FOF adds to RES.
+  </description>
   <float/><double/>
   <rows></rows>
   <column name="Frequency"></column>
@@ -344,38 +534,66 @@ Some points to note about the SDIF types XML format:
 </matrix>
 
 <matrix signature="1RES" name="Filters">
-  <description></description>
+  <description>
+     Resonances/Exponentially Decaying Sinusoids.
+     Resonances data can describe the characteristics of a
+     resonant system like a 
+     bank of second order section-filters,
+     or can specify parameters for a model
+     of sinusoids with fixed frequencies and
+     exponentially decaying amplitudes. (If you put an impulse 
+     into such a group of filter
+     banks, the output should be a sum of sinusoids with 
+     fixed frequencies and exponentially
+     decaying amplitudes, so these two situations are 
+     in a certain sense the same.)
+
+     The decay curve of a resonance should be the same as that of 
+     a two-pole filter with
+     bandwidth equal to decay rate divided by pi.
+     This formula gives the amplitude of each
+     sinusoid over time: 
+     <pre>
+        amp(t) = initial_amp * e ^ (- decay_rate * t)
+     </pre>
+     The phase of a resonance specifies the initial phase 
+     of each decaying sinusoid. 
+     Ircam's programs still in the previous definition,
+     i.e. columns 3 to 5 being:
+     <br/>
+     3. BandWidth 
+     <br/>
+     4. Saliance 
+     <br/>
+     5. Normalisation of amplitude
+     <p/>
+     Therefore the following columns should be that of 2RES:
+  </description>
   <float/><double/>
-  <rows></rows>
+  <rows>resonances </rows>
   <column name="Frequency"></column>
   <column name="Amplitude"></column>
-  <column name="BandWidth"></column>
-  <column name="Saliance"></column>
-  <column name="Correction"></column>
+  <column name="DecayRate"></column>
+  <column name="Phase"></column>
 </matrix>
 
-<matrix signature="1CHA" name="FormantsChannels">
-  <description></description>
-  <float/><double/>
-  <rows></rows>
-  <column name="Channel1"></column>
-  <column name="Channel2"></column>
-  <column name="Channel3"></column>
-  <column name="Channel4"></column>
-</matrix>
-
-<matrix signature="1DIS" name="NoiseInfo">
-  <description></description>
+<matrix signature="1DIS" name="NoiseDistribution">
+  <description>
+    Noise  Distribution matrix, defines a white noise random signal
+    Column Distribution is an identifier (0 is uniform, 1 Gaussian...)
+  </description>
   <float/><double/>
   <rows></rows>
   <column name="Distribution"></column>
-  <column name="Amplitude"></column>
+  <column name="Amplitude">should be variance or standard deviation
+  </column>
 </matrix>
 
 
 
 <frame signature="1NOI" name="">
   <description></description>
+  <matrixref signature="IDIS" occurrence="required">NoiseInfo</matrixref> 
   <matrixref signature="1DIS" occurrence="required">NoiseInfo</matrixref> 
 </frame>
 
@@ -401,16 +619,59 @@ Some points to note about the SDIF types XML format:
 
 
 <matrix signature="ISTF" name="FourierTransformInfo">
-  <description></description>
+  <description>
+     See <matrixref signature="1STF">1STF</matrixref> for details.
+     WindowDuration is the duration of the window, in seconds,
+  </description>
   <float/><double/>
   <rows></rows>
-  <column name="HighestBinFrequency"></column>
-  <column name="FrameDuration"></column>
+  <column name="PeriodOfTheDFT">i.e., Sampling Rate in Hertz</column>
+  <column name="WindowDuration"> in seconds.</column>
   <column name="FFTSize"></column>
 </matrix>
 
 <matrix signature="1STF" name="FourierTransform">
-  <description></description>
+  <description>
+     1STF frames represent the data that come out of a discrete short-term time-domain to frequency-domain transform such as an FFT.
+
+     Here is a precise mathematical definition of this frame type: 
+    <br/>
+    Let s(i) be a discrete signal with sampling rate SR Hertz 
+    <br/>
+    Let w(m) be a window defined with the support [0, M-1], i.e., w(m)=0 for m&lt;0 and m&gt;=M .
+    M is called the <i>Window Size in Samples</i>. The corresponding <i>Window Duration</i> in seconds
+    is M/(Sampling Frequency).
+    <br/>
+    Let N be the size of the transform 
+    <br/>
+     We define the input to the transform, x(n), as follows.
+     Note that the windowed signal is 'put' at the beginning of the vector x(n).
+     <pre>
+Let x(n) =   s(i+n) * w(n)  for  0 lessThanOrEqual n lessThanOrEqual M-1
+    x(n) =   0              for  M lessThanOrEqual n lessThanOrEqual N-1
+     </pre>
+(This is slightly redundant, since we define w(m)=0 when m&gt;=M.)
+The 1STF matrix data is the Discrete Fourier Transform (DFT) of size N, i.e. the X(k) as follows. 
+The DFT is a length N vector X, with these elements: 
+     <pre>
+              N-1
+       X(k) = sum  x(n) * exp(-j * 2 * pi * k * n/N)
+              n=0
+
+       0 lessThanOrEqual k lessThanOrEqual N-1
+     </pre>
+The time tag in a 1STF frame is the time of the center of the window, i.e., (i + M/2)/SR, not the beginning.
+<br/>
+Notes: 
+<br/>
+    This definition corresponds to the output of Matlab's (and UDI's) FFTfunction 
+    The real and imaginary parts come directly from this formula: therefore, if you compute a phase as atan2(imaginary, real), it is the phase of the
+    corresponding COSINUSOID (and not sinusoid as we are used in additive synthesis) at time (i)/SR. 
+    Note that the windowed signal is 'put' at the beginning of the vector x(n) (then zero padding follows) and this is crucial for the phase definition. 
+    Because of aliasing and foldover above the Nyquist frequency (and below the negative Nyquist frequency), the output of the DFT can be thought
+    of as a periodic function of frequency over the range -infinity to infinity. The period of this function is the range from the negative Nyquist
+    frequency to the positive Nyquist frequency, in other words, the sampling rate of the input signal
+  </description>
   <float/><double/><int16/><int32/>
   <rows>Bins</rows>
   <column name="Real"></column>
@@ -425,7 +686,11 @@ Some points to note about the SDIF types XML format:
 <frame signature="1STF" name="FourierTransform">
   <description></description>
   <matrixref signature="ISTF" occurrence="required">Info</matrixref>
-  <matrixref signature="1STF" occurrence="required">FourierTransform</matrixref> 
+  <matrixref signature="1STF" occurrence="required">
+   FourierTransform</matrixref> 
+  <matrixref signature="1WIN" occurrence="optional">
+   Window applied on the signal prior to Fourier transform.
+   </matrixref> 
 </frame>
 
 
@@ -433,26 +698,47 @@ Some points to note about the SDIF types XML format:
 
 <section>Energy</section>
 
-
-<matrix signature="1NRG" name="Energy">
-  <description></description>
-  <float/><double/>
-  <rows></rows>
-  <column name="Energy"></column>
-</matrix>
-
 <matrix signature="INRG" name="ScaleAndFactor">
-  <description></description>
+  <description>
+    Energy information matrix, defines interpretation
+    of following <matrixref signature="1NRG">1NRG matrix
+    </matrixref>
+  </description>
   <float/><double/>
-  <rows></rows>
+  <rows num="1"/>
   <column name="Scale"></column>
   <column name="NormalisationFactor"></column>
+</matrix>
+
+<matrix signature="1NRG" name="Energy">
+  <description>
+    Short time energy of the signal, i.e. 
+     <pre>
+                    m+N-1
+       E(k) = 1/N *  sum  x(n) * x(n)
+                    n=m
+     </pre>
+    The time of the frame should be the center of the interval
+    [m, m+N-1].
+    <br/>
+
+    If a window is applied prior to calculation, 
+    it should be taken into acount and
+    a <matrixref signature="IWIN">IWIN</matrixref>
+    and an optional <matrixref signature="1WIN">1WIN</matrixref>
+    can be joined.
+  </description>
+  <float/><double/>
+  <rows num="1"/>
+  <column name="Energy"></column>
 </matrix>
 
 <frame signature="1NRG" name="">
   <description></description>
   <matrixref signature="INRG" occurrence="required">ScaleAndFactor</matrixref>
   <matrixref signature="1NRG" occurrence="required">Energy</matrixref> 
+  <matrixref signature="IWIN" occurrence="optional">WindowInfo</matrixref> 
+  <matrixref signature="1WIN" occurrence="optional">Window</matrixref> 
 </frame>
 
 
@@ -468,6 +754,66 @@ Some points to note about the SDIF types XML format:
   <description></description>
   <matrixref signature="1BND" occurrence="required">Bands</matrixref>
 </frame>
+
+
+<section>Time-Domain Samples</section>
+
+
+<matrix signature="ITDS" name="TimeDomainSamplesInfo">
+  <description>
+      Time-Domain Samples information matrix, defines interpretation
+      of following <matrixref signature="1TDS">1TDS matrix
+      </matrixref>
+  </description>
+  <rows   num="1"/>
+  <column name="SamplingRate"></column>
+</matrix>
+
+
+<matrix signature="1TDS" name="TimeDomainSamples">
+  <description>
+     Restrict this type to linearly quantized samples with 
+     no compression
+     Unlike most other SDIF frame types, a frame of 1TDS data
+     represents an interval of time (equal to the number of rows 
+     in the 1TDS matrix divided by the sampling rate) 
+     rather than an instant of time. The time tag of a 1TDS 
+     frame represents the beginning of this interval.
+     Most SDIF streams containing 1TDS data will consist of a 
+     single large frame at time zero with all of the samples for the 
+     stream in a single matrix. The same data could be 
+     represented equivalently in a series of shorter frames.
+     There is also the possibility of "gaps" in the time axis,
+  </description>
+  <rows> Sample frames </rows>
+  <column> Amplitudes in each channel. Linear.
+           All but the first are optional.
+  </column>
+</matrix>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -498,7 +844,7 @@ Some points to note about the SDIF types XML format:
 <matrix signature="ITMI" name="TransientMarkerIdentifier">
 
   <description>Matrix identifier for transient in the signal such as
-  occurs at tke beginning of percussive sounds ans which need special
+  occurs at tke beginning of percussive sounds and which need special
   care.
   </description>
 
