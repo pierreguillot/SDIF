@@ -1,5 +1,5 @@
 # Easdif README
-# $Id: README,v 1.1 2003-04-09 16:04:32 roebel Exp $
+# $Id: README,v 1.2 2003-04-09 16:07:02 roebel Exp $
 
 (C) Copyright Ircam 2002-2003
 
@@ -23,12 +23,12 @@ SDIF replacement library.
 
 # Installation and compilation
 
-To compile Easdif you need to extract an SDIF archive into the Easdif
-directory and rename it to SDIF. All SDIF versions later then 3.7.1
-should work.
+To compile Easdif you need to extract the Easdif distribution
+cd into the created directory, call ./configure, make and make install.
+The installation will install libEasdif and the SDIF distribution which
+is part of the current Easdif distribution.
 
 For further information refer to the file INSTALL
-
 
 
 # Documentation
