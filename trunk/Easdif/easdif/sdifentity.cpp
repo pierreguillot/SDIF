@@ -32,9 +32,12 @@
  * 
  * 
  * 
- * $Id: sdifentity.cpp,v 1.16 2004-02-11 19:28:17 roebel Exp $ 
+ * $Id: sdifentity.cpp,v 1.17 2004-02-13 11:34:48 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.16  2004/02/11 19:28:17  roebel
+ * Added inline function to test state of entity. Added function to access NVTs that indicates existance of name.
+ *
  * Revision 1.15  2004/01/24 18:51:19  roebel
  * Fixed rewind for files opened for writing.
  * Improved error checking when doing rewind.
@@ -261,8 +264,11 @@ bool SDIFEntity::Rewind()
 
   SdiffSetPos(GetFile()->Stream,&mFirstFramePos);
   SdiffGetPos(GetFile()->Stream,&readpos);
+
   if(readpos != mFirstFramePos)
     return false;
+
+  mEof = false;
 
   if(mOpen & 2) {
     size_t SizeR = 0;
