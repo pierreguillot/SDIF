@@ -1,12 +1,16 @@
 #!/usr/bin/perl
 #
-# $Id: xmltohtml.pl,v 1.4 2000-08-09 14:43:50 schwarz Exp $
+# $Id: xmltohtml.pl,v 1.5 2000-08-09 14:55:35 schwarz Exp $
 #
 # xmltohtml.pl		6. July 2000		Diemo Schwarz
 #
 # Translate SDIF types description in XML to HTML.
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.4  2000/08/09  14:43:50  schwarz
+# Put all SDIF types into XML format.  Lots of descriptions still missing.
+# Full "about this document" info.
+#
 # Revision 1.3  2000/08/08  15:59:09  schwarz
 # SDIF-TDL version 0.2 (no matrix:role attribute, types-version, types-revision
 # Generation details in STYP 1NVT / HTML footer.
@@ -27,12 +31,12 @@
 # - status for matrices
 
 
+use English;
 use XML::Node;
 use HTML::Stream qw(:funcs);
-use English;
 
 
-my $cvsrev     = '$Id: xmltohtml.pl,v 1.4 2000-08-09 14:43:50 schwarz Exp $ ';
+my $cvsrev     = '$Id: xmltohtml.pl,v 1.5 2000-08-09 14:55:35 schwarz Exp $ ';
 my $tdlversion = '';
 my $version    = 'unknown';
 my $revision   = '';
