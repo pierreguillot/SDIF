@@ -1,5 +1,11 @@
+2002-12-17  Axel Roebel  <Axel.Roebel@ircam.fr>
 
-$Id: ChangeLog,v 1.10 2002-10-31 16:35:35 schwarz Exp $
+	* Bug fix and increased efficency in SdifNameValuesLSetCurrNVT.
+	For certain cases setting the current NVT has messed up 
+	the NVT indices.
+	
+
+$Id: ChangeLog,v 1.11 2002-12-17 15:59:14 roebel Exp $
 	
 Version 3.7.1	2002-10-30  Diemo Schwarz, Patrice Tisserand
 
