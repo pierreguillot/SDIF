@@ -1,4 +1,4 @@
-/* $Id: SdifFPut.c,v 3.3 2000-04-11 14:31:21 schwarz Exp $
+/* $Id: SdifFPut.c,v 3.4 2000-05-04 15:03:58 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -16,6 +16,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.3  2000/04/11  14:31:21  schwarz
+ * Read/write NVT as frame with 1 text matrix, conforming to SDIF spec.
+ *
  * Revision 3.2  1999/09/28  13:08:53  schwarz
  * Included #include <preincluded.h> for cross-platform uniformisation,
  * which in turn includes host_architecture.h and SDIF's project_preinclude.h.
@@ -28,6 +31,7 @@
 
 
 #include <preincluded.h>
+#include <strings.h>
 #include "SdifFPut.h"
 
 #include "SdifTest.h"
