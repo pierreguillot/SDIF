@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.7 2003-04-08 18:29:39 roebel Exp $
+# $Id: Makefile.am,v 1.8 2003-04-09 11:48:40 roebel Exp $
 #
 # ./Easdif/src/Makefile.am	Feb. 2003 Axel Roebel
 #
@@ -31,6 +31,9 @@
 
 
 # $Log: not supported by cvs2svn $
+# Revision 1.7  2003/04/08 18:29:39  roebel
+# Fixed version numbering in shared library.
+#
 # Revision 1.6  2003/04/06 16:31:08  roebel
 # Added license info
 #
@@ -60,7 +63,7 @@ EXTRA_LTLIBRARIES = libEasdif.la
 # lib_LIBRARIES = @SELLIB@
 lib_LTLIBRARIES = @SELLIB@
 
-EXTRA_DIST = easdif_version.h.in
+EXTRA_DIST = easdif_version.h.in easdifintro.h
 
 EASDIF_H = easdif_version.h easdif.h  sdifentity.h \
 	sdifexception.h sdifframe.h sdifinit.h sdifmatrix.h sdifmatrixdata.h \
