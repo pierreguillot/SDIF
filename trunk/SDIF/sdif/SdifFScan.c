@@ -1,4 +1,4 @@
-/* $Id: SdifFScan.c,v 3.6 2000-03-01 11:17:35 schwarz Exp $
+/* $Id: SdifFScan.c,v 3.7 2000-05-15 16:23:08 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -14,6 +14,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.6  2000/03/01  11:17:35  schwarz
+ * Backwards compatibility of data types for reading text.
+ *
  * Revision 3.5  1999/11/03  16:42:33  schwarz
  * Use _SdifNVTStreamID for stream ID of 1NVT frames because of CNMAT
  * restriction of only one frame type per stream.
@@ -236,6 +239,7 @@ SdifFScanMatrixHeader(SdifFileT *SdifF)
       case eFloat8b:
 	  DataType = eFloat8;
       break;
+      default: /* all is fine! */
   }
 
   SdifF->CurrMtrxH->DataType = (SdifDataTypeET) (int) DataType;

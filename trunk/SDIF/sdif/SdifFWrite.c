@@ -1,4 +1,4 @@
-/* $Id: SdifFWrite.c,v 3.9 2000-05-10 15:32:12 schwarz Exp $
+/* $Id: SdifFWrite.c,v 3.10 2000-05-15 16:23:09 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -14,6 +14,10 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.9  2000/05/10  15:32:12  schwarz
+ * Added functions to calculate the Size argument for SdifFSetCurrFrameHeader:
+ * SdifSizeOfFrameHeader and SdifSizeOfMatrix
+ *
  * Revision 3.8  2000/04/11  13:25:39  schwarz
  * Write NVT as frame with 1 text matrix, conforming to SDIF spec, using
  * new function SdifFWriteTextMatrix.
@@ -320,8 +324,8 @@ size_t
 SdifFWriteAllType (SdifFileT *SdifF)
 {
   size_t SizeW = 0;
-  char typstr [_SdifStringLen];
-  int  typlen;
+  /* char typstr [_SdifStringLen];
+     int  typlen; */
 
   if ((SdifF->TypeDefPass == eNotPass) || (SdifF->TypeDefPass == eReadPass))
     {      

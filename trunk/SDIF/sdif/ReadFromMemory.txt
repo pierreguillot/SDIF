@@ -225,22 +225,65 @@ Sdiffwrite(void *ptr, size_t size, size_t nobj, FILE *stream)
 
 - alt 2 -----------------------------------------------------------------------
 
+
 typedef struct {
-	int (*sdiffwrite) (void *ptr, size_t size, size_t nobj, FILE *stream);
-	int (*sdiffread) (...);
-} SdifIOFunctionTable;
+	int (*write) (SdifFileT *file, void *data, size_t size, size_t nobj);
+	int (*read) (...);
+	int (*seek) (...);
+} SdifFunctionTable;
+
+
+- change SdiffRead<type> (FILE *, <type> *obj, int nobj) into:
+
+SdifFRead<type> (SdifFileT *file, <type> *obj, int nobj)
+{
+	file->FunctionTable->read (file, obj, sizeof (<type>), nobj);
+}
+--> Macro???  NO! trust compiler's automatic inlining!
+
 
 struct {
 	...
-	SdifIOFunctionTable FunctionTable;
-} SdifFile;
+	SdifIOFunctionTable *FunctionTable;
+	void *MemStart;		// given memory area
+	void *MemPtr;		// current read/write position
+	void *MemChunkStart;	// record start of frame/chunk
+	int   MemSize;		// bytes
+} SdifFileT;
+
+
+?SdifFSetFunctionTable ();
+?SdifFSetMemoryIO ();
+?SdifFOpenMemory (void *mem, filemode);
+
+predefined tables gSdif<mode>IOTable for modes:
+- file native
+- file swap
+- mem native
+- mem swap
+- text?
 
 
 SdifFOpen ("foo.sdif", eWrite)
+{
 	...
-	file->FunctionTable.sdiffwrite = Sdiffwrite;
 
-SdifFOpen ("mem", eWrite)
+  switch (gSdifMachineType)
+    {
+      
+    case eLittleEndian:
+    case eLittleEndian64:
+    case eLittleEndianLittleConst:
+    case eLittleEndianLittleConst64:
+	file->FunctionTable = &gSdifFileIOTableSwap;
+    default :
+	file->FunctionTable = &gSdifFileIOTableNative;
+    }  
+}
+
+
+?SdifFOpen ("mem", eWrite)
 	...
-	file->FunctionTable.sdiffwrite = Sdifmwrite;
+	file->FunctionTable = &gSdifMemIOTable;
+
 
