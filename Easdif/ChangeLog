@@ -3,12 +3,19 @@
 	* avoid const_cast in CreateMatrixData and
 	only initialize members in SDIFMatrix if valid type is given.
 
+	* CreateMatrixData is now simply called Init.
+	
 	* replaced cout in sdifmatrix.h by exception
 	to prevent the need to include iostream to use easdif.
 
 	* adapted documentation example and test programs to new
 	method names.
 
+	* Improved eof handling in sdifentity. OpenRead will reset
+	eof flag. Default flag for freshly created entity is eof=true.
+
+	* Finished swig test program test.py and added test for swig
+	version to swig configure.in.	
 	
 2003-04-29  Diemo Schwarz  <schwarz@ligeti.ircam.fr>
 
@@ -302,4 +309,4 @@ Version 0.21
 	* ChangeLog: Added changelog to repository.
 
 
-$Id: ChangeLog,v 1.8 2003-05-01 19:09:09 roebel Exp $
+$Id: ChangeLog,v 1.9 2003-05-01 19:11:47 roebel Exp $
