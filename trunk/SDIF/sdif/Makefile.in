@@ -10,7 +10,7 @@
 # even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 # PARTICULAR PURPOSE.
 
-# $Id: Makefile.in,v 1.7 2000-10-30 20:30:54 roebel Exp $
+# $Id: Makefile.in,v 1.8 2000-10-31 10:56:56 roebel Exp $
 #
 # ./sdif/Makefile.am		September 2000			Patrice Tisserand
 #
@@ -123,10 +123,10 @@ lib_LIBRARIES = @SELLIB@
 FORMES_H = host_architecture.h preincluded.h UniversalEnvVar.h host_configure.h XpGuiCalls.h
 FORMES_INCLUDE = /u/formes/share/include
 
-SDIF_H = SdifCheck.h 	SdifConvToText.h 	SdifErrMess.h 	SdifError.h 	SdifFGet.h 	SdifFPrint.h 	SdifFPut.h 		SdifFRead.h 	SdifFScan.h 	SdifFWrite.h 	SdifFile.h 	SdifFileStruct.h 	SdifFrame.h 	SdifFrameType.h SdifGlobals.h 	SdifHard_OS.h 	SdifHash.h	 	SdifHighLevel.h SdifList.h 	SdifMatrix.h 	SdifMatrixType.h SdifMemory.h 		SdifNameValue.h	SdifPreTypes.h 	SdifPrint.h 	SdifRWLowLevel.h SdifSelect.h		SdifSignatureTab.h 		SdifStreamID.h 	SdifString.h 	SdifTest.h 		SdifTextConv.h 	SdifTimePosition.h 	SdifVersion.h project_preinclude.h config.h
+SDIF_H = SdifCheck.h 	SdifConvToText.h 	SdifErrMess.h 	SdifError.h 	SdifFGet.h 	SdifFPrint.h 	SdifFPut.h 		SdifFRead.h 	SdifFScan.h 	SdifFWrite.h 	SdifFile.h 	SdifFileStruct.h 	SdifFrame.h 	SdifFrameType.h SdifGlobals.h 	SdifHard_OS.h 	SdifHash.h	 	SdifHighLevel.h SdifList.h 	SdifMatrix.h 	SdifMatrixType.h SdifMemory.h 		SdifNameValue.h	SdifPreTypes.h 	SdifPrint.h 	SdifRWLowLevel.h SdifSelect.h		SdifSignatureTab.h 		SdifStreamID.h 	SdifString.h 	SdifTest.h 		SdifTextConv.h 	SdifTimePosition.h 	$(top_srcdir)/sdif/SdifVersion.h project_preinclude.h config.h
 
 
-noinst_HEADERS = $(SDIF_H) ${FORMES_H}
+noinst_HEADERS = $(SDIF_H) $(addprefix $(top_srcdir)/sdif/,${FORMES_H})
 
 libsdif_a_SOURCES = SdifString.c      SdifHash.c     SdifGlobals.c      SdifSignatureTab.c 		     SdifError.c       SdifMemory.c   SdifNameValue.c    SdifMatrixType.c 		     SdifFrameType.c   SdifStreamID.c SdifMatrix.c       SdifFrame.c 		     SdifPrint.c       SdifTest.c     SdifTimePosition.c SdifFile.c 		     SdifRWLowLevel.c  SdifFGet.c     SdifFRead.c        SdifFScan.c 		     SdifFPut.c        SdifFPrint.c   SdifFWrite.c       SdifTextConv.c 		     SdifConvToText.c  SdifHard_OS.c  SdifErrMess.c      SdifList.c 		     SdifPreTypes.c    SdifSelect.c   SdifHighLevel.c    SdifCheck.c 
 
@@ -136,7 +136,7 @@ libsdif_debug_a_SOURCES = SdifString.c      SdifHash.c     SdifGlobals.c      Sd
 
 INCLUDES = -D_SdifTypesFileName=\"$(sdiftype)\" -DUSE_CONFIGURE
 
-Versionsrc := $(libsdif_a_SOURCES) $(subst config.h,,$(subst SdifVersion.h,,$(noinst_HEADERS)))
+Versionsrc := $(libsdif_a_SOURCES) $(subst config.h,,$(subst $(top_srcdir)/sdif/SdifVersion.h,,$(noinst_HEADERS)))
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = config.h
 CONFIG_CLEAN_FILES = 
@@ -455,29 +455,29 @@ maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 
 $(libsdif_a_SOURCES) :  @IRCAMDEPS@
 
-SdifFile.o : SdifVersion.h
-SdifVersion.h : $(Versionsrc)
+SdifFile.o : $(top_srcdir)/sdif/SdifVersion.h
+$(top_srcdir)/sdif/SdifVersion.h : $(Versionsrc)
 	@echo  "Updating  Library CKSUM"
-	@echo "/* Automatically generated File do not edit */" >SdifVersion.h
-	@echo '#define AUTOCKSUM "$$Checksum: SRC '$(shell CMD_ENV=xpg4;export CMD_ENV;cksum $^ | cut -f1 -d' '|cksum |cut -f1 -d' ')' $$ IRCAM $$Date: 2000-10-30 20:30:54 $$"'>>SdifVersion.h
+	@echo "/* Automatically generated File do not edit */" >$@
+	@echo '#define AUTOCKSUM "$$Checksum: '$(shell CMD_ENV=xpg4;export CMD_ENV;cksum $^ | cut -f1 -d' '|cksum |cut -f1 -d' ')' $$ IRCAM $$date: "__DATE__" $$"'>>$@
 
 # EXTRA FOR IRCAM STUFF
 ircam_deps : ${FORMES_H}
 
-host_architecture.h:
-	cp ${FORMES_INCLUDE}/host_architecture.h .
+$(top_srcdir)/sdif/host_architecture.h:
+	cp -p ${FORMES_INCLUDE}/host_architecture.h $@
 
-preincluded.h :
-	cp ${FORMES_INCLUDE}/preincluded.h .
+$(top_srcdir)/sdif/preincluded.h :
+	cp -p ${FORMES_INCLUDE}/preincluded.h $@
 
-UniversalEnvVar.h : 
-	cp ${FORMES_INCLUDE}/UniversalEnvVar.h .
+$(top_srcdir)/sdif/UniversalEnvVar.h : 
+	cp -p ${FORMES_INCLUDE}/UniversalEnvVar.h $@
 
-host_configure.h: 
-	cp ${FORMES_INCLUDE}/host_configure.h .
+$(top_srcdir)/sdif/host_configure.h: 
+	cp -p ${FORMES_INCLUDE}/host_configure.h $@
 
-XpGuiCalls.h:
-	cp ${FORMES_INCLUDE}/XpGuiCalls.h .
+$(top_srcdir)/sdif/XpGuiCalls.h:
+	cp -p ${FORMES_INCLUDE}/XpGuiCalls.h $@
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
