@@ -1,4 +1,4 @@
-/* $Id: SdifFile.h,v 3.5 2000-03-01 11:19:37 schwarz Exp $
+/* $Id: SdifFile.h,v 3.6 2000-04-26 15:31:24 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -17,6 +17,10 @@ LIBRARY
 
 LOG
  * $Log: not supported by cvs2svn $
+ * Revision 3.5  2000/03/01  11:19:37  schwarz
+ * Tough check for pipe on open.
+ * Added SdifFCurrDataType.
+ *
  * Revision 3.4  1999/09/28  10:37:00  schwarz
  * Added SdifCheckFileFormat to test if a file is in SDIF.
  *
@@ -107,8 +111,19 @@ extern SdifFileT *gSdifPredefinedTypes;
 
 /*DOC: 
   Initialise the SDIF library, providing a name for an optional additional
-  file with type definitions or "". */
+  file with type definitions or "".
+  <b>This function has to be called once and only once per process 
+  before any other call to the SDIF library.</b> */
 void SdifGenInit (char *PredefinedTypesFile); 
+
+/*DOC:
+  Initialise the SDIF library if it has not been initialised before.
+  This function has to be called at least once, but can be called as
+  many times as desired.  Especially useful for dynamic libraries.
+
+  [in] PredefinedTypesFile:
+	name for an optional additional file with type definitions or "". */
+void SdifGenInitCond (char *PredefinedTypesFile);
 
 /*DOC:
   Deinitialise the SDIF library */
