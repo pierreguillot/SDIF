@@ -8,9 +8,12 @@
  * 
  * 
  * 
- * $Id: sdifmatrix.h,v 1.2 2002-06-18 14:48:30 ftissera Exp $ 
+ * $Id: sdifmatrix.h,v 1.3 2002-07-12 10:25:14 ftissera Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  2002/06/18 14:48:30  ftissera
+ * add GetSignature(), GetStringSignature() and GetType()
+ *
  * Revision 1.1.1.1  2002/04/11 16:13:31  ftissera
  * Project for new SDIF API	
  * 
@@ -55,6 +58,7 @@ public:
     int Read(SdifFileT* file);
     void View();
 
+    /* to get the informations of the matrix */
     int GetSize() const;
     int GetNbRows();
     int GetNbCols();
@@ -64,6 +68,7 @@ public:
     std::string GetStringSignature();
     SdifDataTypeET GetType();
 
+    /* to get the values */
     int GetInt(int i, int j);
     float GetFloat(int i, int j);
     double GetDouble(int i, int j);
@@ -72,6 +77,7 @@ public:
     float Get(int i, int j, float& value);
     double Get(int i, int j, double& value);
 
+    /* to set the values */
     int Set(int i, int j, const int& value);
     int Set(int i, int j, const float& value);
     int Set(int i, int j, const double& value);
