@@ -1,4 +1,4 @@
-$Id: sdif-matlab-readme,v 1.6 2001-05-03 13:03:20 roebel Exp $
+$Id: sdif-matlab-readme,v 1.7 2001-05-14 17:37:04 roebel Exp $
 
 sdif-matlab-README	8.8.2000	Diemo Schwarz (schwarz@ircam.fr)
 -------------------------------------------------------------------------------
@@ -20,6 +20,10 @@ with documentation and support functions.
 
 
 RELEASES
+
+0.1.9   14.05.2001   Added support for writing char data and 1NVT frames 
+                     and matrices. 1NVT matrices have to be specified
+                     as cell string arrays of size Nx2 (N rows and 2 columns) 
 
 0.1.8b  03.05.2001   Removed inconsistency with SDifTypes.STYP
 		     of SDIF Version 3.3. Now correct    SDifTypes.STYP
