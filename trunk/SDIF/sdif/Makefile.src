@@ -1,4 +1,4 @@
-# $Id: Makefile.src,v 3.2 1999-08-31 10:02:57 schwarz Exp $
+# $Id: Makefile.src,v 3.3 1999-10-07 15:08:05 schwarz Exp $
 #
 #               Copyright (c) 1998 by IRCAM - Centre Pompidou
 #                          All rights reserved.
@@ -8,6 +8,10 @@
 #                            manager@ircam.fr
 #
 # $Log: not supported by cvs2svn $
+# Revision 3.2  1999/08/31  10:02:57  schwarz
+# Added module SdifSelect which parses an access specification to a
+# chosen part of SDIF data.  Can be added to a file name.
+#
 # Revision 3.1  1999/03/14  10:56:29  virolle
 # SdifStdErr add
 #
@@ -15,8 +19,7 @@
 # memory report
 #
 #
-# src of sdif library
-
+# src and headers of sdif library
 
 
 SDIF_SRC = \
@@ -49,8 +52,7 @@ SDIF_SRC = \
 	SdifPreTypes.c \
 	SdifSelect.c
 
-
-
-
-
-
+SDIF_HEADERS = \
+	$(SDIF_SRC:%.c=%.h) \
+	SdifFileStruct.h \
+	sdif.h
