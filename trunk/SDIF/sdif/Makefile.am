@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.20 2002-10-04 13:14:04 roebel Exp $
+# $Id: Makefile.am,v 1.21 2002-10-07 12:24:14 roebel Exp $
 #
 # ./sdif/Makefile.am		September 2000			Patrice Tisserand
 #
@@ -29,6 +29,10 @@
 # send email to:  sdif@ircam.fr
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.20  2002/10/04 13:14:04  roebel
+# Changed update check of formes include files from date comparison
+# to comparison with cmp.
+#
 # Revision 1.19  2002/10/03 08:54:25  tisseran
 # Try a fix to keep formesutils header uptodate in cvs working directory
 #
@@ -158,22 +162,22 @@ $(top_srcdir)/sdif/SdifVersion.h : $(Versionsrc)
 .PHONY: ircam_deps
 ircam_deps : $(FORMES_H:%=$(top_srcdir)/sdif/%)
 
-FORCE:
+ircam_force_cmp:
 
-$(top_srcdir)/sdif/host_architecture.h: FORCE #${FORMES_INCLUDE}/host_architecture.h
+$(top_srcdir)/sdif/host_architecture.h: @FORCE_CMP@ #${FORMES_INCLUDE}/host_architecture.h
 #	cp ${FORMES_INCLUDE}/host_architecture.h $@
 	@STEM=host_architecture;if cmp --quiet $(top_srcdir)/sdif/$$STEM.h ${FORMES_INCLUDE}/$$STEM.h;then echo $(top_srcdir)/sdif/$$STEM.h up to date;else echo  Updating $(top_srcdir)/sdif/$$STEM.h; cp ${FORMES_INCLUDE}/$$STEM.h $@;fi
 
-$(top_srcdir)/sdif/preincluded.h :  FORCE # ${FORMES_INCLUDE}/preincluded.h
+$(top_srcdir)/sdif/preincluded.h :  @FORCE_CMP@ # ${FORMES_INCLUDE}/preincluded.h
 	@STEM=preincluded;if cmp --quiet $(top_srcdir)/sdif/$$STEM.h ${FORMES_INCLUDE}/$$STEM.h;then echo $(top_srcdir)/sdif/$$STEM.h up to date;else echo  Updating $(top_srcdir)/sdif/$$STEM.h; cp ${FORMES_INCLUDE}/$$STEM.h $@;fi
 
 
-$(top_srcdir)/sdif/UniversalEnvVar.h :  FORCE #${FORMES_INCLUDE}/UniversalEnvVar.h
+$(top_srcdir)/sdif/UniversalEnvVar.h :  @FORCE_CMP@ #${FORMES_INCLUDE}/UniversalEnvVar.h
 #	cp ${FORMES_INCLUDE}/UniversalEnvVar.h $@
 	@STEM=UniversalEnvVar;if cmp --quiet $(top_srcdir)/sdif/$$STEM.h ${FORMES_INCLUDE}/$$STEM.h;then echo $(top_srcdir)/sdif/$$STEM.h up to date;else echo  Updating $(top_srcdir)/sdif/$$STEM.h; cp ${FORMES_INCLUDE}/$$STEM.h $@;fi
 
 
 
-$(top_srcdir)/sdif/XpGuiCalls.h:  FORCE #${FORMES_INCLUDE}/XpGuiCalls.h
+$(top_srcdir)/sdif/XpGuiCalls.h:  @FORCE_CMP@ #${FORMES_INCLUDE}/XpGuiCalls.h
 #	cp ${FORMES_INCLUDE}/XpGuiCalls.h $@
 	@STEM=XpGuiCalls;if cmp --quiet $(top_srcdir)/sdif/$$STEM.h ${FORMES_INCLUDE}/$$STEM.h;then echo $(top_srcdir)/sdif/$$STEM.h up to date;else echo  Updating $(top_srcdir)/sdif/$$STEM.h; cp ${FORMES_INCLUDE}/$$STEM.h $@;fi
