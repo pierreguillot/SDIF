@@ -1,4 +1,4 @@
-/* $Id: loadsdif-subs.c,v 1.8 2001-04-19 18:28:29 roebel Exp $
+/* $Id: loadsdif-subs.c,v 1.9 2001-05-28 16:32:32 roebel Exp $
 
    loadsdif_subs.c	25. January 2000	Diemo Schwarz
 
@@ -14,6 +14,10 @@
    endread ('close')
 
   $Log: not supported by cvs2svn $
+  Revision 1.8  2001/04/19 18:28:29  roebel
+  Changed error handling in readframe to be consistent with the
+  behavior of sdifextract
+
   Revision 1.7  2000/12/19 16:44:10  roebel
   Fixed Bug in loadsdif - crash when last matrix was not selected
   Moved test file sequence4seg1.energy.sdif into repository
@@ -85,8 +89,53 @@ SdifFileT *beginread (int nlhs, mxArray *plhs [], char *filename, char *types)
 	/* return some header data */
 	if (nlhs > 0)
 	{
-	    plhs [0] = mxCreateString ("Not yet!");
-	    /*plhs [0] = mxCreateCellArray (1, &1);*/
+	  SdifNameValueTableT *tt;
+	  int count=0,numstreamid;
+	  SdifStringT *string;
+	  char *localstr;
+	  SdifHashNT     *pNV;
+	  char idnumasstring[30];
+
+	  string = SdifStringNew();
+
+	  if(SdifNameValuesLIsNotEmpty(&(input->NameValues[count]))){
+	    SdifHashTableT *HTable;
+	    SdifListInitLoop(input->NameValues[count].NVTList);
+
+	    while(  SdifListIsNext(input->NameValues[count].NVTList)){
+	      input->NameValues[count].CurrNVT = 
+		SdifListGetNext (input->NameValues[count].NVTList);
+	      SdifFNameValueLCurrNVTtoSdifString(
+			      input, string);	    
+	    }
+	    count ++;
+
+	  }
+
+	  if((numstreamid=SdifStreamIDTableGetNbData  (input->StreamIDsTable))
+	     > 0){
+	    int iID;
+	    SdifHashNT* pID;
+	    SdifStreamIDT *sd;
+
+	    for(iID=0; iID<input->StreamIDsTable->SIDHT->HashSize; iID++)
+	      for (pID = input->StreamIDsTable->SIDHT->Table[iID]; pID; pID = pID->Next) {
+
+		SdifStringAppend(string,"IDS ");
+		sd = ((SdifStreamIDT * )(pID->Data));
+		sprintf(idnumasstring,"%d ",sd->NumID);
+		SdifStringAppend(string,idnumasstring);
+		SdifStringAppend(string,sd->Source);
+		SdifStringAppend(string,":");
+		SdifStringAppend(string,sd->TreeWay);
+		SdifStringAppend(string,"\n");
+		
+	      }
+	  }
+	  localstr = calloc(string->SizeW+1,1);
+	  strcpy(localstr,string->str);
+	  plhs[0] = mxCreateString(localstr);
+	  SdifStringFree(string);
 	}
     }
 
@@ -198,29 +247,84 @@ static size_t readmatrix (SdifFileT *f, mxArray *mxarray [MaxNumOut])
 		 ncol = SdifFCurrNbCol(f),
 		 nrow = SdifFCurrNbRow(f);
 
-    /* alloc output array and scalars */
-    mxarray [0] = mxCreateDoubleMatrix (nrow, ncol, mxREAL);
-    mxarray [1] = mxCreateDoubleMatrix (1, 1, mxREAL);
-    mxarray [2] = mxCreateDoubleMatrix (1, 1, mxREAL);
-    mxarray [3] = mxCreateString (
-			SdifSignatureToString (SdifFCurrFrameSignature(f)));
-    mxarray [4] = mxCreateString (
-			SdifSignatureToString (SdifFCurrMatrixSignature(f)));
+    SdifDataTypeET DataType = SdifFCurrDataType(f);
+    printf("dat %d t = %d \n",DataType,eText);
+
+    switch (DataType){
+    case eText:{
+      char *str = calloc(nrow*ncol+1,1);
+      double matData;
+    printf("read cahr \n");
+
+      mxarray [1] = mxCreateDoubleMatrix (1, 1, mxREAL);
+      *(mxGetPr (mxarray [1])) = SdifFCurrTime (f);
+      mxarray [2] = mxCreateDoubleMatrix (1, 1, mxREAL);
+      *(mxGetPr (mxarray [2])) = SdifFCurrID (f);
+      mxarray [3] = mxCreateString(
+				   SdifSignatureToString (SdifFCurrFrameSignature(f)));
+      mxarray [4] = mxCreateString(
+				   SdifSignatureToString (SdifFCurrMatrixSignature(f)));
     
-    prmtx		     = mxGetPr (mxarray [0]);
-    *(mxGetPr (mxarray [1])) = SdifFCurrTime (f);
-    *(mxGetPr (mxarray [2])) = SdifFCurrID (f);
+      for (row = 0; row < nrow; row++)
+	{
+	  bytesread += SdifFReadOneRow (f);
+	  for (col = 0; col < ncol; col++){
+	    /* transpose to matlab column-major order */
+	     matData = SdifFCurrOneRowCol(f, col+1);
+	     str [row + col * nrow] = (char) matData;
+	  }
+	}
+      
+      bytesread += SdifFReadPadding (f, SdifFPaddingCalculate (f->Stream, 
+							     bytesread));
+
+      mxarray [0] = mxCreateString(str);
+    }
+    break;
+
+    case eFloat4:
+      /* alloc output array and scalars */
+
+    printf("read float \n");
+
+      mxarray [0] = mxCreateDoubleMatrix (nrow, ncol, mxREAL);
+      mxarray [1] = mxCreateDoubleMatrix (1, 1, mxREAL);
+      mxarray [2] = mxCreateDoubleMatrix (1, 1, mxREAL);
+      mxarray [3] = mxCreateString (
+				    SdifSignatureToString (SdifFCurrFrameSignature(f)));
+      mxarray [4] = mxCreateString (
+				    SdifSignatureToString (SdifFCurrMatrixSignature(f)));
     
-    for (row = 0; row < nrow; row++)
-    {
-	bytesread += SdifFReadOneRow (f);
-	for (col = 0; col < ncol; col++)
+      prmtx		     = mxGetPr (mxarray [0]);
+      *(mxGetPr (mxarray [1])) = SdifFCurrTime (f);
+      *(mxGetPr (mxarray [2])) = SdifFCurrID (f);
+    printf("read row %d col %d \n",nrow,ncol);
+      
+      for (row = 0; row < nrow; row++)
+	{
+	  bytesread += SdifFReadOneRow (f);
+	  for (col = 0; col < ncol; col++)
 	    /* transpose to matlab column-major order */
 	    prmtx [row + col * nrow] = SdifFCurrOneRowCol(f, col+1);
-    }
-    
-    bytesread += SdifFReadPadding (f, SdifFPaddingCalculate (f->Stream, 
+	}
+      
+      bytesread += SdifFReadPadding (f, SdifFPaddingCalculate (f->Stream, 
 							     bytesread));
+      break;
+
+    default :
+      printf("Unknown type of matrix data skipped !!\n");
+      mxarray [0] = mxCreateDoubleMatrix (0, 0, mxREAL);
+      mxarray [1] = mxCreateDoubleMatrix (1, 1, mxREAL);
+      *(mxGetPr (mxarray [1])) = SdifFCurrTime (f);
+      mxarray [2] = mxCreateDoubleMatrix (1, 1, mxREAL);
+      *(mxGetPr (mxarray [2])) = SdifFCurrID (f);
+      mxarray [3] = mxCreateString (
+				    SdifSignatureToString (SdifFCurrFrameSignature(f)));
+      mxarray [4] = mxCreateString (
+				    SdifSignatureToString (SdifFCurrMatrixSignature(f)));
+      break;
+    }
     return (bytesread);
 }
 

@@ -1,4 +1,4 @@
-$Id: sdif-matlab-readme,v 1.7 2001-05-14 17:37:04 roebel Exp $
+$Id: sdif-matlab-readme,v 1.8 2001-05-28 16:32:13 roebel Exp $
 
 sdif-matlab-README	8.8.2000	Diemo Schwarz (schwarz@ircam.fr)
 -------------------------------------------------------------------------------
@@ -20,6 +20,11 @@ with documentation and support functions.
 
 
 RELEASES
+
+0.2.0   28.05.2001   Added support for reading char data and 1NVT frames 
+                     and matrices. The initial loadsdif call now returns
+		     the ASCII chunks of type 1NVT and 1IDS that make up
+                     the header of the SDIF file. 
 
 0.1.9   14.05.2001   Added support for writing char data and 1NVT frames 
                      and matrices. 1NVT matrices have to be specified
