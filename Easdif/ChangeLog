@@ -1,6 +1,16 @@
+2003-05-22  Axel Roebel  <Axel.Roebel@ircam.fr>
+Version 0.6.0
+	
+	* swig/easdif-common.i.in 
+	Fixed support for std::map that is necessary for sdifnamevaluetables.
+
+	* easdif/sdifentity.cpp,sdifnamevaluetable.h,sdifnamevaluetable.cpp
+	SDIFNameValueTable now derived from std::map which makes 
+	handling more conforming to standard and handling in swig easier.
+
 2003-05-21  Axel Roebel  <Axel.Roebel@ircam.fr>
 Version 0.5.1
-	
+
 	* easdif/easdifintro.h,test/*.cpp 
 	Improved error handling. 
 
@@ -355,4 +365,4 @@ Version 0.21
 	* ChangeLog: Added changelog to repository.
 
 
-$Id: ChangeLog,v 1.14 2003-05-21 20:41:21 roebel Exp $
+$Id: ChangeLog,v 1.15 2003-05-22 21:37:53 roebel Exp $
