@@ -1,6 +1,6 @@
 dnl -*-autoconf-*-  (No, it's an autoconf file!)
 dnl -*-m4-*- (He emacs, it's a m4 file)
-dnl $Id: configure.in,v 1.45 2003-12-15 13:17:28 schwarz Exp $
+dnl $Id: configure.in,v 1.46 2004-01-29 13:35:26 schwarz Exp $
 dnl
 dnl configure.in		September 2000		Patrice Tisserand
 dnl
@@ -32,6 +32,9 @@ dnl send email to:  sdif@ircam.fr
 
 
 dnl $Log: not supported by cvs2svn $
+dnl Revision 1.45  2003/12/15 13:17:28  schwarz
+dnl let's call this version beta4
+dnl
 dnl Revision 1.44  2003/11/07 21:47:16  roebel
 dnl removed XpGuiCalls.h and replaced preinclude.h  by local files
 dnl
@@ -208,7 +211,7 @@ PACKAGE=SDIF
 
 SDIF_VERSION_MAJOR=3
 SDIF_VERSION_MINOR=8
-SDIF_VERSION_RELEASE=0-beta4
+SDIF_VERSION_RELEASE=0
 
 VERSION=$SDIF_VERSION_MAJOR.$SDIF_VERSION_MINOR.$SDIF_VERSION_RELEASE
 
@@ -375,6 +378,7 @@ test/files/sdifw/Makefile
 test/files/sdifref/Makefile
 macosxbuild/Makefile
 macosxbuild/SDIF.pbproj/Makefile
+macosxbuild/SDIF.xcode/Makefile
 sdif.pc 
 sdif.spec)
 
