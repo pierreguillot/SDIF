@@ -1,4 +1,4 @@
-/* $Id: sdif.h,v 1.43 2004-09-13 13:06:27 schwarz Exp $
+/* $Id: sdif.h,v 1.44 2004-09-14 15:45:47 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -30,6 +30,11 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.43  2004/09/13 13:06:27  schwarz
+ * SdifReadSimple even simpler, SdifReadFile for full-scale callback reading.
+ * Moving the functionality of querysdif into the library with SdifQuery,
+ * result in SdifQueryTreeT.
+ *
  * Revision 1.42  2004/09/09 18:02:00  schwarz
  * - Changed SdifMatrixDataT to something sensible that allows to read
  *   and store a whole matrix's data as one block into field CurrMtrxData
@@ -217,7 +222,7 @@
  * Revision 1.1.2.1  2000/08/21  13:07:41  tisseran
  * *** empty log message ***
  *
- * $Date: 2004-09-13 13:06:27 $
+ * $Date: 2004-09-14 15:45:47 $
  *
  */
 
@@ -232,7 +237,7 @@ extern "C" {
 #endif
 
 
-static const char _sdif_h_cvs_revision_ [] = "$Id: sdif.h,v 1.43 2004-09-13 13:06:27 schwarz Exp $";
+static const char _sdif_h_cvs_revision_ [] = "$Id: sdif.h,v 1.44 2004-09-14 15:45:47 schwarz Exp $";
 
 
 #include <stdio.h>
@@ -2029,7 +2034,7 @@ size_t SdifFReadMatrixData   (SdifFileT *file);
 
 typedef struct
 { 
-    float min, max;	/* use float even for double values, doesn't harm */
+    double min, max;	/* use double even for int, doesn't harm */
 } SdifMinMaxT;
 
 /* two-level tree node for matrices in frames */
