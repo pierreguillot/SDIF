@@ -1,4 +1,4 @@
-/* $Id: writesdif.c,v 1.2 2000-05-15 13:07:47 tisseran Exp $
+/* $Id: writesdif.c,v 1.3 2000-08-04 14:42:34 schwarz Exp $
 
    writesdif.c       12. May 2000      Patrice Tisserand
 
@@ -6,6 +6,13 @@
    No SDIF depencies here! (-->writesdif-subs.c)
    
    $Log: not supported by cvs2svn $
+ * Revision 1.2  2000/05/15  13:07:47  tisseran
+ * Added test for input arguments:
+ *    Is Matrix Signature a char?
+ * Removed debugging message (mexPrintf("Matrix Loop") ...)
+ * Removed unused variable
+ * Change comment style for writesdif.m
+ *
  * Revision 1.1  2000/05/12  16:14:13  tisseran
  * Mexfile to write sdif files in matlab.
  * TODO: add possibility to use several file at same time.
@@ -17,13 +24,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <strings.h> /* For alpha bzero defintion */
-
-#if defined(__i386)  /* For PATH_MAX definition */
-#include <linux/limits.h> /* File is located in /usr/src/linux/include/linux/limits.h */
-#else
-#include <limits.h>
-#endif
+#include <strings.h>	/* For alpha bzero defintion */
+#include <limits.h>	/* For PATH_MAX definition */
 
 #include <errno.h>
 #include <mex.h>
@@ -66,7 +68,7 @@ mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
 	  if (!input)
 	    mexErrMsgTxt("No file opened. Use 'writesdif (filename)'.");
 
-	  endwrite(input);
+	  input = endwrite(input);
 	}
       else
 	{

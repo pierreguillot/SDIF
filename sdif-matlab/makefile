@@ -1,10 +1,13 @@
-# $Id: makefile,v 1.7 2000-07-27 18:24:49 schwarz Exp $
+# $Id: makefile,v 1.8 2000-08-04 14:42:31 schwarz Exp $
 #
 # makefile	26. January 2000	Diemo Schwarz
 #
 # formesutils matlab library
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.7  2000/07/27  18:24:49  schwarz
+# Install really all necessary files.
+#
 # Revision 1.6  2000/07/24  12:33:33  schwarz
 # Install all necessary files.
 #
@@ -30,32 +33,42 @@
 # Matlab mex extension and support functions to load SDIF files.
 #
 
+
 # include mex definitions from the right places
 MAKEFLAGS = -I . -I /u/formes/lib/matlab/
 include mex.makedefs
+
+
+#
+# VERSION
+#
+
+V_MAJOR 	= 0
+V_MINOR 	= 1
+V_RELEASE	= 2
+VERSION		=  $(V_MAJOR).$(V_MINOR).$(V_RELEASE)
+CVSTAG		= v$(V_MAJOR)_$(V_MINOR)_$(V_RELEASE)
+
+#
+# PATHS and SETTINGS
+#
 
 # under IMPORT_ROOT, imported lib and include directories are used
 ifeq ($(USER),tisseran)
   IMPORT_ROOT	 = $(HOME)
 endif
 
-CFLAGS	   	 = -g -ansi -Wall -DTEST
+CFLAGS	   	 = -g -Wall -DTEST '-DVERSION="$(VERSION)"'
 LFLAGS		 = 
 CC		 = gcc
 
 OBJ_DIR	   	 = obj/$(ARCH)
-OUT_DIRS	 = $(OBJ_DIR)
+OUT_DIRS	 = $(OBJ_DIR) $(INSTALL_DIR)
 VPATH		 = $(OBJ_DIR)
 
-# install mex files and supporting m-files INSTALL_FILES into INSTALL_DIR
-INSTALL_DIR	 = /u/formes/lib/matlab
-INSTALL_FILES	 = $(mexfiles) mex.makedefs sdifexist.m \
-		   loadsdif.m loadsdiffile.m loadsdifflat.m \
-		   writesdif.m
-INSTALLED_FILES  = $(INSTALL_FILES:%=$(INSTALL_DIR)/%)
 
 #
-# files
+# FILES
 #
 
 base		= loadsdif writesdif
@@ -69,7 +82,21 @@ allsrc		= $(cfiles)
 
 
 #
-# rules
+# INSTALL and DISTRIBUTION
+#
+
+# install mex files and supporting m-files INSTALL_FILES into INSTALL_DIR
+INSTALL_DIR	= /u/formes/lib/matlab
+INSTALL_FILES	= $(mexfiles) mex.makedefs sdifexist.m \
+		  loadsdif.m loadsdiffile.m loadsdifflat.m \
+		  writesdif.m
+INSTALLED_FILES = $(INSTALL_FILES:%=$(INSTALL_DIR)/%)
+DISTFILES	= $(INSTALL_FILES) -C $(SDIF_TYPES_DIR) $(SDIF_TYPES_FILE)
+DISTBASE	= sdif-matlab-$(VERSION)
+
+
+#
+# RULES
 #
 
 $(OBJ_DIR)/%.o:	%.c
@@ -82,7 +109,8 @@ $(OBJ_DIR)/%.o:	%.c
 # targets
 #
 
-all:			$(OUT_DIRS) $(mexfiles)
+all:			$(OBJ_DIR) $(mexfiles)
+new:			clean all
 loadsdif:		loadsdif.$(MEXSUF)
 writesdif:		writesdif.$(MEXSUF) 
 
@@ -106,16 +134,16 @@ test:		$(mexfiles) testl t1.sdif
 testl:
 		echo testl | matlab -nosplash
 t1.sdif:
-		(echo "writesdif('$@')"; \
-		 echo "writesdif(0,1,'1NVT','1NVT','name\tvalue\n')"; \
-		 echo "writesdif(1,1,'1ABC','IABC',[1],'1ABC',[1 2; 5 6])"; \
-		 echo "writesdif('close')" )  |  matlab -nosplash
+		echo "testwrite('$@')"  |  matlab -nosplash
 		querysdif $@
 		sdiftotext -i $@
 
-install:	all
+install:	all $(INSTALL_DIR)
 		cp -fp $(INSTALL_FILES) $(INSTALL_DIR)
 		chmod g-w $(INSTALLED_FILES) # assure ownership-change
+dist:		all
+		tar cvfz $(DISTBASE).tar.gz $(DISTFILES)
+		@echo now do: cvs tag $(CVSTAG)
 
 clean mexclean cl:
 		-rm -f $(mexfiles) $(loadsdif_obj) $(writesdif_obj) 
@@ -126,7 +154,6 @@ ll:
 		@echo $(CFLAGS)
 		@echo $(INCL)
 		@echo $(INCLUDE)
-		@echo $(udidepend)
 
 # report missing symbols in loadsdif lib
 mis missing:	$(mexfiles)
