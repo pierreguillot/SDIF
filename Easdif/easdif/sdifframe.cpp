@@ -32,9 +32,13 @@
  * 
  * 
  * 
- * $Id: sdifframe.cpp,v 1.4 2003-04-29 15:41:30 schwarz Exp $ 
+ * $Id: sdifframe.cpp,v 1.5 2003-05-18 21:08:37 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.4  2003/04/29 15:41:30  schwarz
+ * Changed all names View* to Print* and *Info to *Header for consistency
+ * with SDIF library.
+ *
  * Revision 1.3  2003/04/18 16:44:00  schwarz
  * Small changes to make easdif swiggable:
  * - name change for swig-generated classes
@@ -274,7 +278,7 @@ void SDIFFrame::SetTime(float time)
 }
 
 /* to Get */
-SDIFMatrix& SDIFFrame::GetMatrix(unsigned int index)
+SDIFMatrix& SDIFFrame::GetMatrix(unsigned int index) 
 {
     // Check index
     if (index > (mv_Matrix.size()-1))
@@ -284,44 +288,41 @@ SDIFMatrix& SDIFFrame::GetMatrix(unsigned int index)
     }
     return mv_Matrix[index];
 }
-SDIFMatrix& SDIFFrame::GetMatrixIfSelected(SdifFileT* file, unsigned int index)
+
+/* to Get */
+const SDIFMatrix& SDIFFrame::GetMatrix(unsigned int index) const
 {
-    SdifSignature sig, sigm;
-    sig = GetMatrixSelection(file);
-    sigm = mv_Matrix[index].GetSignature();
-    if( (sig != 0 && sig == sigm) || sig == 0 )
-    {	
-	return GetMatrix(index);
-    }
-    else
+    // Check index
+    if (index > (mv_Matrix.size()-1))
     {
-	std::cerr << " No such matrix selected " << std::endl;	   
+	std::cerr << " No such matrix " << std::endl;
 	return mv_Matrix[0];
     }
-
+    return mv_Matrix[index];
 }
 
-SdifUInt4 SDIFFrame::GetNbMatrix()
+
+SdifUInt4 SDIFFrame::GetNbMatrix() const
 {
     return mNbMatrix;
 }
 
-SdifSignature SDIFFrame::GetSignature()
+SdifSignature SDIFFrame::GetSignature() const
 {
     return mSig;
 }
 
-SdifUInt4 SDIFFrame::GetStreamID()
+SdifUInt4 SDIFFrame::GetStreamID() const
 {
     return mStreamID;
 }
 
-SdifFloat8 SDIFFrame::GetTime()
+SdifFloat8 SDIFFrame::GetTime() const
 {
     return mTime;
 }
 
-SdifUInt4 SDIFFrame::GetSize()
+SdifUInt4 SDIFFrame::GetSize() const
 {
     return mSize;
 }
@@ -370,7 +371,7 @@ void SDIFFrame::Resize()
 
 
 
-bool SDIFFrame::MatrixExists(const SdifSignature& sig)
+bool SDIFFrame::MatrixExists(const SdifSignature& sig) const
 { 
     bool test = false;
     SdifUInt4 index = 0;    
@@ -383,7 +384,7 @@ bool SDIFFrame::MatrixExists(const SdifSignature& sig)
     return test;
 }
 
-bool SDIFFrame::MatrixExists(const std::string& signature)
+bool SDIFFrame::MatrixExists(const std::string& signature) const
 {
     SdifSignature sig = SdifStringToSignature(const_cast<char*>
 					      (signature.c_str()));
@@ -391,7 +392,27 @@ bool SDIFFrame::MatrixExists(const std::string& signature)
 }
 
 
-SDIFMatrix& SDIFFrame::GetMatrixWithSig(const SdifSignature& sig)
+SDIFMatrix& SDIFFrame::GetMatrixWithSig(const SdifSignature sig)
+{
+    bool test = false;    
+    SdifUInt4 index = 0;
+
+    while (!test && (index < mNbMatrix))
+    {
+	test = (mv_Matrix[index].GetSignature() == sig);
+	++index;
+    }
+
+    if (test)
+	return mv_Matrix[index-1];
+    else
+    {
+	std::cerr << " No such matrix " << std::endl;
+	return mv_Matrix[0];
+    }
+}
+
+const SDIFMatrix& SDIFFrame::GetMatrixWithSig(const SdifSignature sig) const
 {
     bool test = false;    
     SdifUInt4 index = 0;
@@ -412,6 +433,7 @@ SDIFMatrix& SDIFFrame::GetMatrixWithSig(const SdifSignature& sig)
 }
 
 
+
 SDIFMatrix& SDIFFrame::GetMatrix(const std::string& signature)
 {   
     /*
@@ -424,25 +446,24 @@ SDIFMatrix& SDIFFrame::GetMatrix(const std::string& signature)
     /* with GetMatrixWithSig(sig) */
     return GetMatrixWithSig(sig);
 
-/*
-  while (!test && (index < mNbMatrix))
-  {
-  test = (mv_Matrix[index].GetSignature() == sig);
-  ++index;
-  }
-
-  if (test)
-  return mv_Matrix[index-1];
-  else
-  {
-  std::cerr << " No such matrix " << std::endl;
-  return mv_Matrix[0];
-  }
-*/
 }
 
 
-SdifSignature SDIFFrame::GetMatrixSelection(SdifFileT* file)
+const SDIFMatrix& SDIFFrame::GetMatrix(const std::string& signature) const
+{   
+    /*
+      bool test = false;    
+      SdifUInt4 index = 0;
+    */
+
+    SdifSignature sig = SdifStringToSignature(signature.c_str());
+    /* with GetMatrixWithSig(sig) */
+    return GetMatrixWithSig(sig);
+
+}
+
+
+SdifSignature SDIFFrame::GetMatrixSelection(SdifFileT* file) const
 {
     SdifListT* listsel;
     SdifSignature sig = 0;
@@ -456,7 +477,7 @@ SdifSignature SDIFFrame::GetMatrixSelection(SdifFileT* file)
     return sig;
 }
 
-SdifSignature SDIFFrame::GetMatrixSelection(const SDIFEntity& entity)
+SdifSignature SDIFFrame::GetMatrixSelection(const SDIFEntity& entity) const
 {
     return GetMatrixSelection(entity.GetFile());
 }
