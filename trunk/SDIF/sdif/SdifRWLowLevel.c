@@ -1,4 +1,4 @@
-/* $Id: SdifRWLowLevel.c,v 3.21 2004-06-03 11:18:00 schwarz Exp $
+/* $Id: SdifRWLowLevel.c,v 3.22 2004-06-09 10:54:43 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -32,6 +32,17 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.21  2004/06/03 11:18:00  schwarz
+ * Profiling showed some waste of cycles in byte swapping and signature reading:
+ * - byte swapping now array-wise, not element-wise in SdifSwap* routines:
+ *   -> from 0.24 s (18.5%) to 0.14s
+ * - ASCII signature reading function SdiffGetSignature replaced by new binary
+ *   function SdiffReadSignature (also in SdifFGetSignature, so the change is
+ *   mostly transparent):
+ *   -> from 0.11 s (9.6%)  to 0.01 s
+ * - overall run time improvement with test case sdifextractall_a01:
+ *   -> from 1.20 s         to 0.86 s (40% faster)
+ *
  * Revision 3.20  2004/06/03 09:16:19  schwarz
  * more efficient byte swapping in SdiffreadLittleEndian[248].
  * realised SdiffReadSignature.
@@ -128,9 +139,6 @@
  *
  * Revision 2.2  1999/01/23  13:57:45  virolle
  * General Lists, and special chunk preparation to become frames
- *
- *
- *
  */
 
 
@@ -144,14 +152,16 @@
 #include "SdifError.h"
 #include "SdifString.h"
 
+
 extern int        gSdifInitialised;	/* can't include SdifFile.h */
+
+#define     _SdifBSLittleE   4096
 static char gSdifLittleToBig [_SdifBSLittleE];
 
 
 
-/* fread encapsule */
-size_t
-Sdiffread(void *ptr, size_t size, size_t nobj, FILE *stream)
+/* fread encapsulation with error check */
+size_t Sdiffread(void *ptr, size_t size, size_t nobj, FILE *stream)
 {
   size_t nobjread;
 
@@ -164,7 +174,6 @@ Sdiffread(void *ptr, size_t size, size_t nobj, FILE *stream)
   
   return nobjread;
 }
-
 
 
 
@@ -251,7 +260,7 @@ size_t SdiffwriteLittleEndian2 (void *ptr, size_t nobj, FILE *stream)
 	SdifSwap2Copy(ptr, gSdifLittleToBig, ntowrite);
 	nwritten += Sdiffwrite(gSdifLittleToBig, 2, ntowrite, stream);
 	nobj     -= ntowrite; 
-	ptr	 += _SdifBSLittleE;
+	ptr	  = (char *) ptr + _SdifBSLittleE;
     }
 
     return nwritten;
@@ -272,7 +281,7 @@ size_t SdiffwriteLittleEndian4 (void *ptr, size_t nobj, FILE *stream)
 	SdifSwap4Copy(ptr, gSdifLittleToBig, ntowrite);
 	nwritten += Sdiffwrite(gSdifLittleToBig, 4, ntowrite, stream);
 	nobj     -= ntowrite; 
-	ptr	 += _SdifBSLittleE;
+	ptr	  = (char *) ptr +  _SdifBSLittleE;
     }
 
     return nwritten;
@@ -293,7 +302,7 @@ size_t SdiffwriteLittleEndian8 (void *ptr, size_t nobj, FILE *stream)
 	SdifSwap8Copy(ptr, gSdifLittleToBig, ntowrite);
 	nwritten += Sdiffwrite(gSdifLittleToBig, 8, ntowrite, stream);
 	nobj     -= ntowrite; 
-	ptr	 += _SdifBSLittleE;
+	ptr	  = (char *) ptr +  _SdifBSLittleE;
     }
 
     return nwritten;
