@@ -1,4 +1,4 @@
-/* $Id: SdifHard_OS.h,v 3.4 1999-10-13 16:05:50 schwarz Exp $
+/* $Id: SdifHard_OS.h,v 3.5 2000-03-01 11:17:38 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -16,6 +16,15 @@
  * author: Dominique Virolle 1998
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.4  1999/10/13  16:05:50  schwarz
+ * Changed data type codes (SdifDataTypeET) to SDIF format version 3, as
+ * decided with Matt Wright June 1999, added integer data types.
+ * Added writing of 1NVT with real frame header (but data is still not in
+ * matrices).
+ * The data type handling makes heavy use of code-generating macros,
+ * called for all data types with the sdif_foralltypes macro, thus
+ * adding new data types is easy.
+ *
  * Revision 3.3  1999/10/07  15:12:25  schwarz
  * Added isSeekable flag in SdifFileT struct.  This allows to simplify the
  * many tests for stdio on opening the stream.
@@ -78,15 +87,18 @@
 
 /* to do fpos_t compatible on MacinTosh */
 #if defined(MACINTOSH) || defined(WIN32)
-/* on mac or windows, seeking on a stream is always considered
-   successful (return 0)! */
-#define SdiffPosT long
-#define SdiffGetPos(f,p) ((((*(p)) = ((f!= stdin) && (f!= stdout) && (f!= stderr)) ? ftell(f) : 0 ) == -1 ) ? -1 : 0)
-#define SdiffSetPos(f,p) ((f!= stdin) && (f!= stdout) && (f!= stderr)) ? fseek(f, (long)(*(p)), SEEK_SET) : 0
+    /* on mac or windows, seeking on a stream is always considered
+       successful (return 0)! */
+#   define SdiffPosT		long
+#   define SdiffIsFile(f)	((f)!=stdin && (f)!=stdout && (f)!=stderr)
+#   define Sdiffftell(f)	(SdiffIsFile(f)  ?  ftell(f)  :  0)
+#   define SdiffGetPos(f,p)	((*(p) = Sdiffftell(f)) == -1  ?  -1  :  0)
+#   define SdiffSetPos(f,p)	SdiffIsFile(f)  \
+				    ?  fseek(f, (long)(*(p)), SEEK_SET)  :  0
 #else
-#define SdiffPosT fpos_t
-#define SdiffGetPos(f,p)    fgetpos((f),(p))
-#define SdiffSetPos(f,p)    fsetpos((f),(p))
+#   define SdiffPosT		fpos_t
+#   define SdiffGetPos(f,p)     fgetpos((f),(p))
+#   define SdiffSetPos(f,p)     fsetpos((f),(p))
 #endif
 
 
