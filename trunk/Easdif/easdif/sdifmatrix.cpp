@@ -32,9 +32,12 @@
  * 
  * 
  * 
- * $Id: sdifmatrix.cpp,v 1.14 2003-07-18 20:44:15 roebel Exp $ 
+ * $Id: sdifmatrix.cpp,v 1.15 2003-11-18 01:38:22 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.14  2003/07/18 20:44:15  roebel
+ * removed remaining default arguments in constructor call.
+ *
  * Revision 1.13  2003/07/18 20:42:22  roebel
  * Moved constructor implementations to .cpp, fixed bug in constructor with allocation
  *
@@ -119,7 +122,7 @@
 namespace Easdif {
 
 SDIFMatrix::SDIFMatrix(const SdifDataTypeET _type):
-  mInter(0),mType(_type)
+  mInter(0)
 {
 
     /* default signature */
@@ -127,7 +130,7 @@ SDIFMatrix::SDIFMatrix(const SdifDataTypeET _type):
     // signifies uninitialized matrix
     mSig = 0;
     mFile = 0;
-    Init(mSig, 1, 1, mType);
+    Init(mSig, 1, 1, _type);
 }
 
 SDIFMatrix::SDIFMatrix(const SDIFMatrix& aMatrix):mInter(0)
@@ -294,9 +297,8 @@ int SDIFMatrix::Read(SdifFileT* file)
     mSig = SdifFCurrMatrixSignature(file);
     int nrows = SdifFCurrNbRow(file);
     int ncols = SdifFCurrNbCol(file);
-    mType  = SdifFCurrDataType (file);
 	
-    Init(mSig, nrows, ncols, mType);
+    Init(mSig, nrows, ncols, SdifFCurrDataType (file));
     /* add bytesread */
     bytesread += mInter->read(file);	    
     return bytesread;
