@@ -34,9 +34,13 @@
  * 
  * 
  * 
- * $Id: sdifexception.h,v 1.8 2004-07-21 13:20:28 roebel Exp $ 
+ * $Id: sdifexception.h,v 1.9 2004-07-27 17:39:31 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.8  2004/07/21 13:20:28  roebel
+ * Added support to hold a frameDirectory in the entity and
+ * the possibility to read frames from a given time position.
+ *
  * Revision 1.7  2003/12/18 12:15:29  roebel
  * Renamed method arguments to prevent shadowing of class members
  *
@@ -67,8 +71,8 @@
 
 #include <iostream>
 #include <string>
-#include <sdif.h>
 #include <stdexcept>
+#include "sdif.h"
 
 namespace Easdif {
 
@@ -132,7 +136,7 @@ namespace Easdif {
      *
      *  The member function what returns the error message
      */
-    const char *what() {      
+    const char *what() const throw() {      
       return mMessage.c_str();
     }
 
