@@ -1,0 +1,53 @@
+$Id: README,v 1.1 2003-04-29 15:55:00 schwarz Exp $
+
+README for SWIG wrapper generation for eaSDIF
+
+http://www.swig.org
+
+------------------------------------------------------------------------------
+
+
+There are two modules generated:
+- eaSDIF  with high-level classes (normally you need only this small module)
+- SDIF	  with all the C-definitions of the library (huge!)
+
+
+
+Directories:
+
+easdif/swig		common files
+easdif/swig/perl5	language dir for perl5
+easdif/swig/python	...
+easdif/swig/java
+...more later...	(especially hoping for matlab, ruby)
+
+
+in the main directory:
+
+easdif-common.i
+sdif-common.i
+sdifdefines.i
+
+
+in each language dir, there are these source files:
+
+build			subdirectory with all generated files
+Makefile.am
+easdif-<lang>.i		main interface file, %including ../easdif-common.i
+sdif-<lang>.i
+sdiftypemap-<lang>.i	typemap for <lang>
+<test-scripts, etc.>
+
+
+Each <lang>/easdif-<lang>.i has to include ../easdif-common.i and has
+to define the initialisation of the module, and the class renaming:
+
+	#define SWIG_RENAME_EASDIF
+
+if <lang> does force you to use the eaSDIF qualifier anyway, to avoid
+ugly eaSDIF::SDIFMatrix().
+
+
+TODO:
+- direct set/get of text matrices
+- map/tie matrix columns to hash keys with array value
