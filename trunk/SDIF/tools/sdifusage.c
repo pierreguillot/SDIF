@@ -4,7 +4,6 @@
 /*--------------------------------------------------------------------------*/
 
 #include "sdif_portability.h"
-#include "XpGuiCalls.h"
 
 #include "sdif.h"
 

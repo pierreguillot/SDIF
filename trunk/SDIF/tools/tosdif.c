@@ -1,4 +1,4 @@
-/* $Id: tosdif.c,v 1.4 2003-11-07 21:47:20 roebel Exp $
+/* $Id: tosdif.c,v 1.5 2003-11-07 22:25:27 roebel Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -10,6 +10,9 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.4  2003/11/07 21:47:20  roebel
+ * removed XpGuiCalls.h and replaced preinclude.h  by local files
+ *
  * Revision 1.3  2000/12/06 13:43:44  lefevre
  * Mix HostArchiteture and AutoConfigure mechanisms
  *
@@ -52,7 +55,6 @@
 
 
 #include "sdif_portability.h"
-#include "XpGuiCalls.h"
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -76,7 +78,7 @@ usage(void)
  e :   error file (default is \"stderr\")\n\
  t :   sdif types file (default is env SDIFTYPES\n\t\tor \"SdifTypes.STYP\" in current dir)\n\
  T :   input is a pseudo-sdif text file\n");
-  XpExit(1);
+  exit(1);
 }
 
 

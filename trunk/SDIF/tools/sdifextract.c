@@ -1,4 +1,4 @@
-/* $Id: sdifextract.c,v 1.12 2003-11-07 21:47:19 roebel Exp $
+/* $Id: sdifextract.c,v 1.13 2003-11-07 22:25:16 roebel Exp $
  
                 Copyright (c) 1998 by IRCAM - Centre Pompidou
                            All rights reserved.
@@ -13,6 +13,9 @@
    Extract data from an SDIF-file.  
    
    $Log: not supported by cvs2svn $
+   Revision 1.12  2003/11/07 21:47:19  roebel
+   removed XpGuiCalls.h and replaced preinclude.h  by local files
+
    Revision 1.11  2003/03/18 14:20:59  roebel
    Fixed seg fault on MacOSX - large arrays are now global
 
@@ -143,7 +146,6 @@
 
 
 #include "sdif_portability.h"
-#include "XpGuiCalls.h"
 
 #include "sdif.h"
 #include <stdlib.h>
@@ -208,7 +210,7 @@ void usage (char *msg, char *arg, int longhelp)
     }
     if (longhelp)
     {
-    	fprintf (SdifStdErr, "\n" PROG "version $Revision: 1.12 $\n\n");
+    	fprintf (SdifStdErr, "\n" PROG "version $Revision: 1.13 $\n\n");
     
     	if (types)
     	{
@@ -294,7 +296,7 @@ void usage (char *msg, char *arg, int longhelp)
 "       ASCII with sufficient precision to be exactly equal to the double value\n"
 "       in the SDIF-file.\n"
 "\n");
-    XpExit (0);
+    exit (0);
 }
 
 
@@ -337,18 +339,18 @@ outsdif (OutAction what, double data)
 	case OpenFile:
 	    if (!(out = SdifFOpen (outfile, eWriteFile)))
 		fprintf (SdifStdErr, PROG "can't open SDIF output file %s.\n", 
-			 outfile), XpExit (2);
+			 outfile), exit (2);
 
 	    if (isatty (fileno (out->Stream)))
 		fprintf (SdifStdErr, PROG"won't write SDIF to your screen.\n"),
-		XpExit (3);
+		exit (3);
 
 	    if (!(SdifListIsEmpty(in->Selection->row)  &&  
 		  SdifListIsEmpty(in->Selection->column)))
 	    {
 		if (!out->isSeekable)
 		    fprintf (SdifStdErr, PROG "can't use row or column selection with SDIF output to stdout.\n"),
-		    XpExit (4);
+		    exit (4);
 		else if (verb > 0)
 		    fprintf (SdifStdErr, PROG "warning: row or column selection might produce invalid SDIF output types.\n");
 	    }
@@ -421,7 +423,7 @@ outsdif (OutAction what, double data)
 			 SdifSignatureToString (SdifFCurrFrameSignature(out)), 
 			 SdifFCurrTime(out), 
 			 !out->isSeekable ? " (output is not seekable)" : "");
-		XpExit (5);
+		exit (5);
 	    }
 	break;
 
@@ -446,7 +448,7 @@ outbpf (OutAction what, double data)
 	    {
 		if (!(out = fopen (outfile, "w")))
 		    fprintf (SdifStdErr, "Can't open bpf output file %s.\n", 
-			     outfile), XpExit (0);
+			     outfile), exit (0);
 	    }
 	    else
 		out = stdout;
@@ -481,7 +483,7 @@ outformat (OutAction what, double data)
 	    {
 		if (!(out = fopen (outfile, "w")))
 		    fprintf (SdifStdErr, "Can't open format output file %s.\n",
-			     outfile), XpExit (0);
+			     outfile), exit (0);
 	    }
 	    else
 		out = stdout;
@@ -523,7 +525,7 @@ int KERmain(int argc, char** argv)
 
 #   define	maxintsel	32768	/* todo: make dynamic */
 #   define	hard_defined_get(arr, ind)	((ind) < maxintsel  ?  arr [ind]  :  	      \
-		   (fprintf(stderr, PROG "Number of columns out of bounds, exiting\n"), XpExit (9), 0))
+		   (fprintf(stderr, PROG "Number of columns out of bounds, exiting\n"), exit (9), 0))
 
 
     int		flatcol[maxintsel], cumulcol[maxintsel+1], numcolsel,
@@ -646,7 +648,7 @@ int main(int argc, char** argv)
     if (!in)
     {
         SdifGenKill ();
-        XpExit (1);
+        exit (1);
     }
     isel = in->Selection;
 
@@ -701,9 +703,9 @@ int main(int argc, char** argv)
     SdifFReadAllASCIIChunks (in);
     if (SdifFLastError(in))
     {   /* error has already been printed by the library, just clean
-           up and XpExit */
+           up and exit */
         SdifGenKill ();
-        XpExit (1);
+        exit (1);
     }
     output (OpenFile, 0);
 
@@ -897,11 +899,11 @@ list_to_set (SdifListT *list, int maxmax, int set [])
     {
 	if (range.value <= 0)
 	    fprintf (SdifStdErr, PROG "integer selection must be greater than 0 (you specified %d)\n", range.value), 
-	    XpExit (1);
+	    exit (1);
 	if (range.range >= maxmax)
 	    fprintf (SdifStdErr, PROG "can't handle integer selections "
 		     "greater than %d (you wanted %d)\n", maxmax, range.range),
-	    XpExit (2);
+	    exit (2);
 	if (range.range >= realmax)
 	    realmax = range.range;
 
