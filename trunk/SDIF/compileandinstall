@@ -1,7 +1,7 @@
 #! /bin/sh
 
-if [ ! -d $SYS ]; then
-mkdir $SYS
+if [ ! -d compile.$SYS ]; then
+mkdir compile.$SYS
 fi
 
 if [ `hostname` = "bonang" ];then
@@ -14,7 +14,11 @@ fi
 INSTALL="`pwd`/install-sh -c"
 export INSTALL 
 
-cd $SYS
+cd compile.$SYS
+if [ `pwd` == "$HOME" ];then
+echo error will not delete home
+exit
+fi
 rm -rf *
 ../configure --prefix=/u/formes/share --bindir=/u/formes/share/bin/$SYS --libdir=/u/formes/share/lib/$SYS  --cache-file=config.cache.$SYS 
 
