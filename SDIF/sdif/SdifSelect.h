@@ -1,4 +1,4 @@
-/* $Id: SdifSelect.h,v 3.3 1999-09-28 13:09:12 schwarz Exp $
+/* $Id: SdifSelect.h,v 3.4 1999-10-07 15:06:42 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -71,6 +71,10 @@ TODO
 
 LOG
   $Log: not supported by cvs2svn $
+  Revision 3.3  1999/09/28  13:09:12  schwarz
+  Included #include <preincluded.h> for cross-platform uniformisation,
+  which in turn includes host_architecture.h and SDIF's project_preinclude.h.
+
   Revision 3.2  1999/09/20  13:23:03  schwarz
   First finished version, API to be improved.
 
@@ -230,7 +234,8 @@ SdifSelectAdd_type_Range (SdifListT *list,
 			  SdifSelectTokens rt, 
 			  _datatype_type range);
 
-#endif
+#endif	/* if 0 */
+
 
 #ifdef __STDC__
 /*#if defined (_ANSI_C_SOURCE)  ||  defined (__STDC__)*/
@@ -282,16 +287,16 @@ void SdifSelectAddStringRange (SdifListT *list, char * value, SdifSelectTokens r
   If force_range is 1, the out value is converted to a range in any
   case, with value <= range guaranteed.  
 */
-int SdifSelectGetNextInt  (/*in*/  SdifListP list, 
-			   /*out*/ SdifSelectElementIntT  *range, 
-			   /*in*/  int force_range);
+int SdifSelectGetNextIntRange  (/*in*/  SdifListP list, 
+				/*out*/ SdifSelectElementIntT  *range, 
+				/*in*/  int force_range);
 
 /*DOC: 
   See SdifSelectGetNextInt.
 */
-int SdifSelectGetNextReal (/*in*/  SdifListP list, 
-			   /*out*/ SdifSelectElementRealT *range, 
-			   /*in*/  int force_range);
+int SdifSelectGetNextRealRange (/*in*/  SdifListP list, 
+				/*out*/ SdifSelectElementRealT *range, 
+				/*in*/  int force_range);
 
 /*DOC: 
   Query list of parsed selection elements (one of the SdifListP
@@ -307,6 +312,17 @@ SdifSignature  SdifSelectGetNextSignature (/*in*/  SdifListP list);
   See SdifSelectGetNextSignature.
 */
 char	      *SdifSelectGetNextString    (/*in*/  SdifListP list);
+
+
+/*DOC: 
+  Return value of first selection (ignoring range).
+*/
+int	       SdifSelectGetFirstInt       (SdifListP l, int defval);
+double	       SdifSelectGetFirstReal      (SdifListP l, double defval);
+char	      *SdifSelectGetFirstString    (SdifListP l, char *defval);
+SdifSignature  SdifSelectGetFirstSignature (SdifListP l, SdifSignature defval);
+
+
 
 
 

@@ -1,4 +1,4 @@
-/* $Id: SdifSelect.c,v 3.3 1999-09-28 13:09:11 schwarz Exp $
+/* $Id: SdifSelect.c,v 3.4 1999-10-07 15:06:42 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -72,6 +72,10 @@ TODO
 
 LOG
   $Log: not supported by cvs2svn $
+  Revision 3.3  1999/09/28  13:09:11  schwarz
+  Included #include <preincluded.h> for cross-platform uniformisation,
+  which in turn includes host_architecture.h and SDIF's project_preinclude.h.
+
   Revision 3.2  1999/09/20  13:23:02  schwarz
   First finished version, API to be improved.
 
@@ -535,7 +539,8 @@ SdifPrintSelection (FILE *out, SdifSelectionT *sel, int options)
 
 #   define printrange(elem, type, fmt)		\
     {	SdifSelectElement##type##T range;	printinit (elem);\
-        while (SdifSelectGetNext##type (sel->elem, &range, options & 1))   {  \
+        while(SdifSelectGetNext##type##Range (sel->elem, &range, options & 1))\
+        {  \
 	    int nor = range.rangetype == sst_norange, \
 		nxt = SdifListIsNext (sel->elem);     \
 	    fprintf (out,         nor ? fmt "%s" : fmt " %s " fmt "%s",	      \
@@ -586,6 +591,14 @@ static char	     *getstring	   (SdifSelectValueT val)
 // FUNCTION GROUP:	Add Selections to Element Lists
 */
 
+
+#define _foralltypes(macro) \
+macro (Int,	  int,		 integer)   \
+macro (Real,	  double,	 real)	    \
+macro (Signature, SdifSignature, signature) \
+macro (String,	  char *,	 string)
+
+
 #define _addrange(name, type, field) \
 _addrangeproto   (name, type, field) \
 {   SdifSelectElementT *elem = SdifMalloc (SdifSelectElementT);	        \
@@ -603,11 +616,7 @@ _addsimpleproto   (name, type, field) \
 _addrange  (name, type, field)  \
 _addsimple (name, type, field)
 
-
-_add (Int,	 int,		integer)
-_add (Real,	 double,	real)
-_add (Signature, SdifSignature,	signature)
-_add (String,	 char *,	string)
+_foralltypes (_add)
 
 
 /*
@@ -618,9 +627,9 @@ _add (String,	 char *,	string)
 */
 
 int 
-SdifSelectGetNextInt  (/*in*/  SdifListP list, 
-		       /*out*/ SdifSelectElementIntT  *range, 
-		       /*in*/  int force_range)
+SdifSelectGetNextIntRange  (/*in*/  SdifListP list, 
+			    /*out*/ SdifSelectElementIntT  *range, 
+			    /*in*/  int force_range)
 {
     int avail, delta;
 
@@ -662,9 +671,9 @@ SdifSelectGetNextInt  (/*in*/  SdifListP list,
 
 
 int 
-SdifSelectGetNextReal (/*in*/  SdifListP list, 
-		       /*out*/ SdifSelectElementRealT *range, 
-		       /*in*/  int force_range)
+SdifSelectGetNextRealRange (/*in*/  SdifListP list, 
+			    /*out*/ SdifSelectElementRealT *range, 
+			    /*in*/  int force_range)
 {
     int		avail;
     double	delta;
@@ -722,6 +731,17 @@ SdifSelectGetNextSignature (/*in*/  SdifListP list)
 	     ?  ((SdifSelectElementT *) SdifListGetNext(list))->value.signature
 	     :  NULL);
 }
+
+
+#define _getfirst(name, type, field)					     \
+type SdifSelectGetFirst##name (/*in*/ SdifListP list, type defval)	     \
+{    SdifListInitLoop (list);						     \
+     return (SdifListIsNext (list)  					     \
+	     ?  ((SdifSelectElementT *) SdifListGetNext (list))->value.field \
+	     :  defval);						     \
+}
+
+_foralltypes (_getfirst)
 
 
 
