@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.4 2003-03-07 17:38:41 roebel Exp $
+# $Id: Makefile.am,v 1.5 2003-03-18 15:37:11 roebel Exp $
 #
 # ./Easdif/src/Makefile.am	Feb. 2003 Axel Roebel
 #
@@ -6,6 +6,9 @@
 #
 
 # $Log: not supported by cvs2svn $
+# Revision 1.4  2003/03/07 17:38:41  roebel
+# Updated for correct handling of distribution and new layout of c++ compilation in SDIF.
+#
 # Revision 1.3  2003/03/05 15:33:13  roebel
 # Fixed installation of include files.
 #
@@ -38,9 +41,9 @@ easdifinc_HEADERS = $(EASDIF_H)
 libEasdif_la_SOURCES =  sdifentity.cpp sdifexception.cpp sdifframe.cpp \
 			sdifinit.cpp sdifmatrix.cpp sdifnamevaluetable.cpp
 
-libEasdif_la_LIBADD  = @SDIFOBJECTS@
-
+libEasdif_la_LIBADD  = @SDIFCPPLIB@
 libEasdif_la_LDFLAGS = -no-undefined  -rpath $(libdir)
+
 
 INCLUDES = -I$(top_srcdir) -I../SDIF/include -I$(top_srcdir)/SDIF/include -I$(top_srcdir)/SDIF/sdif   -DUSE_CONFIGURE
 
