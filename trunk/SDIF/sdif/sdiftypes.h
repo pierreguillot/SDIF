@@ -1,4 +1,4 @@
-/* This document ../sdif/sdiftypes.h generated Fri Apr 27 15:51:38 2001 by xmltostyp.pl from sdiftypes.xml
+/* This document ../sdif/sdiftypes.h generated Thu May  3 11:19:36 2001 by xmltostyp.pl from sdiftypes.xml
 */
 #ifndef _SDIFTYPES_H_
 #define _SDIFTYPES_H_
@@ -45,13 +45,14 @@
 "1FTD 1ARR { 1ARR ARRCoefs;  }\n"\
 "\n"\
 "1MTD 1FOF { Frequency, Amplitude, BandWidth, Tex, DebAtt, Atten, Phase }\n"\
-"1MTD 1RES { Frequency, Amplitude, DecayRate, Phase }\n"\
+"1MTD 2RES { Frequency, Amplitude, DecayRate, Phase }\n"\
+"1MTD 1RES { Frequency, Amplitude, BandWidth, Saliance, Correction }\n"\
 "1MTD 1DIS { Distribution, Amplitude }\n"\
 "1FTD 1NOI { 1DIS NoiseDistribution;  }\n"\
 "1FTD 1FOB { 1FQ0 FundamentalFrequencyEstimate; 1FOF Formants; 1CHA Channels;  }\n"\
 "1FTD 1REB { 1RES Filters; 1CHA Channels;  }\n"\
 "\n"\
-"1MTD ISTF { PeriodOfTheDFT, WindowDuration, FFTSize }\n"\
+"1MTD ISTF { DFTPeriod, WindowDuration, FFTSize }\n"\
 "1MTD 1STF { Real, Imaginary }\n"\
 "1FTD ISTF { ISTF FourierTransformInfo;  }\n"\
 "1FTD 1STF { ISTF FourierTransformInfo; 1STF FourierTransform; 1WIN Window;  }\n"\
