@@ -1,4 +1,4 @@
-/* $Id: SdifGlobals.h,v 3.1 1999-03-14 10:56:58 virolle Exp $
+/* $Id: SdifGlobals.h,v 3.2 1999-09-20 13:28:05 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -14,6 +14,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.1  1999/03/14  10:56:58  virolle
+ * SdifStdErr add
+ *
  * Revision 2.4  1999/02/28  12:16:46  virolle
  * memory report
  *
@@ -144,14 +147,45 @@ extern char gSdifErrorMess[_SdifStringLen];
 extern char gSdifStringSignature[_SdifNbMaxPrintSignature][5];
 extern int  CurrStringPosSignature;
 
+
+/*
+// FUNCTION GROUP:	utility functions
+*/
+
+/*DOC:
+*/
 char*     SdifSignatureToString(SdifSignature Signature);
+
+/*DOC: 
+  Compare two signatures, ignoring the first character which
+  encodes the type version.  Note that comparison of full signatures
+  can be done simply with '=='. 
+*/
 short     SdifSignatureCmpNoVersion(SdifSignature Signature1, SdifSignature Signature2);
+
+/*DOC:
+*/
 SdifUInt4 SdifSizeofDataType (SdifDataTypeET DataType);
+
+/*DOC:
+*/
 size_t    SdifPaddingCalculate  (size_t NbBytes);
+
+/*DOC:
+*/
 size_t    SdifFPaddingCalculate (FILE *f, size_t NbBytes);
 
 /* (double f1) == (double f2) with _SdifFloatEps for error */
 short SdifFloat8Equ(SdifFloat8 f1, SdifFloat8 f2);
+
+
+#ifndef min
+#define min(a,b)	((a) < (b)  ?  (a)  :  (b))
+#endif
+
+#ifndef max
+#define max(a,b)	((a) > (b)  ?  (a)  :  (b))
+#endif
 
 
 #endif /* _SdifGlobals_ */
