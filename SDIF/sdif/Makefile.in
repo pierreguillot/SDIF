@@ -10,7 +10,7 @@
 # even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 # PARTICULAR PURPOSE.
 
-# $Id: Makefile.in,v 1.14 2000-11-21 16:34:49 roebel Exp $
+# $Id: Makefile.in,v 1.15 2000-12-06 15:01:14 roebel Exp $
 #
 # ./sdif/Makefile.am		September 2000			Patrice Tisserand
 #
@@ -140,7 +140,7 @@ VERSION = @VERSION@
 
 EXTRA_LIBRARIES = libsdif.a libsdif-debug.a
 lib_LIBRARIES = @SELLIB@
-FORMES_H = host_architecture.h preincluded.h UniversalEnvVar.h host_configure.h XpGuiCalls.h
+FORMES_H = host_architecture.h preincluded.h UniversalEnvVar.h  XpGuiCalls.h
 FORMES_INCLUDE = /u/formes/share/include
 
 SDIF_H = $(top_srcdir)/include/sdif.h 					SdifCheck.h 	SdifErrMess.h	SdifConvToText.h 		SdifError.h 	SdifFGet.h 	SdifFPrint.h 			SdifFPut.h 	SdifFRead.h	SdifFScan.h 			SdifFWrite.h 	SdifFile.h	SdifTimePosition.h 		SdifFrame.h 	SdifFrameType.h SdifGlobals.h 			SdifHard_OS.h 	SdifHash.h	SdifHighLevel.h 		SdifList.h 	SdifMatrix.h 	SdifMatrixType.h		SdifMemory.h	SdifNameValue.h	SdifPreTypes.h 			SdifPrint.h 	SdifSelect.h	SdifRWLowLevel.h		SdifStreamID.h	SdifString.h 	SdifSignatureTab.h		SdifTest.h 	SdifTextConv.h 					$(top_srcdir)/sdif/SdifVersion.h project_preinclude.h config.h

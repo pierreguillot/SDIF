@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.10 2000-11-21 14:51:47 schwarz Exp $
+# $Id: Makefile.am,v 1.11 2000-12-06 15:01:14 roebel Exp $
 #
 # ./sdif/Makefile.am		September 2000			Patrice Tisserand
 #
@@ -29,6 +29,16 @@
 # send email to:  sdif@ircam.fr
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.10  2000/11/21 14:51:47  schwarz
+# - sdif.h is now included by all sdif/Sdif*.c files.
+# - Removed all public typedefs, enums, structs, and defines from the
+#   individual sdif/Sdif*.h files, because they were duplicated in sdif.h.
+# - Todo: Do the same for the function prototypes, decide which types and
+#   prototypes really need to be exported.
+# - Removed SdifFileStruct.h.
+# - Preliminary new version of SdiffGetPos, SdiffSetPos.  They used the
+#   type fpos_t, which is no longer a long on RedHat 7 Linux.
+#
 # Revision 1.9  2000/11/21 09:04:30  roebel
 # Changed Makefile.am  in tools and sdif to properly use
 # include files in $(topsrcdir)/sdif
@@ -60,7 +70,7 @@
 #
 EXTRA_LIBRARIES = libsdif.a libsdif-debug.a
 lib_LIBRARIES = @SELLIB@
-FORMES_H=host_architecture.h preincluded.h UniversalEnvVar.h host_configure.h XpGuiCalls.h
+FORMES_H=host_architecture.h preincluded.h UniversalEnvVar.h  XpGuiCalls.h
 FORMES_INCLUDE=/u/formes/share/include
 
 SDIF_H = $(top_srcdir)/include/sdif.h 				\
