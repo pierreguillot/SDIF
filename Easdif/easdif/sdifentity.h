@@ -32,9 +32,18 @@
  * 
  * 
  * 
- * $Id: sdifentity.h,v 1.10 2003-05-24 00:27:38 roebel Exp $ 
+ * $Id: sdifentity.h,v 1.11 2003-07-18 20:39:35 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.10  2003/05/24 00:27:38  roebel
+ * Internal representation of types now using std::string.
+ * Parameters for type handling routines completely moved
+ * to std::string
+ *
+ * SDIFEntity::SetTypeString no longer appends but sets
+ * the internal string. In fact there was now way to reset
+ * the type string before.
+ *
  * Revision 1.9  2003/05/19 13:59:40  roebel
  * swig rename moved to swig  interface desription.
  *
@@ -180,37 +189,52 @@ public:
  public:
 /** 
  * \ingroup description
- * add a frame type in the SdifStringT* of the entity
+ *
+ * \brief add new frame type  or change existing  frame type  of the entity
  *
  * the description is added to the file with WriteTypes()
- * in the Opening
- * must be used after AddMatrixType()
+ * when the entity is opened for wrinting.Therefore, 
+ * type descriptors  have to be added
+ * to the entity before the file is opened.
  *
- * @param frametype string for define a new frame type 
- * @param matrix string to define the differents matrix which are in 
- * the frame
- * the matrix type
+ * AddFrameType() must be used after Easdif::SDIFEntity::AddMatrixType()
+ *
+ * @param frametype string that identifies the  new frame type,
+ *  the identifier will use  at most 4 characters
+ * @param matrix string that defines the matrix elements that may be part  
+ * of the frame
+ *
+ * Example: 
+ * 
+ *  entity.AddFrameType("1NEW", "1NEW NewMatrix; 1FQ0 New1FQ0");
+ *
  */
     bool AddFrameType(const std::string& frametype, 
 		      const std::string& matrix);
 
 /** 
  * \ingroup description
- * defined or redefined a matrix type in the SdifStringT* of the entity.
- * An example of used :AddMatrixType("TYPE", "namecolumn1, namecolumn2, 
- * namecolumn3"). You can have the number of column that you will
+ * 
+ * \brief define a new or redefine an existing matrix type for  the entity.
  *
- * the description is added to the file with WriteTypes() 
- * in the Opening
- * must be used before AddFrameType()
+ * The type description is added to the entity when the entity is
+ * opened for writing. Therefore, type descriptors  have to be added
+ * to the entity before the file is opened.
+ *
+ * AddMatrixType() must be used before Easdif::SDIFEntity::AddFrameType()
  *
  * @param matrixtype string for define a new matrix type 
  * or redefined a matrix type 
  * @param colnames string to defined the differents parameters of 
  * the matrix type
+ *
+ * Example: 
+ * 
+ *  entity.AddMatrixType("1NEW", "amplitude, phase");
+ *
  */
     bool AddMatrixType(const std::string& matrixtype, 
-		      const std::string& colnames);
+		       const std::string& colnames);
 
 /** 
  * \ingroup description
