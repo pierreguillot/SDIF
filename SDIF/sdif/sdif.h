@@ -1,4 +1,4 @@
-/* $Id: sdif.h,v 3.2 1999-08-31 10:02:58 schwarz Exp $
+/* $Id: sdif.h,v 3.3 2000-03-01 11:20:20 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -18,6 +18,10 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.2  1999/08/31  10:02:58  schwarz
+ * Added module SdifSelect which parses an access specification to a
+ * chosen part of SDIF data.  Can be added to a file name.
+ *
  * Revision 3.1  1999/03/14  10:57:29  virolle
  * SdifStdErr add
  *
@@ -81,6 +85,7 @@ extern "C" {
 #include "SdifFPut.h"
 #include "SdifFPrint.h"
 #include "SdifFWrite.h"
+#include "SdifHighLevel.h"
 
 #include "SdifTextConv.h"
 #include "SdifConvToText.h"
