@@ -1,8 +1,12 @@
-# $Id: Makefile,v 1.5 2002-10-29 10:51:21 schwarz Exp $
+# $Id: Makefile,v 1.6 2002-10-29 11:08:34 schwarz Exp $
 #
 # SDIF/sdif/test/Makefile
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.5  2002/10/29 10:51:21  schwarz
+# Reinserted old tests, they are still needed!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+# Made old tests compile with new autoconf'ed structure.
+#
 # Revision 1.4  2002/05/24 19:38:07  ftissera
 # *** empty log message ***
 #
