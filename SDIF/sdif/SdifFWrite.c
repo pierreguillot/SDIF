@@ -1,4 +1,4 @@
-/* $Id: SdifFWrite.c,v 3.4 1999-10-13 16:05:43 schwarz Exp $
+/* $Id: SdifFWrite.c,v 3.5 1999-10-15 12:28:44 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -14,6 +14,15 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.4  1999/10/13  16:05:43  schwarz
+ * Changed data type codes (SdifDataTypeET) to SDIF format version 3, as
+ * decided with Matt Wright June 1999, added integer data types.
+ * Added writing of 1NVT with real frame header (but data is still not in
+ * matrices).
+ * The data type handling makes heavy use of code-generating macros,
+ * called for all data types with the sdif_foralltypes macro, thus
+ * adding new data types is easy.
+ *
  * Revision 3.3  1999/10/07  15:12:21  schwarz
  * Added isSeekable flag in SdifFileT struct.  This allows to simplify the
  * many tests for stdio on opening the stream.
@@ -154,25 +163,21 @@ SdifFWriteOneNameValue(SdifFileT *SdifF, SdifNameValueT *NameValue)
 size_t
 SdifFWriteNameValueLCurrNVT (SdifFileT *f)
 {
+  SdiffGetPos(f->Stream, &(f->StartChunkPos));
+
 #if (_SdifFormatVersion >= 3)
   /* write NVT as frame (for now with no matrices, but ascii data) */
   SdifFSetCurrFrameHeader (f, e1NVT, _SdifUnknownSize, 0, 
-			   f->NameValues->CurrNVT->NumIDLink,
-			   f->NameValues->CurrNVT->Time);
+			   f->NameValues->CurrNVT->StreamID, _SdifNoTime);
   f->ChunkSize  = SdifFWriteFrameHeader (f);
+#else
+  f->ChunkSize  = SdifFWriteChunkHeader (f, e1NVT, _SdifUnknownSize);
+#endif
   f->ChunkSize += SdifFPutNameValueLCurrNVT (f, 's');
   f->ChunkSize += SdifFWritePadding (f, SdifFPaddingCalculate (f->Stream, 
 							       f->ChunkSize));
-  SdifUpdateChunkSize (f, f->ChunkSize - sizeof(SdifSignature) - sizeof(SdifInt4));
-#else
-  SdiffGetPos(f->Stream, &(f->StartChunkPos));
-
-  f->ChunkSize  = SdifFWriteChunkHeader(f, e1NVT, _SdifUnknownSize);
-  f->ChunkSize += SdifFPutNameValueLCurrNVT(f, 's');
-  f->ChunkSize += SdifFWritePadding(f, SdifFPaddingCalculate(f->Stream, f->ChunkSize));
-
-  SdifUpdateChunkSize(f, f->ChunkSize -sizeof(SdifSignature) -sizeof(SdifInt4));
-#endif
+  SdifUpdateChunkSize (f, f->ChunkSize - sizeof (SdifSignature) 
+				       - sizeof (SdifInt4));
 
   return f->ChunkSize;  
 }
@@ -253,12 +258,17 @@ SdifFWriteAllType (SdifFileT *SdifF)
     {      
       SdiffGetPos(SdifF->Stream, &(SdifF->StartChunkPos));
 
+#if (_SdifFormatVersion >= 3)
+      /* write types as frame (for now with no matrices, but ascii data) */
+      SdifFSetCurrFrameHeader (SdifF, e1TYP, _SdifUnknownSize, 0, 
+			       _SdifNoStreamID, _SdifNoTime);
+      SizeW  = SdifFWriteFrameHeader (SdifF);
+#else
       SizeW  = SdifFWriteChunkHeader(SdifF, e1TYP, _SdifUnknownSize);
+#endif
       SizeW += SdifFPutAllType(SdifF, 's');
       SizeW += SdifFWritePadding(SdifF, SdifFPaddingCalculate(SdifF->Stream, SizeW));
-
       SdifUpdateChunkSize(SdifF, SizeW -sizeof(SdifSignature) -sizeof(SdifInt4));
-
       SdifF->ChunkSize = SizeW;
       SdifF->TypeDefPass = eWritePass;
       return SdifF->ChunkSize;
@@ -292,7 +302,14 @@ SdifFWriteAllStreamID (SdifFileT *SdifF)
     {      
       SdiffGetPos(SdifF->Stream, &(SdifF->StartChunkPos));
       
+#if (_SdifFormatVersion >= 3)
+      /* write types as frame (for now with no matrices, but ascii data) */
+      SdifFSetCurrFrameHeader (SdifF, e1IDS, _SdifUnknownSize, 0, 
+			       _SdifNoStreamID, _SdifNoTime);
+      SizeW  = SdifFWriteFrameHeader (SdifF);
+#else
       SizeW  = SdifFWriteChunkHeader(SdifF, e1IDS, _SdifUnknownSize);
+#endif
       SizeW += SdifFPutAllStreamID(SdifF, 's');
       SizeW += SdifFWritePadding(SdifF, SdifFPaddingCalculate(SdifF->Stream, SizeW));
       
