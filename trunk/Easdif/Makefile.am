@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.17 2004-07-13 15:28:02 roebel Exp $
+# $Id: Makefile.am,v 1.18 2004-07-28 14:59:25 roebel Exp $
 #
 # ./Makefile.am		Feb. 2003     Axel Roebel
 #
@@ -30,6 +30,10 @@
 # 
 
 # $Log: not supported by cvs2svn $
+# Revision 1.17  2004/07/13 15:28:02  roebel
+# Fixed cvstag target to be able to use it from working directories that are not the top
+# source directory.
+#
 # Revision 1.16  2003/11/18 12:31:37  roebel
 # Moved documentation install server to maelzel replacement.
 #
@@ -89,7 +93,7 @@ SUBDIRS =  SDIF easdif  test
 EXTRA_DIST = Doxyfile.in README.MacOSX 
 
 pkgconfigdir = $(libdir)/pkgconfig
-pkgconfig_DATA = Easdif.pc
+pkgconfig_DATA = Easdif@PKGDEBUG@.pc
 
 doc:
 	doxygen Doxyfile
