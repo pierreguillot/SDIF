@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.28 2003-03-18 14:56:02 roebel Exp $
+# $Id: Makefile.am,v 1.29 2003-05-26 08:15:50 tisseran Exp $
 #
 # ./sdif/Makefile.am		September 2000		Patrice Tisserand
 #
@@ -30,6 +30,9 @@
 
 
 # $Log: not supported by cvs2svn $
+# Revision 1.28  2003/03/18 14:56:02  roebel
+# Removed remaining references to cpp compilation.
+#
 # Revision 1.27  2003/03/07 17:33:27  roebel
 # Improved handling of IRCAM include files.
 #
@@ -177,6 +180,8 @@ libsdif_la_LDFLAGS = -no-undefined -release @VERSION@ -rpath $(libdir)
 libsdif_debug_la_LDFLAGS = $(libsdif_la_LDFLAGS) -rpath $(libdir)
 
 sdiftype = $(datadir)/SdifTypes.STYP
+
+EXTRA_DIST=sdif.dsp
 
 INCLUDES = -I../include -I$(top_srcdir)/include -D_SdifTypesFileName=\"$(sdiftype)\" -DUSE_CONFIGURE
 
