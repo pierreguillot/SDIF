@@ -33,9 +33,12 @@
  * 
  * 
  * 
- * $Id: easdif.h,v 1.4 2003-08-06 18:29:11 roebel Exp $ 
+ * $Id: easdif.h,v 1.5 2003-11-18 12:43:30 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.4  2003/08/06 18:29:11  roebel
+ * Added missing inline for sdif helper function
+ *
  * Revision 1.3  2003/08/06 17:59:58  roebel
  * Added helper function for testing sdiffiles with std::string filename argument
  *
@@ -63,8 +66,8 @@
 #include <sdif.h>
 
 /**
-* \defgroup  sdifsupport Sdif Support Functions
-*/
+ * \defgroup  sdifsupport Sdif Support Functions
+ */
 
 /** 
  * \ingroup sdifsupport
@@ -74,9 +77,11 @@
  * 
  * @return true if filename contains sdif data 
  */
-inline 
-bool SdifCheckFileFormat (const std::string &name) {
-  return SdifCheckFileFormat(name.c_str());
+namespace Easdif {
+  inline 
+  bool SdifCheckFileFormat (const std::string &name) {
+    return SdifCheckFileFormat(name.c_str());
+  }
 }
 
 
