@@ -1,0 +1,237 @@
+# $Id: Makefile.preamble,v 3.4 1999-10-07 15:22:53 schwarz Exp $
+#
+#               Copyright (c) 1998 by IRCAM - Centre Pompidou
+#                          All rights reserved.
+#
+#  For any information regarding this and other IRCAM software, please
+#  send email to:
+#                            manager@ircam.fr
+#
+# Makefile.preamble
+# 
+#
+# $Log: not supported by cvs2svn $
+# Revision 3.3  1999/09/28  13:24:34  schwarz
+# Use true ansi compiler, correct libraries, and include path for
+# preincluded.h, including host_architecture.h and SDIF's project_preinclude.h.
+#
+# Revision 3.2  1999/04/30  13:46:14  schwarz
+# We're installing for the team now!
+#
+# Revision 3.1  1999/03/14  10:54:33  virolle
+# SdifStdErr add
+#
+# Revision 2.2  1999/02/28  12:16:26  virolle
+# memory report
+#
+#
+#
+#
+
+
+
+############################################
+#	architecture
+#
+
+SYSTEM 	:= $(shell uname -s)
+SYSVERS := $(shell uname -r)
+ARCH 	:= $(shell arch)
+DATE 	:= $(shell date)
+USER 	:= $(shell whoami)
+ifeq ($(ARCH),sgi)
+	SHELL = /bin/tcsh
+endif
+ifeq ($(ARCH),alpha)
+	SHELL = /usr/local/bin/tcsh
+endif
+ifeq ($(ARCH), mips)
+	SHELL = /u/formes/virolle/bin/mips/tcsh
+endif
+
+SYS	= $(SYSTEM)_$(SYSVERS)
+SYSDIR	= $(SYS)$(TARGET)
+ARCHDIR	= $(ARCH)/$(SYSDIR)
+
+RM	= rm -f
+
+
+##################################
+#  elements de base
+#
+
+#
+# Le repertoire racine du projet PRJ_DIR 
+# est assigne dans chaque sous makefile avant
+# d'inclure ce preambule. Ainsi
+# chaque sous makefile peut atteindre n'importe
+# quel endroit du projet et ils sont tous executable
+# independament.
+# pour le makefile principale  PRJ_DIR est $(shell pwd),
+# pour les autres (objetcs, library, tosdif, sdiftotext) c'est $(shell pwd)/..
+#
+
+PROJECT := sdif
+SDIF_SRC_DIR := $(PRJ_DIR)/$(PROJECT)
+RELEASE := 2.00.01
+# RELEASE 1.00 est la version alpha (maquette de SDIF) installee dans Diphone
+# pour le forum Novembre 1997.
+# Cette RELEASE 2.00 n'est pas encore compatible avec le CNMAT
+# la RELEASE qui sera compatible avec le CNMAT (au moins pour l'entête, les frames et
+# les matrices) devra être 3.00
+# pour la compatibilite des frames ASCII, il faudra sans doute avoir une RELEASE 4.00
+
+# INSTALL_ROOT doit etre changer par l'installateur
+# INSTALL_ROOT := $(HOME)
+INSTALL_ROOT := /u/formes
+#INSTALL_ROOT := /usr/local
+INSTALL_LIB := $(INSTALL_ROOT)/lib/$(ARCH)/$(SYS)
+INSTALL_BIN := $(INSTALL_ROOT)/bin/$(ARCH)/$(SYS)
+INSTALL_INC := $(INSTALL_ROOT)/include/$(PROJECT)
+
+
+
+
+
+#######################################
+# Nom du fichier des types predefinis de SDIF
+#
+
+###
+# Pour la maintenance de la librairie:
+#
+
+# PRE_TYPES_SDIF := $(SDIF_SRC_DIR)/SdifTypes.STYP
+
+# mais il est mieux d'utiliser la variable d'environnement SDIFTYPES
+# prevue pour detourner le fichier officiel des types predefinis
+# donc: setenv SDIFTYPES <your project root>/sdif/SdifTypes.STYP
+# permet d'utiliser le fichier de nom $SDIFTYPES au lieu d'utiliser
+# la version officielle (pas de recomplilation necessaire sur modification
+# de cette variable d'environnement)
+
+
+
+
+###
+#  Pour l'installation officielle:
+#
+
+PRE_TYPES_SDIF := $(INSTALL_INC)/SdifTypes.STYP
+
+# recompliation complete necessaire sur modification de cette variable
+# de makefile car elle est passee a la complilation
+# (D_SDIF_FLAG := -D_SdifTypesFileName='"$(PRE_TYPES_SDIF)"' -D_SDIF_VERS ='"$(VERSION)"' 
+#  puis   cc -c D_SDIF_FLAG  .........)
+
+
+
+
+##############################
+#	vars
+#
+
+DOFLAGS = -O2
+TARGET  = -release
+LIBNAME = sdif
+ifeq ($(DEBUG),1) 
+	DOFLAGS = -g
+	TARGET  = -debug
+	LIBNAME = sdif$(TARGET)
+endif
+
+LIBS 	  = -l$(LIBNAME)
+
+
+###########
+# vars machine
+#
+ifeq ($(SYSTEM), IRIX)
+	CC = cc
+	CAFLAGS =  -fullwarn
+	LFLAGS =
+	LIBS	+= -lgen
+	RANLIB = 0
+	INSTALL := /usr/local/bin/install -c 
+	INSTALL_H_FILES := $(INSTALL)
+endif
+
+
+ifeq ($(SYSTEM), ULTRIX) 
+	CC = gcc
+	CAFLAGS =  -ansi -pedantic
+	LIBS	+= -lgen
+	RANLIB = 0
+	INSTALL :=  /usr/local/bin/install -c 
+	INSTALL_H_FILES := $(INSTALL)
+endif
+
+
+ifeq ($(SYSTEM), IRIX64) 
+	CC = cc
+	CAFLAGS =  -64 -mips4 -D__mips64 
+	LFLAGS = -64 -mips4
+	LIBS	+= -lgen
+	RANLIB = 0
+	INSTALL :=  /usr/local/bin/install -c 
+	INSTALL_H_FILES := $(INSTALL)
+endif
+
+
+ifeq ($(SYSTEM), OSF1) 
+    ifeq ($(DEBUG),1) 
+	CC = gcc
+	CAFLAGS = -Wall -ansi
+    else
+	CC = cc
+	CAFLAGS = -std -Dmips -fullwarn 
+    endif	
+
+	LIBS	+= -lm
+	LFLAGS =
+
+	ifeq ($(DEBUG),1) 
+		DOFLAGS = -g3
+	endif
+
+	INSTALL := /usr/local/bin/install -c 
+	INSTALL_H_FILES := cp -f
+	# RANLIB = ranlib
+	RANLIB = 0
+endif
+
+
+######
+# vars dirs et listes
+#
+
+VERSION := $(PROJECT) $(SYS)$(TARGET) $(RELEASE) compiled by $(USER) $(DATE)
+
+INCLUDE_DIR 	= /usr/include
+INCLUDE_DIRS 	= $(INCLUDE_DIR) /usr/include /u/formes/include
+INCLUDE		= $(INCLUDE_DIRS:%=-I%)
+D_SDIF_FLAG := -D_SdifTypesFileName='"$(PRE_TYPES_SDIF)"' -D_SDIF_VERSION='"$(VERSION)"' 
+
+
+SDIF_OBJ_DIR 	= $(PRJ_DIR)/obj/$(SYSDIR)
+SDIF_LIB_DIR 	= $(PRJ_DIR)/lib$(PROJECT)/$(SYSDIR)
+SDIF_LIB	= $(SDIF_LIB_DIR)/lib$(LIBNAME).a
+
+include $(SDIF_SRC_DIR)/Makefile.src
+
+SDIF_OBJS		 = $(SDIF_SRC:%.c=$(SDIF_OBJ_DIR)/%.o)
+SDIF_INC		 = $(SDIF_HEADERS:%.h=$(SDIF_SRC_DIR)/%.h)
+SDIF_INC_INSTALLED 	 = $(SDIF_HEADERS:%.h=$(INSTALL_INC)/%.h)
+
+
+###############
+# user settings
+#
+
+ifeq ($(USER),schwarz)
+#	compile in path accessible by other projects in development
+	SDIF_LIB_DIR 	= $(HOME)/lib/$(ARCH)/$(SYSDIR)
+endif
+
+####################################
+INSTALL_DIRS:= $(INSTALL_ROOT) $(INSTALL_LIB) $(INSTALL_BIN) $(INSTALL_INC)
