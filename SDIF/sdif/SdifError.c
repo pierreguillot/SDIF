@@ -1,4 +1,4 @@
-/* $Id: SdifError.c,v 3.8 2001-05-02 09:34:41 tisseran Exp $
+/* $Id: SdifError.c,v 3.9 2002-05-02 15:30:48 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -31,6 +31,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.8  2001/05/02 09:34:41  tisseran
+ * Change License from GNU Public License to GNU Lesser Public License.
+ *
  * Revision 3.7  2000/11/15 14:53:25  lefevre
  * no message
  *
@@ -100,10 +103,17 @@
 
 static void SdifExit (void);
 
-SdifExitFuncT gSdifExitFunc = SdifExit;
+SdifExitFuncT	    gSdifExitFunc = SdifExit;
+SdifExceptionFuncT  gSdifErrorFunc = SdifDefaultErrorFunc;
+SdifExceptionFuncT  gSdifWarningFunc = SdifDefaultWarningFunc;
+
+/* global variables set by the _SdifError macro */
 char *SdifErrorFile;
 int SdifErrorLine;
+
+int  gSdifErrorOutputEnabled = 1;
 FILE* SdifStdErr = NULL;
+char gSdifBufferError[4096];
 
 
 static void 
@@ -118,6 +128,32 @@ SdifSetExitFunc (SdifExitFuncT func)
 {
     gSdifExitFunc = func;
 }
+
+void
+SdifSetErrorFunc (SdifExceptionFuncT func)
+{
+    gSdifErrorFunc = func;
+}
+
+void
+SdifSetWarningFunc (SdifExceptionFuncT func)
+{
+    gSdifWarningFunc = func;
+}
+
+
+void	
+SdifEnableErrorOutput  (void)
+{
+    gSdifErrorOutputEnabled = 1;
+}
+
+void
+SdifDisableErrorOutput (void)
+{
+    gSdifErrorOutputEnabled = 0;
+}
+
 
 
 void
@@ -193,5 +229,36 @@ SdifErrorWarning(SdifErrorEnum Error, const void *ErrorMess)
     }
 
     if (exitit)
+    {
+	(*gSdifErrorFunc) (Error, eError, msg, NULL, 
+			   SdifErrorFile, SdifErrorLine);
         (*gSdifExitFunc) ();
+    }
+    else
+    {
+	(*gSdifWarningFunc) (Error, eWarning, msg, NULL, 
+			     SdifErrorFile, SdifErrorLine);
+    }
+}
+
+
+void
+SdifDefaultErrorFunc (int errnum, SdifErrorLevelET errlev, 
+		      char *msg, SdifFileT *file,
+		      char *sourcefilename, int sourcefileline)
+{
+    if (gSdifErrorOutputEnabled)
+    {
+	fprintf(SdifStdErr, msg);
+	fflush(SdifStdErr);
+    }
+}
+
+void
+SdifDefaultWarningFunc (int errnum, SdifErrorLevelET errlev, 
+			char *msg, SdifFileT *file,
+			char *sourcefilename, int sourcefileline)
+{
+    if (gSdifErrorOutputEnabled)
+	fprintf(SdifStdErr, msg);
 }
