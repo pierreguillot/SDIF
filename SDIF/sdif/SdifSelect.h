@@ -1,4 +1,4 @@
-/* $Id: SdifSelect.h,v 3.5 1999-10-13 16:05:58 schwarz Exp $
+/* $Id: SdifSelect.h,v 3.6 2000-03-01 11:18:46 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -71,6 +71,15 @@ TODO
 
 LOG
   $Log: not supported by cvs2svn $
+  Revision 3.5  1999/10/13  16:05:58  schwarz
+  Changed data type codes (SdifDataTypeET) to SDIF format version 3, as
+  decided with Matt Wright June 1999, added integer data types.
+  Added writing of 1NVT with real frame header (but data is still not in
+  matrices).
+  The data type handling makes heavy use of code-generating macros,
+  called for all data types with the sdif_foralltypes macro, thus
+  adding new data types is easy.
+
   Revision 3.4  1999/10/07  15:06:42  schwarz
   Added SdifSelectGetFirst<type>, SdifSelectGetNext(Int|Real).
 
@@ -165,6 +174,12 @@ typedef struct
 		*basename;	/* points into filename */
     SdifListP	stream, frame, matrix, column, row, time;
 } SdifSelectionT;
+/* TODO: array of select elements
+     struct { SdifListP list; SdifSelectElementT minmax; } elem [eSelNum];
+   indexed by
+     enum   { eTime, eStream, eFrame, eMatrix, eColumn, eRow, eSelNum }
+   to use in all API functions instead of SdifListP.
+*/
 
 
 
@@ -175,6 +190,11 @@ typedef struct
 
 /* init module, called by SdifGenInit */
 int SdifInitSelect (void);
+
+/*DOC: 
+  Allocate space for an sdif selection.
+*/
+SdifSelectionT *SdifCreateSelection (void);
 
 /*DOC: 
 */
@@ -223,7 +243,7 @@ void SdifPrintSelection (FILE *out, SdifSelectionT *sel, int options);
   [] _type_ is one of:  <br> Int, Real,   Signature,     String, for
   [] _datatype_ of:	<br> int, double, SdifSignature, char *, respectively.
 */
-SdifSelectAdd_TYPE_ (SdifListT *list, _datatype_ value);
+void SdifSelectAdd_TYPE_ (SdifListT *list, _datatype_ value);
 
 /*DOC:
   Create and add one range to selection element list.  There are four 
@@ -232,10 +252,10 @@ SdifSelectAdd_TYPE_ (SdifListT *list, _datatype_ value);
   [] _type_ is one of:  <br> Int, Real,   Signature,     String, for
   [] _datatype_ of:	<br> int, double, SdifSignature, char *, respectively.
 */
-SdifSelectAdd_TYPE_Range (SdifListT *list, 
-			  _datatype_ value, 
-			  SdifSelectTokens rt, 
-			  _datatype_type range);
+void SdifSelectAdd_TYPE_Range (SdifListT *list, 
+			       _datatype_ value, 
+			       SdifSelectTokens rt, 
+			       _datatype_ range);
 
 #endif	/* if 0 */
 
@@ -333,7 +353,7 @@ SdifSignature  SdifSelectGetFirstSignature (SdifListP l, SdifSignature defval);
 // FUNCTION GROUP:	Selection Testing Functions
 */
 
-int SdifSelectTestIntRange (SdifSelectElementT *elem, int cand);
+int SdifSelectTestIntRange  (SdifSelectElementT *elem, int cand);
 int SdifSelectTestRealRange (SdifSelectElementT *elem, double cand);
 
 int SdifSelectTestInt (SdifListT *list, int cand);
