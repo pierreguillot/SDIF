@@ -1,4 +1,4 @@
-/* $Id: SdifRWLowLevel.c,v 3.12 2000-11-15 14:53:34 lefevre Exp $
+/* $Id: SdifRWLowLevel.c,v 3.13 2000-11-21 16:34:50 roebel Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -32,6 +32,9 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.12  2000/11/15 14:53:34  lefevre
+ * no message
+ *
  * Revision 3.11  2000/10/27  20:03:42  roebel
  * autoconf merged back to main trunk
  *
@@ -302,8 +305,6 @@ SdiffReadInt2 (SdifInt2 *ptr, size_t nobj, FILE *stream)
     {
     case eLittleEndian   :
     case eLittleEndian64 :
-    case eLittleEndianLittleConst :
-    case eLittleEndianLittleConst64 :
       return SdiffreadLittleEndian2(ptr, nobj, stream);
     default :
       return Sdiffread(ptr, sizeof(SdifInt2),  nobj, stream);
@@ -322,8 +323,6 @@ SdiffReadUInt2(SdifUInt2 *ptr, size_t nobj, FILE *stream)
     {
     case eLittleEndian   :
     case eLittleEndian64 :
-    case eLittleEndianLittleConst :
-    case eLittleEndianLittleConst64 :
       return SdiffreadLittleEndian2(ptr, nobj, stream);
     default :
       return Sdiffread(ptr, sizeof(SdifUInt2),  nobj, stream);
@@ -341,8 +340,6 @@ SdiffReadInt4(SdifInt4 *ptr, size_t nobj, FILE *stream)
     {
     case eLittleEndian   :
     case eLittleEndian64 :
-    case eLittleEndianLittleConst :
-    case eLittleEndianLittleConst64 :
       return SdiffreadLittleEndian4(ptr, nobj, stream);
     default :
       return Sdiffread(ptr, sizeof(SdifInt4),  nobj, stream);
@@ -361,8 +358,6 @@ SdiffReadUInt4(SdifUInt4 *ptr, size_t nobj, FILE *stream)
     {
     case eLittleEndian   :
     case eLittleEndian64 :
-    case eLittleEndianLittleConst :
-    case eLittleEndianLittleConst64 :
       return SdiffreadLittleEndian4(ptr, nobj, stream);
     default :
       return Sdiffread(ptr, sizeof(SdifUInt4),  nobj, stream);
@@ -400,8 +395,6 @@ SdiffReadFloat4(SdifFloat4 *ptr, size_t nobj, FILE *stream)
     {
     case eLittleEndian   :
     case eLittleEndian64 :
-    case eLittleEndianLittleConst :
-    case eLittleEndianLittleConst64 :
       return SdiffreadLittleEndian4(ptr, nobj, stream);
     default :
       return Sdiffread(ptr, sizeof(SdifFloat4),  nobj, stream);
@@ -420,8 +413,6 @@ SdiffReadFloat8(SdifFloat8 *ptr, size_t nobj, FILE *stream)
     {
     case eLittleEndian   :
     case eLittleEndian64 :
-    case eLittleEndianLittleConst :
-    case eLittleEndianLittleConst64 :
       return SdiffreadLittleEndian8(ptr, nobj, stream);
     default :
       return Sdiffread(ptr, sizeof(SdifFloat8),  nobj, stream);
@@ -467,8 +458,6 @@ SdiffWriteInt2 (SdifInt2 *ptr, size_t nobj, FILE *stream)
       
     case eLittleEndian   :
     case eLittleEndian64 :
-    case eLittleEndianLittleConst :
-    case eLittleEndianLittleConst64 :
       return SdiffwriteLittleEndian2(ptr, nobj, stream);
       
     default :
@@ -488,8 +477,6 @@ SdiffWriteUInt2(SdifUInt2 *ptr, size_t nobj, FILE *stream)
       
     case eLittleEndian   :
     case eLittleEndian64 :
-    case eLittleEndianLittleConst :
-    case eLittleEndianLittleConst64 :
       return SdiffwriteLittleEndian2(ptr, nobj, stream);
     default :
       return Sdiffwrite(ptr, sizeof(SdifUInt2),  nobj, stream);
@@ -510,8 +497,6 @@ SdiffWriteInt4(SdifInt4 *ptr, size_t nobj, FILE *stream)
       
     case eLittleEndian   :
     case eLittleEndian64 :
-    case eLittleEndianLittleConst :
-    case eLittleEndianLittleConst64 :
       return SdiffwriteLittleEndian4(ptr, nobj, stream);
     default :
       return Sdiffwrite(ptr, sizeof(SdifInt4),  nobj, stream);
@@ -531,8 +516,6 @@ SdiffWriteUInt4(SdifUInt4 *ptr, size_t nobj, FILE *stream)
       
     case eLittleEndian   :
     case eLittleEndian64 :
-    case eLittleEndianLittleConst :
-    case eLittleEndianLittleConst64 :
       return SdiffwriteLittleEndian4(ptr, nobj, stream);
     default :
       return Sdiffwrite(ptr, sizeof(SdifUInt4),  nobj, stream);
@@ -573,8 +556,6 @@ SdiffWriteFloat4(SdifFloat4 *ptr, size_t nobj, FILE *stream)
       
     case eLittleEndian   :
     case eLittleEndian64 :
-    case eLittleEndianLittleConst :
-    case eLittleEndianLittleConst64 :
       return SdiffwriteLittleEndian4(ptr, nobj, stream);
     default :
       return Sdiffwrite(ptr, sizeof(SdifFloat4),  nobj, stream);
@@ -593,8 +574,6 @@ SdiffWriteFloat8(SdifFloat8 *ptr, size_t nobj, FILE *stream)
       
     case eLittleEndian   :
     case eLittleEndian64 :
-    case eLittleEndianLittleConst :
-    case eLittleEndianLittleConst64 :
       return SdiffwriteLittleEndian8(ptr, nobj, stream);
     default :
       return Sdiffwrite(ptr, sizeof(SdifFloat8),  nobj, stream);
@@ -613,8 +592,8 @@ SdiffWriteSignature(SdifSignature *Signature, FILE *stream)
 
     switch (gSdifMachineType)
     {     
-    case eLittleEndianLittleConst :
-    case eLittleEndianLittleConst64 :
+    case eLittleEndian :
+    case eLittleEndian64 :
       SdifLittleToBig(&SignW, Signature, sizeof(SdifSignature));
       break;
     default :
@@ -759,8 +738,8 @@ _SdifStringToSignature (char *str)
 
   switch (gSdifMachineType)
   {     
-    case eLittleEndianLittleConst :
-    case eLittleEndianLittleConst64 :
+    case eLittleEndian :
+    case eLittleEndian64 :
       {
 	SdifSignature Signature = *((SdifSignature *) str);
 	SdifBigToLittle((void *) &Signature, sizeof(SdifSignature));

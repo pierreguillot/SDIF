@@ -1,5 +1,5 @@
 dnl -*-m4-*- (He emacs, it's a m4 file)
-dnl $Id: configure.in,v 1.8 2000-11-21 14:48:30 schwarz Exp $
+dnl $Id: configure.in,v 1.9 2000-11-21 16:34:45 roebel Exp $
 dnl
 dnl configure.in		September 2000		Patrice Tisserand
 dnl
@@ -30,6 +30,9 @@ dnl For any information regarding this and other IRCAM software, please
 dnl send email to:  sdif@ircam.fr
 dnl
 dnl $Log: not supported by cvs2svn $
+dnl Revision 1.8  2000/11/21 14:48:30  schwarz
+dnl Nicer output for debug feature.
+dnl
 dnl Revision 1.7  2000/11/21 09:04:27  roebel
 dnl Changed Makefile.am  in tools and sdif to properly use
 dnl include files in $(topsrcdir)/sdif
@@ -100,32 +103,32 @@ AC_CHECK_SIZEOF(long)
 	
 dnl ############################################################
 dnl Check for multi-character character constant inversion
-AC_MSG_CHECKING(Multi-character character constant inversion)
-AC_TRY_RUN([
-#include <stdlib.h>
-#include <stdio.h>
-int main()
-{
-  char ConstCharTab[] = {'A', 'B', 'C', 'D'};
-  const unsigned int ConstDCBA = 'DCBA';
-  unsigned int *ConstUIntTest;
-
-  ConstUIntTest = (unsigned int*) ConstCharTab;
-
-  if ((*ConstUIntTest) == ConstDCBA)
-	return 0;
-  else
-	return 1;
-}
-
-	], multi_char_inversion=true, multi_char_inversion=false)
-
-if test "$multi_char_inversion" = "true"; then
-	AC_MSG_RESULT(yes)
-	AC_DEFINE(MULTICHAR_CHAR_CONSTANT_INVERSION)
-else
-	AC_MSG_RESULT(no)
-fi
+dnl AC_MSG_CHECKING(Multi-character character constant inversion)
+dnl AC_TRY_RUN([
+dnl #include <stdlib.h>
+dnl #include <stdio.h>
+dnl int main()
+dnl {
+dnl   char ConstCharTab[] = {'A', 'B', 'C', 'D'};
+dnl   const unsigned int ConstDCBA = 'DCBA';
+dnl   unsigned int *ConstUIntTest;
+dnl 
+dnl   ConstUIntTest = (unsigned int*) ConstCharTab;
+dnl 
+dnl   if ((*ConstUIntTest) == ConstDCBA)
+dnl 	return 0;
+dnl   else
+dnl 	return 1;
+dnl }
+dnl 
+dnl 	], multi_char_inversion=true, multi_char_inversion=false)
+dnl 
+dnl if test "$multi_char_inversion" = "true"; then
+dnl 	AC_MSG_RESULT(yes)
+dnl 	AC_DEFINE(MULTICHAR_CHAR_CONSTANT_INVERSION)
+dnl else
+dnl 	AC_MSG_RESULT(no)
+dnl fi
 
 dnl ############################################################
 dnl DEBUG feature

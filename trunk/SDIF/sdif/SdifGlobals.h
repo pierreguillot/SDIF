@@ -1,4 +1,4 @@
-/* $Id: SdifGlobals.h,v 3.11 2000-11-21 14:51:49 schwarz Exp $
+/* $Id: SdifGlobals.h,v 3.12 2000-11-21 16:34:49 roebel Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -31,6 +31,16 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.11  2000/11/21 14:51:49  schwarz
+ * - sdif.h is now included by all sdif/Sdif*.c files.
+ * - Removed all public typedefs, enums, structs, and defines from the
+ *   individual sdif/Sdif*.h files, because they were duplicated in sdif.h.
+ * - Todo: Do the same for the function prototypes, decide which types and
+ *   prototypes really need to be exported.
+ * - Removed SdifFileStruct.h.
+ * - Preliminary new version of SdiffGetPos, SdiffSetPos.  They used the
+ *   type fpos_t, which is no longer a long on RedHat 7 Linux.
+ *
  * Revision 3.10  2000/11/15 14:53:30  lefevre
  * no message
  *
@@ -121,170 +131,6 @@
 #include "SdifError.h"
 #include "SdifMemory.h"
 #include "SdifHard_OS.h"
-
-
-
-/* set default if not overridden from makefile */
-#ifndef _SdifFormatVersion
-#define	_SdifFormatVersion 3
-#endif
-
-#define _SdifTypesVersion  1
-
-
-/* _SdifEnvVar : Environnement variable which contains the name
- * of the file which contains predefined types (the name contains the path).
- * _SdifEnvVar is used in SdifFile.c SdifGenInit, the user can
- * reference predefined types by this envvar name.
- */
-#define _SdifEnvVar "SDIFTYPES"
-
-/* Default predefined types : _SdifTypesFileName see SdifFile.c
- */
-
-#define _SdifListNodeStockSize 0x400 /*1024*/
-#define _SdifGenHashSize 127
-#define _SdifUnknownSize 0xffffffff
-#define _SdifPadding 8
-#define _SdifGranule 1024 /* for OneRow allocation in bytes */
-
-#define _SdifFloat8Error  0xffffffff
-#define _SdifNoTime	  _Sdif_MIN_DOUBLE_	/* for header ASCII frames */
-#define _SdifNoStreamID   0xfffffffe		/* used for 1TYP */
-#define _SdifAllStreamID  0xffffffff		/* used for 1IDS */
-#define _SdifUnknownUInt4 0xffffffff
-
-/* CNMAT restriction: only one frame type per stream.  
-   Therefore we have to use unique IDs for all 'header' frames. */
-#define _SdifNVTStreamID  0xfffffffd		/* used for 1NVT */
-#define _SdifIDSStreamID  0xfffffffc		/* unused */
-#define _SdifTYPStreamID  0xfffffffb		/* unused */
-
-
-
-#if COCOONSEYESONLY
-/*DOC:
-  Macro to generate proper-endianed 4 char SDIF signature from 
-  something like 'ABCD'.
- */
-SdifUInt4 SdifSignatureConst (SdifUInt4 four_char_code);
-#endif
-
-/* This seems to be no longer necessary with gcc version 2.8.1 on alpha */
-#if 0 && defined (__GNUC__)  &&  defined (__alpha__)
-/* Swap multibyte char constant s with gcc on alpha,
-   because gcc builds multi-character constants in inverse oder, as can
-   be seen in cexp.y (variable c is the next character parsed):
- 
-   // Merge character into result; ignore excess chars. 
-   if (num_chars <= max_chars)
-   {
-     if (width < HOST_BITS_PER_WIDE_INT)
-       result = (result << width) | c;
-     else
-       result = c;
-     token_buffer[num_chars - 1] = c;
-   } */
-#   define isolate(s, n)    ((s) & (0xff << ((n) * 8)))   /* s is char const */
-#   define shiftto0(s, n)   (s >> ((n) * 8))
-#   define pick(s, n)	    (shiftto0 (isolate (s, n), n) << ((3 - (n)) * 8))
-#   define SdifSignatureConst(s) (pick(s,0)|pick(s,1)|pick(s,2)|pick(s,3))
-#else
-#   define SdifSignatureConst(s) (s)
-#endif
-
-
-
-#define _SdifFloatEps  FLT_EPSILON
-
-
-#if (_SdifFormatVersion >= 3)
-
-#ifdef STDC_HEADERS  /* Is the compiler ANSI? */
-
-/* generate template for all types */
-#define sdif__foralltypes(macro, post)	macro(Float4)post \
-					macro(Float8)post \
-					macro(Int2  )post \
-					macro(Int4  )post \
-					macro(UInt2 )post \
-					macro(UInt4 )post \
-					macro(Char  )post \
-				     /* macro(Int8  )post \
-					macro(UInt8 )post \
-				      */
-
-/* generate template for all types */
-#define sdif_foralltypes(macro)		sdif__foralltypes(macro,)
-
-/* generate prototype template for all types */
-#define sdif_proto_foralltypes(macro)	sdif__foralltypes(macro,;)
-
-#endif /* STDC_HEADERS */
-
-#else
-
-typedef enum SdifDataTypeE
-{
-  eUnicode  = 0,
-  eFloat4   = 1,
-  eFloat8   = 2,
-  eInt4     = 3,
-  eUInt4    = 4,
-  eChar     = 5,
-  eInt2     = 6,
-  eUInt2    = 7,
-  eFloat4Old = 32
-} SdifDataTypeET;
-#endif
-
-
-#define _SdifStringLen 1024
-
-extern char gSdifString[_SdifStringLen];
-extern char gSdifString2[_SdifStringLen];
-extern char gSdifErrorMess[_SdifStringLen];
-
-#define _SdifNbMaxPrintSignature 8
-extern char gSdifStringSignature[_SdifNbMaxPrintSignature][5];
-extern int  CurrStringPosSignature;
-
-
-/*
-// FUNCTION GROUP:	utility functions
-*/
-
-/*DOC:
-*/
-char*     SdifSignatureToString(SdifSignature Signature);
-
-/*DOC: 
-  Returns size of SDIF data type in bytes
-  (which is always the low-order byte).  
-*/
-SdifUInt4 SdifSizeofDataType (SdifDataTypeET DataType);
-
-/*DOC: 
-  Returns true if DataType is in the list of known data types.
-*/
-int SdifDataTypeKnown (SdifDataTypeET DataType);
-
-/*DOC:
-*/
-size_t    SdifPaddingCalculate  (size_t NbBytes);
-
-/*DOC:
-*/
-size_t    SdifFPaddingCalculate (FILE *f, size_t NbBytes);
-
-
-#ifndef MIN
-#define MIN(a,b)	((a) < (b)  ?  (a)  :  (b))
-#endif
-
-#ifndef MAX
-#define MAX(a,b)	((a) > (b)  ?  (a)  :  (b))
-#endif
 
 
 #endif /* _SdifGlobals_ */

@@ -1,4 +1,4 @@
-/* $Id: SdifHard_OS.c,v 3.7 2000-11-15 14:53:30 lefevre Exp $
+/* $Id: SdifHard_OS.c,v 3.8 2000-11-21 16:34:49 roebel Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -28,6 +28,9 @@
  *
  * author: Dominique Virolle 1998
  * $Log: not supported by cvs2svn $
+ * Revision 3.7  2000/11/15 14:53:30  lefevre
+ * no message
+ *
  * Revision 3.6  2000/10/27  20:03:34  roebel
  * autoconf merged back to main trunk
  *
@@ -141,18 +144,10 @@ SdifGetMachineType(void)
   else
       MachineType = eBigEndian64;
 #else /* LITTLEENDIAN */
-#ifdef MULTICHAR_CHAR_CONSTANT_INVERSION 
-  if (SIZEOF_LONG == 4)
-      MachineType = eLittleEndianLittleConst;
-  else
-      MachineType = eLittleEndianLittleConst64;
-#else
   if (SIZEOF_LONG == 4)
       MachineType = eLittleEndian;
   else
       MachineType = eLittleEndian64;
-
-#endif /* MULTICHAR_CHAR_CONSTANT_INVERSION */
 #endif /* WORDS_BIGENDIAN */
   
 /*    if (    (MachineType == eLittleEndian) */
@@ -187,8 +182,8 @@ SdifInitMachineType(void)
 
   switch (gSdifMachineType)
   {     
-    case eLittleEndianLittleConst:
-    case eLittleEndianLittleConst64:
+    case eLittleEndian :
+    case eLittleEndian64 :
       gSdifSignatureVersionMask = 0xffffff00;
     break;
 

@@ -1547,54 +1547,6 @@ EOF
 
 
 	
-echo $ac_n "checking Multi-character character constant inversion""... $ac_c" 1>&6
-echo "configure:1552: checking Multi-character character constant inversion" >&5
-if test "$cross_compiling" = yes; then
-    { echo "configure: error: can not run test program while cross compiling" 1>&2; exit 1; }
-else
-  cat > conftest.$ac_ext <<EOF
-#line 1557 "configure"
-#include "confdefs.h"
-
-#include <stdlib.h>
-#include <stdio.h>
-int main()
-{
-  char ConstCharTab[] = {'A', 'B', 'C', 'D'};
-  const unsigned int ConstDCBA = 'DCBA';
-  unsigned int *ConstUIntTest;
-
-  ConstUIntTest = (unsigned int*) ConstCharTab;
-
-  if ((*ConstUIntTest) == ConstDCBA)
-	return 0;
-  else
-	return 1;
-}
-
-	
-EOF
-if { (eval echo configure:1578: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext} && (./conftest; exit) 2>/dev/null
-then
-  multi_char_inversion=true
-else
-  echo "configure: failed program was:" >&5
-  cat conftest.$ac_ext >&5
-  rm -fr conftest*
-  multi_char_inversion=false
-fi
-rm -fr conftest*
-fi
-
-if test "$multi_char_inversion" = "true"; then
-	echo "$ac_t""yes" 1>&6
-	cat >> confdefs.h <<\EOF
-#define MULTICHAR_CHAR_CONSTANT_INVERSION 1
-EOF
-
-else
-	echo "$ac_t""no" 1>&6
-fi
 
 
 
@@ -1604,14 +1556,15 @@ fi
 # Check whether --enable-debug or --disable-debug was given.
 if test "${enable_debug+set}" = set; then
   enableval="$enable_debug"
-  echo $enableval; if test "$enableval" = "yes"; then
-SELLIB=libsdif-debug.a; CFLAGS="-g2";
-TESTLIB=sdif-debug; 
-PROGLIST="querysdif-debug sdifextract-debug sdiftotext-debug tosdif-debug";
+  echo FEATURE enable-debug... $enableval; 
+if test "$enableval" = "yes"; then
+	SELLIB=libsdif-debug.a; CFLAGS="-g2";
+	TESTLIB=sdif-debug; 
+	PROGLIST="querysdif-debug sdifextract-debug sdiftotext-debug tosdif-debug";
 else 
-SELLIB=libsdif.a;  CFLAGS="-O3";
-TESTLIB=sdif; 
-PROGLIST="querysdif sdifextract sdiftotext tosdif";
+	SELLIB=libsdif.a;  CFLAGS="-O3";
+	TESTLIB=sdif; 
+	PROGLIST="querysdif sdifextract sdiftotext tosdif";
 fi 
 else
   

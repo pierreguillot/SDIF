@@ -1,8 +1,17 @@
-/* $Id: sdif.h,v 1.6 2000-11-21 14:51:34 schwarz Exp $
+/* $Id: sdif.h,v 1.7 2000-11-21 16:34:48 roebel Exp $
  *
  * This file contains type declaration of variables used in SDIF library.
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.6  2000/11/21 14:51:34  schwarz
+ * - sdif.h is now included by all sdif/Sdif*.c files.
+ * - Removed all public typedefs, enums, structs, and defines from the
+ *   individual sdif/Sdif*.h files, because they were duplicated in sdif.h.
+ * - Todo: Do the same for the function prototypes, decide which types and
+ *   prototypes really need to be exported.
+ * - Preliminary new version of SdiffGetPos, SdiffSetPos.  They used the
+ *   type fpos_t, which is no longer a long on RedHat 7 Linux.
+ *
  * Revision 1.5  2000/11/16 12:20:17  lefevre
  * no message
  *
@@ -24,7 +33,7 @@
  * Revision 1.1.2.1  2000/08/21  13:07:41  tisseran
  * *** empty log message ***
  *
- * $Date: 2000-11-21 14:51:34 $
+ * $Date: 2000-11-21 16:34:48 $
  *
  */
 
@@ -37,7 +46,7 @@ extern "C" {
 #endif
 
 
-static const char _sdif_h_cvs_revision_ [] = "$Id: sdif.h,v 1.6 2000-11-21 14:51:34 schwarz Exp $";
+static const char _sdif_h_cvs_revision_ [] = "$Id: sdif.h,v 1.7 2000-11-21 16:34:48 roebel Exp $";
 
 
 #include <stdio.h>
@@ -157,12 +166,11 @@ struct SdifBlockListS
 */
 
 /*DS: FORCE long fpos*/
+/* ftell/fseek can be applied to stdin/out/err at least in a restricted manner
+ * (same as fgetpos/fsetpos) so let's try */
 #   define SdiffPosT		long
-#   define SdiffIsFile(f)	((f)!=stdin && (f)!=stdout && (f)!=stderr)
-#   define Sdiffftell(f)	(SdiffIsFile(f)  ?  ftell(f)  :  0)
-#   define SdiffGetPos(f,p)	((*(p) = Sdiffftell(f)) == -1  ?  -1  :  0)
-#   define SdiffSetPos(f,p)	SdiffIsFile(f)  \
-				    ?  fseek(f, (long)(*(p)), SEEK_SET)  :  0
+#   define SdiffGetPos(f,p)	((*(p) = ftell(f)) == -1  ?  -1  :  0)
+#   define SdiffSetPos(f,p)	fseek(f, (long)(*(p)), SEEK_SET) 
 #endif
 
 
@@ -184,10 +192,8 @@ typedef enum SdifMachineE
   eUndefinedMachine,
   eBigEndian,
   eLittleEndian,
-  eLittleEndianLittleConst,
   eBigEndian64,
   eLittleEndian64,
-  eLittleEndianLittleConst64,
   ePDPEndian
 } SdifMachineET;
 
@@ -202,20 +208,32 @@ typedef enum SdifBinaryMode
 } SdifBinaryModeET ;
 
 /* SdifGlobals.h */
-#   define SdifSignatureConst(s) (s)
+/* DOC:
+
+  Macro to generate an integer representation of the sequence of unsigned chars 
+  for example :
+
+  SdifSignature sig=SdifSignatureConst('A','B','C','D');
+
+  Because integers are differently handled on little/big endian machines the
+  signatures are swapped if read from a file to match internal format. */
+  
+#   define SdifSignatureConst(p1,p2,p3,p4) (((((unsigned int)(p1))&0xff)<<24)|((((unsigned int)(p2))&0xff)<<16)|((((unsigned int)(p3))&0xff)<<8)|(((unsigned int)(p4))&0xff))
+
+
 typedef enum SdifSignatureE
 {
-  eSDIF = SdifSignatureConst('SDIF'), /* SDIF header */
-  e1NVT = SdifSignatureConst('1NVT'), /* Name Value Table */
-  e1TYP = SdifSignatureConst('1TYP'), /* TYPe declarations */
-  e1MTD = SdifSignatureConst('1MTD'), /* Matrix Type Declaration */
-  e1FTD = SdifSignatureConst('1FTD'), /* Frame Type Declaration */
-  e1IDS = SdifSignatureConst('1IDS'), /* ID Stream Table */
-  eSDFC = SdifSignatureConst('SDFC'), /* Start Data Frame Chunk (text files) */
-  eENDC = SdifSignatureConst('ENDC'), /* END Chunk (text files) */
-  eENDF = SdifSignatureConst('ENDF'), /* END File (text files) */
-  eFORM = SdifSignatureConst('FORM'), /* FORM for IFF compatibility (obsolete ?) */
-  eEmptySignature = SdifSignatureConst('\0\0\0\0')
+  eSDIF = SdifSignatureConst('S','D','I','F'), /* SDIF header */
+  e1NVT = SdifSignatureConst('1','N','V','T'), /* Name Value Table */
+  e1TYP = SdifSignatureConst('1','T','Y','P'), /* TYPe declarations */
+  e1MTD = SdifSignatureConst('1','M','T','D'), /* Matrix Type Declaration */
+  e1FTD = SdifSignatureConst('1','F','T','D'), /* Frame Type Declaration */
+  e1IDS = SdifSignatureConst('1','I','D','S'), /* ID Stream Table */
+  eSDFC = SdifSignatureConst('S','D','F','C'), /* Start Data Frame Chunk (text files) */
+  eENDC = SdifSignatureConst('E','N','D','C'), /* END Chunk (text files) */
+  eENDF = SdifSignatureConst('E','N','D','F'), /* END File (text files) */
+  eFORM = SdifSignatureConst('F','O','R','M'), /* FORM for IFF compatibility (obsolete ?) */
+  eEmptySignature = SdifSignatureConst('\0','\0','\0','\0')
 } SdifSignatureET;
 
 typedef enum SdifModifModeE
@@ -1445,39 +1463,6 @@ SdifUInt2       SdifExistUserFrameType (SdifHashTableT *FrameTypeHT);
 #define _SdifNVTStreamID  0xfffffffd		/* used for 1NVT */
 #define _SdifIDSStreamID  0xfffffffc		/* unused */
 #define _SdifTYPStreamID  0xfffffffb		/* unused */
-
-
-
-#if COCOONSEYESONLY
-/*DOC:
-  Macro to generate proper-endianed 4 char SDIF signature from 
-  something like 'ABCD'.
- */
-SdifUInt4 SdifSignatureConst (SdifUInt4 four_char_code);
-#endif
-
-/* This seems to be no longer necessary with gcc version 2.8.1 on alpha */
-#if 0 && defined (__GNUC__)  &&  defined (__alpha__)
-/* Swap multibyte char constant s with gcc on alpha,
-   because gcc builds multi-character constants in inverse oder, as can
-   be seen in cexp.y (variable c is the next character parsed):
- 
-   // Merge character into result; ignore excess chars. 
-   if (num_chars <= max_chars)
-   {
-     if (width < HOST_BITS_PER_WIDE_INT)
-       result = (result << width) | c;
-     else
-       result = c;
-     token_buffer[num_chars - 1] = c;
-   } */
-#   define isolate(s, n)    ((s) & (0xff << ((n) * 8)))   /* s is char const */
-#   define shiftto0(s, n)   (s >> ((n) * 8))
-#   define pick(s, n)	    (shiftto0 (isolate (s, n), n) << ((3 - (n)) * 8))
-#   define SdifSignatureConst(s) (pick(s,0)|pick(s,1)|pick(s,2)|pick(s,3))
-#else
-#   define SdifSignatureConst(s) (s)
-#endif
 
 
 #define _SdifFloatEps  FLT_EPSILON
