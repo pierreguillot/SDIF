@@ -1,4 +1,4 @@
-/* $Id: SdifGlobals.c,v 3.1 1999-03-14 10:56:57 virolle Exp $
+/* $Id: SdifGlobals.c,v 3.2 1999-06-18 16:23:55 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -14,6 +14,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.1  1999/03/14  10:56:57  virolle
+ * SdifStdErr add
+ *
  * Revision 2.3  1999/01/23  15:55:49  virolle
  * add querysdif.dsp, delete '\r' chars from previous commit
  *
@@ -91,8 +94,8 @@ SdifSignatureCmpNoVersion(SdifSignature Signature1, SdifSignature Signature2)
 {
   SdifUInt4 S1, S2;
 
-  S1 = Signature1 & 0x00ffffff;
-  S2 = Signature2 & 0x00ffffff;
+  S1 = Signature1 & gSdifSignatureVersionMask;
+  S2 = Signature2 & gSdifSignatureVersionMask;
 
   return (short)(S1 == S2);
 }

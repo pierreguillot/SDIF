@@ -1,4 +1,4 @@
-/* $Id: SdifHard_OS.c,v 3.1 1999-03-14 10:56:59 virolle Exp $
+/* $Id: SdifHard_OS.c,v 3.2 1999-06-18 16:23:57 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -11,6 +11,9 @@
  *
  * author: Dominique Virolle 1998
  * $Log: not supported by cvs2svn $
+ * Revision 3.1  1999/03/14  10:56:59  virolle
+ * SdifStdErr add
+ *
  * Revision 2.4  1999/02/28  12:16:47  virolle
  * memory report
  *
@@ -108,7 +111,7 @@ SdifGetMachineType(void)
 
 
 SdifMachineET gSdifMachineType;
-
+SdifUInt4     gSdifSignatureVersionMask;
 
 
 
@@ -116,6 +119,19 @@ SdifMachineET
 SdifInitMachineType(void)
 {
   gSdifMachineType = SdifGetMachineType();
+
+  switch (gSdifMachineType)
+  {     
+    case eLittleEndianLittleConst:
+    case eLittleEndianLittleConst64:
+      gSdifSignatureVersionMask = 0xffffff00;
+    break;
+
+    default :
+      gSdifSignatureVersionMask = 0x00ffffff;
+    break;
+  }
+
   return gSdifMachineType;
 }
 
