@@ -32,9 +32,12 @@
  * 
  * 
  * 
- * $Id: sdifentity.h,v 1.9 2003-05-19 13:59:40 roebel Exp $ 
+ * $Id: sdifentity.h,v 1.10 2003-05-24 00:27:38 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.9  2003/05/19 13:59:40  roebel
+ * swig rename moved to swig  interface desription.
+ *
  * Revision 1.8  2003/05/01 18:59:12  roebel
  * Added missing class keyword for friend declaration.
  *
@@ -130,7 +133,7 @@ private:
     std::vector<SDIFNameValueTable> mv_NVT;
 
     SdifFileT* efile;
-    SdifStringT* mDescription;
+    std::string mDescription;
 
     SdifUInt4 mNbFrame;
     SdifUInt4 mSize;
@@ -150,8 +153,7 @@ public:
     /// Default constructor
     SDIFEntity();
     ~SDIFEntity()
-	{
-	    SdifStringFree(mDescription);
+	{	    
 	    if (0 != efile)
 	    {
 		SdifFClose(efile);
@@ -172,7 +174,7 @@ public:
  * Opening)
  */
  private:
-    int WriteTypes();
+    bool WriteTypes();
     //int AddDescriptionType();
 
  public:
@@ -189,8 +191,8 @@ public:
  * the frame
  * the matrix type
  */
-    int AddFrameType(const std::string& frametype, 
-		     const std::string& matrix);
+    bool AddFrameType(const std::string& frametype, 
+		      const std::string& matrix);
 
 /** 
  * \ingroup description
@@ -207,7 +209,7 @@ public:
  * @param colnames string to defined the differents parameters of 
  * the matrix type
  */
-    int AddMatrixType(const std::string& matrixtype, 
+    bool AddMatrixType(const std::string& matrixtype, 
 		      const std::string& colnames);
 
 /** 
@@ -219,17 +221,22 @@ public:
 
 /** 
  * \ingroup description
- * return the SdifStringT* which describe the differents frames of the file
- * in the frame "1TYP".
+ * return a string  containing the user defined types of the
+ * file that is stored in the frame "1TYP".
+ *
+ *  return Type string
  */
-    SdifStringT* GetTypeString();
+  const std::string& GetTypeString() const;
 
 /** 
  * \ingroup description
- * Set a SdifStringT* for hte description of the differents frames of the file
- * in the frame "1TYP".
+ * Set the user defined frame types in the frame "1TYP" for the current file to
+ * the argument string 
+ * 
+ * \param TypeString
+ * \return return true if success
  */
-    int SetTypeString(SdifStringT* String);
+  bool SetTypeString(const std::string& TypeString);
 
 /*************************************************************************/
 /* Change the selection */

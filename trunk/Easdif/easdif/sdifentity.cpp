@@ -32,9 +32,13 @@
  * 
  * 
  * 
- * $Id: sdifentity.cpp,v 1.10 2003-05-22 21:23:58 roebel Exp $ 
+ * $Id: sdifentity.cpp,v 1.11 2003-05-24 00:27:21 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.10  2003/05/22 21:23:58  roebel
+ * SDIFNameValueTable now derived from std::map which makes handling more conform
+ * to standard and handling in swig easier.
+ *
  * Revision 1.9  2003/05/22 17:57:53  roebel
  * Removed redundant initilization of variable
  *
@@ -123,7 +127,6 @@ namespace Easdif {
 SDIFEntity::SDIFEntity(): efile(0), mSize(0), mEof(true), 
     mOpen(0), generalHeader(0), asciiChunks(0), bytesread(0)
 {
-    mDescription = SdifStringNew();
 };
 
 /* to open a file in mode Read  */
@@ -148,8 +151,11 @@ bool SDIFEntity::OpenRead(const char* filename)
     asciiChunks = SdifFReadAllASCIIChunks(efile);
 
     /* to put matrix and frame's types in the SdifString : mDescription */
-    SdifFAllMatrixTypeToSdifString(efile, mDescription);
-    SdifFAllFrameTypeToSdifString(efile, mDescription);
+    SdifStringT *_tmp = SdifStringNew();
+    SdifFAllMatrixTypeToSdifString(efile, _tmp);
+    SdifFAllFrameTypeToSdifString(efile, _tmp);
+    mDescription = _tmp->str;
+
     n = SdifFNameValueNum(efile);
     /* initialisation of the vector */
     mv_NVT.clear();
@@ -404,57 +410,52 @@ void SDIFEntity::PrintAllNVTs()
 
 /*******************************/
 
-int SDIFEntity::SetTypeString(SdifStringT* String)
+bool SDIFEntity::SetTypeString(const std::string& TypeString)
 {
-    SdifStringAppend(mDescription , String->str);
-    return 1;
+    mDescription = TypeString;
+    return true;
 }
 
-SdifStringT* SDIFEntity::GetTypeString()
+const std::string& SDIFEntity::GetTypeString() const
 {
     return mDescription;
 }
 
 int SDIFEntity::PrintTypes()
 {
-    std::cout << std::endl <<  mDescription->str << std::endl;
+    std::cout << std::endl <<  mDescription << std::endl;
     return 1;
 }
 
 /* for adding a frame type */
-int SDIFEntity::AddFrameType(const std::string& frametype, 
-			     const std::string& matrix)
+bool SDIFEntity::AddFrameType(const std::string& frametype, 
+			     const std::string& matrixtype)
 {
-    SdifStringAppend(mDescription , "1FTD");
-    SdifStringAppend(mDescription ,const_cast<char*>(frametype.c_str()));
-    SdifStringAppend(mDescription ," { ");
-    SdifStringAppend(mDescription ,const_cast<char*>(matrix.c_str()));
-    SdifStringAppend(mDescription ,";  }\n");
-    return 1;
+    mDescription += "1FTD"+frametype + " { " + matrixtype + ";  }\n";
+    return true;
 }
 
 /* for adding a matrix type */
-int SDIFEntity::AddMatrixType(const std::string& matrixtype, 
+bool SDIFEntity::AddMatrixType(const std::string& matrixtype, 
 			      const std::string& colnames)
 {
-    SdifStringAppend(mDescription , "1MTD");
-    SdifStringAppend(mDescription ,const_cast<char*>(matrixtype.c_str()));
-    SdifStringAppend(mDescription ," { ");
-    SdifStringAppend(mDescription ,const_cast<char*>(colnames.c_str()));
-    SdifStringAppend(mDescription ," }\n");
-    return 1;
+    mDescription += "1MTD"+matrixtype + " { " + colnames + " }\n";
+    return true;
 }
 
 /* for adding the description types when opening in mode "eWriteFile" */
-int SDIFEntity::WriteTypes()
+bool SDIFEntity::WriteTypes() 
 {
-  if (mDescription->TotalSize > 0)
+  if (mDescription.size() > 0)
   {
-      SdifFGetAllTypefromSdifString(efile, mDescription);
-      return 1;
+    SdifStringT * _tmp=SdifStringNew();
+    SdifStringAppend(_tmp,mDescription.c_str());
+    SdifFGetAllTypefromSdifString(efile, _tmp);
+    SdifStringFree(_tmp);
+    return true;
   }
   else
-  return 0;
+    return false;
 }
 
 
