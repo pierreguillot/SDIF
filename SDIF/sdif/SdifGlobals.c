@@ -1,4 +1,4 @@
-/* $Id: SdifGlobals.c,v 3.8 2000-11-21 14:51:49 schwarz Exp $
+/* $Id: SdifGlobals.c,v 3.9 2000-11-21 16:34:49 roebel Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -31,6 +31,16 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.8  2000/11/21 14:51:49  schwarz
+ * - sdif.h is now included by all sdif/Sdif*.c files.
+ * - Removed all public typedefs, enums, structs, and defines from the
+ *   individual sdif/Sdif*.h files, because they were duplicated in sdif.h.
+ * - Todo: Do the same for the function prototypes, decide which types and
+ *   prototypes really need to be exported.
+ * - Removed SdifFileStruct.h.
+ * - Preliminary new version of SdiffGetPos, SdiffSetPos.  They used the
+ *   type fpos_t, which is no longer a long on RedHat 7 Linux.
+ *
  * Revision 3.7  2000/11/15 14:53:29  lefevre
  * no message
  *
@@ -117,8 +127,8 @@ SdifSignatureToString(SdifSignature Signature)
 
   switch (gSdifMachineType)
     {     
-    case eLittleEndianLittleConst :
-    case eLittleEndianLittleConst64 :
+    case eLittleEndian :
+    case eLittleEndian64 :
       SdifLittleToBig(&SignW, &Signature, sizeof(SdifSignature));
       break;
     default :

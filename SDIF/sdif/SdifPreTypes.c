@@ -1,4 +1,4 @@
-/* $Id: SdifPreTypes.c,v 3.5 2000-11-21 14:51:50 schwarz Exp $
+/* $Id: SdifPreTypes.c,v 3.6 2000-11-21 16:34:50 roebel Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -33,6 +33,16 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.5  2000/11/21 14:51:50  schwarz
+ * - sdif.h is now included by all sdif/Sdif*.c files.
+ * - Removed all public typedefs, enums, structs, and defines from the
+ *   individual sdif/Sdif*.h files, because they were duplicated in sdif.h.
+ * - Todo: Do the same for the function prototypes, decide which types and
+ *   prototypes really need to be exported.
+ * - Removed SdifFileStruct.h.
+ * - Preliminary new version of SdiffGetPos, SdiffSetPos.  They used the
+ *   type fpos_t, which is no longer a long on RedHat 7 Linux.
+ *
  * Revision 3.4  2000/11/15 14:53:33  lefevre
  * no message
  *
@@ -85,7 +95,7 @@ CreateM_1FQ0(void)
   SdifMatrixTypeT*  M_1FQ0;
 
 
-  M_1FQ0 = SdifCreateMatrixType('1FQ0', NULL);
+  M_1FQ0 = SdifCreateMatrixType(SdifSignatureConst('1','F','Q','0'), NULL);
   SdifMatrixTypeInsertTailColumnDef(M_1FQ0, M_1FQ0_Frequency);
   SdifMatrixTypeInsertTailColumnDef(M_1FQ0, M_1FQ0_Mode);
   SdifMatrixTypeInsertTailColumnDef(M_1FQ0, M_1FQ0_Hit);
@@ -107,7 +117,7 @@ CreateM_1FOF(void)
   SdifMatrixTypeT*  M_1FOF;
 
 
-  M_1FOF = SdifCreateMatrixType('1FOF', NULL);
+  M_1FOF = SdifCreateMatrixType(SdifSignatureConst('1','F','O','F'), NULL);
   SdifMatrixTypeInsertTailColumnDef(M_1FOF, M_1FOF_Frequency);
   SdifMatrixTypeInsertTailColumnDef(M_1FOF, M_1FOF_Amplitude);
   SdifMatrixTypeInsertTailColumnDef(M_1FOF, M_1FOF_BandWidth);
@@ -132,7 +142,7 @@ CreateM_1CHA(void)
   SdifMatrixTypeT*  M_1CHA;
 
 
-  M_1CHA = SdifCreateMatrixType('1CHA', NULL);
+  M_1CHA = SdifCreateMatrixType(SdifSignatureConst('1','C','H','A'), NULL);
   SdifMatrixTypeInsertTailColumnDef(M_1CHA, M_1CHA_Channel1);
   SdifMatrixTypeInsertTailColumnDef(M_1CHA, M_1CHA_Channel2);
   SdifMatrixTypeInsertTailColumnDef(M_1CHA, M_1CHA_Channel3);
@@ -152,7 +162,7 @@ CreateM_1RES(void)
   SdifMatrixTypeT*  M_1RES;
 
 
-  M_1RES = SdifCreateMatrixType('1RES', NULL);
+  M_1RES = SdifCreateMatrixType(SdifSignatureConst('1','R','E','S'), NULL);
   SdifMatrixTypeInsertTailColumnDef(M_1RES, M_1RES_Frequency);
   SdifMatrixTypeInsertTailColumnDef(M_1RES, M_1RES_Amplitude);
   SdifMatrixTypeInsertTailColumnDef(M_1RES, M_1RES_BandWidth);
@@ -173,7 +183,7 @@ CreateM_1DIS(void)
   SdifMatrixTypeT*  M_1DIS;
 
 
-  M_1DIS = SdifCreateMatrixType('1DIS', NULL);
+  M_1DIS = SdifCreateMatrixType(SdifSignatureConst('1','D','I','S'), NULL);
   SdifMatrixTypeInsertTailColumnDef(M_1DIS, M_1DIS_Distribution);
   SdifMatrixTypeInsertTailColumnDef(M_1DIS, M_1DIS_Amplitude);
   M_1DIS->ModifMode = eNoModif;
@@ -204,10 +214,10 @@ CreateF_1FOB(void)
 {
   SdifFrameTypeT*  F_1FOB;
 
-  F_1FOB = SdifCreateFrameType('1FOB', NULL);
-  SdifFrameTypePutComponent(F_1FOB, '1FQ0', "PitchModeHit");
-  SdifFrameTypePutComponent(F_1FOB, '1FOF', "Formants");
-  SdifFrameTypePutComponent(F_1FOB, '1CHA', "FormantsChannels");
+  F_1FOB = SdifCreateFrameType(SdifSignatureConst('1','F','O','B'), NULL);
+  SdifFrameTypePutComponent(F_1FOB, SdifSignatureConst('1','F','Q','0'), "PitchModeHit");
+  SdifFrameTypePutComponent(F_1FOB, SdifSignatureConst('1','F','O','F'), "Formants");
+  SdifFrameTypePutComponent(F_1FOB, SdifSignatureConst('1','C','H','A'), "FormantsChannels");
   F_1FOB->ModifMode = eNoModif;
   return F_1FOB;
 }
@@ -226,9 +236,9 @@ CreateF_1REB(void)
 {
   SdifFrameTypeT*   F_1REB;
 
-  F_1REB = SdifCreateFrameType('1REB', NULL);
-  SdifFrameTypePutComponent(F_1REB, '1RES', "Filters");
-  SdifFrameTypePutComponent(F_1REB, '1CHA', "FiltersChannels");
+  F_1REB = SdifCreateFrameType(SdifSignatureConst('1','R','E','B'), NULL);
+  SdifFrameTypePutComponent(F_1REB, SdifSignatureConst('1','R','E','S'), "Filters");
+  SdifFrameTypePutComponent(F_1REB, SdifSignatureConst('1','C','H','A'), "FiltersChannels");
   F_1REB->ModifMode = eNoModif;
   return F_1REB;
 }
@@ -247,8 +257,8 @@ CreateF_1NOI(void)
 {
   SdifFrameTypeT*   F_1NOI;
 
-  F_1NOI = SdifCreateFrameType('1NOI', NULL);
-  SdifFrameTypePutComponent(F_1NOI, '1DIS', "NoiseInfo");
+  F_1NOI = SdifCreateFrameType(SdifSignatureConst('1','N','O','I'), NULL);
+  SdifFrameTypePutComponent(F_1NOI, SdifSignatureConst('1','D','I','S'), "NoiseInfo");
   F_1NOI->ModifMode = eNoModif;
   return F_1NOI;
 }
