@@ -1,4 +1,4 @@
-/* $Id: SdifHighLevel.c,v 3.6 2001-05-02 09:34:44 tisseran Exp $
+/* $Id: SdifHighLevel.c,v 3.7 2002-08-28 16:52:39 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -29,6 +29,9 @@
  * SdifHighLevel.c	8.12.1999	Diemo Schwarz
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.6  2001/05/02 09:34:44  tisseran
+ * Change License from GNU Public License to GNU Lesser Public License.
+ *
  * Revision 3.5  2000/11/21 14:51:50  schwarz
  * - sdif.h is now included by all sdif/Sdif*.c files.
  * - Removed all public typedefs, enums, structs, and defines from the
@@ -78,24 +81,23 @@ int SdifFReadNextSelectedFrameHeader (SdifFileT *f)
        TODO: heed max time */
     while (1)
     {
-	if (SdifFCurrSignature(f) == eEof)
-	{
-	    bytesread = 0;
-	    break;	/* EXIT RETURN EOF */
-	}
+	if (SdifFCurrSignature(f) == eEmptySignature)
+	    return 0;	/* EXIT RETURN EOF */
 
 	/* TODO: 
 	   first check: if frame sig not selected, don't read frame header */
-	bytesread += SdifFReadFrameHeader(f) + numread;
+	if (!(numread = SdifFReadFrameHeader(f)))
+	    return 0;	/* EXIT RETURN ERROR */
+	else
+	    bytesread += numread;
 
 	if (SdifFCurrFrameIsSelected (f))
 	    break;	/* EXIT RETURN TRUE */
 
 	bytesread += SdifFSkipFrameData (f);
 	SdifFGetSignature(f, &numread);
+	bytesread += numread;
     }
 
     return bytesread;
 }
-
-
