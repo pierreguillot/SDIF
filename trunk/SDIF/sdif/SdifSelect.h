@@ -1,4 +1,4 @@
-/* $Id: SdifSelect.h,v 3.10 2000-10-27 20:03:43 roebel Exp $
+/* $Id: SdifSelect.h,v 3.11 2000-11-15 14:53:35 lefevre Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -88,6 +88,9 @@ TODO
 
 LOG
   $Log: not supported by cvs2svn $
+  Revision 3.10  2000/10/27  20:03:43  roebel
+  autoconf merged back to main trunk
+
   Revision 3.9.2.2  2000/08/21  21:35:48  tisseran
   *** empty log message ***
 
@@ -308,8 +311,6 @@ void SdifSelectAdd_TYPE_Range (SdifListT *list,
 
 
 #ifdef STDC_HEADERS
-/* #ifdefined (__STDC__) */
-/*#if defined (_ANSI_C_SOURCE)  ||  defined (__STDC__)*/
 
 #define _addrangeproto(name, type, field) \
 void SdifSelectAdd##name##Range (SdifListT *list, \

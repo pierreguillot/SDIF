@@ -1,4 +1,4 @@
-/* $Id: SdifMatrix.c,v 3.4 2000-10-27 20:03:37 roebel Exp $
+/* $Id: SdifMatrix.c,v 3.5 2000-11-15 14:53:32 lefevre Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -33,6 +33,9 @@
  *
  * author: Dominique Virolle 1997
  * $Log: not supported by cvs2svn $
+ * Revision 3.4  2000/10/27  20:03:37  roebel
+ * autoconf merged back to main trunk
+ *
  * Revision 3.3.2.1  2000/08/21  21:35:33  tisseran
  * *** empty log message ***
  *
@@ -66,8 +69,8 @@
 
 
 #include <preincluded.h>
-#include "SdifMatrix.h"
 
+#include "SdifMatrix.h"
 #include <stdlib.h>
 #include <assert.h>
 
@@ -385,7 +388,7 @@ SdifOneRowPutValue(SdifOneRowT *OneRow, SdifUInt4 numCol, SdifFloat8 Value)
     switch (OneRow->DataType)
       {
 	  /* generate cases for all types */
-	  sdif_foralltypes (setcase)
+	  sdif_foralltypes (setcase);
   
       default :
 	OneRow->Data.Float4[numCol-1] = (SdifFloat4) Value;      
@@ -417,7 +420,7 @@ SdifOneRowGetValue(SdifOneRowT *OneRow, SdifUInt4 numCol)
     switch (OneRow->DataType)
       {
 	  /* generate cases for all types */
-	  sdif_foralltypes (getcase)
+	  sdif_foralltypes (getcase);
   
       default :
 	return (SdifFloat8) OneRow->Data.Float4[numCol-1];

@@ -1,4 +1,4 @@
-/* $Id: SdifCheck.c,v 3.3 2000-10-27 20:03:24 roebel Exp $
+/* $Id: SdifCheck.c,v 3.4 2000-11-15 14:53:23 lefevre Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -30,6 +30,9 @@
  * File test functions.
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.3  2000/10/27  20:03:24  roebel
+ * autoconf merged back to main trunk
+ *
  * Revision 3.2.2.2  2000/08/21  21:34:54  tisseran
  * *** empty log message ***
  *
@@ -50,6 +53,8 @@
  * formerly in SdifFile.
  *
  */
+
+#include <preincluded.h>
 
 #include "SdifCheck.h"
 #include "SdifFRead.h"

@@ -1,4 +1,4 @@
-/* $Id: SdifFScan.c,v 3.10 2000-10-27 20:03:29 roebel Exp $
+/* $Id: SdifFScan.c,v 3.11 2000-11-15 14:53:27 lefevre Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -31,6 +31,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.10  2000/10/27  20:03:29  roebel
+ * autoconf merged back to main trunk
+ *
  * Revision 3.9.2.2  2000/08/21  21:35:11  tisseran
  * *** empty log message ***
  *
@@ -84,23 +87,19 @@
 
 
 #include <preincluded.h>
+
 #include "SdifFScan.h"
 #include "SdifTest.h"
 #include "SdifFile.h"
-
 #include "SdifRWLowLevel.h"
-
 #include "SdifNameValue.h"
 #include "SdifHash.h"
 #include "SdifMatrixType.h"
 #include "SdifFrameType.h"
 #include "SdifStreamID.h"
 #include "SdifErrMess.h"
-
 #include "SdifTimePosition.h"
-
 #include "SdifFGet.h"
-
 #include <stdlib.h>
 
 
@@ -306,7 +305,7 @@ SdifFScanOneRow(SdifFileT *SdifF)
     switch (SdifF->CurrOneRow->DataType)
     {
         /* generate cases for all types */
-	sdif_foralltypes (scanrowcase)
+	sdif_foralltypes (scanrowcase);
 
 	default :
 	    sprintf (gSdifErrorMess, "in text file, OneRow 0x%04x, then Float4 used", SdifF->CurrOneRow->DataType);

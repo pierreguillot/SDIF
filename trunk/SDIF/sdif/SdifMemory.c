@@ -32,6 +32,9 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.5  2000/10/27  20:03:38  roebel
+ * autoconf merged back to main trunk
+ *
  * Revision 3.4.2.1  2000/08/21  21:35:37  tisseran
  * *** empty log message ***
  *
@@ -65,8 +68,8 @@
 
 
 #include <preincluded.h>
-#include "SdifMemory.h"
 
+#include "SdifMemory.h"
 
 #ifdef _SdifMemoryReport
 #include <stdlib.h>

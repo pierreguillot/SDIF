@@ -1,4 +1,4 @@
-/* $Id: project_preinclude.h,v 3.2 2000-05-12 14:41:50 schwarz Exp $
+/* $Id: project_preinclude.h,v 3.3 2000-11-15 14:53:37 lefevre Exp $
 
    SDIF/sdif/project_preinclude.h	28. Sep 1999	Diemo Schwarz
 
@@ -20,6 +20,14 @@
    use Makefiles and such declarations would therefore get lost.
   
    $Log: not supported by cvs2svn $
+ * Revision 3.2  2000/05/12  14:41:50  schwarz
+ * On behalf of Adrien, synchronisation with Mac sources, with some slight
+ * changes because of cross-platform issues:
+ * - Mac only stuff: XpSetFileAttribute XpFileSize
+ * - Cross platform wrapper: XpGetenv XpExit
+ * - Dangerous: strings.h (and thus bzero, bcopy) is not ANSI and thus doesn't
+ *   exist on Mac.  Use string.h and memset, memcpy.
+ *
  * Revision 3.1  1999/09/28  13:09:18  schwarz
  * Included #include <preincluded.h> for cross-platform uniformisation,
  * which in turn includes host_architecture.h and SDIF's project_preinclude.h.
@@ -47,10 +55,17 @@ Sdif preinclude
 
 #if HOST_OS_MAC
 
-#define _SDIF_VERSION	"Macintosh Sdif 3.0"
-#define _VERSION		"Macintosh Sdif 3.0"
+/* Deal with AutoConf
+   TODO Mix our "" with AutoConf
+*/
+#define VERSION "Macintosh Sdif 3.2"
+
+#define SIZEOF_LONG 4
+
+#ifdef __STDC__
+#define STDC_HEADERS
+#endif
 
 #endif /* HOST_OS_MAC */
-
 
 #endif /* __H_PROJECT_PREINCLUDE__ */

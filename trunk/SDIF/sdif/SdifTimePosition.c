@@ -1,4 +1,4 @@
-/* $Id: SdifTimePosition.c,v 3.4 2000-10-27 20:03:46 roebel Exp $
+/* $Id: SdifTimePosition.c,v 3.5 2000-11-15 14:53:37 lefevre Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -32,6 +32,9 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.4  2000/10/27  20:03:46  roebel
+ * autoconf merged back to main trunk
+ *
  * Revision 3.3.2.1  2000/08/21  21:35:57  tisseran
  * *** empty log message ***
  *
@@ -61,9 +64,8 @@
 
 
 #include <preincluded.h>
+
 #include "SdifTimePosition.h"
-
-
 #include <stdlib.h>
 
 
