@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.10 2003-04-09 16:10:18 roebel Exp $
+# $Id: Makefile.am,v 1.11 2003-04-09 16:19:42 roebel Exp $
 #
 # ./Makefile.am		Feb. 2003     Axel Roebel
 #
@@ -30,6 +30,9 @@
 # 
 
 # $Log: not supported by cvs2svn $
+# Revision 1.10  2003/04/09 16:10:18  roebel
+# Put final publish directory into place.
+#
 # Revision 1.9  2003/04/09 12:30:41  roebel
 # Changed default configuration back to enable-shared but added
 # README.MacOSX to announce problems with shared libraries to users.
@@ -114,8 +117,8 @@ PUBLISH_FILES     = $(PUBLISH_FILE) $(PUBLISH_RPM) $(EXTRA_PUBLISH)
 PUBLISH_FILES_MAP = COPYING INSTALL README AUTHORS ChangeLog
 
 publish-ftp:	# (experimental)
-	echo -e put $(PUBLISH_FILES)  | ncftp -u$(PUBLISH_USER) -p$(PW) ftp://$(PUBLISH_HOST)/sdif/download/test
-	for ii in  $(PUBLISH_FILES_MAP);do echo put -z $$ii $$ii.Easdif; done|ncftp -u$(PUBLISH_USER) -p$(PW) ftp://$(PUBLISH_HOST)/sdif/download
+	echo -e put $(PUBLISH_FILES)  | ncftp -u$(PUBLISH_USER) -p$(PW) ftp://$(PUBLISH_HOST)/$(PUBLISH_DIR)
+	for ii in  $(PUBLISH_FILES_MAP);do echo put -z $$ii $$ii.Easdif; done|ncftp -u$(PUBLISH_USER) -p$(PW) ftp://$(PUBLISH_HOST)/$(PUBLISH_DIR)
 
 
 
