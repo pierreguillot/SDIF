@@ -1,4 +1,4 @@
-/* $Id: SdifFile.h,v 3.4 1999-09-28 10:37:00 schwarz Exp $
+/* $Id: SdifFile.h,v 3.5 2000-03-01 11:19:37 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -17,6 +17,9 @@ LIBRARY
 
 LOG
  * $Log: not supported by cvs2svn $
+ * Revision 3.4  1999/09/28  10:37:00  schwarz
+ * Added SdifCheckFileFormat to test if a file is in SDIF.
+ *
  * Revision 3.3  1999/09/20  13:21:58  schwarz
  * Introduced user data and access functions SdifFAddUserData/GetUserData.
  *
@@ -74,7 +77,7 @@ LOG
 
   Warning: This function doesn't work with stdio.
 */
-int SdifCheckFileFormat (char *name);
+int SdifCheckFileFormat (const char *name);
 
 /*DOC: 
   todo: Test if file is an SDIF file (only when opening for read or
@@ -227,6 +230,10 @@ SdifUInt4     SdifFCurrNbCol           (SdifFileT *SdifF);
   Renvoie SdifF->CurrMtrx->NbRow, nombre de lignes de la matrice en
   cours de traitement.  */
 SdifUInt4     SdifFCurrNbRow           (SdifFileT *SdifF);
+
+/*DOC: 
+  Returns the data type of the current matrix. */
+SdifDataTypeET SdifFCurrDataType (SdifFileT *SdifF);
 
 /*DOC: 
   Renvoie SdifF->CurrFramH->NbMatrix, mombre de matrices du frame
