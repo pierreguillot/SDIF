@@ -1,4 +1,4 @@
-/* $Id: SdifConvToText.c,v 3.7 2001-05-02 09:34:40 tisseran Exp $
+/* $Id: SdifConvToText.c,v 3.8 2003-06-24 15:24:55 roebel Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -30,6 +30,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.7  2001/05/02 09:34:40  tisseran
+ * Change License from GNU Public License to GNU Lesser Public License.
+ *
  * Revision 3.6  2000/11/15 14:53:24  lefevre
  * no message
  *
@@ -62,7 +65,9 @@
 
 #include <preincluded.h>
 #include "XpGuiCalls.h"
+#if 0
 #include "UniversalEnvVar.h"
+#endif
 
 #include "SdifConvToText.h"
 #include "SdifFile.h"

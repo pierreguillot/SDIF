@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.29 2003-05-26 08:15:50 tisseran Exp $
+# $Id: Makefile.am,v 1.30 2003-06-24 15:24:21 roebel Exp $
 #
 # ./sdif/Makefile.am		September 2000		Patrice Tisserand
 #
@@ -30,6 +30,9 @@
 
 
 # $Log: not supported by cvs2svn $
+# Revision 1.29  2003/05/26 08:15:50  tisseran
+# Added sdif.dsp in EXTRA_DIST
+#
 # Revision 1.28  2003/03/18 14:56:02  roebel
 # Removed remaining references to cpp compilation.
 #
@@ -143,7 +146,7 @@ EXTRA_LTLIBRARIES = libsdif.la libsdif-debug.la
 lib_LTLIBRARIES = @SELLIB@
 
 
-FORMES_H=host_architecture.h  preincluded.h UniversalEnvVar.h  XpGuiCalls.h
+FORMES_H=host_architecture.h  preincluded.h   XpGuiCalls.h
 FORMES_INCLUDE=/u/formes/share/include
 
 SDIF_H = ../include/sdif_version.h $(top_srcdir)/include/sdif.h \
