@@ -7,9 +7,13 @@
  * 
  * 
  * 
- * $Id: sdifframe.cpp,v 1.7 2003-02-10 14:14:35 roebel Exp $ 
+ * $Id: sdifframe.cpp,v 1.1 2003-03-03 19:00:16 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.7  2003/02/10 14:14:35  roebel
+ * Fixed problem with size indicated in frameheader when the frame is
+ * written more than one time withut calling cleardata().
+ *
  * Revision 1.6  2002/10/10 10:49:09  roebel
  * Now using namespace Easdif.
  * Fixed handling of zero pointer arguments in initException.

@@ -7,9 +7,12 @@
  * 
  * 
  * 
- * $Id: sdifmatrix.cpp,v 1.8 2003-02-10 14:14:49 roebel Exp $ 
+ * $Id: sdifmatrix.cpp,v 1.1 2003-03-03 19:00:16 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.8  2003/02/10 14:14:49  roebel
+ * Comment changed.
+ *
  * Revision 1.7  2002/11/07 21:06:52  roebel
  * Allow value type to be specified during Matrix construction.
  * Do not resize before writing because size will be already correct.

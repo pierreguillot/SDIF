@@ -11,7 +11,7 @@
 # even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 # PARTICULAR PURPOSE.
 
-# $Id: Makefile,v 1.9 2003-03-03 18:50:36 roebel Exp $
+# $Id: Makefile,v 1.1 2003-03-03 19:00:16 roebel Exp $
 #
 # ./Easdif/src/Makefile.am	Feb. 2003 Axel Roebel
 #
@@ -19,6 +19,9 @@
 #
 
 # $Log: not supported by cvs2svn $
+# Revision 1.9  2003/03/03 18:50:36  roebel
+# Recreated using autotools installed at IRCAM.
+#
 # Revision 1.1  2003/03/03 10:03:50  roebel
 # Adapted for autoconf/automake...
 #

@@ -8,9 +8,13 @@
  * 
  * 
  * 
- * $Id: sdifmatrixdatainterface.h,v 1.5 2002-11-07 21:04:28 roebel Exp $ 
+ * $Id: sdifmatrixdatainterface.h,v 1.1 2003-03-03 19:00:16 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.5  2002/11/07 21:04:28  roebel
+ * Changed Set return value to void.
+ * Added method to clone data.
+ *
  * Revision 1.4  2002/10/10 10:49:09  roebel
  * Now using namespace Easdif.
  * Fixed handling of zero pointer arguments in initException.

@@ -8,9 +8,12 @@
  * 
  * 
  * 
- * $Id: sdifmatrix.h,v 1.7 2003-02-10 14:15:03 roebel Exp $ 
+ * $Id: sdifmatrix.h,v 1.1 2003-03-03 19:00:16 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.7  2003/02/10 14:15:03  roebel
+ * Comment changed.
+ *
  * Revision 1.6  2002/11/07 21:07:24  roebel
  * Allow value type to be specified during Matrix construction.
  * Moved Get/Set methods to header to have the possibility to use

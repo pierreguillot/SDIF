@@ -7,9 +7,13 @@
  * 
  * 
  * 
- * $Id: sdifentity.h,v 1.7 2002-11-27 20:13:04 roebel Exp $ 
+ * $Id: sdifentity.h,v 1.1 2003-03-03 19:00:16 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.7  2002/11/27 20:13:04  roebel
+ * Removed member that redundantly indicated size of NVT vector.
+ * Make use of improved SDIFNameValueTable interface.
+ *
  * Revision 1.6  2002/10/30 15:27:32  roebel
  * Changed return type from int to bool.
  * Changed error checking in openroutines.

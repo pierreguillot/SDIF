@@ -8,9 +8,13 @@
  * 
  *
  * 
- * $Id: sdifnamevaluetable.h,v 1.5 2002-11-28 21:16:56 roebel Exp $ 
+ * $Id: sdifnamevaluetable.h,v 1.1 2003-03-03 19:00:16 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.5  2002/11/28 21:16:56  roebel
+ * Back to simple map which sorts alphabetically. In any case
+ * in SDIF the name value tables are mixed arbitrarily.
+ *
  * Revision 1.4  2002/11/27 20:10:39  roebel
  * Fixed NVT to keep ordering as defined by the sequence of additions to the table.
  * Added begin/end iterator.
