@@ -1,5 +1,5 @@
 dnl -*-m4-*- (He emacs, it's a m4 file)
-dnl $Id: configure.in,v 1.15 2002-08-05 14:31:29 roebel Exp $
+dnl $Id: configure.in,v 1.16 2002-08-29 16:07:09 tisseran Exp $
 dnl
 dnl configure.in		September 2000		Patrice Tisserand
 dnl
@@ -30,6 +30,9 @@ dnl For any information regarding this and other IRCAM software, please
 dnl send email to:  sdif@ircam.fr
 dnl
 dnl $Log: not supported by cvs2svn $
+dnl Revision 1.15  2002/08/05 14:31:29  roebel
+dnl Version 3.6
+dnl
 dnl Revision 1.14  2001/12/05 13:32:38  tisseran
 dnl SDIF 3.5:
 dnl Fix bug in preincluded,h and UniversalEnvVar.h
@@ -195,7 +198,24 @@ PROGLIST="querysdif sdifextract sdiftotext tosdif";
 dnl ############################################################
 dnl CREATE OUTPUT FILES
 AC_MSG_RESULT(CREATE OUTPUT FILES)
-AC_OUTPUT(Makefile sdif/Makefile tools/Makefile  data/Makefile include/Makefile include/sdif_version.h doc/Makefile doc/pics/Makefile doc/extern/Makefile doc/extern/cocoon/Makefile test/Makefile test/files/Makefile test/files/txt/Makefile test/files/sdif/Makefile test/files/txtw/Makefile test/files/sdifw/Makefile test/files/sdifref/Makefile)
+AC_OUTPUT(Makefile 
+sdif/Makefile 
+tools/Makefile
+data/Makefile 
+include/Makefile 
+include/sdif_version.h 
+doc/Makefile 
+doc/pics/Makefile 
+doc/extern/Makefile 
+doc/extern/cocoon/Makefile 
+test/Makefile 
+test/files/Makefile 
+test/files/txt/Makefile 
+test/files/sdif/Makefile 
+test/files/txtw/Makefile 
+test/files/sdifw/Makefile 
+test/files/sdifref/Makefile
+sdif.pc )
 
 AC_MSG_RESULT(END OF CONFIGURATION)
 

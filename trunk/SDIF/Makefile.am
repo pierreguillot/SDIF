@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.9 2001-05-04 14:07:26 tisseran Exp $
+# $Id: Makefile.am,v 1.10 2002-08-29 16:07:09 tisseran Exp $
 #
 # ./Makefile.am		September 2000			Patrice Tisserand
 #
@@ -29,6 +29,12 @@
 # send email to:  sdif@ircam.fr
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.9  2001/05/04 14:07:26  tisseran
+# Liitle fix:
+# - Change a c++ commentary in a c one (sdif.h line:1532)
+# - Change publihs rules of main Makefile, now name of asrc archive on www.ircam.fr/sdif/download
+# is SDIF-(version)-src.tar.gz
+#
 # Revision 1.8  2001/05/02 09:34:36  tisseran
 # Change License from GNU Public License to GNU Lesser Public License.
 #
@@ -66,6 +72,9 @@ EXTRA_DIST = \
 	README COPYING AUTHORS INSTALL doc
 
 sdifincdir = @top_srcdir@/include
+
+pkgconfigdir = $(libdir)/pkgconfig
+pkgconfig_DATA = sdif.pc
 
 grep:
 	grep $a sdif/*.[ch] /dev/null
