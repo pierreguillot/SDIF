@@ -1,4 +1,4 @@
-/* $Id: SdifHard_OS.c,v 3.13 2004-06-03 11:18:00 schwarz Exp $
+/* $Id: SdifHard_OS.c,v 3.14 2004-09-09 17:42:43 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -28,6 +28,16 @@
 /* author: Dominique Virolle 1998
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.13  2004/06/03 11:18:00  schwarz
+ * Profiling showed some waste of cycles in byte swapping and signature reading:
+ * - byte swapping now array-wise, not element-wise in SdifSwap<N>[Copy] routines:   -> from 0.24 s (18.5%) to 0.14s
+ * - ASCII signature reading function SdiffGetSignature replaced by new binary
+ *   function SdiffReadSignature (also in SdifFGetSignature, so the change is
+ *   mostly transparent):
+ *   -> from 0.11 s (9.6%)  to 0.01 s
+ * - overall run time improvement with test case sdifextractall_a01:
+ *   -> from 1.20 s         to 0.86 s (40% faster)
+ *
  * Revision 3.12  2003/11/07 21:47:18  roebel
  * removed XpGuiCalls.h and replaced preinclude.h  by local files
  *
@@ -252,6 +262,7 @@ void SdifSwap2Copy (void *src, void *dest, size_t num)
 }
 
 
+/* testing revealed that swap with '+' is slightly faster than with '|'! */
 #define SWAP4(x)    ((((x) >> 24) & 0xFF)  + (((x) >> 8) & 0xFF00) + \
 		     (((x) & 0xFF00) << 8) + (((x) & 0xFF) << 24))
 
@@ -284,9 +295,13 @@ void SdifSwap4Copy (void *src, void *dest, size_t num)
 }
 
 
-/* 8 byte array swapping in place */
+#define SWAP8CHARWISE 1
+
+/* 8 byte array swapping in place 
+   There is no clear speed difference between char swapping and int swapping */
 void SdifSwap8 (void *ptr, size_t num)
 {
+#if SWAP8CHARWISE
 #   define SWAP(i,j)	temp    = cptr[i]; \
 			cptr[i] = cptr[j]; \
 			cptr[j] = temp
@@ -304,6 +319,21 @@ void SdifSwap8 (void *ptr, size_t num)
 	SWAP(2, 5);
 	SWAP(3, 4);
     }
+#else
+    SdifUInt4  temp;
+    SdifUInt4 *iptr = (SdifUInt4 *) ptr;
+
+    num *= 2;
+
+    while (num > 0)
+    {
+	num -= 2;
+	temp	      = SWAP4(iptr[num + 1]);
+	iptr[num + 1] = SWAP4(iptr[num]);
+	iptr[num]     = temp;
+    }
+   
+#endif
 }
 
 
