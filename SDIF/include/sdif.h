@@ -1,4 +1,4 @@
-/* $Id: sdif.h,v 1.28 2003-05-27 16:08:49 schwarz Exp $
+/* $Id: sdif.h,v 1.29 2003-05-30 17:42:04 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -30,6 +30,10 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.28  2003/05/27 16:08:49  schwarz
+ * Added SdifFGetMatrixTypesTable and SdifFGetFrameTypesTable.
+ * Documented other type access functions.
+ *
  * Revision 1.27  2003/05/01 18:48:41  roebel
  * SdifStringToSignature takes now const char * as argument.
  * Added missing declaration for SdifSkipASCIIUntilfromSdifString.
@@ -150,7 +154,7 @@
  * Revision 1.1.2.1  2000/08/21  13:07:41  tisseran
  * *** empty log message ***
  *
- * $Date: 2003-05-27 16:08:49 $
+ * $Date: 2003-05-30 17:42:04 $
  *
  */
 
@@ -165,7 +169,7 @@ extern "C" {
 #endif
 
 
-static const char _sdif_h_cvs_revision_ [] = "$Id: sdif.h,v 1.28 2003-05-27 16:08:49 schwarz Exp $";
+static const char _sdif_h_cvs_revision_ [] = "$Id: sdif.h,v 1.29 2003-05-30 17:42:04 schwarz Exp $";
 
 
 #include <stdio.h>
@@ -2143,14 +2147,36 @@ size_t    SdifFGetAllTypefromSdifString   (SdifFileT *SdifF, SdifStringT *SdifSt
 /**
  * Get table of matrix type definitions, 
  * useful for SdifGetMatrixType. 
+ *
+ * @ingroup types
  */
 SdifHashTableT *SdifFGetMatrixTypesTable(SdifFileT *file);
 
 /**
  * Get table of frame type definitions, 
  * useful for SdifGetFrameType. 
+ *
+ * @ingroup types
  */
 SdifHashTableT *SdifFGetFrameTypesTable(SdifFileT *file);
+
+/**
+ * Get a matrix type definition from an SDIF file.  You have to have
+ * loaded the ASCII chunks before to catch types defined in the file
+ * itself.
+ *
+ * @ingroup types
+ */
+SdifMatrixTypeT *SdifFGetMatrixType(SdifFileT *file, SdifSignature sig);
+
+/**
+ * Get a frame type definition from an SDIF file.  You have to have
+ * loaded the ASCII chunks before to catch types defined in the file
+ * itself.
+ *
+ * @ingroup types
+ */
+SdifFrameTypeT* SdifFGetFrameType(SdifFileT *file, SdifSignature sig);
 
 
 

@@ -1,4 +1,4 @@
-/* $Id: SdifFile.c,v 3.30 2003-05-27 16:10:42 schwarz Exp $
+/* $Id: SdifFile.c,v 3.31 2003-05-30 17:42:05 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -33,6 +33,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.30  2003/05/27 16:10:42  schwarz
+ * Added SdifFGetMatrixTypesTable and SdifFGetFrameTypesTable.
+ *
  * Revision 3.29  2003/05/26 16:12:47  roebel
  * replaced all references to VERSIOn macro by SDIF_VERSION_STRING
  *
@@ -235,7 +238,7 @@
 #include "SdifVersion.h"
 
 #ifndef AUTOCKSUM
-#define AUTOCKSUM "$Checksum: not available$ IRCAM $Date: 2003-05-27 16:10:42 $" 
+#define AUTOCKSUM "$Checksum: not available$ IRCAM $Date: 2003-05-30 17:42:05 $" 
 #endif
 
 #ifndef lint
@@ -754,7 +757,7 @@ SdifFLoadPredefinedTypes(SdifFileT *SdifF, const char *TypesFileName)
 
 
 /* Get table of matrix type definitions, 
- * useful for SdifGetMatrixType.  */
+   useful for SdifGetMatrixType.  */
 SdifHashTableT *SdifFGetMatrixTypesTable(SdifFileT *file)
 {
     return (file->MatrixTypesTable);
@@ -762,10 +765,25 @@ SdifHashTableT *SdifFGetMatrixTypesTable(SdifFileT *file)
 
 
 /* Get table of frame type definitions, 
- * useful for SdifGetFrameType.  */
+   useful for SdifGetFrameType.  */
 SdifHashTableT *SdifFGetFrameTypesTable(SdifFileT *file)
 {
     return (file->FrameTypesTable);
+}
+
+/* Get table of matrix type definitions, 
+   useful for SdifGetMatrixType.  */
+SdifMatrixTypeT *SdifFGetMatrixType(SdifFileT *file, SdifSignature sig)
+{
+    return (SdifGetMatrixType(file->MatrixTypesTable, sig));
+}
+
+
+/* Get table of frame type definitions, 
+ * useful for SdifGetFrameType.  */
+SdifFrameTypeT* SdifFGetFrameType(SdifFileT *file, SdifSignature sig)
+{
+    return (SdifGetFrameType(file->FrameTypesTable, sig));
 }
 
 
