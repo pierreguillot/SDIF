@@ -1,4 +1,4 @@
-/* $Id: sdif.h,v 1.24 2002-11-28 19:56:21 roebel Exp $
+/* $Id: sdif.h,v 1.25 2003-04-18 16:03:09 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -30,6 +30,11 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.24  2002/11/28 19:56:21  roebel
+ * Fixed some const arguments.
+ * Make SdifFtruncte return SDIF_FTRUNCATE_NOT_AVAILABLE if
+ * this is the case.
+ *
  * Revision 1.23  2002/11/27 17:53:24  roebel
  * Improved documentation.
  *
@@ -134,7 +139,7 @@
  * Revision 1.1.2.1  2000/08/21  13:07:41  tisseran
  * *** empty log message ***
  *
- * $Date: 2002-11-28 19:56:21 $
+ * $Date: 2003-04-18 16:03:09 $
  *
  */
 
@@ -149,7 +154,7 @@ extern "C" {
 #endif
 
 
-static const char _sdif_h_cvs_revision_ [] = "$Id: sdif.h,v 1.24 2002-11-28 19:56:21 roebel Exp $";
+static const char _sdif_h_cvs_revision_ [] = "$Id: sdif.h,v 1.25 2003-04-18 16:03:09 schwarz Exp $";
 
 
 #include <stdio.h>
@@ -348,6 +353,7 @@ typedef enum SdifBinaryMode
 #   define SdifSignatureConst(p1,p2,p3,p4) (((((unsigned int)(p1))&0xff)<<24)|((((unsigned int)(p2))&0xff)<<16)|((((unsigned int)(p3))&0xff)<<8)|(((unsigned int)(p4))&0xff))
 
 
+#ifndef SWIG
 typedef enum SdifSignatureE
 {
   eSDIF = SdifSignatureConst('S','D','I','F'), /* SDIF header */
@@ -362,6 +368,7 @@ typedef enum SdifSignatureE
   eFORM = SdifSignatureConst('F','O','R','M'), /* FORM for IFF compatibility (obsolete ?) */
   eEmptySignature = SdifSignatureConst('\0','\0','\0','\0')
 } SdifSignatureET;
+#endif
 
 typedef enum SdifModifModeE
 {
@@ -618,6 +625,8 @@ struct SdifFrameDataS
   SdifMatrixDataT* *Matrix_s;
 } ;
 
+
+
 /* SdifTimePosition.h */
 typedef struct SdifTimePositionS SdifTimePositionT;
 
@@ -625,10 +634,7 @@ struct SdifTimePositionS
 {
   SdifFloat8    Time;
   SdiffPosT     Position;
-} ;
-
-SdifTimePositionT* SdifCreateTimePosition(SdifFloat8 Time, SdiffPosT Position);
-void               SdifKillTimePosition(void* TimePosition);
+};
 
 
 typedef struct SdifTimePositionLS SdifTimePositionLT;
@@ -636,7 +642,20 @@ typedef struct SdifTimePositionLS SdifTimePositionLT;
 struct SdifTimePositionLS
 {
     SdifListT*          TimePosList;
-} ;
+};
+
+
+SdifTimePositionT* SdifCreateTimePosition(SdifFloat8 Time, SdiffPosT Position);
+void               SdifKillTimePosition(void* TimePosition);
+
+SdifTimePositionLT* SdifCreateTimePositionL(void);
+void                SdifKillTimePositionL  (SdifTimePositionLT *TimePositionL);
+
+SdifTimePositionLT* SdifTimePositionLPutTail(SdifTimePositionLT* TimePositionL,
+                                             SdifFloat8 Time, SdiffPosT Position);
+SdifTimePositionT*  SdifTimePositionLGetTail(SdifTimePositionLT* TimePositionL);
+
+
 
 /* SdifSignatureTab.h */
 typedef struct SdifSignatureTabS SdifSignatureTabT;
@@ -1532,19 +1551,6 @@ SdifErrorT*     SdifFLastError    (SdifFileT *SdifF);
 SdifErrorTagET  SdifFLastErrorTag (SdifFileT *SdifF);
 
 
-#define	MaxUserData	10
-
-
-/*
-// DATA GROUP:	SDIF File Structure
-*/
-
-/*DOC:
-  File mode argument for SdifFOpen.
-*/
-
-
-
 #define _SdifFrameHeaderSize 16  /* (ID=4)+(size=4)+(time=8) */
 
 
@@ -2430,15 +2436,15 @@ size_t SdiffScanFloat4  (FILE *stream, SdifFloat4 *ptr, size_t nobj);
 size_t SdiffScanFloat8  (FILE *stream, SdifFloat8 *ptr, size_t nobj);
 #endif
 
-/*
-  #ifdef STDC_HEADERS*/  /* Is the compiler ANSI? */
+
+#ifndef SWIG	/* are we scanned by SWIG? */
 
 #define sdif_scanproto(type) \
 size_t SdiffScan##type (FILE *stream, Sdif##type *ptr, size_t nobj)
 
 sdif_proto_foralltypes (sdif_scanproto)
-/*
-  #endif */ /* STDC_HEADERS */
+
+#endif /* SWIG */
 
 
 /* Unsafe but optimized version of SdifStringToSignature:
@@ -2947,17 +2953,6 @@ size_t SdifFTextConv               (SdifFileT *SdifF);
 size_t SdifTextToSdif (SdifFileT *SdifF, char *TextStreamName);
 
 
-
-SdifTimePositionT* SdifCreateTimePosition(SdifFloat8 Time, SdiffPosT Position);
-void               SdifKillTimePosition(void* TimePosition);
-
-
-SdifTimePositionLT* SdifCreateTimePositionL(void);
-void                SdifKillTimePositionL  (SdifTimePositionLT *TimePositionL);
-
-SdifTimePositionLT* SdifTimePositionLPutTail(SdifTimePositionLT* TimePositionL,
-                                             SdifFloat8 Time, SdiffPosT Position);
-SdifTimePositionT*  SdifTimePositionLGetTail(SdifTimePositionLT* TimePositionL);
 
 
 /* SdifFPrint */
