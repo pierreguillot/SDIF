@@ -6,7 +6,7 @@ PYTHON=python2.2
 PYTHON_INCLUDE=`$(PYTHON) -c 'import distutils.sysconfig; print distutils.sysconfig.get_python_inc()'`
 
 INCL		= -I/usr/local/include -I$(PYTHON_INCLUDE) \
-		  -I@SDIF_INC_DIR@ -I$../SDIF/sdif -I@EASDIF_INC_DIR@
+		  -I@SDIF_INC_DIR@ -I@SDIF_DEFINC_DIR@  -I@EASDIF_INC_DIR@ -I@EASDIF_DEFINC_DIR@
 
 EASDIF_LIB_PATH	= @EASDIF_LIB_PATH@
 # dbflag = -g
@@ -19,8 +19,8 @@ endif
 modules		= eaSDIF SDIF
 incfiles	= ../easdif-common.i ../easdif-defines.i sdiftypemap-python.i
 easdifincbase	= entity frame matrix namevaluetable
-easdifincfiles	= $(easdifincbase:%=@EASDIF_INC_DIR@/easdif/sdif%.h)
-sdifincfiles	= @SDIF_INC_DIR@/sdif.h
+easdifincfiles	= $(easdifincbase:%=@EASDIF_DEFINC_DIR@/easdif/sdif%.h)
+sdifincfiles	= @SDIF_DEFINC_DIR@/sdif.h
 
 define swig
 	swig $(HAVE_STL) -c++ -python -shadow -o $@ $<

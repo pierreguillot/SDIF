@@ -52,13 +52,50 @@ AM_CONDITIONAL(SWIG_JAVA_HAS_STLMAP, test "$SWIG_JAVA_SUPPORTS_STLMAP" = "yes" )
 AM_CONDITIONAL(SWIG_PERL_HAS_STLMAP, test "$SWIG_PERL_SUPPORTS_STLMAP" = "yes" )
 
 
-EASDIF_INC_DIR="../.."
-AC_SUBST(EASDIF_INC_DIR)
 
-EASDIF_LIB_PATH="../../easdif/.libs"
+EASDIF_DEFINC_DIR="../.."
+AC_SUBST(EASDIF_DEFINC_DIR)
+SDIF_DEFINC_DIR="../../SDIF/include"
+AC_SUBST(SDIF_DEFINC_DIR)
+
+AC_SUBST(EASDIF_INC_DIR)
 AC_SUBST(EASDIF_LIB_PATH)
-SDIF_INC_DIR="../../SDIF/include"
 AC_SUBST(SDIF_INC_DIR)
+
+dnl if not given the configure generated files are found in the
+dnl standard places.
+
+AC_ARG_ENABLE(compiledir,
+[  --enable-compiledir=dir          Easdif library has been configured and compiled in dir],
+[echo FEATURE enable-compiledir... $enableval; 
+abspath=`cd $enableval && echo $PWD` 
+EASDIF_INC_DIR="$abspath"
+EASDIF_LIB_PATH="$abspath/easdif/.libs"
+SDIF_INC_DIR="$abspath/SDIF/include"
+],
+[
+EASDIF_INC_DIR="../.."
+EASDIF_LIB_PATH="../../easdif/.libs"
+SDIF_INC_DIR="../../SDIF/include"
+])
+
+dnl provide host_os variable
+AC_CANONICAL_HOST
+
+dnl get java compiler
+AC_PROG_JAVAC
+
+dnl get java include directories
+AC_JNI_INCLUDE_DIR
+
+for JNI_INCLUDE_DIR in $JNI_INCLUDE_DIRS
+do
+JAVA_INCLUDE="$JAVA_INCLUDE -I$JNI_INCLUDE_DIR"
+done
+
+AC_SUBST(JAVA_INCLUDE)
+
+ 
 
 AC_OUTPUT(
 easdif-common.i
