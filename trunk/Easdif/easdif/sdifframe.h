@@ -34,9 +34,12 @@
  * sdifframe.h is composed of the different methods which are using to 
  * manipulate the frame.
  * 
- * $Id: sdifframe.h,v 1.5 2003-04-29 15:54:06 schwarz Exp $ 
+ * $Id: sdifframe.h,v 1.6 2003-05-18 21:08:37 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.5  2003/04/29 15:54:06  schwarz
+ * Use SWIG_RENAME_EASDIF to control class renaming.
+ *
  * Revision 1.4  2003/04/29 15:41:30  schwarz
  * Changed all names View* to Print* and *Info to *Header for consistency
  * with SDIF library.
@@ -249,20 +252,21 @@ public:
  * get the matrix signature selected which is stored in file
  * @return SdifSignature of SDIFMatrix selection
  */
-    SdifSignature GetMatrixSelection(SdifFileT* file);
-    SdifSignature GetMatrixSelection(const SDIFEntity& entity);
+    SdifSignature GetMatrixSelection(SdifFileT* file) const;
+
+    SdifSignature GetMatrixSelection(const SDIFEntity& entity) const;
 
 /**
  * \ingroup infoframe 
  * @brief check if a matrix type exist in the frame with a SdifSignature
  */
-    bool MatrixExists(const SdifSignature& sig);
+    bool MatrixExists(const SdifSignature& sig) const;
 
 /** 
  * \ingroup infoframe
  * @brief check if a matrix type exist in the frame with a string signature
  */
-    bool MatrixExists(const std::string& signature);
+    bool MatrixExists(const std::string& signature) const;
 
 
 /*************************************************************************/
@@ -277,30 +281,27 @@ public:
  * @return SDIFMatrix number i
  */
     SDIFMatrix& GetMatrix(unsigned int index);
+    const SDIFMatrix& GetMatrix(unsigned int index) const;
 
-/** 
- * \ingroup mat
- * get the matrix number i which is stored in the vector of matrix 
- * if she's selected 
- * @return SDIFMatrix number i if she's selected
- */
-    SDIFMatrix& GetMatrixIfSelected(SdifFileT* file, unsigned int index);
 
 /** 
  * \ingroup mat
  * get the matrix of SdifSignature : sig in the vector of matrix
  * @return SDIFMatrix
  */
-    SDIFMatrix& GetMatrixWithSig(const SdifSignature& sig);/*ambiguity 
+    SDIFMatrix& GetMatrixWithSig(const SdifSignature sig);/*ambiguity 
 					   between signature and int
 					   -> other name : GetMatrixwithSig()*/
+    const SDIFMatrix& GetMatrixWithSig(const SdifSignature sig) const;
+
 /**
  * \ingroup mat 
  * get the matrix with the signature in the vector of matrix
  * @param signature string
  * @return SDIFMatrix
  */
-    SDIFMatrix& GetMatrix(const std::string& signature);
+  SDIFMatrix& GetMatrix(const std::string& signature);
+   const SDIFMatrix& GetMatrix(const std::string& signature) const;
 
 
 
@@ -314,31 +315,31 @@ public:
  * \ingroup getmframe 
  * @brief get the number of matrix in the frame
  */
-    SdifUInt4     GetNbMatrix();
+    SdifUInt4     GetNbMatrix() const;
 
 /** 
  * \ingroup getmframe
  * @brief get the signature of the frame
  */
-    SdifSignature GetSignature();
+    SdifSignature GetSignature() const;
 
 /** 
  * \ingroup getmframe
  * @brief get the streamID of the frame
  */
-    SdifUInt4     GetStreamID();
+    SdifUInt4     GetStreamID() const;
 
 /** 
  * \ingroup getmframe
  * @brief get the time of the frame
  */
-    SdifFloat8    GetTime();
+    SdifFloat8    GetTime() const;
 
 /** 
  * \ingroup getmframe
  * @brief get the size of the frame
  */
-    SdifUInt4     GetSize();
+    SdifUInt4     GetSize() const;
 
 /*************************************************************************/
 /* Set the informations of the frames */
