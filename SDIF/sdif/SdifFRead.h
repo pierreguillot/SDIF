@@ -1,4 +1,4 @@
-/* $Id: SdifFRead.h,v 3.12 2003-08-06 15:16:41 schwarz Exp $
+/* $Id: SdifFRead.h,v 3.13 2003-08-06 15:29:18 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -33,6 +33,9 @@ LIBRARY
 
 LOG
  * $Log: not supported by cvs2svn $
+ * Revision 3.12  2003/08/06 15:16:41  schwarz
+ * Why not declare and document new functions?
+ *
  * Revision 3.11  2003/08/06 15:13:14  schwarz
  * New functions SdifFSkip, SdifFSkipOneRow.
  * Finally removed obsolete functions (like SdifSkip...).
@@ -185,7 +188,7 @@ size_t SdifFReadFrameHeader      (SdifFileT *SdifF);
 
 /*DOC:
   skip one matrix row, when reading row by row with SdifFReadOneRow */
-size_t SdifFSkipOneRow(SdifFileT *SdifF)
+size_t SdifFSkipOneRow           (SdifFileT *SdifF);
 
 
 /*DOC: 
@@ -212,6 +215,15 @@ size_t SdifFSkipMatrixData        (SdifFileT *SdifF);
 size_t SdifFSkipFrameData         (SdifFileT *SdifF);
 
 
+/*DOC: 
+  skip given number of bytes, either by seeking or by reading and ignoring */
+size_t SdifFSkip                  (SdifFileT *SdifF, size_t nbytes);
+
+/*DOC:
+  Read and throw away <i>num</i> bytes from the file. */
+size_t SdifFReadAndIgnore (SdifFileT *SdifF, size_t bytes);
+
+
 
 /* sub-group: padding */
 
@@ -227,14 +239,6 @@ size_t SdifFSkipFrameData         (SdifFileT *SdifF);
   bits.  */
 size_t SdifFReadPadding          (SdifFileT *SdifF, size_t Padding);
 size_t SdifFReadUndeterminatedPadding (SdifFileT *SdifF);
-
-/*DOC: 
-  skip given number of bytes, either by seeking or by reading and ignoring */
-size_t SdifFSkip (SdifFileT *SdifF, size_t nbytes)
-
-/*DOC:
-  Read and throw away <i>num</i> bytes from the file. */
-size_t SdifFReadAndIgnore (SdifFileT *SdifF, size_t bytes);
 
 size_t SdifFReadOneMatrixType    (SdifFileT *SdifF);
 size_t SdifFReadOneFrameType     (SdifFileT *SdifF);
