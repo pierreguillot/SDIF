@@ -1,8 +1,11 @@
 #!/usr/bin/perl
 
-# $Id: test.pl,v 1.3 2003-04-17 10:19:51 schwarz Exp $
+# $Id: test.pl,v 1.4 2003-04-17 11:03:52 schwarz Exp $
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.3  2003/04/17 10:19:51  schwarz
+# Nice class and method names using renaming.
+#
 # Revision 1.2  2003/04/17 10:05:48  schwarz
 # The same with shadow classes (= proper memory management and methods).
 #
@@ -12,9 +15,11 @@
 # Doesn't do much except counting frames.
 
 use SDIF;
+use Data::Dumper;
 
 $file = new SDIF::Entity;
-print "created new SDIFEntity $file\n";
+print "created new SDIFEntity $file\n", Dumper($file), "\nfields:\n", keys(%$file);
+
 
 $frame = new SDIF::Frame;
 print "created new SDIFFrame $frame\n";
@@ -23,10 +28,17 @@ print "created new SDIFFrame $frame\n";
 $res = $file->SDIF::Entity::OpenRead("../test/lic.sdif");
 print "open...$res\n";
 
+%count = ();
+
 while (!$file->SDIF::Entity::eof())
 {
-    $file->SDIF::Entity::ReadNextFrame($frame);
-    $count++;
+    $res = $file->SDIF::Entity::ReadNextFrame($frame);
+    $count{$frame->GetSignature}++;
+
+    #print "reading frame $count: $res\n";
 }
 
-print "found $count frames\n";
+while (my ($ft, $c) = each %count)
+{
+    print "found $c frames of type $ft\n";
+}

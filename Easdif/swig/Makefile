@@ -1,6 +1,9 @@
-# $Id: Makefile,v 1.3 2003-04-17 10:05:48 schwarz Exp $
+# $Id: Makefile,v 1.4 2003-04-17 11:03:52 schwarz Exp $
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.3  2003/04/17 10:05:48  schwarz
+# The same with shadow classes (= proper memory management and methods).
+#
 # Revision 1.2  2003/04/17 09:54:12  schwarz
 # Test target works when path to easdif shared lib is given.
 #
@@ -14,11 +17,14 @@ PERL5_INCLUDE = /usr/lib/perl5/5.6.1/i386-linux/CORE/
 
 INCL = -I/usr/local/include -I$(PERL5_INCLUDE) -I.. -I../SDIF/include -I../SDIF/sdif
 
+sdifincbase  = entity frame matrix namevaluetable
+sdifincfiles = $(sdifincbase:%=../easdif/sdif%.h)
+
 wrap = easdif_wrap.cxx
 
 all:			SDIF.pm SDIF.so
 
-SDIF.pm $(wrap):	easdif.i Makefile
+SDIF.pm $(wrap):	easdif.i $(sdifincfiles) Makefile
 	swig -c++ -perl5 -shadow $<
 #	swig -c++ -perl5 $<
 
