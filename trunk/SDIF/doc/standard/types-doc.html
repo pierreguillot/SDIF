@@ -4,7 +4,7 @@
 <H1>Standard SDIF Types</H1>
 <I>SDIF Types Version: </I>Ircam_1.5
 <P><I>SDIF Types CVS Revision: </I><CODE>
-  $Id: types-doc.html,v 1.1 2000-08-22 14:47:26 schwarz Exp $
+  $Id: types-doc.html,v 1.2 2000-08-22 16:35:06 schwarz Exp $
 </CODE>
 <P><BR>
 <BR>
@@ -14,47 +14,71 @@
 </TABLE>
 </A><BR>
 <A name="Matrix_1NVT"><H3>Matrix 1NVT NameValueTable</H3>
-</A><DL><DT><I>Description:</I><DD>
-</DD>
-</DL>
-<DL><DT><I>Rows:</I><DD>
-</DD>
-</DL>
-<DL><DT><I>Columns:</I></DL>
-<OL>
-<LI><B>Text </B></OL>
-<HR>
-<BR>
-<A name="Matrix_1TYP"><H3>Matrix 1TYP TypeDefinitions</H3>
-</A><DL><DT><I>Description:</I><DD>
-</DD>
-</DL>
-<DL><DT><I>Rows:</I><DD>
-</DD>
-</DL>
-<DL><DT><I>Columns:</I></DL>
-<OL>
-<LI><B>Text </B></OL>
-<HR>
-<BR>
-<A name="Matrix_1IDS"><H3>Matrix 1IDS StreamInfo</H3>
-</A><DL><DT><I>Description:</I><DD>
-</DD>
-</DL>
-<DL><DT><I>Rows:</I><DD>
-</DD>
-</DL>
-<DL><DT><I>Columns:</I></DL>
-<OL>
-<LI><B>Text </B></OL>
-<HR>
-<BR>
-<A name="Frame_1NVT"><H3>Frame 1NVT </H3>
 </A><DL><DT><I>Status:</I><DD>
 standard</DD>
 </DL>
 <DL><DT><I>Description:</I><DD>
-</DD>
+
+    Name-value table: list of key (name) and associated value.  See
+    the <A HREF="#Frame_1NVT">1NVT frame</A>.  The format
+    is a list of: name\tvalue\n.  Name must only contain
+    alphanumerical characters, value must not contain \n or the zero byte.
+  </DD>
+</DL>
+<DL><DT><I>Rows:</I><DD>
+Characters</DD>
+</DL>
+<DL><DT><I>Columns:</I></DL>
+<OL>
+<LI><B>NVTText </B></OL>
+<HR>
+<BR>
+<A name="Matrix_1TYP"><H3>Matrix 1TYP TypeDefinitions</H3>
+</A><DL><DT><I>Status:</I><DD>
+standard</DD>
+</DL>
+<DL><DT><I>Description:</I><DD>
+
+    Description type definition.  See the <A HREF="#Frame_1TYP">1TYP frame</A>.
+  </DD>
+</DL>
+<DL><DT><I>Rows:</I><DD>
+Characters</DD>
+</DL>
+<DL><DT><I>Columns:</I></DL>
+<OL>
+<LI><B>TYPText </B></OL>
+<HR>
+<BR>
+<A name="Matrix_1IDS"><H3>Matrix 1IDS StreamInfo</H3>
+</A><DL><DT><I>Status:</I><DD>
+standard</DD>
+</DL>
+<DL><DT><I>Description:</I><DD>
+
+    Stream routing and synthesizer patch information.  See the <A HREF="#Frame_1IDS">1IDS frame</A>.
+  </DD>
+</DL>
+<DL><DT><I>Rows:</I><DD>
+Characters</DD>
+</DL>
+<DL><DT><I>Columns:</I></DL>
+<OL>
+<LI><B>IDSText </B></OL>
+<HR>
+<BR>
+<A name="Frame_1NVT"><H3>Frame 1NVT NameValueTable</H3>
+</A><DL><DT><I>Status:</I><DD>
+standard</DD>
+</DL>
+<DL><DT><I>Description:</I><DD>
+
+    The 1NVT name-value table frame stores ASCII or numerical header
+    information (value) for arbitrary keys (name).  This is the place
+    to store the name and version of the program that wrote the file,
+    the date, the host, the user, the command-line arguments, and
+    other parameters.
+  </DD>
 </DL>
 <DL><DT><I>Matrices:</I><DD>
 <UL>
@@ -62,12 +86,18 @@ standard</DD>
 </DL>
 <HR>
 <BR>
-<A name="Frame_1TYP"><H3>Frame 1TYP </H3>
+<A name="Frame_1TYP"><H3>Frame 1TYP TypeDefinitions</H3>
 </A><DL><DT><I>Status:</I><DD>
 standard</DD>
 </DL>
 <DL><DT><I>Description:</I><DD>
-</DD>
+
+    Definition of SDIF description types (frame and matrix types)
+    local to the file.  The definitions of any non-standard types used
+    on generation of the SDIF file are copied to this frame, so that
+    the file will work at other sites that don't know about the
+    non-standard types.
+  </DD>
 </DL>
 <DL><DT><I>Matrices:</I><DD>
 <UL>
@@ -75,12 +105,16 @@ standard</DD>
 </DL>
 <HR>
 <BR>
-<A name="Frame_1IDS"><H3>Frame 1IDS </H3>
+<A name="Frame_1IDS"><H3>Frame 1IDS StreamInfo</H3>
 </A><DL><DT><I>Status:</I><DD>
 standard</DD>
 </DL>
 <DL><DT><I>Description:</I><DD>
-</DD>
+
+    Stream routing and synthesizer patch information for the
+    <a href="http://www.ircam.fr/produits/logiciels/log-forum/chant-e.html" target="_new">Chant library</a>, used e.g. in 
+    <a href="http://www.ircam.fr/produits/logiciels/log-forum/diphone-e.html" target="_new">Diphone</a>.
+  </DD>
 </DL>
 <DL><DT><I>Matrices:</I><DD>
 <UL>
@@ -88,9 +122,19 @@ standard</DD>
 </DL>
 <HR>
 <BR>
+<BR>
+<A name="Section_Types used in different contexts"><TABLE bgcolor="yellow" cellpadding="3" width="100%">
+
+<TR><TD><FONT size="5"><B>Types used in different contexts</B></FONT></TD></TR>
+</TABLE>
+</A><BR>
 <A name="Matrix_1GAI"><H3>Matrix 1GAI Gain</H3>
 </A><DL><DT><I>Description:</I><DD>
-</DD>
+
+      A linear gain factor for the data to which it is attached,
+      such as an autoregressive filter, i.e. 
+      <A HREF="#Matrix_1ARA">1ARA</A>
+ </DD>
 </DL>
 <DL><DT><I>Rows: number=1</I><DD>
 </DD>
@@ -102,7 +146,10 @@ standard</DD>
 <BR>
 <A name="Frame_1GAI"><H3>Frame 1GAI Gain</H3>
 </A><DL><DT><I>Description:</I><DD>
-</DD>
+ 
+     See matrix <A HREF="#Matrix_1GAI">
+</A><A HREF="#Matrix_">     Gain</A>
+  </DD>
 </DL>
 <DL><DT><I>Matrices:</I><DD>
 <UL>
@@ -110,15 +157,109 @@ standard</DD>
 </DL>
 <HR>
 <BR>
-<BR>
-<A name="Section_Pitch Estimation"><TABLE bgcolor="yellow" cellpadding="3" width="100%">
+<A name="Matrix_IWIN"><H3>Matrix IWIN WindowInfo</H3>
+</A><DL><DT><I>Description:</I><DD>
 
-<TR><TD><FONT size="5"><B>Pitch Estimation</B></FONT></TD></TR>
+      Window information matrix.
+      Windows used e.g. in spectral estimation. 
+      A portion of the signal is selected by
+      multiplying it by the window function.
+      The WindowIdentifier is a (usually positive)
+      number which identifies the type of window as specified in
+      <code><a href="http://cnmat.CNMAT.Berkeley.EDU/SDIF/proposals/window-enumeration.text">window-enumeration.text</a></code>
+      <br> 
+      The negative number -1 means a not-yet specified window
+      which then must appear in sampled values explictly in
+      a following <A HREF="#Matrix_1WIN"> 1WIN </A>
+      matrix. Then the WindowSize should be the same as the
+      number of rows in the following 
+      <A HREF="#Matrix_1WIN"> 1WIN </A>.
+ </DD>
+</DL>
+<DL><DT><I>Rows: number=1</I><DD>
+</DD>
+</DL>
+<DL><DT><I>Columns:</I></DL>
+<OL>
+<LI><B>WindowIdentifier </B>
+     A number which identifies the type of window.
+  <LI><B>WindowSize </B> in samples</OL>
+<HR>
+<BR>
+<A name="Matrix_1WIN"><H3>Matrix 1WIN Window</H3>
+</A><DL><DT><I>Description:</I><DD>
+
+      Windows used e.g. in spectral estimation. 
+      A portion of the signal is selected by
+      multiplying it by the window function the 
+      samples of which appear in the matrix.
+      It has to be preceeded by a
+      <A HREF="#Matrix_IWIN"> IWIN </A> matrix.
+ </DD>
+</DL>
+<DL><DT><I>Rows:</I><DD>
+
+    As many as samples describing the window function.
+  </DD>
+</DL>
+<DL><DT><I>Columns:</I></DL>
+<OL>
+<LI><B>Samples </B>Samples </OL>
+<HR>
+<BR>
+<A name="Frame_1WIN"><H3>Frame 1WIN Window</H3>
+</A><DL><DT><I>Description:</I><DD>
+
+     See matrix <A HREF="#Matrix_IWIN">
+</A><A HREF="#Matrix_">     IWIN</A>
+  </DD>
+</DL>
+<DL><DT><I>Matrices:</I><DD>
+<UL>
+<LI><A href="#Matrix_IWIN">IWIN WindowInfo</A><I> required </I><LI><A href="#Matrix_1WIN">1WIN Window</A><I> optional </I></UL>
+</DL>
+<HR>
+<BR>
+<A name="Matrix_1CHA"><H3>Matrix 1CHA Channels</H3>
+</A><DL><DT><I>Description:</I><DD>
+
+    Gain factors to distribute signals among several channels
+    with corresponding gains (simple panning).
+  </DD>
+</DL>
+<DL><DT><I>Rows:</I><DD>
+ as many as signals to pan</DD>
+</DL>
+<DL><DT><I>Columns:</I></DL>
+<OL>
+<LI><B>Channel1 </B><LI><B>Channel2 </B>
+  and so on optionally...</OL>
+<HR>
+<BR>
+<BR>
+<A name="Section_Fundamental Frequency Estimation"><TABLE bgcolor="yellow" cellpadding="3" width="100%">
+
+<TR><TD><FONT size="5"><B>Fundamental Frequency Estimation</B></FONT></TD></TR>
 </TABLE>
 </A><BR>
-<A name="Matrix_1FQ0"><H3>Matrix 1FQ0 PitchEstimate</H3>
+<A name="Matrix_1FQ0"><H3>Matrix 1FQ0 FundamentalFrequencyEstimate</H3>
 </A><DL><DT><I>Description:</I><DD>
-Fundamental Frequency <i>f0</i></DD>
+
+     The fundamental frequency <i>f0</i> of a signal is the inverse
+     of the most likely (according to the estimation method used)
+     periodicity at which the signal locally (on a short window)
+     repeats nearly identical to itself.
+     For synthesis, the synthesized signal is supposed
+     to locally have the given periodicity (fundamental frequency)
+     at the instant of the frame time.
+     Even though f0 is often
+     very close to the pitch at which the sound is perceived,
+     this is not a psychoacoustic notion but a statistical notion.
+     The psychoacoustic notion should go into a 1PCH or so matrix.
+     Columns 2 to 4 (Confidence, Score, RealAmplitude) are not yet
+     well defined. They are used by the f0 program at Ircam with 
+     the '<i>long output, -L</i>' option.
+  </DD>
 </DL>
 <DL><DT><I>Rows:</I><DD>
 </DD>
@@ -128,13 +269,15 @@ Fundamental Frequency <i>f0</i></DD>
 <LI><B>Frequency </B><LI><B>Confidence </B><LI><B>Score </B><LI><B>RealAmplitude </B></OL>
 <HR>
 <BR>
-<A name="Frame_1FQ0"><H3>Frame 1FQ0 PitchEstimate</H3>
+<A name="Frame_1FQ0"><H3>Frame 1FQ0 FundamentalFrequencyEstimate</H3>
 </A><DL><DT><I>Description:</I><DD>
-Fundamental Frequency <i>f0</i></DD>
+
+     Fundamental Frequency <i>f0</i> (see matrix 1FQ0)
+  </DD>
 </DL>
 <DL><DT><I>Matrices:</I><DD>
 <UL>
-<LI><A href="#Matrix_1FQ0">1FQ0 PitchEstimate</A><I> required </I>Pitch estimate</UL>
+<LI><A href="#Matrix_1FQ0">1FQ0 FundamentalFrequencyEstimate</A><I> required </I>Fundamental Frequency estimate</UL>
 </DL>
 <HR>
 <BR>
@@ -149,10 +292,17 @@ Fundamental Frequency <i>f0</i></DD>
 standard</DD>
 </DL>
 <DL><DT><I>Description:</I><DD>
-</DD>
+
+     These are the peaks in a short-time frequency estimate such
+     as the Short Time Fourier Transform. Frequency, Amplitude and 
+     Phase should be that of a constant sinusoid producing such
+     a peak in the frequency estimate. Phase (and Frequency and
+     Amplitude in case of nearly linearly time varying
+     parameters) is relative to the center of the window.
+  </DD>
 </DL>
 <DL><DT><I>Rows:</I><DD>
-</DD>
+ as many as peaks estimated in the frequency estimate</DD>
 </DL>
 <DL><DT><I>Columns:</I></DL>
 <OL>
@@ -164,10 +314,27 @@ standard</DD>
 standard</DD>
 </DL>
 <DL><DT><I>Description:</I><DD>
-</DD>
+
+     Sinusoidal tracks are sinsusoids with time-varying Frequency,
+     Amplitude and Phase. Obviusly, giving these values at
+     discrete times (Frame times) only is imprecise unless an 
+     interpolation formula is provided. This is generally not done yet
+     but can easily be added in the name value table 1NVT.
+     One track is described by the rows with same index in successive
+     adjacent frames and that's what index are for, row numbers
+     being arbitrary. When such an index is absent in a frame
+     it means that the track vanishes at the instant of the frame. 
+     Again what happens after the last or before the first occurrence 
+     of that index remains to be precised. The solution adopted at
+     Ircam is to get sure that the first and the last occurrence
+     always have a zero amplitude.
+     
+  </DD>
 </DL>
 <DL><DT><I>Rows:</I><DD>
-</DD>
+
+     as many as sinusoidal tracks.
+  </DD>
 </DL>
 <DL><DT><I>Columns:</I></DL>
 <OL>
@@ -179,14 +346,28 @@ standard</DD>
 standard</DD>
 </DL>
 <DL><DT><I>Description:</I><DD>
-</DD>
+
+    Harmonic Partials are sinsusoids with time-varying Frequency,
+     Amplitude and Phase and such that each one has a frequency 
+     which is close, or at least related, to the integer ith multiple
+     (harmonic) of a common fundamental frequency (see
+     <A HREF="#Matrix_1FQ0"> 1FQ0</A>). 
+     This integer number i, which is usually named the
+     harmonic number, is named 'Index' here and figures in the
+     first column. In a given 1HRM matrix, an index value should
+     not appear more than once. Some Indexes may be absent in
+     certain matrices meaning that the corresponding harmonic
+     partial vanishes or has not been detected.
+     See matrix <A HREF="#Matrix_1TRC"> 1TRC</A>
+     for other properties.
+  </DD>
 </DL>
 <DL><DT><I>Rows:</I><DD>
 A row describes one harmonic partial</DD>
 </DL>
 <DL><DT><I>Columns:</I></DL>
 <OL>
-<LI><B>Index </B>			partial index		<LI><B>Frequency </B><I>[Hz] </I>	partial frequency	<LI><B>Amplitude </B>		partial amplitude	<LI><B>Phase </B>			partial phase, between -pi and pi
+<LI><B>Index </B>			harmonic number of the partial 		<LI><B>Frequency </B><I>[Hz] </I>	partial frequency	<LI><B>Amplitude </B>		partial amplitude	<LI><B>Phase </B>			partial phase, between -pi and pi
   </OL>
 <HR>
 <BR>
@@ -255,9 +436,9 @@ experimental</DD>
 <HR>
 <BR>
 <BR>
-<A name="Section_Spectral Envelopes"><TABLE bgcolor="yellow" cellpadding="3" width="100%">
+<A name="Section_Spectral Envelopes, Transfer Functions and Filters"><TABLE bgcolor="yellow" cellpadding="3" width="100%">
 
-<TR><TD><FONT size="5"><B>Spectral Envelopes</B></FONT></TD></TR>
+<TR><TD><FONT size="5"><B>Spectral Envelopes, Transfer Functions and Filters</B></FONT></TD></TR>
 </TABLE>
 </A><BR>
 <A name="Matrix_IENV"><H3>Matrix IENV SpectralEnvelopeInfo</H3>
@@ -265,6 +446,10 @@ experimental</DD>
 
 	Spectral envelopes information matrix, defines interpretation 
 	of following <A HREF="#Matrix_1ENV">1ENV matrix</A>
+        The linear+logarithmic scaling is linear under a certain
+	frequency called Break Frequency, then logarithmic above.
+        The exact formula is described in:
+	Diemo Schwarz, <a href="http://www.ircam.fr/anasyn/schwarz/da/"><i>Spectral Envelopes in Sound Analysis and Synthesis</i></a>, Master's thesis, 1998.
   </DD>
 </DL>
 <DL><DT><I>Rows: number=1</I><DD>
@@ -273,21 +458,26 @@ experimental</DD>
 <DL><DT><I>Columns:</I></DL>
 <OL>
 <LI><B>HighestBinFrequency </B><I>[Hz] </I>	
-	frequency of the highest bin of the <A HREF="#Matrix_1ENV">
-</A><A HREF="#Matrix_">        1ENV matrix</A>
+	?? frequency of the highest bin of the <A HREF="#Matrix_1ENV">
+</A><A HREF="#Matrix_">        1ENV matrix ??</A>
   <LI><B>ScaleType </B>
-	0 for linear, 1 for logarithmic scaling
+	0 for linear, 1 for linear+logarithmic scaling
   <LI><B>BreakFrequency </B><I>[Hz] </I>
-	break frequency when logarithmic scaling
+	break frequency when linear+logarithmic scaling
   </OL>
 <HR>
 <BR>
 <A name="Matrix_1ENV"><H3>Matrix 1ENV SpectralEnvelope</H3>
 </A><DL><DT><I>Description:</I><DD>
-Spectral envelope in sampled representation.</DD>
-</DL>
-<DL><DT><I>Description (language = fr):</I><DD>
-Abradakadabra abrakabum.</DD>
+
+     Spectral envelope or magnitude transfer function
+     in sampled representation.
+     A spectral envelope is the envelope of the magnitude of
+     a short-time frequency estimate such
+     as the Short Time Fourier Transform. 
+     See for instance:
+	Diemo Schwarz, <a href="http://www.ircam.fr/anasyn/schwarz/da/"><i>Spectral Envelopes in Sound Analysis and Synthesis</i></a>, Master's thesis, 1998.
+  </DD>
 </DL>
 <DL><DT><I>Rows:</I><DD>
 A row corresponds to one bin of the spectral envelope</DD>
@@ -302,7 +492,11 @@ A row corresponds to one bin of the spectral envelope</DD>
 proposed</DD>
 </DL>
 <DL><DT><I>Description:</I><DD>
-</DD>
+
+     The reason for the optional 1GAI matrix is that in some
+     cases it is useful to force the desired gain for the synthesised
+     signal.
+  </DD>
 </DL>
 <DL><DT><I>Matrices:</I><DD>
 <UL>
@@ -312,16 +506,44 @@ proposed</DD>
 </DL>
 <HR>
 <BR>
-<A name="Matrix_1CEC"><H3>Matrix 1CEC CepstralCoefs</H3>
+<A name="Matrix_ITFC"><H3>Matrix ITFC TransferFunctionCoefficientsInfo</H3>
 </A><DL><DT><I>Description:</I><DD>
-Cepstral coefficients</DD>
+
+     Transfer function coefficients information matrix,
+      defines interpretation
+        of following transfer function coefficients matrix such as 
+        <A HREF="#Matrix_1CEC"> 1CEC</A>,
+        <A HREF="#Matrix_1ARA"> 1ARA</A>,
+        <A HREF="#Matrix_1ARR"> 1ARR</A>,
+        <A HREF="#Matrix_1ARK"> 1ARK</A>.
+  </DD>
 </DL>
-<DL><DT><I>Rows:</I><DD>
+<DL><DT><I>Rows: number=1</I><DD>
 </DD>
 </DL>
 <DL><DT><I>Columns:</I></DL>
 <OL>
-<LI><B>c </B></OL>
+<LI><B>SamplingRate </B><I>[Hz] </I>
+        SamplingRate corresponding to the transfer 
+        function coefficients.
+  <LI><B>Order </B>
+        Order of the estimation or number of coefficients of the
+        corresponding filter.
+  </OL>
+<HR>
+<BR>
+<A name="Matrix_1CEC"><H3>Matrix 1CEC CepstralCoefs</H3>
+</A><DL><DT><I>Description:</I><DD>
+Cepstral coefficients as in text books</DD>
+</DL>
+<DL><DT><I>Rows:</I><DD>
+
+    As many as Cepstral Coefficients wished.
+  </DD>
+</DL>
+<DL><DT><I>Columns:</I></DL>
+<OL>
+<LI><B>CepstralCoefficients </B></OL>
 <HR>
 <BR>
 <A name="Frame_1CEC"><H3>Frame 1CEC CepstralCoefs</H3>
@@ -336,12 +558,14 @@ Cepstral coefficients</DD>
 <BR>
 <A name="Matrix_1ARA"><H3>Matrix 1ARA ARACoefs</H3>
 </A><DL><DT><I>Description:</I><DD>
-</DD>
+Autoregressive coefficients  as in text books
+  </DD>
 </DL>
 <DL><DT><I>Rows:</I><DD>
 The rows contain <var>p + 1</var> autoregressive coefficients
     <var>a<sub>0</sub></var> to <var>a<sub>p</sub></var>, where
-    <var>p</var> is the <emph>order</emph> of the LPC.
+    <var>p</var> is the <emph>order</emph> of the 
+    autoregressive filer.
   </DD>
 </DL>
 <DL><DT><I>Columns:</I></DL>
@@ -356,7 +580,8 @@ The rows contain <var>p + 1</var> autoregressive coefficients
 <DL><DT><I>Rows:</I><DD>
 The rows contain <var>p</var> reflection coefficients
     <var>k<sub>1</sub></var> to <var>k<sub>p</sub></var>, where
-    <var>p</var> is the <emph>order</emph> of the LPC.
+    <var>p</var> is the <emph>order</emph> of the 
+    lattice filer.
   </DD>
 </DL>
 <DL><DT><I>Columns:</I></DL>
@@ -370,8 +595,7 @@ The rows contain <var>p</var> reflection coefficients
 </DL>
 <DL><DT><I>Rows:</I><DD>
 The rows contain <var>p + 1</var> autocorrelation coefficients
-    <var>r<sub>0</sub></var> to <var>r<sub>p</sub></var>, where
-    <var>p</var> is the <emph>order</emph> of the LPC.
+    <var>r<sub>0</sub></var> to <var>r<sub>p</sub></var>.
   </DD>
 </DL>
 <DL><DT><I>Columns:</I></DL>
@@ -417,7 +641,13 @@ The rows contain <var>p + 1</var> autocorrelation coefficients
 </A><BR>
 <A name="Matrix_1FOF"><H3>Matrix 1FOF Formants</H3>
 </A><DL><DT><I>Description:</I><DD>
-</DD>
+
+     Formant Waveforms as described in Chant.
+     <br>
+     Could be changed sometime to use 2RES plus a new 2FOF which
+     would contain the columns Tex, DebAtt and Atten
+     which are what FOF adds to RES.
+  </DD>
 </DL>
 <DL><DT><I>Rows:</I><DD>
 </DD>
@@ -429,38 +659,64 @@ The rows contain <var>p + 1</var> autocorrelation coefficients
 <BR>
 <A name="Matrix_1RES"><H3>Matrix 1RES Filters</H3>
 </A><DL><DT><I>Description:</I><DD>
-</DD>
+
+     Resonances/Exponentially Decaying Sinusoids.
+     Resonances data can describe the characteristics of a
+     resonant system like a 
+     bank of second order section-filters,
+     or can specify parameters for a model
+     of sinusoids with fixed frequencies and
+     exponentially decaying amplitudes. (If you put an impulse 
+     into such a group of filter
+     banks, the output should be a sum of sinusoids with 
+     fixed frequencies and exponentially
+     decaying amplitudes, so these two situations are 
+     in a certain sense the same.)
+
+     The decay curve of a resonance should be the same as that of 
+     a two-pole filter with
+     bandwidth equal to decay rate divided by pi.
+     This formula gives the amplitude of each
+     sinusoid over time: 
+     <pre>
+        amp(t) = initial_amp * e ^ (- decay_rate * t)
+     </pre>
+     The phase of a resonance specifies the initial phase 
+     of each decaying sinusoid. 
+     Ircam's programs still in the previous definition,
+     i.e. columns 3 to 5 being:
+     <br>
+     3. BandWidth 
+     <br>
+     4. Saliance 
+     <br>
+     5. Normalisation of amplitude
+     <p>
+     Therefore the following columns should be that of 2RES:
+  </DD>
 </DL>
 <DL><DT><I>Rows:</I><DD>
-</DD>
+resonances </DD>
 </DL>
 <DL><DT><I>Columns:</I></DL>
 <OL>
-<LI><B>Frequency </B><LI><B>Amplitude </B><LI><B>BandWidth </B><LI><B>Saliance </B><LI><B>Correction </B></OL>
+<LI><B>Frequency </B><LI><B>Amplitude </B><LI><B>DecayRate </B><LI><B>Phase </B></OL>
 <HR>
 <BR>
-<A name="Matrix_1CHA"><H3>Matrix 1CHA FormantsChannels</H3>
+<A name="Matrix_1DIS"><H3>Matrix 1DIS NoiseDistribution</H3>
 </A><DL><DT><I>Description:</I><DD>
-</DD>
+
+    Noise  Distribution matrix, defines a white noise random signal
+    Column Distribution is an identifier (0 is uniform, 1 Gaussian...)
+  </DD>
 </DL>
 <DL><DT><I>Rows:</I><DD>
 </DD>
 </DL>
 <DL><DT><I>Columns:</I></DL>
 <OL>
-<LI><B>Channel1 </B><LI><B>Channel2 </B><LI><B>Channel3 </B><LI><B>Channel4 </B></OL>
-<HR>
-<BR>
-<A name="Matrix_1DIS"><H3>Matrix 1DIS NoiseInfo</H3>
-</A><DL><DT><I>Description:</I><DD>
-</DD>
-</DL>
-<DL><DT><I>Rows:</I><DD>
-</DD>
-</DL>
-<DL><DT><I>Columns:</I></DL>
-<OL>
-<LI><B>Distribution </B><LI><B>Amplitude </B></OL>
+<LI><B>Distribution </B><LI><B>Amplitude </B>should be variance or standard deviation
+  </OL>
 <HR>
 <BR>
 <A name="Frame_1NOI"><H3>Frame 1NOI </H3>
@@ -469,7 +725,7 @@ The rows contain <var>p + 1</var> autocorrelation coefficients
 </DL>
 <DL><DT><I>Matrices:</I><DD>
 <UL>
-<LI><A href="#Matrix_1DIS">1DIS NoiseInfo</A><I> required </I>NoiseInfo</UL>
+<LI><A href="#Matrix_IDIS">IDIS </A><I> required </I>NoiseInfo<LI><A href="#Matrix_1DIS">1DIS NoiseDistribution</A><I> required </I>NoiseInfo</UL>
 </DL>
 <HR>
 <BR>
@@ -479,7 +735,7 @@ The rows contain <var>p + 1</var> autocorrelation coefficients
 </DL>
 <DL><DT><I>Matrices:</I><DD>
 <UL>
-<LI><A href="#Matrix_1FQ0">1FQ0 PitchEstimate</A><I> required </I>PitchModeHit<LI><A href="#Matrix_1FOF">1FOF Formants</A><I> required </I>Formants<LI><A href="#Matrix_1CHA">1CHA FormantsChannels</A><I> required </I>FormantsChannels</UL>
+<LI><A href="#Matrix_1FQ0">1FQ0 FundamentalFrequencyEstimate</A><I> required </I>PitchModeHit<LI><A href="#Matrix_1FOF">1FOF Formants</A><I> required </I>Formants<LI><A href="#Matrix_1CHA">1CHA Channels</A><I> required </I>FormantsChannels</UL>
 </DL>
 <HR>
 <BR>
@@ -489,7 +745,7 @@ The rows contain <var>p + 1</var> autocorrelation coefficients
 </DL>
 <DL><DT><I>Matrices:</I><DD>
 <UL>
-<LI><A href="#Matrix_1RES">1RES Filters</A><I> required </I>Filters<LI><A href="#Matrix_1CHA">1CHA FormantsChannels</A><I> required </I>FiltersChannels</UL>
+<LI><A href="#Matrix_1RES">1RES Filters</A><I> required </I>Filters<LI><A href="#Matrix_1CHA">1CHA Channels</A><I> required </I>FiltersChannels</UL>
 </DL>
 <HR>
 <BR>
@@ -501,19 +757,62 @@ The rows contain <var>p + 1</var> autocorrelation coefficients
 </A><BR>
 <A name="Matrix_ISTF"><H3>Matrix ISTF FourierTransformInfo</H3>
 </A><DL><DT><I>Description:</I><DD>
-</DD>
+
+     See <A HREF="#Matrix_1STF">1STF</A> for details.
+     WindowDuration is the duration of the window, in seconds,
+  </DD>
 </DL>
 <DL><DT><I>Rows:</I><DD>
 </DD>
 </DL>
 <DL><DT><I>Columns:</I></DL>
 <OL>
-<LI><B>HighestBinFrequency </B><LI><B>FrameDuration </B><LI><B>FFTSize </B></OL>
+<LI><B>PeriodOfTheDFT </B>i.e., Sampling Rate in Hertz<LI><B>WindowDuration </B> in seconds.<LI><B>FFTSize </B></OL>
 <HR>
 <BR>
 <A name="Matrix_1STF"><H3>Matrix 1STF FourierTransform</H3>
 </A><DL><DT><I>Description:</I><DD>
-</DD>
+
+     1STF frames represent the data that come out of a discrete short-term time-domain to frequency-domain transform such as an FFT.
+
+     Here is a precise mathematical definition of this frame type: 
+    <br>
+    Let s(i) be a discrete signal with sampling rate SR Hertz 
+    <br>
+    Let w(m) be a window defined with the support [0, M-1], i.e., w(m)=0 for m&lt;0 and m&gt;=M .
+    M is called the <i>Window Size in Samples</i>. The corresponding <i>Window Duration</i> in seconds
+    is M/(Sampling Frequency).
+    <br>
+    Let N be the size of the transform 
+    <br>
+     We define the input to the transform, x(n), as follows.
+     Note that the windowed signal is 'put' at the beginning of the vector x(n).
+     <pre>
+Let x(n) =   s(i+n) * w(n)  for  0 lessThanOrEqual n lessThanOrEqual M-1
+    x(n) =   0              for  M lessThanOrEqual n lessThanOrEqual N-1
+     </pre>
+(This is slightly redundant, since we define w(m)=0 when m&gt;=M.)
+The 1STF matrix data is the Discrete Fourier Transform (DFT) of size N, i.e. the X(k) as follows. 
+The DFT is a length N vector X, with these elements: 
+     <pre>
+              N-1
+       X(k) = sum  x(n) * exp(-j * 2 * pi * k * n/N)
+              n=0
+
+       0 lessThanOrEqual k lessThanOrEqual N-1
+     </pre>
+The time tag in a 1STF frame is the time of the center of the window, i.e., (i + M/2)/SR, not the beginning.
+<br>
+Notes: 
+<br>
+    This definition corresponds to the output of Matlab's (and UDI's) FFTfunction 
+    The real and imaginary parts come directly from this formula: therefore, if you compute a phase as atan2(imaginary, real), it is the phase of the
+    corresponding COSINUSOID (and not sinusoid as we are used in additive synthesis) at time (i)/SR. 
+    Note that the windowed signal is 'put' at the beginning of the vector x(n) (then zero padding follows) and this is crucial for the phase definition. 
+    Because of aliasing and foldover above the Nyquist frequency (and below the negative Nyquist frequency), the output of the DFT can be thought
+    of as a periodic function of frequency over the range -infinity to infinity. The period of this function is the range from the negative Nyquist
+    frequency to the positive Nyquist frequency, in other words, the sampling rate of the input signal
+  </DD>
 </DL>
 <DL><DT><I>Rows:</I><DD>
 Bins</DD>
@@ -539,7 +838,10 @@ Bins</DD>
 </DL>
 <DL><DT><I>Matrices:</I><DD>
 <UL>
-<LI><A href="#Matrix_ISTF">ISTF FourierTransformInfo</A><I> required </I>Info<LI><A href="#Matrix_1STF">1STF FourierTransform</A><I> required </I>FourierTransform</UL>
+<LI><A href="#Matrix_ISTF">ISTF FourierTransformInfo</A><I> required </I>Info<LI><A href="#Matrix_1STF">1STF FourierTransform</A><I> required </I>
+   FourierTransform<LI><A href="#Matrix_1WIN">1WIN Window</A><I> optional </I>
+   Window applied on the signal prior to Fourier transform.
+   </UL>
 </DL>
 <HR>
 <BR>
@@ -549,28 +851,48 @@ Bins</DD>
 <TR><TD><FONT size="5"><B>Energy</B></FONT></TD></TR>
 </TABLE>
 </A><BR>
-<A name="Matrix_1NRG"><H3>Matrix 1NRG Energy</H3>
-</A><DL><DT><I>Description:</I><DD>
-</DD>
-</DL>
-<DL><DT><I>Rows:</I><DD>
-</DD>
-</DL>
-<DL><DT><I>Columns:</I></DL>
-<OL>
-<LI><B>Energy </B></OL>
-<HR>
-<BR>
 <A name="Matrix_INRG"><H3>Matrix INRG ScaleAndFactor</H3>
 </A><DL><DT><I>Description:</I><DD>
-</DD>
+
+    Energy information matrix, defines interpretation
+    of following <A HREF="#Matrix_1NRG">1NRG matrix</A><A HREF="#Matrix_">
+</A><A HREF="#Matrix_">    </A>
+  </DD>
 </DL>
-<DL><DT><I>Rows:</I><DD>
+<DL><DT><I>Rows: number=1</I><DD>
 </DD>
 </DL>
 <DL><DT><I>Columns:</I></DL>
 <OL>
 <LI><B>Scale </B><LI><B>NormalisationFactor </B></OL>
+<HR>
+<BR>
+<A name="Matrix_1NRG"><H3>Matrix 1NRG Energy</H3>
+</A><DL><DT><I>Description:</I><DD>
+
+    Short time energy of the signal, i.e. 
+     <pre>
+                    m+N-1
+       E(k) = 1/N *  sum  x(n) * x(n)
+                    n=m
+     </pre>
+    The time of the frame should be the center of the interval
+    [m, m+N-1].
+    <br>
+
+    If a window is applied prior to calculation, 
+    it should be taken into acount and
+    a <A HREF="#Matrix_IWIN">IWIN</A>
+    and an optional <A HREF="#Matrix_1WIN">1WIN</A>
+    can be joined.
+  </DD>
+</DL>
+<DL><DT><I>Rows: number=1</I><DD>
+</DD>
+</DL>
+<DL><DT><I>Columns:</I></DL>
+<OL>
+<LI><B>Energy </B></OL>
 <HR>
 <BR>
 <A name="Frame_1NRG"><H3>Frame 1NRG </H3>
@@ -579,7 +901,7 @@ Bins</DD>
 </DL>
 <DL><DT><I>Matrices:</I><DD>
 <UL>
-<LI><A href="#Matrix_INRG">INRG ScaleAndFactor</A><I> required </I>ScaleAndFactor<LI><A href="#Matrix_1NRG">1NRG Energy</A><I> required </I>Energy</UL>
+<LI><A href="#Matrix_INRG">INRG ScaleAndFactor</A><I> required </I>ScaleAndFactor<LI><A href="#Matrix_1NRG">1NRG Energy</A><I> required </I>Energy<LI><A href="#Matrix_IWIN">IWIN WindowInfo</A><I> optional </I>WindowInfo<LI><A href="#Matrix_1WIN">1WIN Window</A><I> optional </I>Window</UL>
 </DL>
 <HR>
 <BR>
@@ -603,6 +925,55 @@ Bins</DD>
 <UL>
 <LI><A href="#Matrix_1BND">1BND Bands</A><I> required </I>Bands</UL>
 </DL>
+<HR>
+<BR>
+<BR>
+<A name="Section_Time-Domain Samples"><TABLE bgcolor="yellow" cellpadding="3" width="100%">
+
+<TR><TD><FONT size="5"><B>Time-Domain Samples</B></FONT></TD></TR>
+</TABLE>
+</A><BR>
+<A name="Matrix_ITDS"><H3>Matrix ITDS TimeDomainSamplesInfo</H3>
+</A><DL><DT><I>Description:</I><DD>
+
+      Time-Domain Samples information matrix, defines interpretation
+      of following <A HREF="#Matrix_1TDS">1TDS matrix</A><A HREF="#Matrix_">
+</A><A HREF="#Matrix_">      </A>
+  </DD>
+</DL>
+<DL><DT><I>Rows: number=1</I><DD>
+</DD>
+</DL>
+<DL><DT><I>Columns:</I></DL>
+<OL>
+<LI><B>SamplingRate </B></OL>
+<HR>
+<BR>
+<A name="Matrix_1TDS"><H3>Matrix 1TDS TimeDomainSamples</H3>
+</A><DL><DT><I>Description:</I><DD>
+
+     Restrict this type to linearly quantized samples with 
+     no compression
+     Unlike most other SDIF frame types, a frame of 1TDS data
+     represents an interval of time (equal to the number of rows 
+     in the 1TDS matrix divided by the sampling rate) 
+     rather than an instant of time. The time tag of a 1TDS 
+     frame represents the beginning of this interval.
+     Most SDIF streams containing 1TDS data will consist of a 
+     single large frame at time zero with all of the samples for the 
+     stream in a single matrix. The same data could be 
+     represented equivalently in a series of shorter frames.
+     There is also the possibility of &quot;gaps&quot; in the time axis,
+  </DD>
+</DL>
+<DL><DT><I>Rows:</I><DD>
+ Sample frames </DD>
+</DL>
+<DL><DT><I>Columns:</I></DL>
+<OL>
+<LI><B> </B> Amplitudes in each channel. Linear.
+           All but the first are optional.
+  </OL>
 <HR>
 <BR>
 <BR>
@@ -638,7 +1009,7 @@ Bins</DD>
 <A name="Matrix_ITMI"><H3>Matrix ITMI TransientMarkerIdentifier</H3>
 </A><DL><DT><I>Description:</I><DD>
 Matrix identifier for transient in the signal such as
-  occurs at tke beginning of percussive sounds ans which need special
+  occurs at tke beginning of percussive sounds and which need special
   care.
   </DD>
 </DL>
@@ -756,15 +1127,16 @@ private</DD>
 <BASEFONT size="1"><A name="Section_About This Document"><TABLE cellpadding="3">
 
 <TR><TD colspan="4" bgcolor="gray"><FONT size="4"><B>About This Document</B></FONT>
-<TR align="left" valign="top"><TD colspan="4">This document types-doc.html generated Tue Aug 22 16:22:10 2000 by xmltohtml.pl from sdiftypes.xml
-<TR align="left" valign="top"><TH>Generation<TD>schwarz<TD nowrap>Tue Aug 22 16:22:10 2000<TD nowrap>kethuk.ircam.fr /u/formes/schwarz/src/SDIF/types</TR>
+<TR align="left" valign="top"><TD colspan="4">This document types-doc.html generated Tue Aug 22 18:30:55 2000 by xmltohtml.pl from sdiftypes.xml
+<TR align="left" valign="top"><TH>Generation<TD>schwarz<TD nowrap>Tue Aug 22 18:30:55 2000<TD nowrap>kethuk.ircam.fr /u/formes/schwarz/src/SDIF/types</TR>
 
-<TR align="left" valign="top"><TH>Generator<TD>xmltohtml.pl<TD nowrap>Tue Aug 22 16:22:01 2000<TD nowrap>$Id: types-doc.html,v 1.1 2000-08-22 14:47:26 schwarz Exp $ </TR>
+<TR align="left" valign="top"><TH>Generator<TD>xmltohtml.pl<TD nowrap>Tue Aug 22 18:21:48 2000<TD nowrap>$Id: types-doc.html,v 1.2 2000-08-22 16:35:06 schwarz Exp $ </TR>
 
-<TR align="left" valign="top"><TH>Source file<TD>sdiftypes.xml<TD nowrap>Fri Aug 18 19:55:22 2000<TD nowrap>
-  $Id: types-doc.html,v 1.1 2000-08-22 14:47:26 schwarz Exp $
+<TR align="left" valign="top"><TH>Source file<TD>sdiftypes.xml<TD nowrap>Tue Aug 22 18:08:39 2000<TD nowrap>
+  $Id: types-doc.html,v 1.2 2000-08-22 16:35:06 schwarz Exp $
 </TR>
-</TABLE>
+
+<TR><TD colspan="1" bgcolor="gray"><FONT size="+0"><A href="../index.html" target="_parent"><B>Back</B></A></FONT><TD colspan="1" bgcolor="gray"><FONT size="+0"><A href="http://www.ircam.fr/sdif" target="_parent"><B>SDIF&nbsp;Home</B></A></FONT><TD colspan="1" bgcolor="gray"><FONT size="+0"><A href="http://www.ircam.fr/anasyn" target="_parent"><B>Analysis/Synthesis Team</B></A></FONT><TD colspan="1" bgcolor="gray"><FONT size="+0"><A href="http://www.ircam.fr" target="_parent"><B>IRCAM</B></A></FONT></TABLE>
 </A></ADDRESS>
 <BR>
 <BR>
