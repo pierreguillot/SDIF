@@ -1,0 +1,20 @@
+# src of sdif library
+
+
+
+SDIF_SRC = \
+	SdifHash.c \
+	SdifGlobals.c \
+	SdifError.c \
+	SdifMatrixType.c \
+	SdifFrameType.c \
+	SdifStreamID.c \
+	SdifNameValue.c \
+	SdifRWLowLevel.c \
+	SdifMatrix.c \
+	SdifFrame.c \
+	SdifRWHighLevel.c \
+	SdifTextConv.c \
+	SdifConvToText.c \
+	SdifPrint.c \
+	SdifUInt8.c
