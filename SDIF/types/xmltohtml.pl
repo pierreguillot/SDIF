@@ -1,12 +1,15 @@
 #!/usr/bin/perl
 #
-# $Id: xmltohtml.pl,v 1.8 2000-08-17 14:44:16 schwarz Exp $
+# $Id: xmltohtml.pl,v 1.9 2000-08-18 17:53:28 schwarz Exp $
 #
 # xmltohtml.pl		6. July 2000		Diemo Schwarz
 #
 # Translate SDIF types description in XML to HTML.
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.8  2000/08/17  14:44:16  schwarz
+# Matrix status copied.
+#
 # Revision 1.7  2000/08/17  14:34:46  schwarz
 # HTML table of contents is generated!  Use file index.html to get
 # the generated navigation frame toc.html and sdiftypes.html.
@@ -48,13 +51,15 @@ use HTML::Stream qw(:funcs);
 
 
 # html setup
-my @copiedhtmltags = qw(br i b strong emph code var sub sup pre);
+my @singlehtmltags = qw(p br);
+my @copiedhtmltags = qw(i b strong emph code var sub sup pre);
 my %tagmap = (# section => 'H2', 
 	      map { (uc $_, uc $_, lc $_, uc $_ ) } @copiedhtmltags);
+my %tagsing = (map { (uc $_, uc $_, lc $_, uc $_ ) } @singlehtmltags);
 
 
 # init
-my $cvsrev     = '$Id: xmltohtml.pl,v 1.8 2000-08-17 14:44:16 schwarz Exp $ ';
+my $cvsrev     = '$Id: xmltohtml.pl,v 1.9 2000-08-18 17:53:28 schwarz Exp $ ';
 my $tdlversion = '';
 my $version    = 'unknown';
 my $revision   = '';
@@ -166,7 +171,13 @@ $xml->register ("section",     char  => \&section);
 # register XML->HTML tag mapping handlers
 for (keys %tagmap)
 {
-    $xml->register ($_, char => \&tagmapper);
+    $xml->register ($_, start => \&tagmap_start);
+    $xml->register ($_, char  => \&out_char);
+    $xml->register ($_, end   => \&tagmap_end);
+}
+for (keys %tagsing)
+{
+    $xml->register ($_, start => \&tagmap_start);
 }
 
 
@@ -182,12 +193,14 @@ close TOC;
 
 
 
-sub tagmapper
+sub tagmap_start
 {
-    my $tag = $tagmap{$xml->{CURRENT_TAG}};
-    $h->tag ($tag)      if $tag;
-    $h->text($_[1]);
-    $h->tag ("_$tag")   if $tag; 
+    $h->tag ($_[1]);
+}
+
+sub tagmap_end
+{
+    $h->tag ("_$_[1]"); 
 }
 
 
