@@ -1,11 +1,28 @@
-/* $Id: SdifRWLowLevel.h,v 3.8 2000-07-18 15:08:39 tisseran Exp $
+/* $Id: SdifRWLowLevel.h,v 3.9 2000-10-27 20:03:42 roebel Exp $
  *
- *               Copyright (c) 1998 by IRCAM - Centre Pompidou
- *                          All rights reserved.
+ * IRCAM SDIF Library (http://www.ircam.fr/sdif)
+ *
+ * Copyright (C) 1998, 1999, 2000 by IRCAM-Centre Georges Pompidou, Paris, France.
+ * 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ * 
+ * See file COPYING for further informations on licensing terms.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  *  For any information regarding this and other IRCAM software, please
  *  send email to:
- *                            manager@ircam.fr
+ *                            sdif@ircam.fr
  *
  *
  * SdifRWLowLevel.h
@@ -17,6 +34,30 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.8.2.3  2000/08/21  21:35:45  tisseran
+ * *** empty log message ***
+ *
+ * Revision 3.8.2.2  2000/08/21  18:34:13  tisseran
+ * Add SdifSkipASCIIUntilfromSdifString function (same as SdifSkipASCIIUntil).
+ * Add SdifFSkip for SdifSkip for (functions SdifSkip doesn't respect function nomemclature => obsolete).
+ *
+ * Revision 3.8.2.1  2000/08/21  14:04:21  tisseran
+ * *** empty log message ***
+ *
+ * Revision 3.8  2000/07/18  15:08:39  tisseran
+ * This release implements the New SDIF Specification (june 1999):
+ * - Name Values Table are written in a 1NVT frame which contains a 1NVT matrix
+ * - Frame and matrix type declaration are written in a 1TYP frame which contains a 1TYP matrix.
+ * - Stream ID are written in a 1IDS frame which contains a 1IDS matrix.
+ *
+ * Read function accept the previous version of the specification (read a text frame without matrix) to be compatible with older SDIF files.
+ *
+ * SdifString.h and SdifString.c implements some string mangement (creation, destruction, append, test of end of string, getc, ungetc).
+ *
+ * WATCH OUT:
+ *      We don't care about the old SDIF Specification (_SdifFormatVersion < 3)
+ * To use _SdifFormatVersion < 3, get the previous release.
+ *
  * Revision 3.7  2000/05/15  16:23:11  schwarz
  * Avoided avoidable warnings.
  *
@@ -173,6 +214,7 @@ int SdiffGetStringWeakUntilfromSdifString(SdifStringT *SdifString, char* s,
 					  size_t ncMax, char *CharsEnd);
 
 int SdifSkipASCIIUntil  (FILE* fr, size_t *NbCharRead, char *CharsEnd);
+int SdifSkipASCIIUntilfromSdifString  (SdifStringT *SdifString, size_t *NbCharRead, char *CharsEnd);
 
 
 #if 0	/* for cocoon's eyes only */
@@ -183,14 +225,14 @@ size_t SdiffScanFloat8  (FILE *stream, SdifFloat8 *ptr, size_t nobj);
 #endif
 
 
-#ifdef __STDC__  /* Is the compiler ANSI? */
+#ifdef STDC_HEADERS  /* Is the compiler ANSI? */
 
 #define sdif_scanproto(type) \
 size_t SdiffScan##type (FILE *stream, Sdif##type *ptr, size_t nobj)
 
 sdif_proto_foralltypes (sdif_scanproto)
 
-#endif /* __STDC__ */
+#endif /* STDC_HEADERS */
 
 
 /* Unsafe but optimized version of SdifStringToSignature:

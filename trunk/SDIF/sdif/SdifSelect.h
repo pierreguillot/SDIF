@@ -1,11 +1,28 @@
-/* $Id: SdifSelect.h,v 3.9 2000-08-07 15:05:46 schwarz Exp $
+/* $Id: SdifSelect.h,v 3.10 2000-10-27 20:03:43 roebel Exp $
  *
- *               Copyright (c) 1998 by IRCAM - Centre Pompidou
- *                          All rights reserved.
+ * IRCAM SDIF Library (http://www.ircam.fr/sdif)
+ *
+ * Copyright (C) 1998, 1999, 2000 by IRCAM-Centre Georges Pompidou, Paris, France.
+ * 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ * 
+ * See file COPYING for further informations on licensing terms.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  *  For any information regarding this and other IRCAM software, please
  *  send email to:
- *                            manager@ircam.fr
+ *                            sdif@ircam.fr
  *
  *
  * SdifSelect.c		27. August 1999		Diemo Schwarz
@@ -71,6 +88,12 @@ TODO
 
 LOG
   $Log: not supported by cvs2svn $
+  Revision 3.9.2.2  2000/08/21  21:35:48  tisseran
+  *** empty log message ***
+
+  Revision 3.9.2.1  2000/08/21  14:04:23  tisseran
+  *** empty log message ***
+
   Revision 3.8  2000/05/15  16:22:04  schwarz
   Changed prototypes of existing functions (we apologize for the inconvenience)
   SdifFCurrFrameIsSelected and SdifFCurrMatrixIsSelected.
@@ -236,19 +259,11 @@ int SdifFreeSelection (SdifSelectionT *sel);
 /*DOC: 
   Returns pointer to first char of select spec (starting with ::), 
   or NULL if not found.
-  
-  [in] filename can be NULL
 */
 char *SdifSelectFindSelection (const char *filename);
 
 
 /*DOC: 
-  SdifGetFilenameAndSelection parses
-
-  [in]  filename (can be NULL) into
-  [out] sel      which must point to an SdifSelectionT structure.
-  [return] 
-		a pointer to a copy of the filename part of filename
 */
 char *SdifGetFilenameAndSelection (/*in*/  const char *filename, 
 				   /*out*/ SdifSelectionT *sel);
@@ -292,7 +307,8 @@ void SdifSelectAdd_TYPE_Range (SdifListT *list,
 #endif	/* if 0 */
 
 
-#ifdef __STDC__
+#ifdef STDC_HEADERS
+/* #ifdefined (__STDC__) */
 /*#if defined (_ANSI_C_SOURCE)  ||  defined (__STDC__)*/
 
 #define _addrangeproto(name, type, field) \
@@ -322,7 +338,7 @@ void SdifSelectAddSignatureRange (SdifListT *list, SdifSignature value, SdifSele
 void SdifSelectAddString (SdifListT *list, char * value) ; 
 void SdifSelectAddStringRange (SdifListT *list, char * value, SdifSelectTokens rt,      char * range) ; 
 
-#endif
+#endif /* STDC_HEADERS */
 
 
 /*

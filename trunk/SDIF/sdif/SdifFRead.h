@@ -1,11 +1,28 @@
-/* $Id: SdifFRead.h,v 3.7 2000-08-22 13:38:23 schwarz Exp $
+/* $Id: SdifFRead.h,v 3.8 2000-10-27 20:03:29 roebel Exp $
  *
- *               Copyright (c) 1998 by IRCAM - Centre Pompidou
- *                          All rights reserved.
+ * IRCAM SDIF Library (http://www.ircam.fr/sdif)
+ *
+ * Copyright (C) 1998, 1999, 2000 by IRCAM-Centre Georges Pompidou, Paris, France.
+ * 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ * 
+ * See file COPYING for further informations on licensing terms.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  *  For any information regarding this and other IRCAM software, please
  *  send email to:
- *                            manager@ircam.fr
+ *                            sdif@ircam.fr
 
 LIBRARY
  * SdifFRead.h
@@ -16,6 +33,19 @@ LIBRARY
 
 LOG
  * $Log: not supported by cvs2svn $
+ * Revision 3.7  2000/08/22  13:38:23  schwarz
+ * SdifSkip... renamed to SdifFSkip... to follow nomenclature.
+ *
+ * Revision 3.6.2.3  2000/08/21  21:35:10  tisseran
+ * *** empty log message ***
+ *
+ * Revision 3.6.2.2  2000/08/21  18:34:10  tisseran
+ * Add SdifSkipASCIIUntilfromSdifString function (same as SdifSkipASCIIUntil).
+ * Add SdifFSkip for SdifSkip for (functions SdifSkip doesn't respect function nomemclature => obsolete).
+ *
+ * Revision 3.6.2.1  2000/08/21  14:04:11  tisseran
+ * *** empty log message ***
+ *
  * Revision 3.6  2000/07/18  15:08:33  tisseran
  * This release implements the New SDIF Specification (june 1999):
  * - Name Values Table are written in a 1NVT frame which contains a 1NVT matrix
@@ -74,8 +104,8 @@ LOG
  */
 
 
-#ifndef _SdifFRead_
-#define _SdifFRead_
+#ifndef _SDIFFREAD_H 
+#define _SDIFFREAD_H 1
 
 #include "SdifGlobals.h"
 #include "SdifFileStruct.h"
@@ -130,6 +160,7 @@ size_t SdifFReadOneRow           (SdifFileT *SdifF);
   SdifF->CurrSignature.  La lecture doit se faire avant, avec
   SdifFGetSignature.  */
 size_t SdifFReadFrameHeader      (SdifFileT *SdifF);
+
 
 /*DOC: 
   Cette fonction permet de passer une matrice toute entière entête

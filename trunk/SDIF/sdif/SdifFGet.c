@@ -1,11 +1,28 @@
-/* $Id: SdifFGet.c,v 3.7 2000-08-22 13:37:55 schwarz Exp $
+/* $Id: SdifFGet.c,v 3.8 2000-10-27 20:03:26 roebel Exp $
  *
- *               Copyright (c) 1998 by IRCAM - Centre Pompidou
- *                          All rights reserved.
+ * IRCAM SDIF Library (http://www.ircam.fr/sdif)
+ *
+ * Copyright (C) 1998, 1999, 2000 by IRCAM-Centre Georges Pompidou, Paris, France.
+ * 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ * 
+ * See file COPYING for further informations on licensing terms.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  *  For any information regarding this and other IRCAM software, please
  *  send email to:
- *                            manager@ircam.fr
+ *                            sdif@ircam.fr
  *
  *
  * F : SdifFileT*, Get : ascii frames reading,
@@ -15,10 +32,23 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.7  2000/08/22  13:37:55  schwarz
+ * Replaced short by int, because that's faster and less error-prone.
+ *
  * Revision 3.6  2000/08/21  10:02:47  tisseran
  * Add information about compilation when use SdifPrintVersion:
  * - Which SdifTypes.STYP is used.
  * - Who made the compilation.
+ * 
+ * Revision 3.6.2.3  2000/08/21  21:35:03  tisseran
+ * *** empty log message ***
+ *
+ * Revision 3.6.2.2  2000/08/21  18:34:08  tisseran
+ * Add SdifSkipASCIIUntilfromSdifString function (same as SdifSkipASCIIUntil).
+ * Add SdifFSkip for SdifSkip for (functions SdifSkip doesn't respect function nomemclature => obsolete).
+ *
+ * Revision 3.6.2.1  2000/08/21  14:04:06  tisseran
+ * *** empty log message ***
  *
  * Revision 3.5  2000/07/18  15:08:28  tisseran
  * This release implements the New SDIF Specification (june 1999):
@@ -318,7 +348,6 @@ SdifFGetOneMatrixTypefromSdifString(SdifFileT *SdifF, SdifStringT *SdifString)
   SdifMatrixTypeT  *MatrixType;
   int              CharEnd;
   SdifSignature    Signature = 0;
-  FILE *file;
   size_t SizeR = 0;
   
   
@@ -342,7 +371,7 @@ SdifFGetOneMatrixTypefromSdifString(SdifFileT *SdifF, SdifStringT *SdifString)
 	{
 	  /* Skip matrix type def, search '}' */
 	  SdifTestCharEnd(SdifF,
-			  SdifSkipASCIIUntil(file, &SizeR, "}:[];"),
+			  SdifSkipASCIIUntilfromSdifString(SdifString, &SizeR, "}:[];"),
 			  '}', "", eFalse,
 			  "end of matrix type skiped missing");
 	  return SizeR;
@@ -576,7 +605,6 @@ SdifFGetOneFrameTypefromSdifString(SdifFileT *SdifF, SdifStringT *SdifString)
   SdifFrameTypeT  *FramT;
   SdifSignature   FramSignature = 0;
   SdifSignature   MtrxSignature = 0;  
-  FILE            *file;
 
 
   /* FramSignature */
@@ -600,7 +628,7 @@ SdifFGetOneFrameTypefromSdifString(SdifFileT *SdifF, SdifStringT *SdifString)
       {
 	/* Skip frame type def, search '}' */
 	SdifTestCharEnd(SdifF,
-			SdifSkipASCIIUntil(file, &SizeR, "}:[]"),
+			SdifSkipASCIIUntilfromSdifString(SdifString, &SizeR, "}:[]"),
 			'}', "", eFalse,
 			"end of frame type skiped missing");
 	return SizeR;
@@ -852,7 +880,6 @@ SdifFGetOneStreamIDfromSdifString(SdifFileT *SdifF, SdifStringT *SdifString)
   SdifUInt4        NumID;
   char             CharEnd;
   int              ReturnChar;
-  FILE            *file;
   static char      CharsEnd[] =  " \t\n\f\r\v{},;:";
   size_t SizeR = 0;
 
@@ -861,11 +888,14 @@ SdifFGetOneStreamIDfromSdifString(SdifFileT *SdifF, SdifStringT *SdifString)
 					      _SdifStringLen, CharsEnd);
 
 
+
+
   /* test if it's the last or not */
   if ((ReturnChar == eEof))
     {
       /* no more IDStream */
-      return  CharEnd;
+	CharEnd = (char) eEof;
+	return  CharEnd;
     }
   
   CharEnd = (char) ReturnChar;
@@ -877,7 +907,7 @@ SdifFGetOneStreamIDfromSdifString(SdifFileT *SdifF, SdifStringT *SdifString)
       _SdifFError(SdifF, eSyntax, gSdifErrorMess);
       if (CharEnd != (unsigned)';')
 	SdifTestCharEnd(SdifF,
-			SdifSkipASCIIUntil(file, &SizeR, ";"),
+			SdifSkipASCIIUntilfromSdifString(SdifString, &SizeR, ";"),
 			';',
 			"", eFalse, "end of Stream ID skiped missing");
       return  CharEnd;
@@ -891,7 +921,7 @@ SdifFGetOneStreamIDfromSdifString(SdifFileT *SdifF, SdifStringT *SdifString)
       _SdifFError(SdifF, eReDefined, gSdifErrorMess);
       if (CharEnd != (unsigned)';')
 	SdifTestCharEnd(SdifF,
-			SdifSkipASCIIUntil(file, &SizeR, ";"),
+			SdifSkipASCIIUntilfromSdifString(SdifString, &SizeR, ";"),
 			';',
 			"", eFalse, "end of Stream ID skiped missing");
       return  CharEnd;
@@ -906,7 +936,7 @@ SdifFGetOneStreamIDfromSdifString(SdifFileT *SdifF, SdifStringT *SdifString)
     {
       if (CharEnd != (unsigned) ';')
 	SdifTestCharEnd(SdifF,
-			SdifSkipASCIIUntil(file, &SizeR, ";"),
+			SdifSkipASCIIUntilfromSdifString(SdifString, &SizeR, ";"),
 			';',
 			"", eFalse, "end of Stream ID skiped missing");
       return  CharEnd;

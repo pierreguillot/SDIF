@@ -1,11 +1,28 @@
-/* $Id: SdifFRead.c,v 3.11 2000-08-22 13:38:22 schwarz Exp $
+/* $Id: SdifFRead.c,v 3.12 2000-10-27 20:03:29 roebel Exp $
  *
- *               Copyright (c) 1998 by IRCAM - Centre Pompidou
- *                          All rights reserved.
+ * IRCAM SDIF Library (http://www.ircam.fr/sdif)
+ *
+ * Copyright (C) 1998, 1999, 2000 by IRCAM-Centre Georges Pompidou, Paris, France.
+ * 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ * 
+ * See file COPYING for further informations on licensing terms.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  *  For any information regarding this and other IRCAM software, please
  *  send email to:
- *                            manager@ircam.fr
+ *                            sdif@ircam.fr
  *
  *
  * F : SdifFileT* SdifF, Read : binary read (SdifF->Stream)
@@ -14,9 +31,22 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.11  2000/08/22  13:38:22  schwarz
+ * SdifSkip... renamed to SdifFSkip... to follow nomenclature.
+ *
  * Revision 3.10  2000/08/07  15:05:45  schwarz
  * Error checking for read general header.
  * Remove double definition of 1GAI matrix type.
+ * 
+ * Revision 3.10.2.3  2000/08/21  21:35:09  tisseran
+ * *** empty log message ***
+ *
+ * Revision 3.10.2.2  2000/08/21  18:34:09  tisseran
+ * Add SdifSkipASCIIUntilfromSdifString function (same as SdifSkipASCIIUntil).
+ * Add SdifFSkip for SdifSkip for (functions SdifSkip doesn't respect function nomemclature => obsolete).
+ *
+ * Revision 3.10.2.1  2000/08/21  14:04:11  tisseran
+ * *** empty log message ***
  *
  * Revision 3.9  2000/07/18  15:08:32  tisseran
  * This release implements the New SDIF Specification (june 1999):
@@ -138,27 +168,25 @@ SdifFReadGeneralHeader(SdifFileT *SdifF)
   SizeR += SdiffReadUInt4 (&(SdifF->TypesVersion),  1, SdifF->Stream) * sizeof(SdifUInt4);
   
   if (SdifF->CurrSignature != eSDIF)
-  {
+    {
       sprintf(gSdifErrorMess, "%s not correctly read", 
 	      SdifSignatureToString(eSDIF));
       _SdifFError(SdifF, eBadHeader, gSdifErrorMess);
-  }
-  else
-  {   /* read rest of header chunk (might contain additional data) */
-      SdifFReadPadding (SdifF, SdifF->ChunkSize - (SizeR - SizeS));
+    }
 
-      if (SdifF->FormatVersion != _SdifFormatVersion)
-      {
-	  char *mfmt = SdifF->FormatVersion > _SdifFormatVersion
-	  ? "file is in a newer SDIF format version (%d) than the library (%d)"
-	  : "File is in an old SDIF format version (%d).  "
-	    "The library (version %d) is not backwards compatible.";
+  /* read rest of header chunk (might contain additional data) */
+  SdifFReadPadding (SdifF, SdifF->ChunkSize - (SizeR - SizeS));
 
-	  sprintf (gSdifErrorMess, mfmt, SdifF->FormatVersion, 
-		   _SdifFormatVersion);
-	  _SdifFError(SdifF, eBadFormatVersion, gSdifErrorMess);
-      }
-  }
+  if (SdifF->FormatVersion != _SdifFormatVersion)
+  {
+      char *mfmt = SdifF->FormatVersion > _SdifFormatVersion
+	? "file is in a newer SDIF format version (%d) than the library (%d)"
+	: "File is in an old SDIF format version (%d).  "
+	  "The library (version %d) is not backwards compatible.";
+
+      sprintf (gSdifErrorMess, mfmt, SdifF->FormatVersion, _SdifFormatVersion);
+      _SdifFError(SdifF, eBadFormatVersion, gSdifErrorMess);
+    }
     
   return SizeR;
 }
@@ -495,7 +523,7 @@ SdifFReadAndIgnore (SdifFileT *SdifF, size_t bytes)
 
 
 
-/* SdifSkipMatrix read entire matrix header. */
+/* SdifFSkipMatrix read entire matrix header. */
 size_t SdifFSkipMatrix(SdifFileT *SdifF)
 {
   size_t
@@ -514,9 +542,7 @@ size_t SdifSkipMatrix(SdifFileT *SdifF)
 }
 
 
-
-
-/* SdifSkipMatrixData don't read matrix header. */
+/* SdifFSkipMatrixData don't read matrix header. */
 size_t SdifFSkipMatrixData(SdifFileT *SdifF)
 {
   size_t
@@ -535,7 +561,7 @@ size_t SdifFSkipMatrixData(SdifFileT *SdifF)
   Pos += NbBytesToSkip;
   if (SdiffSetPos(SdifF->Stream, &Pos) != 0)
   {
-#if HOST_OS_UNIX
+#if HAVE_ERRNO_H
       if (errno == ESPIPE)
       {	  /* second chance: SdiffSetPos didn't work because we're
 	  reading from a pipe.  Instead of making the whole thing
@@ -553,15 +579,12 @@ size_t SdifFSkipMatrixData(SdifFileT *SdifF)
       return SizeR;
   }
 }
-
 /* obsolete */
 size_t SdifSkipMatrixData(SdifFileT *SdifF)
 {
     _Debug("SdifSkipMatrixData is obsolete, use SdifFSkipMatrixData");
     return SdifFSkipMatrixData(SdifF);
 }
-
-
 
 
 /* Cette fonction à le même sens que SdifSkipMatrixData mais pour les
@@ -610,16 +633,12 @@ size_t SdifFSkipFrameData(SdifFileT *SdifF)
     }
 }
 
-
 /* obsolete */
 size_t SdifSkipFrameData(SdifFileT *SdifF)
 {
     _Debug("SdifSkipFrameData is obsolete, use SdifFSkipFrameData");
     return SdifFSkipFrameData(SdifF);
 }
-
-
-
 
 /*DOC:
   Function to read text matrix.

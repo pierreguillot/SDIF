@@ -1,0 +1,44 @@
+#!/bin/sh 
+
+SDIFTOTEXT=../tools/sdiftotext/sdiftotext
+TOSDIF=../tools/tosdif/tosdif
+
+Files_Txt_Dir=./files/txt
+Files_Sdif_Dir=./files/sdif
+Files_Txt_Sdif_Txt_Dir=./files/txtw
+Files_Txt_Sdif_Txt_Sdif_Dir=./files/sdifw
+
+sleep 1 # Wait one second
+echo
+echo \*************************************************************************
+echo "***    Convert txt->sdif, txt->sdif->txt and txt->sdif->txt->sdif     ***"
+echo \*************************************************************************
+echo
+for namein in $Files_Txt_Dir/*.txt; do
+    base=`basename $namein`
+    echo
+    echo \*********
+    echo "* File: *" $base
+    echo \*********
+    echo
+    if [ "$base" = "t.txt" -o "$base" = "t2.txt" ];then
+       echo \***********************************************************
+       echo "****   BEWARE : $base itentionally produces an Error "
+       echo \***********************************************************
+       echo 
+    fi
+    nameout=$Files_Sdif_Dir/$base.sdif
+    base=`basename $nameout`
+    nameresult=$Files_Txt_Sdif_Txt_Dir/$base.txt
+    base=`basename $nameresult`
+    sdifnameout=$Files_Txt_Sdif_Txt_Sdif_Dir/$base.sdif
+    echo "txt->sdif"
+    $TOSDIF -i $namein -o $nameout
+    echo "txt->sdif->txt"
+    $SDIFTOTEXT -i $nameout -o $nameresult
+    echo "txt->sdif->txt->sdif"
+    $TOSDIF -i $nameresult -o $sdifnameout
+
+done
+
+echo

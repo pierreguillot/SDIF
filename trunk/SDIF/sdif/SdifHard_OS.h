@@ -1,11 +1,28 @@
-/* $Id: SdifHard_OS.h,v 3.5 2000-03-01 11:17:38 schwarz Exp $
+/* $Id: SdifHard_OS.h,v 3.6 2000-10-27 20:03:34 roebel Exp $
  *
- *               Copyright (c) 1998 by IRCAM - Centre Pompidou
- *                          All rights reserved.
+ * IRCAM SDIF Library (http://www.ircam.fr/sdif)
+ *
+ * Copyright (C) 1998, 1999, 2000 by IRCAM-Centre Georges Pompidou, Paris, France.
+ * 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ * 
+ * See file COPYING for further informations on licensing terms.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  *  For any information regarding this and other IRCAM software, please
  *  send email to:
- *                            manager@ircam.fr
+ *                            sdif@ircam.fr
  *
  *
  * SdifHard_OS.h
@@ -16,6 +33,15 @@
  * author: Dominique Virolle 1998
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.5.2.2  2000/08/21  21:35:26  tisseran
+ * *** empty log message ***
+ *
+ * Revision 3.5.2.1  2000/08/21  14:04:20  tisseran
+ * *** empty log message ***
+ *
+ * Revision 3.5  2000/03/01  11:17:38  schwarz
+ * Factored out SdiffIsFile from get/setpos macros.
+ *
  * Revision 3.4  1999/10/13  16:05:50  schwarz
  * Changed data type codes (SdifDataTypeET) to SDIF format version 3, as
  * decided with Matt Wright June 1999, added integer data types.
@@ -79,11 +105,11 @@
 
 
 
-#if defined(__mips64) || defined(__alpha)
-#define _LONG64BITS_
-#else
-#define _LONG32BITS_
-#endif
+/*  #if defined(__mips64) || defined(__alpha) */
+/*  #define _LONG64BITS_ */
+/*  #else */
+/*  #define _LONG32BITS_ */
+/*  #endif */
 
 /* to do fpos_t compatible on MacinTosh */
 #if defined(MACINTOSH) || defined(WIN32)
