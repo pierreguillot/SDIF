@@ -7,9 +7,12 @@
  * 
  * 
  * 
- * $Id: sdifmatrix.cpp,v 1.2 2002-04-11 16:41:55 ftissera Exp $ 
+ * $Id: sdifmatrix.cpp,v 1.3 2002-06-18 14:48:53 ftissera Exp $ 
  * 
- * $Log: not supported by cvs2svn $ 
+ * $Log: not supported by cvs2svn $
+ * Revision 1.2  2002/04/11 16:41:55  ftissera
+ * comment for sdifmatrix.cpp
+ * 
  * 
  */
 
@@ -17,8 +20,9 @@
 SDIFMatrix::SDIFMatrix():mInter(0)
 {
     //m_Signature =...;
+    /* default type */
     mType = eFloat4;
-    /*default signature*/
+    /* default signature */
     mSig = SdifSignatureConst('1','T','R','C');
     CreateMatrixData(mSig, 1, 1, mType);
 }
@@ -74,7 +78,8 @@ void SDIFMatrix::CreateMatrixData(SdifSignature sig, int nrows, int ncols, SdifD
     }
 
     mSig = sig;
-    //update m_Signature;
+    /* to update the m_Signature : */
+    m_Signature = SdifSignatureToString(mSig);
     mType = type;
 
     switch (mType){
@@ -97,15 +102,16 @@ int SDIFMatrix::Write(SdifFileT* file)
     int ncols=mInter->GetNbCol();
 
     // SdifDataTypeET  type  = SdifFCurrDataType(file);
+   
     mInter->Resize(nrows, ncols);
     SizeFrameW = 0;
 
-    /*Write matrix header*/
+    /* convert for the signature*/
     mSig = SdifStringToSignature(const_cast<char*>(m_Signature.c_str()));
-/*
-SdifFSetCurrMatrixHeader(file, mSig, mType, nrows, ncols);
-*/
-    SdifFSetCurrMatrixHeader(file, mSig, eFloat4, nrows, ncols);
+
+    /* Set with the current matrix header */
+    SdifFSetCurrMatrixHeader(file, mSig, mType, nrows, ncols);
+    //SdifFSetCurrMatrixHeader(file, mSig, eFloat4, nrows, ncols);
     SizeFrameW += SdifFWriteMatrixHeader(file);
     SizeFrameW +=mInter->write(file);
 
@@ -202,5 +208,20 @@ int SDIFMatrix::GetSize() const
     return SdifSizeOfMatrix(mType, mInter->GetNbCol(), mInter->GetNbRow());
 }
 
+/* to get the SdifDataType of the matrix */
+SdifDataTypeET SDIFMatrix::GetType()
+{
+    return mType;
+}
 
+/* to get the SdifSignature of the matrix */
+SdifSignature SDIFMatrix::GetSignature()
+{
+    return mSig;
+}
 
+/* to get the string signature of the matrix*/
+std::string SDIFMatrix::GetStringSignature()
+{
+    return m_Signature;
+}
