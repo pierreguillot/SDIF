@@ -1,6 +1,6 @@
 dnl -*-autoconf-*-  (No, it's an autoconf file!)
 dnl -*-m4-*- (He emacs, it's a m4 file)
-dnl $Id: configure.in,v 1.25 2003-11-18 18:24:21 roebel Exp $
+dnl $Id: configure.in,v 1.26 2004-01-19 16:20:24 roebel Exp $
 dnl
 dnl configure.in		Feb 2003      Axel Roebel
 dnl
@@ -33,6 +33,10 @@ dnl
 dnl
 
 dnl $Log: not supported by cvs2svn $
+dnl Revision 1.25  2003/11/18 18:24:21  roebel
+dnl Version 0.7.3, added check for sstream/strstream header.
+dnl changed language to CPLUSPLUS.
+dnl
 dnl Revision 1.24  2003/08/06 18:03:03  roebel
 dnl demo command line follows configured prefix
 dnl
@@ -111,8 +115,8 @@ AC_MSG_RESULT(PACKAGE NAME)
 PACKAGE=Easdif
 
 EASDIF_VERSION_MAJ=0
-EASDIF_VERSION_MIN=7
-EASDIF_VERSION_RELEASE=3
+EASDIF_VERSION_MIN=8
+EASDIF_VERSION_RELEASE=0
 
 VERSION="${EASDIF_VERSION_MAJ}.${EASDIF_VERSION_MIN}.${EASDIF_VERSION_RELEASE}"
 
