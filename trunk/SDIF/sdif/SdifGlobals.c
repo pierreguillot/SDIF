@@ -1,4 +1,4 @@
-/* $Id: SdifGlobals.c,v 3.16 2004-07-22 14:47:56 bogaards Exp $
+/* $Id: SdifGlobals.c,v 3.17 2004-07-27 18:58:37 roebel Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -31,6 +31,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.16  2004/07/22 14:47:56  bogaards
+ * removed many global variables, moved some into the thread-safe SdifGlobals structure, added HAVE_PTHREAD define, reorganized the code for selection, made some arguments const, new version 3.8.6
+ *
  * Revision 3.15  2004/06/03 11:18:00  schwarz
  * Profiling showed some waste of cycles in byte swapping and signature reading:
  * - byte swapping now array-wise, not element-wise in SdifSwap<N>[Copy] routines:   -> from 0.24 s (18.5%) to 0.14s
@@ -192,9 +195,8 @@ struct SdifGlobals* GetSdifGlobals(){
 }
 
 void FreeGlobals(void *inGlobals){
-	struct SdifGlobals* globals = (struct SdifGlobals*) inGlobals;
-	
-	SdifDrainListNodeStock();
+	struct SdifGlobals* globals = (struct SdifGlobals*) inGlobals;	
+	SdifListNStockMakeEmpty(&globals->sdifListNodeStock);
 	free(globals);
 }
 
