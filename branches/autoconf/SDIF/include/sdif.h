@@ -1,12 +1,15 @@
-/* $Id: sdif.h,v 1.1.2.1 2000-08-21 17:08:40 tisseran Exp $
+/* $Id: sdif.h,v 1.1.2.2 2000-08-21 21:34:52 tisseran Exp $
  *
  * This file contains type declaration of variables used in SDIF library.
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.1.2.1  2000/08/21  17:08:40  tisseran
+ * *** empty log message ***
+ *
  * Revision 1.1.2.1  2000/08/21  13:07:41  tisseran
  * *** empty log message ***
  *
- * $Date: 2000-08-21 17:08:40 $
+ * $Date: 2000-08-21 21:34:52 $
  *
  */
 
@@ -14,6 +17,7 @@
 #ifndef _SDIF_H
 #define _SDIF_H 1
 
+#include <stdio.h>
 #include <float.h>
 
 
@@ -599,15 +603,18 @@ struct SdifStringS
 };
 
 
-/* $Id: sdif.h,v 1.1.2.1 2000-08-21 17:08:40 tisseran Exp $
+/* $Id: sdif.h,v 1.1.2.2 2000-08-21 21:34:52 tisseran Exp $
  *
  * This file contains prototype of functions used in SDIF library.
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.1.2.1  2000/08/21  17:08:40  tisseran
+ * *** empty log message ***
+ *
  * Revision 1.1.2.1  2000/08/21  13:07:39  tisseran
  * *** empty log message ***
  *
- * $Date: 2000-08-21 17:08:40 $
+ * $Date: 2000-08-21 21:34:52 $
  *
  */
 
