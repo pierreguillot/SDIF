@@ -1,8 +1,184 @@
+$Id: ChangeLog,v 1.3 2003-04-03 13:21:48 schwarz Exp $
+	
+2003-04-03  Diemo Schwarz  <schwarz@ircam.fr>
+
+	* Makefile.am: Added doc and test targets.
+
+	* configure.in, Doxyfile:
+	Doxyfile created from Doxyfile.in with Version from configure.in
+
+	* Doxyfile.in: Doxyfile created from Doxyfile.in
+	Version from configure.in
+	Corrected input file location
+
+	* autogen.sh:
+	Added conditional to prevent endless loop when directory SDIF doesn't exist.
+
+2003-03-18  Axel Roebel  <roebel@ircam.fr>
+
+	* easdif/Makefile.am: Use libtool for conveniance library
+
+	* configure.in: Improved messages for check of MacOSX Darwin.
+
+2003-03-07  Axel Roebel  <roebel@ircam.fr>
+
+	* Makefile, Makefile.in, configure, easdif/Makefile, easdif/Makefile.in, test/Makefile, test/Makefile.in:
+	Removed generated files from CVS.
+
+	* easdif/easdif_version.h.in: Added configure input file to CVS.
+
+	* Makefile.am, configure.in, easdif/Makefile.am, test/Makefile.am:
+	Updated for correct handling of distribution and new layout of c++ compilation in SDIF.
+
+	
+2003-03-05  Axel Roebel  <roebel@ircam.fr>
+
+	* configure.in:
+	test for MacOSX and disable shraed libraries for this system.
+
+	* easdif/Makefile.am: Fixed installation of include files.
+
+2003-03-04  Axel Roebel  <roebel@ircam.fr>
+
+	* Makefile, Makefile.in, configure, easdif/Makefile, easdif/Makefile.in, easdif/easdif_version.h, test/Makefile, test/Makefile.in:
+	Regenerated for configure.in with version detection
+
+	* test/Makefile.am:
+	Fixed path problems for configuration not inside top_srcdir
+
+	* easdif/Makefile.am: Removed version determination
+
+	* easdif/easdif_version.h: version 0.30 (automaticly generated)
+
+	* configure.in: Included version determination
+
+	* Makefile.am:
+	Changed src difrectory to easdif, fixed distribution of SDIF
+
+	* Doxyfile: Version 0.30
+
+2003-03-03  Axel Roebel  <roebel@ircam.fr>
+
+	* configure.in, Makefile, Makefile.in, configure: Updated with automake
+
+	* easdif/Makefile, easdif/Makefile.am, easdif/Makefile.in, easdif/easdif.h, easdif/easdif_version.h, easdif/easdifintro.h, easdif/sdifentity.cpp, easdif/sdifentity.h, easdif/sdifexception.cpp, easdif/sdifexception.h, easdif/sdifframe.cpp, easdif/sdifframe.h, easdif/sdifinit.cpp, easdif/sdifinit.h, easdif/sdifmatrix.cpp, easdif/sdifmatrix.h, easdif/sdifmatrixdata.h, easdif/sdifmatrixdatainterface.h, easdif/sdifnamevaluetable.cpp, easdif/sdifnamevaluetable.h, src/Makefile.in, src/config.h.in, src/easdif.h, src/easdif_version.h, src/easdifintro.h, src/sdifentity.cpp, src/sdifentity.h, src/sdifexception.cpp, src/sdifexception.h, src/sdifframe.cpp, src/sdifframe.h, src/sdifinit.cpp, src/sdifinit.h, src/sdifmatrix.cpp, src/sdifmatrix.h, src/sdifmatrixdata.h, src/sdifmatrixdatainterface.h, src/sdifnamevaluetable.cpp, src/sdifnamevaluetable.h, src/Makefile, src/Makefile.am:
+	Moved src directory to new name easdif
+
+	* src/Makefile, src/Makefile.in, test/Makefile, test/Makefile.in, Makefile, Makefile.in, configure:
+	Recreated using autotools installed at IRCAM.
+
+	* src/config.h.in: Added to CVS
+
+	* autogen.sh: Added missing path for command autogen.sh in SDIF
+
+	* Easdif.pc.in: Added support for autoconf/automake...
+
+	* autogen.sh, configure, configure.in, test/Makefile, test/Makefile.am, test/Makefile.in, src/Makefile, src/Makefile.am, src/Makefile.in, Makefile, Makefile.am, Makefile.in:
+	Adapted for autoconf/automake...
+
+
+2003-02-10  Axel Roebel  <roebel@ircam.fr>
+
+	* src/sdifmatrix.h, src/sdifmatrix.cpp: Comment changed.
+
+	* src/sdifframe.cpp:
+	Fixed problem with size indicated in frameheader when the frame is
+	written more than one time withut calling cleardata().
+
+	* src/sdifexception.h:
+	Added exception for writing frame header with wrong number of bytes for the framesize.
+
+	
+2003-02-07  Axel Roebel  <roebel@ircam.fr>
+
+	* test/easdifRmNVT.cpp: Updated usage info.
+
+	* src/sdifentity.cpp:
+	Empty sdif files (only header information) will be correctly handled
+	now.
+
+	* test/easdifRmNVT.cpp: utility to remove NVT from sdif files.
+
+	* test/Makefile: Added easdifRmNVT to makefile.
+
+
+2002-12-13  Axel Roebel  <roebel@ircam.fr>
+
+	* test/tutofini.cpp: explicitely close sdif files at the end.
+
+
+2002-12-02  Axel Roebel  <roebel@ircam.fr>
+
+	* src/sdifinit.cpp, src/sdifinit.h:
+	Added init function with char* argument
+
+
+2002-11-28  Axel Roebel  <roebel@ircam.fr>
+
+	* src/sdifnamevaluetable.cpp, src/sdifnamevaluetable.h:
+	Back to simple map which sorts alphabetically. In any case
+	in SDIF the name value tables are mixed arbitrarily.
+
+	* src/sdifinit.cpp, src/sdifinit.h:
+	Improved parameter handling of  EasdifInit.
+
+	* src/easdif_version.h, Doxyfile: Version 0.22
+
+	* test/tutofini.cpp: Added NVT name retrieval test.
+
+	
+2002-11-27  Axel Roebel  <roebel@ircam.fr>
+
+	* src/sdifentity.cpp, src/sdifentity.h:
+	Removed member that redundantly indicated size of NVT vector.
+	Make use of improved SDIFNameValueTable interface.
+
+	* src/sdifnamevaluetable.cpp, src/sdifnamevaluetable.h:
+	Fixed NVT to keep ordering as defined by the sequence of additions to the table.
+	Added begin/end iterator.
+	Added global functions to get name and value from SDIFNameValueTable iterators.
+	Removed member that redundantly indicated size of map.
+
+
+2002-11-07  Axel Roebel  <roebel@ircam.fr>
+
+	* test/tutofini.cpp: Updated demo to have reasonable message for EOF.
+
+	* src/sdifmatrixdata.h: Provide clone method.
+	Fixed bounds checking in Get template.
+	Reorganized CopyData.
+
+	* src/sdifmatrix.h:
+	Allow value type to be specified during Matrix construction.
+	Moved Get/Set methods to header to have the possibility to use
+	real templates.
+
+	* src/sdifmatrix.cpp:
+	Allow value type to be specified during Matrix construction.
+	Do not resize before writing because size will be already correct.
+	Replaced Copy Constructor to use clone method.
+	Moved Get/Set methods to header to have the possibility to use
+	real templates.
+
+	* src/sdifmatrixdatainterface.h: Changed Set return value to void.
+	Added method to clone data.
+
+	* src/easdifintro.h: Updated demo to have reasonable message for EOF.
+
+	* src/easdif_version.h: Version 0.21.
+
 
 2002-10-30  Axel Roebel  <Axel.Roebel@ircam.fr>
 Version 0.21
 	
-	* changed return types from int to bool and improved error
+	* src/sdifentity.cpp, src/sdifentity.h:
+	changed return types from int to bool and improved error
 	checking for opening files in sdifentity.
 
-	* changed makefile for the libtool in SDIF.
+	* src/Makefile, Makefile:
+	New library placement due to libtool used in SDIF.
+
+	* Doxyfile, ChangeLog: Version 0.21.
+
+	* ChangeLog: Added changelog to repository.
+
