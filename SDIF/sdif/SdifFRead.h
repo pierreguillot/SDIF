@@ -1,4 +1,4 @@
-/* $Id: SdifFRead.h,v 3.11 2003-08-06 15:13:14 schwarz Exp $
+/* $Id: SdifFRead.h,v 3.12 2003-08-06 15:16:41 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -33,6 +33,10 @@ LIBRARY
 
 LOG
  * $Log: not supported by cvs2svn $
+ * Revision 3.11  2003/08/06 15:13:14  schwarz
+ * New functions SdifFSkip, SdifFSkipOneRow.
+ * Finally removed obsolete functions (like SdifSkip...).
+ *
  * Revision 3.10  2001/05/02 09:34:42  tisseran
  * Change License from GNU Public License to GNU Lesser Public License.
  *
@@ -177,6 +181,13 @@ size_t SdifFReadOneRow           (SdifFileT *SdifF);
 size_t SdifFReadFrameHeader      (SdifFileT *SdifF);
 
 
+/* sub-group: skipping */
+
+/*DOC:
+  skip one matrix row, when reading row by row with SdifFReadOneRow */
+size_t SdifFSkipOneRow(SdifFileT *SdifF)
+
+
 /*DOC: 
   Cette fonction permet de passer une matrice toute entière entête
   incluse. Elle est utile lorsque qu'un frame contient plus de
@@ -201,6 +212,9 @@ size_t SdifFSkipMatrixData        (SdifFileT *SdifF);
 size_t SdifFSkipFrameData         (SdifFileT *SdifF);
 
 
+
+/* sub-group: padding */
+
 /*DOC: 
   Cette fonction permet de lire le Padding en fin de matrice.
   l'utilisation classique de cette fonctin est:<br> 
@@ -213,6 +227,10 @@ size_t SdifFSkipFrameData         (SdifFileT *SdifF);
   bits.  */
 size_t SdifFReadPadding          (SdifFileT *SdifF, size_t Padding);
 size_t SdifFReadUndeterminatedPadding (SdifFileT *SdifF);
+
+/*DOC: 
+  skip given number of bytes, either by seeking or by reading and ignoring */
+size_t SdifFSkip (SdifFileT *SdifF, size_t nbytes)
 
 /*DOC:
   Read and throw away <i>num</i> bytes from the file. */
