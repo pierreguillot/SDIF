@@ -1,6 +1,9 @@
 <sdif-tdl version="0.3alpha">
 
 <!-- $Log: not supported by cvs2svn $
+ Revision 1.7  2000/08/22  18:01:06  peeters
+ Added definition for 1MRK, 1PEM, 1VUV, 1VUF, 1VUN
+
  Revision 1.6  2000/08/22  16:07:50  schwarz
  More docs of sdif-tdl XML format.
  Supporting Types description.
@@ -29,7 +32,7 @@
 <types-version>Ircam_1.5</types-version>
 
 <types-revision>
-  $Id: sdiftypes.xml,v 1.7 2000-08-22 18:01:06 peeters Exp $
+  $Id: sdiftypes.xml,v 1.8 2000-09-27 10:12:47 schwarz Exp $
 </types-revision>
 
 
@@ -52,7 +55,7 @@ Some points to note about the SDIF types XML format:
 	<sub>subscript</sub>, 
 	<sup>superscript</sup>,
 	<pre>preformetted source code, etc. (multiline)</pre>
-	<a href="link target">hyperlink text</a>,
+	<a href="link target" [target="_new|_parent|..."]>hyperlink text</a>,
 	<br/> newline	(note the closing '/'!)
 	<p/>  paragraph	(note the closing '/'!)
 
@@ -74,6 +77,14 @@ Some points to note about the SDIF types XML format:
   <type>float</type>   <type>double</type>   <type>float double</type>
   <data type="float"/> <data type="double"/> <data type="float" type="double"/>
 					     <data type="float|double"/>
+!!<datatype><integer size="2"/> or <integer width="16"/>
+	    <float/> <double/>  or <real size="4"/> or <real width="32"/>
+	    <text/> <rawbyte/>
+  </datatype>
+
+- Content?:
+
+  <datarange min=".." max=".."/>
 
 
 - Sectioning:
@@ -654,7 +665,7 @@ Some points to note about the SDIF types XML format:
 <frame signature="1NOI" name="">
   <description></description>
   <matrixref signature="IDIS" occurrence="required">NoiseInfo</matrixref> 
-  <matrixref signature="1DIS" occurrence="required">NoiseInfo</matrixref> 
+  <matrixref signature="1DIS" occurrence="required">NoiseDistribution</matrixref> 
 </frame>
 
 		       
@@ -895,7 +906,7 @@ the analysis method used. This is the reason why it is essential to
 refer to the analysis method used in the matrix.
 The matrix can contain other columns for the parameters of the method.
 
-<strong>Method:</strong> 1
+<p/><strong>Method:</strong> 1
 <br/>
 <strong>Definition:</strong> phase +Pi/2 of the 1st partial SINUSOID which represents this partial
 <br/>
