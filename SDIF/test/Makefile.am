@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.11 2002-09-24 13:20:34 schwarz Exp $
+# $Id: Makefile.am,v 1.12 2002-10-10 10:39:06 roebel Exp $
 #
 # ./test/Makefile.am		September 2000			Patrice Tisserand
 #
@@ -29,6 +29,9 @@
 # send email to:  sdif@ircam.fr
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.11  2002/09/24 13:20:34  schwarz
+# Added forgotten test programs to dist.
+#
 # Revision 1.10  2002/06/18 16:56:00  tisseran
 # Create two shell script to launch headerTest and NVTTest binary.
 # I do this to call script shell with an explicit shell ( $(SHELL) in TESTS_ENVIRONMENT).
@@ -78,7 +81,7 @@ testcheck_DEPENDENCIES = ../sdif/@SELLIB@
 testselect_SOURCES = testselect.c
 testselect_DEPENDENCIES = ../sdif/@SELLIB@
 
-LDADD = -l@TESTLIB@
+LDADD = -l$(basename $(subst lib,,@SELLIB@))
 LDFLAGS = -L../sdif
 INCLUDES = -I../include -I$(top_srcdir)/include
 
