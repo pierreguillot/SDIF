@@ -1,4 +1,4 @@
-/* $Id: querysdif.c,v 1.4 2000-12-06 13:43:43 lefevre Exp $
+/* $Id: querysdif.c,v 1.5 2002-05-24 19:41:51 ftissera Exp $
  
                 Copyright (c) 1998 by IRCAM - Centre Pompidou
                            All rights reserved.
@@ -13,6 +13,9 @@
    View summary of data in an SDIF-file.  
    
    $Log: not supported by cvs2svn $
+   Revision 1.4  2000/12/06 13:43:43  lefevre
+   Mix HostArchiteture and AutoConfigure mechanisms
+
  * Revision 1.3  2000/11/16  12:02:23  lefevre
  * no message
  *
@@ -216,7 +219,15 @@ int main(int argc, char** argv)
 
 
     /* do inits, open files */
-    SdifGenInit (types  ?  types  :  "");
+    if (!types)
+    {
+	char types2[2] = "";
+	SdifGenInit (types2);
+    }
+    else
+    {
+	SdifGenInit (types);
+    }
 
     if (!infile)   
     	infile  = "stdin";

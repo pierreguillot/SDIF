@@ -1,5 +1,8 @@
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.3  2001/05/04 18:08:01  schwarz
+ * Added test for SdifNameValuesLPutCurrNVTTranslate.
+ *
  * Revision 1.2  2000/10/27 20:04:02  roebel
  * autoconf merged back to main trunk
  *
@@ -16,7 +19,7 @@
  * This program test the matrix and frame type declaration in SDIF file.
  * 
  *
- * $Id: test2.c,v 1.3 2001-05-04 18:08:01 schwarz Exp $
+ * $Id: test2.c,v 1.4 2002-05-24 19:41:34 ftissera Exp $
  *
  */
 #include <stdlib.h>
@@ -67,7 +70,15 @@ main(void)
   fprintf(stderr,"*************************************\n");
 
   fprintf(stderr,"\nLibrary Initialisation (SdifGenInit)\n");  
-  SdifGenInit(types ? types : "");
+  if (!types)
+  {
+      char types2[2] = "";
+      SdifGenInit (types2);
+  }
+  else
+  {
+      SdifGenInit (types);
+  }
 
   fprintf(stderr,"\nWRITE SEQUENCE\n");
 

@@ -1,4 +1,4 @@
-/* $Id: sdifextract.c,v 1.9 2001-09-11 13:04:27 roebel Exp $
+/* $Id: sdifextract.c,v 1.10 2002-05-24 19:41:51 ftissera Exp $
  
                 Copyright (c) 1998 by IRCAM - Centre Pompidou
                            All rights reserved.
@@ -13,6 +13,9 @@
    Extract data from an SDIF-file.  
    
    $Log: not supported by cvs2svn $
+   Revision 1.9  2001/09/11 13:04:27  roebel
+   sdifextract sdif output bug fixed
+
    Revision 1.8  2001/07/19 14:24:36  lefevre
    Macintosh Compilation
 
@@ -142,6 +145,8 @@
 #include <string.h>
 
 
+#ifndef HAVE_CONFIG_H
+
 #if defined(HOST_OS_UNIX)
 #include <unistd.h>
 #elif defined(HOST_OS_MAC)
@@ -149,6 +154,14 @@
 #elif defined(WIN32)
 #include <io.h>
 #endif
+
+#else /* HAVE_CONFIG_H */
+
+#ifdef HAVE_UNISTD_H
+#include <unistd.h>
+#endif /* HAVE_UNISTD_H */
+
+#endif /* HAVE_CONFIG_H */
 
 #define  DB	0	/* heavy debugging level 0, 1, 2 */
 
@@ -189,7 +202,7 @@ void usage (char *msg, char *arg, int longhelp)
     }
     if (longhelp)
     {
-    	fprintf (SdifStdErr, "\n" PROG "version $Revision: 1.9 $\n\n");
+    	fprintf (SdifStdErr, "\n" PROG "version $Revision: 1.10 $\n\n");
     
     	if (types)
     	{
@@ -349,7 +362,7 @@ outsdif (OutAction what, double data)
 
 	case BeginFrame:
 	  if (out->CurrFramH == NULL)
-	    out->CurrFramH = calloc(1,sizeof(*out->CurrFramH));
+	    out->CurrFramH = (SdifFrameHeaderT *)calloc(1,sizeof(*out->CurrFramH));
 	  
 	  *out->CurrFramH           = *in->CurrFramH;
 	  /* leave original data in case we don't change frame structure
@@ -368,7 +381,7 @@ outsdif (OutAction what, double data)
 	case BeginMatrix:  
 	    mustwriteheader = 1;
 	    nummatrix++;	
-	    rows = data;
+	    rows = (int)data;
 	    if (rows > 0) break; 
 	    else	  data = SdifFCurrNbCol (in);
 	    /* FALLTHROUGH! (matrix has no rows->write header nevertheless) */
@@ -379,7 +392,7 @@ outsdif (OutAction what, double data)
 	        SdifFSetCurrMatrixHeader (out, 
 		    SdifSelectGetFirstSignature (out->Selection->matrix, 
 						 SdifFCurrMatrixSignature(in)),
-		    SdifFCurrDataType (in), rows, data);
+		    SdifFCurrDataType (in), rows, (unsigned int)data);
 		numbytes += SdifFWriteMatrixHeader (out);
 		mustwriteheader = 0;
 	    }
@@ -605,7 +618,15 @@ int main(int argc, char** argv)
      *  do inits 
      */
 
-    SdifGenInit (types  ?  types  :  "");
+    if (!types)
+    {
+	char types2[2] = "";
+	SdifGenInit (types2);
+    }
+    else
+    {
+	SdifGenInit (types);
+    }
 
     /* open in file (parses selection from filename into in->Selection) */
     in = SdifFOpen (infile, eReadFile);
