@@ -1,8 +1,11 @@
-/* $Id: sdif.h,v 1.16 2002-06-18 13:56:23 ftissera Exp $
+/* $Id: sdif.h,v 1.17 2002-08-05 14:22:42 roebel Exp $
  *
  * This file contains type declaration of variables used in SDIF library.
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.16  2002/06/18 13:56:23  ftissera
+ * Move SdifFGetAllTypefromSdifString declaration from SdifFGet.h to sdif.h
+ *
  * Revision 1.15  2002/05/24 19:40:43  ftissera
  * Change code to be compatible with C++
  * Add two handlers for error and warning.
@@ -78,7 +81,7 @@
  * Revision 1.1.2.1  2000/08/21  13:07:41  tisseran
  * *** empty log message ***
  *
- * $Date: 2002-06-18 13:56:23 $
+ * $Date: 2002-08-05 14:22:42 $
  *
  */
 
@@ -94,7 +97,7 @@ extern "C" {
 #endif
 
 
-static const char _sdif_h_cvs_revision_ [] = "$Id: sdif.h,v 1.16 2002-06-18 13:56:23 ftissera Exp $";
+static const char _sdif_h_cvs_revision_ [] = "$Id: sdif.h,v 1.17 2002-08-05 14:22:42 roebel Exp $";
 
 
 #include <stdio.h>
@@ -2390,6 +2393,15 @@ char *SdifSelectFindSelection (const char *filename);
 */
 char *SdifGetFilenameAndSelection (/*in*/  const char *filename, 
 				   /*out*/ SdifSelectionT *sel);
+
+/*DOC: 
+  Replace current selection by new one given in first argument.
+  The selection specification may contain all the parts of a filename
+  based selection after the  selection indicator :: .
+*/
+void SdifReplaceSelection (/*in*/ const char* selectionstr,
+			   /*out*/ SdifSelectionT *sel);
+
 
 /*DOC: 
 */
