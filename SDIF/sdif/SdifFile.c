@@ -1,4 +1,4 @@
-/* $Id: SdifFile.c,v 3.31 2003-05-30 17:42:05 schwarz Exp $
+/* $Id: SdifFile.c,v 3.32 2003-06-06 10:25:44 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -33,6 +33,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.31  2003/05/30 17:42:05  schwarz
+ * Added SdifFGetMatrixType and SdifFGetFrameType.
+ *
  * Revision 3.30  2003/05/27 16:10:42  schwarz
  * Added SdifFGetMatrixTypesTable and SdifFGetFrameTypesTable.
  *
@@ -238,7 +241,7 @@
 #include "SdifVersion.h"
 
 #ifndef AUTOCKSUM
-#define AUTOCKSUM "$Checksum: not available$ IRCAM $Date: 2003-05-30 17:42:05 $" 
+#define AUTOCKSUM "$Checksum: not available$ IRCAM $Date: 2003-06-06 10:25:44 $" 
 #endif
 
 #ifndef lint
@@ -373,6 +376,20 @@ SdifFOpen(const char* Name, SdifFileModeET Mode)
 			if(SdifF->Stream != NULL)
 			{	XpSetFileAttribute(SdifF->Name, FileType_Sdif, 0);
 			}
+	  break;
+
+          case eReadWriteFile:
+	      switch (stdio)
+	      {
+		  case eBinaryModeUnknown:
+		      SdifF->Stream = SdiffBinOpen (SdifF->Name, 
+						    eBinaryModeReadWrite);
+		  break;
+
+	          default:
+		      _SdifFError(SdifF, eBadStdFile, SdifF->Name);
+		  break;
+	      }
 	  break;
 
           case ePredefinedTypes: /* special case:		  */
