@@ -7,17 +7,22 @@
  * 
  * 
  * 
- * $Id: sdifnamevaluetable.cpp,v 1.2 2002-08-28 16:46:53 roebel Exp $ 
+ * $Id: sdifnamevaluetable.cpp,v 1.3 2002-10-10 10:49:09 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  2002/08/28 16:46:53  roebel
+ * Internal reorganization and name changes.
+ *
  * Revision 1.1  2002/06/18 17:56:40  ftissera
  * Project for new SDIF API
  * 
  * 
  */
 
+#include <iostream>
 #include "easdif/sdifnamevaluetable.h"
 
+namespace Easdif {
 
 int SDIFNameValueTable::AddNameValue(std::string name,std::string value)
 {
@@ -60,7 +65,7 @@ void SDIFNameValueTable::ViewNameValue(std::string name)
 
 void SDIFNameValueTable::ViewNameValueTable()
 {
-   typedef map<std::string, std::string>::const_iterator CI;
+   typedef std::map<std::string, std::string>::const_iterator CI;
 
     for (CI p = map_NameValues.begin(); p != map_NameValues.end() ; ++p)
     {
@@ -69,14 +74,5 @@ void SDIFNameValueTable::ViewNameValueTable()
     }
 }
 
-
-
-
-
-
-
-
-
-
-
+} // end of namespace Easdif
 

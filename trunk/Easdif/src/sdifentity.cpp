@@ -7,9 +7,13 @@
  * 
  * 
  * 
- * $Id: sdifentity.cpp,v 1.4 2002-10-03 11:26:56 tisseran Exp $ 
+ * $Id: sdifentity.cpp,v 1.5 2002-10-10 10:49:09 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.4  2002/10/03 11:26:56  tisseran
+ * Check if efile is not null before trying to close it.
+ * Initialize efile to 0 by sdifentity::sdifentity()
+ *
  * Revision 1.3  2002/08/28 16:46:53  roebel
  * Internal reorganization and name changes.
  *
@@ -37,6 +41,8 @@
 //  SdifGenInit(PredefinedType);
 //  SdifSetErrorFunc(ExceptionThrower);
 //}
+
+namespace Easdif {
 
 SDIFEntity::SDIFEntity(): efile(0), mSize(0), mEof(0), mNbNVT(0), 
     mOpen(0), generalHeader(0), asciiChunks(0), bytesread(0)
@@ -157,7 +163,7 @@ int SDIFEntity::WriteNVTs()
     const char* name;
     const char* value;
     // size_t asciiChunks;    
-    typedef map<std::string, std::string>::const_iterator CI;
+    typedef std::map<std::string, std::string>::const_iterator CI;
 
     for (int i = 0 ; i < mNbNVT ; i++)
     {
@@ -233,14 +239,23 @@ SdifErrorT* SDIFEntity::LastError()
 }
 
 
-int& SDIFEntity::eof() {
+bool& SDIFEntity::eof() {
     return mEof;
 }
 
 int SDIFEntity::ReadNextFrame(SDIFFrame& frame)
 {
     int bytesread = 0;
-    if(eof()) return -1;
+
+    if(eof()) {
+      // return -1;
+      SDIFEof exc;
+      exc.initException(eError,
+			"Error in SDIFEntity::ReadNextFrame -- Eof reached",
+			efile,0,0,0);      
+      throw exc;
+    }
+
     //bytesread = frame.Read(efile, eof());
     bytesread = frame.Read(efile, mEof);
     return bytesread;    
@@ -341,3 +356,4 @@ int SDIFEntity::ChangeSelection(const std::string& selection)
 
 /*****************************************************/
 
+} // end of namespace Easdif

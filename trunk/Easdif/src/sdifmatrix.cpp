@@ -7,9 +7,12 @@
  * 
  * 
  * 
- * $Id: sdifmatrix.cpp,v 1.5 2002-08-28 16:46:53 roebel Exp $ 
+ * $Id: sdifmatrix.cpp,v 1.6 2002-10-10 10:49:09 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.5  2002/08/28 16:46:53  roebel
+ * Internal reorganization and name changes.
+ *
  * Revision 1.4  2002/07/12 10:20:04  ftissera
  * Read has changed for selection
  *
@@ -22,7 +25,11 @@
  * 
  */
 
+
+#include <iostream>
 #include "easdif/sdifmatrix.h"
+
+namespace Easdif {
 
 SDIFMatrix::SDIFMatrix():mInter(0)
 {
@@ -249,3 +256,4 @@ std::string SDIFMatrix::GetStringSignature() const
 {
     return m_Signature;
 }
+} // end of namespace Easdif

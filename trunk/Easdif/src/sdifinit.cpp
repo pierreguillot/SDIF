@@ -1,5 +1,6 @@
 #include "sdifinit.h"
 
+namespace Easdif {
 
 //void EasdifInit(char* PredefinedType)
 void EasdifInit(std::string PredefinedType)
@@ -14,3 +15,5 @@ void EasdifEnd()
 {
  SdifGenKill();
 }
+
+} // end of namespace Easdif

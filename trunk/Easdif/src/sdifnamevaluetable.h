@@ -8,9 +8,12 @@
  * 
  *
  * 
- * $Id: sdifnamevaluetable.h,v 1.2 2002-08-28 16:46:53 roebel Exp $ 
+ * $Id: sdifnamevaluetable.h,v 1.3 2002-10-10 10:49:09 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  2002/08/28 16:46:53  roebel
+ * Internal reorganization and name changes.
+ *
  * Revision 1.1  2002/06/18 17:56:06  ftissera
  * Project for new SDIF API
  * 
@@ -26,6 +29,8 @@
 #include <iterator>
 #include <sdif.h>
 
+
+namespace Easdif {
 
 /** 
  * @brief class which can be associated with a Name Value Table
@@ -121,6 +126,9 @@ class SDIFNameValueTable
  */
     void ViewNameValueTable();
 };
+
+
+} // end of namespace Easdif
 
 #endif
 

@@ -7,9 +7,12 @@
  * 
  * 
  * 
- * $Id: sdifframe.cpp,v 1.5 2002-08-28 16:46:53 roebel Exp $ 
+ * $Id: sdifframe.cpp,v 1.6 2002-10-10 10:49:09 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.5  2002/08/28 16:46:53  roebel
+ * Internal reorganization and name changes.
+ *
  * Revision 1.4  2002/07/12 10:18:17  ftissera
  * Read has changed for selection
  *
@@ -25,8 +28,10 @@
 #include "easdif/sdifframe.h"
 #include "easdif/sdifentity.h"
 
+namespace Easdif {
+
 /* for reading */
-int SDIFFrame::Read(SdifFileT* file,int &eof)
+int SDIFFrame::Read(SdifFileT* file,bool &eof)
 {
     mFrameBytesRead = 0;
 
@@ -55,7 +60,13 @@ int SDIFFrame::Read(SDIFEntity& entity)
     mFrameBytesRead = 0;
     SdifFileT* file = entity.GetFile();
 
-    if(entity.eof()) return -1;
+    if(entity.eof()) {
+      // return -1;
+      Easdif::SDIFEof exc;
+      exc.initException(eError,"Error in SDIFFrame::Read -- Eof reached",
+			file,0,0,0);      
+      throw exc;
+    }
     return Read(file,entity.eof());
 
 /*
@@ -396,4 +407,5 @@ SdifSignature SDIFFrame::GetMatrixSelection(const SDIFEntity& entity)
 }
 
 
+} // end of namespace Easdif
 

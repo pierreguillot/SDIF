@@ -9,9 +9,12 @@
  * sdifframe.h is composed of the different methods which are using to 
  * manipulate the frame.
  * 
- * $Id: sdifframe.h,v 1.4 2002-08-28 16:46:53 roebel Exp $ 
+ * $Id: sdifframe.h,v 1.5 2002-10-10 10:49:09 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.4  2002/08/28 16:46:53  roebel
+ * Internal reorganization and name changes.
+ *
  * Revision 1.3  2002/07/12 10:19:03  ftissera
  * *** empty log message ***
  *
@@ -31,9 +34,9 @@
 #include <sdif.h>
 #include "easdif/sdifmatrix.h"
 
+namespace Easdif {
+
 class SDIFEntity;
-
-
 
 /** 
  * @brief class which can be associated with a frame
@@ -89,7 +92,7 @@ public:
  * read entirely a frame : the header and the data
  * @return number of bytes read
  */
-    int  Read(SdifFileT* file, int &eof);
+    int  Read(SdifFileT* file, bool &eof);
 
 /**
  * \ingroup rnw 
@@ -328,5 +331,6 @@ public:
     void SetTime(float time);
 
 };
+} // end of namespace Easdif
 
 #endif

@@ -8,9 +8,12 @@
  * 
  * 
  * 
- * $Id: sdifmatrixdatainterface.h,v 1.3 2002-08-28 16:46:53 roebel Exp $ 
+ * $Id: sdifmatrixdatainterface.h,v 1.4 2002-10-10 10:49:09 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.3  2002/08/28 16:46:53  roebel
+ * Internal reorganization and name changes.
+ *
  * Revision 1.2  2002/07/12 10:29:54  ftissera
  * *** empty log message ***
  *
@@ -24,8 +27,8 @@
 #define SDIFMATRIXDATAINTERFACE_H_ 1
 
 #include <sdif.h>
-//#include "sdifmatrixdata.h"
 
+namespace Easdif {
 
 //class SdifMatrixDataInterface
 
@@ -54,5 +57,7 @@ public:
 
     virtual ~SDIFMatrixDataInterface() {};
 };
+
+} // end of namespace Easdif
 
 #endif
