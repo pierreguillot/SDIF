@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.21 2003-05-23 17:28:40 schwarz Exp $
+# $Id: Makefile.am,v 1.22 2003-06-13 10:05:40 schwarz Exp $
 #
 # ./Makefile.am		September 2000			Patrice Tisserand
 #
@@ -30,6 +30,10 @@
 
 
 # $Log: not supported by cvs2svn $
+# Revision 1.21  2003/05/23 17:28:40  schwarz
+# Dammit! win and mac build directories winbuild and maxosxbuild,
+# 	not yet used since you have to change the projects first.
+#
 # Revision 1.20  2003/05/01 18:51:59  roebel
 # Fixed double declaration of EXTRA_DIST variable.
 #
@@ -116,7 +120,7 @@ else
 DOC_SRC_DIR =
 endif 
 
-SUBDIRS = sdif include tools data test sdifcpp $(DOC_SRC_DIR)
+SUBDIRS = sdif include tools data test sdifcpp macosxbuild $(DOC_SRC_DIR)
 
 sdifincdir = @top_srcdir@/include
 
@@ -141,8 +145,7 @@ test:	check
 #
 
 # more files to include in dist
-EXTRA_DIST	  = sdif.pbxproj README.MacOSX \
-		    sdif.vcproj sdif.dsw
+EXTRA_DIST	  = sdif.vcproj sdif.dsw
 
 
 # base name of distribution (override automake generated variable to make source distribution!)
