@@ -32,9 +32,12 @@
  * 
  * 
  * 
- * $Id: sdifentity.h,v 1.7 2003-04-29 15:54:04 schwarz Exp $ 
+ * $Id: sdifentity.h,v 1.8 2003-05-01 18:59:12 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.7  2003/04/29 15:54:04  schwarz
+ * Use SWIG_RENAME_EASDIF to control class renaming.
+ *
  * Revision 1.6  2003/04/29 15:41:30  schwarz
  * Changed all names View* to Print* and *Info to *Header for consistency
  * with SDIF library.
@@ -118,7 +121,7 @@ namespace Easdif {
 
 class SDIFEntity
 {
-    friend SDIFFrame;
+    friend class SDIFFrame;
 
 private:
 
