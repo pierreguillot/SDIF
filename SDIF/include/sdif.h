@@ -1,4 +1,4 @@
-/* $Id: sdif.h,v 1.27 2003-05-01 18:48:41 roebel Exp $
+/* $Id: sdif.h,v 1.28 2003-05-27 16:08:49 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -30,6 +30,10 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.27  2003/05/01 18:48:41  roebel
+ * SdifStringToSignature takes now const char * as argument.
+ * Added missing declaration for SdifSkipASCIIUntilfromSdifString.
+ *
  * Revision 1.26  2003/04/18 17:42:49  schwarz
  * Removed last warning from swig.
  *
@@ -146,7 +150,7 @@
  * Revision 1.1.2.1  2000/08/21  13:07:41  tisseran
  * *** empty log message ***
  *
- * $Date: 2003-05-01 18:48:41 $
+ * $Date: 2003-05-27 16:08:49 $
  *
  */
 
@@ -161,7 +165,7 @@ extern "C" {
 #endif
 
 
-static const char _sdif_h_cvs_revision_ [] = "$Id: sdif.h,v 1.27 2003-05-01 18:48:41 roebel Exp $";
+static const char _sdif_h_cvs_revision_ [] = "$Id: sdif.h,v 1.28 2003-05-27 16:08:49 schwarz Exp $";
 
 
 #include <stdio.h>
@@ -945,6 +949,9 @@ struct SdifFileS
 
 
 
+
+
+
 /* SdifString.h */
 
 typedef struct SdifStringS SdifStringT;
@@ -1599,12 +1606,31 @@ void            SdifKillComponent   (SdifComponentT *Component);
 SdifFrameTypeT* SdifCreateFrameType (SdifSignature FramS, SdifFrameTypeT *PredefinedFrameType);
 
 void            SdifKillFrameType               (SdifFrameTypeT *FrameType);
+
+/** 
+ * Access a frame type definition by matrix component signature 
+ */
 SdifComponentT* SdifFrameTypeGetComponent_MtrxS (SdifFrameTypeT *FrameType, SdifSignature MtrxS);
+
+/** 
+ * Access a frame type definition by matrix component name 
+ */
 SdifComponentT* SdifFrameTypeGetComponent       (SdifFrameTypeT *FrameType, char *NameC);
+
+/** 
+ * Access a frame type definition by matrix component number 
+ */
 SdifComponentT* SdifFrameTypeGetNthComponent    (SdifFrameTypeT *FrameType, SdifUInt4 NumC);
+
 SdifFrameTypeT* SdifFrameTypePutComponent       (SdifFrameTypeT *FrameType, SdifSignature MtrxS, char *NameC);
 
+
+/**
+ * Get frame type pointer from signature, given a frame type hash table.
+ * Use SdifFGetFrameTypesTable to get this.
+ */ 
 SdifFrameTypeT* SdifGetFrameType       (SdifHashTableT *FrameTypeHT, SdifSignature FramS);
+
 void            SdifPutFrameType       (SdifHashTableT *FrameTypeHT, SdifFrameTypeT *FrameType);
 SdifUInt2       SdifExistUserFrameType (SdifHashTableT *FrameTypeHT);
 
@@ -2088,7 +2114,10 @@ SdifColumnDefT*  SdifMatrixTypeGetNthColumnDef     (SdifMatrixTypeT *MatrixType,
   signature d'un type prédéfini,
   SdifGetMatrixType(SdifF->MatrixTypeTable,Signature) renvoie NULL si
   le lien avec entre SdifF et gSdifPredefinedType n'a pas été mis à
-  jour.  */
+  jour.  
+
+  Tip: use SdifFGetMatrixTypesTable to obtain the matrix types hash table.
+*/
 SdifMatrixTypeT* SdifGetMatrixType		   (SdifHashTableT *MatrixTypesTable, 
 						    SdifSignature Signature);
 
@@ -2108,6 +2137,21 @@ SdifUInt2        SdifExistUserMatrixType(SdifHashTableT *MatrixTypesTable);
   Get all types from a SdifStringT
 */
 size_t    SdifFGetAllTypefromSdifString   (SdifFileT *SdifF, SdifStringT *SdifString);
+
+
+
+/**
+ * Get table of matrix type definitions, 
+ * useful for SdifGetMatrixType. 
+ */
+SdifHashTableT *SdifFGetMatrixTypesTable(SdifFileT *file);
+
+/**
+ * Get table of frame type definitions, 
+ * useful for SdifGetFrameType. 
+ */
+SdifHashTableT *SdifFGetFrameTypesTable(SdifFileT *file);
+
 
 
 /*
