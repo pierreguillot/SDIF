@@ -1,4 +1,4 @@
-/* $Id: SdifHard_OS.h,v 3.2 1999-06-18 16:23:58 schwarz Exp $
+/* $Id: SdifHard_OS.h,v 3.3 1999-10-07 15:12:25 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -16,6 +16,11 @@
  * author: Dominique Virolle 1998
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.2  1999/06/18  16:23:58  schwarz
+ * SdifSignatureCmpNoVersion dropped LAST byte on alpha, because the mask
+ * 0x00ffffff was not byteswapped.  Introduced gSdifSignatureVersionMask,
+ * which is initialised in SdifInitMachineType to appropriate value.
+ *
  * Revision 3.1  1999/03/14  10:57:00  virolle
  * SdifStdErr add
  *
@@ -68,6 +73,8 @@
 
 /* to do fpos_t compatible on MacinTosh */
 #if defined(MACINTOSH) || defined(WIN32)
+/* on mac or windows, seeking on a stream is always considered
+   successful (return 0)! */
 #define SdiffPosT long
 #define SdiffGetPos(f,p) ((((*(p)) = ((f!= stdin) && (f!= stdout) && (f!= stderr)) ? ftell(f) : 0 ) == -1 ) ? -1 : 0)
 #define SdiffSetPos(f,p) ((f!= stdin) && (f!= stdout) && (f!= stderr)) ? fseek(f, (long)(*(p)), SEEK_SET) : 0
@@ -109,7 +116,12 @@ void SdifBigToLittle(void *InOutPtr, size_t size);
 
 
 int       SdifStrLen  (const char *s);
+
+/* returns 0 if strings are equal */
 int       SdifStrCmp  (const char *s1, const char *s2);
+
+/* returns true if strings are equal */
+int	  SdifStrEq(const char *s1, const char *s2);
 int       SdifStrNCmp (const char *s1, const char *s2, unsigned int n);
 char*     SdifStrNCpy (char *s1, const char *s2, unsigned int n);
 char*     SdifCreateStrNCpy (const char* Source, size_t Size);

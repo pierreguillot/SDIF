@@ -1,4 +1,4 @@
-/* $Id: SdifFileStruct.h,v 3.2 1999-09-20 13:22:00 schwarz Exp $
+/* $Id: SdifFileStruct.h,v 3.3 1999-10-07 15:12:23 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -15,6 +15,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.2  1999/09/20  13:22:00  schwarz
+ * Introduced user data and access functions SdifFAddUserData/GetUserData.
+ *
  * Revision 3.1  1999/03/14  10:56:51  virolle
  * SdifStdErr add
  *
@@ -156,13 +159,13 @@ struct SdifFileS
   char *TextStreamName;                 /* Name of the text file corresponding to the sdif file */
   FILE *TextStream;                     /* Stream text */
 
-
-  unsigned int NbOfWarning;
-  SdifErrorLT *Errors;
+  unsigned int  NbOfWarning;
+  SdifErrorLT  *Errors;
 
   int		NbUserData;		/* todo: hash table */
   void		*UserData [MaxUserData];
-};
+  int		isSeekable;		/* file is neither standard i/o nor pipe i/o */
+};	/* end struct SdifFileS */
 
 
 #endif /* _SdifFileStruct_ */

@@ -1,4 +1,4 @@
-/* $Id: SdifHard_OS.c,v 3.3 1999-09-28 13:09:01 schwarz Exp $
+/* $Id: SdifHard_OS.c,v 3.4 1999-10-07 15:12:24 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -11,6 +11,10 @@
  *
  * author: Dominique Virolle 1998
  * $Log: not supported by cvs2svn $
+ * Revision 3.3  1999/09/28  13:09:01  schwarz
+ * Included #include <preincluded.h> for cross-platform uniformisation,
+ * which in turn includes host_architecture.h and SDIF's project_preinclude.h.
+ *
  * Revision 3.2  1999/06/18  16:23:57  schwarz
  * SdifSignatureCmpNoVersion dropped LAST byte on alpha, because the mask
  * 0x00ffffff was not byteswapped.  Introduced gSdifSignatureVersionMask,
@@ -199,6 +203,13 @@ int
 SdifStrCmp(const char *s1, const char *s2)
 {
   return strcmp(s1, s2);
+}
+
+
+int
+SdifStrEq(const char *s1, const char *s2)
+{
+  return strcmp(s1, s2) == 0;
 }
 
 

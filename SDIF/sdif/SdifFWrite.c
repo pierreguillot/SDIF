@@ -1,4 +1,4 @@
-/* $Id: SdifFWrite.c,v 3.2 1999-09-28 13:08:56 schwarz Exp $
+/* $Id: SdifFWrite.c,v 3.3 1999-10-07 15:12:21 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -14,6 +14,10 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.2  1999/09/28  13:08:56  schwarz
+ * Included #include <preincluded.h> for cross-platform uniformisation,
+ * which in turn includes host_architecture.h and SDIF's project_preinclude.h.
+ *
  * Revision 3.1  1999/03/14  10:56:47  virolle
  * SdifStdErr add
  *
@@ -47,7 +51,9 @@ SdifUpdateChunkSize(SdifFileT *SdifF, size_t ChunkSize)
 
   ChunkSizeInt4 = (SdifInt4) ChunkSize;
  
-  if  ( (SdifF->Stream != stdout) && (SdifF->Stream != stderr) )
+  /* proper solution:  SdifFileT.isSeekable flag is false for stdio and
+     pipe i/o.  In this case, don't even try to update chunk size. */
+  if (SdifF->isSeekable)
     {
       if (SdiffGetPos(SdifF->Stream, &(SdifF->Pos)) != 0)
 	_SdifRemark("SdifUpdateChunkSize, SdifFGetPos erreur\n");
