@@ -11,7 +11,7 @@ The SDIF Sound Description Interchange Format IRCAM Library
 see http://www.ircam.fr/sdif
 %prep
 
-%setup -n SDIF-%{version}
+%setup -n SDIF-%{version}-src
 
 %build
 ./configure --prefix=/usr
