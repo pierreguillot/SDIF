@@ -13,7 +13,8 @@ echo \*************************************************************************
 for namein in  $Files_Sdif_Dir/*.sdif; do
     base=`basename $namein`
     sdifnameout=$Files_Txt_Sdif_Txt_Sdif_Dir/$base.txt.sdif
-    if  ! cmp $namein $sdifnameout; then
+    cmp $namein $sdifnameout
+    if [ $? != "0" ]; then
       exit 1
     fi 
 done

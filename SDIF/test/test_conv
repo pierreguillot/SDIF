@@ -56,7 +56,6 @@ for namein in $Files_Txt_Dir/*.txt; do
     $SDIFTOTEXT -i $nameout -o $nameresult
     echo "txt->sdif->txt->sdif"
     $TOSDIF -i $nameresult -o $sdifnameout
-
 done
 
 echo
