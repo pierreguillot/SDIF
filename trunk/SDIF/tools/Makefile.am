@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.9 2002-09-24 13:36:25 schwarz Exp $
+# $Id: Makefile.am,v 1.10 2002-10-10 10:40:10 roebel Exp $
 #
 # ./tools/Makefile.am		September 2000			Patrice Tisserand
 #
@@ -29,6 +29,9 @@
 # send email to:  sdif@ircam.fr
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.9  2002/09/24 13:36:25  schwarz
+# Need to define VERSION for tools.
+#
 # Revision 1.8  2001/07/12 14:11:47  roebel
 # Added include file holding library version defines to the distribution.
 #
@@ -78,18 +81,18 @@ tosdif_debug_LDADD = -lsdif-debug
 tosdif_debug_LDFLAGS = -L../sdif
 tosdif_debug_DEPENDENCIES=../sdif/libsdif-debug.a
 
-querysdif_LDADD = -lsdif
+querysdif_LDADD = -l$(basename $(subst lib,,@SELLIB@))
 querysdif_LDFLAGS = -L../sdif
-querysdif_DEPENDENCIES=../sdif/libsdif.a
-sdifextract_LDADD = -lsdif
+querysdif_DEPENDENCIES=../sdif/@SELLIB@
+sdifextract_LDADD = -l$(basename $(subst lib,,@SELLIB@))
 sdifextract_LDFLAGS = -L../sdif
-sdifextract_DEPENDENCIES=../sdif/libsdif.a
-sdiftotext_LDADD = -lsdif
+sdifextract_DEPENDENCIES=../sdif/@SELLIB@
+sdiftotext_LDADD = -l$(basename $(subst lib,,@SELLIB@))
 sdiftotext_LDFLAGS = -L../sdif
-sdiftotext_DEPENDENCIES=../sdif/libsdif.a
-tosdif_LDADD = -lsdif
+sdiftotext_DEPENDENCIES=../sdif/@SELLIB@
+tosdif_LDADD = -l$(basename $(subst lib,,@SELLIB@))
 tosdif_LDFLAGS = -L../sdif
-tosdif_DEPENDENCIES=../sdif/libsdif.a
+tosdif_DEPENDENCIES=../sdif/@SELLIB@
 
 INCLUDES  = -I../include -I$(top_srcdir)/include -I$(top_srcdir)/sdif
-CFLAGS   += '-DVERSION="$(VERSION)"'
+CFLAGS   = @CFLAGS@ '-DVERSION="$(VERSION)"'
