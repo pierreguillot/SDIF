@@ -1,3 +1,8 @@
+2004-07-20  Axel Roebel  <Axel.Roebel@ircam.fr>
+
+	* loadsdif tests the file to be an sdif file prior to try to open it.
+	returns error (no output matrix) in case it is no sdif file
+
 2003-10-29  schwarz  <schwarz@LeGray>
 
 	* loadsdifflat.m: fix frame/matrix correspondence bug
