@@ -32,9 +32,12 @@
  * 
  * 
  * 
- * $Id: sdifmatrix.cpp,v 1.2 2003-04-06 16:31:08 roebel Exp $ 
+ * $Id: sdifmatrix.cpp,v 1.3 2003-04-29 15:18:04 schwarz Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  2003/04/06 16:31:08  roebel
+ * Added license info
+ *
  * Revision 1.1  2003/03/03 19:00:16  roebel
  * Moved src directory to new name easdif
  *
@@ -74,7 +77,7 @@
 
 namespace Easdif {
 
-SDIFMatrix::SDIFMatrix(const SdifDataTypeET & _type):
+SDIFMatrix::SDIFMatrix(const SdifDataTypeET _type):
   mInter(0),mType(_type)
 {
 
@@ -96,16 +99,19 @@ SDIFMatrix::SDIFMatrix(const SDIFMatrix& aMatrix):mInter(0)
     mInter =   aMatrix.mInter->clone(); 
 }
 
-void SDIFMatrix::CreateMatrixData(SdifSignature sig, int nrows, int ncols, SdifDataTypeET type)//=eFloat4)
+
+
+void SDIFMatrix::CreateMatrixData_(const char *sig, SdifSignature ssig, 
+				   int nrows, int ncols, 
+				   SdifDataTypeET type)
 {
     if(mInter) {
 	delete mInter;
 	mInter =0;
     }
 
-    mSig = sig;
-    /* to update the m_Signature : */
-    m_Signature = SdifSignatureToString(mSig);
+    mSig = ssig;
+    m_Signature = sig;
     mType = type;
 
     switch (mType){
@@ -118,8 +124,30 @@ void SDIFMatrix::CreateMatrixData(SdifSignature sig, int nrows, int ncols, SdifD
     case eFloat8:
 	mInter=static_cast<SDIFMatrixDataInterface*>(new SDIFMatrixData<double>(nrows,ncols));
 	break;
+
+    default:
+      cerr  << endl << "!!! matrix type " << mType << " to be implemented !!!" << endl;
+      throw;
     }
 }
+
+
+void SDIFMatrix::CreateMatrixData(SdifSignature sig, int nrows, int ncols, SdifDataTypeET type)//=eFloat4)
+{
+    CreateMatrixData_(SdifSignatureToString(sig), sig, nrows, ncols, type);
+}
+
+
+
+void SDIFMatrix::CreateMatrixData(std::string &sig, int nrows, int ncols, SdifDataTypeET type)//=eFloat4)
+{
+    CreateMatrixData_(const_cast<char*>(sig.c_str()), 
+		      SdifStringToSignature(const_cast<char*>(sig.c_str())), 
+		      nrows, ncols, type);
+}
+
+
+
 
 int SDIFMatrix::Write(SdifFileT* file)
 {
