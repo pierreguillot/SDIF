@@ -33,9 +33,13 @@
  * 
  * 
  * 
- * $Id: easdif.h,v 1.6 2003-11-19 11:59:20 roebel Exp $ 
+ * $Id: easdif.h,v 1.7 2004-07-27 17:40:19 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.6  2003/11/19 11:59:20  roebel
+ * Put SdifCheckFileFormat which is a variant of
+ * a standard sdif function back into global namespace.
+ *
  * Revision 1.5  2003/11/18 12:43:30  roebel
  * Moved SdifCheckFileFormat into Easdif namespace.
  *
@@ -66,7 +70,7 @@
 
 #include <string>
 #include <vector>
-#include <sdif.h>
+#include "sdif.h"
 
 /**
  * \defgroup  sdifsupport Sdif Support Functions

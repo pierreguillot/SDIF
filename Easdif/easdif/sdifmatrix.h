@@ -33,9 +33,12 @@
  * 
  * 
  * 
- * $Id: sdifmatrix.h,v 1.21 2004-07-26 14:49:16 roebel Exp $ 
+ * $Id: sdifmatrix.h,v 1.22 2004-07-27 17:40:19 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.21  2004/07/26 14:49:16  roebel
+ * Fixed compiler warnings due to implicite casts
+ *
  * Revision 1.20  2004/07/21 13:27:22  roebel
  * Added new data accessing functions to read complete columns
  * GetCol(double *,int icol), GetCol(float *,int icol), GetCol(int *,int icol)
@@ -150,7 +153,7 @@
 
 
 #include <string>
-#include <sdif.h>
+#include "sdif.h"
 #include "easdif/sdifexception.h"
 #include "easdif/sdifmatrixdatainterface.h"
 #include "easdif/sdifmatrixdata.h"
