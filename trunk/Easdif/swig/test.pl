@@ -1,8 +1,15 @@
 #!/usr/bin/perl
 
-# $Id: test.pl,v 1.9 2003-04-18 15:41:18 schwarz Exp $
+# $Id: test.pl,v 1.10 2003-04-29 16:28:11 schwarz Exp $
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.9  2003/04/18 15:41:18  schwarz
+# Don't include all definitions from sdif.h, only the ones needed by
+# easdif, defined in sdifdefine.i.  -> smaller wrapper size:
+# .cxx	 880k -> 130k
+# .o	1000k -> 210k
+# .pm	 123k -> 8k
+#
 # Revision 1.8  2003/04/18 14:31:27  schwarz
 # Added typemap for string to SdifSignature conversion (input arg):
 # Setting/writing data works --> wrapper complete, but rudimentary.
@@ -55,7 +62,7 @@ while (!$file->eof())
     $count{$fsig}++;
 
     # print frame to stdout
-    #$frame->View();
+    #$frame->Print();
 
     $mat  = $frame->GetMatrix(0);
 #    $nomat= $frame->GetMatrix(1);
@@ -75,7 +82,7 @@ while (!$file->eof())
 }
 
 print "\ntypes defined in file:\n";
-$file->ViewTypes();
+$file->PrintTypes();
 
 # close file
 $file->Close();
@@ -100,7 +107,7 @@ while (my ($sig, $c) = each %valcount)
     $omt->CreateMatrixData($valmsig{$sig}, 1, 1, $eaSDIF::eFloat4);
     $omt->Set(0, 0, $mu);
 
-    $ofr->SetInfo($valfsig{$sig}, $stream++, $sigma);
+    $ofr->SetHeader($valfsig{$sig}, $stream++, $sigma);
     $ofr->AddMatrix($omt);
     $bytes += $ofr->Write($out);
 }
