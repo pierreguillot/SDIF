@@ -1,3 +1,18 @@
+2004-07-26  Niels Bogaards <bogaards@ircam.fr> and Axel Roebel  <roebel@localdomain>
+Version 3.8.6
+
+	* SDIF now thread save if pthreads are available:
+
+	Removed all unnecessary global and static variables and
+	reorganized remaining globals to be located in a thread local
+	structure. Old global variables are still exported to
+	not break old programs, however, they will no longer be used
+	internally to SDIF.
+	
+	Added pthread configure test
+
+	
+
 2004-07-13  Axel Roebel  <Axel.Roebel@ircam.fr>
 Version 3.8.5
 
@@ -375,4 +390,4 @@ Version 3.3:
 	  Operating System.
 
 	
-$Id: ChangeLog,v 1.37 2004-07-13 18:02:36 roebel Exp $
+$Id: ChangeLog,v 1.38 2004-07-26 10:30:22 roebel Exp $
