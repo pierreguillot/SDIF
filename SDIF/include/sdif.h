@@ -1,8 +1,11 @@
-/* $Id: sdif.h,v 1.14 2001-07-19 14:24:33 lefevre Exp $
+/* $Id: sdif.h,v 1.15 2002-05-24 19:40:43 ftissera Exp $
  *
  * This file contains type declaration of variables used in SDIF library.
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.14  2001/07/19 14:24:33  lefevre
+ * Macintosh Compilation
+ *
  * Revision 1.13  2001/07/12  14:11:48  roebel
  * Added include file holding library version defines to the distribution.
  *
@@ -70,7 +73,7 @@
  * Revision 1.1.2.1  2000/08/21  13:07:41  tisseran
  * *** empty log message ***
  *
- * $Date: 2001-07-19 14:24:33 $
+ * $Date: 2002-05-24 19:40:43 $
  *
  */
 
@@ -86,7 +89,7 @@ extern "C" {
 #endif
 
 
-static const char _sdif_h_cvs_revision_ [] = "$Id: sdif.h,v 1.14 2001-07-19 14:24:33 lefevre Exp $";
+static const char _sdif_h_cvs_revision_ [] = "$Id: sdif.h,v 1.15 2002-05-24 19:40:43 ftissera Exp $";
 
 
 #include <stdio.h>
@@ -128,35 +131,9 @@ struct SdifHashTableS
   SdifHashNT* *Table;
   unsigned int HashSize;
   SdifHashIndexTypeET IndexType;
-  void (*Killer)();  /* no verification of arguments */
+  void (*Killer)(void *); 
   unsigned int NbOfData;
 } ;
-
-/* SdifError.h */
-typedef enum SdifErrorE
-{
-  eFalse = 0,
-  eTrue = 1,
-  eFreeNull = 256,
-  eAllocFail,
-  eArrayPosition,
-  eEof,
-  eFileNotFound,
-  eInvalidPreType,
-  eAffectationOrder,
-  eNoModifErr,
-  eNotInDataTypeUnion,
-  eNotFound,
-  eExistYet,
-  eWordCut,
-  eTokenLength
-} SdifErrorEnum;
-
-
-/*DOC:
-  Exit function type (See SdifSetExitFunc). */
-typedef void (*SdifExitFuncT) (void);
-
 
 /* SdifMemory.h */
 #define _SdifMrNameSize 64
@@ -355,7 +332,7 @@ struct SdifListS
   SdifListNT *Head;
   SdifListNT *Tail;
   SdifListNT *Curr;  /* pointer before the next */
-  void (*Killer)();  /* no verification of arguments */
+  void (*Killer)(void *);  
   unsigned int NbData;
 } ;
 
@@ -570,7 +547,7 @@ struct SdifSignatureTabS
 /* tokens (numerical ids) for sdifspec separators */
 typedef enum { sst_specsep, sst_stream, sst_frame, sst_matrix, sst_column, 
 	       sst_row,     sst_time,   sst_list,  sst_range,  sst_delta,
-	       sst_num,	/* number of tokens */	   sst_norange = 0
+	       sst_num	/* number of tokens */,	   sst_norange = 0
 } SdifSelectTokens;
 
 /*DOC: 
@@ -700,6 +677,35 @@ struct SdifErrorLS
   SdifFileT*	SdifF; /* only a link */
 };
 
+
+/* SdifError.h */
+typedef enum SdifErrorE
+{
+  eFalse = 0,
+  eTrue = 1,
+  eFreeNull = 256,
+  eAllocFail,
+  eArrayPosition,
+  eEof,
+  eFileNotFound,
+  eInvalidPreType,
+  eAffectationOrder,
+  eNoModifErr,
+  eNotInDataTypeUnion,
+  eNotFound,
+  eExistYet,
+  eWordCut,
+  eTokenLength
+} SdifErrorEnum;
+
+
+/*DOC:
+  Exit function type (See SdifSetExitFunc). */
+typedef void (*SdifExitFuncT) (void);
+
+/*DOC:
+ Exception function type (See SdifSetErrorFunc and SdifSetWarningFunc). */
+typedef void (*SdifExceptionFuncT) ( int, SdifErrorLevelET, char*, SdifFileT*, SdifErrorT *, char*, int);
 
 
 
@@ -1213,6 +1219,15 @@ void SdifGenKill (void);
   Default is exit(). */
 void SdifSetExitFunc (SdifExitFuncT func);
 
+/*DOC:
+  Set function that will be called after an error has occured.
+  make an exception. */
+void SdifSetErrorFunc (SdifExceptionFuncT func);
+
+/*DOC:
+  Set function that will be called after a warning has occured.
+  make an exception. */
+void SdifSetWarningFunc (SdifExceptionFuncT func);
 
 /*DOC:
   Print version information to standard error. */
@@ -1524,7 +1539,8 @@ SdifUInt2       SdifExistUserFrameType (SdifHashTableT *FrameTypeHT);
 */
 
 
-#ifdef STDC_HEADERS  /* Is the compiler ANSI? */
+/*
+  #ifdef STDC_HEADERS */  /* Is the compiler ANSI? */
 
 /* generate template for all types */
 #define sdif__foralltypes(macro, post)	macro(Float4)post \
@@ -1552,7 +1568,8 @@ SdifUInt2       SdifExistUserFrameType (SdifHashTableT *FrameTypeHT);
 #define sdif_proto_foralltypes(macro)   \
 	sdif__foralltypes(macro,sdif_foralltypes_post_proto)
 
-#endif /* STDC_HEADERS */
+/*
+  #endif */ /* STDC_HEADERS */
 
 
 #define _SdifStringLen 1024
@@ -1640,7 +1657,7 @@ SdifInt4 SdiffBinClose      (FILE *f);
 
 
 
-SdifHashTableT* SdifCreateHashTable(unsigned int HashSize, SdifHashIndexTypeET IndexType, void (*Killer)());
+SdifHashTableT* SdifCreateHashTable(unsigned int HashSize, SdifHashIndexTypeET IndexType, void (*Killer)(void *));
 
 void SdifMakeEmptyHashTable (SdifHashTableT* HTable);
 void SdifKillHashTable      (SdifHashTableT* HTable);
@@ -2287,15 +2304,15 @@ size_t SdiffScanFloat4  (FILE *stream, SdifFloat4 *ptr, size_t nobj);
 size_t SdiffScanFloat8  (FILE *stream, SdifFloat8 *ptr, size_t nobj);
 #endif
 
-
-#ifdef STDC_HEADERS  /* Is the compiler ANSI? */
+/*
+  #ifdef STDC_HEADERS*/  /* Is the compiler ANSI? */
 
 #define sdif_scanproto(type) \
 size_t SdiffScan##type (FILE *stream, Sdif##type *ptr, size_t nobj)
 
 sdif_proto_foralltypes (sdif_scanproto)
-
-#endif /* STDC_HEADERS */
+/*
+  #endif */ /* STDC_HEADERS */
 
 
 /* Unsafe but optimized version of SdifStringToSignature:
@@ -2397,8 +2414,6 @@ void SdifSelectAdd_TYPE_Range (SdifListT *list,
 #endif	/* if 0 */
 
 
-#ifdef STDC_HEADERS
-
 #define _addrangeproto(name, type, field) \
 void SdifSelectAdd##name##Range (SdifListT *list, \
 				 type value, SdifSelectTokens rt, type range)
@@ -2414,20 +2429,6 @@ _addproto (Int,	      int,		integer)
 _addproto (Real,      double,		real)
 _addproto (Signature, SdifSignature,	signature)
 _addproto (String,    char *,		string)
-
-#else
-
-void SdifSelectAddInt (SdifListT *list, int value) ; 
-void SdifSelectAddIntRange (SdifListT *list, int value, SdifSelectTokens rt, int range) ; 
-void SdifSelectAddReal (SdifListT *list, double value) ; 
-void SdifSelectAddRealRange (SdifListT *list,                                   double value, SdifSelectTokens rt, double range) ; 
-void SdifSelectAddSignature (SdifListT *list, SdifSignature value) ; 
-void SdifSelectAddSignatureRange (SdifListT *list, SdifSignature value, SdifSelectTokens rt,   SdifSignature range) ; 
-void SdifSelectAddString (SdifListT *list, char * value) ; 
-void SdifSelectAddStringRange (SdifListT *list, char * value, SdifSelectTokens rt,      char * range) ; 
-
-#endif /* STDC_HEADERS */
-
 
 /*
 // FUNCTION GROUP:	Query parsed ranges (list of ranges).
