@@ -18,6 +18,10 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.2  1999/09/28  13:09:02  schwarz
+ * Included #include <preincluded.h> for cross-platform uniformisation,
+ * which in turn includes host_architecture.h and SDIF's project_preinclude.h.
+ *
  * Revision 3.1  1999/03/14  10:57:03  virolle
  * SdifStdErr add
  *
@@ -317,10 +321,11 @@ SdifListIsEmpty(SdifListT* List)
 
 
 
-void
+int
 SdifListInitLoop(SdifListT* List)
 {
     List->Curr = NULL;
+    return (List->Head != NULL);	/* true if List has elements */
 }
 
 
