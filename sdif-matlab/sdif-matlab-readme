@@ -1,4 +1,4 @@
-$Id: sdif-matlab-readme,v 1.12 2001-07-23 11:06:51 roebel Exp $
+$Id: sdif-matlab-readme,v 1.13 2003-09-15 17:28:58 schwarz Exp $
 
 sdif-matlab-README	8.8.2000	Diemo Schwarz (schwarz@ircam.fr)
 -------------------------------------------------------------------------------
@@ -20,6 +20,9 @@ with documentation and support functions.
 
 
 RELEASES
+
+0.3.0   15.09.2003   Use matrix row/column selection.  
+		     loadsdifflat, loadsdiffile 100 times faster for big files.
 
 0.2.2   not yet published 
                      Compiled with sdif version 3.4, support for reading 

@@ -1,10 +1,14 @@
-# $Id: makefile,v 1.31 2003-04-22 16:08:54 roebel Exp $
+# $Id: makefile,v 1.32 2003-09-15 17:29:12 schwarz Exp $
 #
 # makefile	26. January 2000	Diemo Schwarz
 #
 # formesutils matlab library
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.31  2003/04/22 16:08:54  roebel
+# Added possibility for writing local type declaration to
+# sdif file.
+#
 # Revision 1.30  2001/07/23 11:07:26  roebel
 # Installation removes files first!
 #
@@ -299,6 +303,9 @@ install:	all $(INSTALL_DIR)
 	rm -f $(INSTALLED_FILES)
 	cp -f $(INSTALL_FILES) $(INSTALL_DIR)
 	chmod g+w $(INSTALLED_FILES) # assure ownership-change
+
+instdef installdef installdefs:
+	cp -f mex.makedefs $(INSTALL_DIR)
 
 dist:		all
 	tar cvfz $(DIST_BASE).tar.gz $(DIST_FILES)
