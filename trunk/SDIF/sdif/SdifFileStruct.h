@@ -1,4 +1,4 @@
-/* $Id: SdifFileStruct.h,v 3.5 2000-05-04 15:06:42 schwarz Exp $
+/* $Id: SdifFileStruct.h,v 3.6 2000-05-22 15:23:16 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -15,6 +15,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.5  2000/05/04  15:06:42  schwarz
+ * Moved SdifSignatureTab into separate file SdifSignatureTab
+ *
  * Revision 3.4  1999/10/13  16:05:46  schwarz
  * Changed data type codes (SdifDataTypeET) to SDIF format version 3, as
  * decided with Matt Wright June 1999, added integer data types.
@@ -86,6 +89,10 @@
 
 #define	MaxUserData	10
 
+
+/*
+// DATA GROUP:	SDIF File Structure
+*/
 
 /*DOC:
   File mode argument for SdifFOpen.

@@ -1,4 +1,4 @@
-/* $Id: SdifStreamID.h,v 3.4 1999-10-15 12:26:56 schwarz Exp $
+/* $Id: SdifStreamID.h,v 3.5 2000-05-22 15:23:18 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -16,6 +16,11 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.4  1999/10/15  12:26:56  schwarz
+ * No time parameter for name value tables and stream ID tables, since
+ * this decision is better left to the library.  (It uses the _SdifNoTime
+ * constant, which happens to be _Sdif_MIN_DOUBLE_.)
+ *
  * Revision 3.3  1999/09/28  13:09:14  schwarz
  * Included #include <preincluded.h> for cross-platform uniformisation,
  * which in turn includes host_architecture.h and SDIF's project_preinclude.h.
@@ -60,6 +65,14 @@
 #include "SdifGlobals.h"
 #include "SdifHash.h"
 
+
+
+/*
+// DATA GROUP:		Stream ID Table and Entries for 1IDS ASCII chunk
+*/
+
+/*DOC:
+  Stream ID Table Entry */
 typedef struct SdifStreamIDS SdifStreamIDT;
 struct SdifStreamIDS
 {
@@ -69,13 +82,27 @@ struct SdifStreamIDS
 } ;
 
 
+/*DOC:
+  Stream ID Table, holds SdifStreamIDT stream ID table entries */
+typedef struct SdifStreamIDTableS SdifStreamIDTableT;
+struct SdifStreamIDTableS
+{
+    SdifHashTableT* SIDHT;
+    SdifUInt4       StreamID;
+    SdifFloat8      Time;	/* always _SdifNoTime */
+} ;
+
+
+/*
+// FUNCTION GROUP:	Stream ID Tables for 1IDS ASCII chunk
+*/
+
 /*DOC: 
   Permet de créer un pointeur sur un objet de type StreamIDT.  
 
-<p>Exemple:
+<p>Exemple dans le cas d'un TreeWay pour chant (non fichier):
 
 <pre>
-// dans le cas d'un TreeWay pour champ (non fichier)
 void ConsOneStreamID(SdifFileT *SdifF,
 		     int        NumID,
 		     char      *PatchType,
@@ -95,37 +122,74 @@ void ConsOneStreamID(SdifFileT *SdifF,
 
   SdifHashTablePut(SdifF->StreamIDsTable, &(StreamID->NumID), 1, StreamID);
 }
+</pre>
 
-// pour recuperer un StreamID il faut utiliser la fonction SdifHashTableGet
-{
-  SdifStreamIDT* StreamID;
-
-  StreamID = (SdifStreamIDT*) SdifHashTableGet (SdifF->StreamIDsTable, &NumID, 0);
-  // le troisième argument n'est pas utilisé, car la table est indexée directement
-  // par des entiers (création de la table avec l'option eInt4). 
-   
-}</pre>
-
+Pour recuperer un StreamID il faut utiliser la fonction SdifHashTableGet
+<pre>
+  SdifStreamIDT *StreamID = (SdifStreamIDT*) SdifHashTableGet (SdifF->StreamIDsTable, &NumID, 0);
+</pre>
+Le troisième argument n'est pas utilisé, car la table est indexée directement
+par des entiers (création de la table avec l'option eInt4). 
 */
 SdifStreamIDT* SdifCreateStreamID(SdifUInt4 NumID, char *Source, char *TreeWay);
 void           SdifKillStreamID(SdifStreamIDT *StreamID);
 
 
-
-typedef struct SdifStreamIDTableS SdifStreamIDTableT;
-struct SdifStreamIDTableS
-{
-    SdifHashTableT* SIDHT;
-    SdifUInt4       StreamID;
-    SdifFloat8      Time;
-} ;
-
-
+/*DOC:
+  Create a stream ID table.  <strong>The stream ID table of the SDIF
+  file structure is created automatically by SdifFOpen().</strong> 
+  It can be obtained by SdifFStreamIDTable(). */
 SdifStreamIDTableT* SdifCreateStreamIDTable     (SdifUInt4 HashSize);
-void                SdifKillStreamIDTable       (SdifStreamIDTableT* SIDTable);
-SdifStreamIDT*      SdifStreamIDTablePutSID     (SdifStreamIDTableT* SIDTable, SdifUInt4 NumID, char *Source, char *TreeWay);
-SdifStreamIDT*      SdifStreamIDTableGetSID     (SdifStreamIDTableT* SIDTable, SdifUInt4 NumID);
-SdifUInt4           SdifStreamIDTableGetNbData  (SdifStreamIDTableT* SIDTable);
+
+/*DOC:
+  Deallocate a stream ID table.  <strong>The stream ID table of the SDIF
+  file structure is killed automatically by SdifFClose.</strong>  
+  It can be obtained by SdifFStreamIDTable. */
+void                SdifKillStreamIDTable       (SdifStreamIDTableT *SIDTable);
+
+/*DOC:
+  Add an entry to a stream ID table.  The table will be written by
+  SdifFWriteAllASCIIChunks.
+  [in]  SIDTable pointer to stream ID table, e.g. obtained by SdifFStreamIDTable
+  [in]	NumID	stream ID of the frames the stream ID table describes
+  [in]	Source	Source identifier for the table (ex. "Chant")
+  [in]	TreeWay	Routing and parameters, separated by slashes
+  [return]
+		The stream ID table entry just created and added */
+SdifStreamIDT*      SdifStreamIDTablePutSID     (SdifStreamIDTableT *SIDTable,
+						 SdifUInt4	     NumID, 
+						 char 		    *Source, 
+						 char 		    *TreeWay);
+
+/*DOC:
+  Retrieve an entry to a stream ID table.  The table has to have been
+  read by SdifFReadAllASCIIChunks.
+
+  [in]  SIDTable pointer to stream ID table, e.g. obtained by 
+		 SdifFStreamIDTable
+  [in]	NumID	 stream ID of the frames the stream ID table describes
+  [return]
+		 pointer to stream ID table entry, or NULL if no entry for 
+		 stream ID NumID exists. */
+SdifStreamIDT*      SdifStreamIDTableGetSID     (SdifStreamIDTableT *SIDTable, 
+						 SdifUInt4	     NumID);
+
+/*DOC:
+  Return number of entries in stream ID table SIDTable */
+SdifUInt4           SdifStreamIDTableGetNbData  (SdifStreamIDTableT *SIDTable);
+
+
+/*DOC:
+  Return stream ID field in stream ID table entry SID */
+SdifUInt4	    SdifStreamIDEntryGetSID	(SdifStreamIDT *SID);
+
+/*DOC:
+  Return source field in stream ID table entry SID */
+char		   *SdifStreamIDEntryGetSource	(SdifStreamIDT *SID);
+
+/*DOC:
+  Return "treeway" field in stream ID table entry SID */
+char		   *SdifStreamIDEntryGetTreeWay	(SdifStreamIDT *SID);
 
 
 #endif /* _SdifStreamID_ */

@@ -1,4 +1,4 @@
-/* $Id: SdifFile.h,v 3.7 2000-05-04 15:05:48 schwarz Exp $
+/* $Id: SdifFile.h,v 3.8 2000-05-22 15:23:15 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -17,6 +17,12 @@ LIBRARY
 
 LOG
  * $Log: not supported by cvs2svn $
+ * Revision 3.7  2000/05/04  15:05:48  schwarz
+ * SDIF Selection is now parsed automatically on opening a file,
+ * and placed in file->Selection.
+ * Moved SdifCheckFileFormat and SdifSignatureTab functions into
+ * separate files SdifCheck and SdifSignatureTab.
+ *
  * Revision 3.6  2000/04/26  15:31:24  schwarz
  * Added SdifGenInitCond for conditional initialisation.
  *
@@ -277,6 +283,10 @@ SdifNameValuesLT *SdifFNameValueList (SdifFileT *file);
   Return number of NVTs present.
   [] precondition NVTs have been read with SdifFReadAllASCIIChunks. */
 int SdifFNameValueNum (SdifFileT *file);
+
+/*DOC:
+  Return the file's stream ID table, created automatically by SdifFOpen. */
+SdifStreamIDTableT *SdifFStreamIDTable (SdifFileT *file);
 
 /*DOC:
   Add user data, return index added */
