@@ -10,6 +10,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.3  1998/05/04  15:44:17  schwarz
+ * Replaced constant char* args by const char* (also some void*).
+ *
  */
 
 #include "SdifHash.h"
@@ -38,27 +41,29 @@ SdifCreateHashTable(unsigned int HashSize,
 		    SdifHashIndexTypeET IndexType,
 		    void (*Killer)())
 {
-  SdifHashTableT *NewTable;
+  SdifHashTableT *NewTable = NULL;
   SdifHashNT **CurrTable;
   unsigned int i;
 
-  if (NewTable = (SdifHashTableT*) malloc (sizeof(SdifHashTableT)))
+  NewTable = (SdifHashTableT*) malloc (sizeof(SdifHashTableT));
+  if (NewTable)
     {
       NewTable->HashSize = HashSize;
       NewTable->NbOfData = 0;
       NewTable->IndexType = IndexType;
       NewTable->Killer = Killer;
-      if (NewTable->Table = (SdifHashNT**) malloc (sizeof(SdifHashNT*) * HashSize))
-	{
-	  CurrTable = NewTable->Table;
-	  for(i=0; i<HashSize; i++)
-	    *CurrTable++ = NULL;
-	}
+      NewTable->Table = (SdifHashNT**) malloc (sizeof(SdifHashNT*) * HashSize);
+      if (NewTable->Table)
+	    {
+	      CurrTable = NewTable->Table;
+	      for(i=0; i<HashSize; i++)
+	       *CurrTable++ = NULL;
+	    }
       else
-	{
-	  fprintf(stderr, "HashTable allocation memory error\n");
-	  return NULL;
-	}
+	    {
+	     fprintf(stderr, "HashTable allocation memory error\n");
+	     return NULL;
+        }
       return NewTable;
     }
   else
@@ -82,25 +87,25 @@ SdifMakeEmptyHashTable(SdifHashTableT* HTable)
   for(i=0; i<HTable->HashSize; i++)
     {
       while (HTable->Table[i])
-	{
-	  pNode = HTable->Table[i];
-	  if (HTable->IndexType == eHashChar)
-	    free(pNode->Index.Char[0]);
-	  if (HTable->Killer)
-	    (*(HTable->Killer))(pNode->Data); /* this line can occasion a warning */
-	  else
-	    {
-	      /* if (pNode->Data)
-	       *   free(pNode->Data);
-	       *else
-	       *   fprintf(stderr, "HashTable->Data kill memory error : \n");
-	       */
-	      /* consider that the object pNode->Data cannot be kill because static
-	       */
+        {
+          pNode = HTable->Table[i];
+          if (HTable->IndexType == eHashChar)
+            free(pNode->Index.Char[0]);
+          if (HTable->Killer)
+            (*(HTable->Killer))(pNode->Data); /* this line can occasion a warning */
+          else
+            {
+              /* if (pNode->Data)
+              *   free(pNode->Data);
+	          *else
+	          *   fprintf(stderr, "HashTable->Data kill memory error : \n");
+	          */
+	          /* consider that the object pNode->Data cannot be kill because static
+	           */
+	        }
+	      HTable->Table[i] = pNode->Next;
+	      free(pNode);
 	    }
-	  HTable->Table[i] = pNode->Next;
-	  free(pNode);
-	}
     }
 }
 
@@ -159,9 +164,9 @@ SdifHashTableSearchChar(SdifHashTableT* HTable, const char *s, unsigned int ncha
   for (pNode = HTable->Table[SdifHashChar(s, nchar, HTable->HashSize)]; pNode!=NULL; pNode = pNode->Next)
     {
       if (strncmp((char*) s, (char*) pNode->Index.Char[0], nchar)== 0)
-	{
-	  return pNode->Data;     /* trouve */
-	}
+	    {
+         return pNode->Data;     /* trouve */
+        }
     }
 
   return NULL; /* pas trouve */
@@ -185,17 +190,18 @@ SdifHashTablePutChar(SdifHashTableT* HTable,
     {
       pNode = (SdifHashNT*) malloc (sizeof(SdifHashNT));
       if (pNode)
-	{
-	  if (pNode->Index.Char[0] = (char*) malloc (nchar * sizeof(char)))
-	    strncpy((char*) pNode->Index.Char[0], (char*) s, nchar);
-	  else
-	    return NULL; /* erreur memoire */
-	  valHash = SdifHashChar(s, nchar, HTable->HashSize);
-	  pNode->Data = Data; /* Attention : copie de pointeur */
-	  HTable->NbOfData++;
-	  pNode->Next = HTable->Table[valHash];
-	  HTable->Table[valHash] = pNode;
-	}
+        {
+	      pNode->Index.Char[0] = (char*) malloc (nchar * sizeof(char));
+          if (pNode->Index.Char[0])
+	        strncpy((char*) pNode->Index.Char[0], (char*) s, nchar);
+	      else
+	        return NULL; /* erreur memoire */
+	      valHash = SdifHashChar(s, nchar, HTable->HashSize);
+	      pNode->Data = Data; /* Attention : copie de pointeur */
+	      HTable->NbOfData++;
+	      pNode->Next = HTable->Table[valHash];
+	      HTable->Table[valHash] = pNode;
+	    }
     }
   return HTable;
 }
@@ -245,35 +251,35 @@ SdifHashTablePutInt4(SdifHashTableT* HTable, const unsigned int i, void* Data)
     {
       pNode = (SdifHashNT*) malloc (sizeof(SdifHashNT));
       if (pNode)
-	{
-	  pNode->Index.Int4 = i;
-	  valHash = SdifHashInt4(i, HTable->HashSize);
-	  pNode->Data = Data; /* Attention : copy de pointeur */
-	  HTable->NbOfData++;
+	    {
+	      pNode->Index.Int4 = i;
+	      valHash = SdifHashInt4(i, HTable->HashSize);
+	      pNode->Data = Data; /* Attention : copy de pointeur */
+	      HTable->NbOfData++;
 	  
-	  if (! HTable->Table[valHash])
-	    {
-	      pNode->Next = NULL;
-	      HTable->Table[valHash] = pNode;
-	    }
-	  else
-	    {
-	      if (pNode->Index.Int4 < HTable->Table[valHash]->Index.Int4)
-		{
-		  pNode->Next = HTable->Table[valHash];
-		  HTable->Table[valHash] = pNode;
-		}
+          if (! HTable->Table[valHash])
+            {
+	          pNode->Next = NULL;
+	          HTable->Table[valHash] = pNode;
+	        }
 	      else
-		{
-		  for(CurrNode = HTable->Table[valHash]; CurrNode->Next; CurrNode = CurrNode->Next)
-		    if (pNode->Index.Int4 < CurrNode->Next->Index.Int4)
-		      break;
+	        {
+	          if (pNode->Index.Int4 < HTable->Table[valHash]->Index.Int4)
+		        {
+		          pNode->Next = HTable->Table[valHash];
+		          HTable->Table[valHash] = pNode;
+		        }
+	          else
+		        {
+		          for(CurrNode = HTable->Table[valHash]; CurrNode->Next; CurrNode = CurrNode->Next)
+		            if (pNode->Index.Int4 < CurrNode->Next->Index.Int4)
+		              break;
 		  
-		  pNode->Next = CurrNode->Next;
-		  CurrNode->Next = pNode;
-		}
+		          pNode->Next = CurrNode->Next;
+		          CurrNode->Next = pNode;
+		        }
+	        }
 	    }
-	}
     }
   return HTable;
 }

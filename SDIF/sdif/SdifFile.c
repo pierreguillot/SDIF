@@ -1,4 +1,4 @@
-/* $Id: SdifFile.c,v 1.5 1998-07-23 17:02:49 virolle Exp $
+/* $Id: SdifFile.c,v 2.0 1998-11-29 11:41:40 virolle Exp $
  *
  * SdifFile.c
  *
@@ -20,6 +20,7 @@
 
 #include "SdifFile.h"
 #include "SdifTest.h"
+#include "SdifErrMess.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -36,111 +37,128 @@
 SdifFileT*
 SdifFOpen(const char* Name, SdifFileModeET Mode)
 {
-  SdifFileT* SdifFile;
+  SdifFileT* SdifF;
 
 
 
-  if (SdifFile = (SdifFileT*) malloc (sizeof(SdifFileT)))
+  SdifF = (SdifFileT*) malloc (sizeof(SdifFileT));
+  if (SdifF)
     {
-      SdifFile->Name             = SdifCreateStrNCpy(Name, SdifStrLen(Name)+1);
-      SdifFile->Mode             = Mode;
+      SdifF->Name             = SdifCreateStrNCpy(Name, SdifStrLen(Name)+1);
+      SdifF->Mode             = Mode;
+	  SdifF->FormatVersion    = _SdifFormatVersion; /* default */
       
-      SdifFile->NameValues       = SdifCreateNameValuesL(_SdifNameValueHashSize);
-      SdifFile->MatrixTypesTable = SdifCreateHashTable(_SdifGenHashSize, eHashInt4,
-						       SdifKillMatrixType);
-      SdifFile->FrameTypesTable  = SdifCreateHashTable(_SdifGenHashSize, eHashInt4,
-						       SdifKillFrameType);
-      SdifFile->StreamIDsTable   = SdifCreateHashTable(1, eHashInt4, SdifKillStreamID);
-      SdifFile->TimePositions    = SdifCreateTimePositionL();
+      SdifF->NameValues       = SdifCreateNameValuesL(_SdifNameValueHashSize);
+      SdifF->MatrixTypesTable = SdifCreateHashTable(_SdifGenHashSize, eHashInt4,
+						                            SdifKillMatrixType);
+      SdifF->FrameTypesTable  = SdifCreateHashTable(_SdifGenHashSize, eHashInt4,
+						                            SdifKillFrameType);
+      SdifF->StreamIDsTable   = SdifCreateHashTable(1, eHashInt4, SdifKillStreamID);
+      SdifF->TimePositions    = SdifCreateTimePositionL();
 
 
+      SdifF->CurrSignature = eEmptySignature;
+      SdifF->CurrFramH     = NULL;
+      SdifF->CurrMtrxH     = NULL;
+      SdifF->CurrFramT     = NULL;
+      SdifF->CurrMtrxT     = NULL;
+      SdifF->PrevTime      = _Sdif_MIN_DOUBLE_;
+      SdifF->MtrxUsed      = SdifCreateSignatureTab(_SdifGranule);
+      /*SdifF->MtrxUsed      = SdifCreateSignatureTab(1);*/
+      SdifF->CurrFramPos   = 0;
+      SdifF->FileSize      = 0;
+      SdifF->ChunkSize     = 0;
+      SdifF->StartChunkPos = 0;
+      SdifF->Pos           = 0;
+      SdifF->TypeDefPass   = eNotPass;
+      SdifF->StreamIDPass  = eNotPass;
+ 
+      /* One _SdifGranule allocated --> 256 floats */
+      SdifF->CurrOneRow = SdifCreateOneRow(eFloat4, 1);
 
-      SdifFile->CurrSignature = eEmptySignature;
-      SdifFile->CurrFramH     = NULL;
-      SdifFile->CurrMtrxH     = NULL;
-      SdifFile->CurrFramPos   = 0;
-      SdifFile->FileSize      = 0;
-      SdifFile->ChunkSize     = 0;
-      SdifFile->StartChunkPos = 0;
-      SdifFile->Pos           = 0;
-      SdifFile->TypeDefPass   = eNotPass;
-      SdifFile->StreamIDPass  = eNotPass;
+      SdifF->TextStreamName   = NULL;
+      SdifF->TextStream       = NULL;
+      SdifF->NbOfWarning = 0;
 
-      SdifFile->CurrOneRow = SdifCreateOneRow(eFloat4, 1); /* One _GsdifGranule allocated --> 256 floats */
+      SdifF->Stream        = NULL;
+      SdifF->Errors        = SdifCreateErrorL(SdifF);
+      
 
-      SdifFile->TextStreamName   = NULL;
-      SdifFile->TextStream       = NULL;
-      SdifFile->NbOfWarning = 0;
-
-      SdifFile->Stream       = NULL;
-    
       switch (Mode)
-	{
+        {
+      case eReadFile :
+        if (SdifStrCmp(Name, "stdin") == 0)
+          {
+            SdifF->Stream = SdiffBinOpen (Name, eBinaryModeStdInput);
+            return SdifF;
+		  }
+        else
+          {
+            if (    (SdifStrCmp(Name, "stdout") == 0)
+			     || (SdifStrCmp(Name, "stderr") == 0)   )
+              {
+                _SdifFError(SdifF, eBadStdFile, Name);
+                SdifFClose(SdifF);
+				return NULL;
+			  }
+            else
+              {
+                SdifF->Stream = SdiffBinOpen (Name, eBinaryModeRead);
+                if (! SdifF->Stream)
+                  {
+                    _SdifError(eFileNotFound, Name);
+                    SdifFClose(SdifF);
+                    return NULL;
+                  }
+                else
+                  {
+                    return SdifF;
+                  }
+              }
+          }
 
-	case eReadFile :
-	  if (SdifStrCmp(Name, "stdin") == 0)
-	    {
-	      SdifFile->Stream = stdin;
-	      return SdifFile;
-	    }
-	  else
-	    if (    (SdifStrCmp(Name, "stdout") == 0)
-		 || (SdifStrCmp(Name, "stderr") == 0)   )
-	      {
-		_SdifFileMess(SdifFile, eBadStdFile, Name);
-		SdifFClose(SdifFile);
-		return NULL;
-	      }
-	    else
-	      if (! (SdifFile->Stream = fopen (Name, "rb")))
-		{
-		  _SdifError(eFileNotFound, Name);
-		  SdifFClose(SdifFile);
-		  return NULL;
-		}
-	      else
-		return SdifFile;
-	  
+      case eWriteFile :
+          if (SdifStrCmp(Name, "stdout") == 0)
+            {
+              SdifF->Stream = SdiffBinOpen (Name, eBinaryModeStdOutput);
+              return SdifF;
+            }
+		  else
+            if (    (SdifStrCmp(Name, "stdin") == 0)
+			     || (SdifStrCmp(Name, "stderr") == 0)   )
+              {
+                _SdifFError(SdifF, eBadStdFile, Name);
+                SdifFClose(SdifF);
+                return NULL;
+              }
+            else
+              {
+                SdifF->Stream = SdiffBinOpen (Name, eBinaryModeWrite);
+                if (! SdifF->Stream)
+                 {
+                    _SdifError(eFileNotFound, Name);
+                    SdifFClose(SdifF);
+                    return NULL;
+                  }
+                else
+                  return SdifF;
+              }
 
-	case eWriteFile :
-	  if (SdifStrCmp(Name, "stdout") == 0)
-	    {
-	      SdifFile->Stream = stdout;
-	      return SdifFile;
-	    }
-	  else
-	    if (    (SdifStrCmp(Name, "stdin") == 0)
-		 || (SdifStrCmp(Name, "stderr") == 0)   )
-	      {
-		_SdifFileMess(SdifFile, eBadStdFile, Name);
-		SdifFClose(SdifFile);
-		return NULL;
-	      }
-	    else
-	      if (! (SdifFile->Stream = fopen (Name, "wb")))
-		{
-		  _SdifError(eAllocFail, Name);	  
-		  SdifFClose(SdifFile);
-		  return NULL;
-		}
-	      else
-		return SdifFile;
+      case ePredefinedTypes:
+        SdifF->Stream = NULL;
+        return SdifF;
 
-	case ePredefinedTypes:
-	  SdifFile->Stream = NULL;
-	  return SdifFile;
-
-	default :
-	  _SdifFileMess(SdifFile, eBadMode, "this mode doesn't exist");
-	  SdifFClose(SdifFile);
-	  return NULL;
-	}
-    }
+      default :
+        _SdifFError(SdifF, eBadMode, "this mode doesn't exist");
+        SdifFClose(SdifF);
+        return NULL;
+      }
+  }
   else
-    {
-      _SdifError(eAllocFail, "SdifFile");
-      return NULL;
-    }
+  {
+    _SdifError(eAllocFail, "SdifFile");
+    return NULL;
+  }
 }
 
 
@@ -151,7 +169,7 @@ SdifFOpen(const char* Name, SdifFileModeET Mode)
 
 
 
-
+/* Obsolete version */
 SdifFileT*
 SdifOpenFile(const char* Name, SdifFileModeET Mode)
 {
@@ -176,7 +194,7 @@ SdifFOpenText(SdifFileT *SdifF, const char* Name, SdifFileModeET Mode)
 	case eReadFile :
       if (SdifStrCmp(Name, "stdin") == 0)
 	  {
-	    SdifF->TextStream = stdin;
+	    SdifF->TextStream = SdiffBinOpen (Name, eBinaryModeStdInput);
 	    return SdifF;
 	  }
 	  else
@@ -184,13 +202,14 @@ SdifFOpenText(SdifFileT *SdifF, const char* Name, SdifFileModeET Mode)
 	    if (    (SdifStrCmp(Name, "stdout") == 0)
 			 || (SdifStrCmp(Name, "stderr") == 0)   )
 		{
-		  _SdifFileMess(SdifF, eBadStdFile, Name);
+		  _SdifFError(SdifF, eBadStdFile, Name);
 		  SdifFClose(SdifF);
 		  return NULL;
 	    }
 	    else
 		{
-	      if (! (SdifF->TextStream = fopen (Name, "rb")))
+	      SdifF->TextStream = SdiffBinOpen (Name, eBinaryModeRead);
+	      if (! SdifF->TextStream)
 		  {
 		    _SdifError(eFileNotFound, Name);
 		    SdifFClose(SdifF);
@@ -206,27 +225,28 @@ SdifFOpenText(SdifFileT *SdifF, const char* Name, SdifFileModeET Mode)
 	case eWriteFile :
 	  if (SdifStrCmp(Name, "stdout") == 0)
 	  {
-	    SdifF->TextStream = stdout;
+	    SdifF->TextStream = SdiffBinOpen (Name, eBinaryModeStdOutput);
 	    return SdifF;
 	  }
 	  else
 	  {
         if (SdifStrCmp(Name, "stderr") == 0)
 		{
-	      SdifF->TextStream = stderr;
+	      SdifF->TextStream = SdiffBinOpen (Name, eBinaryModeStdError);
 	      return SdifF;
 		}
 		else
 		{
 	      if (SdifStrCmp(Name, "stdin") == 0)
 		  {
-		    _SdifFileMess(SdifF, eBadStdFile, Name);
+		    _SdifFError(SdifF, eBadStdFile, Name);
 		    SdifFClose(SdifF);
 		    return NULL;
 		  }
 	      else
 		  {
-	        if (! (SdifF->TextStream = fopen (Name, "wb")))
+	        SdifF->TextStream = SdiffBinOpen (Name, eBinaryModeWrite);
+	        if (! SdifF->TextStream)
 			{
 		      _SdifError(eAllocFail, Name);	  
 		      SdifFClose(SdifF);
@@ -240,8 +260,36 @@ SdifFOpenText(SdifFileT *SdifF, const char* Name, SdifFileModeET Mode)
 		}
 	  }
 	case ePredefinedTypes:
+      if (SdifStrCmp(Name, "stdin") == 0)
+	  {
+	    SdifF->TextStream = SdiffBinOpen (Name, eBinaryModeStdInput);
+	    return SdifF;
+	  }
+	  else
+	  {
+	    if (    (SdifStrCmp(Name, "stdout") == 0)
+			 || (SdifStrCmp(Name, "stderr") == 0)   )
+		{
+		  _SdifFError(SdifF, eBadStdFile, Name);
+		  SdifFClose(SdifF);
+		  return NULL;
+	    }
+	    else
+		{
+	      SdifF->TextStream = SdiffBinOpen (Name, eBinaryModeRead);
+	      if (! SdifF->TextStream)
+		  {
+		    _SdifError(eFileNotFound, Name);
+		    return NULL;
+		  }
+	      else
+		  {
+		    return SdifF;
+		  }
+		}
+	  }
 	default :
-	  _SdifFileMess(SdifF, eBadMode, "this mode doesn't exist or isn't appropriated");
+	  _SdifFError(SdifF, eBadMode, "this mode doesn't exist or isn't appropriated");
 	  SdifFClose(SdifF);
 	  return NULL;
 	}
@@ -273,6 +321,8 @@ SdifFClose(SdifFileT* SdifF)
         else                         _SdifError (eFreeNull, "SdifFile->TimePositions");
       if (SdifF->CurrOneRow)         SdifKillOneRow(SdifF->CurrOneRow);
         else                         _SdifError (eFreeNull, "SdifFile->CurrOneRow");
+      if (SdifF->Errors)             SdifKillErrorL(SdifF->Errors);
+        else                         _SdifError (eFreeNull, "SdifFile->Errors");
 
 
       if (SdifF->CurrFramH)
@@ -288,14 +338,14 @@ SdifFClose(SdifFileT* SdifF)
 		if (    (SdifF->Stream != stdout)
 			 && (SdifF->Stream != stdin)
 			 && (SdifF->Stream != stderr)  )
-          fclose (SdifF->Stream);
+          SdiffBinClose (SdifF->Stream);
 
 
       if (SdifF->TextStream)
 		if (    (SdifF->TextStream != stdout)
 			 && (SdifF->TextStream != stdin)
 			 && (SdifF->TextStream != stderr)  )
-        fclose(SdifF->TextStream);
+          SdiffBinClose(SdifF->TextStream);
 
 
 
@@ -310,6 +360,7 @@ SdifFClose(SdifFileT* SdifF)
 
 
 
+/* Obsolete version */
 void
 SdifCloseFile(SdifFileT* SdifF)
 {
@@ -325,7 +376,7 @@ SdifCloseFile(SdifFileT* SdifF)
 
 
 SdifFrameHeaderT*
-SdifFileCreateCurrFramH(SdifFileT* SdifF, SdifSignature Signature)
+SdifFCreateCurrFramH(SdifFileT* SdifF, SdifSignature Signature)
 {
   if (! (SdifF->CurrFramH))
     SdifF->CurrFramH = SdifCreateFrameHeaderEmpty(Signature);
@@ -340,7 +391,7 @@ SdifFileCreateCurrFramH(SdifFileT* SdifF, SdifSignature Signature)
 
 
 SdifMatrixHeaderT*
-SdifFileCreateCurrMtrxH(SdifFileT* SdifF)
+SdifFCreateCurrMtrxH(SdifFileT* SdifF)
 {
   if (! (SdifF->CurrMtrxH))
     SdifF->CurrMtrxH = SdifCreateMatrixHeaderEmpty();
@@ -358,7 +409,7 @@ SdifFileCreateCurrMtrxH(SdifFileT* SdifF)
 
 
 FILE*
-SdifFileGetFILE_SwitchVerbose(SdifFileT* SdifF, int Verbose)
+SdifFGetFILE_SwitchVerbose(SdifFileT* SdifF, int Verbose)
 {
   switch (Verbose)
     {
@@ -383,17 +434,7 @@ SdifFileGetFILE_SwitchVerbose(SdifFileT* SdifF, int Verbose)
 void
 SdifTakeCodedPredefinedTypes(SdifFileT *SdifF)
 {
-  SdifPutMatrixType(SdifF->MatrixTypesTable,   &M_1FQ0);
-  SdifPutMatrixType(SdifF->MatrixTypesTable,   &M_1FOF);
-  SdifPutMatrixType(SdifF->MatrixTypesTable,   &M_1CHA);
-  SdifPutMatrixType(SdifF->MatrixTypesTable,   &M_1RES);
-  SdifPutMatrixType(SdifF->MatrixTypesTable,   &M_1DIS);
-  SdifF->MatrixTypesTable->Killer = NULL;
-
-  SdifPutFrameType(SdifF->FrameTypesTable,   &F_1FOB);
-  SdifPutFrameType(SdifF->FrameTypesTable,   &F_1REB);
-  SdifPutFrameType(SdifF->FrameTypesTable,   &F_1NOI);
-  SdifF->FrameTypesTable->Killer = NULL;
+  SdifCreatePredefinedTypes(SdifF->MatrixTypesTable, SdifF->FrameTypesTable);
 }
 
 
@@ -415,32 +456,19 @@ SdifFLoadPredefinedTypes(SdifFileT *SdifF, char *TypesFileName)
       SdifTakeCodedPredefinedTypes(SdifF);
     }
   else
-    if (! (SdifF->TextStream = fopen(TypesFileName, "rb")) )
-      {
-	_SdifRemark("Load Coded Predefinied Types, it can be incomplete (file not found)\n");
-	SdifTakeCodedPredefinedTypes(SdifF);
-      }
-    else
-      {
-	SdifF->TextStreamName = SdifCreateStrNCpy(TypesFileName, SdifStrLen(TypesFileName)+1);
-	
-	SizeR += SdifFScanGeneralHeader(SdifF);
-	
-	SdiffGetSignature(SdifF->TextStream, &(SdifF->CurrSignature), &SizeR);
-	while (    (SdifF->CurrSignature != eENDF)
-		   && (!feof(SdifF->TextStream)))
-	  {
-	    if (SdifF->CurrSignature == e1TYP)
-	      SizeR += SdifFScanAllType(SdifF);
-	    else
-	      _SdifFileMess(SdifF, eBadTypesFile, TypesFileName);
-	    
-	    SizeR += SdiffGetSignature(SdifF->TextStream, &(SdifF->CurrSignature), &SizeR);
-	  }  
-	
-	fclose(SdifF->TextStream);
-	SdifF->TextStream = NULL;
-      }
+    {
+      SdifFOpenText(SdifF, TypesFileName, ePredefinedTypes);
+      if (! SdifF->TextStream)
+        {
+          _SdifRemark("Load Coded Predefinied Types, it can be incomplete (file not found)\n");
+          SdifTakeCodedPredefinedTypes(SdifF);
+        }
+      else
+        {
+            SdifFScanGeneralHeader   (SdifF);
+            SdifFScanAllASCIIChunks  (SdifF);
+        }
+    }
 }
 
 
@@ -465,15 +493,17 @@ SdifGenInit(char *PredefinedTypesFile)
   char *PreTypesEnvVar=NULL;
   
   SdifInitMachineType();
+  SdifSetStdIOBinary (); /* only WIN32 */
+
   gSdifPredefinedTypes = SdifFOpen("Predefined", ePredefinedTypes);
 
   if ( (!PredefinedTypesFile) || (strlen(PredefinedTypesFile)== 0) )
     {
       PreTypesEnvVar = getenv(_SdifEnvVar);
       if (PreTypesEnvVar)
-	SdifFLoadPredefinedTypes(gSdifPredefinedTypes, PreTypesEnvVar);
+        SdifFLoadPredefinedTypes(gSdifPredefinedTypes, PreTypesEnvVar);
       else
-	SdifFLoadPredefinedTypes(gSdifPredefinedTypes,  _SdifTypesFileName);
+        SdifFLoadPredefinedTypes(gSdifPredefinedTypes,  _SdifTypesFileName);
     }
   else
     {
@@ -497,31 +527,32 @@ SdifGenKill(void)
 void SdifPrintVersion(void)
 {
 #ifndef lint
-  static char rcsid[]= "$Revision: 1.5 $ IRCAM $Date: 1998-07-23 17:02:49 $";
+  static char rcsid[]= "$Revision: 2.0 $ IRCAM $Date: 1998-11-29 11:41:40 $";
 #endif
 
 
   fprintf(stderr, "SDIF Library\n");
+  fprintf(stderr, "Format version : %d\n", _SdifFormatVersion);
 
 #ifndef lint
   fprintf(stderr, "CVS: %s\n", rcsid);
 #endif
 
-  fprintf(stderr, "Release: %s\n", _SDIF_VERSION);
+  fprintf(stderr, "Release: %s, %s\n", _SDIF_VERSION, __DATE__);
 }
 
 
 
 
 SdifFrameHeaderT*
-SdifSetCurrFrameHeader(SdifFileT     *SdifF,
+SdifFSetCurrFrameHeader(SdifFileT     *SdifF,
 		       SdifSignature Signature,
 		       SdifUInt4     Size,
 		       SdifUInt4     NbMatrix,
 		       SdifUInt4     NumID,
 		       SdifFloat8    Time)
 {
-  SdifFileCreateCurrFramH(SdifF, Signature);
+  SdifFCreateCurrFramH(SdifF, Signature);
   SdifF->CurrFramH->Size      = Size;
   SdifF->CurrFramH->NbMatrix  = NbMatrix;
   SdifF->CurrFramH->NumID     = NumID;
@@ -534,13 +565,13 @@ SdifSetCurrFrameHeader(SdifFileT     *SdifF,
 
 
 SdifMatrixHeaderT*
-SdifSetCurrMatrixHeader(SdifFileT     *SdifF,
+SdifFSetCurrMatrixHeader(SdifFileT     *SdifF,
 			SdifSignature  Signature,
 			SdifDataTypeET DataType,
 			SdifUInt4      NbRow,
 			SdifUInt4      NbCol)
 {
-  SdifFileCreateCurrMtrxH(SdifF);
+  SdifFCreateCurrMtrxH(SdifF);
   SdifF->CurrMtrxH->Signature = Signature;
   SdifF->CurrMtrxH->DataType  = DataType;
   SdifF->CurrMtrxH->NbRow     = NbRow;
@@ -558,7 +589,7 @@ SdifSetCurrMatrixHeader(SdifFileT     *SdifF,
 
 
 SdifOneRowT*
-SdifSetCurrOneRow(SdifFileT *SdifF, void *Values)
+SdifFSetCurrOneRow(SdifFileT *SdifF, void *Values)
 {
   switch (SdifF->CurrOneRow->DataType)
     {
@@ -577,7 +608,7 @@ SdifSetCurrOneRow(SdifFileT *SdifF, void *Values)
 
 
 SdifOneRowT*
-SdifSetCurrOneRowCol(SdifFileT *SdifF, SdifUInt4 numCol, SdifFloat8 Value)
+SdifFSetCurrOneRowCol(SdifFileT *SdifF, SdifUInt4 numCol, SdifFloat8 Value)
 {
   return SdifOneRowPutValue(SdifF->CurrOneRow, numCol, Value);
 }
@@ -585,45 +616,45 @@ SdifSetCurrOneRowCol(SdifFileT *SdifF, SdifUInt4 numCol, SdifFloat8 Value)
 
 
 SdifFloat8
-SdifCurrOneRowCol(SdifFileT *SdifF, SdifUInt4 numCol)
+SdifFCurrOneRowCol(SdifFileT *SdifF, SdifUInt4 numCol)
 {
   return SdifOneRowGetValue(SdifF->CurrOneRow, numCol);
 }
 
 SdifFloat8
-SdifCurrOneRowColName(SdifFileT *SdifF, SdifMatrixTypeT *MatrixType, char *NameCD)
+SdifFCurrOneRowColName(SdifFileT *SdifF, SdifMatrixTypeT *MatrixType, char *NameCD)
 {
   return SdifOneRowGetValue(SdifF->CurrOneRow,
 			    SdifMatrixTypeGetNumColumnDef(MatrixType, NameCD));
 }
 
 SdifSignature
-SdifCurrSignature(SdifFileT *SdifF)
+SdifFCurrSignature(SdifFileT *SdifF)
 {
   return SdifF->CurrSignature;
 }
 
 SdifSignature
-SdifCleanCurrSignature(SdifFileT *SdifF)
+SdifFCleanCurrSignature(SdifFileT *SdifF)
 {
   SdifF->CurrSignature = eEmptySignature;
   return SdifF->CurrSignature;
 }
 
 SdifSignature
-SdifCurrFrameSignature(SdifFileT *SdifF)
+SdifFCurrFrameSignature(SdifFileT *SdifF)
 {
-  return SdifF->CurrMtrxH->Signature;
+  return SdifF->CurrFramH->Signature;
 }
 
 SdifSignature
-SdifCurrMatrixSignature(SdifFileT *SdifF)
+SdifFCurrMatrixSignature(SdifFileT *SdifF)
 {
   return SdifF->CurrMtrxH->Signature;
 }
 
 SdifOneRowT*
-SdifCurrOneRow(SdifFileT *SdifF)
+SdifFCurrOneRow(SdifFileT *SdifF)
 {
   return SdifF->CurrOneRow;
 }
@@ -632,48 +663,182 @@ SdifCurrOneRow(SdifFileT *SdifF)
     This can subsequently be used for SdifSetCurrOneRow.
  */
 void*
-SdifCurrOneRowData(SdifFileT *SdifF)
+SdifFCurrOneRowData(SdifFileT *SdifF)
 {
   switch (SdifF->CurrOneRow->DataType)
     {
     case eFloat4:
       return SdifF->CurrOneRow->Data.F4;
-      break;
     case eFloat8:
       return SdifF->CurrOneRow->Data.F8;
-      break;
     default:
       return NULL;
     }
 }
 
 SdifUInt4
-SdifCurrNbCol(SdifFileT *SdifF)
+SdifFCurrNbCol(SdifFileT *SdifF)
 {
   return SdifF->CurrMtrxH->NbCol;
 }
 
 SdifUInt4
-SdifCurrNbRow(SdifFileT *SdifF)
+SdifFCurrNbRow(SdifFileT *SdifF)
 {
   return SdifF->CurrMtrxH->NbRow;
 }
 
 SdifUInt4
-SdifCurrNbMatrix(SdifFileT *SdifF)
+SdifFCurrNbMatrix(SdifFileT *SdifF)
 {
   return SdifF->CurrFramH->NbMatrix;
 }
 
 SdifUInt4
-SdifCurrID(SdifFileT *SdifF)
+SdifFCurrID(SdifFileT *SdifF)
 {
   return SdifF->CurrFramH->NumID;
 }
 
 SdifFloat8
-SdifCurrTime(SdifFileT *SdifF)
+SdifFCurrTime(SdifFileT *SdifF)
 {
   return SdifF->CurrFramH->Time;
 }
 
+
+
+
+
+
+
+
+
+
+
+
+/***** SdifSignatureTabT *****/
+
+
+SdifSignatureTabT*
+SdifCreateSignatureTab (SdifUInt4 NbSignMax)
+{
+  SdifSignatureTabT* NewSignTab = NULL;
+  SdifUInt4 iSign;
+
+  NewSignTab = (SdifSignatureTabT*) malloc (sizeof(SdifSignatureTabT));
+  if (NewSignTab)
+    {
+      NewSignTab->Tab = (SdifSignature*) malloc (NbSignMax * sizeof(SdifSignature));
+      if (NewSignTab->Tab)
+        {
+          NewSignTab->NbSignMax = NbSignMax;
+          for (iSign=0; iSign<NewSignTab->NbSignMax; iSign++)
+            NewSignTab->Tab[iSign] = 0;
+          NewSignTab->NbSign    = 0;
+        }
+      else
+        {
+          _SdifError(eAllocFail, "NewSignTab->Tab");
+          return NULL;
+        }
+    }
+  else
+    {
+      _SdifError(eAllocFail, "NewSignTab");
+      return NULL;
+    }
+
+  return NewSignTab;
+}
+
+
+
+
+SdifSignatureTabT*
+SdifReInitSignatureTab (SdifSignatureTabT* SignTab, SdifUInt4 NewNbSignMax)
+{
+  SdifUInt4 iSign;
+
+  if (SignTab->NbSignMax  < NewNbSignMax)
+	{
+	  SignTab->Tab = (SdifSignature*) realloc (SignTab->Tab, NewNbSignMax);
+	  if (SignTab->Tab )
+	    {
+	      SignTab->NbSignMax = NewNbSignMax;
+	    }
+	  else
+	    {
+	      _SdifError(eAllocFail, "SignTab->Tab RE-allocation");
+	      return NULL;
+	    }
+  }
+
+  for (iSign=0; iSign<NewNbSignMax; iSign++)
+    SignTab->Tab[iSign] = 0;
+  SignTab->NbSign  = 0;
+
+  return SignTab;
+}
+
+
+
+
+SdifSignature
+SdifIsInSignatureTab (SdifSignatureTabT* SignTab, SdifSignature Sign)
+{
+  SdifUInt4 iSign;
+
+  for (iSign=0; iSign<SignTab->NbSign; iSign++)
+    if (SignTab->Tab[iSign] == Sign)
+      return Sign;
+
+  return 0;
+}
+
+
+SdifSignatureTabT*
+SdifPutInSignatureTab (SdifSignatureTabT* SignTab, SdifSignature Sign)
+{
+  SignTab->Tab[SignTab->NbSign] = Sign;
+  SignTab->NbSign++;
+  return SignTab;
+}
+
+
+SdifFileT*
+SdifFReInitMtrxUsed (SdifFileT *SdifF)
+{
+  SdifReInitSignatureTab(SdifF->MtrxUsed, SdifF->CurrFramH->NbMatrix);
+  return SdifF; 
+}
+
+SdifSignature
+SdifFIsInMtrxUsed (SdifFileT *SdifF, SdifSignature Sign)
+{
+  return SdifIsInSignatureTab (SdifF->MtrxUsed, Sign);
+}
+
+SdifFileT*
+SdifFPutInMtrxUsed (SdifFileT *SdifF, SdifSignature Sign)
+{
+  SdifPutInSignatureTab (SdifF->MtrxUsed,  Sign);
+  return SdifF; 
+}
+
+
+/* Error management */
+
+SdifErrorT*
+SdifFLastError (SdifFileT *SdifF)
+{
+  return SdifLastError(SdifF->Errors);
+}
+
+
+
+SdifErrorTagET
+SdifFLastErrorTag (SdifFileT *SdifF)
+{
+  return SdifLastErrorTag(SdifF->Errors);
+}

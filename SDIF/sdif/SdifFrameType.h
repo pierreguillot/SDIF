@@ -1,4 +1,4 @@
-/* $Id: SdifFrameType.h,v 1.4 1998-11-10 15:31:47 schwarz Exp $
+/* $Id: SdifFrameType.h,v 2.0 1998-11-29 11:41:46 virolle Exp $
  *
  * SdifFrameType.h
  *
@@ -7,6 +7,12 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.4  1998/11/10  15:31:47  schwarz
+ * Removed all 'extern' keywords for prototypes, since this is redundant
+ * (function prototypes are automatically linked extern), and it
+ * prohibits cocoon from generating an entry in the HTML documentation
+ * for this function.
+ *
  */
 
 
@@ -19,19 +25,10 @@
 typedef struct SdifComponentS SdifComponentT;
 struct SdifComponentS
 {
-  SdifSignature MatrixSignature;
+  SdifSignature MtrxS;
   char *Name;
   SdifUInt4  Num;
 } ;
-
-
-
-typedef struct SdifComponentNS SdifComponentNT;
-struct SdifComponentNS
-{
-  SdifComponentNT *Next;
-  SdifComponentT *Component;
-};
 
 
 
@@ -42,8 +39,7 @@ struct SdifFrameTypeS
 
   SdifFrameTypeT* FrameTypePre;
 
-  SdifComponentNT *HeadUse;
-  SdifComponentNT *TailUse;
+  SdifHashTableT *ComponentUseHT;
   SdifUInt4       NbComponentUse;
 
   SdifUInt4       NbComponent;
@@ -51,35 +47,18 @@ struct SdifFrameTypeS
 };
 
 
-SdifComponentT*  SdifCreateComponent  (SdifSignature MatrixSignature, 
-				       char *Name, 
-				       SdifUInt4 Num);
-void             SdifKillComponent    (SdifComponentT *Component);
+SdifComponentT* SdifCreateComponent (SdifSignature MtrxS, char *Name, SdifUInt4 Num);
+void            SdifKillComponent   (SdifComponentT *Component);
+SdifFrameTypeT* SdifCreateFrameType (SdifSignature FramS, SdifFrameTypeT *PredefinedFrameType);
 
-SdifComponentNT* SdifCreateComponentN (SdifComponentNT *Next, 
-				       SdifComponentT *Component);
-SdifComponentNT* SdifKillComponentN   (SdifComponentNT *ComponentNode);
+void            SdifKillFrameType               (SdifFrameTypeT *FrameType);
+SdifComponentT* SdifFrameTypeGetComponent_MtrxS (SdifFrameTypeT *FrameType, SdifSignature MtrxS);
+SdifComponentT* SdifFrameTypeGetComponent       (SdifFrameTypeT *FrameType, char *NameC);
+SdifComponentT* SdifFrameTypeGetNthComponent    (SdifFrameTypeT *FrameType, SdifUInt4 NumC);
+SdifFrameTypeT* SdifFrameTypePutComponent       (SdifFrameTypeT *FrameType, SdifSignature MtrxS, char *NameC);
 
-SdifFrameTypeT*  SdifCreateFrameType  (SdifSignature FrameSignature,
-				       SdifFrameTypeT *PredefinedFrameType);
-void             SdifKillFrameType    (SdifFrameTypeT *FrameType);
-
-SdifUInt4        SdifFrameTypeGetNumComponent (SdifFrameTypeT *FrameType, 
-					       char *NameCD);
-SdifComponentT*  SdifFrameTypeGetComponent    (SdifFrameTypeT *FrameType, 
-					       char *NameCD);
-SdifComponentT*  SdifFrameTypeGetNthComponent (SdifFrameTypeT *FrameType, 
-					       SdifUInt4 NumC);
- 
-SdifFrameTypeT*  SdifFrameTypeInsertTailComponent(SdifHashTableT *MatrixTTable,
-						  SdifFrameTypeT *FrameType,
-						  SdifSignature MatrixSignatur,
-						  char *NameC);
- 
-SdifFrameTypeT*  SdifGetFrameType       (SdifHashTableT *FrameTypesTable, 
-				         SdifSignature FrameSiganture);
-void             SdifPutFrameType       (SdifHashTableT *FrameTypesTable, 
-				         SdifFrameTypeT *FrameType);
-SdifUInt2        SdifExistUserFrameType (SdifHashTableT *FrameTypesTable);
+SdifFrameTypeT* SdifGetFrameType       (SdifHashTableT *FrameTypeHT, SdifSignature FramS);
+void            SdifPutFrameType       (SdifHashTableT *FrameTypeHT, SdifFrameTypeT *FrameType);
+SdifUInt2       SdifExistUserFrameType (SdifHashTableT *FrameTypeHT);
 
 #endif /* _SdifFrameType_  */

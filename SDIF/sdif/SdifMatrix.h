@@ -1,4 +1,4 @@
-/* $Id: SdifMatrix.h,v 1.4 1998-11-10 15:31:51 schwarz Exp $
+/* $Id: SdifMatrix.h,v 2.0 1998-11-29 11:41:55 virolle Exp $
  *
  * SdifMatrix.h
  *
@@ -11,6 +11,12 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.4  1998/11/10  15:31:51  schwarz
+ * Removed all 'extern' keywords for prototypes, since this is redundant
+ * (function prototypes are automatically linked extern), and it
+ * prohibits cocoon from generating an entry in the HTML documentation
+ * for this function.
+ *
  */
 
 #ifndef _SdifMatrix_
@@ -67,41 +73,27 @@ struct SdifMatrixDataS
 
 
 
-SdifMatrixHeaderT* SdifCreateMatrixHeader    (SdifSignature Signature, 
-					      SdifUInt4 DataType,
-					      SdifUInt4 NbRow, 
-					      SdifUInt4 NbCol);
+SdifMatrixHeaderT* SdifCreateMatrixHeader    (SdifSignature Signature, SdifUInt4 DataType,
+						     SdifUInt4 NbRow, SdifUInt4 NbCol);
+
 SdifMatrixHeaderT* SdifCreateMatrixHeaderEmpty (void);
-void               SdifKillMatrixHeader      (SdifMatrixHeaderT *MatrixHeader);
+void               SdifKillMatrixHeader        (SdifMatrixHeaderT *MatrixHeader);
 
-SdifOneRowT*       SdifCreateOneRow          (SdifDataTypeET DataType, 
-					      SdifUInt4  NbGranuleAlloc);
-SdifOneRowT*       SdifReInitOneRow          (SdifOneRowT *OneRow, 
-					      SdifDataTypeET DataType, 
-					      SdifUInt4 NbData);
+SdifOneRowT*       SdifCreateOneRow          (SdifDataTypeET DataType, SdifUInt4  NbGranuleAlloc);
+SdifOneRowT*       SdifReInitOneRow          (SdifOneRowT *OneRow, SdifDataTypeET DataType, SdifUInt4 NbData);
 void               SdifKillOneRow            (SdifOneRowT *OneRow);
-SdifOneRowT*       SdifOneRowPutValue        (SdifOneRowT *OneRow, 
-					      SdifUInt4 numCol, 
-					      SdifFloat8 Value);
-SdifFloat8         SdifOneRowGetValue        (SdifOneRowT *OneRow, 
-					      SdifUInt4 numCol);
-SdifFloat8         SdifOneRowGetValueColName (SdifOneRowT *OneRow, 
-					      SdifMatrixTypeT *MatrixType, 
-					      char * NameCD);
+SdifOneRowT*       SdifOneRowPutValue        (SdifOneRowT *OneRow, SdifUInt4 numCol, SdifFloat8 Value);
+SdifFloat8         SdifOneRowGetValue        (SdifOneRowT *OneRow, SdifUInt4 numCol);
+SdifFloat8         SdifOneRowGetValueColName (SdifOneRowT *OneRow, SdifMatrixTypeT *MatrixType, char * NameCD);
 
-SdifMatrixDataT*   SdifCreateMatrixData      (SdifSignature Signature, 
-					      SdifDataTypeET DataType,
-					      SdifUInt4 NbRow, 
-					      SdifUInt4 NbCol);
+SdifMatrixDataT*   SdifCreateMatrixData      (SdifSignature Signature, SdifDataTypeET DataType,
+						     SdifUInt4 NbRow, SdifUInt4 NbCol);
 
 void               SdifKillMatrixData        (SdifMatrixDataT *MatrixData);
 SdifMatrixDataT*   SdifMatrixDataPutValue    (SdifMatrixDataT *MatrixData,
-					      SdifUInt4  numRow, 
-					      SdifUInt4  numCol, 
-					      SdifFloat8 Value);
+						     SdifUInt4  numRow, SdifUInt4  numCol, SdifFloat8 Value);
 
 SdifFloat8         SdifMatrixDataGetValue    (SdifMatrixDataT *MatrixData,
-					      SdifUInt4  numRow, 
-					      SdifUInt4  numCol);
+						     SdifUInt4  numRow, SdifUInt4  numCol);
 
 #endif /* _SdifMatrix_ */

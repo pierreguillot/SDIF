@@ -1,4 +1,4 @@
-/* $Id: SdifNameValue.c,v 1.3 1998-04-24 12:40:35 schwarz Exp $
+/* $Id: SdifNameValue.c,v 2.0 1998-11-29 11:41:58 virolle Exp $
  *
  * SdifNameValue.c
  *
@@ -9,6 +9,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.3  1998/04/24  12:40:35  schwarz
+ * Made char * arguments constant for SdifNameValuesLPut and functions called by it.
+ *
  */
 
 
@@ -23,9 +26,10 @@
 SdifNameValueT*
 SdifCreateNameValue(const char *Name,  const char *Value)
 {
-  SdifNameValueT *NewNameValue;
+  SdifNameValueT *NewNameValue = NULL;
 
-  if (NewNameValue = (SdifNameValueT*) malloc (sizeof(SdifNameValueT)))
+  NewNameValue = (SdifNameValueT*) malloc (sizeof(SdifNameValueT));
+  if (NewNameValue)
     {
       NewNameValue->Name  = SdifCreateStrNCpy(Name, SdifStrLen(Name)+1);
       NewNameValue->Value = SdifCreateStrNCpy(Value, SdifStrLen(Value)+1);
@@ -66,9 +70,10 @@ SdifCreateNameValueHTN(SdifNameValueHTNT *Next,
 		       SdifHashTableT *NameValueHT,
 		       SdifUInt4 NumHT)
 {
-  SdifNameValueHTNT *NewNVHTN;
+  SdifNameValueHTNT *NewNVHTN = NULL;
   
-  if (NewNVHTN = (SdifNameValueHTNT*) malloc (sizeof(SdifNameValueHTNT)))
+  NewNVHTN = (SdifNameValueHTNT*) malloc (sizeof(SdifNameValueHTNT));
+  if (NewNVHTN)
     {
       NewNVHTN->Next = Next;
       NewNVHTN->NameValueHT = NameValueHT;
@@ -114,9 +119,10 @@ SdifKillNameValueHTN(SdifNameValueHTNT *NVHTN)
 SdifNameValuesLT*
 SdifCreateNameValuesL(SdifUInt4  HashSize)
 {
-  SdifNameValuesLT *NewNameValuesL;
+  SdifNameValuesLT *NewNameValuesL = NULL;
   
-  if (NewNameValuesL = (SdifNameValuesLT*) malloc (sizeof(SdifNameValuesLT)))
+  NewNameValuesL = (SdifNameValuesLT*) malloc (sizeof(SdifNameValuesLT));
+  if (NewNameValuesL)
     {
       NewNameValuesL->HeadHTN = NULL;
       NewNameValuesL->TailHTN = NULL;
@@ -173,8 +179,7 @@ SdifKillNameValuesL(SdifNameValuesLT *NameValuesL)
 SdifNameValuesLT*
 SdifNameValuesLNewHT(SdifNameValuesLT *NameValuesL)
 {
-  SdifNameValueHTNT
-    *NewNode;
+  SdifNameValueHTNT *NewNode = NULL;
 
   NewNode = SdifCreateNameValueHTN(NULL,
 				   SdifCreateHashTable(NameValuesL->HashSize,
@@ -236,8 +241,11 @@ SdifNameValuesLGet(SdifNameValuesLT *NameValuesL, char *Name)
     *pNode;
 
   for(pNode = NameValuesL->HeadHTN; pNode; pNode = pNode->Next)
-    if (NameValue = SdifHashTableSearch(pNode->NameValueHT, Name, SdifStrLen(Name)+1))
-      return NameValue;
+    {
+      NameValue = SdifHashTableSearch(pNode->NameValueHT, Name, SdifStrLen(Name)+1);
+      if (NameValue)
+        return NameValue;
+    }
 
   return NULL;
 }
@@ -251,7 +259,7 @@ SdifNameValuesLGet(SdifNameValuesLT *NameValuesL, char *Name)
 
 
 SdifNameValueT*
-SdifNameValuesLGetFromCurrHT(SdifNameValuesLT *NameValuesL, char *Name)
+SdifNameValuesLGetCurrHT(SdifNameValuesLT *NameValuesL, char *Name)
 {
   return SdifHashTableSearch(NameValuesL->CurrHT, Name, SdifStrLen(Name)+1);
 }
@@ -266,11 +274,10 @@ SdifNameValuesLGetFromCurrHT(SdifNameValuesLT *NameValuesL, char *Name)
 
 
 SdifNameValueT*
-SdifNameValuesLPut(SdifNameValuesLT *NameValuesL, 
+SdifNameValuesLPutCurrHT(SdifNameValuesLT *NameValuesL, 
 		   const char *Name,  const char *Value)
 {
-  SdifNameValueT
-    *NewNameValue;
+  SdifNameValueT *NewNameValue = NULL;
   
   NewNameValue = SdifCreateNameValue(Name, Value);
 

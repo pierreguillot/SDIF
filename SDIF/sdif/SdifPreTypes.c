@@ -49,9 +49,6 @@ SdifMatrixTypeT  M_1FQ0 = { '1FQ0' ,
 
 
 
-
-
-
 /* 1FOF matrix
  *  Mtrx  1FOF  {Frequency, Amplitude, BandWidth, Tex, DebAtt, Atten, Phase}
  */
@@ -157,6 +154,9 @@ SdifMatrixTypeT  M_1DIS = { '1DIS' ,
 
 
 
+
+
+
 /*****************************************
 ******************************************
 *          PREDEFINED FRAMES             *
@@ -173,24 +173,18 @@ SdifMatrixTypeT  M_1DIS = { '1DIS' ,
  *	}
  */
 
-SdifComponentT   F_1FOB_PitchModeHit         = { '1FQ0', "PitchModeHit", 1};
-SdifComponentT   F_1FOB_Formants             = { '1FOF', "Formants",     2};
-SdifComponentT   F_1FOB_FormantsChannels     = { '1CHA', "Formants",     3};
+SdifFrameTypeT*
+CreateF_1FOB(void)
+{
+  SdifFrameTypeT*  F_1FOB;
 
-SdifComponentNT  F_1FOB_FormantsChannelsNode = { NULL,                         &F_1FOB_FormantsChannels};
-SdifComponentNT  F_1FOB_FormantsNode         = { &F_1FOB_FormantsChannelsNode, &F_1FOB_Formants};
-SdifComponentNT  F_1FOB_PitchModeHitNode     = { &F_1FOB_FormantsNode,         &F_1FOB_PitchModeHit};
-
-SdifFrameTypeT   F_1FOB = { '1FOB',
-			    NULL,
-			    &F_1FOB_PitchModeHitNode,
-			    &F_1FOB_FormantsChannelsNode,
-			    3, 3,
-			    eNoModif};
-
-
-
-
+  F_1FOB = SdifCreateFrameType('1FOB', NULL);
+  SdifFrameTypePutComponent(F_1FOB, '1FQ0', "PitchModeHit");
+  SdifFrameTypePutComponent(F_1FOB, '1FOF', "Formants");
+  SdifFrameTypePutComponent(F_1FOB, '1CHA', "FormantsChannels");
+  F_1FOB->ModifMode = eNoModif;
+  return F_1FOB;
+}
 
 
 /* 1REB frame
@@ -201,19 +195,17 @@ SdifFrameTypeT   F_1FOB = { '1FOB',
  *	}
  */
 
-SdifComponentT   F_1REB_Filters             = { '1RES', "Filters", 1};
-SdifComponentT   F_1REB_FiltersChannels     = { '1CHA', "FiltersChannels", 2};
+SdifFrameTypeT*
+CreateF_1REB(void)
+{
+  SdifFrameTypeT*   F_1REB;
 
-SdifComponentNT  F_1REB_FiltersChannelsNode = { NULL,                &F_1REB_FiltersChannels};
-SdifComponentNT  F_1REB_FiltersNode         = { &F_1REB_FiltersChannelsNode, &F_1REB_Filters};
-
-SdifFrameTypeT   F_1REB = { '1REB',
-			    NULL,
-			    &F_1REB_FiltersNode,
-			    &F_1REB_FiltersChannelsNode,
-			    2, 2,
-			    eNoModif};
-
+  F_1REB = SdifCreateFrameType('1REB', NULL);
+  SdifFrameTypePutComponent(F_1REB, '1RES', "Filters");
+  SdifFrameTypePutComponent(F_1REB, '1CHA', "FiltersChannels");
+  F_1REB->ModifMode = eNoModif;
+  return F_1REB;
+}
 
 
 
@@ -224,13 +216,30 @@ SdifFrameTypeT   F_1REB = { '1REB',
  *	}
  */
 
-SdifComponentT   F_1NOI_NoiseInfo     = { '1DIS', "NoiseInfo", 1};
-SdifComponentNT  F_1NOI_NoiseInfoNode = { NULL, &F_1NOI_NoiseInfo};
+SdifFrameTypeT*
+CreateF_1NOI(void)
+{
+  SdifFrameTypeT*   F_1NOI;
 
-SdifFrameTypeT   F_1NOI = { '1NOI',
-			    NULL,
-			    &F_1NOI_NoiseInfoNode,
-			    &F_1NOI_NoiseInfoNode,
-			    1, 1,
-			    eNoModif};
+  F_1NOI = SdifCreateFrameType('1NOI', NULL);
+  SdifFrameTypePutComponent(F_1NOI, '1DIS', "NoiseInfo");
+  F_1NOI->ModifMode = eNoModif;
+  return F_1NOI;
+}
+
+
+void
+SdifCreatePredefinedTypes(SdifHashTableT *MatrixTypesHT, SdifHashTableT *FrameTypesHT)
+{
+  SdifPutMatrixType(MatrixTypesHT,   &M_1FQ0);
+  SdifPutMatrixType(MatrixTypesHT,   &M_1FOF);
+  SdifPutMatrixType(MatrixTypesHT,   &M_1CHA);
+  SdifPutMatrixType(MatrixTypesHT,   &M_1RES);
+  SdifPutMatrixType(MatrixTypesHT,   &M_1DIS);
+  MatrixTypesHT->Killer = NULL;
+
+  SdifPutFrameType(FrameTypesHT,   CreateF_1FOB() );
+  SdifPutFrameType(FrameTypesHT,   CreateF_1REB() );
+  SdifPutFrameType(FrameTypesHT,   CreateF_1NOI() );
+}
 

@@ -21,6 +21,7 @@
 #include "SdifFrameType.h"
 #include "SdifStreamID.h"
 #include "SdifFPut.h"
+#include "SdifErrMess.h"
 
 #include "SdifTimePosition.h"
 
@@ -101,7 +102,7 @@ SdifFPrintAllType(SdifFileT *SdifF)
       SdifF->TypeDefPass = eWritePass;
     }
   else
-    _SdifFileMess(SdifF, eOnlyOneChunkOf, SdifSignatureToString(e1TYP));
+    _SdifFError(SdifF, eOnlyOneChunkOf, SdifSignatureToString(e1TYP));
 
   return SizeW;
 }
@@ -124,7 +125,7 @@ SdifFPrintAllStreamID(SdifFileT *SdifF)
       SdifF->StreamIDPass = eWritePass;
     }
   else
-    _SdifFileMess(SdifF, eOnlyOneChunkOf, SdifSignatureToString(e1IDS));
+    _SdifFError(SdifF, eOnlyOneChunkOf, SdifSignatureToString(e1IDS));
       
   return SizeW;
 }
@@ -204,7 +205,7 @@ SdifFPrintOneRow(SdifFileT *SdifF)
       break;
     default :
       sprintf(gSdifErrorMess, "OneRow 0x%04x, then Float4 used", SdifF->CurrOneRow->DataType);
-      _SdifFileMess(SdifF, eTypeDataNotSupported, gSdifErrorMess);
+      _SdifFError(SdifF, eTypeDataNotSupported, gSdifErrorMess);
       /* then values are considered as Float4 */
       for(iCol=0; iCol<SdifF->CurrOneRow->NbData; iCol++)
 	SizeW += fprintf(SdifF->TextStream, "\t%g", SdifF->CurrOneRow->Data.F4[iCol]);

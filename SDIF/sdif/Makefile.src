@@ -26,4 +26,11 @@ SDIF_SRC = \
 	SdifTextConv.c \
 	SdifConvToText.c \
 	SdifHard_OS.c \
+	SdifErrMess.c \
 	SdifPreTypes.c
+
+
+
+
+
+

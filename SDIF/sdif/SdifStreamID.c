@@ -17,9 +17,10 @@
 SdifStreamIDT*
 SdifCreateStreamID(SdifUInt4 NumID, char *Source, char *TreeWay)
 {
-  SdifStreamIDT *NewID;
+  SdifStreamIDT *NewID = NULL;
   
-  if (NewID =  (SdifStreamIDT*) malloc (sizeof(SdifStreamIDT)))
+  NewID =  (SdifStreamIDT*) malloc (sizeof(SdifStreamIDT));
+  if (NewID)
     {
       NewID->NumID = NumID;
       NewID->Source  = SdifCreateStrNCpy(Source, SdifStrLen(Source)+1);

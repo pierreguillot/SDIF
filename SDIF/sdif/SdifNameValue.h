@@ -1,4 +1,4 @@
-/* $Id: SdifNameValue.h,v 1.5 1998-11-10 15:31:52 schwarz Exp $
+/* $Id: SdifNameValue.h,v 2.0 1998-11-29 11:41:58 virolle Exp $
  *
  * SdifNameValue.h
  *
@@ -9,6 +9,12 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.5  1998/11/10  15:31:52  schwarz
+ * Removed all 'extern' keywords for prototypes, since this is redundant
+ * (function prototypes are automatically linked extern), and it
+ * prohibits cocoon from generating an entry in the HTML documentation
+ * for this function.
+ *
  * Revision 1.4  1998/07/23  17:02:57  virolle
  * *** empty log message ***
  *
@@ -49,10 +55,12 @@ struct SdifNameValueHTNS
   SdifUInt4 NumHT;
 };
 
+
 SdifNameValueHTNT* SdifCreateNameValueHTN(SdifNameValueHTNT *Next,
-					  SdifHashTableT *NameValueHT,
-					  SdifUInt4 NumHT);
+						 SdifHashTableT *NameValueHT,
+						 SdifUInt4 NumHT);
 SdifNameValueHTNT* SdifKillNameValueHTN  (SdifNameValueHTNT *NVHTN);
+
 
 
 typedef struct SdifNameValuesLS SdifNameValuesLT;
@@ -65,18 +73,13 @@ struct SdifNameValuesLS
   SdifUInt4          HashSize;
 } ;
 
-SdifNameValuesLT* SdifCreateNameValuesL       (SdifUInt4  HashSize);
-void              SdifKillNameValuesL         (SdifNameValuesLT *NameValuesL);
-SdifNameValuesLT* SdifNameValuesLNewHT        (SdifNameValuesLT *NameValuesL);
-SdifHashTableT*   SdifNameValuesLSetCurrHT    (SdifNameValuesLT *NameValuesL, 
-					       SdifUInt4 NumCurrHT);
-SdifNameValueT*   SdifNameValuesLGet          (SdifNameValuesLT *NameValuesL, 
-					       char *Name);
-SdifNameValueT*   SdifNameValuesLGetFromCurrHT(SdifNameValuesLT *NameValuesL, 
-					       char *Name);
-SdifNameValueT*   SdifNameValuesLPut          (SdifNameValuesLT *NameValuesL, 
-					       const char *Name,
-					       const char *Value);
-SdifUInt2         SdifNameValuesLIsNotEmpty   (SdifNameValuesLT *NameValuesL);
+SdifNameValuesLT* SdifCreateNameValuesL     (SdifUInt4  HashSize);
+void              SdifKillNameValuesL       (SdifNameValuesLT *NameValuesL);
+SdifNameValuesLT* SdifNameValuesLNewHT      (SdifNameValuesLT *NameValuesL);
+SdifHashTableT*   SdifNameValuesLSetCurrHT  (SdifNameValuesLT *NameValuesL, SdifUInt4 NumCurrHT);
+SdifNameValueT*   SdifNameValuesLGet        (SdifNameValuesLT *NameValuesL, char *Name);
+SdifNameValueT*   SdifNameValuesLGetCurrHT  (SdifNameValuesLT *NameValuesL, char *Name);
+SdifNameValueT*   SdifNameValuesLPutCurrHT  (SdifNameValuesLT *NameValuesL, const char *Name,  const char *Value);
+SdifUInt2         SdifNameValuesLIsNotEmpty (SdifNameValuesLT *NameValuesL);
 
 #endif /* _SdifNameValue_ */

@@ -33,7 +33,7 @@ SdifFPutOneNameValue(SdifFileT* SdifF, int Verbose, SdifNameValueT *NameValue)
   size_t  SizeW = 0;
   FILE   *file;
 
-  file = SdifFileGetFILE_SwitchVerbose(SdifF, Verbose);
+  file = SdifFGetFILE_SwitchVerbose(SdifF, Verbose);
   
   SizeW += fprintf(file, "%s\t", NameValue->Name);
   SizeW += fprintf(file, "%s;\n", NameValue->Value);
@@ -54,7 +54,7 @@ SdifFPutNameValueCurrHT (SdifFileT *SdifF, int Verbose)
   FILE           *file;
 
 
-  file = SdifFileGetFILE_SwitchVerbose(SdifF, Verbose);
+  file = SdifFGetFILE_SwitchVerbose(SdifF, Verbose);
 
 
   HTable = SdifF->NameValues->CurrHT;
@@ -83,7 +83,7 @@ SdifFPutOneMatrixType(SdifFileT* SdifF, int Verbose, SdifMatrixTypeT *MatrixType
   FILE            *file;
   
   
-  file = SdifFileGetFILE_SwitchVerbose(SdifF, Verbose);
+  file = SdifFGetFILE_SwitchVerbose(SdifF, Verbose);
 
   if (MatrixType->HeadUse)
     {
@@ -128,10 +128,10 @@ SdifFPutOneComponent(SdifFileT *SdifF, int Verbose, SdifComponentT *Component)
   size_t   SizeW = 0;
   FILE    *file;
 
-  file = SdifFileGetFILE_SwitchVerbose(SdifF, Verbose);
+  file = SdifFGetFILE_SwitchVerbose(SdifF, Verbose);
 
   SizeW += fprintf(file, "\t  ");
-  SizeW += sizeof(SdifSignature) * SdiffWriteSignature(&(Component->MatrixSignature), file);
+  SizeW += sizeof(SdifSignature) * SdiffWriteSignature(&(Component->MtrxS), file);
   SizeW += fprintf(file, "\t%s;\n", Component->Name);
   
   return SizeW;
@@ -145,21 +145,24 @@ SdifFPutOneComponent(SdifFileT *SdifF, int Verbose, SdifComponentT *Component)
 size_t
 SdifFPutOneFrameType(SdifFileT *SdifF, int Verbose, SdifFrameTypeT *FrameType)
 {
-  SdifComponentNT *Node;
-  size_t           SizeW = 0;
-  FILE            *file;
+  SdifUInt4 iC;
+  size_t    SizeW = 0;
+  FILE      *file;
 
-  file = SdifFileGetFILE_SwitchVerbose(SdifF, Verbose);
+  file = SdifFGetFILE_SwitchVerbose(SdifF, Verbose);
   
-  if (FrameType->HeadUse)
+  if (FrameType->NbComponentUse > 0)
     {
       SizeW += fprintf(file, "  %s\t", SdifSignatureToString(e1FTD));
       SizeW += sizeof(SdifSignature) * SdiffWriteSignature( &(FrameType->Signature), file);
       SizeW += fprintf(file, "\n\t{\n");
-      for(Node = FrameType->HeadUse; Node;  Node = Node->Next)
-	{
-	  SizeW += SdifFPutOneComponent(SdifF, Verbose, Node->Component);
-	}
+      for(iC = FrameType->NbComponent - FrameType->NbComponentUse + 1;
+          iC<= FrameType->NbComponent;
+          iC++)
+	    {
+	      SizeW += SdifFPutOneComponent(SdifF, Verbose,
+                   SdifFrameTypeGetNthComponent(FrameType, iC));
+	    }
       SizeW += fprintf(file, "\t}\n");
     }
 
@@ -193,7 +196,7 @@ SdifFPutAllType(SdifFileT *SdifF, int Verbose)
   size_t  SizeW = 0;
   FILE   *file;
 
-  file = SdifFileGetFILE_SwitchVerbose(SdifF, Verbose);
+  file = SdifFGetFILE_SwitchVerbose(SdifF, Verbose);
  
   SizeW += fprintf(file, "{\n");  
   SizeW += SdifFPutAllMatrixType(SdifF, Verbose);
@@ -216,7 +219,7 @@ SdifFPutOneStreamID(SdifFileT *SdifF, int Verbose, SdifStreamIDT *StreamID)
   size_t   SizeW = 0;
   FILE    *file;
 
-  file = SdifFileGetFILE_SwitchVerbose(SdifF, Verbose);
+  file = SdifFGetFILE_SwitchVerbose(SdifF, Verbose);
 
   SizeW += fprintf(file, "  %u ", StreamID->NumID);
   SizeW += fprintf(file, "%s:", StreamID->Source);
@@ -242,7 +245,7 @@ SdifFPutAllStreamID(SdifFileT *SdifF, int Verbose)
   size_t           SizeW = 0;
   FILE             *file;
 
-  file = SdifFileGetFILE_SwitchVerbose(SdifF, Verbose);
+  file = SdifFGetFILE_SwitchVerbose(SdifF, Verbose);
 
   SizeW += fprintf(file, "{\n");
   

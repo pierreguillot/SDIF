@@ -69,123 +69,89 @@ Sdiffwrite(void *ptr, size_t size, size_t nobj, FILE *stream)
 /************ little endian machine *****************/
 
 
+/** fread **/
+
 size_t
-SdiffreadLittleEndian2 (void *ptr, size_t nobj, FILE *stream)
+SdiffreadLittleEndianN (void *ptr, size_t size, size_t nobj, FILE *stream)
 {
-  size_t nobjread = 0;
+	/* size must be a power of 2 */
   size_t
-    i2bytes,
-    Mi2Bytes;
+    nobjread = 0,
+	iNbytes,
+    MiNBytes;
   unsigned char *ptrChar;
 
   ptrChar = (unsigned char*) ptr;
 
-  if (nobj > _SdifBSLittleE / 2)
-    {
-      nobjread += SdiffreadLittleEndian2(ptr, _SdifBSLittleE / 2, stream);
-      nobjread += SdiffreadLittleEndian2(((unsigned char*) ptr)+(_SdifBSLittleE),
-					   nobj - (_SdifBSLittleE / 2),
-					   stream);
-      return nobjread;
-    }
-  else
-    {
-      nobjread = Sdiffread(gSdifLittleToBig, 2, nobj, stream);
-      Mi2Bytes = nobj << 1;         /****  (nobj << 1)  <=>  (nobj*2)  *****/
-      for(i2bytes=0; i2bytes<Mi2Bytes; i2bytes+=2)
-	{
-	  ptrChar[i2bytes+1] = gSdifLittleToBig[i2bytes];
-	  ptrChar[i2bytes]   = gSdifLittleToBig[i2bytes + 1];
-	}
-      
-      return nobjread;
-    }
+
+  nobjread = Sdiffread(ptrChar, size, nobj, stream);
+  MiNBytes = nobjread * size;
+  for (iNbytes=0; iNbytes < MiNBytes; iNbytes += size)
+	  SdifBigToLittle(ptrChar+iNbytes, size);
+  return nobjread ;
 }
 
 
+
+
+size_t
+SdiffreadLittleEndian2 (void *ptr, size_t nobj, FILE *stream)
+{
+  return SdiffreadLittleEndianN (ptr, 2, nobj, stream) ;
+}
 
 
 
 size_t
 SdiffreadLittleEndian4 (void *ptr, size_t nobj, FILE *stream)
 {
-  /* little : [3] [2] [1] [0] --->  big : [0] [1] [2] [3] */
-  size_t
-    nobjread = 0,
-    i4bytes,
-    Mi4Bytes;
-  unsigned char *ptrChar;
-
-  ptrChar = (unsigned char*) ptr;
-
-  if (nobj > _SdifBSLittleE / 4)
-    {
-      nobjread += SdiffreadLittleEndian4(ptr, _SdifBSLittleE / 4, stream);
-      nobjread += SdiffreadLittleEndian4(((unsigned char*) ptr)+(_SdifBSLittleE),
-					   nobj - (_SdifBSLittleE / 4),
-					   stream);
-      return nobjread;
-    }
-  else
-    {
-      nobjread = Sdiffread(gSdifLittleToBig, 4, nobj, stream);
-      Mi4Bytes = nobj << 2;         /****  (nobj << 2)  <=>  (nobj*4)  *****/
-      for(i4bytes=0; i4bytes<Mi4Bytes; i4bytes+=4)
-        {
-	      ptrChar[i4bytes+3] = gSdifLittleToBig[i4bytes];
-	      ptrChar[i4bytes+2] = gSdifLittleToBig[i4bytes+1];
-	      ptrChar[i4bytes+1] = gSdifLittleToBig[i4bytes+2];
-	      ptrChar[i4bytes]   = gSdifLittleToBig[i4bytes+3];
-        }
-      
-      return nobjread;
-    }
+  return SdiffreadLittleEndianN (ptr, 4, nobj, stream) ;
 }
-
 
 
 
 size_t
 SdiffreadLittleEndian8 (void *ptr, size_t nobj, FILE *stream)
 {
-  size_t
-    nobjread = 0,
-    i8bytes,
-    Mi8Bytes;
-  unsigned char *ptrChar;
-
-  ptrChar = (unsigned char*) ptr;
-
-  if (nobj > _SdifBSLittleE / 8)
-    {
-      nobjread += SdiffreadLittleEndian8(ptr, _SdifBSLittleE / 8, stream);
-      nobjread += SdiffreadLittleEndian8(((unsigned char*) ptr)+(_SdifBSLittleE),
-					   nobj - (_SdifBSLittleE / 8),
-					   stream);
-      return nobjread;
-    }
-  else
-    {
-      nobjread = Sdiffread(gSdifLittleToBig, 8, nobj, stream);
-      Mi8Bytes = nobj << 3;         /****  (nobj << 2)  <=>  (nobj*8)  *****/
-      for(i8bytes=0; i8bytes<Mi8Bytes; i8bytes+=8)
-	{
-	   ptrChar[i8bytes+7] = gSdifLittleToBig[i8bytes];
-	   ptrChar[i8bytes+6] = gSdifLittleToBig[i8bytes+1];
-	   ptrChar[i8bytes+5] = gSdifLittleToBig[i8bytes+2];
-	   ptrChar[i8bytes+4] = gSdifLittleToBig[i8bytes+3];
-	   ptrChar[i8bytes+3] = gSdifLittleToBig[i8bytes+4];
-	   ptrChar[i8bytes+2] = gSdifLittleToBig[i8bytes+5];
-	   ptrChar[i8bytes+1] = gSdifLittleToBig[i8bytes+6];
-	   ptrChar[i8bytes]   = gSdifLittleToBig[i8bytes+7];
-	}
-      
-      return nobjread;
-    }
+  return SdiffreadLittleEndianN (ptr, 8, nobj, stream) ;
 }
 
 
 
+/** fwrite **/
+
+
+size_t
+SdiffwriteLittleEndianN (void *ptr, size_t size, size_t nobj, FILE *stream)
+{
+	/* size must be a power of 2 */
+  size_t
+    nobjwrite = 0,
+	iNbytes,
+    MiNBytes,
+	nobjInOneBuf;
+  unsigned char *ptrChar;
+
+  ptrChar = (unsigned char*) ptr;
+  nobjInOneBuf = _SdifBSLittleE / size;
+  if (nobj > nobjInOneBuf)
+    {
+      nobjwrite += SdiffwriteLittleEndianN(ptrChar, size, nobjInOneBuf, stream);
+      nobjwrite += SdiffwriteLittleEndianN(ptrChar+_SdifBSLittleE, size,
+		                                   nobj - nobjInOneBuf,
+					                       stream);
+      return nobjwrite;
+    }
+  else
+    {
+       MiNBytes = nobj * size;
+       for (iNbytes=0; iNbytes < MiNBytes; iNbytes += size)
+	      SdifLittleToBig(gSdifLittleToBig+iNbytes, ptrChar+iNbytes, size);
+      
+      nobjwrite = Sdiffwrite(gSdifLittleToBig, size, nobj, stream);
+      return nobjwrite;
+    }
+}
 
 
 
@@ -193,120 +159,23 @@ SdiffreadLittleEndian8 (void *ptr, size_t nobj, FILE *stream)
 size_t
 SdiffwriteLittleEndian2 (void *ptr, size_t nobj, FILE *stream)
 {
-  size_t
-    nobjwrite = 0,
-    i2bytes,
-    Mi2Bytes;
-  unsigned char *ptrChar;
-
-  ptrChar = (unsigned char*) ptr;
-
-  if (nobj > _SdifBSLittleE / 2)
-    {
-      nobjwrite += SdiffwriteLittleEndian2(ptr, _SdifBSLittleE / 2, stream);
-      nobjwrite += SdiffwriteLittleEndian2(((unsigned char*) ptr)+(_SdifBSLittleE),
-					   nobj - (_SdifBSLittleE / 2),
-					   stream);
-      return nobjwrite;
-    }
-  else
-    {
-      Mi2Bytes = nobj << 1;         /****  (nobj << 1)  <=>  (nobj*2)  *****/
-      for(i2bytes=0; i2bytes<Mi2Bytes; i2bytes+=2)
-	{
-	  gSdifLittleToBig[i2bytes]     = ptrChar[i2bytes+1];
-	  gSdifLittleToBig[i2bytes + 1] = ptrChar[i2bytes];
-	}
-      
-      nobjwrite = Sdiffwrite(gSdifLittleToBig, 2, nobj, stream);
-      return nobjwrite;
-    }
+  return SdiffwriteLittleEndianN (ptr, 2, nobj, stream);
 }
-
-
-
-
 
 
 
 size_t
 SdiffwriteLittleEndian4 (void *ptr, size_t nobj, FILE *stream)
 {
-  /* little : [3] [2] [1] [0] --->  big : [0] [1] [2] [3] */
-  size_t
-    nobjwrite = 0,
-    i4bytes,
-    Mi4Bytes;
-  unsigned char *ptrChar;
-
-  ptrChar = (unsigned char*) ptr;
-
-  if (nobj > _SdifBSLittleE / 4)
-    {
-      nobjwrite += SdiffwriteLittleEndian4(ptr, _SdifBSLittleE / 4, stream);
-      nobjwrite += SdiffwriteLittleEndian4(((unsigned char*) ptr)+(_SdifBSLittleE),
-					   nobj - (_SdifBSLittleE / 4),
-					   stream);
-      return nobjwrite;
-    }
-  else
-    {
-      Mi4Bytes = nobj << 2;         /****  (nobj << 2)  <=>  (nobj*4)  *****/
-      for(i4bytes=0; i4bytes<Mi4Bytes; i4bytes+=4)
-	{
-	  gSdifLittleToBig[i4bytes]   = ptrChar[i4bytes+3];
-	  gSdifLittleToBig[i4bytes+1] = ptrChar[i4bytes+2];
-	  gSdifLittleToBig[i4bytes+2] = ptrChar[i4bytes+1];
-	  gSdifLittleToBig[i4bytes+3] = ptrChar[i4bytes];
-	}
-      
-      nobjwrite = Sdiffwrite(gSdifLittleToBig, 4, nobj, stream);
-      return nobjwrite;
-    }
+  return SdiffwriteLittleEndianN (ptr, 4, nobj, stream);
 }
-
-
-
 
 
 
 size_t
 SdiffwriteLittleEndian8 (void *ptr, size_t nobj, FILE *stream)
 {
-  size_t
-    nobjwrite = 0,
-    i8bytes,
-    Mi8Bytes;
-  unsigned char *ptrChar;
-
-  ptrChar = (unsigned char*) ptr;
-
-  if (nobj > _SdifBSLittleE / 8)
-    {
-      nobjwrite += SdiffwriteLittleEndian8(ptr, _SdifBSLittleE / 8, stream);
-      nobjwrite += SdiffwriteLittleEndian8(((unsigned char*) ptr)+(_SdifBSLittleE),
-					   nobj - (_SdifBSLittleE / 8),
-					   stream);
-      return nobjwrite;
-    }
-  else
-    {
-      Mi8Bytes = nobj << 3;         /****  (nobj << 2)  <=>  (nobj*8)  *****/
-      for(i8bytes=0; i8bytes<Mi8Bytes; i8bytes+=8)
-	{
-	  gSdifLittleToBig[i8bytes]   = ptrChar[i8bytes+7];
-	  gSdifLittleToBig[i8bytes+1] = ptrChar[i8bytes+6];
-	  gSdifLittleToBig[i8bytes+2] = ptrChar[i8bytes+5];
-	  gSdifLittleToBig[i8bytes+3] = ptrChar[i8bytes+4];
-	  gSdifLittleToBig[i8bytes+4] = ptrChar[i8bytes+3];
-	  gSdifLittleToBig[i8bytes+5] = ptrChar[i8bytes+2];
-	  gSdifLittleToBig[i8bytes+6] = ptrChar[i8bytes+1];
-	  gSdifLittleToBig[i8bytes+7] = ptrChar[i8bytes];
-	}
-      
-      nobjwrite = Sdiffwrite(gSdifLittleToBig, 8, nobj, stream);
-      return nobjwrite;
-    }
+  return SdiffwriteLittleEndianN (ptr, 8, nobj, stream);
 }
 
 
@@ -335,7 +204,7 @@ SdiffReadInt2 (SdifInt2 *ptr, size_t nobj, FILE *stream)
     case eLittleEndianLittleConst64 :
       return SdiffreadLittleEndian2(ptr, nobj, stream);
     default :
-    return Sdiffread(ptr, sizeof(SdifInt2),  nobj, stream);
+      return Sdiffread(ptr, sizeof(SdifInt2),  nobj, stream);
     }  
 }
 
@@ -634,14 +503,14 @@ SdiffWriteSignature(SdifSignature *Signature, FILE *stream)
 {
     SdifSignature SignW;
 
-    SignW = *Signature ;
     switch (gSdifMachineType)
     {     
     case eLittleEndianLittleConst :
     case eLittleEndianLittleConst64 :
-      SdifLittleToBig(&SignW, sizeof(Signature));
+      SdifLittleToBig(&SignW, Signature, sizeof(Signature));
       break;
     default :
+      SignW = *Signature ;
       break;
     }
   return Sdiffwrite(&SignW, sizeof(SdifSignature),  1, stream);
@@ -764,9 +633,9 @@ int
 SdiffGetSignature(FILE* fr, SdifSignature *Signature, size_t *NbCharRead)
 {
   char Name[4] = "\0\0\0";
-  char c;
-  int cint;
-  char *pCS;
+  char c = 0;
+  int cint = 0;
+  char *pCS = NULL;
   unsigned int i;
   
   do

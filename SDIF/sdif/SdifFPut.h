@@ -1,4 +1,4 @@
-/* $Id: SdifFPut.h,v 1.2 1998-11-10 15:31:42 schwarz Exp $
+/* $Id: SdifFPut.h,v 2.0 1998-11-29 11:41:32 virolle Exp $
  *
  * SdifFPut.h
  *
@@ -11,6 +11,12 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  1998/11/10  15:31:42  schwarz
+ * Removed all 'extern' keywords for prototypes, since this is redundant
+ * (function prototypes are automatically linked extern), and it
+ * prohibits cocoon from generating an entry in the HTML documentation
+ * for this function.
+ *
  */
 
 

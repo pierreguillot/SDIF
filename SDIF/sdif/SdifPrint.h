@@ -1,4 +1,4 @@
-/* $Id: SdifPrint.h,v 1.3 1998-11-10 15:31:54 schwarz Exp $
+/* $Id: SdifPrint.h,v 2.0 1998-11-29 11:42:02 virolle Exp $
  *
  * SdifPrint.h
  *
@@ -8,6 +8,12 @@
  *
  * author: Dominique Virolle 1997
  * $Log: not supported by cvs2svn $
+ * Revision 1.3  1998/11/10  15:31:54  schwarz
+ * Removed all 'extern' keywords for prototypes, since this is redundant
+ * (function prototypes are automatically linked extern), and it
+ * prohibits cocoon from generating an entry in the HTML documentation
+ * for this function.
+ *
  */
 
 #ifndef _SdifPrint_
