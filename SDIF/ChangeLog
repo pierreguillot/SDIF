@@ -1,3 +1,15 @@
+2003-05-24  Axel Röbel  <roebel@ircam.fr>
+
+	* include/sdif_version.h.in: 
+	Renamed  VERSION string to SDIF_VERSION_STRING
+	A VERSION Macro in user include files breaks
+	include files in dependend libraries that itself 
+	define a VERSION macro.
+
+	This is necessary for configured builds of dependend
+	libraries as for example Easdif!!!
+
+
 Version 3.7.4	2003-05-23  Diemo Schwarz  <schwarz@ircam.fr>
 
 	* sdif.pbxproj, macosxbuild, winbuild:
@@ -150,4 +162,4 @@ Version 3.3:
 	  Operating System.
 
 	
-$Id: ChangeLog,v 1.16 2003-05-23 17:28:40 schwarz Exp $
+$Id: ChangeLog,v 1.17 2003-05-24 00:29:38 roebel Exp $
