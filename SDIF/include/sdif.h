@@ -1,4 +1,4 @@
-/* $Id: sdif.h,v 1.26 2003-04-18 17:42:49 schwarz Exp $
+/* $Id: sdif.h,v 1.27 2003-05-01 18:48:41 roebel Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -30,6 +30,9 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.26  2003/04/18 17:42:49  schwarz
+ * Removed last warning from swig.
+ *
  * Revision 1.25  2003/04/18 16:03:09  schwarz
  * Made parseable by swig (no generating macros).
  * Removed double definitions, reordered others.
@@ -143,7 +146,7 @@
  * Revision 1.1.2.1  2000/08/21  13:07:41  tisseran
  * *** empty log message ***
  *
- * $Date: 2003-04-18 17:42:49 $
+ * $Date: 2003-05-01 18:48:41 $
  *
  */
 
@@ -158,7 +161,7 @@ extern "C" {
 #endif
 
 
-static const char _sdif_h_cvs_revision_ [] = "$Id: sdif.h,v 1.26 2003-04-18 17:42:49 schwarz Exp $";
+static const char _sdif_h_cvs_revision_ [] = "$Id: sdif.h,v 1.27 2003-05-01 18:48:41 roebel Exp $";
 
 
 #include <stdio.h>
@@ -2431,6 +2434,7 @@ int SdiffGetStringWeakUntilfromSdifString(SdifStringT *SdifString, char* s,
 					  size_t ncMax, char *CharsEnd);
 
 int SdifSkipASCIIUntil  (FILE* fr, size_t *NbCharRead, char *CharsEnd);
+int SdifSkipASCIIUntilfromSdifString  (SdifStringT *SdifString, size_t *NbCharRead, char *CharsEnd);
 
 
 #if 0	/* for cocoon's eyes only */
@@ -2461,7 +2465,7 @@ SdifSignature _SdifStringToSignature (char *str);
   Convert a string to an SDIF signature (in proper endianness).
   str can point to any string position of any length.  
 */
-SdifSignature SdifStringToSignature (char *str);
+SdifSignature SdifStringToSignature (const char *str);
 
 
 
