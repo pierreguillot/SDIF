@@ -1,4 +1,4 @@
-# $Id: Makefile,v 3.1 1999-03-14 10:54:42 virolle Exp $
+# $Id: Makefile,v 3.2 1999-04-30 13:45:53 schwarz Exp $
 #
 #               Copyright (c) 1998 by IRCAM - Centre Pompidou
 #                          All rights reserved.
@@ -13,6 +13,9 @@
 # Makefile for automatic documentation.
 #
 # $Log: not supported by cvs2svn $
+# Revision 3.1  1999/03/14  10:54:42  virolle
+# SdifStdErr add
+#
 # Revision 2.3  1999/01/21  16:36:23  schwarz
 # Beefed up the SDIF library user manual.  It now has the sections
 # User Manual		(as before, but with navigating toc frame and
@@ -114,7 +117,8 @@ ahead-extern	= <a href="$(URLROOT)/SDIF.html\#functions" target=doc><strong>Func
 ahead-intern	= <a href="$(URLROOT)/SDIF.html\#data" target=doc><strong>Data Structures</strong></a><br>$(ahead-extern)
 
 %/alpha-toc.html:	%/cocoon/SDIF.lnk Makefile
-		sort $< | perl -n -e '\
+		@echo Gendoc $< $@
+		@sort $< | perl -n -e '\
 		BEGIN { print qq|<body bgcolor=white>\n$(ahead-$*)\n\
 				 <strong>All Declarations:</strong><br>\n|; } \
 		END {print "</body>";} \
@@ -124,7 +128,8 @@ ahead-intern	= <a href="$(URLROOT)/SDIF.html\#data" target=doc><strong>Data Stru
 # make substitution file for anchor to replace function names in
 # SdifManuelDoc.html by bold link to def in cocoon doc 
 %/linkit.lnk:	%/cocoon/SDIF.lnk Makefile
-		perl -n -e '\
+		@echo Gendoc $< $@
+		@perl -n -e '\
 		s|\\#|cocoon/SDIF.html\\#|;  s|<a href=|<a href=|; \
 		split "%";  print "%$$_[1]%<b>$$_[2]</b>%\n"' $< >$@
 
@@ -169,19 +174,21 @@ $(isec):	intern/default-sec.html
 		# avoid making (thus destroying) these source files!
 
 %-sec.html:	default-sec.html Makefile
-		perl -p -e $(ewarn) -e 's!$(var-$(*F))!$(selcolor)!;' $(@D)/$(<F) >$@
-		@echo
+		@echo Gendoc $(@D)/$(<F) $@
+		@perl -p -e $(ewarn) -e 's!$(var-$(*F))!$(selcolor)!;' $(@D)/$(<F) >$@
 
 %-main.html:	default-main.html Makefile
-		perl -p -e $(ewarn) -e 's!default-doc\.html!$(doc-$(*F))!;' \
+		@echo Gendoc $(@D)/$(<F) $@
+		@perl -p -e $(ewarn) -e 's!default-doc\.html!$(doc-$(*F))!;' \
 		     -e 's!default-(sec|toc)\.html!$(*F)-$$1.html!;' $(@D)/$(<F) >$@
-		@echo
+
 
 # use cocoon's anchor to replace function names in
 # SdifManuelDoc.html by bold link to def in cocoon doc 
 %/by-subject-doc.html:	%/linkit.lnk $(src-$*)
-		anchor $< $(src-$(*F)) $@
-		perl -pi -e $(ewarn) -e 's|(src="*)pics|$$1../pics|;' $@
+		@echo Gendoc $(src-$(*F)) $@
+		@anchor $< $(src-$(*F)) $@
+		@perl -pi -e $(ewarn) -e 's|(src="*)pics|$$1../pics|;' $@
 
 
 #
