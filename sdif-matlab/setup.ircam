@@ -2,7 +2,7 @@ SDIF_TYPES_DIR  :=  /u/formes/share/share
 SDIF_TYPES_FILE := SdifTypes.STYP
 
 ifeq ($(ARCH),i686)
- MEXCMD = /usr/local/bin/mex /data/matlab-6/bin/mex
+ MEXCMD = /usr/local/bin/mex 
  LINKFLAGS = "LDFLAGS=-shared -nodefaultlibs"
 endif
 
