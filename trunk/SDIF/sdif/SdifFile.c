@@ -1,4 +1,4 @@
-/* $Id: SdifFile.c,v 3.42 2004-02-11 15:44:05 roebel Exp $
+/* $Id: SdifFile.c,v 3.43 2004-02-11 16:24:11 roebel Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -33,6 +33,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.42  2004/02/11 15:44:05  roebel
+ * Again an update of handling of the warning for missing types file.
+ *
  * Revision 3.41  2004/02/10 14:55:41  roebel
  * Removed remark (warning) for the case where types file name is "".
  *
@@ -816,6 +819,7 @@ SdifGenInit(const char *PredefinedTypesFile)
 {
     char *PreTypesEnvVar=NULL;
     char *local_types = NULL;
+    int   use_default_file =0;
 
     assert (!gSdifInitialised  &&  "SDIF library already initialised");
     gSdifInitialised = 1;
@@ -837,7 +841,8 @@ SdifGenInit(const char *PredefinedTypesFile)
 #endif
        if (! PreTypesEnvVar)
        {
-         PreTypesEnvVar = _SdifTypesFileName;
+         PreTypesEnvVar   = _SdifTypesFileName;
+	 use_default_file = 1;
        }
 
        {
@@ -862,7 +867,7 @@ SdifGenInit(const char *PredefinedTypesFile)
 	      * In this case, if not available do not request to load it to prevent 
 	      * warnings.
 	      * */
-	     if(PreTypesEnvVar == _SdifTypesFileName) {
+	     if(use_default_file) {
 	       rs = stat(PreTypesEnvVar,&sb);
 	       if(rs!=0)
 		 PreTypesEnvVar = "";
@@ -882,7 +887,7 @@ SdifGenInit(const char *PredefinedTypesFile)
 	    * if not available do not request to load it to prevent 
 	    * warnings.
 	    * */
-	   if(PreTypesEnvVar == _SdifTypesFileName) {
+	   if( use_default_file) {
 	     rs = open(PreTypesEnvVar,O_RDONLY);
 	     if(rs==-1)
 	       PreTypesEnvVar = "";
@@ -891,7 +896,6 @@ SdifGenInit(const char *PredefinedTypesFile)
 	   }
 	 }
 #endif
-
 	 free(copy);
        }
 
