@@ -1,6 +1,6 @@
 dnl -*-autoconf-*-  (No, it's an autoconf file!)
 dnl -*-m4-*- (He emacs, it's a m4 file)
-dnl $Id: configure.in,v 1.29 2003-03-07 17:30:59 roebel Exp $
+dnl $Id: configure.in,v 1.30 2003-03-07 17:43:21 roebel Exp $
 dnl
 dnl configure.in		September 2000		Patrice Tisserand
 dnl
@@ -32,6 +32,11 @@ dnl send email to:  sdif@ircam.fr
 
 
 dnl $Log: not supported by cvs2svn $
+dnl Revision 1.29  2003/03/07 17:30:59  roebel
+dnl Updated handling of --enable-cpp to use own directory.
+dnl If --enable-cpp is given there are both versions compiled
+dnl but only the c version is installed. the c++ version is only for Easdif.
+dnl
 dnl Revision 1.28  2003/03/06 15:02:28  tisseran
 dnl Fix C++ compiler use when compiling in C++
 dnl
@@ -154,7 +159,7 @@ PACKAGE=SDIF
 
 SDIF_VERSION_MAJOR=3
 SDIF_VERSION_MINOR=7
-SDIF_VERSION_RELEASE=2
+SDIF_VERSION_RELEASE=3
 
 VERSION=$SDIF_VERSION_MAJOR.$SDIF_VERSION_MINOR.$SDIF_VERSION_RELEASE
 
