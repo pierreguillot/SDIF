@@ -1,4 +1,4 @@
-/* $Id: SdifTest.c,v 3.4 2000-04-11 14:32:09 schwarz Exp $
+/* $Id: SdifTest.c,v 3.5 2000-08-22 13:38:41 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -16,6 +16,10 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.4  2000/04/11  14:32:09  schwarz
+ * Don't return error, if more columns in matrix than known,
+ * since then the wrong number of columns is read.
+ *
  * Revision 3.3  1999/10/13  16:05:59  schwarz
  * Changed data type codes (SdifDataTypeET) to SDIF format version 3, as
  * decided with Matt Wright June 1999, added integer data types.
@@ -93,7 +97,7 @@ SdifTestMatrixType(SdifFileT *SdifF, SdifSignature Signature)
 
 
 
-short
+int
 SdifFTestDataType(SdifFileT* SdifF)
 {
 #if (_SdifFormatVersion >= 3)
@@ -129,8 +133,7 @@ SdifFTestDataType(SdifFileT* SdifF)
 
 
 
-short
-SdifFTestNbColumns(SdifFileT* SdifF)
+int SdifFTestNbColumns(SdifFileT* SdifF)
 {
   if (SdifF->CurrMtrxT->NbColumnDef < SdifF->CurrMtrxH->NbCol)
     {
@@ -151,34 +154,35 @@ SdifFTestNbColumns(SdifFileT* SdifF)
 
 
 
-short
-SdifFTestMatrixWithFrameHeader(SdifFileT* SdifF)
+int SdifFTestMatrixWithFrameHeader(SdifFileT* SdifF)
 {
-  SdifComponentT *CD;
+    SdifComponentT *CD;
 
-  CD = SdifFrameTypeGetComponent_MtrxS(SdifF->CurrFramT,
-                                       SdifF->CurrMtrxH->Signature);
+    CD = SdifFrameTypeGetComponent_MtrxS (SdifF->CurrFramT,
+					  SdifF->CurrMtrxH->Signature);
 
-  if (CD)
-    if (! SdifFIsInMtrxUsed (SdifF, SdifF->CurrMtrxH->Signature))
-      return eTrue;
+    if (CD)
+	if (! SdifFIsInMtrxUsed (SdifF, SdifF->CurrMtrxH->Signature))
+	    return eTrue;
+	else
+	    _SdifFError(SdifF, eMtrxUsedYet,
+			SdifSignatureToString(SdifF->CurrMtrxH->Signature));
     else
-	  _SdifFError(SdifF,
-        eMtrxUsedYet,
-        SdifSignatureToString(SdifF->CurrMtrxH->Signature));
-  else
-	_SdifFError(SdifF,
-      eMtrxNotInFrame,
-      SdifSignatureToString(SdifF->CurrMtrxH->Signature));
-
-  return eFalse;
+    {   /* warn about additional undeclared matrix in frame */
+	_SdifFError(SdifF, eMtrxNotInFrame,
+		    SdifSignatureToString(SdifF->CurrMtrxH->Signature));
+	return eTrue; /* ...but do not signal an error, because we
+                         allow any additional matrices in frames */
+    }
+    
+    return eFalse;
 }
 
 
 
 
 
-short
+int
 SdifFTestNotEmptyMatrix(SdifFileT* SdifF)
 {
   if ((SdifF->CurrMtrxH->NbCol <= 0) && (SdifF->CurrMtrxH->NbRow <= 0)) 
@@ -191,7 +195,7 @@ SdifFTestNotEmptyMatrix(SdifFileT* SdifF)
 
 
 
-short
+int
 SdifFTestMatrixHeader(SdifFileT* SdifF)
 {
   SdifF->CurrMtrxT = SdifTestMatrixType(SdifF, SdifF->CurrMtrxH->Signature);
@@ -301,7 +305,7 @@ SdifTestComponent(SdifFileT* SdifF, SdifFrameTypeT *FramT, char *NameCD)
 
 
 
-short
+int
 SdifTestSignature(SdifFileT *SdifF, int CharEnd, SdifSignature Signature, char *Mess)
 {
   if ( (SdifIsAReservedChar((char) CharEnd) != -1) || (isspace((char) CharEnd)) )
@@ -323,9 +327,9 @@ SdifTestSignature(SdifFileT *SdifF, int CharEnd, SdifSignature Signature, char *
 
 
 
-short
+int
 SdifTestCharEnd(SdifFileT *SdifF, int CharEnd, char MustBe, char *StringRead,
-		short ErrCondition, char *Mess)
+		int ErrCondition, char *Mess)
 {
   if (   ( (unsigned) CharEnd != (unsigned) MustBe)
       ||   (ErrCondition))
@@ -352,7 +356,7 @@ SdifTestCharEnd(SdifFileT *SdifF, int CharEnd, char MustBe, char *StringRead,
 
 
 
-short
+int
 SdifTestMatrixTypeModifMode(SdifFileT *SdifF, SdifMatrixTypeT *MatrixType)
 {  
   if (eCanModif == MatrixType->ModifMode)
@@ -370,7 +374,7 @@ SdifTestMatrixTypeModifMode(SdifFileT *SdifF, SdifMatrixTypeT *MatrixType)
 
 
 
-short
+int
 SdifTestFrameTypeModifMode(SdifFileT *SdifF, SdifFrameTypeT *FrameType)
 {
   if (eCanModif == FrameType->ModifMode)
