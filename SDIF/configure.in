@@ -1,6 +1,6 @@
 dnl -*-autoconf-*-  (No, it's an autoconf file!)
 dnl -*-m4-*- (He emacs, it's a m4 file)
-dnl $Id: configure.in,v 1.28 2003-03-06 15:02:28 tisseran Exp $
+dnl $Id: configure.in,v 1.29 2003-03-07 17:30:59 roebel Exp $
 dnl
 dnl configure.in		September 2000		Patrice Tisserand
 dnl
@@ -32,6 +32,9 @@ dnl send email to:  sdif@ircam.fr
 
 
 dnl $Log: not supported by cvs2svn $
+dnl Revision 1.28  2003/03/06 15:02:28  tisseran
+dnl Fix C++ compiler use when compiling in C++
+dnl
 dnl Revision 1.27  2003/03/03 09:53:17  roebel
 dnl Removed duplicate macro AC_SUBST.
 dnl Added c++ compiler check in case of --enable-c++.
@@ -181,15 +184,9 @@ AC_HEADER_STDC
 AC_CHECK_HEADERS( sys/types.h sys/stat.h)
 AC_CHECK_HEADERS(errno.h)
 AC_CHECK_HEADERS(unistd.h)
-AC_SUBST(IRCAMDEPS)
-AC_SUBST(FORCE_CMP)
-if test -f /u/formes/share/include/preincluded.h ; then
- IRCAMDEPS=ircam_deps
- FORCE_CMP=ircam_force_cmp
-else
- IRCAMDEPS=;
- FORCE_CMP=;
-fi
+
+AM_CONDITIONAL(ISATIRCAM, test -f /u/formes/share/include/preincluded.h)
+
 
 dnl ############################################################
 dnl Particular compiler characteristics
@@ -255,22 +252,27 @@ dnl compile with g++
 
 
 AC_ARG_ENABLE(cpp,
-[--enable-cpp              compile with g++ for C++ classes using the library],
+[--enable-cpp       compile also withh C++ compiler for internal use to build Easdif],
 [ dnl actions if enable-option given
   echo FEATURE enable-cpp... $enableval; 
   if test "$enableval" = "yes"; then
-  dnl	SELLIB=libsdif-cpp.a; CFLAGS="-O3"; CC="g++"   ...debug for now
+  dnl	
 	AC_PROG_CXX
-  dnl Hack to use the C++ compiler for compiling C source code
-	SELLIB=libsdif-cpp.la; CFLAGS="-g2"; CC="$CXX"
+	CXXFLAGS=$CFLAGS
+	SELLIBCPP="libsdif-cpp.a"	
+	AM_CONDITIONAL(ENABLECPP,true)
   else
 	dnl leave values unchanged
-	dummy=stupid
+        SELLIBCPP=
+	AM_CONDITIONAL(ENABLECPP,false)
   fi 
 ],
 [ dnl actions if enable-option not given
-  dummy=stupid
+  SELLIBCPP=
+  AM_CONDITIONAL(ENABLECPP,false)
 ])
+
+AC_SUBST(SELLIBCPP)
 
 dnl ############################################################
 dnl checks for library functions
@@ -295,6 +297,7 @@ dnl CREATE OUTPUT FILES
 AC_MSG_RESULT(CREATE OUTPUT FILES)
 AC_OUTPUT(Makefile 
 sdif/Makefile 
+sdifcpp/Makefile 
 tools/Makefile
 data/Makefile 
 include/Makefile 
