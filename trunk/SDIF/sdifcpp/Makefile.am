@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.3 2003-07-21 13:41:35 tisseran Exp $
+# $Id: Makefile.am,v 1.4 2003-08-07 16:20:44 roebel Exp $
 #
 # ./sdifcpp/Makefile.am		March 2003		Axel Roebel
 #
@@ -30,6 +30,9 @@
 
 
 # $Log: not supported by cvs2svn $
+# Revision 1.3  2003/07/21 13:41:35  tisseran
+# Fixed conditionnal compilation/installation of libsdif-cpp.
+#
 # Revision 1.2  2003/03/18 14:56:52  roebel
 # Use libtool to built conveniance library.
 #
@@ -40,7 +43,7 @@
 
 
 EXTRA_LTLIBRARIES = libsdif-cpp.la 
-lib_LTLIBRARIES = @SELLIBCPP@
+noinst_LTLIBRARIES = @SELLIBCPP@
 
 FORMES_H=host_architecture.h  preincluded.h UniversalEnvVar.h  XpGuiCalls.h
 FORMES_INCLUDE=/u/formes/share/include
@@ -76,7 +79,6 @@ libsdif_cpp_la_SOURCES = \
 	SdifPrint.cpp      SdifRWLowLevel.cpp   SdifFPut.cpp           \
 	SdifConvToText.cpp SdifPreTypes.cpp
 
-libsdif_cpp_la_LDFLAGS=-no-undefined -release @VERSION@ -rpath $(libdir)
 
 CLEANFILES = $(libsdif_cpp_la_SOURCES) SdifVersion.h
 sdiftype = $(datadir)/SdifTypes.STYP
