@@ -15,6 +15,10 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.2  1999/09/28  13:09:06  schwarz
+ * Included #include <preincluded.h> for cross-platform uniformisation,
+ * which in turn includes host_architecture.h and SDIF's project_preinclude.h.
+ *
  * Revision 3.1  1999/03/14  10:57:10  virolle
  * SdifStdErr add
  *
@@ -70,7 +74,7 @@ SdifKillBlockNode(SdifBlockNodeT* BlockNode)
     SdifBlockNodeT* Next;
 
     Next = BlockNode->Next;
-    free(BlockNode->ptr); // free of user ptr
+    free(BlockNode->ptr); /* free of user ptr */
     free(BlockNode);
     return Next;
 }
@@ -157,7 +161,7 @@ SdifMr_realloc(SdifBlockListT* L, void* oldptr, size_t size, size_t nobj)
     size_t ReAllocSize = 0;
 
 
-    newptr = realloc(oldptr, size * nobj); // realloc user block
+    newptr = realloc(oldptr, size * nobj); /* realloc user block */
 
     for (Curr = L->Alloc; Curr; Curr=Curr->Next)
     {

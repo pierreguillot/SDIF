@@ -1,4 +1,4 @@
-/* $Id: SdifError.c,v 3.3 2000-03-01 11:17:33 schwarz Exp $
+/* $Id: SdifError.c,v 3.4 2000-05-12 14:41:43 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -14,6 +14,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.3  2000/03/01  11:17:33  schwarz
+ * Configurable exit function on error.
+ *
  * Revision 3.2  1999/09/28  13:08:50  schwarz
  * Included #include <preincluded.h> for cross-platform uniformisation,
  * which in turn includes host_architecture.h and SDIF's project_preinclude.h.
@@ -53,6 +56,7 @@
 
 
 #include <preincluded.h>
+#include "XpGuiCalls.h"
 #include "SdifError.h"
 #include <stdlib.h>
 
@@ -67,7 +71,7 @@ FILE* SdifStdErr = NULL;
 static void 
 SdifExit (void)
 {
-    exit (1);
+    XpExit(1);
 }
 
 

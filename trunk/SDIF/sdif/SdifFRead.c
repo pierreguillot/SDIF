@@ -1,4 +1,4 @@
-/* $Id: SdifFRead.c,v 3.7 2000-04-11 14:31:41 schwarz Exp $
+/* $Id: SdifFRead.c,v 3.8 2000-05-12 14:41:46 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -14,6 +14,10 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.7  2000/04/11  14:31:41  schwarz
+ * Read/write NVT as frame with 1 text matrix, conforming to SDIF spec.
+ * Read rest of general header chunk (might contain additional data).
+ *
  * Revision 3.6  2000/03/01  11:19:57  schwarz
  * Assert Padding, added SdifFReadAndIgnore.
  * SdiffSetPos checks for pipe and then uses SdifFReadAndIgnore to seek forward.
@@ -505,6 +509,7 @@ SdifSkipMatrixData(SdifFileT *SdifF)
   Pos += NbBytesToSkip;
   if (SdiffSetPos(SdifF->Stream, &Pos) != 0)
   {
+#if HOST_OS_UNIX
       if (errno == ESPIPE)
       {	  /* second chance: SdiffSetPos didn't work because we're
 	  reading from a pipe.  Instead of making the whole thing
@@ -513,6 +518,7 @@ SdifSkipMatrixData(SdifFileT *SdifF)
 	  return (SdifFReadAndIgnore (SdifF, NbBytesToSkip));
       }
       else
+#endif
 	  return (size_t) -1;
   }
   else

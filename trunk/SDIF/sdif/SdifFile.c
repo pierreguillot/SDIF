@@ -1,4 +1,4 @@
-/* $Id: SdifFile.c,v 3.10 2000-05-04 15:05:47 schwarz Exp $
+/* $Id: SdifFile.c,v 3.11 2000-05-12 14:41:47 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -16,6 +16,12 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.10  2000/05/04  15:05:47  schwarz
+ * SDIF Selection is now parsed automatically on opening a file,
+ * and placed in file->Selection.
+ * Moved SdifCheckFileFormat and SdifSignatureTab functions into
+ * separate files SdifCheck and SdifSignatureTab.
+ *
  * Revision 3.9  2000/04/26  15:31:23  schwarz
  * Added SdifGenInitCond for conditional initialisation.
  *
@@ -92,6 +98,7 @@
 
 
 #include <preincluded.h>
+#include "XpGuiCalls.h"
 #include "SdifFile.h"
 #include "SdifTest.h"
 #include "SdifSelect.h"
@@ -608,7 +615,7 @@ SdifGenInit(char *PredefinedTypesFile)
 
     if ( (!PredefinedTypesFile) || (strlen(PredefinedTypesFile)== 0) )
     {
-	PreTypesEnvVar = getenv(_SdifEnvVar);
+	PreTypesEnvVar = XpGetenv(_SdifEnvVar);
 	if (PreTypesEnvVar)
 	    SdifFLoadPredefinedTypes(gSdifPredefinedTypes, PreTypesEnvVar);
 	else
@@ -641,6 +648,8 @@ SdifGenKill(void)
 #ifdef _SdifMemoryReport
   SdifMrDrainBlockList(&SdifMrReport);
 #endif
+
+  gSdifInitialised = 0;
 }
 
 
@@ -648,7 +657,7 @@ SdifGenKill(void)
 void SdifPrintVersion(void)
 {
 #ifndef lint
-    static char rcsid[]= "$Revision: 3.10 $ IRCAM $Date: 2000-05-04 15:05:47 $";
+    static char rcsid[]= "$Revision: 3.11 $ IRCAM $Date: 2000-05-12 14:41:47 $";
 #endif
 
     if (SdifStdErr == NULL)

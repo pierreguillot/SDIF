@@ -1,4 +1,4 @@
-/* $Id: project_preinclude.h,v 3.1 1999-09-28 13:09:18 schwarz Exp $
+/* $Id: project_preinclude.h,v 3.2 2000-05-12 14:41:50 schwarz Exp $
 
    SDIF/sdif/project_preinclude.h	28. Sep 1999	Diemo Schwarz
 
@@ -20,19 +20,35 @@
    use Makefiles and such declarations would therefore get lost.
   
    $Log: not supported by cvs2svn $
-   
-   Alberto Ricci, 19990212 <- I'm Y2K!
-*/
+ * Revision 3.1  1999/09/28  13:09:18  schwarz
+ * Included #include <preincluded.h> for cross-platform uniformisation,
+ * which in turn includes host_architecture.h and SDIF's project_preinclude.h.
+ *
+ * Revision 1.2  1999/02/19  15:36:32  schwarz
+ * Fixed include of fp.h, preprocessor # in first column.
+ *
+ * Alberto Ricci, 19990212 <- I'm Y2K!
+ */
+
+
+/******** PROJECT PREINCLUDE FOR SDIF ********/
 
 
 #ifndef __H_PROJECT_PREINCLUDE__
 #define __H_PROJECT_PREINCLUDE__
 
+/*
+Sdif preinclude
+*/
+
+/*
+#define _SdifMemoryReport
+*/
 
 #if HOST_OS_MAC
 
-#define bzero(p,s)	memset(p,0,s)
-#define bcopy(p1,p2,s)	memcpy(p2,p1,s)
+#define _SDIF_VERSION	"Macintosh Sdif 3.0"
+#define _VERSION		"Macintosh Sdif 3.0"
 
 #endif /* HOST_OS_MAC */
 
