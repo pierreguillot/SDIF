@@ -1,8 +1,11 @@
-# $Id: Makefile,v 1.3 1998-11-10 15:36:15 schwarz Exp $
+# $Id: Makefile,v 2.0 1998-11-29 11:28:29 virolle Exp $
 #
 # make general	
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.3  1998/11/10  15:36:15  schwarz
+# Added sdifextract.
+#
 
 
 PRJ_DIR := $(shell pwd)
