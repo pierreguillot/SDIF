@@ -68,6 +68,8 @@ int main(int argc, char** argv)
 	{
 	    entity.AddNVT(readentity.GetNVT(i));
 	}	
+	entity.GetNVT(0).PrintNameValue("the_name");
+	entity.GetNVT(0).PrintNameValue("notthere");
     }
 
     /******** DESCRIPTION TYPE ********/
@@ -83,8 +85,6 @@ int main(int argc, char** argv)
    
     entity.AddFrameType("1NEW", "1NEW NewMatrix; 1FQ0 New1FQ0");
 
-    entity.GetNVT(0).PrintNameValue("the_name");
-    entity.GetNVT(0).PrintNameValue("notthere");
 
     /* to open a file for writing */
     entity.OpenWrite("FileToWrite.sdif");
