@@ -16,10 +16,6 @@ make
 
  make test 
 
-Not all tests are very meaningful. However, they should run without 
-a crash. The first (testrw) and the last (t1.sdif) have some sort of
-result checking and should report an error if the output is not correct.
-
 5.) to install files run:
 
  make install
