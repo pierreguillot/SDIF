@@ -1,4 +1,4 @@
-/* $Id: SdifFile.c,v 3.47 2004-09-09 17:41:41 schwarz Exp $
+/* $Id: SdifFile.c,v 3.48 2004-09-14 15:44:18 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -33,6 +33,10 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.47  2004/09/09 17:41:41  schwarz
+ * Whole matrix data can be read into field CurrMtrxData and accessed
+ * with access functions SdifFCurrMatrixData, SdifFCurrMatrixDataPointer.
+ *
  * Revision 3.46  2004/07/22 14:47:56  bogaards
  * removed many global variables, moved some into the thread-safe SdifGlobals structure, added HAVE_PTHREAD define, reorganized the code for selection, made some arguments const, new version 3.8.6
  *
@@ -1277,8 +1281,10 @@ SdifFAddUserData (SdifFileT *file, void *data)
 void *
 SdifFGetUserData (SdifFileT *file, int index)
 {
-    assert (index >= 0  &&  index < file->NbUserData);
-    return (file->UserData [index]);
+    if (index >= 0  &&  index < file->NbUserData)
+	return (file->UserData [index]);
+    else
+	return (NULL);
 }
 
 /* Rewind to start of file (before header!) */
