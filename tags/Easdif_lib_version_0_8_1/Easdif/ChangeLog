@@ -1,0 +1,477 @@
+2004-02-02  Axel Roebel  <Axel.Roebel@ircam.fr>
+Version 0.8.1
+	
+	* easdif/sdifframe.h, easdif/sdifframe.cpp
+	fixed problem in sdifframe that would result in 
+	error when matrices in the frame would be resized.
+	
+2004-01-19  Axel Roebel  <Axel.Roebel@ircam.fr>
+Version 0.8.0
+	
+	* easdif/sdifentity.h, easdif/sdifentity.cpp
+	new methods for reading only selected frames, and reawind the sdif file reader
+	to the beginning.
+
+	* added --enable-java switch to swig configure
+
+2003-11-25  Axel Roebel  <Axel.Roebel@ircam.fr>
+Version 0.7.3
+
+	* easdif/sdifinit.cpp, easdif/sdifinit.h
+	Changed EasdifInit to return true if SDIF has been
+	initialized and false if SDIF was already initialized
+	such that the types could not be changed.
+	
+	* easdif/sdifmatrix.cpp 
+	Bug fix that would affect reading matrices 
+	with different data type from a single frame.
+
+	* Doxyfile.in
+	Fixed documentation creation if configuring in directory which is
+	not top_srcdir.
+	
+	* easdif/sdifexception.h easdif/sdifexception.cpp
+	Sdif exceptions are now properly derived from
+	standard exception. Included  documentation for all exceptions.
+	Unified handling of SDIF errortags and errornums.
+	
+	* easdif/sdifframe.h, easdif/sdifframe.cpp, easdif/sdifexception.h
+	added exception for accessing a matrix which is not contained 
+	in a frame.
+	
+2003-08-06  Axel Roebel  <Axel.Roebel@ircam.fr>
+Version 0.7.2
+
+	* easdif/easdif.h
+	Added SdifCheckFileFormat with std::string filename argument.
+
+	* easdif/easdifintro.h
+	demo command line follows installation prefix.
+	
+2003-07-18  Axel Roebel  <Axel.Roebel@ircam.fr>
+
+	* easdif/sdifmatrix.cpp, easdif/sdifmatrix.h
+	Improved documentation, moved constructors from .h to .cpp
+	fixed segfault in constructor with allocation.
+	Changed constructor to use  const std::string as argument.
+	Fixed warning due to comparison between int and unsigned int.
+
+	* easdif/sdifentity.h, easdif/sdifinit.h
+	Improved documentation. WriteNVTs is now private.
+	
+	* easdif/sdifframe.h, easdif/sdifframe.cpp
+	Added SetHeader with Signature as std::string
+
+2003-07-17  Axel Roebel  <Axel.Roebel@ircam.fr>
+
+	* easdif/sdifmatrix.cpp, easdif/sdifmatrix.h, easdif/sdifmatrixdata.h,easdif/sdifmatrixdatainterface.h
+	Updated Resize method to properly
+	reorganize (and no longer clear) data.
+	Added new method Clear to set all matrix elements to zero.
+	Added assignment operator that does a proper deep copy
+	of the matrx data.
+	
+	
+2003-07-05  Axel Röbel  <roebel@ircam.fr>
+
+	* easdif/sdifmatrix.cpp
+	Added support for sdif data types eUint1 and eInt1.
+	Reinitialising a matrix will now first test whether
+	the current type matches the new one and in this case do
+	a resize instead of deleting and reallocating.
+
+	* easdif/sdifmatrix.h, easdif/sdifmatrixdata.h
+	After Resize-ing a matrix all elements are set to zero.
+	
+
+2003-05-28  Axel Roebel  <Axel.Roebel@ircam.fr>
+
+	* Added configuration dependend map support for swig.
+
+2003-05-26  Axel Roebel  <Axel.Roebel@ircam.fr>
+Version 0.7.1
+	
+	* configure.in, easdif/easdif_version.h.in,easdif_config.h.in
+	the version macros were not working, now they do
+
+2003-05-24  Axel Röbel  <roebel@ircam.fr>
+Version 0.7.0
+	
+	* easdif/sdifentity.h,cpp
+	Internal representation of types now using std::string.
+	Parameters for type handling routines completely moved
+	to std::string
+
+	SDIFEntity::SetTypeString no longer appends but sets
+	the internal string. In fact there was now way to reset
+	the type string before.
+	
+
+2003-05-22  Axel Roebel  <Axel.Roebel@ircam.fr>
+Version 0.6.0
+	
+	* swig/easdif-common.i.in 
+	Fixed support for std::map that is necessary for sdifnamevaluetables.
+
+	* easdif/sdifentity.cpp,sdifnamevaluetable.h,sdifnamevaluetable.cpp
+	SDIFNameValueTable now derived from std::map which makes 
+	handling more conforming to standard and handling in swig easier.
+
+2003-05-21  Axel Roebel  <Axel.Roebel@ircam.fr>
+Version 0.5.1
+
+	* easdif/easdifintro.h,test/*.cpp 
+	Improved error handling. 
+
+	* swig/easdif-common.i
+	Implemented exception handling
+
+	* easdif/sdifentity.cpp
+	Reopening the same entity is handled properly. The existing 
+	file will be properly closed and the entity reinitialized.
+
+	* easdif/sdifexception.h
+	Added documentation. Removed unused member "error".
+	Added member functions to access message and errortag.
+	
+2003-05-18  Axel Röbel  <roebel@ircam.fr>
+Version 0.5.0
+	
+	* easdif/sdifframe.h,cpp
+	Added appropriate const methods.
+	For proper sw1ig access GetMatrixWithSignature does no longer take
+	a reference as argument.
+
+	* easdif/sdifmatrix.h,cpp:
+	Added method to read column names of matrix. For this the 
+	current SdifFile is now stored in the matrix.
+	Improved documentation.
+	Added support for sdif data types eChar and eInt2.
+
+	* easdif/{Makefile.am,easdif_version.h,easdif_config.h}
+	Resolved possible name conflict due to declaration of VERSION 
+	in installed files. Now easdif_config.h is used only during
+	installation while easdif_version.h is installed and 
+	used by user applications.
+
+	* swig/easdif-common.i.in
+	To resolve problems with inconsistent nameing in interface files
+	and header files, swig rename declarations have been changed to use 
+	%rename instead of %name and have been moved to swig interface 
+	description.
+	Due to bug in swig const version of GetMatrixWithSig had to be ignored.
+
+2003-05-01  Axel Röbel  <roebel@ircam.fr>
+
+	* easdif/sdifmatrix.h/cpp:
+	CreateMatrixData is now simply called Init. 
+	Added missing Resize method. 
+	Replaced cout in sdifmatrix.h by exception to prevent the 
+	  need to include iostream to use easdif.
+	Avoid const_cast in CreateMatrixData (now Init) and
+	  initialize members in SDIFMatrix only if valid type is given. 
+	Removed redundant member m_Signature.
+
+	* adapted documentation example and test programs to new
+	method names.
+
+	* easdif/sdifentity 
+	Improved eof handling in sdifentity. OpenRead will reset
+	eof flag. Default flag for freshly created entity is eof=true.
+
+	* Finished swig test program test.py and added test for swig
+	version to swig configure.in.	
+	
+2003-04-29  Diemo Schwarz  <schwarz@ligeti.ircam.fr>
+
+	* Changed all names View* to Print* and *Info to *Header for
+	  consistency with SDIF library.
+
+	* easdif/sdifmatrix.h:
+	Constructor with space initialisation, default singleton float matrix.
+	CreateMatrixData accepts SdifSignature or std::string.
+	Sketch string matrix access functions to be implemented,
+	throw exception when used.
+
+	* easdif/sdifmatrix.cpp:
+	CreateMatrixData accepts SdifSignature or std::string,
+	throws exception when unimplemented data type requested.
+
+	* Small changes to make easdif swiggable:
+	- name change for swig-generated classes
+	- eof() returns bool, not bool&
+	- Matrix::Set takes int/float, not int&/float&
+
+	
+2003-04-10  Axel Roebel  <roebel@ircam.fr>
+
+	* Makefile.am:
+	Change name of doc directory in doc distribution to Easdif-VERSION.doc.
+
+	
+2003-04-09  Axel Roebel  <roebel@ircam.fr>
+
+	* Makefile.am:
+	Because Easdif has its own subdir in the download directory
+	no need to map filenames.
+
+	* SDIF/Makefile.am: Fixed publish-ftp target.
+
+	* Makefile.am:
+	Changed publish directory to be special sub directory for Easdif.
+
+	* Makefile.am: Directory was still wrong.
+
+	* ChangeLog: Last change for distribution.
+
+	* ChangeLog: Version 0.3.2.
+
+	* configure.in: Version 0.3.2 (first public release).
+
+	* Makefile.am: Put final publish directory into place.
+
+	* README: Updated info.
+
+	* README: Registered README in CVS.
+
+	* README.doc:
+	Integrated README.doc into README and removed README.doc from CVS
+
+	* README.MacOSX, configure.in, Makefile.am:
+	Changed default configuration back to enable-shared but added
+	README.MacOSX to announce problems with shared libraries to users.
+
+	* README.shared, SDIF/README.shared: Removed README from CVS
+
+	* SDIF/configure.in, SDIF/README.MacOSX, SDIF/Makefile.am:
+	Changed default configuration back to enable-shared but added
+	README.MacOSX to announce problems with shared libraries to users.
+
+	* Makefile.am: fixed PUBLISH_HOST
+
+	* easdif/Makefile.am: Added missing easdifintro.h to dsitributed files.
+
+2003-04-08  Axel Roebel  <roebel@ligeti.ircam.fr>
+
+	* test/Makefile.am: Dont install test programs
+
+	* Makefile.am: Added determination of SDIF version
+
+	* configure.in:
+	Added test for program dot, Moved determination of SDIF version in Makefile because SDIF may be configured only at the end of configure
+
+	* Doxyfile.in: Added test for program dot
+
+2003-04-09  Axel Roebel  <Axel.Roebel@ircam.fr>
+Version 0.32
+
+	* Added dot flag support in Doxyfile.in
+
+	* Added README.MacOSX and switched --enable-shared back on
+	by default.
+
+	* Fixed publish-ftp target.
+
+	* Enable documentation generation if configured in sub directory.
+
+	* Included easdifintro.h into distribution.
+	
+	* Distribution name now includes SDIF version.
+
+	* Do not install test binaries.
+	
+
+	
+2003-04-03  Diemo Schwarz  <schwarz@ircam.fr>
+	
+	* configure.in:
+	Version number set in configure.in, generates Doxyfile with correct number.
+	Version numbering scheme with 3 fields:
+	- first  number: major version, only gigantic changes
+	- second number: minor version, records changes in API
+			 (added/removed functions, changed prototypes)
+	- third  number: release number, for intermediate releases,
+			 bug fixes, etc. that don't change the API
+
+	* Makefile.am: Added doc and test targets.
+
+	* configure.in, Doxyfile:
+	Doxyfile created from Doxyfile.in with Version from configure.in
+
+	* Doxyfile.in: Doxyfile created from Doxyfile.in
+	Version from configure.in
+	Corrected input file location
+
+	* autogen.sh:
+	Added conditional to prevent endless loop when directory SDIF doesn't exist.
+
+2003-03-18  Axel Roebel  <roebel@ircam.fr>
+
+	* easdif/Makefile.am: Use libtool for conveniance library
+
+	* configure.in: Improved messages for check of MacOSX Darwin.
+
+2003-03-07  Axel Roebel  <roebel@ircam.fr>
+
+	* Makefile, Makefile.in, configure, easdif/Makefile, easdif/Makefile.in, test/Makefile, test/Makefile.in:
+	Removed generated files from CVS.
+
+	* easdif/easdif_version.h.in: Added configure input file to CVS.
+
+	* Makefile.am, configure.in, easdif/Makefile.am, test/Makefile.am:
+	Updated for correct handling of distribution and new layout of c++ compilation in SDIF.
+
+	
+2003-03-05  Axel Roebel  <roebel@ircam.fr>
+
+	* configure.in:
+	test for MacOSX and disable shraed libraries for this system.
+
+	* easdif/Makefile.am: Fixed installation of include files.
+
+2003-03-04  Axel Roebel  <roebel@ircam.fr>
+
+	* Makefile, Makefile.in, configure, easdif/Makefile, easdif/Makefile.in, easdif/easdif_version.h, test/Makefile, test/Makefile.in:
+	Regenerated for configure.in with version detection
+
+	* test/Makefile.am:
+	Fixed path problems for configuration not inside top_srcdir
+
+	* easdif/Makefile.am: Removed version determination
+
+	* easdif/easdif_version.h: version 0.30 (automaticly generated)
+
+	* configure.in: Included version determination
+
+	* Makefile.am:
+	Changed src difrectory to easdif, fixed distribution of SDIF
+
+	* Doxyfile: Version 0.30
+
+2003-03-03  Axel Roebel  <roebel@ircam.fr>
+
+	* configure.in, Makefile, Makefile.in, configure: Updated with automake
+
+	* easdif/Makefile, easdif/Makefile.am, easdif/Makefile.in, easdif/easdif.h, easdif/easdif_version.h, easdif/easdifintro.h, easdif/sdifentity.cpp, easdif/sdifentity.h, easdif/sdifexception.cpp, easdif/sdifexception.h, easdif/sdifframe.cpp, easdif/sdifframe.h, easdif/sdifinit.cpp, easdif/sdifinit.h, easdif/sdifmatrix.cpp, easdif/sdifmatrix.h, easdif/sdifmatrixdata.h, easdif/sdifmatrixdatainterface.h, easdif/sdifnamevaluetable.cpp, easdif/sdifnamevaluetable.h, src/Makefile.in, src/config.h.in, src/easdif.h, src/easdif_version.h, src/easdifintro.h, src/sdifentity.cpp, src/sdifentity.h, src/sdifexception.cpp, src/sdifexception.h, src/sdifframe.cpp, src/sdifframe.h, src/sdifinit.cpp, src/sdifinit.h, src/sdifmatrix.cpp, src/sdifmatrix.h, src/sdifmatrixdata.h, src/sdifmatrixdatainterface.h, src/sdifnamevaluetable.cpp, src/sdifnamevaluetable.h, src/Makefile, src/Makefile.am:
+	Moved src directory to new name easdif
+
+	* src/Makefile, src/Makefile.in, test/Makefile, test/Makefile.in, Makefile, Makefile.in, configure:
+	Recreated using autotools installed at IRCAM.
+
+	* src/config.h.in: Added to CVS
+
+	* autogen.sh: Added missing path for command autogen.sh in SDIF
+
+	* Easdif.pc.in: Added support for autoconf/automake...
+
+	* autogen.sh, configure, configure.in, test/Makefile, test/Makefile.am, test/Makefile.in, src/Makefile, src/Makefile.am, src/Makefile.in, Makefile, Makefile.am, Makefile.in:
+	Adapted for autoconf/automake...
+
+
+2003-02-10  Axel Roebel  <roebel@ircam.fr>
+
+	* src/sdifmatrix.h, src/sdifmatrix.cpp: Comment changed.
+
+	* src/sdifframe.cpp:
+	Fixed problem with size indicated in frameheader when the frame is
+	written more than one time withut calling cleardata().
+
+	* src/sdifexception.h:
+	Added exception for writing frame header with wrong number of bytes for the framesize.
+
+	
+2003-02-07  Axel Roebel  <roebel@ircam.fr>
+
+	* test/easdifRmNVT.cpp: Updated usage info.
+
+	* src/sdifentity.cpp:
+	Empty sdif files (only header information) will be correctly handled
+	now.
+
+	* test/easdifRmNVT.cpp: utility to remove NVT from sdif files.
+
+	* test/Makefile: Added easdifRmNVT to makefile.
+
+
+2002-12-13  Axel Roebel  <roebel@ircam.fr>
+
+	* test/tutofini.cpp: explicitely close sdif files at the end.
+
+
+2002-12-02  Axel Roebel  <roebel@ircam.fr>
+
+	* src/sdifinit.cpp, src/sdifinit.h:
+	Added init function with char* argument
+
+
+2002-11-28  Axel Roebel  <roebel@ircam.fr>
+
+	* src/sdifnamevaluetable.cpp, src/sdifnamevaluetable.h:
+	Back to simple map which sorts alphabetically. In any case
+	in SDIF the name value tables are mixed arbitrarily.
+
+	* src/sdifinit.cpp, src/sdifinit.h:
+	Improved parameter handling of  EasdifInit.
+
+	* src/easdif_version.h, Doxyfile: Version 0.22
+
+	* test/tutofini.cpp: Added NVT name retrieval test.
+
+	
+2002-11-27  Axel Roebel  <roebel@ircam.fr>
+
+	* src/sdifentity.cpp, src/sdifentity.h:
+	Removed member that redundantly indicated size of NVT vector.
+	Make use of improved SDIFNameValueTable interface.
+
+	* src/sdifnamevaluetable.cpp, src/sdifnamevaluetable.h:
+	Fixed NVT to keep ordering as defined by the sequence of additions to the table.
+	Added begin/end iterator.
+	Added global functions to get name and value from SDIFNameValueTable iterators.
+	Removed member that redundantly indicated size of map.
+
+
+2002-11-07  Axel Roebel  <roebel@ircam.fr>
+
+	* test/tutofini.cpp: Updated demo to have reasonable message for EOF.
+
+	* src/sdifmatrixdata.h: Provide clone method.
+	Fixed bounds checking in Get template.
+	Reorganized CopyData.
+
+	* src/sdifmatrix.h:
+	Allow value type to be specified during Matrix construction.
+	Moved Get/Set methods to header to have the possibility to use
+	real templates.
+
+	* src/sdifmatrix.cpp:
+	Allow value type to be specified during Matrix construction.
+	Do not resize before writing because size will be already correct.
+	Replaced Copy Constructor to use clone method.
+	Moved Get/Set methods to header to have the possibility to use
+	real templates.
+
+	* src/sdifmatrixdatainterface.h: Changed Set return value to void.
+	Added method to clone data.
+
+	* src/easdifintro.h: Updated demo to have reasonable message for EOF.
+
+	* src/easdif_version.h: Version 0.21.
+
+
+2002-10-30  Axel Roebel  <Axel.Roebel@ircam.fr>
+Version 0.21
+	
+	* src/sdifentity.cpp, src/sdifentity.h:
+	changed return types from int to bool and improved error
+	checking for opening files in sdifentity.
+
+	* src/Makefile, Makefile:
+	New library placement due to libtool used in SDIF.
+
+	* Doxyfile, ChangeLog: Version 0.21.
+
+	* ChangeLog: Added changelog to repository.
+
+
+$Id: ChangeLog,v 1.28 2004-02-02 18:07:19 roebel Exp $
