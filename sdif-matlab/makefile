@@ -1,10 +1,13 @@
-# $Id: makefile,v 1.22 2001-05-03 13:03:20 roebel Exp $
+# $Id: makefile,v 1.23 2001-05-04 13:05:35 roebel Exp $
 #
 # makefile	26. January 2000	Diemo Schwarz
 #
 # formesutils matlab library
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.22  2001/05/03 13:03:20  roebel
+# New version recompiled with proper SDifTypes.STYP
+#
 # Revision 1.21  2001/04/20 14:48:41  roebel
 # Added missing files data/testlm*.out to source distribution.
 #
@@ -187,7 +190,7 @@ allmex:		$(mexfiles)
 INSTALL_FILES	= $(mexfiles) $(mfiles) 
 INSTALLED_FILES = $(INSTALL_FILES:%=$(INSTALL_DIR)/%)
 
-DIST_DIR	= /usr/local/www/ircam/equipes/analyse-synthese/sdif/download
+DIST_DIR	= /usr/local/www/ircam/equipes/analyse-synthese/sdif/download/sdif-matlab
 DIST_FILES	= $(foreach s, $(ALLMEXSUF), $(mexbase:%=%.$s)) \
 		  sdif-matlab-readme README.first $(mfiles) \
 		  -C $(SDIF_TYPES_DIR) $(SDIF_TYPES_FILE) \
