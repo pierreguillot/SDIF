@@ -1,6 +1,6 @@
 dnl -*-autoconf-*-  (No, it's an autoconf file!)
 dnl -*-m4-*- (He emacs, it's a m4 file)
-dnl $Id: configure.in,v 1.53 2004-07-26 10:30:22 roebel Exp $
+dnl $Id: configure.in,v 1.54 2004-08-31 13:58:46 roebel Exp $
 dnl
 dnl configure.in		September 2000		Patrice Tisserand
 dnl
@@ -32,6 +32,10 @@ dnl send email to:  sdif@ircam.fr
 
 
 dnl $Log: not supported by cvs2svn $
+dnl Revision 1.53  2004/07/26 10:30:22  roebel
+dnl Version 3.8.6:
+dnl thread safe sdif: finished pthread support in SDIF by means of adding pthread detection to configure.
+dnl
 dnl Revision 1.52  2004/07/22 14:47:54  bogaards
 dnl removed many global variables, moved some into the thread-safe SdifGlobals structure, added HAVE_PTHREAD define, reorganized the code for selection, made some arguments const, new version 3.8.6
 dnl
@@ -337,7 +341,7 @@ else
 fi ],
 [
 SELLIB=libsdif.la; CFLAGS="-O3";
-PROGLIST="querysdif\$(EXEXT) sdifextract\$(EXEEXT) sdiftotext\$(EXEEXT) tosdif\$(EXEEXT)";
+PROGLIST="querysdif\$(EXEEXT) sdifextract\$(EXEEXT) sdiftotext\$(EXEEXT) tosdif\$(EXEEXT)";
 ])
 
 
