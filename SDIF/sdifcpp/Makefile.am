@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.2 2003-03-18 14:56:52 roebel Exp $
+# $Id: Makefile.am,v 1.3 2003-07-21 13:41:35 tisseran Exp $
 #
 # ./sdifcpp/Makefile.am		March 2003		Axel Roebel
 #
@@ -30,6 +30,9 @@
 
 
 # $Log: not supported by cvs2svn $
+# Revision 1.2  2003/03/18 14:56:52  roebel
+# Use libtool to built conveniance library.
+#
 # Revision 1.1  2003/03/07 17:34:09  roebel
 # cplusplus compilation is moved in its own directory.
 #
@@ -37,7 +40,7 @@
 
 
 EXTRA_LTLIBRARIES = libsdif-cpp.la 
-noinst_LTLIBRARIES = @SELLIBCPP@
+lib_LTLIBRARIES = @SELLIBCPP@
 
 FORMES_H=host_architecture.h  preincluded.h UniversalEnvVar.h  XpGuiCalls.h
 FORMES_INCLUDE=/u/formes/share/include
@@ -60,7 +63,6 @@ SDIF_H = ../include/sdif_version.h $(top_srcdir)/include/sdif.h \
 
 noinst_HEADERS = $(SDIF_H) $(addprefix $(top_srcdir)/sdif/,${FORMES_H})
 
-if ENABLECPP
 libsdif_cpp_la_SOURCES = \
 	SdifHash.cpp       SdifGlobals.cpp      SdifSignatureTab.cpp   \
 	SdifMemory.cpp     SdifNameValue.cpp    SdifMatrixType.cpp     \
@@ -73,9 +75,8 @@ libsdif_cpp_la_SOURCES = \
 	SdifString.cpp     SdifError.cpp        SdifFrameType.cpp      \
 	SdifPrint.cpp      SdifRWLowLevel.cpp   SdifFPut.cpp           \
 	SdifConvToText.cpp SdifPreTypes.cpp
-else
-libsdif_cpp_la_SOURCES = 
-endif
+
+libsdif_cpp_la_LDFLAGS=-no-undefined -release @VERSION@ -rpath $(libdir)
 
 CLEANFILES = $(libsdif_cpp_la_SOURCES) SdifVersion.h
 sdiftype = $(datadir)/SdifTypes.STYP
