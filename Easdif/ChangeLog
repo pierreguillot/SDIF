@@ -1,0 +1,7 @@
+
+2002-10-30  Axel Roebel  <Axel.Roebel@ircam.fr>
+Version 0.21
+	
+	* changed return types from int to bool and improved error
+	checking for opening files in sdifentity.
+
