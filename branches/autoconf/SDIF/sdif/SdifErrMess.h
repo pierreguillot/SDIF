@@ -1,4 +1,4 @@
-/* $Id: SdifErrMess.h,v 3.4.2.2 2000-08-21 21:35:00 tisseran Exp $
+/* $Id: SdifErrMess.h,v 3.4.2.3 2000-11-15 15:16:49 ballany Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -32,6 +32,9 @@
  * author: Dominique Virolle 1998
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 3.4.2.2  2000/08/21  21:35:00  tisseran
+ * *** empty log message ***
+ *
  * Revision 3.4.2.1  2000/08/21  14:04:04  tisseran
  * *** empty log message ***
  *
@@ -98,7 +101,8 @@ typedef enum SdifErrorLevelE
 	eError,
 	eWarning,
 	eRemark,
-	eNoLevel
+	eNoLevel,
+	eNumLevels
 } SdifErrorLevelET;
 
 

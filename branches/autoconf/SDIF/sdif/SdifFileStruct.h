@@ -1,4 +1,4 @@
-/* $Id: SdifFileStruct.h,v 3.6.2.2 2000-08-21 21:35:17 tisseran Exp $
+/* $Id: SdifFileStruct.h,v 3.6.2.3 2000-11-15 15:16:50 ballany Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -32,6 +32,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.6.2.2  2000/08/21  21:35:17  tisseran
+ * *** empty log message ***
+ *
  * Revision 3.6.2.1  2000/08/21  14:04:16  tisseran
  * *** empty log message ***
  *
@@ -196,7 +199,7 @@ struct SdifFileS
   char *TextStreamName;                 /* Name of the text file corresponding to the sdif file */
   FILE *TextStream;                     /* Stream text */
 
-  unsigned int  NbOfWarning;
+  SdifUInt4    ErrorCount[eNumLevels];
   SdifErrorLT  *Errors;
 
   int		NbUserData;		/* todo: hash table */
