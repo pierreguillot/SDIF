@@ -32,9 +32,12 @@
  * 
  * 
  * 
- * $Id: sdifentity.h,v 1.2 2003-04-06 16:31:08 roebel Exp $ 
+ * $Id: sdifentity.h,v 1.3 2003-04-08 17:26:04 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  2003/04/06 16:31:08  roebel
+ * Added license info
+ *
  * Revision 1.1  2003/03/03 19:00:16  roebel
  * Moved src directory to new name easdif
  *
@@ -85,10 +88,10 @@
 namespace Easdif {
 
 /** 
- * @brief class which can be associated with a file
+ * @brief class holding all information concerned with a singe sdif file.
  *
- * SDIFEntity is composed of different methods which permits the gestion of a 
- * file. 
+ * SDIFEntity is composed of different methods that allow the handling of an 
+ * sdif-file. 
  * 
  */
 class SDIFEntity
