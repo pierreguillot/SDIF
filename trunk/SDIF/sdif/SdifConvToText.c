@@ -1,4 +1,4 @@
-/* $Id: SdifConvToText.c,v 3.4 2000-10-27 20:03:24 roebel Exp $
+/* $Id: SdifConvToText.c,v 3.5 2000-11-14 10:42:26 lefevre Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -30,6 +30,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.4  2000/10/27  20:03:24  roebel
+ * autoconf merged back to main trunk
+ *
  * Revision 3.3.2.1  2000/08/21  21:34:56  tisseran
  * *** empty log message ***
  *
@@ -297,7 +300,6 @@ SdifToText(SdifFileT *SdifF, char *TextStreamName)
           SizeR = SdifFConvToText(SdifF);
           fflush(SdifF->TextStream);
 
-          XpSetFileAttribute(TextStreamName, FileType_Text, 0);
 	      return  SizeR;
         }
     }

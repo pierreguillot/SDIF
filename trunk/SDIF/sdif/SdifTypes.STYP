@@ -64,7 +64,7 @@ SDIF
   1MTD 	1ARR 	{ AutoCorrelationCoefficients }
   1FTD 	1ARR 	{ 1ARR ARCoefs; }
       
-  1MTD 	1CEC 	{ c }
+  1MTD 	1CEC 	{ CepstralCoefs }
   1FTD 	1CEC 	{ 1CEC CepstralCoefs; }
 
   1MTD  1NRG    { Energy }
