@@ -1,4 +1,4 @@
-/* $Id: SdifRWLowLevel.c,v 3.26 2004-07-22 14:47:56 bogaards Exp $
+/* $Id: SdifRWLowLevel.c,v 3.27 2004-09-09 17:33:55 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -32,6 +32,9 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.26  2004/07/22 14:47:56  bogaards
+ * removed many global variables, moved some into the thread-safe SdifGlobals structure, added HAVE_PTHREAD define, reorganized the code for selection, made some arguments const, new version 3.8.6
+ *
  * Revision 3.25  2004/07/13 18:03:16  roebel
  * Forget to fix the byteoffset for the return value.
  *
@@ -171,9 +174,11 @@
 #include "SdifString.h"
 
 
-extern int        gSdifInitialised;	/* can't include SdifFile.h */
+extern int gSdifInitialised;		/* can't include SdifFile.h */
 
-#define     _SdifBSLittleE   4096
+#define    _SdifBSLittleE    4096	/* local swap buffers' size */
+
+
 
 /* fread encapsulation with error check */
 size_t Sdiffread(void *ptr, size_t size, size_t nobj, FILE *stream)
@@ -261,15 +266,15 @@ size_t SdiffreadLittleEndian8 (void *ptr, size_t nobj, FILE *stream)
 
 
 
-/* swapping fwrite functions have to copy the data to the global
-   buffer gSdifLittleToBig and write from there in order to leave the
+/* swapping fwrite functions have to copy the data to the 
+   buffer sdifLittleToBig and write from there in order to leave the
    caller's data intact */
 
 size_t SdiffwriteLittleEndian2 (void *ptr, size_t nobj, FILE *stream)
 {
 #   define nblock     (_SdifBSLittleE / 2)
     size_t nwritten = 0;
-	char sdifLittleToBig [_SdifBSLittleE];
+    char sdifLittleToBig [_SdifBSLittleE];
 
     while (nobj > 0)
     {
@@ -278,7 +283,7 @@ size_t SdiffwriteLittleEndian2 (void *ptr, size_t nobj, FILE *stream)
 	SdifSwap2Copy(ptr, sdifLittleToBig, ntowrite);
 	nwritten += Sdiffwrite(sdifLittleToBig, 2, ntowrite, stream);
 	nobj     -= ntowrite; 
-	ptr	  = (char *) ptr + _SdifBSLittleE;
+	(char *) ptr += _SdifBSLittleE;
     }
 
     return nwritten;
@@ -300,7 +305,7 @@ size_t SdiffwriteLittleEndian4 (void *ptr, size_t nobj, FILE *stream)
 	SdifSwap4Copy(ptr, sdifLittleToBig, ntowrite);
 	nwritten += Sdiffwrite(sdifLittleToBig, 4, ntowrite, stream);
 	nobj     -= ntowrite; 
-	ptr	  = (char *) ptr +  _SdifBSLittleE;
+	(char *) ptr += _SdifBSLittleE;
     }
 
     return nwritten;
@@ -322,7 +327,7 @@ size_t SdiffwriteLittleEndian8 (void *ptr, size_t nobj, FILE *stream)
 	SdifSwap8Copy(ptr, sdifLittleToBig, ntowrite);
 	nwritten += Sdiffwrite(sdifLittleToBig, 8, ntowrite, stream);
 	nobj     -= ntowrite; 
-	ptr	  = (char *) ptr +  _SdifBSLittleE;
+	(char *) ptr += _SdifBSLittleE;
     }
 
     return nwritten;
@@ -654,14 +659,14 @@ SdiffWriteString(char* ptr, FILE *stream)
 
 
 
-/* Return c if it is a reserved char, -1 otherwise. */
-int
+/* Return true if c is a reserved char. */
+int 
 SdifIsAReservedChar(char c)
 {
-  if (memchr (_SdifReservedChars, c, SdifStrLen(_SdifReservedChars)))
-    return (int) c;
+  if (memchr(_SdifReservedChars, c, SdifStrLen(_SdifReservedChars)))
+      return eTrue;
   else
-    return -1; 
+      return eFalse; 
 }
 
 
@@ -678,7 +683,7 @@ SdifStringToNV (/*in out*/ char *str)
     {
         if (isspace (*s)  ||  iscntrl (*s))
 	    *s = '_';
-	else if (SdifIsAReservedChar (*s) != -1)
+	else if (SdifIsAReservedChar(*s))
 	    *s = '.';
 	s++;
     }
@@ -720,7 +725,7 @@ SdiffGetString(FILE* fr, char* s, size_t ncMax, size_t *NbCharRead)
 
   while ( (ncMax-- > 0) && (!feof(fr)) )
     {
-      if (SdifIsAReservedChar(c) != -1)
+      if (SdifIsAReservedChar(c))
 	{
 	  *cs++ = '\0';
 	  return cint;
@@ -827,7 +832,7 @@ SdiffGetSignature(FILE* fr, SdifSignature *Signature, size_t *NbCharRead)
   
   for (i=0; ((i<4) && (!feof(fr))); i++)
     {
-      if ( (SdifIsAReservedChar(c) != -1) || (isspace(c)) )
+      if ( (SdifIsAReservedChar(c)) || (isspace(c)) )
 	break;
       else
 	{
@@ -859,46 +864,37 @@ SdiffGetSignature(FILE* fr, SdifSignature *Signature, size_t *NbCharRead)
   Function return the signature in a SdifString
 */
 int
-SdiffGetSignaturefromSdifString(SdifStringT *SdifString, SdifSignature *Signature)
+SdiffGetSignaturefromSdifString (SdifStringT *SdifString, 
+				 SdifSignature *Signature)
 {
   SdifSignature sig = eEmptySignature; /* force 4 byte alignment */
   char *Name = (char *) &sig;
-  char c = 0;
-  int cint = 0;
-  unsigned int i;
+  int   c = eEof;
+  int   i;
 
-  do
-    {
-      cint = SdifStringGetC(SdifString);
-      c = (char) cint;
-    }
-  while (isspace(c) && (!SdifStringIsEOS(SdifString)));
+  /* skip whitespace */
+  SdiffReadSpacefromSdifString(SdifString);
 
-  for (i=0; ((i<4) && (!SdifStringIsEOS(SdifString))); i++)
-    {
-      if ( (SdifIsAReservedChar(c) != -1) || (isspace(c)) )
-	break;
+  /* string starts now with first non-whitespace character, or EOS:
+     read up to 4 characters into sig */
+  for (i = 0; i < 4; i++)
+  {
+      /* get next char */
+      if (SdifStringIsEOS(SdifString))
+	  break;	/* exit loop on EOS, return last sig char */
       else
-	{
+	  c = SdifStringGetC(SdifString);
+
+      if (SdifIsAReservedChar(c)  ||  isspace(c))
+	  break;	/* exit loop on non-sig char, return it */
+      else
 	  Name[i] = c;
-	  if (i < 4-1)
-	    {
-	      cint = SdifStringGetC(SdifString);
-	      c = (char) cint;
-	    }
-	}
-    }
-  
-  if (SdifStringIsEOS(SdifString))
-    {
-      *Signature = eEmptySignature;
-      return eEof;
-    }
-  else
-    {
-      *Signature = _SdifStringToSignature (Name);
-      return cint;
-    }
+  }
+
+  /* return all we have as signature */
+  *Signature = _SdifStringToSignature(Name);
+  return c;	/* last char of signature, if it was complete 4 bytes
+		   or on EOS, or the non-sig char after signature */
 }
 
 
@@ -936,31 +932,39 @@ SdiffReadSpace(FILE* fr)
 }
 
 
+/* skip whitespace in string,
+
+   POSTCONDITION:
+   string starts with first non-whitespace character,
+   or EOS condition is set
+*/
 size_t
 SdiffReadSpacefromSdifString(SdifStringT *SdifString)
 {
-  char c;
+  char   c;
+  int    eos;
   size_t NbCharRead = 0;
-	char errorMess[_SdifStringLen];
+  char   errorMess[_SdifStringLen];
   
-  while ( isspace(c = (char) SdifStringGetC(SdifString)))
-    {
+  /* need to store end-of-string, because it is changed by subsequent getc */
+  while (!(eos = SdifStringIsEOS(SdifString))  &&  
+	 isspace(c = SdifStringGetC(SdifString)))
+  {
       NbCharRead++;
-    }
+  }
 
-  if (SdifStringIsEOS(SdifString))
-    return 0;
-  
+  if (eos)	/* end of string, there were no non-whitespace characters */
+      return NbCharRead; 
   else
-    {
+  {
       if (SdifStringUngetC(SdifString))
-	return NbCharRead;
+	  return NbCharRead;
       else
-	{
+      {
 	  sprintf(errorMess, "ungetc failed : (%d,%c) ", c, c);
 	  _SdifError(eEof, errorMess);
-	}
-    }
+      }
+  }
   return NbCharRead;
 }
 
@@ -1045,43 +1049,47 @@ SdiffGetWordUntilfromSdifString(SdifStringT *SdifString, char* s, size_t ncMax,c
   CharsEndLen = SdifStrLen(CharsEnd);
   cs = s;
   
-  while( (c = (char) SdifStringGetC(SdifString))&& (ncMax-- > 0) && (!SdifStringIsEOS(SdifString)) )
-    {
+  while (!SdifStringIsEOS(SdifString)
+	 &&  (c = (char) SdifStringGetC(SdifString))
+	 &&  ncMax-- > 0)
+  {
       if (memchr(CharsEnd, c, CharsEndLen))
-	{
+      {
 	  *cs = '\0';
 	  return (int) c;
-	}
+      }
 
       if (isspace(c))
-	{
+      {
 	  SizeR += SdiffReadSpacefromSdifString(SdifString);
 	  c = (char) SdifStringGetC(SdifString);
+
 	  if (memchr(CharsEnd, c, CharsEndLen))
-	    {
+	  {
 	      *cs = '\0';
 	      return (int) c;
-	    }
+	  }
 	  else
-	    {
+	  {
 	      *cs++ = '\0';
 	      /*_SdifError(eWordCut, s);*/
 	      return -1;
-	    }
-	}
-
+	  }
+      }
+      
       *cs++ = c;
-    }
+  }
     
   if (SdifStringIsEOS(SdifString))
-    return eEof;
+      return eEof;
   
   if (ncMax <= 0)
-    {
+  {
       *cs = '\0';
       _SdifError(eTokenLength, s);
       return eTokenLength;
-    }
+  }
+
   return eFalse;
 }
 
