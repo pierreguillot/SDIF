@@ -1,4 +1,4 @@
-/* $Id: SdifTest.c,v 3.3 1999-10-13 16:05:59 schwarz Exp $
+/* $Id: SdifTest.c,v 3.4 2000-04-11 14:32:09 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -16,6 +16,15 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.3  1999/10/13  16:05:59  schwarz
+ * Changed data type codes (SdifDataTypeET) to SDIF format version 3, as
+ * decided with Matt Wright June 1999, added integer data types.
+ * Added writing of 1NVT with real frame header (but data is still not in
+ * matrices).
+ * The data type handling makes heavy use of code-generating macros,
+ * called for all data types with the sdif_foralltypes macro, thus
+ * adding new data types is easy.
+ *
  * Revision 3.2  1999/09/28  13:09:14  schwarz
  * Included #include <preincluded.h> for cross-platform uniformisation,
  * which in turn includes host_architecture.h and SDIF's project_preinclude.h.
@@ -129,7 +138,8 @@ SdifFTestNbColumns(SdifFileT* SdifF)
         SdifF->CurrMtrxT->NbColumnDef,
         SdifF->CurrMtrxH->NbCol);
       _SdifFError(SdifF, eBadNbData, gSdifErrorMess);
-      return eFalse;
+      return eTrue; /* don't return eFalse, since then the wrong number
+                      of columns is read */
     }
   else
     return eTrue;
