@@ -1,4 +1,4 @@
-/* $Id: SdifFRead.c,v 3.18 2004-05-03 18:07:27 schwarz Exp $
+/* $Id: SdifFRead.c,v 3.19 2004-06-03 11:18:00 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -31,6 +31,13 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.18  2004/05/03 18:07:27  schwarz
+ * Fixed bugs in padding calculation for ascii chunks:
+ * 1. DON'T PAD FRAMES!
+ * 2. SdifFReadMatrixHeader already accounts for read signature
+ * Now, calculating padding from ftell is redundant, but we leave it in,
+ * with a warning, until everyone's code is tested.
+ *
  * Revision 3.17  2003/11/07 21:47:18  roebel
  * removed XpGuiCalls.h and replaced preinclude.h  by local files
  *
@@ -402,14 +409,9 @@ SdifFReadMatrixHeader(SdifFileT *SdifF)
   
   SdifFCreateCurrMtrxH(SdifF); /* create only if it's necessary */
   
-  SdiffGetSignature(SdifF->Stream, &(SdifF->CurrMtrxH->Signature), &SizeR);
-  SizeR += sizeof(SdifUInt4) * SdiffReadUInt4( UIntTab, 3, SdifF->Stream);
+  SdiffReadSignature(&SdifF->CurrMtrxH->Signature, SdifF->Stream, &SizeR);
+  SizeR += sizeof(SdifUInt4) * SdiffReadUInt4(UIntTab, 3, SdifF->Stream);
  
-  /* when DataType was 32 for Float4 at Ircam 
-  if ((SdifDataTypeET) UIntTab[0] == eFloat4Old)
-    UIntTab[0] = eFloat4;
-  */
-
   SdifF->CurrMtrxH->DataType  = (SdifDataTypeET) UIntTab[0];
   SdifF->CurrMtrxH->NbRow     = UIntTab[1];
   SdifF->CurrMtrxH->NbCol     = UIntTab[2];

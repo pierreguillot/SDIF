@@ -1,4 +1,4 @@
-/* $Id: SdifHard_OS.c,v 3.12 2003-11-07 21:47:18 roebel Exp $
+/* $Id: SdifHard_OS.c,v 3.13 2004-06-03 11:18:00 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -23,11 +23,14 @@
  *  For any information regarding this and other IRCAM software, please
  *  send email to:
  *                            sdif@ircam.fr
+ */
+
+/* author: Dominique Virolle 1998
  *
- *
- *
- * author: Dominique Virolle 1998
  * $Log: not supported by cvs2svn $
+ * Revision 3.12  2003/11/07 21:47:18  roebel
+ * removed XpGuiCalls.h and replaced preinclude.h  by local files
+ *
  * Revision 3.11  2003/06/06 10:25:44  schwarz
  * Added eReadWriteFile that eventually opens a file in read-write mode.
  *
@@ -214,49 +217,125 @@ SdifInitMachineType(void)
 
 
 
-/* SdifLittleToBig keeps the little input for other use.
+/*
+ *  Big endian <-> little endian byte swapping
  */
-void
-SdifLittleToBig(void *BigPtr, void *LittlePtr, size_t size)
+
+#define SWAP2(x)  ((((x) >> 8) & 0xFF) + (((x) & 0xFF) << 8))
+
+/* 2 byte array swapping in place */
+void SdifSwap2 (void *ptr, size_t num)
 {
-    unsigned int i;
-    size_t sizediv2;
-    unsigned char * BigS = (unsigned char * ) BigPtr;
-    unsigned char * LittleS = (unsigned char * ) LittlePtr;
-    unsigned char ctemp; /* if BigPtr == LittlePtr */
+    SdifUInt2  temp;
+    SdifUInt2 *iptr = (SdifUInt2 *) ptr;
 
-    sizediv2 = size / 2;
-
-    for (i=0 ; i< sizediv2 ; i++)
-      {
-        ctemp            = LittleS[i];
-        BigS[i]          = LittleS[size -1 -i];
-        BigS[size -1 -i] = ctemp;
-      }
-}
-
-/* SdifBigToLittle replace the big by the little.
- */
-void
-SdifBigToLittle(void *InOutPtr, size_t size)
-{
-    unsigned int i;
-    size_t sizediv2;
-    unsigned char * s = (unsigned char * ) InOutPtr;
-    unsigned char ctemp;
-
-    sizediv2 = size / 2;
-
-    for (i=0 ; i< sizediv2 ; i++)
-      {
-        ctemp = s[i];
-        s[i] = s[size -1 -i];
-        s[size -1 -i] = ctemp;
-      }
+    while (num > 0)
+    {
+	num--;
+	temp      = iptr[num];
+	iptr[num] = SWAP2(temp);
+    }
 }
 
 
+/* 2 byte array swapping with copy */
+void SdifSwap2Copy (void *src, void *dest, size_t num)
+{
+    SdifUInt2 *isrc  = (SdifUInt2 *) src;
+    SdifUInt2 *idest = (SdifUInt2 *) dest;
 
+    while (num > 0)
+    {
+	num--;
+	idest[num] = SWAP2(isrc[num]);
+    }
+}
+
+
+#define SWAP4(x)    ((((x) >> 24) & 0xFF)  + (((x) >> 8) & 0xFF00) + \
+		     (((x) & 0xFF00) << 8) + (((x) & 0xFF) << 24))
+
+/* 4 byte array swapping in place */
+void SdifSwap4 (void *ptr, size_t num)
+{
+    SdifUInt4  temp;
+    SdifUInt4 *iptr = (SdifUInt4 *) ptr;
+
+    while (num > 0)
+    {
+	num--;
+	temp      = iptr[num];
+	iptr[num] = SWAP4(temp);
+    }
+}
+
+
+/* 4 byte array swapping with copy */
+void SdifSwap4Copy (void *src, void *dest, size_t num)
+{
+    SdifUInt4 *isrc  = (SdifUInt4 *) src;
+    SdifUInt4 *idest = (SdifUInt4 *) dest;
+
+    while (num > 0)
+    {
+	num--;
+	idest[num] = SWAP4(isrc[num]);
+    }
+}
+
+
+/* 8 byte array swapping in place */
+void SdifSwap8 (void *ptr, size_t num)
+{
+#   define SWAP(i,j)	temp    = cptr[i]; \
+			cptr[i] = cptr[j]; \
+			cptr[j] = temp
+
+    unsigned char  temp;
+    unsigned char *cptr = (unsigned char *) ptr + 8 * num;
+
+    while (num > 0)
+    {
+	num--;
+	cptr -= 8;
+
+	SWAP(0, 7);
+	SWAP(1, 6);
+	SWAP(2, 5);
+	SWAP(3, 4);
+    }
+}
+
+
+/* 8 byte array swapping with copy */
+void SdifSwap8Copy (void *src, void *dest, size_t num)
+{
+    unsigned char *psrc  = (unsigned char *) src  + 8 * num;
+    unsigned char *pdest = (unsigned char *) dest + 8 * num;
+
+    while (num > 0)
+    {
+	num--;
+	psrc  -= 8;
+	pdest -= 8;
+
+	pdest[0] = psrc[7];
+	pdest[1] = psrc[6];
+	pdest[2] = psrc[5];
+	pdest[3] = psrc[4];
+	pdest[4] = psrc[3];
+	pdest[5] = psrc[2];
+	pdest[6] = psrc[1];
+	pdest[7] = psrc[0];
+    }
+}
+
+
+
+
+/*
+ *  Standard C-lib utility function wrappers
+ */
 
 int
 SdifStrLen(const char *s)

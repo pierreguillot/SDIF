@@ -1,4 +1,4 @@
-/* $Id: SdifRWLowLevel.c,v 3.20 2004-06-03 09:16:19 schwarz Exp $
+/* $Id: SdifRWLowLevel.c,v 3.21 2004-06-03 11:18:00 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -32,6 +32,10 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.20  2004/06/03 09:16:19  schwarz
+ * more efficient byte swapping in SdiffreadLittleEndian[248].
+ * realised SdiffReadSignature.
+ *
  * Revision 3.19  2004/02/08 14:26:58  ellis
  *
  * now the textual scanner parses correctly character datas
@@ -196,43 +200,12 @@ Sdiffwrite(void *ptr, size_t size, size_t nobj, FILE *stream)
 
 /** fread **/
 
-size_t
-SdiffreadLittleEndianN (void *ptr, size_t size, size_t nobj, FILE *stream)
-{
-	/* size must be a power of 2 */
-  size_t
-    nobjread = 0,
-	iNbytes,
-    MiNBytes;
-  unsigned char *ptrChar;
-
-  ptrChar = (unsigned char*) ptr;
-
-
-  nobjread = Sdiffread(ptrChar, size, nobj, stream);
-  MiNBytes = nobjread * size;
-  for (iNbytes=0; iNbytes < MiNBytes; iNbytes += size)
-	  SdifBigToLittle(ptrChar+iNbytes, size);
-  return nobjread ;
-}
-
-
 size_t SdiffreadLittleEndian2 (void *ptr, size_t nobj, FILE *stream)
 {
-#   define SWAP_SHORT(x)  ((((x) >> 8) & 0xFF) + (((x) & 0xFF) << 8))
-
-    size_t  nobjread;
-    short   temp, *intptr = (short *) ptr;
+    size_t nobjread;
     
-    nobjread = nobj = Sdiffread(ptr, 2, nobj, stream);
-
-    /* 2 byte array swapping */
-    while (nobj > 0)
-    {
-	nobj--;
-	temp         = intptr[nobj];
-	intptr[nobj] = SWAP_SHORT(temp);
-    }
+    nobjread = Sdiffread(ptr, 2, nobj, stream);
+    SdifSwap2(ptr, nobjread);
 
     return nobjread;
 }
@@ -240,21 +213,10 @@ size_t SdiffreadLittleEndian2 (void *ptr, size_t nobj, FILE *stream)
 
 size_t SdiffreadLittleEndian4 (void *ptr, size_t nobj, FILE *stream)
 {
-#   define SWAP_INT(x)    ((((x) >> 24) & 0xFF)  + (((x) >> 8) & 0xFF00) + \
-			   (((x) & 0xFF00) << 8) + (((x) & 0xFF) << 24))
-
-    size_t  nobjread;
-    int     temp, *intptr = (int *) ptr;
+    size_t nobjread;
     
-    nobjread = nobj = Sdiffread(ptr, 4, nobj, stream);
-
-    /* 4 byte array swapping */
-    while (nobj > 0)
-    {
-	nobj--;
-	temp         = intptr[nobj];
-	intptr[nobj] = SWAP_INT(temp);
-    }
+    nobjread = Sdiffread(ptr, 4, nobj, stream);
+    SdifSwap4(ptr, nobjread);
 
     return nobjread;
 }
@@ -262,89 +224,80 @@ size_t SdiffreadLittleEndian4 (void *ptr, size_t nobj, FILE *stream)
 
 size_t SdiffreadLittleEndian8 (void *ptr, size_t nobj, FILE *stream)
 {
-#   define SWAP(i,j)	temp      = ucptr [i]; \
-			ucptr [i] = ucptr [j]; \
-			ucptr [j] = temp
-
-    size_t	   nobjread;
-    unsigned char *ucptr, temp;
+    size_t nobjread;
     
-    nobjread = nobj = Sdiffread(ptr, 8, nobj, stream);
-
-    /* 8 byte array swapping */
-    ucptr = (unsigned char *) ptr + 8 * nobj;
-    while (nobj > 0)
-    {
-	nobj--;
-	ucptr -= 8;
-
-	SWAP(0, 7);
-	SWAP(1, 6);
-	SWAP(2, 5);
-	SWAP(3, 4);
-    }
+    nobjread = Sdiffread(ptr, 8, nobj, stream);
+    SdifSwap8(ptr, nobjread);
 
     return nobjread;
 }
 
-/** fwrite **/
 
 
-size_t
-SdiffwriteLittleEndianN (void *ptr, size_t size, size_t nobj, FILE *stream)
+
+/* swapping fwrite functions have to copy the data to the global
+   buffer gSdifLittleToBig and write from there in order to leave the
+   caller's data intact */
+
+size_t SdiffwriteLittleEndian2 (void *ptr, size_t nobj, FILE *stream)
 {
-	/* size must be a power of 2 */
-  size_t
-    nobjwrite = 0,
-	iNbytes,
-    MiNBytes,
-	nobjInOneBuf;
-  unsigned char *ptrChar;
+#   define nblock     (_SdifBSLittleE / 2)
+    size_t nwritten = 0;
 
-  ptrChar = (unsigned char*) ptr;
-  nobjInOneBuf = _SdifBSLittleE / size;
-  if (nobj > nobjInOneBuf)
+    while (nobj > 0)
     {
-      nobjwrite += SdiffwriteLittleEndianN(ptrChar, size, nobjInOneBuf, stream);
-      nobjwrite += SdiffwriteLittleEndianN(ptrChar+_SdifBSLittleE, size,
-		                                   nobj - nobjInOneBuf,
-					                       stream);
-      return nobjwrite;
+	size_t ntowrite = nobj > nblock  ?  nblock  :  nobj;
+
+	SdifSwap2Copy(ptr, gSdifLittleToBig, ntowrite);
+	nwritten += Sdiffwrite(gSdifLittleToBig, 2, ntowrite, stream);
+	nobj     -= ntowrite; 
+	ptr	 += _SdifBSLittleE;
     }
-  else
+
+    return nwritten;
+#   undef nblock
+}
+
+
+
+size_t SdiffwriteLittleEndian4 (void *ptr, size_t nobj, FILE *stream)
+{
+#   define nblock     (_SdifBSLittleE / 4)
+    size_t nwritten = 0;
+
+    while (nobj > 0)
     {
-       MiNBytes = nobj * size;
-       for (iNbytes=0; iNbytes < MiNBytes; iNbytes += size)
-	      SdifLittleToBig(gSdifLittleToBig+iNbytes, ptrChar+iNbytes, size);
-      
-      nobjwrite = Sdiffwrite(gSdifLittleToBig, size, nobj, stream);
-      return nobjwrite;
+	size_t ntowrite = nobj > nblock  ?  nblock  :  nobj;
+
+	SdifSwap4Copy(ptr, gSdifLittleToBig, ntowrite);
+	nwritten += Sdiffwrite(gSdifLittleToBig, 4, ntowrite, stream);
+	nobj     -= ntowrite; 
+	ptr	 += _SdifBSLittleE;
     }
+
+    return nwritten;
+#   undef nblock
 }
 
 
 
-
-size_t
-SdiffwriteLittleEndian2 (void *ptr, size_t nobj, FILE *stream)
+size_t SdiffwriteLittleEndian8 (void *ptr, size_t nobj, FILE *stream)
 {
-  return SdiffwriteLittleEndianN (ptr, 2, nobj, stream);
-}
+#   define nblock     (_SdifBSLittleE / 8)
+    size_t nwritten = 0;
 
+    while (nobj > 0)
+    {
+	size_t ntowrite = nobj > nblock  ?  nblock  :  nobj;
 
+	SdifSwap8Copy(ptr, gSdifLittleToBig, ntowrite);
+	nwritten += Sdiffwrite(gSdifLittleToBig, 8, ntowrite, stream);
+	nobj     -= ntowrite; 
+	ptr	 += _SdifBSLittleE;
+    }
 
-size_t
-SdiffwriteLittleEndian4 (void *ptr, size_t nobj, FILE *stream)
-{
-  return SdiffwriteLittleEndianN (ptr, 4, nobj, stream);
-}
-
-
-
-size_t
-SdiffwriteLittleEndian8 (void *ptr, size_t nobj, FILE *stream)
-{
-  return SdiffwriteLittleEndianN (ptr, 8, nobj, stream);
+    return nwritten;
+#   undef nblock
 }
 
 
@@ -480,7 +433,7 @@ SdiffReadFloat8(SdifFloat8 *ptr, size_t nobj, FILE *stream)
 
 int SdiffReadSignature (SdifSignature *Signature, FILE *stream, size_t *nread)
 {
-    *nread = fread(Signature, sizeof(Signature), 1, stream);
+    *nread = fread(Signature, sizeof(Signature), 1, stream) * sizeof(Signature);
 
     if (*nread  &&  !feof(stream))
     {
@@ -633,22 +586,23 @@ SdiffWriteFloat8(SdifFloat8 *ptr, size_t nobj, FILE *stream)
 }
 
 
-size_t
-SdiffWriteSignature(SdifSignature *Signature, FILE *stream)
+size_t SdiffWriteSignature(SdifSignature *Signature, FILE *stream)
 {
     SdifSignature SignW;
 
     switch (gSdifMachineType)
     {     
-    case eLittleEndian :
-    case eLittleEndian64 :
-      SdifLittleToBig(&SignW, Signature, sizeof(SdifSignature));
+      case eLittleEndian :
+      case eLittleEndian64 :
+	  SdifSwap4Copy(Signature, &SignW, 1);
       break;
-    default :
-      SignW = *Signature;
+
+      default :
+	  SignW = *Signature;
       break;
     }
-  return Sdiffwrite(&SignW, sizeof(SdifSignature),  1, stream);
+
+    return Sdiffwrite(&SignW, sizeof(SdifSignature), 1, stream);
 }
 
 
@@ -784,14 +738,14 @@ _SdifStringToSignature (char *str)
   {     
     case eLittleEndian :
     case eLittleEndian64 :
-      {
+    {
 	SdifSignature Signature = *((SdifSignature *) str);
-	SdifBigToLittle((void *) &Signature, sizeof(SdifSignature));
+	SdifSwap4((void *) &Signature, 1);
 	return (Signature);
-      }
+    }
 	
     default:
-      return (*((SdifSignature *) str));
+	return (*((SdifSignature *) str));
   }
 }  
 
