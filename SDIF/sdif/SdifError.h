@@ -1,4 +1,4 @@
-/* $Id: SdifError.h,v 3.2 2000-03-01 11:17:34 schwarz Exp $
+/* $Id: SdifError.h,v 3.3 2000-08-21 10:02:46 tisseran Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -15,6 +15,9 @@
  * author: Dominique Virolle 1997
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 3.2  2000/03/01  11:17:34  schwarz
+ * Configurable exit function on error.
+ *
  * Revision 3.1  1999/03/14  10:56:36  virolle
  * SdifStdErr add
  *
@@ -80,6 +83,8 @@ extern char *SdifErrorFile;
 extern int SdifErrorLine;
 extern FILE* SdifStdErr;
 
+extern int gSdifErrorOutputEnabled;
+
 void SdifSetExitFunc (SdifExitFuncT func);
 void SdifErrorWarning(SdifErrorEnum Error, const void *ErrorMess);
 
@@ -93,6 +98,6 @@ fprintf(SdifStdErr, "*Sdif Debug* %s, %d:\n", SdifErrorFile, SdifErrorLine), \
 fprintf(SdifStdErr, "%s\n",(mess)))
 
 #define _SdifRemark(mess) \
-fprintf(SdifStdErr, "*Sdif* %s\n", mess)
+(gSdifErrorOutputEnabled ? fprintf(SdifStdErr, "*Sdif* %s\n", mess) : 0 )
 
 #endif /* _SdifError_ */

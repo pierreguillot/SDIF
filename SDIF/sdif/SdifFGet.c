@@ -1,4 +1,4 @@
-/* $Id: SdifFGet.c,v 3.5 2000-07-18 15:08:28 tisseran Exp $
+/* $Id: SdifFGet.c,v 3.6 2000-08-21 10:02:47 tisseran Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -15,6 +15,20 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.5  2000/07/18  15:08:28  tisseran
+ * This release implements the New SDIF Specification (june 1999):
+ * - Name Values Table are written in a 1NVT frame which contains a 1NVT matrix
+ * - Frame and matrix type declaration are written in a 1TYP frame which contains a 1TYP matrix.
+ * - Stream ID are written in a 1IDS frame which contains a 1IDS matrix.
+ *
+ * Read function accept the previous version of the specification (read a text frame without matrix) to be compatible with older SDIF files.
+ *
+ * SdifString.h and SdifString.c implements some string mangement (creation, destruction, append, test of end of string, getc, ungetc).
+ *
+ * WATCH OUT:
+ *      We don't care about the old SDIF Specification (_SdifFormatVersion < 3)
+ * To use _SdifFormatVersion < 3, get the previous release.
+ *
  * Revision 3.4  2000/05/12  14:41:45  schwarz
  * On behalf of Adrien, synchronisation with Mac sources, with some slight
  * changes because of cross-platform issues:
@@ -840,8 +854,6 @@ SdifFGetOneStreamIDfromSdifString(SdifFileT *SdifF, SdifStringT *SdifString)
 
   ReturnChar = SdiffGetStringUntilfromSdifString(SdifString, gSdifString,
 					      _SdifStringLen, CharsEnd);
-
-
 
 
   /* test if it's the last or not */

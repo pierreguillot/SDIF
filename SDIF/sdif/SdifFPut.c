@@ -1,4 +1,4 @@
-/* $Id: SdifFPut.c,v 3.7 2000-07-18 15:08:29 tisseran Exp $
+/* $Id: SdifFPut.c,v 3.8 2000-08-21 10:02:48 tisseran Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -16,6 +16,20 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.7  2000/07/18  15:08:29  tisseran
+ * This release implements the New SDIF Specification (june 1999):
+ * - Name Values Table are written in a 1NVT frame which contains a 1NVT matrix
+ * - Frame and matrix type declaration are written in a 1TYP frame which contains a 1TYP matrix.
+ * - Stream ID are written in a 1IDS frame which contains a 1IDS matrix.
+ *
+ * Read function accept the previous version of the specification (read a text frame without matrix) to be compatible with older SDIF files.
+ *
+ * SdifString.h and SdifString.c implements some string mangement (creation, destruction, append, test of end of string, getc, ungetc).
+ *
+ * WATCH OUT:
+ *      We don't care about the old SDIF Specification (_SdifFormatVersion < 3)
+ * To use _SdifFormatVersion < 3, get the previous release.
+ *
  * Revision 3.6  2000/07/06  19:01:46  tisseran
  * Add function for frame and matrix type declaration
  * Remove string size limitation for NameValueTable
@@ -109,45 +123,6 @@ SdifFPutNameValueLCurrNVT (SdifFileT *SdifF, int Verbose)
 
 
 
-char *
-SdifFNameValueLCurrNVTtoString (SdifFileT *SdifF)
-{
-  SdifUInt4       iNV;
-  SdifHashNT     *pNV;
-  SdifHashTableT *HTable;
-
-  char           *tmpStr; /* To conserve value if the reallocation
-			     is impossible */
-  SdifStringT *SdifString; /* Structure used for memory reallocation */
-  int result;
-  
-  /* Memory allocation */
-  SdifString = SdifStringNew();
-
-  HTable = SdifF->NameValues->CurrNVT->NVHT;
-  
-  for(iNV=0; iNV<HTable->HashSize; iNV++)
-    for (pNV = HTable->Table[iNV]; pNV; pNV = pNV->Next)
-      {
-	SdifNameValueT *NameValue = pNV->Data;
-	result = SdifStringAppend(SdifString, NameValue->Name);
-	result *= SdifStringAppend(SdifString, "\t");
-	result *= SdifStringAppend(SdifString, NameValue->Value);
-	result *= SdifStringAppend(SdifString, "\n");	
-      }
-
-  tmpStr = strdup(SdifString->str);
-  
-  /* ERROR TRAITEMENT MUST BE VERIFIED !!!!! */
-  if (!tmpStr)
-      fprintf(stderr,"No more memory avaluable!!\n");
-
-  SdifStringFree(SdifString);
-  
-  return tmpStr;
-}
-
-
 /*DOC:
   Remark:
          This function implements the new SDIF Specification (June 1999):
@@ -164,7 +139,7 @@ SdifFNameValueLCurrNVTtoSdifString (SdifFileT *SdifF, SdifStringT *SdifString)
   SdifUInt4       iNV;
   SdifHashNT     *pNV;
   SdifHashTableT *HTable;
-  int result;
+  int result = 1;
   
   HTable = SdifF->NameValues->CurrNVT->NVHT;
   

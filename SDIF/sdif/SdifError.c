@@ -1,4 +1,4 @@
-/* $Id: SdifError.c,v 3.4 2000-05-12 14:41:43 schwarz Exp $
+/* $Id: SdifError.c,v 3.5 2000-08-21 10:02:45 tisseran Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -14,6 +14,14 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.4  2000/05/12  14:41:43  schwarz
+ * On behalf of Adrien, synchronisation with Mac sources, with some slight
+ * changes because of cross-platform issues:
+ * - Mac only stuff: XpSetFileAttribute XpFileSize
+ * - Cross platform wrapper: XpGetenv XpExit
+ * - Dangerous: strings.h (and thus bzero, bcopy) is not ANSI and thus doesn't
+ *   exist on Mac.  Use string.h and memset, memcpy.
+ *
  * Revision 3.3  2000/03/01  11:17:33  schwarz
  * Configurable exit function on error.
  *
@@ -68,6 +76,7 @@ int SdifErrorLine;
 FILE* SdifStdErr = NULL;
 
 
+
 static void 
 SdifExit (void)
 {
@@ -87,6 +96,9 @@ SdifErrorWarning(SdifErrorEnum Error, const void *ErrorMess)
 {
   int exitit = 0;
 
+  if (gSdifErrorOutputEnabled == 0)
+    return;
+  
   fprintf(SdifStdErr, "*Sdif* Error (%s, %d)\n  ", SdifErrorFile, SdifErrorLine);
 
   switch(Error)

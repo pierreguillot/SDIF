@@ -1,4 +1,4 @@
-/* $Id: SdifString.c,v 3.2 2000-08-21 09:56:35 schwarz Exp $
+/* $Id: SdifString.c,v 3.3 2000-08-21 10:02:51 tisseran Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -15,6 +15,9 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.2  2000/08/21  09:56:35  schwarz
+ * Fixed bug of forgotten space for terminating zero in realloc test.
+ *
  * Revision 3.1  2000/07/18  15:08:40  tisseran
  * This release implements the New SDIF Specification (june 1999):
  * - Name Values Table are written in a 1NVT frame which contains a 1NVT matrix
@@ -52,6 +55,7 @@ SdifStringT * SdifStringNew(void)
   SdifString->str = (char *)malloc(TotalSize * sizeof(char));
   SdifString->SizeW = SizeW;
   SdifString->TotalSize = TotalSize;
+  SdifString->NbCharRead = 0;
 
   return(SdifString);
 }
