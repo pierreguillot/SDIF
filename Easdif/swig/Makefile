@@ -1,6 +1,10 @@
-# $Id: Makefile,v 1.9 2003-04-18 16:00:22 schwarz Exp $
+# $Id: Makefile,v 1.10 2003-04-18 17:45:23 schwarz Exp $
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.9  2003/04/18 16:00:22  schwarz
+# Generate separate large module SDIF.pm with all
+# low-level sdif lib wrappers.
+#
 # Revision 1.8  2003/04/18 15:41:18  schwarz
 # Don't include all definitions from sdif.h, only the ones needed by
 # easdif, defined in sdifdefine.i.  -> smaller wrapper size:
@@ -42,7 +46,7 @@ EASDIF_LIB_PATH	= ../easdif/.libs
 
 
 modules		= eaSDIF SDIF
-incfiles	= sdifdefines.i sdifsignature.i
+incfiles	= sdifdefines.i sdiftypemap.i
 easdifincbase	= entity frame matrix namevaluetable
 easdifincfiles	= $(easdifincbase:%=../easdif/sdif%.h)
 sdifincfiles	= ../SDIF/include/sdif.h
@@ -67,7 +71,7 @@ SDIF_wrap.cxx:		sdif.i   $(sdifincfiles)   $(incfiles)
 %.so: 	%_wrap.o
 	g++ -shared $(EASDIF_LIB_PATH)/libEasdif.so $< -o $@
 
-test:	eaSDIF.pm
+test:	eaSDIF.pm eaSDIF.so SDIF.so
 	LD_LIBRARY_PATH=$(EASDIF_LIB_PATH):$(LD_LIBRARY_PATH) \
 	perl -I. test.pl
 
