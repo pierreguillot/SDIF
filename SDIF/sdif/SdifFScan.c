@@ -1,4 +1,4 @@
-/* $Id: SdifFScan.c,v 3.5 1999-11-03 16:42:33 schwarz Exp $
+/* $Id: SdifFScan.c,v 3.6 2000-03-01 11:17:35 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -14,6 +14,11 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.5  1999/11/03  16:42:33  schwarz
+ * Use _SdifNVTStreamID for stream ID of 1NVT frames because of CNMAT
+ * restriction of only one frame type per stream.
+ * (See SdifNameValuesLNewTable)
+ *
  * Revision 3.4  1999/10/15  12:27:51  schwarz
  * No time parameter for name value tables and stream ID tables, since
  * this decision is better left to the library.  (It uses the _SdifNoTime
@@ -217,12 +222,22 @@ SdifFScanMatrixHeader(SdifFileT *SdifF)
   SdifFCreateCurrMtrxH(SdifF); /* create only if it's necessary */
   
   SdiffGetSignature(SdifF->TextStream, &(SdifF->CurrMtrxH->Signature), &SizeR);
-
-
   fscanf(SdifF->TextStream, "%i", &DataType);
-  /* when DataType was 32 for Float4 at Ircam */
-  /* if ((SdifDataTypeET) (int) DataType == eFloat4Old)  
-         DataType = eFloat4; */
+
+  /* when DataType was 32 for Float4 at Ircam and others */
+  switch ((SdifDataTypeET) (int) DataType)
+  {
+      case eFloat4a:
+      case eFloat4b:
+          DataType = eFloat4;
+      break;
+
+      case eFloat8a:
+      case eFloat8b:
+	  DataType = eFloat8;
+      break;
+  }
+
   SdifF->CurrMtrxH->DataType = (SdifDataTypeET) (int) DataType;
 
   fscanf(SdifF->TextStream, "%u", &(SdifF->CurrMtrxH->NbRow));

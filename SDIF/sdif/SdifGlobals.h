@@ -1,4 +1,4 @@
-/* $Id: SdifGlobals.h,v 3.6 1999-11-03 16:42:35 schwarz Exp $
+/* $Id: SdifGlobals.h,v 3.7 2000-03-01 11:17:37 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -14,6 +14,11 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.6  1999/11/03  16:42:35  schwarz
+ * Use _SdifNVTStreamID for stream ID of 1NVT frames because of CNMAT
+ * restriction of only one frame type per stream.
+ * (See SdifNameValuesLNewTable)
+ *
  * Revision 3.5  1999/10/15  12:27:08  schwarz
  * Changed min/max to upper case.
  *
@@ -203,7 +208,12 @@ typedef enum SdifDataTypeE
   eInt8     = 0x0108,
   eUInt2    = 0x0202,
   eUInt4    = 0x0204,
-  eUInt8    = 0x0208
+  eUInt8    = 0x0208,
+ 	    
+  eFloat4a  = 0x0001,	/* =  1 */    /* Backwards compatibility with old */
+  eFloat4b  = 0x0010,	/* = 32 */    /* IRCAM versions < 3 of SDIF */
+  eFloat8a  = 0x0002,	/* =  2 */    /* IN TEXT MODE ONLY! */
+  eFloat8b  = 0x0020	/* = 64 */
 } SdifDataTypeET;
 
 #ifdef __STDC__  /* Is the compiler ANSI? */
