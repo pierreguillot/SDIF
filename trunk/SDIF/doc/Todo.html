@@ -1,8 +1,11 @@
 <html>
-<!-- $Id: Todo.html,v 3.6 2000-08-22 16:33:53 schwarz Exp $-->
+<!-- $Id: Todo.html,v 3.7 2000-08-27 15:19:52 schwarz Exp $-->
 <!--
 
 $Log: not supported by cvs2svn $
+Revision 3.6  2000/08/22  16:33:53  schwarz
+Types points.
+
 Revision 3.5  2000/08/07  15:12:05  schwarz
 Cocoon is installed for groups now, more docs.
 
@@ -45,7 +48,7 @@ is already done.
 
 <tr align=left valign=top>
   <th>Revision
-  <td>$Id: Todo.html,v 3.6 2000-08-22 16:33:53 schwarz Exp $
+  <td>$Id: Todo.html,v 3.7 2000-08-27 15:19:52 schwarz Exp $
 </tr>
 
 <tr align=left valign=top>
@@ -56,6 +59,9 @@ is already done.
 <tr valign=top align=left>
   <th>Change log
   <td><pre>$Log: not supported by cvs2svn $
+Revision 3.6  2000/08/22  16:33:53  schwarz
+Types points.
+
 Revision 3.5  2000/08/07  15:12:05  schwarz
 Cocoon is installed for groups now, more docs.
 
@@ -113,18 +119,9 @@ is already done.
 	<li> tools: unify flag for types file: use <t>-T</t> throughout
 	<li> reinstall current versions of tools on all systems
 	<li> binary release
-	<li> clean up makefiles, directories:
-	<ul> <li> all programs in one directory
-	     <li> no more wrappers
-	</ul>
-	<li> use autoconf / configure
-	<li> official GPL in files
-	<li> create test cases
 	<li> Test release (Emmanuel, Marcelo, Karim Hadad, Bennet
 	Smith, Julien Boissinot, iii@ircam.fr, Matt, Roebel)
 	</ul>
-
-<li> Fix Diphone SDIF output frame size bug
 
 </ul>
 
@@ -141,7 +138,6 @@ is already done.
 
 <li> XML types
 	<ul>
-	<li> translator to 1TYP, HTML
 	<li> design DTD
 	<li> standardise DTD
 	</ul>
@@ -198,6 +194,8 @@ is already done.
      SdifFWriteFrame (file);
      </pre>
 
+<li> install sdif tools under alternative names (hard links): sdifquery, texttosdif 
+
 </ul>
 
 
@@ -207,7 +205,24 @@ is already done.
 <A name=done><H2>Done</H2></A>
 <ul>
 
-<li> 1NVT, 1TYP, 1IDS conformant to spec (19/07/200)
+<li> Fix Diphone SDIF output frame size bug (July 2000)
+<li> 1NVT, 1TYP, 1IDS conformant to spec (19/07/2000)
+<li> XML types
+	<ul>
+	<li> translator to .styp, HTML (27.07.2000)
+	<li> convert all .styp definitions to xml (09.08.2000)
+	<li> add all doc we can get hold of to sdiftypes.xml (22.08.2000)
+	</ul>
+<li> Release (22.08.2000)
+	<ul>
+	<li> use autoconf / configure
+	<li> clean up makefiles, directories:
+	<ul> <li> all programs in one directory
+	     <li> no more wrappers
+	</ul>
+	<li> official GPL in files
+	<li> create test cases
+	</ul>
 
 </ul>
 
