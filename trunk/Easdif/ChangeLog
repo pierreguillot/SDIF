@@ -1,6 +1,11 @@
-2003-11-18  Axel Roebel  <Axel.Roebel@ircam.fr>
+2003-11-25  Axel Roebel  <Axel.Roebel@ircam.fr>
 Version 0.7.3
 
+	* easdif/sdifinit.cpp, easdif/sdifinit.h
+	Changed EasdifInit to return true if SDIF has been
+	initialized and false if SDIF was already initialized
+	such that the types could not be changed.
+	
 	* easdif/sdifmatrix.cpp 
 	Bug fix that would affect reading matrices 
 	with different data type from a single frame.
@@ -453,4 +458,4 @@ Version 0.21
 	* ChangeLog: Added changelog to repository.
 
 
-$Id: ChangeLog,v 1.25 2003-11-19 11:58:39 roebel Exp $
+$Id: ChangeLog,v 1.26 2003-11-25 10:59:15 roebel Exp $
