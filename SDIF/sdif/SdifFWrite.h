@@ -1,4 +1,4 @@
-/* $Id: SdifFWrite.h,v 3.5 2000-04-11 14:31:57 schwarz Exp $
+/* $Id: SdifFWrite.h,v 3.6 2000-05-10 15:32:13 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -105,6 +105,9 @@ void main(void)
 
 LOG
  * $Log: not supported by cvs2svn $
+ * Revision 3.5  2000/04/11  14:31:57  schwarz
+ * SdifFWriteTextMatrix
+ *
  * Revision 3.4  2000/03/01  11:19:46  schwarz
  * Added functions for matrix-wise writing:  SdifUpdateFrameHeader,
  * SdifFWriteMatrixData, SdifFWriteMatrix, SdifFWriteFrameAndOneMatrix
@@ -317,5 +320,16 @@ size_t  SdifFWriteFrameAndOneMatrix (SdifFileT	    *SdifF,
 				     void	    *Data);
 
 
+/*DOC:
+  Return (constant) size of frame header after signature and size field. 
+  Use this to calculate the Size argument for SdifFSetCurrFrameHeader. */
+size_t SdifSizeOfFrameHeader (void);
+
+/*DOC:
+  Return size of matrix (header, data, padding).
+  Use this to calculate the Size argument for SdifFSetCurrFrameHeader. */
+size_t SdifSizeOfMatrix (SdifDataTypeET DataType,
+			 SdifUInt4      NbRow,
+			 SdifUInt4      NbCol);
 
 #endif /* _SdifFWrite_ */
