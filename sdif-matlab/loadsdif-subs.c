@@ -1,4 +1,4 @@
-/* $Id: loadsdif-subs.c,v 1.6 2000-08-08 17:26:58 schwarz Exp $
+/* $Id: loadsdif-subs.c,v 1.7 2000-12-19 16:44:10 roebel Exp $
 
    loadsdif_subs.c	25. January 2000	Diemo Schwarz
 
@@ -14,6 +14,10 @@
    endread ('close')
 
   $Log: not supported by cvs2svn $
+  Revision 1.6  2000/08/08 17:26:58  schwarz
+  Fixed 'last matrix not returned' bug.
+  More test cases t0, t1.
+
   Revision 1.5  2000/08/04  14:42:28  schwarz
   Added reset of file variable, prevents crash on double-close.
   Version number is written in NVTs, and is used for distribution,
@@ -40,7 +44,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <limits.h>
-#include <sdif/sdif.h>
 #include "loadsdif.h"
 
 
@@ -118,7 +121,7 @@ int readframe (int nlhs, mxArray *plhs [], SdifFileT *f)
 	    while (!SdifFCurrFrameIsSelected (f))
 	    {
 		size_t   numread;
-		SdifSkipFrameData (f);
+		SdifFSkipFrameData (f);
 		if ((eof = SdifFGetSignature(f, &numread) == eEof))
 		    return 0;
 		bytesread += numread + SdifFReadFrameHeader(f);
@@ -143,7 +146,7 @@ int readframe (int nlhs, mxArray *plhs [], SdifFileT *f)
 	    }
 	    else
 	    {
-		bytesread   += SdifSkipMatrixData(f);
+		bytesread   += SdifFSkipMatrixData(f);
 		matricesskipped++;	/* count for reporting */
 	    }
 	    matricesleft--;
@@ -156,11 +159,16 @@ int readframe (int nlhs, mxArray *plhs [], SdifFileT *f)
     }
 
     /* assign to output parameters */
-    for (m = 0; m < nlhs; m++)
-    {
+    if(matrixfound) {
+      for (m = 0; m < nlhs; m++)	{
 	plhs [m] = mxarray [m];
+      }
     }
-
+    else{
+      for (m = 0; m < nlhs; m++)	{
+	  plhs [m] = mxCreateDoubleMatrix (0, 0, mxREAL);
+      }
+    }
     /* return true even on eof: we want to return the last matrix read */
     return (SdifFLastError (f) == NULL);
 }

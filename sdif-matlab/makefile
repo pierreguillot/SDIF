@@ -1,10 +1,13 @@
-# $Id: makefile,v 1.15 2000-09-28 19:17:55 schwarz Exp $
+# $Id: makefile,v 1.16 2000-12-19 16:44:11 roebel Exp $
 #
 # makefile	26. January 2000	Diemo Schwarz
 #
 # formesutils matlab library
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.15  2000/09/28 19:17:55  schwarz
+# Use new /u/formes/share directories.
+#
 # Revision 1.14  2000/08/27  14:32:20  schwarz
 # Added data directory for reference data.
 # Version number, dist uses sdif-matlab-readme, no querysdif.
@@ -63,7 +66,7 @@
 
 
 # include mex definitions from the right places
-MAKEFLAGS = -I . -I /u/formes/lib/matlab/
+MAKEFLAGS = -I . -I /u/formes/share/lib/matlab/
 include mex.makedefs
 
 
@@ -73,7 +76,7 @@ include mex.makedefs
 
 V_MAJOR 	= 0
 V_MINOR 	= 1
-V_RELEASE	= 5
+V_RELEASE	= 6
 VERSION		= $(V_MAJOR).$(V_MINOR).$(V_RELEASE)
 CVSTAG		= sdif_matlab_v$(V_MAJOR)_$(V_MINOR)_$(V_RELEASE)
 
@@ -91,7 +94,7 @@ endif
 endif
 
 CFLAGS	   	 = -g -Wall -DTEST '-DVERSION="$(VERSION)"'
-LFLAGS		 = 
+LFLAGS		 = $(MEXLFLAGS)
 CC		 = gcc
 
 OBJ_DIR	   	 = obj/$(ARCH)
@@ -155,11 +158,11 @@ loadsdif:		loadsdif.$(MEXSUF)
 writesdif:		writesdif.$(MEXSUF) 
 
 # dependencies
-loadsdif.$(MEXSUF):	loadsdif.c  $(loadsdif_obj)  $(PM_LIB) $(SDIF_LIB)
+loadsdif.$(MEXSUF):	loadsdif.c  $(loadsdif_obj)  $(SDIF_LIB)
 loadsdif.c:		loadsdif.h 
 $(loadsdif_obj):	$(loadsdif_src)  loadsdif.h
 
-writesdif.$(MEXSUF):	writesdif.c $(writesdif_obj) $(PM_LIB) $(SDIF_LIB)
+writesdif.$(MEXSUF):	writesdif.c $(writesdif_obj) $(SDIF_LIB)
 writesdif.c:		writesdif.h 
 $(writesdif_obj):	$(writesdif_src) writesdif.h
 
@@ -176,7 +179,7 @@ testrw rw:	gen
 testl:
 		echo testl     | matlab -nosplash
 t1t:	
-		setenv  SDIFTYPES testtypes.styp; $(MAKE) t1.sdif
+		SDIFTYPES=testtypes.styp;export SDIFTYPES; $(MAKE) t1.sdif
 t1.sdif:
 		echo "testwrite('$@'), loadsdiffile('$@')"  |  matlab -nosplash
 		querysdif $@
