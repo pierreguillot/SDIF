@@ -13,8 +13,19 @@ namespace Easdif {
   before any other call to the SDIF library.</b> 
 */
 
+  /**
+   * \brief initialize Easdif and sdif library
+   *
+   * @param PredefinedType 
+   */
+   void EasdifInit(const std::string& PredefinedType = "");
 
-void EasdifInit(const std::string& PredefinedType = "");
+  /** 
+   * \brief initialize Easdif and sdif library
+   * 
+   * @param PredefinedType 
+   */
+  void EasdifInit(const char *PredefinedType);
 
 void EasdifEnd();
 

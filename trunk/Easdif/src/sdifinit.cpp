@@ -5,7 +5,13 @@ namespace Easdif {
 //void EasdifInit(char* PredefinedType)
 void EasdifInit(const std::string& PredefinedType)
 {
-    SdifGenInit(PredefinedType.c_str());
+    EasdifInit(PredefinedType.c_str());
+}
+
+//void EasdifInit(char* PredefinedType)
+void EasdifInit(const char *PredefinedType)
+{
+    SdifGenInit(PredefinedType);
     SdifSetErrorFunc(ExceptionThrower);
 }
 
