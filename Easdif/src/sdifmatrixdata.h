@@ -8,9 +8,14 @@
  * 
  * 
  * 
- * $Id: sdifmatrixdata.h,v 1.5 2002-10-10 10:49:09 roebel Exp $ 
+ * $Id: sdifmatrixdata.h,v 1.6 2002-11-07 21:09:33 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.5  2002/10/10 10:49:09  roebel
+ * Now using namespace Easdif.
+ * Fixed handling of zero pointer arguments in initException.
+ * Reading past end of file now throws an exception.
+ *
  * Revision 1.4  2002/08/28 16:46:53  roebel
  * Internal reorganization and name changes.
  *
@@ -73,6 +78,7 @@ public:
 	};
 	
 
+
 /*************************************************************************/
 /* Get data */
 /**
@@ -80,19 +86,19 @@ public:
 */
 
 
-/** 
- *  template method for getting data
- */
-    template <class TT>
-    TT Get(int i, int j)
-	{
-	    if (i > m_Nrows || j > m_Ncols)
-	    {
-		std::cerr<<"Error in Get : cannot have i>m_Nrows or j>m_Ncols"<<std::endl;
-		return 1;
-	    }
-	   return  static_cast<TT>(m_Data[i*m_Ncols+j]);
-	}
+  /** 
+   *  template method for getting data
+   */
+  template <class TT>
+  TT Get(int i, int j)
+  {
+    if (i<0 || i >= m_Nrows || j >= m_Ncols || j<0)
+      {
+	std::cerr<<"Error in Get : out of matrix range"<<std::endl;
+	return 1;
+      }
+    return static_cast<TT>(m_Data[i*m_Ncols+j]);
+  }
 
 /**
  * \ingroup getdata
@@ -252,14 +258,26 @@ public:
 
 	}
 
+
+  /**
+   * \brief clone matrix data
+   *
+   */
+  SDIFMatrixData *clone() {
+    SDIFMatrixData<T> *tmp = 
+      new SDIFMatrixData<T>(this->m_Nrows,this->m_Ncols);
+    tmp->CopyData(this->m_Data);    
+    return tmp;
+  }
+
 /**
  * \ingroup otherdata 
  * @brief 
  */
-    inline int CopyData(std::vector<T>& data)
+     void CopyData(std::vector<T>& data)
 	{
-	    data.resize(m_Data.size());
-	    std::copy(m_Data.begin(), m_Data.end(), data.begin());
+	    m_Data.resize(data.size());
+	    std::copy(data.begin(), data.end(), m_Data.begin());
 	}
 
 /** 
@@ -285,45 +303,42 @@ public:
 
 /** 
  * \ingroup setdata
- * set a value of type int
+ * set a value in the matrix using double input type
  * 
  * @param i 
  * @param j 
  * @param value 
  */
-    inline int Set(int i, int j, const int& value)
-	{
-	    m_Data[i*m_Ncols+j] = static_cast<T>(value);
-	    return 1;
-	}
+  void Set(int i, int j, const double& value)
+  {
+    m_Data[i*m_Ncols+j] = static_cast<T>(value);
+  }
 
 /** 
  * \ingroup setdata
- * set a value of type float
+ * set a value in the matrix using float input type
  * 
  * @param i 
  * @param j 
  * @param value 
  */
-    inline int Set(int i, int j, const float& value)
-	{
-	    m_Data[i*m_Ncols+j] = static_cast<T>(value);
-	    return 1;
-	}
+  void Set(int i, int j, const float& value)
+  {
+    m_Data[i*m_Ncols+j] = static_cast<T>(value);
+  }
 
 /** 
  * \ingroup setdata
- * set a value of type double
+ * set a value in the matrix using int input type
  * 
  * @param i 
  * @param j 
- * @param value
+ * @param value 
  */
-    inline int Set(int i, int j, const double& value)
-	{
-	    m_Data[i*m_Ncols+j] = static_cast<T>(value);
-	    return 1;
-	}
+  void Set(int i, int j, const int& value)
+  {
+    m_Data[i*m_Ncols+j] = static_cast<T>(value);
+  }
 
 };
 
