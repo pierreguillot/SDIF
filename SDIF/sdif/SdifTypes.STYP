@@ -78,6 +78,19 @@ SDIF
   1MTD  1HRE    { MeanDeltaFrequency, Harmonicity, WeightedHarmonicity }
   1FTD  1HRE    { 1HRE harm; }
 
+  1MTD  1PEM	{ Identifier, Parameter1, Parameter2, Parameter3 }
+  1MTD  ITMR	{ Index, Frequency, Amplitude, Phase }
+  1MTD  ITMI	{ Index }
+  1MTD  1VUN	{ Index }
+  1MTD  1VUF	{ CuttingFrequency }
+
+  1FTD  1MRK	{ 1PEM PeriodMarker; 
+		  ITMR TransientMarkerRepresentation;
+		  ITMI TransientMarkerIdentifier; }
+
+  1FTD  1VUV	{ 1VUN	VoicedUnvoicedNorm;
+		  1VUF  VoicedUnvoicedFreq; }
+
   1MTD  EMPM	{ Value, Index }
   1MTD  EMJR    { Record }
   1FTD  EFPM	{ EMPM Tableau;
