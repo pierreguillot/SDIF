@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.22 2002-10-24 13:51:09 tisseran Exp $
+# $Id: Makefile.am,v 1.23 2002-10-24 15:48:35 tisseran Exp $
 #
 # ./sdif/Makefile.am		September 2000			Patrice Tisserand
 #
@@ -29,6 +29,11 @@
 # send email to:  sdif@ircam.fr
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.22  2002/10/24 13:51:09  tisseran
+# First version of SDIF library using libtool.
+# It hasn't been tested since I can't compile at home.
+# So I need to commit, for testing after logging on an ircam host....
+#
 # Revision 1.21  2002/10/07 12:24:14  roebel
 # Fixed dependence with respect to include files in /u/formes/share/include for non ircam configuration
 #
@@ -166,7 +171,7 @@ libsdif_la_SOURCES =  SdifHash.c       SdifGlobals.c      SdifSignatureTab.c   \
 libsdif_debug_la_SOURCES = $(libsdif_la_SOURCES)
 libsdif_cpp_la_SOURCES   = $(libsdif_la_SOURCES)
 
-libsdif_la_LDFLAGS = -release @SDIF_VERSION@
+libsdif_la_LDFLAGS = -no-undefined -release @VERSION@
 libsdif_debug_la_LDFLAGS = $(libsdif_la_LDFLAGS)
 libsdif_cpp_la_LDFLAGS   = $(libsdif_la_LDFLAGS) -lstdc++
 
@@ -175,10 +180,13 @@ sdiftype = $(datadir)/SdifTypes.STYP
 INCLUDES = -I../include -I$(top_srcdir)/include -D_SdifTypesFileName=\"$(sdiftype)\" -DUSE_CONFIGURE
 
 $(libsdif_a_SOURCES) :  @IRCAMDEPS@
+$(libsdif_la_SOURCES) :  @IRCAMDEPS@
 
 SdifFile.o : $(top_srcdir)/sdif/SdifVersion.h
 
-Versionsrc := $(libsdif_a_SOURCES) $(subst config.h,,$(subst $(top_srcdir)/sdif/SdifVersion.h,,$(noinst_HEADERS) )) 
+# Versionsrc := $(libsdif_a_SOURCES) $(subst config.h,,$(subst $(top_srcdir)/sdif/SdifVersion.h,,$(noinst_HEADERS) )) 
+Versionsrc := $(libsdif_la_SOURCES) $(subst config.h,,$(subst $(top_srcdir)/sdif/SdifVersion.h,,$(noinst_HEADERS) )) 
+
 $(top_srcdir)/sdif/SdifVersion.h : $(Versionsrc)
 	@echo  "Updating  Library CKSUM"
 	@echo "/* Automatically generated File do not edit */" >$@
