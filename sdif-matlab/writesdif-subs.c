@@ -1,4 +1,4 @@
-/* $Id: writesdif-subs.c,v 1.7 2001-05-14 17:36:31 roebel Exp $
+/* $Id: writesdif-subs.c,v 1.8 2003-04-22 16:08:55 roebel Exp $
    writesdif-subs.c     12. May 2000           Patrice Tisserand
 
    Subroutines for writesdif, function to write an SDIF file.
@@ -33,6 +33,9 @@
                      Close the sdif file
 		     
    $Log: not supported by cvs2svn $
+   Revision 1.7  2001/05/14 17:36:31  roebel
+   Added support for writing char and 1NVT matrice data!
+
    Revision 1.6  2001/04/20 14:37:48  roebel
    Changed VERSION macro to VERS because VERSIOn is used somewhere in
    mexversion.c.
@@ -76,11 +79,13 @@
 static void   exitwrite(void);
 
 SdifFileT *
-beginwrite (int nrhs, const mxArray *prhs [], char *filename, char *types)
+beginwrite (int nrhs, const mxArray *prhs [], char *filename, 
+	    char *types, const char * _localtypes)
 {
   SdifFileT      *output = NULL;
   int            nbParam = 2;
   char           nbParamString[3];
+  SdifStringT *pLocaltypes = 0;
   
   /* Sdif library initialisation */
   if (!gSdifInitialised)
@@ -89,9 +94,16 @@ beginwrite (int nrhs, const mxArray *prhs [], char *filename, char *types)
       SdifSetExitFunc (exitwrite);
     }
 
-  if (nrhs == 3)
+  if (nrhs == 3) {
+    if(_localtypes[0] == '\000')
       nbParam = (int) mxGetScalar(prhs[2]);
+    else {
+      pLocaltypes = SdifStringNew();
+      SdifStringAppend(pLocaltypes , _localtypes );
+    }
       
+  }
+
   if ((output = SdifFOpen(filename, eWriteFile)))
     {
       /* Information table chunk creation */
@@ -107,7 +119,11 @@ beginwrite (int nrhs, const mxArray *prhs [], char *filename, char *types)
       SdifNameValuesLPutCurrNVT(output->NameValues,
 				"NumberOfParameters", nbParamString);
 
+      if(pLocaltypes && pLocaltypes->TotalSize > 0 ) {
+	SdifFGetAllTypefromSdifString(output, pLocaltypes);
+      }
       /* Write general header and ascii chunks */
+
       SdifFWriteGeneralHeader(output);
       SdifFWriteAllASCIIChunks(output);
     }
