@@ -19,11 +19,11 @@ SDIF_INCL  = $(HOME)/include
 # The path of the sdif library 
 SDIF_LIB  = $(HOME)/lib/$(SYS)/libsdif.a
 else
-ifeq ($(USER),tisseran)
+#ifeq ($(USER),tisseran)
 # The path to sdif.h 
-SDIF_INCL  = $(HOME)/include
+#SDIF_INCL  = $(HOME)/include
 
 # The path of the sdif library 
-SDIF_LIB  = $(HOME)/lib/$(SYS)/libsdif.a
-endif
+#SDIF_LIB  = $(HOME)/lib/$(SYS)/libsdif.a
+#endif
 endif
