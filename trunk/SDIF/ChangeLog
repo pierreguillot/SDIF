@@ -1,3 +1,69 @@
+2004-09-09  Diemo Schwarz  <schwarz@ligeti.ircam.fr>
+Version 3.9.0 rc1
+	
+	* include/sdif.h:
+	- Changed SdifMatrixDataT to something sensible that allows to read
+	  and store a whole matrix's data as one block into field CurrMtrxData
+	  of SdifFileT with SdifFReadMatrixData and accessed with the
+	  functions SdifFCurrMatrixData, SdifFCurrMatrixDataPointer, with
+	  automatic reallocation.
+	- SdifReadSimple: simple callback-based reading of an entire SDIF file.
+	- SdifListConcat function
+	- SdifIsAReservedChar return value changed to boolean flag, clearer
+	- SdifSelectAppendList function
+	- Removed unimplemented prototypes drafted in sdif/SdifHighLevel.h
+
+	* sdif/SdifHighLevel.h:
+	Removed implemented prototypes SdifReadSimple from this draft file.
+
+	* sdif/SdifHighLevel.c:
+	SdifReadSimple: simple callback-based reading of an entire SDIF file.
+
+	* sdif/SdifFRead.c, sdif/SdifMatrix.c, sdif/SdifFile.c:
+	SdifFReadMatrixData allows to read and store a whole matrix's data as
+	one block in an SdifMatrixDataT, with automatic reallocation.
+	Changed SdifMatrixDataT to something sensible that allows to read and
+	store a whole matrix's data as one block, with automatic reallocation.
+	Copy matrix data to float array, to use in jMax/FTM.
+	Moved SdifSizeOfMatrix* functions here.
+
+	Whole matrix data can be read into field CurrMtrxData and accessed
+	with access functions SdifFCurrMatrixData, SdifFCurrMatrixDataPointer.
+
+	* sdif/SdifRWLowLevel.c, sdif/SdifFGet.c, sdif/SdifString.c:
+	Fixed parsing bug that the type definition string had to end with
+	whitespace.
+
+	SdiffGetSignaturefromSdifString, SdiffReadSpacefromSdifString,
+	SdiffGetWordUntilfromSdifString: better syntax error messages and
+	code reformatted to help finding Parsing bug.  Fixed low-level
+	tokenising errors that were part of the parsing bug.
+	
+	At the next bug with the type language parser and tokeniser, it should
+	be rewritten using flex/bison!
+
+	SdifIsAReservedChar return value changed to boolean flag, much clearer.
+
+	* sdif/SdifSelect.c: 
+	SdifSelectAppendList function, avoids the double references
+	SdifListConcat woulde create.
+	
+	* sdif/SdifList.c: SdifListConcat function
+
+	* sdif/SdifHash.c: local SdifHashInt4 function as macro
+
+	* sdif/SdifHard_OS.c: swapping code alternatives
+
+	* sdif/SdifFrame.c: moved SdifSizeOf* functions to SdifGlobals.c
+
+	* sdif/SdifGlobals.c:
+	moved SdifSizeOf* functions from SdifFWrite.c to SdifGlobals.c
+	padding test with ftell now only when compiling in debug mode
+
+	* sdif/SdifFWrite.c:
+	moved SdifSizeOf* functions from SdifFWrite.c to SdifGlobals.c
+
+
 2004-09-01  Axel Roebel  <Axel.Roebel@ircam.fr>
 Version 3.8.7
 	
@@ -7,8 +73,30 @@ Version 3.8.7
 	* sdif/SdifConvToText.c:
 	fixed typo in USE_XPGUI macro.
 	
+
+
+2004-09-01  Diemo Schwarz  <schwarz@ligeti.ircam.fr>
+
+	* doc/download/sdif-matlab/index.html:
+	geoffroy's windows version, freesoft wiki
+
+	* doc/download/sdif-matlab/index.html:
+	someone edited this file without checking it in to CVS...
+
+2004-08-27  Diemo Schwarz  <schwarz@ligeti.ircam.fr>
+
+	* doc/index.html: 3.8.6
+	freesoftware + wiki
+
+	* doc/download/index.html: 3.8.6, ReleaseNotes
+
 2004-08-26  Diemo Schwarz  <schwarz@ligeti.ircam.fr>
-Version 3.8.6
+
+	* Makefile.am: ReleaseNotes
+	some echo's don't know -e, is it needed?
+
+2004-08-26  Diemo Schwarz  <schwarz@ligeti.ircam.fr>
+Version 3.8.6 released
 
 	* Makefile.am: ReleaseNotes
 	some echo's don't know -e, is it needed?
@@ -32,7 +120,8 @@ Version 3.8.6
 	* sdif/SdifGlobals.c: Fixed infinite recursion in FreeGlobals.
 
 2004-07-26  Niels Bogaards <bogaards@ircam.fr> and Axel Roebel  <roebel@localdomain>
-
+Version 3.8.6 
+	
 	* SDIF now thread save if pthreads are available:
 
 	Removed all unnecessary global and static variables and
@@ -427,4 +516,4 @@ Version 3.3:
 	  Operating System.
 
 	
-$Id: ChangeLog,v 1.40 2004-09-06 18:24:57 roebel Exp $
+$Id: ChangeLog,v 1.41 2004-09-09 18:14:48 schwarz Exp $
