@@ -10,7 +10,7 @@ function testl(name)
 %	testfile ('test2.sdif')
 %	testfile ('test2.sdif::@0+0.01#0')
 %	testfile ('test2.sdif::@0+0.01#1')
-	testfile ('test2.sdif::1TRC/1TRC')
+	testfile ('data/test2.sdif::1TRC/1TRC')
 	testfile ...
 	   ('/snd/dhaes/ADDsequence4seg1/sequence4seg1.energy.sdif::1NRG/INRG')
     end
