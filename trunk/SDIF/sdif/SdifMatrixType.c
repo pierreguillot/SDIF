@@ -1,4 +1,4 @@
-/* $Id: SdifMatrixType.c,v 3.7 2002-05-24 19:37:52 ftissera Exp $
+/* $Id: SdifMatrixType.c,v 3.8 2003-10-14 10:10:37 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -37,6 +37,10 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.7  2002/05/24 19:37:52  ftissera
+ * Change code to be compatible with C++
+ * Cast pointers to correct type.
+ *
  * Revision 3.6  2001/05/02 09:34:46  tisseran
  * Change License from GNU Public License to GNU Lesser Public License.
  *
@@ -289,6 +293,18 @@ SdifMatrixTypeGetNthColumnDef(SdifMatrixTypeT *MatrixType, SdifUInt4 NumCD)
   return ColumnDef;
 }
 
+
+
+/* SdifMatrixTypeGetColumnName returns pointer to name of column at index. */
+const char* SdifMatrixTypeGetColumnName (SdifMatrixTypeT *mtype, int index)
+{
+    SdifColumnDefT *cd = SdifMatrixTypeGetNthColumnDef(mtype, index);
+
+    if (cd)
+	return cd->Name;
+    else
+	return NULL;
+}
 
 
 
