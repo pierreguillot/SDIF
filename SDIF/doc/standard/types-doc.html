@@ -4,7 +4,7 @@
 <H1>Standard SDIF Types</H1>
 <I>SDIF Types Version: </I>Ircam_1.5
 <P><I>SDIF Types CVS Revision: </I><CODE>
-  $Id: types-doc.html,v 1.2 2000-08-22 16:35:06 schwarz Exp $
+  $Id: types-doc.html,v 1.3 2000-08-22 18:00:50 peeters Exp $
 </CODE>
 <P><BR>
 <BR>
@@ -984,6 +984,48 @@ Bins</DD>
 </A><BR>
 <A name="Matrix_1PEM"><H3>Matrix 1PEM PeriodMarker</H3>
 </A><DL><DT><I>Description:</I><DD>
+
+<strong>1PEM</strong> matrix type stands for <strong>PeriodMarker</strong>.
+PeriodMarker are used for pitch-synchronous algorithm such as PSOLA
+synthesis, or pitch-synchronous analysis.
+The most general definition of period markers is &quot;the distance
+between two markers is equal to the local fundamental period&quot;. Instead
+of this definition which only gives a relative positionning of the
+period markers, an exact positionning of the period markers is often
+required. This absolute positionning of the period markers depends on
+the analysis method used. This is the reason why it is essential to
+refer to the analysis method used in the matrix.
+The matrix can contain other columns for the parameters of the method.
+
+<strong>Method:</strong> 1
+<br>
+<strong>Definition:</strong> phase +Pi/2 of the 1st partial SINUSOID which represents this partial
+<br>
+<strong>Note:</strong> To be coherent with additive partial , a partial is represented
+by a sinusoid. The interesting point is at phase +Pi/2 since it is
+closer to the maximum of energy needed for PSOLA.
+<br>
+<strong>Method:</strong> 2
+<br>
+<strong>Definition:</strong> group delay 
+<br>
+<strong>Note:</strong> In brief, an amplitude wheigted mean group
+delay provides a delay which, added to the begining time of the
+analysis frame gives the time of the mark
+<br>
+<strong>Method:</strong> 3
+<br>
+<strong>Definition:</strong> Glottale closure
+<br>
+<strong>Note:</strong> A method developed for speech
+<br>
+<strong>Method:</strong> 4
+<br>
+<strong>Definition:</strong>Maximum of energy synchronised with F0       
+<br>
+<strong>Note:</strong> Needs a precise definition
+<br>
+<strong>Method:</strong> 5 ...
 </DD>
 </DL>
 <DL><DT><I>Rows:</I><DD>
@@ -1030,6 +1072,14 @@ Matrix identifier for transient in the signal such as
 </A><BR>
 <A name="Matrix_1VUN"><H3>Matrix 1VUN VoicedUnvoicedNorm</H3>
 </A><DL><DT><I>Description:</I><DD>
+
+<strong>1VUN</strong> matrix type stands for <strong>Voiced/Unvoiced
+Normalized</strong>. It represents the voicing coefficient
+(harmonicity or periodicity coefficient in the general case) at a
+given time. The &quot;voicing&quot; coefficient is a measure of the part of the
+signal which is produced by the vocal folds (which is harmonic or
+periodic in the general case) at a given time. Range: [0,1]. 0 means
+purely unvoiced, 1 means purely voiced.
 </DD>
 </DL>
 <DL><DT><I>Rows:</I><DD>
@@ -1037,11 +1087,17 @@ Matrix identifier for transient in the signal such as
 </DL>
 <DL><DT><I>Columns:</I></DL>
 <OL>
-<LI><B>Index </B></OL>
+<LI><B>VoicingCoefficient </B>Normalized voicing coefficient, range: [0,1]</OL>
 <HR>
 <BR>
 <A name="Matrix_1VUF"><H3>Matrix 1VUF VoicedUnvoicedFreq</H3>
 </A><DL><DT><I>Description:</I><DD>
+  
+<strong>1VUF</strong> matrix type stands for <strong>Voiced/Unvoiced
+Frequency</strong>. It is the cutting frequency below which the signal
+is considered as voiced (harmonic or periodic in the general case) and
+above which it is considered as unvoiced (non-harmonic, non-periodic
+or noisy in the general case).  Range: [0, 1/2 Nyquist Frequency].
 </DD>
 </DL>
 <DL><DT><I>Rows:</I><DD>
@@ -1049,7 +1105,7 @@ Matrix identifier for transient in the signal such as
 </DL>
 <DL><DT><I>Columns:</I></DL>
 <OL>
-<LI><B>CuttingFrequency </B></OL>
+<LI><B>CuttingFrequency </B><I>[Hz] </I>Voiced/Unvoiced cutting frequency, range: [0, 1/2 Nyquist Frequency]</OL>
 <HR>
 <BR>
 <A name="Frame_1MRK"><H3>Frame 1MRK Marker</H3>
@@ -1057,6 +1113,21 @@ Matrix identifier for transient in the signal such as
 proposed</DD>
 </DL>
 <DL><DT><I>Description:</I><DD>
+
+<strong>1MRK</strong> frame type stands for <strong>Marker</strong>.
+Usually analysis method estimate parameters at a given time (examples:
+sinusoidal analysis, spectral analysis, ...). In the opposite, the
+results of some analysis method can be a serie of times (examples:
+detection of the times where abrupt changes occur, detection of the
+times of glottal closures, ...). The results of these analysis, which
+is essentially a series of times, is stored in as a series of frames.
+The time of each of these frames is the resulis of the analysis and
+the matrix inside each frame describe what this frame refer to, or in
+other word which analysis method has decided to point to this time
+(example: this frame time has been pointed by a glottal closure
+detection algorithm). In some cases, it is also important to add
+information related to the results (example: coded waveform of a
+transient).
 </DD>
 </DL>
 <DL><DT><I>Matrices:</I><DD>
@@ -1070,6 +1141,11 @@ proposed</DD>
 proposed</DD>
 </DL>
 <DL><DT><I>Description:</I><DD>
+
+<strong>1VUV</strong> frame type stands for
+<strong>Voiced/Unvoiced</strong>. This frame contains information
+about the voicing (harmonicity or periodiodicity in the general case)
+property of the current time.
 </DD>
 </DL>
 <DL><DT><I>Matrices:</I><DD>
@@ -1127,13 +1203,13 @@ private</DD>
 <BASEFONT size="1"><A name="Section_About This Document"><TABLE cellpadding="3">
 
 <TR><TD colspan="4" bgcolor="gray"><FONT size="4"><B>About This Document</B></FONT>
-<TR align="left" valign="top"><TD colspan="4">This document types-doc.html generated Tue Aug 22 18:30:55 2000 by xmltohtml.pl from sdiftypes.xml
-<TR align="left" valign="top"><TH>Generation<TD>schwarz<TD nowrap>Tue Aug 22 18:30:55 2000<TD nowrap>kethuk.ircam.fr /u/formes/schwarz/src/SDIF/types</TR>
+<TR align="left" valign="top"><TD colspan="4">This document types-doc.html generated Tue Aug 22 19:57:53 2000 by xmltohtml.pl from sdiftypes.xml
+<TR align="left" valign="top"><TH>Generation<TD>peeters<TD nowrap>Tue Aug 22 19:57:53 2000<TD nowrap>kethuk.ircam.fr /u/formes/peeters/SDIF/types</TR>
 
-<TR align="left" valign="top"><TH>Generator<TD>xmltohtml.pl<TD nowrap>Tue Aug 22 18:21:48 2000<TD nowrap>$Id: types-doc.html,v 1.2 2000-08-22 16:35:06 schwarz Exp $ </TR>
+<TR align="left" valign="top"><TH>Generator<TD>xmltohtml.pl<TD nowrap>Tue Aug 22 18:50:44 2000<TD nowrap>$Id: types-doc.html,v 1.3 2000-08-22 18:00:50 peeters Exp $ </TR>
 
-<TR align="left" valign="top"><TH>Source file<TD>sdiftypes.xml<TD nowrap>Tue Aug 22 18:08:39 2000<TD nowrap>
-  $Id: types-doc.html,v 1.2 2000-08-22 16:35:06 schwarz Exp $
+<TR align="left" valign="top"><TH>Source file<TD>sdiftypes.xml<TD nowrap>Tue Aug 22 19:57:23 2000<TD nowrap>
+  $Id: types-doc.html,v 1.3 2000-08-22 18:00:50 peeters Exp $
 </TR>
 
 <TR><TD colspan="1" bgcolor="gray"><FONT size="+0"><A href="../index.html" target="_parent"><B>Back</B></A></FONT><TD colspan="1" bgcolor="gray"><FONT size="+0"><A href="http://www.ircam.fr/sdif" target="_parent"><B>SDIF&nbsp;Home</B></A></FONT><TD colspan="1" bgcolor="gray"><FONT size="+0"><A href="http://www.ircam.fr/anasyn" target="_parent"><B>Analysis/Synthesis Team</B></A></FONT><TD colspan="1" bgcolor="gray"><FONT size="+0"><A href="http://www.ircam.fr" target="_parent"><B>IRCAM</B></A></FONT></TABLE>
