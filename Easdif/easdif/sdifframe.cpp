@@ -32,9 +32,13 @@
  * 
  * 
  * 
- * $Id: sdifframe.cpp,v 1.11 2004-07-21 13:20:33 roebel Exp $ 
+ * $Id: sdifframe.cpp,v 1.12 2004-07-29 13:43:39 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.11  2004/07/21 13:20:33  roebel
+ * Added support to hold a frameDirectory in the entity and
+ * the possibility to read frames from a given time position.
+ *
  * Revision 1.10  2004/02/02 18:07:24  roebel
  * Version 0.8.1: bug fix in sdifframe establishing the possibility to
  * resize matrices within the frame.
@@ -383,7 +387,7 @@ void SDIFFrame::ClearData()
 {
     mStreamID = 0;
     mNbMatrix = 0;
-    mSig      = SdifStringToSignature("0000");
+    mSig      = eEmptySignature;
     mTime     = -1.;
     mv_Matrix.clear();
 }
