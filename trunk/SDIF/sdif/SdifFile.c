@@ -1,4 +1,4 @@
-/* $Id: SdifFile.c,v 3.29 2003-05-26 16:12:47 roebel Exp $
+/* $Id: SdifFile.c,v 3.30 2003-05-27 16:10:42 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -33,6 +33,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.29  2003/05/26 16:12:47  roebel
+ * replaced all references to VERSIOn macro by SDIF_VERSION_STRING
+ *
  * Revision 3.28  2003/01/16 15:31:16  tisseran
  * Check if host have unistd.h before included it
  *
@@ -232,7 +235,7 @@
 #include "SdifVersion.h"
 
 #ifndef AUTOCKSUM
-#define AUTOCKSUM "$Checksum: not available$ IRCAM $Date: 2003-05-26 16:12:47 $" 
+#define AUTOCKSUM "$Checksum: not available$ IRCAM $Date: 2003-05-27 16:10:42 $" 
 #endif
 
 #ifndef lint
@@ -749,6 +752,21 @@ SdifFLoadPredefinedTypes(SdifFileT *SdifF, const char *TypesFileName)
     }
 }
 
+
+/* Get table of matrix type definitions, 
+ * useful for SdifGetMatrixType.  */
+SdifHashTableT *SdifFGetMatrixTypesTable(SdifFileT *file)
+{
+    return (file->MatrixTypesTable);
+}
+
+
+/* Get table of frame type definitions, 
+ * useful for SdifGetFrameType.  */
+SdifHashTableT *SdifFGetFrameTypesTable(SdifFileT *file)
+{
+    return (file->FrameTypesTable);
+}
 
 
 
