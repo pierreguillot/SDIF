@@ -1,4 +1,4 @@
-/* $Id: SdifSelect.h,v 3.7 2000-05-12 16:55:31 schwarz Exp $
+/* $Id: SdifSelect.h,v 3.8 2000-05-15 16:22:04 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -71,6 +71,10 @@ TODO
 
 LOG
   $Log: not supported by cvs2svn $
+  Revision 3.7  2000/05/12  16:55:31  schwarz
+  Added prototype and doc for SdifBaseName.
+  Avoid avoidable warnings.
+
   Revision 3.6  2000/03/01  11:18:46  schwarz
   Added SdifCreateSelection.
   Fixed Linux-only bug in SdifGetFilenameAndSelection (high addresses).
@@ -105,6 +109,8 @@ LOG
 
 
 #include "SdifHard_OS.h"	/* SdifSignature */
+#include "SdifFrame.h"
+#include "SdifMatrix.h"
 #include "SdifList.h"
 
 
@@ -381,17 +387,29 @@ int SdifSelectTestString (SdifListT *list, const char *cand);
 typedef struct SdifFileS SdifFileT;
 #endif
 
-/*DOC:
-  Test the selection elements applicable to frames: time, stream, frame type.
-  Can be called after SdifFReadFrameHeader().
-*/
-int SdifFCurrFrameIsSelected (SdifFileT *file, SdifSelectionT *sel);
+
+/*DOC: 
+  Test the selection elements from sel applicable to frame FramH:
+  time, stream, frame type. */
+int SdifFrameIsSelected (SdifFrameHeaderT *FramH, SdifSelectionT *sel);
 
 /*DOC:
-  Test the selection elements applicable to matrices: the matrix signature
-  Can be called after SdifFReadMatrixHeader().
-*/
-int SdifFCurrMatrixIsSelected (SdifFileT *file, SdifSelectionT *sel);
+  Test the selection elements from sel applicable to matrix MtrxH: 
+  the matrix signature. */
+int SdifMatrixIsSelected (SdifMatrixHeaderT *MtrxH, SdifSelectionT *sel);
+
+
+/*DOC: 
+  Test if the current frame header is in the file selection
+  (automatically parsed from the filename).  
+  Can be called after SdifFReadFrameHeader(). */
+int SdifFCurrFrameIsSelected (SdifFileT *file);
+
+/*DOC:
+  Test if the current matrix header is in the file selection
+  (automatically parsed from the filename).  
+  Can be called after SdifFReadMatrixHeader(). */
+int SdifFCurrMatrixIsSelected (SdifFileT *file);
 
 
 #endif /* _SdifSelect_ */
