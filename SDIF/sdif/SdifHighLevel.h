@@ -1,4 +1,4 @@
-/* $Id: SdifHighLevel.h,v 3.1 2000-03-01 11:20:21 schwarz Exp $
+/* $Id: SdifHighLevel.h,v 3.2 2000-04-11 14:44:28 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -14,6 +14,9 @@ LIBRARY
  *
 LOG
  * $Log: not supported by cvs2svn $
+ * Revision 3.1  2000/03/01  11:20:21  schwarz
+ * Added preliminary sketch of SdifHighLevel
+ *
  */
 
 
@@ -47,7 +50,7 @@ SdifFWriteMatrixColumns (SdifFileT     *file,
 			 void	       *columns []);
 
 
-SdifFWriteTextMatrix (SdifFileT f, SdifSignature matrixsig, const char *str);
+SdifFWriteTextMatrix (SdifFileT f, SdifSignature matrixsig, const char *str)
 {
     /* convert to UTF-8 */
     SdifConvertToUTF8 (str, utfstr);
@@ -89,11 +92,84 @@ SdifFReadMatrixAs_TYPE_ ();
   eTypeMask  = 0x0fff  /* mask to eliminate flags */
 #endif
 
-SdifFReadMatrixAs (SdifFileT *file, void *target,
-		   SdifDataTypeET as_type, int translate);
+
+/*DOC: 
+  Reads matrix header and data into memory allocated by the library,
+  accessible by SdifFCurrMatrixData (). */
+int SdifFReadMatrix (SdifFileT *file);
+
+/* with type conversion */
+int SdifFReadMatrixAs (SdifFileT *file, SdifDataTypeET as_type);
+
+/*? text special: return allocated, decoded c-string, to be free'd by caller */
+char *SdifFReadTextMatrix (SdifFileT *file);
+
+/*DOC: 
+  Reads matrix data into memory pointed to by target, which must point
+  to at least nbrow * nbcol * size of datatype bytes of memory.  If
+  target is NULL, the library will allocate enough space for the data
+  of one matrix, accessible by SdifFCurrMatrixData ().
+
+  [Precondition:] 
+  Matrix header must have been read with SdifFReadMatrixHeader.  */
+int SdifFReadMatrixData   (SdifFileT *file, void *target);
+
+/* with type conversion */
+int SdifFReadMatrixDataAs (SdifFileT *file, void *target,
+			   SdifDataTypeET as_type);
+
+
+/* --> SdifMatrix.h: add to SdifMatrixHeaderS not void *MatrixData, but:
+
+   DataTypeUT Data;
+
+   --> SdifFile.c: add void *SdifFCurrMatrixData (SdifFileT *);
+*/
+
+void *SdifFCurrMatrixData (SdifFileT *file)
+{
+  return file->CurrMtrxH->Data.Void;
+}
 
 void *SdifGetColumn ();
+
+
+
+// Error handling
+
+
+int /*bool*/ SdifFCheckStatus (SdifFileT *file)
+{
+  return (SdifLastError (file->ErrorList)) == NULL);
+}
+
+
+int /*bool*/ SdifFCheckStatusPrint (SdifFileT *file)
+{
+  SdifError err = SdifLastError (file->ErrorList));
+  if (err != eNoError)
+     print (SdifFsPrintFirstError (..., file, ...);
+  return err == NULL;
+}
+
+
+/* --> test in SdifFReadGeneralHeader  (file) + SdifFReadAllASCIIChunks (file)
+   if (!SdifFCheckStatus (file))
+      SdifWarningAdd ("Followup error");
+*/
+
+
+
+
 
 #endif /* TBI */
 
 #endif /* _SdifHighLevel_H_ */
+
+
+
+
+
+
+
+
