@@ -1,10 +1,15 @@
-# $Id: makefile,v 1.13 2000-08-27 14:24:12 schwarz Exp $
+# $Id: makefile,v 1.14 2000-08-27 14:32:20 schwarz Exp $
 #
 # makefile	26. January 2000	Diemo Schwarz
 #
 # formesutils matlab library
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.13  2000/08/27  14:24:12  schwarz
+# Clarified empty matrix issue:  The doc was wrong!
+# Updated doc and loadsdiffile and loadsdifflat now use eof flag right
+# and don't stop on empty matrices.
+#
 # Revision 1.12  2000/08/23  15:03:20  schwarz
 # Read/write test testrw with intrusion/selection of other data.
 #
@@ -64,7 +69,7 @@ include mex.makedefs
 
 V_MAJOR 	= 0
 V_MINOR 	= 1
-V_RELEASE	= 4
+V_RELEASE	= 5
 VERSION		= $(V_MAJOR).$(V_MINOR).$(V_RELEASE)
 CVSTAG		= sdif_matlab_v$(V_MAJOR)_$(V_MINOR)_$(V_RELEASE)
 
@@ -119,7 +124,7 @@ DIST_DIR	= /usr/local/www/ircam/equipes/analyse-synthese/sdif/download
 DIST_FILES	= $(foreach s, $(ALLMEXSUF), $(mexbase:%=%.$s)) \
 		  sdif-matlab-readme $(mfiles) \
 		  -C $(SDIF_TYPES_DIR) $(SDIF_TYPES_FILE) \
-		  -C $(subst /lib/,/bin/,$(SDIF_LIB_DIR)) querysdif
+#		  -C $(subst /lib/,/bin/,$(SDIF_LIB_DIR)) querysdif
 DIST_HOST	= maelzel
 DIST_BASE	= sdif-matlab-$(VERSION)
 DIST_COPYFILES  = $(DIST_BASE).tar.gz sdif-matlab-readme
