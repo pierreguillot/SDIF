@@ -1,4 +1,4 @@
-/* $Id: SdifFile.h,v 3.17 2003-11-07 21:47:18 roebel Exp $
+/* $Id: SdifFile.h,v 3.18 2004-01-09 11:29:23 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -34,6 +34,9 @@ LIBRARY
 
 LOG
  * $Log: not supported by cvs2svn $
+ * Revision 3.17  2003/11/07 21:47:18  roebel
+ * removed XpGuiCalls.h and replaced preinclude.h  by local files
+ *
  * Revision 3.16  2002/11/28 19:57:11  roebel
  * Removed redunant declarations that are already in sdif.h.
  *
@@ -146,6 +149,26 @@ LOG
 #define _SDIFFILE_H
 
 #include "SdifGlobals.h"
+
+
+/**
+ * Get the matrix type definition defined in an SDIF file.  You have to have
+ * loaded the ASCII chunks before to catch types defined in the file
+ * itself.
+ *
+ * @ingroup types
+ */
+SdifMatrixTypeT *SdifFGetMatrixType(SdifFileT *file, SdifSignature sig);
+
+/**
+ * Get a frame type definition defined in an SDIF file.  You have to have
+ * loaded the ASCII chunks before to catch types defined in the file
+ * itself.
+ *
+ * @ingroup types
+ */
+SdifFrameTypeT* SdifFGetFrameType(SdifFileT *file, SdifSignature sig);
+
 
 /*
 // FUNCTION GROUP:	Error flag for file
