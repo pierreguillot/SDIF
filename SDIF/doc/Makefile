@@ -1,4 +1,4 @@
-# $Id: Makefile,v 3.4 1999-10-07 15:22:10 schwarz Exp $
+# $Id: Makefile,v 3.5 2000-07-19 18:10:13 schwarz Exp $
 #
 #               Copyright (c) 1998 by IRCAM - Centre Pompidou
 #                          All rights reserved.
@@ -13,6 +13,9 @@
 # Makefile for automatic documentation.
 #
 # $Log: not supported by cvs2svn $
+# Revision 3.4  1999/10/07  15:22:10  schwarz
+# Added trademark notice in index.
+#
 # Revision 3.3  1999/08/26  15:29:23  schwarz
 # Cocoon (3.2) works only on fresh dir.
 # Simplified installation: Don't rely on make on install host (and
@@ -81,6 +84,13 @@ makedependency	= # Makefile # when changing preprocessor options
 headerdir	= $(ABS_ROOT)/sdif
 headerfiles	= $(wildcard $(headerdir)/*.h)	# same as $(shell ls .../*.h)
 
+matlabdlarch 	= download/sdif-matlab.tar.gz
+matlabdldir	= $(HOME)/src/formesutils/matlab
+matlabdlbase	= loadsdif writesdif
+matlabdlfiles	= $(foreach sufx,m mexaxp mexlx,$(matlabdlbase:%=%.$(sufx))) \
+		  loadsdiffile.m loadsdifflat.m sdifexist.m
+
+
 VPATH		= pics intern extern
 
 
@@ -128,7 +138,7 @@ sdif.%.cocoon:	sdif.src $(headerfiles) $(makedependency)
 
 ahead-extern	= <a href="$(URLROOT)/SDIF.html\#data" target=doc><strong>Data Structures</strong></a><br>\
 		  <a href="$(URLROOT)/SDIF.html\#functions" target=doc><strong>Function Prototypes</strong></a><br><br>
-		  
+
 ahead-intern	= $(ahead-extern)
 
 %/alpha-toc.html:	%/cocoon/SDIF.lnk Makefile
@@ -154,7 +164,7 @@ ahead-intern	= $(ahead-extern)
 #
 
 eindsuf		= by-subject alpha tutorial utilities
-iindsuf		= by-subject alpha
+iindsuf		= by-subject alpha todo
 emain		= $(eindsuf:%=extern/%-main.html)
 esec		= $(eindsuf:%=extern/%-sec.html)
 egenerated	= $(emain) $(esec) extern/by-subject-doc.html
@@ -166,10 +176,12 @@ var-by-subject	= SUBJECT
 var-alpha	= ALPHA
 var-tutorial	= TUTORIAL
 var-utilities	= UTILITIES
+var-todo	= TODO
 doc-by-subject	= by-subject-doc.html
 doc-alpha	= cocoon/SDIF.html\#functions
 doc-tutorial	= tutorial-doc.html
 doc-utilities	= utilities-doc.html
+doc-todo	= ../Todo.html
 src-extern	= SdifManuelDoc.html
 src-intern	= SdifProgDoc.html
 
@@ -185,8 +197,10 @@ $(emain):	extern/default-main.html
 $(esec):	extern/default-sec.html
 $(imain):	intern/default-main.html
 $(isec):	intern/default-sec.html
+
+# avoid making (thus destroying) these source files!
 %/default-sec.html %/default-main.html:
-		# avoid making (thus destroying) these source files!
+		@echo Preserving $@
 
 %-sec.html:	default-sec.html Makefile
 		@echo Gendoc $(@D)/$(<F) $@
@@ -212,9 +226,15 @@ $(isec):	intern/default-sec.html
 
 install:	$(INSTALLSRC) 
 		rsh $(INSTALLHOST) \
-		  	cp -r $(INSTALLSRC:%=$(PWD)/%) $(INSTALLDIR) \; \
+		  	cp -pr $(INSTALLSRC:%=$(PWD)/%) $(INSTALLDIR) \; \
 		  	$(MAKE) -C $(INSTALLDIR) URLBASE=$(URLBASE) \
-				postinst-intern postinst-extern
+				postinst-intern postinst-extern $(matlabdlarch)
+installdl:
+		rsh $(INSTALLHOST) \
+		  	cp -pr $(PWD)/Makefile $(INSTALLDIR) \; \
+		  	$(MAKE) -C $(INSTALLDIR) URLBASE=$(URLBASE) \
+				$(matlabdlarch)
+
 
 # this is running on INSTALLHOST!
 postinst-%:
@@ -222,6 +242,8 @@ postinst-%:
 		@find $(INSTALLDIR)/$* -name \*.html -print \
 		| xargs $(INSTALLHTML) 
 
+$(matlabdlarch): download $(matlabdlfiles:%=$(matlabdldir)/%)
+		tar cvf - -C $(matlabdldir) $(matlabdlfiles) | gzip -9 >$@
 
 #
 # Misc
@@ -235,3 +257,6 @@ eclean:
 
 iclean:
 		rm -f $(igenerated)
+
+download:
+		mkdir -p $@
