@@ -3,17 +3,17 @@ SDIF
 
 1NVT
 {
-  GenerationDate	Thu_May__3_11_19_36_2001;
-  GenerationDir	/u/formes/roebel/src/SDIF/types;
-  GenerationHost	kethuk_ircam_fr;
-  GenerationUser	roebel;
+  GenerationDate	Tue_Sep_24_15_36_54_2002;
+  GenerationDir	/u/formes/schwarz/src/sdif/types;
+  GenerationHost	lithium_ircam_fr;
+  GenerationUser	schwarz;
   Generator	xmltostyp_pl;
   GeneratorFiledate	Wed_Apr_18_18_24_52_2001;
   GeneratorRevision	$Id__xmltostyp_pl_v_1_5_2001/04/18_16_24_52_schwarz_Exp_$_;
-  SdifTypesVersion	Ircam_1_6;
+  SdifTypesVersion	Ircam_1_7;
   SourceFile	sdiftypes_xml;
-  SourceFileRevision	___$Id__sdiftypes_xml_v_1_11_2001/05/02_15_28_48_schwarz_Exp_$_;
-  SourceFiledate	Wed_May__2_17_28_48_2001;
+  SourceFileRevision	___$Id__sdiftypes_xml_v_1_16_2002/09/20_14_31_14_schwarz_Exp_$_;
+  SourceFiledate	Fri_Sep_20_16_31_14_2002;
 }
 
 1TYP
@@ -77,16 +77,25 @@ SDIF
 1FTD 1BND { 1BND Bands;  }
 
 1MTD ITDS { SamplingRate }
-1MTD 1TDS {  }
+1MTD 1TDS { Sample }
 
 1MTD 1PEM { Identifier, Parameter1, Parameter2, Parameter3 }
 1MTD ITMR { Index, Frequency, Amplitude, Phase }
 1MTD ITMI { Index }
+1MTD 1BEG { Id }
+1MTD 1END { Id }
+1MTD 1SEG { Confidence }
+1FTD 1SEG { 1SEG Segmentation;  }
+1MTD 1LAB { Chars }
+1FTD 1MRK { 1BEG SegmentStart; 1END SegmentEnd; 1SEG Segmentation; 1LAB Label; 1PEM PeriodMarker; ITMR TransientMarkerRepresentation; ITMI TransientMarkerIdentifier;  }
 
 1MTD 1VUN { VoicingCoefficient }
 1MTD 1VUF { CuttingFrequency }
-1FTD 1MRK { 1PEM PeriodMarker; ITMR TransientMarkerRepresentation; ITMI TransientMarkerIdentifier;  }
 1FTD 1VUV { 1VUN VoicedUnvoicedNorm; 1VUF VoicedUnvoicedFreq;  }
+
+1MTD 1MID { Status, Data1, Data2 }
+1MTD 1SYX { Data }
+1FTD 1MID { 1MID MIDIEvent; 1SYX MIDISystemExclusive;  }
 
 1MTD EMPM { Value, Index }
 1MTD EMJR { Record }
