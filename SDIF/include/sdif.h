@@ -1,8 +1,11 @@
-/* $Id: sdif.h,v 1.5 2000-11-16 12:20:17 lefevre Exp $
+/* $Id: sdif.h,v 1.6 2000-11-21 14:51:34 schwarz Exp $
  *
  * This file contains type declaration of variables used in SDIF library.
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.5  2000/11/16 12:20:17  lefevre
+ * no message
+ *
  * Revision 1.4  2000/11/16  12:02:22  lefevre
  * no message
  *
@@ -21,7 +24,7 @@
  * Revision 1.1.2.1  2000/08/21  13:07:41  tisseran
  * *** empty log message ***
  *
- * $Date: 2000-11-16 12:20:17 $
+ * $Date: 2000-11-21 14:51:34 $
  *
  */
 
@@ -32,6 +35,10 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+
+static const char _sdif_h_cvs_revision_ [] = "$Id: sdif.h,v 1.6 2000-11-21 14:51:34 schwarz Exp $";
+
 
 #include <stdio.h>
 #include <float.h>
@@ -96,7 +103,11 @@ typedef enum SdifErrorE
   eTokenLength
 } SdifErrorEnum;
 
+
+/*DOC:
+  Exit function type (See SdifSetExitFunc). */
 typedef void (*SdifExitFuncT) (void);
+
 
 /* SdifMemory.h */
 #define _SdifMrNameSize 64
@@ -122,6 +133,40 @@ struct SdifBlockListS
     size_t	    BytesDeAlloc;
 };
 
+
+
+
+/* to do fpos_t compatible on MacinTosh */
+#if defined(MACINTOSH) || defined(WIN32)
+    /* on mac or windows, seeking on a stream is always considered
+       successful (return 0)! */
+#   define SdiffPosT		long
+#   define SdiffIsFile(f)	((f)!=stdin && (f)!=stdout && (f)!=stderr)
+#   define Sdiffftell(f)	(SdiffIsFile(f)  ?  ftell(f)  :  0)
+#   define SdiffGetPos(f,p)	((*(p) = Sdiffftell(f)) == -1  ?  -1  :  0)
+#   define SdiffSetPos(f,p)	SdiffIsFile(f)  \
+				    ?  fseek(f, (long)(*(p)), SEEK_SET)  :  0
+#else
+/*
+#   define SdiffPosT		fpos_t
+#   define SdiffGetPos(f,p)     fgetpos((f),(p))
+#   define SdiffSetPos(f,p)     fsetpos((f),(p))
+
+#   define SdiffGetPos(f,p)	((*(p) = ftell(f)) == -1  ?  -1  :  0)
+#   define SdiffSetPos(f,p)     (fseek(f, (long)(*(p)), SEEK_SET))
+*/
+
+/*DS: FORCE long fpos*/
+#   define SdiffPosT		long
+#   define SdiffIsFile(f)	((f)!=stdin && (f)!=stdout && (f)!=stderr)
+#   define Sdiffftell(f)	(SdiffIsFile(f)  ?  ftell(f)  :  0)
+#   define SdiffGetPos(f,p)	((*(p) = Sdiffftell(f)) == -1  ?  -1  :  0)
+#   define SdiffSetPos(f,p)	SdiffIsFile(f)  \
+				    ?  fseek(f, (long)(*(p)), SEEK_SET)  :  0
+#endif
+
+
+
 /* SdifHard_OS.h */
 
 typedef char           SdifChar;
@@ -133,7 +178,7 @@ typedef float          SdifFloat4;
 typedef double         SdifFloat8;
 typedef unsigned int   SdifSignature;
 
-#   define SdiffPosT		fpos_t
+
 typedef enum SdifMachineE
 {
   eUndefinedMachine,
@@ -180,6 +225,22 @@ typedef enum SdifModifModeE
 } SdifModifModeET;
 
 
+/* DataTypeEnum
+
+   On Matt Wright's visit at IRCAM June 1999, we defined a new
+   encoding for the MatrixDataType field with the feature that the low
+   order byte encodes the number of bytes taken by each matrix
+   element.  
+
+   Low order byte encodes the number of bytes 
+   High order bytes come from this (extensible) enum:
+
+        0 : Float
+        1 : Signed integer
+        2 : Unsigned integer
+        3 : Text (UTF-8 when 1 byte)
+        4 : arbitrary/void
+*/
 typedef enum SdifDataTypeE
 {
   eText	    = 0x0301,
@@ -224,6 +285,9 @@ struct SdifListNStockS
     SdifListNT* Trash; /* to recycle nodes */
 };
 
+
+/* lists management */
+
 typedef struct SdifListS SdifListT;
 typedef SdifListT	*SdifListP;
 
@@ -263,6 +327,11 @@ struct SdifNameValuesLS
 
 
 /* SdifStreamID.h */
+
+/*
+// DATA GROUP:		Stream ID Table and Entries for 1IDS ASCII chunk
+*/
+
 
 /*DOC:
   Stream ID Table Entry */
@@ -435,10 +504,26 @@ struct SdifSignatureTabS
 
 
 /* SdifSelect.h */
+
+/* 
+// DATA GROUP:	SDIF Selection
+*/
+
+/* tokens (numerical ids) for sdifspec separators */
 typedef enum { sst_specsep, sst_stream, sst_frame, sst_matrix, sst_column, 
 	       sst_row,     sst_time,   sst_list,  sst_range,  sst_delta,
 	       sst_num,	/* number of tokens */	   sst_norange = 0
 } SdifSelectTokens;
+
+/*DOC: 
+  Selection element interface (returned by SdifGetNextSelection*):
+  One basic data element value, with optional range.  
+  The meaning of range is determined by rangetype: 
+
+  [] 0		no range
+  [] sst_range	range is value..range
+  [] sst_delta	range is value-range..value+range
+*/
 
 typedef struct 
 {
@@ -452,6 +537,14 @@ typedef struct
     SdifSelectTokens   rangetype; /* 0 for not present, sst_range, sst_delta */
 } SdifSelectElementRealT;
 
+/* no SdifSelectElementSignatureT or string range, since it makes no sense */
+
+
+
+/*DOC:
+  Internal: one value of different possible types in a selection
+  element (the element list determines which type is actually used).  
+*/
 typedef union SdifSelectValueS 
 {
     int            integer;
@@ -460,6 +553,13 @@ typedef union SdifSelectValueS
     SdifSignature  signature;
 } SdifSelectValueT;
 
+/*DOC: 
+  Selection element internal data structure:
+  One basic data element, with optional <ul>
+  <li> range (value is lower, range is upper bound) or 
+  <li> delta (value-range is lower, value+range is upper bound)
+  </ul>
+*/
 typedef struct SdifSelectElementS
 {
     SdifSelectValueT value;
@@ -467,6 +567,10 @@ typedef struct SdifSelectElementS
     SdifSelectTokens rangetype; /* 0 for not present, sst_range, sst_delta */
 } SdifSelectElementT, *SdifSelectElementP;
 
+/*DOC: 
+  Holds a selection of what data to access in an SDIF file,
+  parsed from a simple regular expression.  
+*/
 typedef struct
 {
     char	*filename,	/* allocated / freed by 
@@ -474,6 +578,15 @@ typedef struct
 		*basename;	/* points into filename */
     SdifListP	stream, frame, matrix, column, row, time;
 } SdifSelectionT;
+
+/* TODO: array of select elements
+     struct { SdifListP list; SdifSelectElementT minmax; } elem [eSelNum];
+   indexed by
+     enum   { eTime, eStream, eFrame, eMatrix, eColumn, eRow, eSelNum }
+   to use in all API functions instead of SdifListP.
+*/
+
+
 
 /* SdifErrMess.h */
 typedef enum SdifErrorTagE
@@ -502,16 +615,17 @@ typedef enum SdifErrorTagE
 } SdifErrorTagET;
 
 
+/*DOC:
+  Level of Error */
 typedef enum SdifErrorLevelE
 {
 	eFatal,
 	eError,
 	eWarning,
 	eRemark,
-	eNoLevel
+	eNoLevel,
+	eNumLevels	/* level count, must always be last */
 } SdifErrorLevelET;
-
-
 
 
 typedef struct SdifErrorS SdifErrorT;
@@ -529,7 +643,17 @@ struct SdifErrorLS
   SdifFileT*	SdifF; /* only a link */
 };
 
+
+
+
 /* SdifFileStruct.h */
+
+/*
+// DATA GROUP:	SDIF File Structure
+*/
+
+/*DOC:
+  File mode argument for SdifFOpen. */
 typedef enum SdifFileModeE
 {
   eUnknownFileMode,	/* 0 */
@@ -551,9 +675,15 @@ enum SdifPassE
   eReadPass,
   eWritePass
 };
-  
+
+
+/*
+// DATA GROUP:		SDIF File Structure
+*/
 
 #define	MaxUserData	10
+/*DOC:
+  THE SDIF File Structure! */
 struct SdifFileS
 {
   char		     *Name;		/* Name of the file, can be "stdin, stdout, stderr */
@@ -601,14 +731,18 @@ struct SdifFileS
   char *TextStreamName;                 /* Name of the text file corresponding to the sdif file */
   FILE *TextStream;                     /* Stream text */
 
-  unsigned int  NbOfWarning;
-  SdifErrorLT  *Errors;
+  SdifUInt4     ErrorCount [eNumLevels];/* Error count per level of severity */
+  SdifErrorLT  *Errors;			/* List of errors or warnings */
 
   int		NbUserData;		/* todo: hash table */
   void		*UserData [MaxUserData];
 };	/* end struct SdifFileS */
 
+
+
+
 /* SdifString.h */
+
 typedef struct SdifStringS SdifStringT;
 struct SdifStringS
 {
@@ -617,36 +751,6 @@ struct SdifStringS
   size_t SizeW; /* Memory size actually used */
   int    NbCharRead; /* Number of char read */
 };
-
-
-/* $Id: sdif.h,v 1.5 2000-11-16 12:20:17 lefevre Exp $
- *
- * This file contains prototype of functions used in SDIF library.
- *
- * $Log: not supported by cvs2svn $
- * Revision 1.4  2000/11/16  12:02:22  lefevre
- * no message
- *
- * Revision 1.3  2000/11/15  14:53:22  lefevre
- * no message
- *
- * Revision 1.2  2000/10/27  20:03:18  roebel
- * autoconf merged back to main trunk
- *
- * Revision 1.1.2.2  2000/08/21  21:34:52  tisseran
- * *** empty log message ***
- *
- * Revision 1.1.2.1  2000/08/21  17:08:40  tisseran
- * *** empty log message ***
- *
- * Revision 1.1.2.1  2000/08/21  13:07:39  tisseran
- * *** empty log message ***
- *
- * $Date: 2000-11-16 12:20:17 $
- *
- */
-
-
 
 
 /*DOC: 
@@ -790,6 +894,9 @@ size_t SdifFReadFrameHeader      (SdifFileT *SdifF);
   incluse. Elle est utile lorsque qu'un frame contient plus de
   matrices que le programme lecteur n'en connaît. Il peut ainsi les
   passer pour retomber sur un autre frame.  */
+size_t SdifFSkipMatrix	         (SdifFileT *SdifF);
+/*DOC:
+  obsolete, now called SdifFSkipMatrix */
 size_t SdifSkipMatrix            (SdifFileT *SdifF);
 
 /*DOC: 
@@ -798,15 +905,19 @@ size_t SdifSkipMatrix            (SdifFileT *SdifF);
   inconnu, non interprétable par le programme lecteur.
 
   Note:  The matrix padding is skipped also. */
-size_t SdifSkipMatrixData        (SdifFileT *SdifF);
 size_t SdifFSkipMatrixData       (SdifFileT *SdifF);
+/*DOC:
+  obsolete, now called SdifFSkipMatrixData */
+size_t SdifSkipMatrixData        (SdifFileT *SdifF);
 
 /*DOC: 
   Cette fonction à le même sens que SdifSkipMatrixData mais pour les
   frames. Il faut donc pour l'utiliser avoir au préalable lu la
   signature et l'entête.  */
-size_t SdifSkipFrameData         (SdifFileT *SdifF);
 size_t SdifFSkipFrameData        (SdifFileT *SdifF);
+/*DOC:
+  obsolete, now called SdifFSkipFrameData */
+size_t SdifSkipFrameData         (SdifFileT *SdifF);
 
 /*DOC: 
   Cette fonction permet de lire le Padding en fin de matrice.
@@ -1039,6 +1150,12 @@ void SdifGenInitCond (char *PredefinedTypesFile);
 /*DOC:
   Deinitialise the SDIF library */
 void SdifGenKill (void); 
+
+/*DOC:
+  Set function that will be called after a grave error has occurred.  
+  Default is exit(). */
+void SdifSetExitFunc (SdifExitFuncT func);
+
 
 /*DOC:
   Print version information to standard error. */
@@ -1430,7 +1547,7 @@ char*     SdifSignatureToString(SdifSignature Signature);
   encodes the type version.  Note that comparison of full signatures
   can be done simply with '=='. 
 */
-short     SdifSignatureCmpNoVersion(SdifSignature Signature1, SdifSignature Signature2);
+int     SdifSignatureCmpNoVersion(SdifSignature Signature1, SdifSignature Signature2);
 
 /*DOC: 
   Returns size of SDIF data type in bytes
@@ -1452,7 +1569,7 @@ size_t    SdifPaddingCalculate  (size_t NbBytes);
 size_t    SdifFPaddingCalculate (FILE *f, size_t NbBytes);
 
 /* (double f1) == (double f2) with _SdifFloatEps for error */
-short SdifFloat8Equ(SdifFloat8 f1, SdifFloat8 f2);
+int SdifFloat8Equ(SdifFloat8 f1, SdifFloat8 f2);
 
 
 #ifndef MIN
@@ -1472,29 +1589,6 @@ short SdifFloat8Equ(SdifFloat8 f1, SdifFloat8 f2);
 #define _Sdif_MIN_DOUBLE_ (- DBL_MAX)
 
 
-
-/*  #if defined(__mips64) || defined(__alpha) */
-/*  #define _LONG64BITS_ */
-/*  #else */
-/*  #define _LONG32BITS_ */
-/*  #endif */
-
-/* to do fpos_t compatible on MacinTosh */
-#if defined(MACINTOSH) || defined(WIN32)
-    /* on mac or windows, seeking on a stream is always considered
-       successful (return 0)! */
-#   define SdiffPosT		long
-#   define SdiffIsFile(f)	((f)!=stdin && (f)!=stdout && (f)!=stderr)
-#   define Sdiffftell(f)	(SdiffIsFile(f)  ?  ftell(f)  :  0)
-#   define SdiffGetPos(f,p)	((*(p) = Sdiffftell(f)) == -1  ?  -1  :  0)
-#   define SdiffSetPos(f,p)	SdiffIsFile(f)  \
-				    ?  fseek(f, (long)(*(p)), SEEK_SET)  :  0
-#else
-#   define SdiffPosT		fpos_t
-#   define SdiffGetPos(f,p)     fgetpos((f),(p))
-#   define SdiffSetPos(f,p)     fsetpos((f),(p))
-#endif
-
 int       SdifStrLen  (const char *s);
 
 /* returns 0 if strings are equal */
@@ -1512,9 +1606,6 @@ void     SdifSetStdIOBinary (void);
 FILE*    SdiffBinOpen       (const char * Name, SdifBinaryModeET Mode);
 SdifInt4 SdiffBinClose      (FILE *f);
 
-
-#ifndef _SdifHash_
-#define _SdifHash_
 
 
 SdifHashTableT* SdifCreateHashTable(unsigned int HashSize, SdifHashIndexTypeET IndexType, void (*Killer)());
@@ -1545,7 +1636,6 @@ SdifHashTableT* SdifHashTablePutInt4   (SdifHashTableT* HTable, const unsigned i
 void*           SdifHashTableSearch (SdifHashTableT* HTable, void *ptr, unsigned int nobj);
 SdifHashTableT* SdifHashTablePut    (SdifHashTableT* HTable, const void *ptr, unsigned int nobj, void* Data);
 
-#endif /* _SdifHash_ */
 
 #if 0	/* TBI */
 
@@ -1684,11 +1774,6 @@ int /*bool*/ SdifFCheckStatusPrint (SdifFileT *file)
 
 
 
-#ifndef _SdifList_
-#define _SdifList_
-
-
-
 /* stocks management */
 
 void        SdifInitListNStock      (SdifListNStockT *Stock, unsigned int SizeOfOneStock);
@@ -1751,7 +1836,6 @@ SdifListT*  SdifListPutHead     (SdifListT* List, void *pData);
 unsigned int SdifListGetNbData  (SdifListT* List);
 
 
-#endif /* _SdifList_ */
 
 SdifMatrixHeaderT* SdifCreateMatrixHeader    (SdifSignature Signature, 
 					      SdifDataTypeET DataType,
@@ -1838,9 +1922,6 @@ SdifUInt2        SdifExistUserMatrixType(SdifHashTableT *MatrixTypesTable);
 
 
 
-#ifndef _SdifMemory_
-#define _SdifMemory_
-
 /*
  * make #define or token adding :
  * _SdifMemoryReport		to have a memory report at the end of execution (with the other token too).
@@ -1911,8 +1992,6 @@ SdifMr_free(&SdifMrReport, (void*) _ptr))
 
 
 #endif /* _SdifMemoryReport */
-
-#endif /* _SdifMemory_ */
 
 #define _SdifNameValueHashSize 31
 
@@ -2629,24 +2708,24 @@ SdifFrameTypeT*  SdifTestFrameType  (SdifFileT *SdifF, SdifSignature Signature);
 
 
 
-short SdifFTestMatrixWithFrameHeader (SdifFileT* SdifF);
-short SdifFTestDataType              (SdifFileT* SdifF);
-short SdifFTestNbColumns             (SdifFileT* SdifF);
-short SdifFTestNotEmptyMatrix        (SdifFileT* SdifF);
-short SdifFTestMatrixHeader          (SdifFileT* SdifF);
+int SdifFTestMatrixWithFrameHeader (SdifFileT* SdifF);
+int SdifFTestDataType              (SdifFileT* SdifF);
+int SdifFTestNbColumns             (SdifFileT* SdifF);
+int SdifFTestNotEmptyMatrix        (SdifFileT* SdifF);
+int SdifFTestMatrixHeader          (SdifFileT* SdifF);
 
 
 
 SdifColumnDefT*  SdifTestColumnDef (SdifFileT *SdifF, SdifMatrixTypeT *MtrxT, char *NameCD);
 SdifComponentT*  SdifTestComponent (SdifFileT* SdifF, SdifFrameTypeT *FramT, char *NameCD);
 
-short SdifTestSignature            (SdifFileT *SdifF, int CharEnd, SdifSignature Signature, char *Mess);
-short SdifTestCharEnd              (SdifFileT *SdifF, int CharEnd, char MustBe,
-					   char *StringRead, short ErrCondition, char *Mess);
+int SdifTestSignature            (SdifFileT *SdifF, int CharEnd, SdifSignature Signature, char *Mess);
+int SdifTestCharEnd              (SdifFileT *SdifF, int CharEnd, char MustBe,
+					   char *StringRead, int ErrCondition, char *Mess);
 
 
-short SdifTestMatrixTypeModifMode  (SdifFileT *SdifF, SdifMatrixTypeT *MatrixType);
-short SdifTestFrameTypeModifMode   (SdifFileT *SdifF, SdifFrameTypeT *FrameType);
+int SdifTestMatrixTypeModifMode  (SdifFileT *SdifF, SdifMatrixTypeT *MatrixType);
+int SdifTestFrameTypeModifMode   (SdifFileT *SdifF, SdifFrameTypeT *FrameType);
 
 
 
@@ -2668,10 +2747,6 @@ size_t SdifTextToSdif (SdifFileT *SdifF, char *TextStreamName);
 
 
 
-#ifndef _SdifTimePosition_
-#define _SdifTimePosition_
-
-
 SdifTimePositionT* SdifCreateTimePosition(SdifFloat8 Time, SdiffPosT Position);
 void               SdifKillTimePosition(void* TimePosition);
 
@@ -2682,9 +2757,6 @@ void                SdifKillTimePositionL  (SdifTimePositionLT *TimePositionL);
 SdifTimePositionLT* SdifTimePositionLPutTail(SdifTimePositionLT* TimePositionL,
                                              SdifFloat8 Time, SdiffPosT Position);
 SdifTimePositionT*  SdifTimePositionLGetTail(SdifTimePositionLT* TimePositionL);
-
-#endif /* _SdifTimePosition_ */
-
 
 
 /* SdifFPrint */
@@ -2707,4 +2779,5 @@ size_t SdifFPrintFrameType          (SdifFileT *SdifF, SdifFrameTypeT  *FrameTyp
 #ifdef __cplusplus
 }
 #endif
+
 #endif /* _SDIF_H */
