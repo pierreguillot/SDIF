@@ -1,4 +1,4 @@
-/* $Id: SdifString.c,v 3.9 2002-08-27 10:52:52 schwarz Exp $
+/* $Id: SdifString.c,v 3.10 2004-09-09 17:49:51 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -32,6 +32,11 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.9  2002/08/27 10:52:52  schwarz
+ * String append from const char *
+ * Threw out redundant function prototypes from SdifString.h,
+ * because their place is sdif.h!
+ *
  * Revision 3.8  2002/06/18 13:55:27  ftissera
  * Change malloc to calloc in SdifStringNew to get an empty string
  *
@@ -163,6 +168,9 @@ int SdifStringAppend(SdifStringT * SdifString, const char *strToAppend)
 
 /*DOC:
   Read the current char (= fgetc).
+
+  TODO: return eEof when string is used up, rewrite parser more simply!
+  (read whole 1TYP string matrix, parse from mem only)
 */
 int SdifStringGetC(SdifStringT *SdifString)
 {
@@ -177,17 +185,17 @@ int SdifStringGetC(SdifStringT *SdifString)
 }
 
 /*DOC:
-  Equivalent of ungetc
+  Equivalent of ungetc: put one character back into string, clear EOS condition
 */
 int SdifStringUngetC(SdifStringT *SdifString)
 {
-  if (SdifStringIsEOS(SdifString) || (SdifString->NbCharRead == 0))
+  if (SdifString->NbCharRead == 0)
       return eFalse;
   else
-    {
+  {
       SdifString->NbCharRead--;
       return eTrue;
-    }
+  }
 }
 
 
