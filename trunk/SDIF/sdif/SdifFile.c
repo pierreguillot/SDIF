@@ -1,4 +1,4 @@
-/* $Id: SdifFile.c,v 3.46 2004-07-22 14:47:56 bogaards Exp $
+/* $Id: SdifFile.c,v 3.47 2004-09-09 17:41:41 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -33,6 +33,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.46  2004/07/22 14:47:56  bogaards
+ * removed many global variables, moved some into the thread-safe SdifGlobals structure, added HAVE_PTHREAD define, reorganized the code for selection, made some arguments const, new version 3.8.6
+ *
  * Revision 3.45  2004/06/09 10:54:43  schwarz
  * Fixed compilation problems on Windows (thanks Jean Bresson):
  * - void pointer arithmetic not allowed
@@ -364,7 +367,8 @@ SdifFOpen(const char* Name, SdifFileModeET Mode)
       SdifF->StreamIDPass  = eNotPass;
  
       /* One _SdifGranule allocated --> 256 floats */
-      SdifF->CurrOneRow = SdifCreateOneRow(eFloat4, 1);
+      SdifF->CurrOneRow    = SdifCreateOneRow(eFloat4, 1);
+      SdifF->CurrMtrxData  = SdifCalloc(SdifMatrixDataT, 1);
 
       SdifF->TextStreamName   = NULL;
       SdifF->TextStream       = NULL;
@@ -596,7 +600,7 @@ SdifFClose(SdifFileT* SdifF)
         else                         _SdifError (eFreeNull, "SdifFile->MatrixTypesTable");
       if (SdifF->FrameTypesTable)    SdifKillHashTable (SdifF->FrameTypesTable);
         else                         _SdifError (eFreeNull, "SdifFile->FrameTypesTable");
-/*      if (SdifF->StreamIDsTable)     SdifKillHashTable (SdifF->StreamIDsTable);
+/*    if (SdifF->StreamIDsTable)     SdifKillHashTable (SdifF->StreamIDsTable);
         else                         _SdifError (eFreeNull, "SdifFile->StreamIDsTable");*/
       if (SdifF->StreamIDsTable)     SdifKillStreamIDTable (SdifF->StreamIDsTable);
         else                         _SdifError (eFreeNull, "SdifFile->StreamIDsTable");
@@ -606,6 +610,8 @@ SdifFClose(SdifFileT* SdifF)
         else                         _SdifError (eFreeNull, "SdifFile->Selection");
       if (SdifF->CurrOneRow)         SdifKillOneRow(SdifF->CurrOneRow);
         else                         _SdifError (eFreeNull, "SdifFile->CurrOneRow");
+      if (SdifF->CurrMtrxData)       SdifKillMatrixData(SdifF->CurrMtrxData);
+        else                         _SdifError (eFreeNull, "SdifFile->CurrMtrxData");
       if (SdifF->Errors)             SdifKillErrorL(SdifF->Errors);
         else                         _SdifError (eFreeNull, "SdifFile->Errors");
 
@@ -1096,11 +1102,13 @@ SdifFCurrMatrixSignature(SdifFileT *SdifF)
   return SdifF->CurrMtrxH->Signature;
 }
 
+/* Renvoie la ligne temporaire de SdifF.  */
 SdifOneRowT*
 SdifFCurrOneRow(SdifFileT *SdifF)
 {
   return SdifF->CurrOneRow;
 }
+
 
 /*  DS: Added SdifCurrOneRowData to return a pointer to the raw data.
     This can subsequently be used for SdifSetCurrOneRow.
@@ -1122,6 +1130,22 @@ SdifFCurrOneRowData(SdifFileT *SdifF)
     }
 #endif
 }
+
+
+/* return pointer to current matrix data structure */
+SdifMatrixDataT *SdifFCurrMatrixData (SdifFileT *file)
+{
+  return file->CurrMtrxData;
+}
+
+
+/* return pointer to current raw matrix data, 
+   specified by current matrix header */
+void *SdifFCurrMatrixDataPointer (SdifFileT *file)
+{
+  return file->CurrMtrxData->Data.Void;
+}
+
 
 SdifUInt4
 SdifFCurrNbCol(SdifFileT *SdifF)
