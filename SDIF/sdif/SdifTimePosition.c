@@ -1,4 +1,4 @@
-/* $Id: SdifTimePosition.c,v 3.2 1999-09-28 13:09:17 schwarz Exp $
+/* $Id: SdifTimePosition.c,v 3.3 2000-05-15 16:22:36 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -15,6 +15,10 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.2  1999/09/28  13:09:17  schwarz
+ * Included #include <preincluded.h> for cross-platform uniformisation,
+ * which in turn includes host_architecture.h and SDIF's project_preinclude.h.
+ *
  * Revision 3.1  1999/03/14  10:57:27  virolle
  * SdifStdErr add
  *
@@ -72,7 +76,7 @@ SdifCreateTimePosition(SdifFloat8 Time, SdiffPosT Position)
 
 
 void
-SdifKillTimePosition(SdifTimePositionT* TimePosition)
+SdifKillTimePosition(void* TimePosition)
 {
   if (TimePosition)
     SdifFree (TimePosition);

@@ -1,4 +1,4 @@
-/* $Id: SdifMatrixType.c,v 3.2 1999-09-28 13:09:04 schwarz Exp $
+/* $Id: SdifMatrixType.c,v 3.3 2000-05-15 16:22:32 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -20,6 +20,10 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.2  1999/09/28  13:09:04  schwarz
+ * Included #include <preincluded.h> for cross-platform uniformisation,
+ * which in turn includes host_architecture.h and SDIF's project_preinclude.h.
+ *
  * Revision 3.1  1999/03/14  10:57:08  virolle
  * SdifStdErr add
  *
@@ -72,11 +76,11 @@ SdifCreateColumnDef(char *Name, SdifUInt4 Num)
 
 
 void
-SdifKillColumnDef(SdifColumnDefT *ColumnDef)
+SdifKillColumnDef(void *ColumnDef)
 {
   if (ColumnDef)
     {
-      SdifKillStr(ColumnDef->Name);
+      SdifKillStr(((SdifColumnDefT *) ColumnDef)->Name);
       SdifFree(ColumnDef);
     }
   else
