@@ -1,7 +1,7 @@
 SDIFROOT := ../SDIF
 
 CXX = g++
-CXXFLAGS = -g -ggdb -Wall -I.. -I$(SDIFROOT)/include 
+CXXFLAGS = -g -ggdb -Wall -I.. -I$(SDIFROOT)/include -I$(SDIFROOT)/compile.$(SYS)/include 
 
 LIBDIR  = ../lib.$(SYS)
 LDFLAGS = -L$(LIBDIR) -lEasdif   -lm
