@@ -1,4 +1,4 @@
-/* $Id: SdifSelect.h,v 3.8 2000-05-15 16:22:04 schwarz Exp $
+/* $Id: SdifSelect.h,v 3.9 2000-08-07 15:05:46 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -71,6 +71,15 @@ TODO
 
 LOG
   $Log: not supported by cvs2svn $
+  Revision 3.8  2000/05/15  16:22:04  schwarz
+  Changed prototypes of existing functions (we apologize for the inconvenience)
+  SdifFCurrFrameIsSelected and SdifFCurrMatrixIsSelected.
+  They now take only an SdifFileT as parameter, no longer a selection.
+  If you don't want to test the file selection (automatically
+  parsed from the filename), use these new functions like this:
+  SdifFrameIsSelected  (file->CurrFramH, myselection) and
+  SdifMatrixIsSelected (file->CurrMtrxH, myselection).
+
   Revision 3.7  2000/05/12  16:55:31  schwarz
   Added prototype and doc for SdifBaseName.
   Avoid avoidable warnings.
@@ -227,11 +236,19 @@ int SdifFreeSelection (SdifSelectionT *sel);
 /*DOC: 
   Returns pointer to first char of select spec (starting with ::), 
   or NULL if not found.
+  
+  [in] filename can be NULL
 */
 char *SdifSelectFindSelection (const char *filename);
 
 
 /*DOC: 
+  SdifGetFilenameAndSelection parses
+
+  [in]  filename (can be NULL) into
+  [out] sel      which must point to an SdifSelectionT structure.
+  [return] 
+		a pointer to a copy of the filename part of filename
 */
 char *SdifGetFilenameAndSelection (/*in*/  const char *filename, 
 				   /*out*/ SdifSelectionT *sel);

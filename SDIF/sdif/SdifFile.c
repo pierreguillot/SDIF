@@ -1,4 +1,4 @@
-/* $Id: SdifFile.c,v 3.11 2000-05-12 14:41:47 schwarz Exp $
+/* $Id: SdifFile.c,v 3.12 2000-08-07 15:05:45 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -16,6 +16,14 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.11  2000/05/12  14:41:47  schwarz
+ * On behalf of Adrien, synchronisation with Mac sources, with some slight
+ * changes because of cross-platform issues:
+ * - Mac only stuff: XpSetFileAttribute XpFileSize
+ * - Cross platform wrapper: XpGetenv XpExit
+ * - Dangerous: strings.h (and thus bzero, bcopy) is not ANSI and thus doesn't
+ *   exist on Mac.  Use string.h and memset, memcpy.
+ *
  * Revision 3.10  2000/05/04  15:05:47  schwarz
  * SDIF Selection is now parsed automatically on opening a file,
  * and placed in file->Selection.
@@ -657,7 +665,7 @@ SdifGenKill(void)
 void SdifPrintVersion(void)
 {
 #ifndef lint
-    static char rcsid[]= "$Revision: 3.11 $ IRCAM $Date: 2000-05-12 14:41:47 $";
+    static char rcsid[]= "$Revision: 3.12 $ IRCAM $Date: 2000-08-07 15:05:45 $";
 #endif
 
     if (SdifStdErr == NULL)
@@ -882,6 +890,8 @@ SdifFPutInMtrxUsed (SdifFileT *SdifF, SdifSignature Sign)
 
 /* Error management */
 
+/* Return pointer to last error of file or NULL if there are no errors
+   present.  */
 SdifErrorT*
 SdifFLastError (SdifFileT *SdifF)
 {
@@ -889,7 +899,7 @@ SdifFLastError (SdifFileT *SdifF)
 }
 
 
-
+/* Return last error tag of file */
 SdifErrorTagET
 SdifFLastErrorTag (SdifFileT *SdifF)
 {
