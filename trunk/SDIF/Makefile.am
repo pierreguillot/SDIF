@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.14 2002-10-31 16:35:36 schwarz Exp $
+# $Id: Makefile.am,v 1.15 2003-03-07 17:31:37 roebel Exp $
 #
 # ./Makefile.am		September 2000			Patrice Tisserand
 #
@@ -30,6 +30,10 @@
 
 
 # $Log: not supported by cvs2svn $
+# Revision 1.14  2002/10/31 16:35:36  schwarz
+# Added sdif.vcproj
+# More info for dist.
+#
 # Revision 1.13  2002/10/30 17:25:33  schwarz
 # Ouf, finally proper distribution building: a src.tar.gz and a binary
 # rpm (thanks to Patrice, but use with caution).
@@ -88,7 +92,7 @@
 # Added header with copyright and links to all Makefile.am and configure.in.
 
 
-SUBDIRS = sdif include tools data test
+SUBDIRS = sdif include tools data test sdifcpp
 
 sdifincdir = @top_srcdir@/include
 
