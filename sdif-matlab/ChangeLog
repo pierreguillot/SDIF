@@ -6,6 +6,8 @@ Version 0.4.0
 
 	* sdifexist not only checks existance of given file
 	but also if it is an SDIF file.	
+
+	* loadsdif now reads matrices integer data.  
 	
 2003-10-29  schwarz  <schwarz@LeGray>
 
