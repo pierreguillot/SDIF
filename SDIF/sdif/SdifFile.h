@@ -1,4 +1,4 @@
-/* $Id: SdifFile.h,v 3.6 2000-04-26 15:31:24 schwarz Exp $
+/* $Id: SdifFile.h,v 3.7 2000-05-04 15:05:48 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -17,6 +17,9 @@ LIBRARY
 
 LOG
  * $Log: not supported by cvs2svn $
+ * Revision 3.6  2000/04/26  15:31:24  schwarz
+ * Added SdifGenInitCond for conditional initialisation.
+ *
  * Revision 3.5  2000/03/01  11:19:37  schwarz
  * Tough check for pipe on open.
  * Added SdifFCurrDataType.
@@ -73,23 +76,9 @@ LOG
 #include "SdifGlobals.h"
 
 
-/*DOC: 
-  Test if file is an SDIF file.
-
-  [] Returns:	0 if not an SDIF file (the first 4 chars are not "SDIF"),
-		or file can not be opened, else 1.  
-
-  Warning: This function doesn't work with stdio.
+/*
+// FUNCTION GROUP:	Opening and Closing of Files
 */
-int SdifCheckFileFormat (const char *name);
-
-/*DOC: 
-  todo: Test if file is an SDIF file (only when opening for read or
-  append) and open it.
-
-  [Return] NULL if not an SDIF file (the first 4 chars are not "SDIF"),
-  or file can not be opened.  */
-SdifFileT*	   SdifFTryOpen			(const char *Name, SdifFileModeET Mode);
 
 /*DOC:
  */
@@ -108,6 +97,12 @@ void               SdifFLoadPredefinedTypes     (SdifFileT *SdifF, char *TypesFi
 
 extern int	  gSdifInitialised;
 extern SdifFileT *gSdifPredefinedTypes;
+
+
+
+/*
+// FUNCTION GROUP:	Init/Deinit of the Library
+*/
 
 /*DOC: 
   Initialise the SDIF library, providing a name for an optional additional
@@ -134,12 +129,16 @@ void SdifGenKill (void);
 void SdifPrintVersion(void);
 
 
+/*
+// FUNCTION GROUP:	Current Header Access Functions
+*/
+
 /*DOC: 
   Permet de donner des valeurs à chaque champ de l'entête de frame
   temporaire de SdifF.<p> 
 
   Exemple:
-  <code>SdifSetCurrFrameHeader(SdifF, '1FOB', 3, NumID, 1.0);</code> */
+  <code>SdifSetCurrFrameHeader(SdifF, '1FOB', _SdifUnknownSize, 3, streamid, 1.0);</code> */
 SdifFrameHeaderT* SdifFSetCurrFrameHeader (SdifFileT *SdifF, 
 					   SdifSignature Signature, 
 					   SdifUInt4 Size,
@@ -263,31 +262,49 @@ SdifUInt4     SdifFCurrID              (SdifFileT *SdifF);
   Renvoie SdifF->CurrFramH->Time.  */
 SdifFloat8    SdifFCurrTime            (SdifFileT *SdifF);
 
-/*DOC:
-  Add user data, return index added 
+
+
+/*
+// FUNCTION GROUP:	File Data Access Functions
 */
+
+/*DOC:
+  Return list of NVTs for querying. 
+  [] precondition NVTs have been read with SdifFReadAllASCIIChunks. */
+SdifNameValuesLT *SdifFNameValueList (SdifFileT *file);
+
+/*DOC:
+  Return number of NVTs present.
+  [] precondition NVTs have been read with SdifFReadAllASCIIChunks. */
+int SdifFNameValueNum (SdifFileT *file);
+
+/*DOC:
+  Add user data, return index added */
 int SdifFAddUserData (SdifFileT *file, void *data);
 
 /*DOC:
-  Get user data by index 
-*/
+  Get user data by index */
 void *SdifFGetUserData (SdifFileT *file, int index);
 
 
-SdifSignatureTabT* SdifCreateSignatureTab (SdifUInt4 NbSignMax);
-void		   SdifKillSignatureTab   (SdifSignatureTabT *SignTab);
-SdifSignatureTabT* SdifReInitSignatureTab (SdifSignatureTabT *SignTab, SdifUInt4 NewNbSignMax);
-SdifSignatureTabT* SdifPutInSignatureTab  (SdifSignatureTabT *SignTab, SdifSignature Sign);
-SdifSignature      SdifIsInSignatureTab   (SdifSignatureTabT *SignTab, SdifSignature Sign);
+
 SdifFileT*    SdifFReInitMtrxUsed (SdifFileT *SdifF);
 SdifFileT*    SdifFPutInMtrxUsed  (SdifFileT *SdifF, SdifSignature Sign);
 SdifSignature SdifFIsInMtrxUsed   (SdifFileT *SdifF, SdifSignature Sign);
 
 
+
+/*
+// FUNCTION GROUP:	Error flag for file
+*/
+
+/*DOC: 
+  Return pointer to last error struct or NULL if no error present
+  for this file. */
 SdifErrorT*     SdifFLastError    (SdifFileT *SdifF);
+
+/*DOC: 
+  Return tag of last error or eNoError if no error present for this file. */
 SdifErrorTagET  SdifFLastErrorTag (SdifFileT *SdifF);
 
 #endif /* _SdifFile_ */
-
-
-

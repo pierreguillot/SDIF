@@ -1,4 +1,4 @@
-/* $Id: SdifFile.c,v 3.9 2000-04-26 15:31:23 schwarz Exp $
+/* $Id: SdifFile.c,v 3.10 2000-05-04 15:05:47 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -16,6 +16,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.9  2000/04/26  15:31:23  schwarz
+ * Added SdifGenInitCond for conditional initialisation.
+ *
  * Revision 3.8  2000/03/01  11:19:36  schwarz
  * Tough check for pipe on open.
  * Added SdifFCurrDataType.
@@ -109,25 +112,6 @@
 #endif
 
 
-int
-SdifCheckFileFormat (const char *name)
-{
-    int		ret = 0;
-    size_t	size;
-    SdifFileT	*file;
-
-    SdifDisableErrorOutput ();
-    if (file = SdifFOpen (name, eReadFile))
-    {
-        SdifFGetSignature (file, &size);
-        ret = file->CurrSignature == eSDIF;
-	SdifFClose (file);
-    }
-    SdifEnableErrorOutput ();
-    return (ret);
-}
-
-
 SdifFileT*
 SdifFOpen(const char* Name, SdifFileModeET Mode)
 {
@@ -144,31 +128,36 @@ SdifFOpen(const char* Name, SdifFileModeET Mode)
 	 eBinaryModeUnknown means file i/o */
       SdifBinaryModeET    stdio;   
 
-      if (Name == NULL)
-	  Name = "";
-      if (Name [0] == 0  ||  SdifStrEq (Name, "-"))
-	  stdio = Mode == eReadFile          ?  eBinaryModeStdInput
-					     :  eBinaryModeStdOutput;
-      else
-	  stdio = SdifStrEq(Name, "stdin")   ?  eBinaryModeStdInput   :
-		  SdifStrEq(Name, "stdout")  ?  eBinaryModeStdOutput  :
-		  SdifStrEq(Name, "stderr")  ?  eBinaryModeStdError   : 
-						eBinaryModeUnknown;
+      /* Split name and selection */
+      SdifF->Selection        = SdifCreateSelection ();
+      SdifF->Name             = SdifGetFilenameAndSelection (Name, 
+							     SdifF->Selection);
 
-      SdifF->Name             = SdifCreateStrNCpy(Name, SdifStrLen(Name)+1);
+      if (SdifF->Name == NULL)
+	  SdifF->Name = "";
+      if (SdifF->Name [0] == 0  ||  SdifStrEq (SdifF->Name, "-"))
+	  stdio = Mode == eReadFile		    ?  eBinaryModeStdInput
+						    :  eBinaryModeStdOutput;
+      else
+	  stdio = SdifStrEq(SdifF->Name, "stdin")   ?  eBinaryModeStdInput   :
+		  SdifStrEq(SdifF->Name, "stdout")  ?  eBinaryModeStdOutput  :
+		  SdifStrEq(SdifF->Name, "stderr")  ?  eBinaryModeStdError   : 
+						       eBinaryModeUnknown;
+
       SdifF->Mode             = Mode;
       SdifF->FormatVersion    = _SdifFormatVersion; /* default */
       SdifF->TypesVersion     = _SdifTypesVersion;  /* default */
       
-      SdifF->NameValues       = SdifCreateNameValuesL(_SdifNameValueHashSize);
-      SdifF->MatrixTypesTable = SdifCreateHashTable(_SdifGenHashSize, eHashInt4,
-						                            SdifKillMatrixType);
-      SdifF->FrameTypesTable  = SdifCreateHashTable(_SdifGenHashSize, eHashInt4,
-						                            SdifKillFrameType);
+      SdifF->NameValues       = SdifCreateNameValuesL (_SdifNameValueHashSize);
+      SdifF->MatrixTypesTable = SdifCreateHashTable   (_SdifGenHashSize, 
+						       eHashInt4, 
+						       SdifKillMatrixType);
+      SdifF->FrameTypesTable  = SdifCreateHashTable   (_SdifGenHashSize, 
+						       eHashInt4,
+						       SdifKillFrameType);
 /*      SdifF->StreamIDsTable   = SdifCreateHashTable(1, eHashInt4, SdifKillStreamID);*/
       SdifF->StreamIDsTable   = SdifCreateStreamIDTable(1);
       SdifF->TimePositions    = SdifCreateTimePositionL();
-      SdifF->Selection        = NULL; /* todo: automaticall get selection */
 
       SdifF->CurrSignature = eEmptySignature;
       SdifF->CurrFramH     = NULL;
@@ -176,7 +165,7 @@ SdifFOpen(const char* Name, SdifFileModeET Mode)
       SdifF->CurrFramT     = NULL;
       SdifF->CurrMtrxT     = NULL;
       SdifF->PrevTime      = _Sdif_MIN_DOUBLE_;
-      SdifF->MtrxUsed      = SdifCreateSignatureTab(_SdifGranule);
+      SdifF->MtrxUsed      = SdifCreateSignatureTab (_SdifSignatureTabGranule);
       /*SdifF->MtrxUsed      = SdifCreateSignatureTab(1);*/
       SdifF->CurrFramPos   = 0;
       SdifF->FileSize      = 0;
@@ -205,15 +194,17 @@ SdifFOpen(const char* Name, SdifFileModeET Mode)
 	      switch (stdio)
 	      {
 	          case eBinaryModeStdInput:
-		      SdifF->Stream = SdiffBinOpen (Name, eBinaryModeStdInput);
+		      SdifF->Stream = SdiffBinOpen (SdifF->Name, 
+						    eBinaryModeStdInput);
 		  break;
 
 		  case eBinaryModeUnknown:
-		      SdifF->Stream = SdiffBinOpen (Name, eBinaryModeRead);
+		      SdifF->Stream = SdiffBinOpen (SdifF->Name, 
+						    eBinaryModeRead);
 		  break;
 
 	          default:
-		      _SdifFError(SdifF, eBadStdFile, Name);
+		      _SdifFError(SdifF, eBadStdFile, SdifF->Name);
 		  break;
 	      }
 	  break;
@@ -222,15 +213,17 @@ SdifFOpen(const char* Name, SdifFileModeET Mode)
 	      switch (stdio)
 	      {
 	          case eBinaryModeStdOutput:
-		      SdifF->Stream = SdiffBinOpen(Name, eBinaryModeStdOutput);
+		      SdifF->Stream = SdiffBinOpen (SdifF->Name, 
+						    eBinaryModeStdOutput);
 		  break;
 
 		  case eBinaryModeUnknown:
-		      SdifF->Stream = SdiffBinOpen (Name, eBinaryModeWrite);
+		      SdifF->Stream = SdiffBinOpen (SdifF->Name, 
+						    eBinaryModeWrite);
 		  break;
 
 	          default:
-		      _SdifFError(SdifF, eBadStdFile, Name);
+		      _SdifFError(SdifF, eBadStdFile, SdifF->Name);
 		  break;
               }
 	  break;
@@ -407,8 +400,10 @@ SdifFClose(SdifFileT* SdifF)
 {
   if (SdifF)
     {
-      if (SdifF->Name)               SdifFree (SdifF->Name);
-        else                         _SdifError (eFreeNull, "SdifFile->Name");
+	/* name is now part of the selection and freed with it.
+	   if (SdifF->Name)          SdifFree (SdifF->Name);
+	   else                     _SdifError (eFreeNull, "SdifFile->Name");
+	*/
       if (SdifF->NameValues)         SdifKillNameValuesL (SdifF->NameValues);
         else                         _SdifError (eFreeNull, "SdifFile->NameValues");
       if (SdifF->MatrixTypesTable)   SdifKillHashTable (SdifF->MatrixTypesTable);
@@ -421,6 +416,8 @@ SdifFClose(SdifFileT* SdifF)
         else                         _SdifError (eFreeNull, "SdifFile->StreamIDsTable");
       if (SdifF->TimePositions)      SdifKillTimePositionL (SdifF->TimePositions);
         else                         _SdifError (eFreeNull, "SdifFile->TimePositions");
+      if (SdifF->Selection)          SdifFreeSelection (SdifF->Selection);
+        else                         _SdifError (eFreeNull, "SdifFile->Selection");
       if (SdifF->CurrOneRow)         SdifKillOneRow(SdifF->CurrOneRow);
         else                         _SdifError (eFreeNull, "SdifFile->CurrOneRow");
       if (SdifF->Errors)             SdifKillErrorL(SdifF->Errors);
@@ -651,7 +648,7 @@ SdifGenKill(void)
 void SdifPrintVersion(void)
 {
 #ifndef lint
-    static char rcsid[]= "$Revision: 3.9 $ IRCAM $Date: 2000-04-26 15:31:23 $";
+    static char rcsid[]= "$Revision: 3.10 $ IRCAM $Date: 2000-05-04 15:05:47 $";
 #endif
 
     if (SdifStdErr == NULL)
@@ -853,122 +850,6 @@ SdifFCurrTime(SdifFileT *SdifF)
 
 
 
-
-
-
-
-
-
-
-
-/***** SdifSignatureTabT *****/
-
-
-SdifSignatureTabT*
-SdifCreateSignatureTab (SdifUInt4 NbSignMax)
-{
-  SdifSignatureTabT* NewSignTab = NULL;
-  SdifUInt4 iSign;
-
-  NewSignTab = SdifMalloc(SdifSignatureTabT);
-  if (NewSignTab)
-    {
-      NewSignTab->Tab = SdifCalloc(SdifSignature, NbSignMax);
-      if (NewSignTab->Tab)
-        {
-          NewSignTab->NbSignMax = NbSignMax;
-          for (iSign=0; iSign<NewSignTab->NbSignMax; iSign++)
-            NewSignTab->Tab[iSign] = 0;
-          NewSignTab->NbSign    = 0;
-        }
-      else
-        {
-          _SdifError(eAllocFail, "NewSignTab->Tab");
-          return NULL;
-        }
-    }
-  else
-    {
-      _SdifError(eAllocFail, "NewSignTab");
-      return NULL;
-    }
-
-  return NewSignTab;
-}
-
-
-
-void
-SdifKillSignatureTab (SdifSignatureTabT* SignTab)
-{
-  if (SignTab)
-    {
-      if (SignTab->Tab)
-      {
-	  SdifFree(SignTab->Tab);
-      }
-      SdifFree(SignTab);
-    }
-  else
-    {
-      _SdifError(eAllocFail, "NewSignTab");
-    }
-}
-
-
-
-SdifSignatureTabT*
-SdifReInitSignatureTab (SdifSignatureTabT* SignTab, SdifUInt4 NewNbSignMax)
-{
-    SdifUInt4 iSign;
-
-    if (SignTab->NbSignMax  < NewNbSignMax)
-    {
-	SignTab->Tab = SdifRealloc(SignTab->Tab, SdifSignature, NewNbSignMax);
-	if (SignTab->Tab )
-	{
-	    SignTab->NbSignMax = NewNbSignMax;
-	}
-	else
-	{
-	    _SdifError(eAllocFail, "SignTab->Tab RE-allocation");
-	    return NULL;
-	}
-    }
-
-    for (iSign=0; iSign<NewNbSignMax; iSign++)
-        SignTab->Tab[iSign] = 0;
-
-    SignTab->NbSign  = 0;
-
-    return SignTab;
-}
-
-
-
-
-SdifSignature
-SdifIsInSignatureTab (SdifSignatureTabT* SignTab, SdifSignature Sign)
-{
-  SdifUInt4 iSign;
-
-  for (iSign=0; iSign<SignTab->NbSign; iSign++)
-    if (SignTab->Tab[iSign] == Sign)
-      return Sign;
-
-  return 0;
-}
-
-
-SdifSignatureTabT*
-SdifPutInSignatureTab (SdifSignatureTabT* SignTab, SdifSignature Sign)
-{
-  SignTab->Tab[SignTab->NbSign] = Sign;
-  SignTab->NbSign++;
-  return SignTab;
-}
-
-
 SdifFileT*
 SdifFReInitMtrxUsed (SdifFileT *SdifF)
 {
@@ -1008,6 +889,18 @@ SdifFLastErrorTag (SdifFileT *SdifF)
 
 
 
+/* Return list of NVTs for querying. */
+SdifNameValuesLT *
+SdifFNameValueList (SdifFileT *file)
+{
+    return (file->NameValues);
+}
+
+/* Return number of NVTs present. */
+int SdifFNameValueNum (SdifFileT *file)
+{
+    return (SdifListGetNbData (file->NameValues->NVTList));
+}
 
 
 /* Add user data, return index added */
