@@ -32,9 +32,14 @@
  * 
  * 
  * 
- * $Id: sdifentity.h,v 1.27 2004-09-10 14:45:28 roebel Exp $ 
+ * $Id: sdifentity.h,v 1.28 2004-10-07 14:48:11 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.27  2004/09/10 14:45:28  roebel
+ * Hopefully fixed the private access problems with CodeWarrior.
+ * Added access functions to current location FrameDirectory and directory
+ * iterator.
+ *
  * Revision 1.26  2004/09/10 10:58:21  roebel
  * Fixed signed unsigned compiler warnings
  *
@@ -354,7 +359,7 @@ public:
          mpEnt->mFrameDirectory.end() ||
          (!mlEndDOWN && !up)|| (!mlEndUP && up)) {
 
-        if(mpEnt->mFrameDirectory.size() && (mlEndUP || mlEndDOWN)
+        if(!mpEnt->mFrameDirectory.empty() && (mlEndUP || mlEndDOWN)
            && mBase== mpEnt->mFrameDirectory.end()) {
 
           if(mlEndDOWN && up)
