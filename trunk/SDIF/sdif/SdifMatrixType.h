@@ -1,4 +1,4 @@
-/* $Id: SdifMatrixType.h,v 3.3 1999-09-28 13:09:05 schwarz Exp $
+/* $Id: SdifMatrixType.h,v 3.4 2000-05-15 16:22:33 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -48,6 +48,10 @@ EXAMPLE
 
 LOG
  * $Log: not supported by cvs2svn $
+ * Revision 3.3  1999/09/28  13:09:05  schwarz
+ * Included #include <preincluded.h> for cross-platform uniformisation,
+ * which in turn includes host_architecture.h and SDIF's project_preinclude.h.
+ *
  * Revision 3.2  1999/08/25  18:32:36  schwarz
  * Added cocoon-able comments with sentinel "DOC:" (on a single line).
  *
@@ -122,7 +126,7 @@ struct SdifMatrixTypeS
 
 
 SdifColumnDefT*  SdifCreateColumnDef (char *Name,  unsigned int Num);
-void             SdifKillColumnDef   (SdifColumnDefT *ColumnDef);
+void             SdifKillColumnDef   (void *ColumnDef);
 
 /*DOC: 
   premet de créer un objet 'type de matrice'. Le premier argument

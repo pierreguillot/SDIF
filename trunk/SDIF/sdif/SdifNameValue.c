@@ -1,4 +1,4 @@
-/* $Id: SdifNameValue.c,v 3.3 1999-10-15 12:26:53 schwarz Exp $
+/* $Id: SdifNameValue.c,v 3.4 2000-05-15 16:22:34 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -17,6 +17,11 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.3  1999/10/15  12:26:53  schwarz
+ * No time parameter for name value tables and stream ID tables, since
+ * this decision is better left to the library.  (It uses the _SdifNoTime
+ * constant, which happens to be _Sdif_MIN_DOUBLE_.)
+ *
  * Revision 3.2  1999/09/28  13:09:07  schwarz
  * Included #include <preincluded.h> for cross-platform uniformisation,
  * which in turn includes host_architecture.h and SDIF's project_preinclude.h.
@@ -137,11 +142,11 @@ SdifCreateNameValueTable (SdifUInt4 StreamID,
 
 
 void
-SdifKillNameValueTable  (SdifNameValueTableT* NVTable)
+SdifKillNameValueTable  (void* NVTable)
 {
   if (NVTable)
     {
-      SdifKillHashTable(NVTable->NVHT);
+      SdifKillHashTable(((SdifNameValueTableT *) NVTable)->NVHT);
       SdifFree(NVTable);
     }
   else
@@ -283,7 +288,7 @@ SdifNameValuesLSetCurrNVT(SdifNameValuesLT *NameValuesL, SdifUInt4 NumCurrNVT)
     while (SdifListIsNext(NameValuesL->NVTList))
     {
         NVT = SdifListGetNext(NameValuesL->NVTList);
-        if (NVT->NumTable = NumCurrNVT)
+        if ((NVT->NumTable = NumCurrNVT))
         {
             NameValuesL->CurrNVT = NVT;
             break;

@@ -1,4 +1,4 @@
-/* $Id: SdifErrMess.h,v 3.2 1999-09-28 10:35:43 schwarz Exp $
+/* $Id: SdifErrMess.h,v 3.3 2000-05-15 16:22:30 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -15,6 +15,10 @@
  * author: Dominique Virolle 1998
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 3.2  1999/09/28  10:35:43  schwarz
+ * Added SdifEnableErrorOutput/SdifDisableErrorOutput to temporarily
+ * switch off error messages when doing things that might fail.
+ *
  * Revision 3.1  1999/03/14  10:56:34  virolle
  * SdifStdErr add
  *
@@ -96,18 +100,20 @@ struct SdifErrorLS
 };
 
 
-SdifErrorT*		SdifCreateError		(SdifErrorTagET Tag,
-											SdifErrorLevelET Level, const char* UserMess);
-void			SdifKillError		(SdifErrorT *Error);
+SdifErrorT*	SdifCreateError		(SdifErrorTagET Tag,
+					 SdifErrorLevelET Level, 
+					 const char* UserMess);
+void		SdifKillError		(void *Error);
 SdifErrorLT*	SdifCreateErrorL	(SdifFileT* SdifF);
-void			SdifKillErrorL		(SdifErrorLT *ErrorL);
+void		SdifKillErrorL		(SdifErrorLT *ErrorL);
 SdifErrorLT*	SdifInsertTailError	(SdifErrorLT* ErrorL,
-									SdifErrorTagET Tag, const char* UserMess);
-SdifErrorT*		SdifLastError		(SdifErrorLT *ErrorL);
+					 SdifErrorTagET Tag, 
+					 const char* UserMess);
+SdifErrorT*	SdifLastError		(SdifErrorLT *ErrorL);
 SdifErrorTagET	SdifLastErrorTag	(SdifErrorLT *ErrorL);
-SdifInt4		SdifFsPrintError	(char* oErrMess, SdifFileT* SdifF,
-									 SdifErrorT* Error,
-									const char *LibFile, int LibLine);
+SdifInt4	SdifFsPrintError	(char* oErrMess, SdifFileT* SdifF,
+					 SdifErrorT* Error,
+					 const char *LibFile, int LibLine);
 
 /*DOC:
   Switch output of error messages on stderr by _SdifFError on. 
