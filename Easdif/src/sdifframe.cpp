@@ -7,9 +7,14 @@
  * 
  * 
  * 
- * $Id: sdifframe.cpp,v 1.6 2002-10-10 10:49:09 roebel Exp $ 
+ * $Id: sdifframe.cpp,v 1.7 2003-02-10 14:14:35 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.6  2002/10/10 10:49:09  roebel
+ * Now using namespace Easdif.
+ * Fixed handling of zero pointer arguments in initException.
+ * Reading past end of file now throws an exception.
+ *
  * Revision 1.5  2002/08/28 16:46:53  roebel
  * Internal reorganization and name changes.
  *
@@ -139,10 +144,17 @@ int SDIFFrame::ReadInfo(const SDIFEntity& entity)
 int SDIFFrame::Write(SdifFileT* file)
 {        
     SdifUInt4 index;
+    
     WriteInfo(file);
+    SdifUInt4 _size    = 0;
     for (index = 0; index < mNbMatrix; index++)	    
-	mSize += mv_Matrix[index].Write(file);     
+	_size += mv_Matrix[index].Write(file);     
 
+    if(_size != mSize){
+      Easdif::SDIFFrameHeaderSizeError exc;
+      exc.initException(eError,"Error in SDIFFrame::Write -- FrameSize in Header does not match size of matrices in header",file,0,0,0);      
+      throw exc;
+    }
     return mSize; 
 }
 
@@ -155,10 +167,12 @@ int SDIFFrame::Write(const SDIFEntity& entity)
 /* writing informations */
 int SDIFFrame::WriteInfo(SdifFileT* file)
 {
-    mSize += SdifSizeOfFrameHeader();
-    SdifFSetCurrFrameHeader(file, mSig, mSize, mNbMatrix, mStreamID, mTime);	           SdifFWriteFrameHeader(file);    
-
-    return mSize;
+  int _frsize = SdifSizeOfFrameHeader();
+  SdifFSetCurrFrameHeader(file, mSig, mSize+SdifSizeOfFrameHeader(),
+			  mNbMatrix, mStreamID, mTime); 
+  SdifFWriteFrameHeader(file);    
+  
+  return _frsize;
 }
 
 /* writing informations with SDIFEntity*/
