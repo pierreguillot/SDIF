@@ -1,4 +1,4 @@
-/* $Id: SdifPreTypes.h,v 3.4 2001-05-02 09:34:46 tisseran Exp $
+/* $Id: SdifPreTypes.h,v 3.5 2002-11-28 19:57:19 roebel Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -34,6 +34,9 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.4  2001/05/02 09:34:46  tisseran
+ * Change License from GNU Public License to GNU Lesser Public License.
+ *
  * Revision 3.3  2000/11/21 14:51:50  schwarz
  * - sdif.h is now included by all sdif/Sdif*.c files.
  * - Removed all public typedefs, enums, structs, and defines from the
@@ -85,37 +88,5 @@
 #include "SdifFrameType.h"
 #include "SdifGlobals.h"
 
-
-#define   M_1FQ0_Frequency  "Frequency"
-#define   M_1FQ0_Mode       "Mode"
-#define   M_1FQ0_Hit        "Hit"
-
-#define   M_1FOF_Frequency  "Frequency"
-#define   M_1FOF_Amplitude  "Amplitude"
-#define   M_1FOF_BandWidth  "BandWidth"
-#define   M_1FOF_Tex        "Tex"
-#define   M_1FOF_DebAtt     "DebAtt"
-#define   M_1FOF_Atten      "Atten"
-#define   M_1FOF_Phase      "Phase"
-
-#define   M_1CHA_Channel1   "Channel1"
-#define   M_1CHA_Channel2   "Channel2"
-#define   M_1CHA_Channel3   "Channel3"
-#define   M_1CHA_Channel4   "Channel4"
-
-#define   M_1RES_Frequency  "Frequency"
-#define   M_1RES_Amplitude  "Amplitude"
-#define   M_1RES_BandWidth  "BandWidth"
-#define   M_1RES_Saliance   "Saliance"
-#define   M_1RES_Correction "Correction"
-
-#define   M_1DIS_Distribution    "Distribution"
-#define   M_1DIS_Amplitude  "Amplitude"
-
-SdifFrameTypeT* CreateF_1FOB(void);
-SdifFrameTypeT* CreateF_1REB(void);
-SdifFrameTypeT* CreateF_1NOI(void);
-void SdifCreatePredefinedTypes(SdifHashTableT *MatrixTypesHT,
-                                      SdifHashTableT *FrameTypesHT);
 
 #endif /* _SdifPreTypes_ */
