@@ -9,7 +9,7 @@
 <META name="GENERATOR" content="hevea 1.05">
 </HEAD>
 <BODY TEXT=black BGCOLOR=white>
-<!--HEVEA command line is: hevea -exec xxdate.exe extern/tutorial-doc.tex -o extern/tutorial-doc.html -->
+<!--HEVEA command line is: hevea -fix -exec xxdate.exe extern/tutorial-doc.tex -o extern/tutorial-doc.html -->
 <!--HTMLHEAD-->
 <!--ENDHTML-->
 <!--CUT DEF section 1 -->
@@ -19,7 +19,7 @@
 
 <H3 ALIGN=center><A HREF="mailto:schwarz@ircam.fr">Diemo Schwarz</A></H3>
 
-<H3 ALIGN=center>August 27, 2000</H3><BR><BR><BR><A NAME="Introduction"></A><!--TOC section Introduction-->
+<H3 ALIGN=center>October 26, 2001</H3><BR><BR><BR><A NAME="Introduction"></A><!--TOC section Introduction-->
 
 <H2>1&nbsp;&nbsp; Introduction</H2><!--SEC END -->
 This tutorial describes the standard way to read and write an SDIF file using
@@ -125,11 +125,13 @@ while (!eof  &amp;&amp;  SdifFLastError (file) == NULL)
 	    {
     		bytesread += SdifFSkipMatrixData(file);
 	    }
-    	    
-    	    bytesread += SdifFReadPadding(file, SdifFPaddingCalculate(file-&gt;Stream, bytesread));
+
+	    <FONT COLOR="#0000ff"><TT><I>/* Read matrix-padding to assure 8 byte alignment.  
+		      (Frames are then automatically aligned.) */</I></TT></FONT>
+	    bytesread += SdifFReadPadding(file, SdifFPaddingCalculate(file-&gt;Stream, bytesread));
     	} 
-    
-        <FONT COLOR="#0000ff"><TT><I>/* read next signature */</I></TT></FONT>
+
+        <FONT COLOR="#0000ff"><TT><I>/* Read next signature */</I></TT></FONT>
     	eof = SdifFGetSignature(file, &amp;bytesread) == eEof;
     }
 }
