@@ -1,6 +1,6 @@
 dnl -*-autoconf-*-  (No, it's an autoconf file!)
 dnl -*-m4-*- (He emacs, it's a m4 file)
-dnl $Id: configure.in,v 1.27 2004-02-02 18:07:22 roebel Exp $
+dnl $Id: configure.in,v 1.28 2004-02-11 19:28:16 roebel Exp $
 dnl
 dnl configure.in		Feb 2003      Axel Roebel
 dnl
@@ -33,6 +33,10 @@ dnl
 dnl
 
 dnl $Log: not supported by cvs2svn $
+dnl Revision 1.27  2004/02/02 18:07:22  roebel
+dnl Version 0.8.1: bug fix in sdifframe establishing the possibility to
+dnl resize matrices within the frame.
+dnl
 dnl Revision 1.26  2004/01/19 16:20:24  roebel
 dnl Version 0.8.0
 dnl
@@ -119,7 +123,7 @@ PACKAGE=Easdif
 
 EASDIF_VERSION_MAJ=0
 EASDIF_VERSION_MIN=8
-EASDIF_VERSION_RELEASE=1
+EASDIF_VERSION_RELEASE=2
 
 VERSION="${EASDIF_VERSION_MAJ}.${EASDIF_VERSION_MIN}.${EASDIF_VERSION_RELEASE}"
 
