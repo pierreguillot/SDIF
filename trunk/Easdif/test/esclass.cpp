@@ -92,8 +92,7 @@ int main()
 	/*if we want to clear the data of the frame :*/
 	frameToWrite.ClearData();
 	/* read next signature */
-	eof = SdifFGetSignature(file, &bytesread) == eEof;
-	
+	eof = SdifFGetSignature(file, &bytesread) == eEof;	
     }
 
     if (SdifFLastError(file))   /* Check for errors */
