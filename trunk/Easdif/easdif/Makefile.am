@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.3 2003-03-05 15:33:13 roebel Exp $
+# $Id: Makefile.am,v 1.4 2003-03-07 17:38:41 roebel Exp $
 #
 # ./Easdif/src/Makefile.am	Feb. 2003 Axel Roebel
 #
@@ -6,6 +6,9 @@
 #
 
 # $Log: not supported by cvs2svn $
+# Revision 1.3  2003/03/05 15:33:13  roebel
+# Fixed installation of include files.
+#
 # Revision 1.2  2003/03/04 00:55:02  roebel
 # Removed version determination
 #
@@ -39,7 +42,7 @@ libEasdif_la_LIBADD  = @SDIFOBJECTS@
 
 libEasdif_la_LDFLAGS = -no-undefined  -rpath $(libdir)
 
-INCLUDES = -I$(top_srcdir) -I$(top_srcdir)/SDIF/include -I$(top_srcdir)/SDIF/sdif   -DUSE_CONFIGURE
+INCLUDES = -I$(top_srcdir) -I../SDIF/include -I$(top_srcdir)/SDIF/include -I$(top_srcdir)/SDIF/sdif   -DUSE_CONFIGURE
 
 
 #

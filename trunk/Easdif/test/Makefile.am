@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.2 2003-03-04 00:56:12 roebel Exp $
+# $Id: Makefile.am,v 1.3 2003-03-07 17:38:41 roebel Exp $
 #
 # ./Easdif/test/Makefile.am	Feb. 2003 Axel Roebel
 #
@@ -6,6 +6,9 @@
 #
 
 # $Log: not supported by cvs2svn $
+# Revision 1.2  2003/03/04 00:56:12  roebel
+# Fixed path problems for configuration not inside top_srcdir
+#
 # Revision 1.1  2003/03/03 10:04:25  roebel
 # Adapted for autoconf/automake...
 #
@@ -30,7 +33,7 @@ tutofini_LDFLAGS = -L$(EASDIR)
 tutofini_DEPENDENCIES=$(EASDIR)/libEasdif.la
 
 
-CXXFLAGS = -g -I$(top_srcdir)  -I$(top_srcdir)/SDIF/include 
+CXXFLAGS = -g -I$(top_srcdir) -I..  -I../SDIF/include -I$(top_srcdir)/SDIF/include 
 
 
 
