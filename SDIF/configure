@@ -1697,7 +1697,7 @@ done
 ac_given_srcdir=$srcdir
 ac_given_INSTALL="$INSTALL"
 
-trap 'rm -fr `echo "Makefile sdif/Makefile tools/Makefile tools/querysdif/Makefile tools/sdifextract/Makefile tools/sdiftotext/Makefile tools/tosdif/Makefile data/Makefile include/Makefile doc/Makefile doc/pics/Makefile doc/extern/Makefile doc/extern/cocoon/Makefile test/Makefile test/files/Makefile test/files/txt/Makefile test/files/sdif/Makefile test/files/txtw/Makefile test/files/sdifw/Makefile sdif/config.h" | sed "s/:[^ ]*//g"` conftest*; exit 1' 1 2 15
+trap 'rm -fr `echo "Makefile sdif/Makefile tools/Makefile  data/Makefile include/Makefile doc/Makefile doc/pics/Makefile doc/extern/Makefile doc/extern/cocoon/Makefile test/Makefile test/files/Makefile test/files/txt/Makefile test/files/sdif/Makefile test/files/txtw/Makefile test/files/sdifw/Makefile sdif/config.h" | sed "s/:[^ ]*//g"` conftest*; exit 1' 1 2 15
 EOF
 cat >> $CONFIG_STATUS <<EOF
 
@@ -1785,7 +1785,7 @@ EOF
 
 cat >> $CONFIG_STATUS <<EOF
 
-CONFIG_FILES=\${CONFIG_FILES-"Makefile sdif/Makefile tools/Makefile tools/querysdif/Makefile tools/sdifextract/Makefile tools/sdiftotext/Makefile tools/tosdif/Makefile data/Makefile include/Makefile doc/Makefile doc/pics/Makefile doc/extern/Makefile doc/extern/cocoon/Makefile test/Makefile test/files/Makefile test/files/txt/Makefile test/files/sdif/Makefile test/files/txtw/Makefile test/files/sdifw/Makefile"}
+CONFIG_FILES=\${CONFIG_FILES-"Makefile sdif/Makefile tools/Makefile  data/Makefile include/Makefile doc/Makefile doc/pics/Makefile doc/extern/Makefile doc/extern/cocoon/Makefile test/Makefile test/files/Makefile test/files/txt/Makefile test/files/sdif/Makefile test/files/txtw/Makefile test/files/sdifw/Makefile"}
 EOF
 cat >> $CONFIG_STATUS <<\EOF
 for ac_file in .. $CONFIG_FILES; do if test "x$ac_file" != x..; then
