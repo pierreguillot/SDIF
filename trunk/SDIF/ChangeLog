@@ -1,5 +1,28 @@
-2004-07-26  Niels Bogaards <bogaards@ircam.fr> and Axel Roebel  <roebel@localdomain>
+2004-08-26  Diemo Schwarz  <schwarz@ligeti.ircam.fr>
 Version 3.8.6
+
+	* Makefile.am: ReleaseNotes
+	some echo's don't know -e, is it needed?
+
+2004-08-25  Diemo Schwarz  <schwarz@ligeti.ircam.fr>
+
+	* ReleaseNotes:
+	real release notes give a high-level summary of the changes,
+	ChangeLog gives the details per file
+
+2004-08-23  Axel Roebel  <roebel@ligeti.ircam.fr>
+
+	* sdif/Makefile.am: Fixed for dist target!
+
+2004-07-28  Axel Roebel  <roebel@ligeti.ircam.fr>
+
+	* sdif/SdifGlobals.c: Simplified global list initialisation.
+
+2004-07-27  Axel Roebel  <roebel@ligeti.ircam.fr>
+
+	* sdif/SdifGlobals.c: Fixed infinite recursion in FreeGlobals.
+
+2004-07-26  Niels Bogaards <bogaards@ircam.fr> and Axel Roebel  <roebel@localdomain>
 
 	* SDIF now thread save if pthreads are available:
 
@@ -11,7 +34,12 @@ Version 3.8.6
 	
 	Added pthread configure test
 
-	
+	* sdif.pc.in: Added switch configuration for pthread enabled libraries
+
+	* sdif/config.h.in: Added support for pthreads.
+
+	* ChangeLog, acinclude.m4, configure.in: Version 3.8.6:
+	thread safe sdif: finished pthread support in SDIF by means of adding pthread detection to configure.
 
 2004-07-13  Axel Roebel  <Axel.Roebel@ircam.fr>
 Version 3.8.5
@@ -390,4 +418,4 @@ Version 3.3:
 	  Operating System.
 
 	
-$Id: ChangeLog,v 1.38 2004-07-26 10:30:22 roebel Exp $
+$Id: ChangeLog,v 1.39 2004-08-27 10:27:59 schwarz Exp $
