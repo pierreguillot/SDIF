@@ -1,17 +1,21 @@
-# $Id: makefile,v 1.2 2000-05-11 12:38:22 schwarz Exp $
+# $Id: makefile,v 1.3 2000-05-12 14:05:03 schwarz Exp $
 #
 # makefile	26. January 2000	Diemo Schwarz
 #
 # formesutils matlab library
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.2  2000/05/11  12:38:22  schwarz
+# Compiles mex on Linux!  (Paths and compiler had to be found.)
+# db target.
+#
 # Revision 1.1  2000/05/04  13:24:08  schwarz
 # Matlab mex extension and support functions to load SDIF files.
 #
 
 
 #
-# settings	TODO: Linux
+# settings
 #
 
 ARCH 		:= $(shell arch)
@@ -50,27 +54,32 @@ else
   IMPORT_ROOT	 = /u/formes
 endif
 
-GLOBAL_ROOT	= /u/formes
+GLOBAL_ROOT	 = /u/formes
 GLOBAL_INCL 	 = $(IMPORT_ROOT)/include 
 GLOBAL_LIB	 = $(IMPORT_ROOT)/lib/$(ARCH)
 
-SDIF_LIB_DIR   = $(GLOBAL_LIB)/$(SYS)$(VERSION)
-SDIF_LIB_BASE  = sdif$(VERS)
-SDIF_LIB_PATH  = $(SDIF_LIB_DIR)/lib$(SDIF_LIB_BASE).a
+SDIF_LIB_DIR     = $(GLOBAL_LIB)/$(SYS)$(VERSION)
+SDIF_LIB_BASE    = sdif$(VERS)
+SDIF_LIB_PATH    = $(SDIF_LIB_DIR)/lib$(SDIF_LIB_BASE).a
 
-PM_LIB_DIR	= $(GLOBAL_LIB)
-PM_LIB_BASE	= Pm
-PM_LIB_PATH	= $(PM_LIB_DIR)/lib$(PM_LIB_BASE).a
+PM_LIB_DIR	 = $(GLOBAL_LIB)
+PM_LIB_BASE	 = Pm
+PM_LIB_PATH	 = $(PM_LIB_DIR)/lib$(PM_LIB_BASE).a
 
-pm_sdif		= $(PM_LIB_PATH) $(SDIF_LIB_PATH)
-INCL	   	= -I$(GLOBAL_INCL) -I/usr/include -I/usr/local/include/
-CFLAGS	   	= -g -ansi -Wall -DTEST $(INCL)
-LFLAGS		= 
-MEXFLAGS-alpha	= -g
-MEXFLAGS-i686	= -g CC=gcc LD=gcc
+pm_sdif		 = $(PM_LIB_PATH) $(SDIF_LIB_PATH)
+INCL	   	 = -I$(GLOBAL_INCL) -I/usr/include -I/usr/local/include/
+CFLAGS	   	 = -g -ansi -Wall -DTEST $(INCL)
+LFLAGS		 = 
+MEXFLAGS-alpha	 = -g
+MEXFLAGS-i686	 = -g CC=gcc LD=gcc
 
-OBJ_DIR	   	= obj/$(ARCH)
-OUT_DIRS	= $(OBJ_DIR)
+OBJ_DIR	   	 = obj/$(ARCH)
+OUT_DIRS	 = $(OBJ_DIR)
+
+# install mex files and supporting m-files INSTALL_FILES into INSTALL_DIR
+INSTALL_DIR	 = /u/formes/lib/matlab
+INSTALL_FILES	 = $(mexfiles) loadsdiffile.m loadsdifflat.m
+
 
 #
 # rules
@@ -104,9 +113,6 @@ allsrc		= $(cfiles)
 all:			$(OUT_DIRS) $(mexfiles)
 loadsdif:		loadsdif.$(mexsuf)
 
-db:
-	$(MAKE) DEBUG=1
-
 # dependencies
 loadsdif.$(mexsuf):	loadsdif.c $(loadsdif_obj) $(pm_sdif)
 loadsdif.c:		loadsdif.h 
@@ -114,10 +120,15 @@ $(loadsdif_obj):	$(loadsdif_src) loadsdif.h
 
 # external builds
 sdif:
-			$(MAKE) -C $(HOME)/src/SDIF
+		$(MAKE) -C $(HOME)/src/SDIF
+db:
+		$(MAKE) DEBUG=1
 
-# test
-# testl.m
+test:		$(mexfiles)
+		echo testl | matlab -nosplash
+
+install:	all
+		cp $(INSTALL_FILES) $(INSTALL_DIR)
 
 clean mexclean cl:
 		-rm -f $(mexfiles)
@@ -129,6 +140,7 @@ ll:
 		@echo $(INCLUDE)
 		@echo $(udidepend)
 
+# report missing symbols in loadsdif lib
 mis missing:	$(mexfiles)
 		@echo; echo [missing objects in loadsdif]
 		nm loadsdif.$(mexsuf) | grep '| U | 0*$$'
