@@ -86,6 +86,8 @@ int main(int argc, char** argv)
 	{
 	    entity.AddNVT(readentity.GetNVT(i));
 	}	
+	entity.GetNVT(0).PrintNameValue("the_name");
+	entity.GetNVT(0).PrintNameValue("notthere");
     }
 
     /******** DESCRIPTION TYPE ********/
@@ -153,9 +155,9 @@ int main(int argc, char** argv)
 	  }
 	
 	/* to set the header of the new frame with the one of a frame :*/
-	frameTowrite.SetInfo(frame.GetSignature(),
-			     frame.GetStreamID(),
-			     frame.GetTime() );
+	frameTowrite.SetHeader(frame.GetSignature(),
+			       frame.GetStreamID(),
+			       frame.GetTime() );
 	
 	/* an other method can be :
 	   frameTowrite.SetStreamID(frame.GetStreamID());
