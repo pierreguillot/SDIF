@@ -1,10 +1,16 @@
-# $Id: makefile,v 1.16 2000-12-19 16:44:11 roebel Exp $
+# $Id: makefile,v 1.17 2001-02-07 15:54:13 roebel Exp $
 #
 # makefile	26. January 2000	Diemo Schwarz
 #
 # formesutils matlab library
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.16  2000/12/19 16:44:11  roebel
+# Fixed Bug in loadsdif - crash when last matrix was not selected
+# Moved test file sequence4seg1.energy.sdif into repository
+# Corrected sgi mex extension to mexsg such that sgi is now in
+# distribution
+#
 # Revision 1.15  2000/09/28 19:17:55  schwarz
 # Use new /u/formes/share directories.
 #
@@ -76,7 +82,7 @@ include mex.makedefs
 
 V_MAJOR 	= 0
 V_MINOR 	= 1
-V_RELEASE	= 6
+V_RELEASE	= 7
 VERSION		= $(V_MAJOR).$(V_MINOR).$(V_RELEASE)
 CVSTAG		= sdif_matlab_v$(V_MAJOR)_$(V_MINOR)_$(V_RELEASE)
 
@@ -112,7 +118,12 @@ writesdif_src	= writesdif-subs.c
 loadsdif_obj	= $(loadsdif_src:%.c=$(OBJ_DIR)/%.o)
 writesdif_obj	= $(writesdif_src:%.c=$(OBJ_DIR)/%.o)
 cfiles		= $(mexbase:%=%.c) $(loadsdif_src) $(writesdif_src) 
+
+ifeq ($(ARCH),i686)
+mexfiles	= $(notdir $(mexbase:%=%.$(MEXSUF))) $(notdir $(mexbase:%=%.$(MEX6SUF)))
+else
 mexfiles	= $(notdir $(mexbase:%=%.$(MEXSUF)))
+endif
 mfiles		= loadsdif.m loadsdiffile.m loadsdifflat.m \
 		  writesdif.m sdifexist.m 
 allsrc		= $(cfiles)
@@ -166,6 +177,11 @@ writesdif.$(MEXSUF):	writesdif.c $(writesdif_obj) $(SDIF_LIB)
 writesdif.c:		writesdif.h 
 $(writesdif_obj):	$(writesdif_src) writesdif.h
 
+ifeq ($(ARCH),i686)
+loadsdif.$(MEX6SUF):	loadsdif.c  $(loadsdif_obj)  $(SDIF_LIB)
+writesdif.$(MEX6SUF):	writesdif.c $(writesdif_obj) $(SDIF_LIB)
+endif
+
 # external builds
 sdif:
 		$(MAKE) -C $(HOME)/src/SDIF
@@ -176,14 +192,27 @@ test:		$(mexfiles) testrw testl t1.sdif
 
 testrw rw:	gen
 		echo 'testrw'  |  matlab -nosplash
+ifeq ($(ARCH),i686)
+		echo 'testrw'  |  matlab6 -nojvm -nosplash
+endif
+
 testl:
 		echo testl     | matlab -nosplash
+ifeq ($(ARCH),i686)
+		echo testl     | matlab6 -nojvm -nosplash
+endif
+
 t1t:	
 		SDIFTYPES=testtypes.styp;export SDIFTYPES; $(MAKE) t1.sdif
 t1.sdif:
 		echo "testwrite('$@'), loadsdiffile('$@')"  |  matlab -nosplash
 		querysdif $@
 		sdiftotext -i $@
+ifeq ($(ARCH),i686)
+		echo "testwrite('$@'), loadsdiffile('$@')"  |  matlab6 -nojvm -nosplash
+		querysdif $@
+		sdiftotext -i $@
+endif
 
 install:	all $(INSTALL_DIR)
 		cp -f $(INSTALL_FILES) $(INSTALL_DIR)

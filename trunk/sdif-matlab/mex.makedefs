@@ -1,8 +1,14 @@
-# -*-makefile-*- $Id: mex.makedefs,v 1.7 2000-12-19 16:44:11 roebel Exp $
+# -*-makefile-*- $Id: mex.makedefs,v 1.8 2001-02-07 15:54:18 roebel Exp $
 #
 # Commonly used settings for compiling matlab mex extensions.
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.7  2000/12/19 16:44:11  roebel
+# Fixed Bug in loadsdif - crash when last matrix was not selected
+# Moved test file sequence4seg1.energy.sdif into repository
+# Corrected sgi mex extension to mexsg such that sgi is now in
+# distribution
+#
 # Revision 1.6  2000/11/09 16:23:32  schwarz
 # Using /u/formes/share and HOSTTYPE but still ARCH for paths.
 #
@@ -58,20 +64,27 @@ mexpath-sgi      = /usr/LOCAL/matlab
 mexpath-iris4d   = /usr/LOCAL/matlab
 mexpath-i386     = /usr/local/matlab
 mexpath-i686     = /usr/local/matlab
+mexpath-i686-6   = /data/matlab-6
 mexpath-	 = WARNING UNKNOWN ARCH
 MEXPATH		 = $(mexpath-$(ARCH))
+MEX6PATH	 = $(mexpath-$(ARCH)-6)
 
 # mex suffix per arch
 mex-alpha	 = mexaxp
 mex-sgi		 = mexsg
 mex-iris4d	 = mexsg
 mex-i386	 = mexlx
-mex-i686	 = mexlx
+# matlab 5 and matlab 6
+mex-i686	 = mexlx 
+mex-i686-6	 = mexglx
 MEXSUF     	 = $(mex-$(ARCH))
-ALLMEXSUF	 = $(mex-alpha) $(mex-sgi) $(mex-i686)
+MEX6SUF    	 = $(mex-$(ARCH)-6)
+
+ALLMEXSUF	 = $(mex-alpha) $(mex-sgi) $(mex-i686)  $(mex-i686-6) 
 
 # mex compiler
 MEX	   	 = $(MEXPATH)/bin/mex
+MEX6	   	 = $(MEX6PATH)/bin/mex
 
 # mex includes
 MEXINCL		 = $(MEXPATH)/extern/include
@@ -120,12 +133,15 @@ INCL	   	+= -I$(GLOBAL_INCL) -I$(MEXINCL) -I/usr/include -I/usr/local/include/
 # rules
 #
 
-.SUFFIXES:	.o .c .$(MEXSUF)
+.SUFFIXES:	.o .c .$(MEXSUF) .$(MEX6SUF)
 
 .c.o:
 		$(MEX-COMPILE)
 .c.$(MEXSUF):
 		$(MEX-LINK)
+
+.c.$(MEX6SUF):
+		$(MEX6-LINK)
 
 define MEX-COMPILE
 	$(CC) -c $(CFLAGS) $(INCL) $< -o $@
@@ -134,3 +150,8 @@ endef
 define MEX-LINK
 	$(MEX) -v -g $(MEXFLAGS) $(INCL) $(LINKFLAGS) $(LFLAGS) $(mexflags-$(@F)) $^
 endef
+
+define MEX6-LINK
+	$(MEX6) -v -g $(MEXFLAGS) $(INCL)  $(LFLAGS) $(mexflags-$(@F)) $^
+endef
+
