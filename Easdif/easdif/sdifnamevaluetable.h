@@ -33,9 +33,12 @@
  * 
  *
  * 
- * $Id: sdifnamevaluetable.h,v 1.5 2003-04-29 15:54:08 schwarz Exp $ 
+ * $Id: sdifnamevaluetable.h,v 1.6 2003-05-19 13:59:40 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.5  2003/04/29 15:54:08  schwarz
+ * Use SWIG_RENAME_EASDIF to control class renaming.
+ *
  * Revision 1.4  2003/04/29 15:41:30  schwarz
  * Changed all names View* to Print* and *Info to *Header for consistency
  * with SDIF library.
@@ -94,11 +97,6 @@ namespace Easdif {
  * SDIFNameValueTable is composed of different methods which permits to
  * manipulate a Name Value Table.
  */
-
-// shorten SWIG class name because we prefix with SDIF:: anyway
-#ifdef SWIG_RENAME_EASDIF
-%name(NameValueTable)
-#endif
 
 class SDIFNameValueTable
 {

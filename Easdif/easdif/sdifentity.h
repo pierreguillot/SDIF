@@ -32,9 +32,12 @@
  * 
  * 
  * 
- * $Id: sdifentity.h,v 1.8 2003-05-01 18:59:12 roebel Exp $ 
+ * $Id: sdifentity.h,v 1.9 2003-05-19 13:59:40 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.8  2003/05/01 18:59:12  roebel
+ * Added missing class keyword for friend declaration.
+ *
  * Revision 1.7  2003/04/29 15:54:04  schwarz
  * Use SWIG_RENAME_EASDIF to control class renaming.
  *
@@ -114,10 +117,6 @@ namespace Easdif {
  * 
  */
 
-// shorten SWIG class name because we prefix with SDIF:: anyway
-#ifdef SWIG_RENAME_EASDIF
-%name(Entity)
-#endif
 
 class SDIFEntity
 {
