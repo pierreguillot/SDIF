@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.1 2003-03-07 17:34:09 roebel Exp $
+# $Id: Makefile.am,v 1.2 2003-03-18 14:56:52 roebel Exp $
 #
 # ./sdifcpp/Makefile.am		March 2003		Axel Roebel
 #
@@ -30,11 +30,14 @@
 
 
 # $Log: not supported by cvs2svn $
+# Revision 1.1  2003/03/07 17:34:09  roebel
+# cplusplus compilation is moved in its own directory.
+#
 
 
 
-EXTRA_LIBRARIES = libsdif-cpp.a 
-noinst_LIBRARIES = @SELLIBCPP@
+EXTRA_LTLIBRARIES = libsdif-cpp.la 
+noinst_LTLIBRARIES = @SELLIBCPP@
 
 FORMES_H=host_architecture.h  preincluded.h UniversalEnvVar.h  XpGuiCalls.h
 FORMES_INCLUDE=/u/formes/share/include
@@ -58,7 +61,7 @@ SDIF_H = ../include/sdif_version.h $(top_srcdir)/include/sdif.h \
 noinst_HEADERS = $(SDIF_H) $(addprefix $(top_srcdir)/sdif/,${FORMES_H})
 
 if ENABLECPP
-libsdif_cpp_a_SOURCES = \
+libsdif_cpp_la_SOURCES = \
 	SdifHash.cpp       SdifGlobals.cpp      SdifSignatureTab.cpp   \
 	SdifMemory.cpp     SdifNameValue.cpp    SdifMatrixType.cpp     \
 	SdifStreamID.cpp   SdifMatrix.cpp       SdifFrame.cpp          \
@@ -71,21 +74,21 @@ libsdif_cpp_a_SOURCES = \
 	SdifPrint.cpp      SdifRWLowLevel.cpp   SdifFPut.cpp           \
 	SdifConvToText.cpp SdifPreTypes.cpp
 else
-libsdif_cpp_a_SOURCES = 
+libsdif_cpp_la_SOURCES = 
 endif
 
-CLEANFILES = $(libsdif_cpp_a_SOURCES) SdifVersion.h
+CLEANFILES = $(libsdif_cpp_la_SOURCES) SdifVersion.h
 sdiftype = $(datadir)/SdifTypes.STYP
 
 INCLUDES = -I../include -I$(top_srcdir)/include -I../sdif -I$(top_srcdir)/sdif -D_SdifTypesFileName=\"$(sdiftype)\" -DUSE_CONFIGURE
 
 
-$(libsdif_cpp_a_SOURCES) : $(FORMES_H:%=$(top_srcdir)/sdif/%)
+$(libsdif_cpp_la_SOURCES) : $(FORMES_H:%=$(top_srcdir)/sdif/%)
 
-$(libsdif_cpp_a_SOURCES) : %.cpp : ../sdif/%.c 
+$(libsdif_cpp_la_SOURCES) : %.cpp : ../sdif/%.c 
 	cp  $< $@
 
-BUILT_SOURCES = $(libsdif_cpp_a_SOURCES) 
+BUILT_SOURCES = $(libsdif_cpp_la_SOURCES) 
 
 # dont use c compiler implicite rule which would override use of c++ 
 %.o : %.c
@@ -97,7 +100,7 @@ BUILT_SOURCES = $(libsdif_cpp_a_SOURCES)
 SdifFile.o : SdifVersion.h
 
 # Versionsrc := $(libsdif_a_SOURCES) $(subst config.h,,$(subst $(top_srcdir)/sdif/SdifVersion.h,,$(noinst_HEADERS) )) 
-Versionsrc := $(libsdif_cpp_a_SOURCES) $(subst ../sdif/config.h,,$(subst $(top_srcdir)/sdif/SdifVersion.h,,$(noinst_HEADERS) )) 
+Versionsrc := $(libsdif_cpp_la_SOURCES) $(subst ../sdif/config.h,,$(subst $(top_srcdir)/sdif/SdifVersion.h,,$(noinst_HEADERS) )) 
 
 
 SdifVersion.h : $(Versionsrc)
