@@ -1,10 +1,13 @@
-# $Id: makefile,v 1.34 2004-03-30 18:10:44 roebel Exp $
+# $Id: makefile,v 1.35 2004-07-20 14:48:39 roebel Exp $
 #
 # makefile	26. January 2000	Diemo Schwarz
 #
 # formesutils matlab library
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.34  2004/03/30 18:10:44  roebel
+# Improved dist creation when not all binaries are available.
+#
 # Revision 1.33  2004/02/19 10:56:32  schwarz
 # install loadsdifbpf
 #
@@ -198,15 +201,16 @@ mexsuf.inc.$(ARCH):
 #
 # FILES
 #
-mexbase		= loadsdif writesdif
+mexbase		= loadsdif writesdif issdiffile
 loadsdif_mex    = $(foreach suf,$(MEXSUF),loadsdif.$(suf))
 writesdif_mex    = $(foreach suf,$(MEXSUF),writesdif.$(suf))
+issdif_mex    = $(foreach suf,$(MEXSUF),issdiffile.$(suf))
 
 loadsdif_src	= loadsdif-subs.c
 writesdif_src	= writesdif-subs.c
 cfiles		= $(mexbase:%=%.c) $(loadsdif_src) $(writesdif_src) 
 hfiles		= $(mexbase:%=%.h)
-mexfiles	= $(loadsdif_mex)  $(writesdif_mex) 
+mexfiles	= $(loadsdif_mex)  $(writesdif_mex) $(issdif_mex) 
 
 mfiles		= loadsdif.m loadsdiffile.m loadsdifflat.m loadsdifbpf.m \
 		  writesdif.m sdifexist.m 
@@ -256,6 +260,13 @@ $(writesdif_mex) : writesdif.c writesdif-subs.c $(SDIF_LIB) writesdif.h
 	   echo Compiling:; \
 	   echo $$mexcmd  -O '-DVERS=\"$(VERSION)\"' $(INCL) $(LINKFLAGS) writesdif.c writesdif-subs.c $(SDIF_LIB);\
 	   $$mexcmd  -O '-DVERS=\"$(VERSION)\"' $(INCL) $(LINKFLAGS) writesdif.c writesdif-subs.c $(SDIF_LIB);\
+	done	
+
+$(issdif_mex) : issdiffile.c  $(SDIF_LIB) 
+	@for mexcmd in $(MEXCMD); do \
+	   echo Compiling:; \
+	   echo $$mexcmd  -O '-DVERS=\"$(VERSION)\"' $(INCL) $(LINKFLAGS)  issdiffile.c $(SDIF_LIB);\
+	   $$mexcmd  -O '-DVERS=\"$(VERSION)\"' $(INCL) $(LINKFLAGS) issdiffile.c $(SDIF_LIB);\
 	done	
 
 
