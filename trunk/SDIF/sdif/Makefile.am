@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.31 2003-11-07 15:27:33 tisseran Exp $
+# $Id: Makefile.am,v 1.32 2003-11-07 21:47:18 roebel Exp $
 #
 # ./sdif/Makefile.am		September 2000		Patrice Tisserand
 #
@@ -30,6 +30,10 @@
 
 
 # $Log: not supported by cvs2svn $
+# Revision 1.31  2003/11/07 15:27:33  tisseran
+# Removed CKSUM computing.
+# Removed generation of SdifFile.h
+#
 # Revision 1.30  2003/06/24 15:24:21  roebel
 # Removed UniversalEnvVar.h which in fact has never been used in SDIF.
 #
@@ -148,10 +152,6 @@ EXTRA_LTLIBRARIES = libsdif.la libsdif-debug.la
 # lib_LIBRARIES = @SELLIB@
 lib_LTLIBRARIES = @SELLIB@
 
-
-FORMES_H=host_architecture.h  preincluded.h   XpGuiCalls.h
-FORMES_INCLUDE=/u/formes/share/include
-
 SDIF_H = ../include/sdif_version.h $(top_srcdir)/include/sdif.h \
 	SdifCheck.h 	SdifErrMess.h	SdifConvToText.h 	\
 	SdifError.h 	SdifFGet.h 	SdifFPrint.h 		\
@@ -164,9 +164,9 @@ SDIF_H = ../include/sdif_version.h $(top_srcdir)/include/sdif.h \
 	SdifPrint.h 	SdifSelect.h	SdifRWLowLevel.h	\
 	SdifStreamID.h	SdifString.h 	SdifSignatureTab.h	\
 	SdifTest.h 	SdifTextConv.h 	sdiftypes.h		\
-	project_preinclude.h config.h
+	sdif_portability.h host_architecture.h  config.h
 
-noinst_HEADERS = $(SDIF_H) $(addprefix $(top_srcdir)/sdif/,${FORMES_H})
+noinst_HEADERS = $(SDIF_H) 
 
 libsdif_la_SOURCES = SdifHash.c       SdifGlobals.c      SdifSignatureTab.c   \
 		     SdifMemory.c     SdifNameValue.c    SdifMatrixType.c     \
@@ -196,15 +196,4 @@ $(libsdif_a_SOURCES) :  $(FORMES_H:%=$(top_srcdir)/sdif/%)
 $(libsdif_la_SOURCES) : $(FORMES_H:%=$(top_srcdir)/sdif/%)
 
 
-#
-# EXTRA FOR IRCAM STUFF
-#
 
-if ISATIRCAM
-ircam_cmp = $(FORMES_INCLUDE)/$(notdir $(1))
-else
-ircam_cmp = 
-endif
-
-$(FORMES_H:%=$(top_srcdir)/sdif/%) : $(top_srcdir)/sdif/% : $(call ircam_cmp,%)
-	cp $< $@

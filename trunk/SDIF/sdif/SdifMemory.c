@@ -32,6 +32,9 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.8  2003/08/06 15:18:08  schwarz
+ * SdifCalloc now does what it appears to do: clear memory
+ *
  * Revision 3.7  2001/05/02 09:34:46  tisseran
  * Change License from GNU Public License to GNU Lesser Public License.
  *
@@ -73,7 +76,7 @@
 
 
 
-#include <preincluded.h>
+#include "sdif_portability.h"
 
 #include "SdifMemory.h"
 

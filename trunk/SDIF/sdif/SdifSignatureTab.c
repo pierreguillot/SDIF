@@ -1,4 +1,4 @@
-/* $Id: SdifSignatureTab.c,v 3.4 2001-05-02 09:34:47 tisseran Exp $
+/* $Id: SdifSignatureTab.c,v 3.5 2003-11-07 21:47:18 roebel Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -30,6 +30,9 @@
  * Handling of a Table of Signatures
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.4  2001/05/02 09:34:47  tisseran
+ * Change License from GNU Public License to GNU Lesser Public License.
+ *
  * Revision 3.3  2000/11/15 14:53:35  lefevre
  * no message
  *
@@ -45,7 +48,7 @@
  *
  */
 
-#include <preincluded.h>
+#include "sdif_portability.h"
 
 #include "SdifSignatureTab.h"
 

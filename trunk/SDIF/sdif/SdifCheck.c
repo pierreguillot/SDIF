@@ -1,4 +1,4 @@
-/* $Id: SdifCheck.c,v 3.5 2001-05-02 09:34:40 tisseran Exp $
+/* $Id: SdifCheck.c,v 3.6 2003-11-07 21:47:18 roebel Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -30,6 +30,9 @@
  * File test functions.
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.5  2001/05/02 09:34:40  tisseran
+ * Change License from GNU Public License to GNU Lesser Public License.
+ *
  * Revision 3.4  2000/11/15 14:53:23  lefevre
  * no message
  *
@@ -57,7 +60,7 @@
  *
  */
 
-#include <preincluded.h>
+#include "sdif_portability.h"
 
 #include "SdifCheck.h"
 #include "SdifFRead.h"

@@ -1,4 +1,4 @@
-/* $Id: SdifTextConv.c,v 3.10 2003-06-24 16:01:32 roebel Exp $
+/* $Id: SdifTextConv.c,v 3.11 2003-11-07 21:47:18 roebel Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -32,6 +32,9 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.10  2003/06/24 16:01:32  roebel
+ * permanently removed references to UniversalEnvVar.h
+ *
  * Revision 3.9  2003/06/24 15:25:01  roebel
  * Removed UniversalEnvVar.h which in fact has never been used in SDIF.
  *
@@ -82,8 +85,10 @@
  */
 
 
-#include <preincluded.h>
+#include "sdif_portability.h"
+#ifdef USE_XPGUI
 #include "XpGuiCalls.h"
+#endif
 
 #include "SdifTextConv.h"
 #include "SdifFile.h"
@@ -219,7 +224,6 @@ SdifFTextConvAllFrame(SdifFileT *SdifF)
     SizeR = 0,
     SizeW = 0;
   int CharEnd = 0;
-  long fileSize;
 
   while ((CharEnd != eEof) && (SdifFCurrSignature(SdifF) != eENDC))
     {
@@ -228,9 +232,12 @@ SdifFTextConvAllFrame(SdifFileT *SdifF)
          return SizeW;
       SdifFCleanCurrSignature(SdifF);
       CharEnd = SdiffGetSignature (SdifF->TextStream, &(SdifF->CurrSignature), &SizeR);
-
-      fileSize = ftell(SdifF->TextStream);
-      XpProBarSet((float)fileSize);
+#ifdef USE_XPGUI
+      {
+	long int fileSize = ftell(SdifF->TextStream);
+	XpProBarSet((float)fileSize);
+      }
+#endif
     }
 
   if (CharEnd == eEof)
@@ -327,7 +334,6 @@ size_t
 SdifTextToSdif(SdifFileT *SdifF, char *TextStreamName)
 {
   size_t FileSizeW = 0;
-  long   fileSize = 0;
 
   if (SdifF->Mode != eWriteFile)
     _SdifFError(SdifF, eBadMode, "it must be eWriteFile");
@@ -355,10 +361,13 @@ SdifTextToSdif(SdifFileT *SdifF, char *TextStreamName)
 	    }
       else
         {
-          fileSize = XpFileSize(TextStreamName);
-          XpProBarString("Convert Text To Sdif");
-          XpProBarInit((float)fileSize);
-
+#ifdef USE_XPGUI
+	  {
+	    long int fileSize = XpFileSize(TextStreamName);
+	    XpProBarString("Convert Text To Sdif");
+	    XpProBarInit((float)fileSize);
+	  }
+#endif
           FileSizeW = SdifFTextConv(SdifF);
           fflush(SdifF->Stream);
  

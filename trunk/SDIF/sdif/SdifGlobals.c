@@ -1,4 +1,4 @@
-/* $Id: SdifGlobals.c,v 3.12 2003-07-18 21:08:55 roebel Exp $
+/* $Id: SdifGlobals.c,v 3.13 2003-11-07 21:47:18 roebel Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -31,6 +31,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.12  2003/07/18 21:08:55  roebel
+ * Added new datatypes eInt1 and eUInt1 to SdifDataTypeKnown.
+ *
  * Revision 3.11  2001/05/02 09:34:43  tisseran
  * Change License from GNU Public License to GNU Lesser Public License.
  *
@@ -112,7 +115,7 @@
  *
  */
 
-#include <preincluded.h>
+#include "sdif_portability.h"
 
 #include "SdifGlobals.h"
 #include <string.h>

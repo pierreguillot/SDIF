@@ -1,4 +1,4 @@
-/* $Id: sdifextract.c,v 1.11 2003-03-18 14:20:59 roebel Exp $
+/* $Id: sdifextract.c,v 1.12 2003-11-07 21:47:19 roebel Exp $
  
                 Copyright (c) 1998 by IRCAM - Centre Pompidou
                            All rights reserved.
@@ -13,6 +13,9 @@
    Extract data from an SDIF-file.  
    
    $Log: not supported by cvs2svn $
+   Revision 1.11  2003/03/18 14:20:59  roebel
+   Fixed seg fault on MacOSX - large arrays are now global
+
    Revision 1.10  2002/05/24 19:41:51  ftissera
    Change code to be compatible with C++
 
@@ -139,7 +142,7 @@
 */
 
 
-#include <preincluded.h>
+#include "sdif_portability.h"
 #include "XpGuiCalls.h"
 
 #include "sdif.h"
@@ -205,7 +208,7 @@ void usage (char *msg, char *arg, int longhelp)
     }
     if (longhelp)
     {
-    	fprintf (SdifStdErr, "\n" PROG "version $Revision: 1.11 $\n\n");
+    	fprintf (SdifStdErr, "\n" PROG "version $Revision: 1.12 $\n\n");
     
     	if (types)
     	{

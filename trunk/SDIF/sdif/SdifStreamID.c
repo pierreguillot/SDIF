@@ -1,4 +1,4 @@
-/* $Id: SdifStreamID.c,v 3.8 2002-05-24 19:37:52 ftissera Exp $
+/* $Id: SdifStreamID.c,v 3.9 2003-11-07 21:47:18 roebel Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -32,6 +32,10 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.8  2002/05/24 19:37:52  ftissera
+ * Change code to be compatible with C++
+ * Cast pointers to correct type.
+ *
  * Revision 3.7  2001/05/02 09:34:48  tisseran
  * Change License from GNU Public License to GNU Lesser Public License.
  *
@@ -75,7 +79,7 @@
 
 
 
-#include <preincluded.h>
+#include "sdif_portability.h"
 
 #include "SdifStreamID.h"
 #include <stdlib.h>

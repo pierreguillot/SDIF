@@ -3,7 +3,7 @@
 /*	Adrien Lefevre - IRCAM - 09/97											*/
 /*--------------------------------------------------------------------------*/
 
-#include <preincluded.h>
+#include "sdif_portability.h"
 #include "XpGuiCalls.h"
 
 #include "sdif.h"

@@ -1,4 +1,4 @@
-/* $Id: SdifError.c,v 3.13 2003-11-07 12:09:08 ellis Exp $
+/* $Id: SdifError.c,v 3.14 2003-11-07 21:47:18 roebel Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -31,6 +31,10 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.13  2003/11/07 12:09:08  ellis
+ * Added the declaration of of two functions in the header file
+ * SdifFAllFrameTypeToSdifString and SdifFAllMatrixTypeToSdifString
+ *
  * Revision 3.12  2002/08/05 14:21:08  roebel
  * Comment changed.
  *
@@ -112,8 +116,10 @@
  */
 
 
-#include <preincluded.h>
+#include "sdif_portability.h"
+#ifdef USE_XPGUI
 #include "XpGuiCalls.h"
+#endif
 
 #include "SdifError.h"
 #include <stdlib.h>
@@ -136,7 +142,11 @@ char gSdifBufferError[4096];
 static void 
 SdifExit (void)
 {
+#ifdef USE_XPGUI
     XpExit(1);
+#else
+    exit(1);
+#endif
 }
 
 

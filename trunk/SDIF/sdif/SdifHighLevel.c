@@ -1,4 +1,4 @@
-/* $Id: SdifHighLevel.c,v 3.7 2002-08-28 16:52:39 schwarz Exp $
+/* $Id: SdifHighLevel.c,v 3.8 2003-11-07 21:47:18 roebel Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -29,6 +29,11 @@
  * SdifHighLevel.c	8.12.1999	Diemo Schwarz
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.7  2002/08/28 16:52:39  schwarz
+ * Fixed bug that end of file was not recognised:
+ * signature is then eEmptySignature, and not eEof.
+ * Error check for SdifFReadFrameHeader.
+ *
  * Revision 3.6  2001/05/02 09:34:44  tisseran
  * Change License from GNU Public License to GNU Lesser Public License.
  *
@@ -61,7 +66,7 @@
 
 
 /* include */		 /* to get these definitions: */
-#include <preincluded.h>
+#include "sdif_portability.h"
 
 #include "SdifGlobals.h"
 #include "SdifFile.h"

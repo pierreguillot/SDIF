@@ -1,4 +1,4 @@
-/* $Id: SdifConvToText.c,v 3.9 2003-06-24 16:01:32 roebel Exp $
+/* $Id: SdifConvToText.c,v 3.10 2003-11-07 21:47:18 roebel Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -30,6 +30,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.9  2003/06/24 16:01:32  roebel
+ * permanently removed references to UniversalEnvVar.h
+ *
  * Revision 3.8  2003/06/24 15:24:55  roebel
  * Removed UniversalEnvVar.h which in fact has never been used in SDIF.
  *
@@ -66,8 +69,10 @@
  *
  */
 
-#include <preincluded.h>
+#include "sdif_portability.h"
+#ifdef USE_XPGUI
 #include "XpGuiCalls.h"
+#endif
 
 #include "SdifConvToText.h"
 #include "SdifFile.h"
@@ -212,7 +217,6 @@ SdifFConvToTextAllFrame(SdifFileT *SdifF)
     SizeRSign = 0,
     SizeR = 0;
   int CharEnd = 0;
-  long fileSize;
 
   while (CharEnd != eEof)
     {
@@ -224,8 +228,12 @@ SdifFConvToTextAllFrame(SdifFileT *SdifF)
 	SizeR += SizeRSign;
 	SizeRSign = 0;
       }
-      fileSize = ftell(SdifF->Stream);
-      XpProBarSet((float)fileSize);
+#ifdef USEXPGUI
+      {
+	long int fileSize = ftell(SdifF->Stream);
+	XpProBarSet((float)fileSize);
+      }
+#endif
     }
 
   return SizeR;
@@ -270,7 +278,6 @@ size_t
 SdifToText(SdifFileT *SdifF, char *TextStreamName)
 {
   size_t SizeR = 0;
-  long   fileSize = 0;
   
   if (SdifF->Mode != eReadFile)
       _SdifFError(SdifF, eBadMode, "it must be eReadFile");
@@ -284,7 +291,7 @@ SdifToText(SdifFileT *SdifF, char *TextStreamName)
     }
   
   SdifF->TextStreamName = SdifCreateStrNCpy(TextStreamName, SdifStrLen(TextStreamName)+1);
-  
+
   if (SdifStrCmp(SdifF->TextStreamName, SdifF->Name) == 0)
     {
       sprintf(gSdifErrorMess, "Write=%s, Read=%s.", SdifF->TextStreamName, SdifF->Name);
@@ -300,10 +307,13 @@ SdifToText(SdifFileT *SdifF, char *TextStreamName)
 	    }
       else
         {
-          fileSize = XpFileSize(SdifF->Name);
-          XpProBarString("Convert Sdif To Text");
-          XpProBarInit((float)fileSize);
-
+#ifdef USEXPGUI
+	  {
+	    long int fileSize = XpFileSize(SdifF->Name);
+	    XpProBarString("Convert Sdif To Text");
+	    XpProBarInit((float)fileSize);
+	  }
+#endif
           SizeR = SdifFConvToText(SdifF);
           fflush(SdifF->TextStream);
 

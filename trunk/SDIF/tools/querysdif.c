@@ -1,4 +1,4 @@
-/* $Id: querysdif.c,v 1.6 2003-06-04 20:32:25 schwarz Exp $
+/* $Id: querysdif.c,v 1.7 2003-11-07 21:47:19 roebel Exp $
  
                 Copyright (c) 1998 by IRCAM - Centre Pompidou
                            All rights reserved.
@@ -14,6 +14,9 @@
    
 
    $Log: not supported by cvs2svn $
+   Revision 1.6  2003/06/04 20:32:25  schwarz
+   Finally: do statistics about matrix sizes.
+
    Revision 1.5  2002/05/24 19:41:51  ftissera
    Change code to be compatible with C++
 
@@ -60,7 +63,7 @@
 */
 
 
-#include <preincluded.h>
+#include "sdif_portability.h"
 #include "XpGuiCalls.h"
 
 #include "sdif.h"

@@ -1,4 +1,4 @@
-/* $Id: sdiftotext.c,v 1.4 2003-11-07 12:09:09 ellis Exp $
+/* $Id: sdiftotext.c,v 1.5 2003-11-07 21:47:20 roebel Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -11,6 +11,10 @@
  * sdiftotext.c
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.4  2003/11/07 12:09:09  ellis
+ * Added the declaration of of two functions in the header file
+ * SdifFAllFrameTypeToSdifString and SdifFAllMatrixTypeToSdifString
+ *
  * Revision 1.3  2000/12/06 13:43:44  lefevre
  * Mix HostArchiteture and AutoConfigure mechanisms
  *
@@ -54,7 +58,7 @@
  */
 
 
-#include <preincluded.h>
+#include "sdif_portability.h"
 #include "XpGuiCalls.h"
 
 #include <stdlib.h>
