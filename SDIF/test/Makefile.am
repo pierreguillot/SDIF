@@ -1,6 +1,6 @@
-# $Id: Makefile.am,v 1.12 2002-10-10 10:39:06 roebel Exp $
+# $Id: Makefile.am,v 1.13 2004-06-02 14:46:27 schwarz Exp $
 #
-# ./test/Makefile.am		September 2000			Patrice Tisserand
+# ./test/Makefile.am		September 2000		Patrice Tisserand
 #
 # Source file for GNU automake, generates Makefile.in.
 #
@@ -29,6 +29,9 @@
 # send email to:  sdif@ircam.fr
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.12  2002/10/10 10:39:06  roebel
+# Removed configure-variable @TESTLIB@ which can be derived from @SELLIB@.
+#
 # Revision 1.11  2002/09/24 13:20:34  schwarz
 # Added forgotten test programs to dist.
 #
@@ -66,7 +69,8 @@
 #
 # Revision 1.1.2.2  2000/10/26  17:27:40  schwarz
 # Added header with copyright and links to all Makefile.am and configure.in.
-#
+
+
 SUBDIRS = files
 EXTRA_DIST = $(TESTS) xpianoRes.m5.FIL.sdif
 
@@ -85,7 +89,26 @@ LDADD = -l$(basename $(subst lib,,@SELLIB@))
 LDFLAGS = -L../sdif
 INCLUDES = -I../include -I$(top_srcdir)/include
 
-TESTS_ENVIRONMENT = SDIFTYPES=$(top_srcdir)/data/SdifTypes.STYP $(SHELL)
+SDIFTYPES	  = $(top_srcdir)/data/SdifTypes.STYP 
+TESTS_ENVIRONMENT = SDIFTYPES=$(SDIFTYPES) $(SHELL)
 #TESTS = test_conv2  headerTest NVTTest cmd_testcheck
 TESTS = test_conv2  test_Header test_NVT cmd_testcheck
 
+
+#
+# profiling targets
+#
+
+profbase	= sdifextract
+profexe		= ../tools/$(profbase)-profile
+proffile	= a01
+profdata	= /net/slentem/data2/caterpillar/sounds/bach-menuhin/$(proffile).sdif
+proftag		= $(profbase)-$(VERSION)-$(proffile)$(descr)
+prof		= gprof -b
+
+prof:
+	-$(profexe) -T $(SDIFTYPES) $(profdata) > /tmp/$(proffile).sdif
+	$(prof) -i $(profexe) gmon.out			   # info
+	$(prof)    $(profexe) gmon.out >$(proftag).gprof   # flat + call graph
+	$(prof) -l $(profexe) gmon.out >$(proftag).gprof-l # line by line
+	$(prof) -A $(profexe) gmon.out >$(proftag).gprof-A # ann. prog. listing
