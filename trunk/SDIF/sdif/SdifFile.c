@@ -1,4 +1,4 @@
-/* $Id: SdifFile.c,v 3.13 2000-08-21 10:02:50 tisseran Exp $
+/* $Id: SdifFile.c,v 3.14 2000-08-22 13:17:24 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -16,6 +16,11 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.13  2000/08/21  10:02:50  tisseran
+ * Add information about compilation when use SdifPrintVersion:
+ * - Which SdifTypes.STYP is used.
+ * - Who made the compilation.
+ *
  * Revision 3.12  2000/08/07  15:05:45  schwarz
  * Error checking for read general header.
  * Remove double definition of 1GAI matrix type.
@@ -214,10 +219,14 @@ SdifFOpen(const char* Name, SdifFileModeET Mode)
 
       SdifF->TextStreamName   = NULL;
       SdifF->TextStream       = NULL;
-      SdifF->NbOfWarning = 0;
-
-      SdifF->Stream        = NULL;
-      SdifF->Errors        = SdifCreateErrorL(SdifF);
+      SdifF->Stream           = NULL;
+ 
+      SdifF->Errors		   = SdifCreateErrorL(SdifF);
+      SdifF->ErrorCount	[eFatal]   = 0;
+      SdifF->ErrorCount	[eError]   = 0;
+      SdifF->ErrorCount	[eWarning] = 0;
+      SdifF->ErrorCount	[eRemark]  = 0;
+      SdifF->ErrorCount	[eNoLevel] = 0;
 
       SdifF->NbUserData    = 0;
       
@@ -679,7 +688,7 @@ SdifGenKill(void)
 void SdifPrintVersion(void)
 {
 #ifndef lint
-    static char rcsid[]= "$Revision: 3.13 $ IRCAM $Date: 2000-08-21 10:02:50 $";
+    static char rcsid[]= "$Revision: 3.14 $ IRCAM $Date: 2000-08-22 13:17:24 $";
 #endif
     
     if (SdifStdErr == NULL)
@@ -908,6 +917,24 @@ SdifFPutInMtrxUsed (SdifFileT *SdifF, SdifSignature Sign)
 
 
 /* Error management */
+
+int SdifFNumErrors (SdifFileT *f, SdifErrorLevelET upto)
+{
+    int ret = 0;
+    switch (upto)	/* switch is much faster than loop */
+    {	/* sum no. of errors of level upto or more severe */
+    	case eNoLevel:	ret += f->ErrorCount [eNoLevel];
+    	case eRemark:	ret += f->ErrorCount [eRemark];
+    	case eWarning:	ret += f->ErrorCount [eWarning];
+    	case eError:	ret += f->ErrorCount [eError];
+    	case eFatal:	ret += f->ErrorCount [eFatal];
+    	break;
+    
+    	default:	assert (!"illegal argument for SdifErrorLevelET");
+    }
+    return (ret);
+}
+
 
 /* Return pointer to last error of file or NULL if there are no errors
    present.  */

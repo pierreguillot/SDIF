@@ -1,4 +1,4 @@
-/* $Id: SdifFile.h,v 3.8 2000-05-22 15:23:15 schwarz Exp $
+/* $Id: SdifFile.h,v 3.9 2000-08-22 13:17:24 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -17,6 +17,9 @@ LIBRARY
 
 LOG
  * $Log: not supported by cvs2svn $
+ * Revision 3.8  2000/05/22  15:23:15  schwarz
+ * Added functions to retrieve and inspect the stream ID table of a file.
+ *
  * Revision 3.7  2000/05/04  15:05:48  schwarz
  * SDIF Selection is now parsed automatically on opening a file,
  * and placed in file->Selection.
@@ -307,6 +310,13 @@ SdifSignature SdifFIsInMtrxUsed   (SdifFileT *SdifF, SdifSignature Sign);
 /*
 // FUNCTION GROUP:	Error flag for file
 */
+
+/*DOC: 
+  Return number of errors present for file of level upto or more
+  severe.  Example: SdifFNumErrors(f, eError) is true if an error or a
+  fatal error occurred since opening the file, false if there were
+  only warnings or remarks. */
+int SdifFNumErrors (SdifFileT *SdifF, SdifErrorLevelET upto);
 
 /*DOC: 
   Return pointer to last error struct or NULL if no error present

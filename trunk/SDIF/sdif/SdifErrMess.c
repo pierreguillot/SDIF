@@ -1,4 +1,4 @@
-/* $Id: SdifErrMess.c,v 3.8 2000-08-07 15:05:44 schwarz Exp $
+/* $Id: SdifErrMess.c,v 3.9 2000-08-22 13:17:23 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -15,6 +15,10 @@
  * author: Dominique Virolle 1998
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.8  2000/08/07  15:05:44  schwarz
+ * Error checking for read general header.
+ * Remove double definition of 1GAI matrix type.
+ *
  * Revision 3.7  2000/05/15  16:22:29  schwarz
  * Avoid warning about KillerFT function pointer type (ANSI prototype given).
  * Argument to kill func is now void *.
@@ -60,6 +64,15 @@
 
 char gSdifBufferError[4096];
 int  gSdifErrorOutputEnabled = 1;
+
+
+const char *gSdifErrorLevel [eNumLevels] = {
+    "Fatal Error",
+    "Error",
+    "Warning",
+    "Remark",
+    "Message",	/* eNoLevel, shouldn't occur */
+};
 
 
 const SdifErrorT gSdifErrMessFormat[] = {
@@ -177,16 +190,15 @@ SdifKillErrorL(SdifErrorLT *ErrorL)
 
 
 
-SdifErrorLT*
-SdifInsertTailError(SdifErrorLT* ErrorL, SdifErrorTagET Tag, const char* UserMess)
+SdifUInt4 SdifInsertTailError (SdifErrorLT* ErrorL, int ErrorCount [], 
+			       SdifErrorTagET Tag, const char* UserMess)
 {
-	SdifErrorT* NewError = NULL;
-
-	NewError = SdifCreateError(Tag, gSdifErrMessFormat[Tag].Level, UserMess);
+    SdifErrorLevelET	Level    = gSdifErrMessFormat[Tag].Level;
+    SdifUInt4		Count    = ++ErrorCount [Level];
+    SdifErrorT*		NewError = SdifCreateError(Tag, Level, UserMess);
 
     SdifListPutTail(ErrorL->ErrorList, NewError);
-
-	return ErrorL;
+    return Count;
 }
 
 
@@ -214,6 +226,19 @@ SdifLastErrorTag(SdifErrorLT *ErrorL)
 
 
 
+SdifUInt4 SdifFError (SdifFileT* SdifF, SdifErrorTagET ErrorTag, 
+		      const char *UserMess, const char *file, const int line)
+{
+    /* add to list and count error */
+    SdifUInt4 count = SdifInsertTailError (SdifF->Errors, SdifF->ErrorCount, 
+					   ErrorTag, UserMess);
+    SdifFsPrintError (gSdifBufferError, SdifF, SdifLastError(SdifF->Errors), 
+		      __FILE__, __LINE__);
+    if (gSdifErrorOutputEnabled)
+	fprintf (SdifStdErr, "%s", gSdifBufferError);
+    return count;    
+}
+
 
 SdifInt4
 SdifFsPrintError(char* oErrMess,
@@ -240,17 +265,17 @@ SdifFsPrintError(char* oErrMess,
 
 #if defined (DEBUG)  ||  defined (_DEBUG)
 	sprintf(HeadErrMess,
-			"*Sdif* Error %d of level %d (%s, %d)\n  SdifFile: %s",
+			"*Sdif* %s %d (%s, %d):\n  SdifFile: %s",
+			gSdifErrorLevel [Error->Level],
 			Error->Tag,
-			Error->Level,
   			LibFile,
   			LibLine,
   			SdifF->Name);
 #else
 	sprintf(HeadErrMess,
-			"*Sdif* Error %d of level %d\n  SdifFile: %s",
+			"*Sdif* %s %d:\n  SdifFile: %s",
+			gSdifErrorLevel [Error->Level],
 			Error->Tag,
-			Error->Level,
 			SdifF->Name);
 #endif /* ifdef DEBUG */
 

@@ -1,4 +1,4 @@
-/* $Id: SdifErrMess.h,v 3.4 2000-08-07 15:05:44 schwarz Exp $
+/* $Id: SdifErrMess.h,v 3.5 2000-08-22 13:17:24 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -15,6 +15,10 @@
  * author: Dominique Virolle 1998
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 3.4  2000/08/07  15:05:44  schwarz
+ * Error checking for read general header.
+ * Remove double definition of 1GAI matrix type.
+ *
  * Revision 3.3  2000/05/15  16:22:30  schwarz
  * Avoid warning about KillerFT function pointer type (ANSI prototype given).
  * Argument to kill func is now void *.
@@ -84,7 +88,8 @@ typedef enum SdifErrorLevelE
 	eError,
 	eWarning,
 	eRemark,
-	eNoLevel
+	eNoLevel,
+	eNumLevels	/* level count, must always be last */
 } SdifErrorLevelET;
 
 
@@ -120,11 +125,18 @@ SdifErrorT*	SdifCreateError		(SdifErrorTagET Tag,
 void		SdifKillError		(void *Error);
 SdifErrorLT*	SdifCreateErrorL	(SdifFileT* SdifF);
 void		SdifKillErrorL		(SdifErrorLT *ErrorL);
-SdifErrorLT*	SdifInsertTailError	(SdifErrorLT* ErrorL,
+SdifUInt4       SdifInsertTailError     (SdifErrorLT* ErrorL, 
+					 int ErrorCount [], 
 					 SdifErrorTagET Tag, 
 					 const char* UserMess);
 SdifErrorT*	SdifLastError		(SdifErrorLT *ErrorL);
 SdifErrorTagET	SdifLastErrorTag	(SdifErrorLT *ErrorL);
+
+SdifUInt4	SdifFError		(SdifFileT* SdifF, 
+					 SdifErrorTagET ErrorTag, 
+					 const char *UserMess, 
+					 const char *file, 
+					 const int line);
 SdifInt4	SdifFsPrintError	(char* oErrMess, SdifFileT* SdifF,
 					 SdifErrorT* Error,
 					 const char *LibFile, int LibLine);
@@ -146,8 +158,6 @@ extern int	gSdifErrorOutputEnabled;
 
 
 #define _SdifFError(SdifF, ErrorTag, UserMess) \
-(SdifInsertTailError(SdifF->Errors, ErrorTag, UserMess), \
- SdifFsPrintError(gSdifBufferError, SdifF, SdifLastError(SdifF->Errors), __FILE__, __LINE__), \
-gSdifErrorOutputEnabled  ?  fprintf(SdifStdErr,"%s", gSdifBufferError)  :  0)
+	 SdifFError(SdifF, ErrorTag, UserMess, __FILE__, __LINE__)
 
 #endif  /* _SdifErrMess_ */
