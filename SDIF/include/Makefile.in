@@ -13,11 +13,14 @@
 # $Id;$
 
 # $Log: not supported by cvs2svn $
+# Revision 1.1.2.2  2000/08/21  17:00:36  tisseran
+# *** empty log message ***
+#
 # Revision 1.1.2.1  2000/08/21  13:07:38  tisseran
 # *** empty log message ***
 #
 
-# $Date: 2000-08-21 17:00:37 $
+# $Date: 2000-08-21 17:08:39 $
 
 
 SHELL = @SHELL@
@@ -73,7 +76,7 @@ RANLIB = @RANLIB@
 VERSION = @VERSION@
 
 sdifincdir = $(prefix)/include
-sdifinc_HEADERS = sdiftypes.h sdifglobals.h
+sdifinc_HEADERS = sdif.h
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../sdif/config.h
 CONFIG_CLEAN_FILES = 
