@@ -33,9 +33,12 @@
  * 
  * 
  * 
- * $Id: sdifmatrixdata.h,v 1.13 2004-07-29 13:44:44 roebel Exp $ 
+ * $Id: sdifmatrixdata.h,v 1.14 2004-09-08 09:17:10 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.13  2004/07/29 13:44:44  roebel
+ * Fixed SetCol to use correct element offset as well.
+ *
  * Revision 1.12  2004/07/29 10:23:36  bogaards
  * GetCol uses col increment instead of row increment
  *
@@ -228,7 +231,7 @@ public:
     if (i<0 || i >= m_Nrows || j >= m_Ncols || j<0)
       {
 	throw SDIFArrayPosition(eError,
-				"Error in  SDIFMatrixData::Get!!! requested row is out of range !!!",
+				"Error in  SDIFMatrixData::Get!!! requested position is out of range !!!",
 				0,eArrayPosition,__FILE__,__LINE__);
       }
     return static_cast<TT>(m_Data[i*m_Ncols+j]);
@@ -472,7 +475,7 @@ public:
  */
    int GetNbRows() const
 	{
-	    return m_Nrows;
+          return m_Nrows;
 	}
 
 /** 
