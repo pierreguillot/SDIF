@@ -1,4 +1,4 @@
-/* $Id: SdifFScan.h,v 3.1 1999-03-14 10:56:46 virolle Exp $
+/* $Id: SdifFScan.h,v 3.1.2.1 2000-08-21 14:04:13 tisseran Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -16,6 +16,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.1  1999/03/14  10:56:46  virolle
+ * SdifStdErr add
+ *
  * Revision 2.3  1999/01/23  15:55:45  virolle
  * add querysdif.dsp, delete '\r' chars from previous commit
  *
@@ -44,8 +47,8 @@
  */
 
 
-#ifndef _SdifFScan_
-#define _SdifFScan_
+#ifndef _SDIFFSCAN_H
+#define _SDIFFSCAN_H 1
 
 #include "SdifGlobals.h"
 #include "SdifFileStruct.h"

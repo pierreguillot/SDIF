@@ -1,4 +1,4 @@
-/* $Id: SdifFGet.c,v 3.6 2000-08-21 10:02:47 tisseran Exp $
+/* $Id: SdifFGet.c,v 3.6.2.1 2000-08-21 14:04:06 tisseran Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -854,6 +854,8 @@ SdifFGetOneStreamIDfromSdifString(SdifFileT *SdifF, SdifStringT *SdifString)
 
   ReturnChar = SdiffGetStringUntilfromSdifString(SdifString, gSdifString,
 					      _SdifStringLen, CharsEnd);
+
+
 
 
   /* test if it's the last or not */

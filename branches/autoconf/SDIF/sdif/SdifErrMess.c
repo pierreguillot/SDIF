@@ -1,4 +1,4 @@
-/* $Id: SdifErrMess.c,v 3.8 2000-08-07 15:05:44 schwarz Exp $
+/* $Id: SdifErrMess.c,v 3.8.2.1 2000-08-21 14:04:03 tisseran Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -191,8 +191,6 @@ SdifInsertTailError(SdifErrorLT* ErrorL, SdifErrorTagET Tag, const char* UserMes
 
 
 
-/* Return pointer to last error of list or NULL if there are no errors
-   present.  */
 SdifErrorT*
 SdifLastError(SdifErrorLT *ErrorL)
 {
@@ -203,11 +201,12 @@ SdifLastError(SdifErrorLT *ErrorL)
 }
 
 
+
 SdifErrorTagET
 SdifLastErrorTag(SdifErrorLT *ErrorL)
 {
-    if (SdifListIsEmpty(ErrorL->ErrorList))
-	return eNoError;
+	if (SdifListIsEmpty(ErrorL->ErrorList))
+		return eNoError;
     else
         return ((SdifErrorT*) SdifListGetTail(ErrorL->ErrorList))->Tag;
 }

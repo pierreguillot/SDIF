@@ -1,4 +1,4 @@
-/* $Id: SdifFRead.h,v 3.6 2000-07-18 15:08:33 tisseran Exp $
+/* $Id: SdifFRead.h,v 3.6.2.1 2000-08-21 14:04:11 tisseran Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -16,6 +16,20 @@ LIBRARY
 
 LOG
  * $Log: not supported by cvs2svn $
+ * Revision 3.6  2000/07/18  15:08:33  tisseran
+ * This release implements the New SDIF Specification (june 1999):
+ * - Name Values Table are written in a 1NVT frame which contains a 1NVT matrix
+ * - Frame and matrix type declaration are written in a 1TYP frame which contains a 1TYP matrix.
+ * - Stream ID are written in a 1IDS frame which contains a 1IDS matrix.
+ *
+ * Read function accept the previous version of the specification (read a text frame without matrix) to be compatible with older SDIF files.
+ *
+ * SdifString.h and SdifString.c implements some string mangement (creation, destruction, append, test of end of string, getc, ungetc).
+ *
+ * WATCH OUT:
+ *      We don't care about the old SDIF Specification (_SdifFormatVersion < 3)
+ * To use _SdifFormatVersion < 3, get the previous release.
+ *
  * Revision 3.5  2000/05/15  16:23:07  schwarz
  * Avoided avoidable warnings.
  *
@@ -60,8 +74,8 @@ LOG
  */
 
 
-#ifndef _SdifFRead_
-#define _SdifFRead_
+#ifndef _SDIFFREAD_H 
+#define _SDIFFREAD_H 1
 
 #include "SdifGlobals.h"
 #include "SdifFileStruct.h"

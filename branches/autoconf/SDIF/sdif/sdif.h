@@ -1,4 +1,4 @@
-/* $Id: sdif.h,v 3.6 2000-07-18 15:08:42 tisseran Exp $
+/* $Id: sdif.h,v 3.6.2.1 2000-08-21 14:04:27 tisseran Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -18,6 +18,20 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.6  2000/07/18  15:08:42  tisseran
+ * This release implements the New SDIF Specification (june 1999):
+ * - Name Values Table are written in a 1NVT frame which contains a 1NVT matrix
+ * - Frame and matrix type declaration are written in a 1TYP frame which contains a 1TYP matrix.
+ * - Stream ID are written in a 1IDS frame which contains a 1IDS matrix.
+ *
+ * Read function accept the previous version of the specification (read a text frame without matrix) to be compatible with older SDIF files.
+ *
+ * SdifString.h and SdifString.c implements some string mangement (creation, destruction, append, test of end of string, getc, ungetc).
+ *
+ * WATCH OUT:
+ *      We don't care about the old SDIF Specification (_SdifFormatVersion < 3)
+ * To use _SdifFormatVersion < 3, get the previous release.
+ *
  * Revision 3.5  2000/07/06  19:01:50  tisseran
  * Add function for frame and matrix type declaration
  * Remove string size limitation for NameValueTable
@@ -69,6 +83,8 @@ extern "C" {
 #include <stdlib.h>
 #include <ctype.h>
 #include <string.h>
+
+#include "config.h" /* For autoconf */
   
 #include "SdifHash.h"
 #include "SdifError.h"

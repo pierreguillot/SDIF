@@ -1,4 +1,4 @@
-/* $Id: SdifSelect.c,v 3.11 2000-08-07 15:05:46 schwarz Exp $
+/* $Id: SdifSelect.c,v 3.11.2.1 2000-08-21 14:04:22 tisseran Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -577,8 +577,7 @@ SdifGetFilenameAndSelection (/*in*/  const char *filename,
     const char *spec = SdifSelectFindSelection (filename);
 
     SdifInitSelection  (sel, filename, spec  ?  spec - filename 
-					     :  (filename ? strlen (filename) 
-							  : 0));
+					     :  strlen (filename));
     if (spec)
 	SdifParseSelection (sel, spec + symlen (sst_specsep));
     return (sel->filename);

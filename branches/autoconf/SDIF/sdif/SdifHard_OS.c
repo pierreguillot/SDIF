@@ -1,4 +1,4 @@
-/* $Id: SdifHard_OS.c,v 3.5 2000-07-06 19:01:48 tisseran Exp $
+/* $Id: SdifHard_OS.c,v 3.5.2.1 2000-08-21 14:04:19 tisseran Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -11,6 +11,12 @@
  *
  * author: Dominique Virolle 1998
  * $Log: not supported by cvs2svn $
+ * Revision 3.5  2000/07/06  19:01:48  tisseran
+ * Add function for frame and matrix type declaration
+ * Remove string size limitation for NameValueTable
+ * TODO: 1TYP and 1IDS frame must contain an 1NVT (text) matrix
+ *       Actually, data are written with fprintf.
+ *
  * Revision 3.4  1999/10/07  15:12:24  schwarz
  * Added isSeekable flag in SdifFileT struct.  This allows to simplify the
  * many tests for stdio on opening the stream.
@@ -58,68 +64,86 @@
 
 #include "SdifMemory.h"
 
+/* To know what hardware we have (check endian and sizeof long ) 
+   Endian and size of long are checked in ./configure => config.h */
 SdifMachineET
 SdifGetMachineType(void)
 {
   unsigned int MachineType;
-  long *LongTest;
-  char CharTab[] = {0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08};
+/*    long *LongTest; */
+/*    char CharTab[] = {0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08}; */
 
   /* for 2nd part of tests if Little */
-  const char ConstCharTab[] = {'A', 'B', 'C', 'D'};
-  const unsigned int ConstDCBA = 'DCBA';
-  unsigned int *ConstUIntTest;
+/*    const char ConstCharTab[] = {'A', 'B', 'C', 'D'}; */
+/*    const unsigned int ConstDCBA = 'DCBA'; */
+/*    unsigned int *ConstUIntTest; */
 
-  LongTest = (long*) CharTab;
+/*    LongTest = (long*) CharTab; */
 
-#ifdef _LONG64BITS_
+/*#ifdef _LONG64BITS_
   switch (*LongTest)
-    {
-    case 0x0102030405060708 :
-      MachineType = eBigEndian64;
-	  break;
-    case 0x0807060504030201 :
-      MachineType = eLittleEndian64;
-	  break;
-    default :
-      MachineType = eUndefinedMachine;
-	  break;
-    }
-
-#else
-  switch (*LongTest)
-    {
-    case 0x01020304 :
-      MachineType = eBigEndian;
-	  break;
-    case 0x04030201 :
-      MachineType = eLittleEndian;
-	  break;
-   /*case 0x03040102 :
-    *MachineType = ePDPEndian;
-	*break;
-    */
-    default :
-      MachineType = eUndefinedMachine;
-      break;
-    }
-#endif /* _LONG64BITS */
-
+  {
+  case 0x0102030405060708 :
+  MachineType = eBigEndian64;
+  break;
+  case 0x0807060504030201 :
+  MachineType = eLittleEndian64;
+  break;
+  default :
+  MachineType = eUndefinedMachine;
+  break;
+  }
   
-  if (    (MachineType == eLittleEndian)
-       || (MachineType == eLittleEndian64)  )
-    {
-      /* there is supposed that sizeof(int)== 4 */
-      ConstUIntTest = (unsigned int*) ConstCharTab;
-      if ((*ConstUIntTest) == ConstDCBA)
-        {
-          if (MachineType == eLittleEndian)
-            MachineType = eLittleEndianLittleConst;
-          else
-          if (MachineType == eLittleEndian64)
-            MachineType = eLittleEndianLittleConst64;
-        }
-    }
+  #else
+  switch (*LongTest)
+  {
+  case 0x01020304 :
+  MachineType = eBigEndian;
+  break;
+  case 0x04030201 :
+  MachineType = eLittleEndian;
+  break;
+  default :
+  MachineType = eUndefinedMachine;
+  break;
+  }
+  #endif */ /* _LONG64BITS */
+  
+/* WORDS_BIG_ENDIAN and SIZEOF_LONG are defined in config.h */
+#ifdef WORDS_BIGENDIAN
+  if (SIZEOF_LONG == 4)
+      MachineType = eBigEndian;
+  else
+      MachineType = eBigEndian64;
+#else /* LITTLEENDIAN */
+#ifdef MULTICHAR_CHAR_CONSTANT_INVERSION 
+  if (SIZEOF_LONG == 4)
+      MachineType = eLittleEndianLittleConst;
+  else
+      MachineType = eLittleEndianLittleConst64;
+#else
+  if (SIZEOF_LONG == 4)
+      MachineType = eLittleEndian;
+  else
+      MachineType = eLittleEndian64;
+
+#endif /* MULTICHAR_CHAR_CONSTANT_INVERSION */
+#endif /* WORDS_BIGENDIAN */
+  
+/*    if (    (MachineType == eLittleEndian) */
+/*         || (MachineType == eLittleEndian64)  ) */
+/*      { */
+/*        there is supposed that sizeof(int)== 4 */
+/*        ConstUIntTest = (unsigned int*) ConstCharTab; */
+/*        if ((*ConstUIntTest) == ConstDCBA) */
+/*          { */
+/*            if (MachineType == eLittleEndian) */
+/*              MachineType = eLittleEndianLittleConst; */
+/*            else */
+/*            if (MachineType == eLittleEndian64) */
+/*              MachineType = eLittleEndianLittleConst64; */
+/*          } */
+/*      } */
   return MachineType;
 }
 

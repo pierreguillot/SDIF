@@ -1,4 +1,4 @@
-/* $Id: SdifConvToText.h,v 3.3 1999-09-28 13:08:49 schwarz Exp $
+/* $Id: SdifConvToText.h,v 3.3.2.1 2000-08-21 14:04:02 tisseran Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -15,6 +15,10 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.3  1999/09/28  13:08:49  schwarz
+ * Included #include <preincluded.h> for cross-platform uniformisation,
+ * which in turn includes host_architecture.h and SDIF's project_preinclude.h.
+ *
  * Revision 3.2  1999/08/25  18:32:33  schwarz
  * Added cocoon-able comments with sentinel "DOC:" (on a single line).
  *
@@ -42,8 +46,8 @@
  *
  */
 
-#ifndef _SdifConvToText_
-#define _SdifConvToText_
+#ifndef _SDIFCONVTOTEXT_H
+#define _SDIFCONVTOTEXT_H 1
 
 #include "SdifGlobals.h"
 #include "SdifFileStruct.h"

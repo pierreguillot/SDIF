@@ -1,4 +1,4 @@
-/* $Id: SdifFileStruct.h,v 3.6 2000-05-22 15:23:16 schwarz Exp $
+/* $Id: SdifFileStruct.h,v 3.6.2.1 2000-08-21 14:04:16 tisseran Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -15,6 +15,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.6  2000/05/22  15:23:16  schwarz
+ * Added functions to retrieve and inspect the stream ID table of a file.
+ *
  * Revision 3.5  2000/05/04  15:06:42  schwarz
  * Moved SdifSignatureTab into separate file SdifSignatureTab
  *
@@ -68,8 +71,8 @@
  *
  */
 
-#ifndef _SdifFileStruct_
-#define _SdifFileStruct_
+#ifndef _SDIFFILESTRUCT_H
+#define _SDIFFILESTRUCT_H 1
 
 #include "SdifGlobals.h"
 #include "SdifSignatureTab.h"

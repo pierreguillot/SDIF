@@ -1,4 +1,4 @@
-/* $Id: SdifErrMess.h,v 3.4 2000-08-07 15:05:44 schwarz Exp $
+/* $Id: SdifErrMess.h,v 3.4.2.1 2000-08-21 14:04:04 tisseran Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -30,8 +30,8 @@
  */
 
 
-#ifndef _SdifErrMess_
-#define _SdifErrMess_
+#ifndef _SDIFERRMESS_H
+#define _SDIFERRMESS_H 1
 
 #include "SdifGlobals.h"
 #include "SdifList.h"
@@ -45,12 +45,6 @@
 #define SdifFileT_
 typedef struct SdifFileS SdifFileT;
 #endif
-
-
-/*
-// DATA GROUP:	Error Handling
-*/
-
 
 typedef enum SdifErrorTagE
 {
@@ -110,10 +104,6 @@ struct SdifErrorLS
 };
 
 
-/*
-// FUNCTION GROUP:	Error Handling
-*/
-
 SdifErrorT*	SdifCreateError		(SdifErrorTagET Tag,
 					 SdifErrorLevelET Level, 
 					 const char* UserMess);
@@ -128,7 +118,6 @@ SdifErrorTagET	SdifLastErrorTag	(SdifErrorLT *ErrorL);
 SdifInt4	SdifFsPrintError	(char* oErrMess, SdifFileT* SdifF,
 					 SdifErrorT* Error,
 					 const char *LibFile, int LibLine);
-
 
 /*DOC:
   Switch output of error messages on stderr by _SdifFError on. 
