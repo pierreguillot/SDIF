@@ -1,4 +1,4 @@
-/* $Id: SdifFile.c,v 3.40 2004-02-08 14:26:58 ellis Exp $
+/* $Id: SdifFile.c,v 3.41 2004-02-10 14:55:41 roebel Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -33,6 +33,10 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.40  2004/02/08 14:26:58  ellis
+ *
+ * now the textual scanner parses correctly character datas
+ *
  * Revision 3.39  2003/12/15 13:14:50  schwarz
  * Added SdifFileT based functions SdifFSetPos, SdifFGetPos around the
  * Sdiff* Macros, to be callable from OpenMusic.
@@ -718,7 +722,11 @@ SdifFLoadPredefinedTypes(SdifFileT *SdifF, const char *TypesFileName)
 {
   if (SdifStrEq(TypesFileName, ""))
     {
+
+      /* No types requested so do not emit warning! */
+#if 0
       _SdifRemark("Load Coded Predefinied Types, it can be incomplete (file name null)\n");
+#endif
       /*
 	Old version (before version SDIF 3.3)
 	SdifTakeCodedPredefinedTypes(SdifF);
