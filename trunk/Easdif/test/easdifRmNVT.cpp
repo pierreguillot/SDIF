@@ -98,7 +98,7 @@ int main(int argc, char** argv)
 	  }
 	
 	/* to set the header of the new frame with the one of a frame :*/
-	frameTowrite.SetInfo(frame.GetSignature(),
+	frameTowrite.SetHeader(frame.GetSignature(),
 			     frame.GetStreamID(),
 			     frame.GetTime() );
 	
