@@ -1,4 +1,4 @@
-/* $Id: SdifNameValue.c,v 3.7 2001-05-02 09:34:46 tisseran Exp $
+/* $Id: SdifNameValue.c,v 3.8 2001-05-04 18:09:18 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -34,6 +34,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.7  2001/05/02 09:34:46  tisseran
+ * Change License from GNU Public License to GNU Lesser Public License.
+ *
  * Revision 3.6  2000/11/15 14:53:33  lefevre
  * no message
  *
@@ -365,6 +368,24 @@ SdifNameValuesLPutCurrNVT(SdifNameValuesLT *NameValuesL,
     return SdifNameValueTablePutNV(NameValuesL->CurrNVT, Name, Value);
 }
 
+
+SdifNameValueT*
+SdifNameValuesLPutCurrNVTTranslate(SdifNameValuesLT *NameValuesL, 
+		   const char *Name,  const char *Value)
+{
+    SdifNameValueT* ret;
+    char *tname  = strdup(Name);
+    char *tvalue = strdup(Value);
+
+    SdifStringToNV(tname);
+    SdifStringToNV(tvalue);
+
+    ret = SdifNameValueTablePutNV(NameValuesL->CurrNVT, tname, tvalue);
+
+    free(tname);
+    free(tvalue);
+    return ret;
+}
 
 
 SdifUInt2
