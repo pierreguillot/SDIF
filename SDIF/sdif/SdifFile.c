@@ -1,4 +1,4 @@
-/* $Id: SdifFile.c,v 3.33 2003-06-24 15:24:58 roebel Exp $
+/* $Id: SdifFile.c,v 3.34 2003-06-24 16:01:32 roebel Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -33,6 +33,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.33  2003/06/24 15:24:58  roebel
+ * Removed UniversalEnvVar.h which in fact has never been used in SDIF.
+ *
  * Revision 3.32  2003/06/06 10:25:44  schwarz
  * Added eReadWriteFile that eventually opens a file in read-write mode.
  *
@@ -215,9 +218,6 @@
 
 #include <preincluded.h>
 #include "XpGuiCalls.h"
-#if 0
-#include "UniversalEnvVar.h"
-#endif
 
 #include "SdifGlobals.h"
 #include "SdifFile.h"
@@ -246,7 +246,7 @@
 #include "SdifVersion.h"
 
 #ifndef AUTOCKSUM
-#define AUTOCKSUM "$Checksum: not available$ IRCAM $Date: 2003-06-24 15:24:58 $" 
+#define AUTOCKSUM "$Checksum: not available$ IRCAM $Date: 2003-06-24 16:01:32 $" 
 #endif
 
 #ifndef lint
