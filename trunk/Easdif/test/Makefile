@@ -11,7 +11,7 @@
 # even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 # PARTICULAR PURPOSE.
 
-# $Id: Makefile,v 1.8 2003-03-03 18:50:23 roebel Exp $
+# $Id: Makefile,v 1.9 2003-03-04 00:59:00 roebel Exp $
 #
 # ./Easdif/test/Makefile.am	Feb. 2003 Axel Roebel
 #
@@ -19,6 +19,9 @@
 #
 
 # $Log: not supported by cvs2svn $
+# Revision 1.2  2003/03/04 00:56:12  roebel
+# Fixed path problems for configuration not inside top_srcdir
+#
 # Revision 1.1  2003/03/03 10:04:25  roebel
 # Adapted for autoconf/automake...
 #
@@ -75,6 +78,8 @@ AS = @AS@
 CC = gcc
 CXX = c++
 DLLTOOL = @DLLTOOL@
+EASDIF_VERSION_MAJ = 
+EASDIF_VERSION_MIN = 
 ECHO = echo
 EXEEXT = 
 IRCAMDEPS = ircam_deps
@@ -85,38 +90,39 @@ OBJDUMP = @OBJDUMP@
 OBJEXT = o
 PACKAGE = Easdif
 RANLIB = ranlib
-SDIFOBJECTS =  $(top_srcdir)/SDIF/sdif/SdifCheck.lo $(top_srcdir)/SDIF/sdif/SdifConvToText.lo $(top_srcdir)/SDIF/sdif/SdifErrMess.lo $(top_srcdir)/SDIF/sdif/SdifError.lo $(top_srcdir)/SDIF/sdif/SdifFGet.lo $(top_srcdir)/SDIF/sdif/SdifFPrint.lo $(top_srcdir)/SDIF/sdif/SdifFPut.lo $(top_srcdir)/SDIF/sdif/SdifFRead.lo $(top_srcdir)/SDIF/sdif/SdifFScan.lo $(top_srcdir)/SDIF/sdif/SdifFWrite.lo $(top_srcdir)/SDIF/sdif/SdifFile.lo $(top_srcdir)/SDIF/sdif/SdifFrame.lo $(top_srcdir)/SDIF/sdif/SdifFrameType.lo $(top_srcdir)/SDIF/sdif/SdifGlobals.lo $(top_srcdir)/SDIF/sdif/SdifHard_OS.lo $(top_srcdir)/SDIF/sdif/SdifHash.lo $(top_srcdir)/SDIF/sdif/SdifHighLevel.lo $(top_srcdir)/SDIF/sdif/SdifList.lo $(top_srcdir)/SDIF/sdif/SdifMatrix.lo $(top_srcdir)/SDIF/sdif/SdifMatrixType.lo $(top_srcdir)/SDIF/sdif/SdifMemory.lo $(top_srcdir)/SDIF/sdif/SdifNameValue.lo $(top_srcdir)/SDIF/sdif/SdifPreTypes.lo $(top_srcdir)/SDIF/sdif/SdifPrint.lo $(top_srcdir)/SDIF/sdif/SdifRWLowLevel.lo $(top_srcdir)/SDIF/sdif/SdifSelect.lo $(top_srcdir)/SDIF/sdif/SdifSignatureTab.lo $(top_srcdir)/SDIF/sdif/SdifStreamID.lo $(top_srcdir)/SDIF/sdif/SdifString.lo $(top_srcdir)/SDIF/sdif/SdifTest.lo $(top_srcdir)/SDIF/sdif/SdifTextConv.lo $(top_srcdir)/SDIF/sdif/SdifTimePosition.lo
+SDIFOBJECTS =  ../SDIF/sdif/SdifCheck.lo ../SDIF/sdif/SdifConvToText.lo ../SDIF/sdif/SdifErrMess.lo ../SDIF/sdif/SdifError.lo ../SDIF/sdif/SdifFGet.lo ../SDIF/sdif/SdifFPrint.lo ../SDIF/sdif/SdifFPut.lo ../SDIF/sdif/SdifFRead.lo ../SDIF/sdif/SdifFScan.lo ../SDIF/sdif/SdifFWrite.lo ../SDIF/sdif/SdifFile.lo ../SDIF/sdif/SdifFrame.lo ../SDIF/sdif/SdifFrameType.lo ../SDIF/sdif/SdifGlobals.lo ../SDIF/sdif/SdifHard_OS.lo ../SDIF/sdif/SdifHash.lo ../SDIF/sdif/SdifHighLevel.lo ../SDIF/sdif/SdifList.lo ../SDIF/sdif/SdifMatrix.lo ../SDIF/sdif/SdifMatrixType.lo ../SDIF/sdif/SdifMemory.lo ../SDIF/sdif/SdifNameValue.lo ../SDIF/sdif/SdifPreTypes.lo ../SDIF/sdif/SdifPrint.lo ../SDIF/sdif/SdifRWLowLevel.lo ../SDIF/sdif/SdifSelect.lo ../SDIF/sdif/SdifSignatureTab.lo ../SDIF/sdif/SdifStreamID.lo ../SDIF/sdif/SdifString.lo ../SDIF/sdif/SdifTest.lo ../SDIF/sdif/SdifTextConv.lo ../SDIF/sdif/SdifTimePosition.lo
 SELLIB = libEasdif.la
 STRIP = strip
-VERSION = 
+VERSION = 0.30
 
 EXTRA_PROGRAMS = 
 bin_PROGRAMS = easdifRmNVT tutorini tutofini
 
+EASDIR = ../easdif
 easdifRmNVT_SOURCES = easdifRmNVT.cpp
 easdifRmNVT_LDADD = -lEasdif -lm
-easdifRmNVT_LDFLAGS = -L$(top_srcdir)/src
-easdifRmNVT_DEPENDENCIES = $(top_srcdir)/src/libEasdif.la
+easdifRmNVT_LDFLAGS = -L$(EASDIR)
+easdifRmNVT_DEPENDENCIES = $(EASDIR)/libEasdif.la
 
 tutorini_SOURCES = tutorini.cpp
 tutorini_LDADD = -lEasdif -lm
-tutorini_LDFLAGS = -L$(top_srcdir)/src
-tutorini_DEPENDENCIES = $(top_srcdir)/src/libEasdif.la
+tutorini_LDFLAGS = -L$(EASDIR)
+tutorini_DEPENDENCIES = $(EASDIR)/libEasdif.la
 
 tutofini_SOURCES = tutofini.cpp
 tutofini_LDADD = -lEasdif -lm
-tutofini_LDFLAGS = -L$(top_srcdir)/src
-tutofini_DEPENDENCIES = $(top_srcdir)/src/libEasdif.la
+tutofini_LDFLAGS = -L$(EASDIR)
+tutofini_DEPENDENCIES = $(EASDIR)/libEasdif.la
 
 CXXFLAGS = -g -I$(top_srcdir)  -I$(top_srcdir)/SDIF/include 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
-CONFIG_HEADER = ../src/config.h
+CONFIG_HEADER = ../easdif/easdif_version.h
 CONFIG_CLEAN_FILES = 
 bin_PROGRAMS =  easdifRmNVT$(EXEEXT) tutorini$(EXEEXT) tutofini$(EXEEXT)
 PROGRAMS =  $(bin_PROGRAMS)
 
 
-DEFS = -DHAVE_CONFIG_H -I. -I$(srcdir) -I../src
+DEFS = -DHAVE_CONFIG_H -I. -I$(srcdir) -I../easdif
 CPPFLAGS = 
 LDFLAGS = 
 LIBS = 
