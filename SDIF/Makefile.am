@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.11 2002-10-30 15:54:01 schwarz Exp $
+# $Id: Makefile.am,v 1.12 2002-10-30 16:09:20 schwarz Exp $
 #
 # ./Makefile.am		September 2000			Patrice Tisserand
 #
@@ -30,6 +30,11 @@
 
 
 # $Log: not supported by cvs2svn $
+# Revision 1.11  2002/10/30 15:54:01  schwarz
+# Added necessary files to dist.
+# Added src distribution target.
+# Updated publish method (not tested).
+#
 # Revision 1.10  2002/08/29 16:07:09  tisseran
 # Add support of pkg-config for SDIF library.
 # After installation, now you can use:
@@ -103,7 +108,7 @@ cvstag:
 # todo: configure DISTHOST
 DISTDIR       = sdif/download
 DISTFILE      = $(distdir)-src.tar.gz
-EXTRA_DIST    = README COPYING AUTHORS INSTALL ChangeLog doc
+EXTRA_DIST    = README COPYING AUTHORS INSTALL ChangeLog #  doc
 DISTFILES     = $(DISTFILE) $(EXTRA_DIST)
 
 # use this to tag the cvs project, make a source distribution, and
@@ -118,7 +123,9 @@ END_OF_FTP_COMMANDS \
 		| ftp $(DISTHOST)
 
 # use this to make a source distribution!
-srcdist:	dist
+srcdist:	$(DISTFILE)
+
+$(DISTFILE):    dist
 		mv $(distdir).tar.gz $(DISTFILE)
 
 
