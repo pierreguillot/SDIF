@@ -1,12 +1,16 @@
 #!/usr/bin/perl
 #
-# $Id: xmltostyp.pl,v 1.3 2000-08-09 14:43:50 schwarz Exp $
+# $Id: xmltostyp.pl,v 1.4 2000-09-27 10:12:47 schwarz Exp $
 #
 # xmltostyp.pl		6. July 2000		Diemo Schwarz
 #
 # Translate SDIF types description in XML to STYP format for the SDIF-library.
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.3  2000/08/09  14:43:50  schwarz
+# Put all SDIF types into XML format.  Lots of descriptions still missing.
+# Full "about this document" info.
+#
 # Revision 1.2  2000/08/08  15:59:10  schwarz
 # SDIF-TDL version 0.2 (no matrix:role attr., types-version, types-revision)
 # Generation details in STYP 1NVT / HTML footer
@@ -24,7 +28,7 @@ use English;
 use XML::Node;
 
 
-my $cvsrev     = '$Id: xmltostyp.pl,v 1.3 2000-08-09 14:43:50 schwarz Exp $ ';
+my $cvsrev     = '$Id: xmltostyp.pl,v 1.4 2000-09-27 10:12:47 schwarz Exp $ ';
 my $tdlversion = '';
 my $version    = '';
 my $revision   = '';
@@ -66,6 +70,10 @@ $xml->register (">sdif-tdl>frame>matrixref:signature", attr  => \&addmatrix);
 $xml->register (">sdif-tdl>frame",	     start => \&header);
 $xml->register (">sdif-tdl>frame:signature", attr  => \$framesig);
 $xml->register (">sdif-tdl>frame",	     end   => \&frame);
+
+# a little grouping
+$xml->register (">sdif-tdl>section",	     start => sub { print "\n"; } );
+
 
 
 # process all input files
