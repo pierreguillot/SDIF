@@ -1,4 +1,4 @@
-/* $Id: SdifTest.c,v 3.11 2004-07-22 14:47:56 bogaards Exp $
+/* $Id: SdifTest.c,v 3.12 2004-09-09 17:50:40 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -33,6 +33,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.11  2004/07/22 14:47:56  bogaards
+ * removed many global variables, moved some into the thread-safe SdifGlobals structure, added HAVE_PTHREAD define, reorganized the code for selection, made some arguments const, new version 3.8.6
+ *
  * Revision 3.10  2003/11/07 21:47:18  roebel
  * removed XpGuiCalls.h and replaced preinclude.h  by local files
  *
@@ -365,7 +368,7 @@ SdifTestSignature(SdifFileT *SdifF, int CharEnd, SdifSignature Signature, char *
 {
 	char errorMess[_SdifStringLen];
 
-  if ( (SdifIsAReservedChar((char) CharEnd) != -1) || (isspace((char) CharEnd)) )
+  if (SdifIsAReservedChar(CharEnd)  ||  isspace(CharEnd))
     {
       sprintf(errorMess,
 	      "%s Name not correctly read : '%s'. Last char read : '%d'",
@@ -380,39 +383,23 @@ SdifTestSignature(SdifFileT *SdifF, int CharEnd, SdifSignature Signature, char *
 }
 
 
-
-
-
-
 int
 SdifTestCharEnd(SdifFileT *SdifF, int CharEnd, char MustBe, char *StringRead,
 		int ErrCondition, char *Mess)
 {
-	char errorMess[_SdifStringLen];
+    char errorMess[_SdifStringLen];
 
-  if (   ( (unsigned) CharEnd != (unsigned) MustBe)
-      ||   (ErrCondition))
+    if ((unsigned) CharEnd != (unsigned) MustBe  ||  ErrCondition)
     {
-      sprintf(errorMess,
-	      "In %s, Attempt to read (%d) '%c': (%d) '%s%c' ",
-	      Mess,
-	      MustBe,
-	      MustBe,
-	      CharEnd,
-	      StringRead,
-	      CharEnd);
-      _SdifFError (SdifF, eSyntax, errorMess);
-      return  eFalse;
+	sprintf(errorMess, 
+		"In %s, Attempt to read '%c' (%d): actually read '%s%c' (%d) ",
+		Mess, MustBe, MustBe, StringRead, CharEnd, CharEnd);
+	_SdifFError (SdifF, eSyntax, errorMess);
+	return  eFalse;
     }
-  else
-    return eTrue;
+    else
+	return eTrue;
 }
-
-
-
-
-
-
 
 
 int
