@@ -1,4 +1,4 @@
-/* $Id: SdifStreamID.c,v 3.2 1999-09-28 13:09:13 schwarz Exp $
+/* $Id: SdifStreamID.c,v 3.3 1999-10-15 12:26:55 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -15,6 +15,10 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.2  1999/09/28  13:09:13  schwarz
+ * Included #include <preincluded.h> for cross-platform uniformisation,
+ * which in turn includes host_architecture.h and SDIF's project_preinclude.h.
+ *
  * Revision 3.1  1999/03/14  10:57:21  virolle
  * SdifStdErr add
  *
@@ -95,8 +99,7 @@ SdifCreateStreamIDTable(SdifUInt4 HashSize)
     NewSIDTable = SdifMalloc(SdifStreamIDTableT);
     if (NewSIDTable)
     {
-        NewSIDTable->NumIDLink  = _SdifNoStreamID;
-        NewSIDTable->Time       = _Sdif_MIN_DOUBLE_;
+        NewSIDTable->StreamID   = _SdifNoStreamID;
         NewSIDTable->SIDHT      = SdifCreateHashTable(HashSize, eHashInt4, SdifKillStreamID);;
         return NewSIDTable;
     }

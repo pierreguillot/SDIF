@@ -1,4 +1,4 @@
-/* $Id: SdifStreamID.h,v 3.3 1999-09-28 13:09:14 schwarz Exp $
+/* $Id: SdifStreamID.h,v 3.4 1999-10-15 12:26:56 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -16,6 +16,10 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.3  1999/09/28  13:09:14  schwarz
+ * Included #include <preincluded.h> for cross-platform uniformisation,
+ * which in turn includes host_architecture.h and SDIF's project_preinclude.h.
+ *
  * Revision 3.2  1999/08/25  18:32:37  schwarz
  * Added cocoon-able comments with sentinel "DOC:" (on a single line).
  *
@@ -112,7 +116,7 @@ typedef struct SdifStreamIDTableS SdifStreamIDTableT;
 struct SdifStreamIDTableS
 {
     SdifHashTableT* SIDHT;
-    SdifUInt4       NumIDLink;
+    SdifUInt4       StreamID;
     SdifFloat8      Time;
 } ;
 

@@ -1,4 +1,4 @@
-/* $Id: SdifFScan.c,v 3.3 1999-10-13 16:05:42 schwarz Exp $
+/* $Id: SdifFScan.c,v 3.4 1999-10-15 12:27:51 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -14,6 +14,15 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.3  1999/10/13  16:05:42  schwarz
+ * Changed data type codes (SdifDataTypeET) to SDIF format version 3, as
+ * decided with Matt Wright June 1999, added integer data types.
+ * Added writing of 1NVT with real frame header (but data is still not in
+ * matrices).
+ * The data type handling makes heavy use of code-generating macros,
+ * called for all data types with the sdif_foralltypes macro, thus
+ * adding new data types is easy.
+ *
  * Revision 3.2  1999/09/28  13:08:55  schwarz
  * Included #include <preincluded.h> for cross-platform uniformisation,
  * which in turn includes host_architecture.h and SDIF's project_preinclude.h.
@@ -157,7 +166,7 @@ SdifFScanAllASCIIChunks(SdifFileT *SdifF)
 	{
 
 	case e1NVT :
-	  SdifNameValuesLNewTable(SdifF->NameValues, _SdifNoStreamID, _Sdif_MIN_DOUBLE_);
+	  SdifNameValuesLNewTable(SdifF->NameValues, _SdifNoStreamID);
 	  SizeR += SdifFScanNameValueLCurrNVT(SdifF);
 	  break;
 
