@@ -1,0 +1,29 @@
+#! /bin/sh
+
+if [ ! -d $SYS ]; then
+mkdir $SYS
+fi
+
+cd $SYS
+rm -f config.cache.$SYS
+../configure --prefix=/u/formes/share --bindir=/u/formes/share/bin/$SYS --libdir=/u/formes/share/lib/$SYS  --cache-file=config.cache.$SYS 
+
+make 
+make test
+if [ $? != "0" ]; then
+    exit 1
+fi 
+
+make install
+
+make clean
+rm -f config.cache.$SYS
+../configure --prefix=/u/formes/share --bindir=/u/formes/share/bin/$SYS --libdir=/u/formes/share/lib/$SYS  --cache-file=config.cache.$SYS --enable-debug
+make 
+make test
+if [ $? != "0" ]; then
+    exit 1
+fi 
+
+make install
+make clean
