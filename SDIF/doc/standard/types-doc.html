@@ -1,0 +1,787 @@
+<HTML>
+<TITLE>Standard SDIF Types</TITLE>
+<BODY bgcolor="#ffffff">
+<H1>Standard SDIF Types</H1>
+<I>SDIF Types Version: </I>Ircam_1.5
+<P><I>SDIF Types CVS Revision: </I><CODE>
+  $Id: types-doc.html,v 1.1 2000-08-22 14:47:26 schwarz Exp $
+</CODE>
+<P><BR>
+<BR>
+<A name="Section_Supporting Types"><TABLE bgcolor="yellow" cellpadding="3" width="100%">
+
+<TR><TD><FONT size="5"><B>Supporting Types</B></FONT></TD></TR>
+</TABLE>
+</A><BR>
+<A name="Matrix_1NVT"><H3>Matrix 1NVT NameValueTable</H3>
+</A><DL><DT><I>Description:</I><DD>
+</DD>
+</DL>
+<DL><DT><I>Rows:</I><DD>
+</DD>
+</DL>
+<DL><DT><I>Columns:</I></DL>
+<OL>
+<LI><B>Text </B></OL>
+<HR>
+<BR>
+<A name="Matrix_1TYP"><H3>Matrix 1TYP TypeDefinitions</H3>
+</A><DL><DT><I>Description:</I><DD>
+</DD>
+</DL>
+<DL><DT><I>Rows:</I><DD>
+</DD>
+</DL>
+<DL><DT><I>Columns:</I></DL>
+<OL>
+<LI><B>Text </B></OL>
+<HR>
+<BR>
+<A name="Matrix_1IDS"><H3>Matrix 1IDS StreamInfo</H3>
+</A><DL><DT><I>Description:</I><DD>
+</DD>
+</DL>
+<DL><DT><I>Rows:</I><DD>
+</DD>
+</DL>
+<DL><DT><I>Columns:</I></DL>
+<OL>
+<LI><B>Text </B></OL>
+<HR>
+<BR>
+<A name="Frame_1NVT"><H3>Frame 1NVT </H3>
+</A><DL><DT><I>Status:</I><DD>
+standard</DD>
+</DL>
+<DL><DT><I>Description:</I><DD>
+</DD>
+</DL>
+<DL><DT><I>Matrices:</I><DD>
+<UL>
+<LI><A href="#Matrix_1NVT">1NVT NameValueTable</A><I> required </I></UL>
+</DL>
+<HR>
+<BR>
+<A name="Frame_1TYP"><H3>Frame 1TYP </H3>
+</A><DL><DT><I>Status:</I><DD>
+standard</DD>
+</DL>
+<DL><DT><I>Description:</I><DD>
+</DD>
+</DL>
+<DL><DT><I>Matrices:</I><DD>
+<UL>
+<LI><A href="#Matrix_1TYP">1TYP TypeDefinitions</A><I> required </I></UL>
+</DL>
+<HR>
+<BR>
+<A name="Frame_1IDS"><H3>Frame 1IDS </H3>
+</A><DL><DT><I>Status:</I><DD>
+standard</DD>
+</DL>
+<DL><DT><I>Description:</I><DD>
+</DD>
+</DL>
+<DL><DT><I>Matrices:</I><DD>
+<UL>
+<LI><A href="#Matrix_1IDS">1IDS StreamInfo</A><I> required </I></UL>
+</DL>
+<HR>
+<BR>
+<A name="Matrix_1GAI"><H3>Matrix 1GAI Gain</H3>
+</A><DL><DT><I>Description:</I><DD>
+</DD>
+</DL>
+<DL><DT><I>Rows: number=1</I><DD>
+</DD>
+</DL>
+<DL><DT><I>Columns:</I></DL>
+<OL>
+<LI><B>Gain </B>linear gain value</OL>
+<HR>
+<BR>
+<A name="Frame_1GAI"><H3>Frame 1GAI Gain</H3>
+</A><DL><DT><I>Description:</I><DD>
+</DD>
+</DL>
+<DL><DT><I>Matrices:</I><DD>
+<UL>
+<LI><A href="#Matrix_1GAI">1GAI Gain</A><I> required </I>Gain</UL>
+</DL>
+<HR>
+<BR>
+<BR>
+<A name="Section_Pitch Estimation"><TABLE bgcolor="yellow" cellpadding="3" width="100%">
+
+<TR><TD><FONT size="5"><B>Pitch Estimation</B></FONT></TD></TR>
+</TABLE>
+</A><BR>
+<A name="Matrix_1FQ0"><H3>Matrix 1FQ0 PitchEstimate</H3>
+</A><DL><DT><I>Description:</I><DD>
+Fundamental Frequency <i>f0</i></DD>
+</DL>
+<DL><DT><I>Rows:</I><DD>
+</DD>
+</DL>
+<DL><DT><I>Columns:</I></DL>
+<OL>
+<LI><B>Frequency </B><LI><B>Confidence </B><LI><B>Score </B><LI><B>RealAmplitude </B></OL>
+<HR>
+<BR>
+<A name="Frame_1FQ0"><H3>Frame 1FQ0 PitchEstimate</H3>
+</A><DL><DT><I>Description:</I><DD>
+Fundamental Frequency <i>f0</i></DD>
+</DL>
+<DL><DT><I>Matrices:</I><DD>
+<UL>
+<LI><A href="#Matrix_1FQ0">1FQ0 PitchEstimate</A><I> required </I>Pitch estimate</UL>
+</DL>
+<HR>
+<BR>
+<BR>
+<A name="Section_Sinusoidal Modeling"><TABLE bgcolor="yellow" cellpadding="3" width="100%">
+
+<TR><TD><FONT size="5"><B>Sinusoidal Modeling</B></FONT></TD></TR>
+</TABLE>
+</A><BR>
+<A name="Matrix_1PIC"><H3>Matrix 1PIC PickedPeaks</H3>
+</A><DL><DT><I>Status:</I><DD>
+standard</DD>
+</DL>
+<DL><DT><I>Description:</I><DD>
+</DD>
+</DL>
+<DL><DT><I>Rows:</I><DD>
+</DD>
+</DL>
+<DL><DT><I>Columns:</I></DL>
+<OL>
+<LI><B>Frequency </B><LI><B>Amplitude </B><LI><B>Phase </B><LI><B>Confidence </B></OL>
+<HR>
+<BR>
+<A name="Matrix_1TRC"><H3>Matrix 1TRC SinusoidalTracks</H3>
+</A><DL><DT><I>Status:</I><DD>
+standard</DD>
+</DL>
+<DL><DT><I>Description:</I><DD>
+</DD>
+</DL>
+<DL><DT><I>Rows:</I><DD>
+</DD>
+</DL>
+<DL><DT><I>Columns:</I></DL>
+<OL>
+<LI><B>Index </B><LI><B>Frequency </B><LI><B>Amplitude </B><LI><B>Phase </B></OL>
+<HR>
+<BR>
+<A name="Matrix_1HRM"><H3>Matrix 1HRM HarmonicPartials</H3>
+</A><DL><DT><I>Status:</I><DD>
+standard</DD>
+</DL>
+<DL><DT><I>Description:</I><DD>
+</DD>
+</DL>
+<DL><DT><I>Rows:</I><DD>
+A row describes one harmonic partial</DD>
+</DL>
+<DL><DT><I>Columns:</I></DL>
+<OL>
+<LI><B>Index </B>			partial index		<LI><B>Frequency </B><I>[Hz] </I>	partial frequency	<LI><B>Amplitude </B>		partial amplitude	<LI><B>Phase </B>			partial phase, between -pi and pi
+  </OL>
+<HR>
+<BR>
+<A name="Frame_1PIC"><H3>Frame 1PIC PickedPeaks</H3>
+</A><DL><DT><I>Status:</I><DD>
+standard</DD>
+</DL>
+<DL><DT><I>Description:</I><DD>
+</DD>
+</DL>
+<DL><DT><I>Matrices:</I><DD>
+<UL>
+<LI><A href="#Matrix_1PIC">1PIC PickedPeaks</A><I> required </I>PickedPeaks</UL>
+</DL>
+<HR>
+<BR>
+<A name="Frame_1TRC"><H3>Frame 1TRC SinusoidalTracks</H3>
+</A><DL><DT><I>Status:</I><DD>
+standard</DD>
+</DL>
+<DL><DT><I>Description:</I><DD>
+</DD>
+</DL>
+<DL><DT><I>Matrices:</I><DD>
+<UL>
+<LI><A href="#Matrix_1TRC">1TRC SinusoidalTracks</A><I> required </I>SinusoidalTracks</UL>
+</DL>
+<HR>
+<BR>
+<A name="Frame_1HRM"><H3>Frame 1HRM HarmonicPartials</H3>
+</A><DL><DT><I>Status:</I><DD>
+standard</DD>
+</DL>
+<DL><DT><I>Description:</I><DD>
+</DD>
+</DL>
+<DL><DT><I>Matrices:</I><DD>
+<UL>
+<LI><A href="#Matrix_1HRM">1HRM HarmonicPartials</A><I> required </I></UL>
+</DL>
+<HR>
+<BR>
+<A name="Matrix_1HRE"><H3>Matrix 1HRE HarmonicityEstimate</H3>
+</A><DL><DT><I>Description:</I><DD>
+</DD>
+</DL>
+<DL><DT><I>Rows:</I><DD>
+</DD>
+</DL>
+<DL><DT><I>Columns:</I></DL>
+<OL>
+<LI><B>MeanDeltaFrequency </B><LI><B>Harmonicity </B><LI><B>WeightedHarmonicity </B></OL>
+<HR>
+<BR>
+<A name="Frame_1HRE"><H3>Frame 1HRE HarmonicityEstimate</H3>
+</A><DL><DT><I>Status:</I><DD>
+experimental</DD>
+</DL>
+<DL><DT><I>Description:</I><DD>
+</DD>
+</DL>
+<DL><DT><I>Matrices:</I><DD>
+<UL>
+<LI><A href="#Matrix_1HRE">1HRE HarmonicityEstimate</A><I> required </I>Harmonicity</UL>
+</DL>
+<HR>
+<BR>
+<BR>
+<A name="Section_Spectral Envelopes"><TABLE bgcolor="yellow" cellpadding="3" width="100%">
+
+<TR><TD><FONT size="5"><B>Spectral Envelopes</B></FONT></TD></TR>
+</TABLE>
+</A><BR>
+<A name="Matrix_IENV"><H3>Matrix IENV SpectralEnvelopeInfo</H3>
+</A><DL><DT><I>Description:</I><DD>
+
+	Spectral envelopes information matrix, defines interpretation 
+	of following <A HREF="#Matrix_1ENV">1ENV matrix</A>
+  </DD>
+</DL>
+<DL><DT><I>Rows: number=1</I><DD>
+</DD>
+</DL>
+<DL><DT><I>Columns:</I></DL>
+<OL>
+<LI><B>HighestBinFrequency </B><I>[Hz] </I>	
+	frequency of the highest bin of the <A HREF="#Matrix_1ENV">
+</A><A HREF="#Matrix_">        1ENV matrix</A>
+  <LI><B>ScaleType </B>
+	0 for linear, 1 for logarithmic scaling
+  <LI><B>BreakFrequency </B><I>[Hz] </I>
+	break frequency when logarithmic scaling
+  </OL>
+<HR>
+<BR>
+<A name="Matrix_1ENV"><H3>Matrix 1ENV SpectralEnvelope</H3>
+</A><DL><DT><I>Description:</I><DD>
+Spectral envelope in sampled representation.</DD>
+</DL>
+<DL><DT><I>Description (language = fr):</I><DD>
+Abradakadabra abrakabum.</DD>
+</DL>
+<DL><DT><I>Rows:</I><DD>
+A row corresponds to one bin of the spectral envelope</DD>
+</DL>
+<DL><DT><I>Columns:</I></DL>
+<OL>
+<LI><B>Env </B>envelope bin</OL>
+<HR>
+<BR>
+<A name="Frame_1ENV"><H3>Frame 1ENV SpectralEnvelope</H3>
+</A><DL><DT><I>Status:</I><DD>
+proposed</DD>
+</DL>
+<DL><DT><I>Description:</I><DD>
+</DD>
+</DL>
+<DL><DT><I>Matrices:</I><DD>
+<UL>
+<LI><A href="#Matrix_IENV">IENV SpectralEnvelopeInfo</A><I> optional </I><LI><A href="#Matrix_1ENV">1ENV SpectralEnvelope</A><I> required </I><LI><A href="#Matrix_1GAI">1GAI Gain</A><I> optional </I>
+    gain of the original signal = desired gain for the synthesised signal
+  </UL>
+</DL>
+<HR>
+<BR>
+<A name="Matrix_1CEC"><H3>Matrix 1CEC CepstralCoefs</H3>
+</A><DL><DT><I>Description:</I><DD>
+Cepstral coefficients</DD>
+</DL>
+<DL><DT><I>Rows:</I><DD>
+</DD>
+</DL>
+<DL><DT><I>Columns:</I></DL>
+<OL>
+<LI><B>c </B></OL>
+<HR>
+<BR>
+<A name="Frame_1CEC"><H3>Frame 1CEC CepstralCoefs</H3>
+</A><DL><DT><I>Description:</I><DD>
+</DD>
+</DL>
+<DL><DT><I>Matrices:</I><DD>
+<UL>
+<LI><A href="#Matrix_1CEC">1CEC CepstralCoefs</A><I> required </I>CepstralCoefs</UL>
+</DL>
+<HR>
+<BR>
+<A name="Matrix_1ARA"><H3>Matrix 1ARA ARACoefs</H3>
+</A><DL><DT><I>Description:</I><DD>
+</DD>
+</DL>
+<DL><DT><I>Rows:</I><DD>
+The rows contain <var>p + 1</var> autoregressive coefficients
+    <var>a<sub>0</sub></var> to <var>a<sub>p</sub></var>, where
+    <var>p</var> is the <emph>order</emph> of the LPC.
+  </DD>
+</DL>
+<DL><DT><I>Columns:</I></DL>
+<OL>
+<LI><B>AutoRegressiveCoefficients </B></OL>
+<HR>
+<BR>
+<A name="Matrix_1ARK"><H3>Matrix 1ARK ARKCoefs</H3>
+</A><DL><DT><I>Description:</I><DD>
+</DD>
+</DL>
+<DL><DT><I>Rows:</I><DD>
+The rows contain <var>p</var> reflection coefficients
+    <var>k<sub>1</sub></var> to <var>k<sub>p</sub></var>, where
+    <var>p</var> is the <emph>order</emph> of the LPC.
+  </DD>
+</DL>
+<DL><DT><I>Columns:</I></DL>
+<OL>
+<LI><B>ReflectionCoefficients </B></OL>
+<HR>
+<BR>
+<A name="Matrix_1ARR"><H3>Matrix 1ARR ARRCoefs</H3>
+</A><DL><DT><I>Description:</I><DD>
+</DD>
+</DL>
+<DL><DT><I>Rows:</I><DD>
+The rows contain <var>p + 1</var> autocorrelation coefficients
+    <var>r<sub>0</sub></var> to <var>r<sub>p</sub></var>, where
+    <var>p</var> is the <emph>order</emph> of the LPC.
+  </DD>
+</DL>
+<DL><DT><I>Columns:</I></DL>
+<OL>
+<LI><B>AutoCorrelationCoefficients </B></OL>
+<HR>
+<BR>
+<A name="Frame_1ARA"><H3>Frame 1ARA ARKCoefs</H3>
+</A><DL><DT><I>Description:</I><DD>
+</DD>
+</DL>
+<DL><DT><I>Matrices:</I><DD>
+<UL>
+<LI><A href="#Matrix_1GAI">1GAI Gain</A><I> required </I>Gain<LI><A href="#Matrix_1ARA">1ARA ARACoefs</A><I> required </I>ARCoefs</UL>
+</DL>
+<HR>
+<BR>
+<A name="Frame_1ARK"><H3>Frame 1ARK ARKCoefs</H3>
+</A><DL><DT><I>Description:</I><DD>
+</DD>
+</DL>
+<DL><DT><I>Matrices:</I><DD>
+<UL>
+<LI><A href="#Matrix_1GAI">1GAI Gain</A><I> required </I>Gain<LI><A href="#Matrix_1ARK">1ARK ARKCoefs</A><I> required </I>ARCoefs</UL>
+</DL>
+<HR>
+<BR>
+<A name="Frame_1ARR"><H3>Frame 1ARR ARRCoefs</H3>
+</A><DL><DT><I>Description:</I><DD>
+</DD>
+</DL>
+<DL><DT><I>Matrices:</I><DD>
+<UL>
+<LI><A href="#Matrix_1ARR">1ARR ARRCoefs</A><I> required </I>ARCoefs</UL>
+</DL>
+<HR>
+<BR>
+<BR>
+<A name="Section_Resonances"><TABLE bgcolor="yellow" cellpadding="3" width="100%">
+
+<TR><TD><FONT size="5"><B>Resonances</B></FONT></TD></TR>
+</TABLE>
+</A><BR>
+<A name="Matrix_1FOF"><H3>Matrix 1FOF Formants</H3>
+</A><DL><DT><I>Description:</I><DD>
+</DD>
+</DL>
+<DL><DT><I>Rows:</I><DD>
+</DD>
+</DL>
+<DL><DT><I>Columns:</I></DL>
+<OL>
+<LI><B>Frequency </B><LI><B>Amplitude </B><LI><B>BandWidth </B><LI><B>Tex </B><LI><B>DebAtt </B><LI><B>Atten </B><LI><B>Phase </B></OL>
+<HR>
+<BR>
+<A name="Matrix_1RES"><H3>Matrix 1RES Filters</H3>
+</A><DL><DT><I>Description:</I><DD>
+</DD>
+</DL>
+<DL><DT><I>Rows:</I><DD>
+</DD>
+</DL>
+<DL><DT><I>Columns:</I></DL>
+<OL>
+<LI><B>Frequency </B><LI><B>Amplitude </B><LI><B>BandWidth </B><LI><B>Saliance </B><LI><B>Correction </B></OL>
+<HR>
+<BR>
+<A name="Matrix_1CHA"><H3>Matrix 1CHA FormantsChannels</H3>
+</A><DL><DT><I>Description:</I><DD>
+</DD>
+</DL>
+<DL><DT><I>Rows:</I><DD>
+</DD>
+</DL>
+<DL><DT><I>Columns:</I></DL>
+<OL>
+<LI><B>Channel1 </B><LI><B>Channel2 </B><LI><B>Channel3 </B><LI><B>Channel4 </B></OL>
+<HR>
+<BR>
+<A name="Matrix_1DIS"><H3>Matrix 1DIS NoiseInfo</H3>
+</A><DL><DT><I>Description:</I><DD>
+</DD>
+</DL>
+<DL><DT><I>Rows:</I><DD>
+</DD>
+</DL>
+<DL><DT><I>Columns:</I></DL>
+<OL>
+<LI><B>Distribution </B><LI><B>Amplitude </B></OL>
+<HR>
+<BR>
+<A name="Frame_1NOI"><H3>Frame 1NOI </H3>
+</A><DL><DT><I>Description:</I><DD>
+</DD>
+</DL>
+<DL><DT><I>Matrices:</I><DD>
+<UL>
+<LI><A href="#Matrix_1DIS">1DIS NoiseInfo</A><I> required </I>NoiseInfo</UL>
+</DL>
+<HR>
+<BR>
+<A name="Frame_1FOB"><H3>Frame 1FOB </H3>
+</A><DL><DT><I>Description:</I><DD>
+</DD>
+</DL>
+<DL><DT><I>Matrices:</I><DD>
+<UL>
+<LI><A href="#Matrix_1FQ0">1FQ0 PitchEstimate</A><I> required </I>PitchModeHit<LI><A href="#Matrix_1FOF">1FOF Formants</A><I> required </I>Formants<LI><A href="#Matrix_1CHA">1CHA FormantsChannels</A><I> required </I>FormantsChannels</UL>
+</DL>
+<HR>
+<BR>
+<A name="Frame_1REB"><H3>Frame 1REB </H3>
+</A><DL><DT><I>Description:</I><DD>
+</DD>
+</DL>
+<DL><DT><I>Matrices:</I><DD>
+<UL>
+<LI><A href="#Matrix_1RES">1RES Filters</A><I> required </I>Filters<LI><A href="#Matrix_1CHA">1CHA FormantsChannels</A><I> required </I>FiltersChannels</UL>
+</DL>
+<HR>
+<BR>
+<BR>
+<A name="Section_Fourier Transform"><TABLE bgcolor="yellow" cellpadding="3" width="100%">
+
+<TR><TD><FONT size="5"><B>Fourier Transform</B></FONT></TD></TR>
+</TABLE>
+</A><BR>
+<A name="Matrix_ISTF"><H3>Matrix ISTF FourierTransformInfo</H3>
+</A><DL><DT><I>Description:</I><DD>
+</DD>
+</DL>
+<DL><DT><I>Rows:</I><DD>
+</DD>
+</DL>
+<DL><DT><I>Columns:</I></DL>
+<OL>
+<LI><B>HighestBinFrequency </B><LI><B>FrameDuration </B><LI><B>FFTSize </B></OL>
+<HR>
+<BR>
+<A name="Matrix_1STF"><H3>Matrix 1STF FourierTransform</H3>
+</A><DL><DT><I>Description:</I><DD>
+</DD>
+</DL>
+<DL><DT><I>Rows:</I><DD>
+Bins</DD>
+</DL>
+<DL><DT><I>Columns:</I></DL>
+<OL>
+<LI><B>Real </B><LI><B>Imaginary </B></OL>
+<HR>
+<BR>
+<A name="Frame_ISTF"><H3>Frame ISTF FourierTransformInfo</H3>
+</A><DL><DT><I>Description:</I><DD>
+</DD>
+</DL>
+<DL><DT><I>Matrices:</I><DD>
+<UL>
+<LI><A href="#Matrix_ISTF">ISTF FourierTransformInfo</A><I> required </I>Info</UL>
+</DL>
+<HR>
+<BR>
+<A name="Frame_1STF"><H3>Frame 1STF FourierTransform</H3>
+</A><DL><DT><I>Description:</I><DD>
+</DD>
+</DL>
+<DL><DT><I>Matrices:</I><DD>
+<UL>
+<LI><A href="#Matrix_ISTF">ISTF FourierTransformInfo</A><I> required </I>Info<LI><A href="#Matrix_1STF">1STF FourierTransform</A><I> required </I>FourierTransform</UL>
+</DL>
+<HR>
+<BR>
+<BR>
+<A name="Section_Energy"><TABLE bgcolor="yellow" cellpadding="3" width="100%">
+
+<TR><TD><FONT size="5"><B>Energy</B></FONT></TD></TR>
+</TABLE>
+</A><BR>
+<A name="Matrix_1NRG"><H3>Matrix 1NRG Energy</H3>
+</A><DL><DT><I>Description:</I><DD>
+</DD>
+</DL>
+<DL><DT><I>Rows:</I><DD>
+</DD>
+</DL>
+<DL><DT><I>Columns:</I></DL>
+<OL>
+<LI><B>Energy </B></OL>
+<HR>
+<BR>
+<A name="Matrix_INRG"><H3>Matrix INRG ScaleAndFactor</H3>
+</A><DL><DT><I>Description:</I><DD>
+</DD>
+</DL>
+<DL><DT><I>Rows:</I><DD>
+</DD>
+</DL>
+<DL><DT><I>Columns:</I></DL>
+<OL>
+<LI><B>Scale </B><LI><B>NormalisationFactor </B></OL>
+<HR>
+<BR>
+<A name="Frame_1NRG"><H3>Frame 1NRG </H3>
+</A><DL><DT><I>Description:</I><DD>
+</DD>
+</DL>
+<DL><DT><I>Matrices:</I><DD>
+<UL>
+<LI><A href="#Matrix_INRG">INRG ScaleAndFactor</A><I> required </I>ScaleAndFactor<LI><A href="#Matrix_1NRG">1NRG Energy</A><I> required </I>Energy</UL>
+</DL>
+<HR>
+<BR>
+<A name="Matrix_1BND"><H3>Matrix 1BND Bands</H3>
+</A><DL><DT><I>Description:</I><DD>
+</DD>
+</DL>
+<DL><DT><I>Rows:</I><DD>
+</DD>
+</DL>
+<DL><DT><I>Columns:</I></DL>
+<OL>
+<LI><B>LowerFrequencyLimit </B><LI><B>UpperFrequencyLimit </B></OL>
+<HR>
+<BR>
+<A name="Frame_1BND"><H3>Frame 1BND Bands</H3>
+</A><DL><DT><I>Description:</I><DD>
+</DD>
+</DL>
+<DL><DT><I>Matrices:</I><DD>
+<UL>
+<LI><A href="#Matrix_1BND">1BND Bands</A><I> required </I>Bands</UL>
+</DL>
+<HR>
+<BR>
+<BR>
+<A name="Section_Time markers"><TABLE bgcolor="yellow" cellpadding="3" width="100%">
+
+<TR><TD><FONT size="5"><B>Time markers</B></FONT></TD></TR>
+</TABLE>
+</A><BR>
+<A name="Matrix_1PEM"><H3>Matrix 1PEM PeriodMarker</H3>
+</A><DL><DT><I>Description:</I><DD>
+</DD>
+</DL>
+<DL><DT><I>Rows:</I><DD>
+</DD>
+</DL>
+<DL><DT><I>Columns:</I></DL>
+<OL>
+<LI><B>Identifier </B><LI><B>Parameter1 </B><LI><B>Parameter2 </B><LI><B>Parameter3 </B></OL>
+<HR>
+<BR>
+<A name="Matrix_ITMR"><H3>Matrix ITMR TransientMarkerRepresentation</H3>
+</A><DL><DT><I>Description:</I><DD>
+</DD>
+</DL>
+<DL><DT><I>Rows:</I><DD>
+</DD>
+</DL>
+<DL><DT><I>Columns:</I></DL>
+<OL>
+<LI><B>Index </B><LI><B>Frequency </B><LI><B>Amplitude </B><LI><B>Phase </B></OL>
+<HR>
+<BR>
+<A name="Matrix_ITMI"><H3>Matrix ITMI TransientMarkerIdentifier</H3>
+</A><DL><DT><I>Description:</I><DD>
+Matrix identifier for transient in the signal such as
+  occurs at tke beginning of percussive sounds ans which need special
+  care.
+  </DD>
+</DL>
+<DL><DT><I>Rows:</I><DD>
+</DD>
+</DL>
+<DL><DT><I>Columns:</I></DL>
+<OL>
+<LI><B>Index </B>Identifier of the method used to detect and
+  estimate this marker</OL>
+<HR>
+<BR>
+<BR>
+<A name="Section_Voiced-Unvoiced Decision"><TABLE bgcolor="yellow" cellpadding="3" width="100%">
+
+<TR><TD><FONT size="5"><B>Voiced-Unvoiced Decision</B></FONT></TD></TR>
+</TABLE>
+</A><BR>
+<A name="Matrix_1VUN"><H3>Matrix 1VUN VoicedUnvoicedNorm</H3>
+</A><DL><DT><I>Description:</I><DD>
+</DD>
+</DL>
+<DL><DT><I>Rows:</I><DD>
+</DD>
+</DL>
+<DL><DT><I>Columns:</I></DL>
+<OL>
+<LI><B>Index </B></OL>
+<HR>
+<BR>
+<A name="Matrix_1VUF"><H3>Matrix 1VUF VoicedUnvoicedFreq</H3>
+</A><DL><DT><I>Description:</I><DD>
+</DD>
+</DL>
+<DL><DT><I>Rows:</I><DD>
+</DD>
+</DL>
+<DL><DT><I>Columns:</I></DL>
+<OL>
+<LI><B>CuttingFrequency </B></OL>
+<HR>
+<BR>
+<A name="Frame_1MRK"><H3>Frame 1MRK Marker</H3>
+</A><DL><DT><I>Status:</I><DD>
+proposed</DD>
+</DL>
+<DL><DT><I>Description:</I><DD>
+</DD>
+</DL>
+<DL><DT><I>Matrices:</I><DD>
+<UL>
+<LI><A href="#Matrix_1PEM">1PEM PeriodMarker</A><I> required </I>PeriodMarker<LI><A href="#Matrix_ITMR">ITMR TransientMarkerRepresentation</A><I> required </I>TransientMarkerRepresentation<LI><A href="#Matrix_ITMI">ITMI TransientMarkerIdentifier</A><I> required </I>TransientMarkerIdentifier</UL>
+</DL>
+<HR>
+<BR>
+<A name="Frame_1VUV"><H3>Frame 1VUV VoicedUnvoiced</H3>
+</A><DL><DT><I>Status:</I><DD>
+proposed</DD>
+</DL>
+<DL><DT><I>Description:</I><DD>
+</DD>
+</DL>
+<DL><DT><I>Matrices:</I><DD>
+<UL>
+<LI><A href="#Matrix_1VUN">1VUN VoicedUnvoicedNorm</A><I> required </I>VoicedUnvoicedNorm<LI><A href="#Matrix_1VUF">1VUF VoicedUnvoicedFreq</A><I> required </I>VoicedUnvoicedFreq</UL>
+</DL>
+<HR>
+<BR>
+<BR>
+<A name="Section_jMax Physical Model Parameters"><TABLE bgcolor="yellow" cellpadding="3" width="100%">
+
+<TR><TD><FONT size="5"><B>jMax Physical Model Parameters</B></FONT></TD></TR>
+</TABLE>
+</A><BR>
+<A name="Matrix_EMPM"><H3>Matrix EMPM Tableau</H3>
+</A><DL><DT><I>Description:</I><DD>
+</DD>
+</DL>
+<DL><DT><I>Rows:</I><DD>
+</DD>
+</DL>
+<DL><DT><I>Columns:</I></DL>
+<OL>
+<LI><B>Value </B><LI><B>Index </B></OL>
+<HR>
+<BR>
+<A name="Matrix_EMJR"><H3>Matrix EMJR EndRecording</H3>
+</A><DL><DT><I>Description:</I><DD>
+</DD>
+</DL>
+<DL><DT><I>Rows:</I><DD>
+</DD>
+</DL>
+<DL><DT><I>Columns:</I></DL>
+<OL>
+<LI><B>Record </B></OL>
+<HR>
+<BR>
+<A name="Frame_EFPM"><H3>Frame EFPM PhysicalModelParameters</H3>
+</A><DL><DT><I>Status:</I><DD>
+private</DD>
+</DL>
+<DL><DT><I>Description:</I><DD>
+</DD>
+</DL>
+<DL><DT><I>Matrices:</I><DD>
+<UL>
+<LI><A href="#Matrix_EMPM">EMPM Tableau</A><I> required </I>Tableau<LI><A href="#Matrix_EMJR">EMJR EndRecording</A><I> required </I>EndRecording</UL>
+</DL>
+<HR>
+<BR>
+<BR>
+<BR>
+<ADDRESS>
+<BASEFONT size="1"><A name="Section_About This Document"><TABLE cellpadding="3">
+
+<TR><TD colspan="4" bgcolor="gray"><FONT size="4"><B>About This Document</B></FONT>
+<TR align="left" valign="top"><TD colspan="4">This document types-doc.html generated Tue Aug 22 16:22:10 2000 by xmltohtml.pl from sdiftypes.xml
+<TR align="left" valign="top"><TH>Generation<TD>schwarz<TD nowrap>Tue Aug 22 16:22:10 2000<TD nowrap>kethuk.ircam.fr /u/formes/schwarz/src/SDIF/types</TR>
+
+<TR align="left" valign="top"><TH>Generator<TD>xmltohtml.pl<TD nowrap>Tue Aug 22 16:22:01 2000<TD nowrap>$Id: types-doc.html,v 1.1 2000-08-22 14:47:26 schwarz Exp $ </TR>
+
+<TR align="left" valign="top"><TH>Source file<TD>sdiftypes.xml<TD nowrap>Fri Aug 18 19:55:22 2000<TD nowrap>
+  $Id: types-doc.html,v 1.1 2000-08-22 14:47:26 schwarz Exp $
+</TR>
+</TABLE>
+</A></ADDRESS>
+<BR>
+<BR>
+<BR>
+<BR>
+<BR>
+<BR>
+<BR>
+<BR>
+<BR>
+<BR>
+<BR>
+<BR>
+<BR>
+<BR>
+<BR>
+<BR>
+<BR>
+</BODY>
+</HTML>
