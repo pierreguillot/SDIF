@@ -1,12 +1,15 @@
 #!/usr/bin/perl
 #
-# $Id: xmltohtml.pl,v 1.9 2000-08-18 17:53:28 schwarz Exp $
+# $Id: xmltohtml.pl,v 1.10 2000-08-22 16:21:48 schwarz Exp $
 #
 # xmltohtml.pl		6. July 2000		Diemo Schwarz
 #
 # Translate SDIF types description in XML to HTML.
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.9  2000/08/18  17:53:28  schwarz
+# Proper handling of single HTML tags (empty tags in XML).
+#
 # Revision 1.8  2000/08/17  14:44:16  schwarz
 # Matrix status copied.
 #
@@ -48,18 +51,19 @@
 use English;
 use XML::Node;
 use HTML::Stream qw(:funcs);
+use File::Basename;
 
 
 # html setup
 my @singlehtmltags = qw(p br);
-my @copiedhtmltags = qw(i b strong emph code var sub sup pre);
+my @copiedhtmltags = qw(i b strong emph code var sub sup pre a);
 my %tagmap = (# section => 'H2', 
 	      map { (uc $_, uc $_, lc $_, uc $_ ) } @copiedhtmltags);
 my %tagsing = (map { (uc $_, uc $_, lc $_, uc $_ ) } @singlehtmltags);
 
 
 # init
-my $cvsrev     = '$Id: xmltohtml.pl,v 1.9 2000-08-18 17:53:28 schwarz Exp $ ';
+my $cvsrev     = '$Id: xmltohtml.pl,v 1.10 2000-08-22 16:21:48 schwarz Exp $ ';
 my $tdlversion = '';
 my $version    = 'unknown';
 my $revision   = '';
@@ -78,6 +82,7 @@ my $refsig     = '';
 my $refocc     = '';
 my $text       = '';	# text for all descriptions and refs
 my $lang       = '';
+my @htmlattr   = ();
 my @columns    = ();
 my @components = ();
 
@@ -89,7 +94,7 @@ local $lastlevel = 1;
 
 # arguments
 my ($xmlin, $docout, $tocout) = @ARGV;
-
+my $docbase = basename ($docout);
 
 # open files, create objects
 if ($docout eq '-')
@@ -168,6 +173,7 @@ $xml->register ("description", end   => \&description_end);
 $xml->register ("description:language", attr => \$lang);
 $xml->register ("section",     char  => \&section);
 
+
 # register XML->HTML tag mapping handlers
 for (keys %tagmap)
 {
@@ -179,6 +185,10 @@ for (keys %tagsing)
 {
     $xml->register ($_, start => \&tagmap_start);
 }
+
+# register html attributes
+$xml->register ("a:href", attr => \&html_attr);
+$xml->register ("a:target", attr => \&html_attr);
 
 
 # process input file
@@ -195,12 +205,18 @@ close TOC;
 
 sub tagmap_start
 {
-    $h->tag ($_[1]);
+    $h->tag ($_[1], @htmlattr);
+    @htmlattr = ();
 }
 
 sub tagmap_end
 {
     $h->tag ("_$_[1]"); 
+}
+
+sub html_attr
+{
+    push (@htmlattr, $xml->{CURRENT_ATTR}, $_[1]);
 }
 
 
@@ -215,12 +231,15 @@ sub header
       ->BODY(bgcolor => "#ffffff")->H1->t("Standard SDIF Types")->_H1;
     $toc->HTML->TITLE->t("Standard SDIF Types Table of Contents")->_TITLE
 	->BODY(bgcolor => "#ffffff");
+    toc ('', "Contents", 0);
+    $toc->FONT(size => -1)->P;
 }
 
 sub footer
 {
     my @g = stat $PROGRAM_NAME;
     my @s = stat $xmlin;
+    my $fs = "+0";
 
     $h->BR->BR->BR->ADDRESS->tag('BASEFONT', size => 1)
       ->A(name => "Section_About This Document")
@@ -229,7 +248,7 @@ sub footer
 	      ->FONT(size => +4)->B->t("About This Document")->_B->_FONT
       ->TR(align => 'left', valign => 'top')
 	  ->TD(colspan => 4)
-	      ->t("This document $docout generated " . scalar localtime() . 
+	      ->t("This document $docbase generated " . scalar localtime() . 
 		  " by $PROGRAM_NAME from $xmlin")
       ->TR(align => 'left', valign => 'top')
 	  ->TH->t("Generation")->TD->t($ENV{USER})
@@ -243,13 +262,26 @@ sub footer
 	  ->TH->t("Source file")->TD->t("$xmlin")
 	  ->TD(nowrap)->t(scalar localtime($s[9]))
 	  ->TD(nowrap)->t($revision)->_TR
+      ->TR
+	->TD(colspan => 1, bgcolor => "gray")->FONT(size => $fs)
+	  ->A(href => "../index.html", target => "_parent")
+	  ->B->t("Back")->_B->_A->_FONT
+        ->TD(colspan => 1, bgcolor => "gray")->FONT(size => $fs)
+	  ->A(href => "http://www.ircam.fr/sdif", target => "_parent")
+	  ->B->t("SDIF")->e('nbsp')->t("Home")->_B->_A->_FONT
+        ->TD(colspan => 1, bgcolor => "gray")->FONT(size => $fs)
+	  ->A(href => "http://www.ircam.fr/anasyn", target => "_parent")
+	  ->B->t("Analysis/Synthesis Team")->_B->_A->_FONT
+       ->TD(colspan => 1, bgcolor => "gray")->FONT(size => $fs)
+	  ->A(href => "http://www.ircam.fr", target => "_parent")
+	  ->B->t("IRCAM")->_B->_A->_FONT
       ->_TABLE->_A
       ->_ADDRESS;
     $h->BR->BR->BR->BR->BR->BR->BR->BR->BR->BR->BR->BR->BR->BR->BR->BR->BR;
     $h->_BODY->_HTML;
 
     toc ("Section_About This Document", "About This Document", 1);
-    $toc->_DL->_BODY->_HTML;
+    $toc->_DL->_FONT->_BODY->_HTML;
 
 }
 
@@ -391,17 +423,17 @@ sub section
 sub toc
 {
     my ($target, $text, $level) = @_;
-    my @levtag  = ('', 'B' , 'LI');
+    my @levtag  = ('B', 'B' , 'LI');
 
     if ($level < $lastlevel)
     {
-	$toc->_DL->P;
+	$toc->P;
     }
     if ($level > $lastlevel)
     {
-	$toc->DL(compact);
+#	$toc->DL(compact);
     }
-    $toc->A(target => "doc", href => "$docout#$target");
+    $toc->A(target => "doc", href => "$docbase#$target");
     $toc->tag($levtag[$level])		if $levtag[$level];
     $toc->t($text);
     $toc->tag("_$levtag[$level]")	if $levtag[$level];
