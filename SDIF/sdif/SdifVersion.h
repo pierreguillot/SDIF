@@ -1,4 +1,4 @@
-/* 	$Id: SdifVersion.h,v 1.1.2.1 2000-10-25 17:28:53 roebel Exp $	
+/* 	$Id: SdifVersion.h,v 1.1.2.2 2000-10-25 18:01:12 roebel Exp $	
  *
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
@@ -36,5 +36,5 @@
  */
 
 #ifndef lint
-    static char rcsid[]= "$Id $Revision: 1.1.2.1 $ IRCAM $Date: 2000-10-25 17:28:53 $";
+    static char rcsid[]= "$Revision: 1.1.2.2 $ IRCAM $Date: 2000-10-25 18:01:12 $";
 #endif
