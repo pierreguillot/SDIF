@@ -34,9 +34,12 @@
  * sdifframe.h is composed of the different methods which are using to 
  * manipulate the frame.
  * 
- * $Id: sdifframe.h,v 1.10 2003-11-18 18:27:04 roebel Exp $ 
+ * $Id: sdifframe.h,v 1.11 2004-02-02 18:07:27 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.10  2003/11/18 18:27:04  roebel
+ * Added exceptions when accessing non existing matrices in a frame.
+ *
  * Revision 1.9  2003/07/21 09:59:43  roebel
  * Fixed Error in Documentation
  *
@@ -124,7 +127,6 @@ private:
     SdifFloat8      mTime;
     SdifSignature   mSig;
     SdifUInt4       mStreamID;
-    SdifUInt4       mSize;// keep the size of the frame
     SdifUInt4       mNbMatrix;
     //SdifUInt4       mSelected;
 
@@ -140,7 +142,7 @@ public:
    *
    *  Constructs a frame 
    */
-  SDIFFrame(): mStreamID(0), mSize(0), mNbMatrix(0)//, mSelected(0)
+  SDIFFrame(): mStreamID(0), mNbMatrix(0)//, mSelected(0)
 	{};
     //size_t  mFrameBytesRead;
 

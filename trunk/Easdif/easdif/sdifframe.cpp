@@ -32,9 +32,13 @@
  * 
  * 
  * 
- * $Id: sdifframe.cpp,v 1.9 2003-12-05 13:53:14 ellis Exp $ 
+ * $Id: sdifframe.cpp,v 1.10 2004-02-02 18:07:24 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.9  2003/12/05 13:53:14  ellis
+ *
+ * including <iostream> for the use of std::cout, cerr...
+ *
  * Revision 1.8  2003/11/18 18:17:00  roebel
  * Replaced error messages by exceptions.
  *
@@ -203,16 +207,17 @@ int SDIFFrame::ReadHeader(const SDIFEntity& entity)
 int SDIFFrame::Write(SdifFileT* file)
 {        
     SdifUInt4 index;
+    SdifUInt4 lsize=GetSize();
     
     WriteHeader(file);
     SdifUInt4 _size    = 0;
     for (index = 0; index < mNbMatrix; index++)	    
 	_size += mv_Matrix[index].Write(file);     
 
-    if(_size != mSize){
+    if(_size != lsize){
       throw Easdif::SDIFFrameHeaderSizeError(eError,"Error in SDIFFrame::Write -- FrameSize in Header does not match size of matrices in header",file,eBadHeader,0,0);
     }
-    return mSize; 
+    return _size; 
 }
 
 /* for writing with SDIFEntity */
@@ -225,7 +230,7 @@ int SDIFFrame::Write(const SDIFEntity& entity)
 int SDIFFrame::WriteHeader(SdifFileT* file)
 {
   int _frsize = SdifSizeOfFrameHeader();
-  SdifFSetCurrFrameHeader(file, mSig, mSize+SdifSizeOfFrameHeader(),
+  SdifFSetCurrFrameHeader(file, mSig, GetSize()+SdifSizeOfFrameHeader(),
 			  mNbMatrix, mStreamID, mTime); 
   SdifFWriteFrameHeader(file);    
   
@@ -371,14 +376,18 @@ SdifFloat8 SDIFFrame::GetTime() const
 
 SdifUInt4 SDIFFrame::GetSize() const
 {
-    return mSize;
+  SdifUInt4       size=0;
+    
+  for(unsigned int i=0;i<GetNbMatrix();++i)
+    size += GetMatrix(i).GetSize();
+  return size;
+
 }
 
 /* clean */
 void SDIFFrame::ClearData()
 {
     mStreamID = 0;
-    mSize = 0;
     mNbMatrix = 0;
     mv_Matrix.clear();
 }
@@ -387,7 +396,6 @@ void SDIFFrame::ClearData()
 int SDIFFrame::AddMatrix(const SDIFMatrix& aMatrix)
 {
     mv_Matrix.insert(mv_Matrix.end(), aMatrix);
-    mSize += aMatrix.GetSize();
     mNbMatrix++;
     return mNbMatrix;
 }
