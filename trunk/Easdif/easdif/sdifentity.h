@@ -32,9 +32,12 @@
  * 
  * 
  * 
- * $Id: sdifentity.h,v 1.3 2003-04-08 17:26:04 roebel Exp $ 
+ * $Id: sdifentity.h,v 1.4 2003-04-18 16:44:00 schwarz Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.3  2003/04/08 17:26:04  roebel
+ * Updated doc.
+ *
  * Revision 1.2  2003/04/06 16:31:08  roebel
  * Added license info
  *
@@ -94,8 +97,15 @@ namespace Easdif {
  * sdif-file. 
  * 
  */
+
+// shorten SWIG class name because we prefix with SDIF:: anyway
+#ifdef SWIG
+%name(Entity)
+#endif
+
 class SDIFEntity
 {
+    friend SDIFFrame;
 
 private:
 
@@ -351,7 +361,7 @@ public:
  * \ingroup rnwentity
  * true if file is at eof
  */
-    bool& eof();
+    bool eof();
 
 /** 
  * \ingroup rnwentity
