@@ -1,10 +1,13 @@
-# $Id: makefile,v 1.18 2001-02-07 15:56:42 roebel Exp $
+# $Id: makefile,v 1.19 2001-02-07 16:00:13 roebel Exp $
 #
 # makefile	26. January 2000	Diemo Schwarz
 #
 # formesutils matlab library
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.18  2001/02/07 15:56:42  roebel
+# Added README.first to distribution
+#
 # Revision 1.17  2001/02/07 15:54:13  roebel
 # Added support for matlab 6
 #
@@ -85,7 +88,7 @@ include mex.makedefs
 
 V_MAJOR 	= 0
 V_MINOR 	= 1
-V_RELEASE	= 7
+V_RELEASE	= 7b
 VERSION		= $(V_MAJOR).$(V_MINOR).$(V_RELEASE)
 CVSTAG		= sdif_matlab_v$(V_MAJOR)_$(V_MINOR)_$(V_RELEASE)
 
