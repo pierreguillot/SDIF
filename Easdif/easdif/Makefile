@@ -11,7 +11,7 @@
 # even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 # PARTICULAR PURPOSE.
 
-# $Id: Makefile,v 1.1 2003-03-03 19:00:16 roebel Exp $
+# $Id: Makefile,v 1.2 2003-03-04 00:59:00 roebel Exp $
 #
 # ./Easdif/src/Makefile.am	Feb. 2003 Axel Roebel
 #
@@ -19,8 +19,11 @@
 #
 
 # $Log: not supported by cvs2svn $
-# Revision 1.9  2003/03/03 18:50:36  roebel
-# Recreated using autotools installed at IRCAM.
+# Revision 1.2  2003/03/04 00:55:02  roebel
+# Removed version determination
+#
+# Revision 1.1  2003/03/03 19:00:16  roebel
+# Moved src directory to new name easdif
 #
 # Revision 1.1  2003/03/03 10:03:50  roebel
 # Adapted for autoconf/automake...
@@ -81,6 +84,8 @@ AS = @AS@
 CC = gcc
 CXX = c++
 DLLTOOL = @DLLTOOL@
+EASDIF_VERSION_MAJ = 
+EASDIF_VERSION_MIN = 
 ECHO = echo
 EXEEXT = 
 IRCAMDEPS = ircam_deps
@@ -91,10 +96,10 @@ OBJDUMP = @OBJDUMP@
 OBJEXT = o
 PACKAGE = Easdif
 RANLIB = ranlib
-SDIFOBJECTS =  $(top_srcdir)/SDIF/sdif/SdifCheck.lo $(top_srcdir)/SDIF/sdif/SdifConvToText.lo $(top_srcdir)/SDIF/sdif/SdifErrMess.lo $(top_srcdir)/SDIF/sdif/SdifError.lo $(top_srcdir)/SDIF/sdif/SdifFGet.lo $(top_srcdir)/SDIF/sdif/SdifFPrint.lo $(top_srcdir)/SDIF/sdif/SdifFPut.lo $(top_srcdir)/SDIF/sdif/SdifFRead.lo $(top_srcdir)/SDIF/sdif/SdifFScan.lo $(top_srcdir)/SDIF/sdif/SdifFWrite.lo $(top_srcdir)/SDIF/sdif/SdifFile.lo $(top_srcdir)/SDIF/sdif/SdifFrame.lo $(top_srcdir)/SDIF/sdif/SdifFrameType.lo $(top_srcdir)/SDIF/sdif/SdifGlobals.lo $(top_srcdir)/SDIF/sdif/SdifHard_OS.lo $(top_srcdir)/SDIF/sdif/SdifHash.lo $(top_srcdir)/SDIF/sdif/SdifHighLevel.lo $(top_srcdir)/SDIF/sdif/SdifList.lo $(top_srcdir)/SDIF/sdif/SdifMatrix.lo $(top_srcdir)/SDIF/sdif/SdifMatrixType.lo $(top_srcdir)/SDIF/sdif/SdifMemory.lo $(top_srcdir)/SDIF/sdif/SdifNameValue.lo $(top_srcdir)/SDIF/sdif/SdifPreTypes.lo $(top_srcdir)/SDIF/sdif/SdifPrint.lo $(top_srcdir)/SDIF/sdif/SdifRWLowLevel.lo $(top_srcdir)/SDIF/sdif/SdifSelect.lo $(top_srcdir)/SDIF/sdif/SdifSignatureTab.lo $(top_srcdir)/SDIF/sdif/SdifStreamID.lo $(top_srcdir)/SDIF/sdif/SdifString.lo $(top_srcdir)/SDIF/sdif/SdifTest.lo $(top_srcdir)/SDIF/sdif/SdifTextConv.lo $(top_srcdir)/SDIF/sdif/SdifTimePosition.lo
+SDIFOBJECTS =  ../SDIF/sdif/SdifCheck.lo ../SDIF/sdif/SdifConvToText.lo ../SDIF/sdif/SdifErrMess.lo ../SDIF/sdif/SdifError.lo ../SDIF/sdif/SdifFGet.lo ../SDIF/sdif/SdifFPrint.lo ../SDIF/sdif/SdifFPut.lo ../SDIF/sdif/SdifFRead.lo ../SDIF/sdif/SdifFScan.lo ../SDIF/sdif/SdifFWrite.lo ../SDIF/sdif/SdifFile.lo ../SDIF/sdif/SdifFrame.lo ../SDIF/sdif/SdifFrameType.lo ../SDIF/sdif/SdifGlobals.lo ../SDIF/sdif/SdifHard_OS.lo ../SDIF/sdif/SdifHash.lo ../SDIF/sdif/SdifHighLevel.lo ../SDIF/sdif/SdifList.lo ../SDIF/sdif/SdifMatrix.lo ../SDIF/sdif/SdifMatrixType.lo ../SDIF/sdif/SdifMemory.lo ../SDIF/sdif/SdifNameValue.lo ../SDIF/sdif/SdifPreTypes.lo ../SDIF/sdif/SdifPrint.lo ../SDIF/sdif/SdifRWLowLevel.lo ../SDIF/sdif/SdifSelect.lo ../SDIF/sdif/SdifSignatureTab.lo ../SDIF/sdif/SdifStreamID.lo ../SDIF/sdif/SdifString.lo ../SDIF/sdif/SdifTest.lo ../SDIF/sdif/SdifTextConv.lo ../SDIF/sdif/SdifTimePosition.lo
 SELLIB = libEasdif.la
 STRIP = strip
-VERSION = 
+VERSION = 0.30
 
 EXTRA_LTLIBRARIES = libEasdif.la 
 
@@ -112,13 +117,13 @@ libEasdif_la_SOURCES = sdifentity.cpp sdifexception.cpp sdifframe.cpp \
 			sdifinit.cpp sdifmatrix.cpp sdifnamevaluetable.cpp
 
 
-libEasdif_la_LIBADD =  $(top_srcdir)/SDIF/sdif/SdifCheck.lo $(top_srcdir)/SDIF/sdif/SdifConvToText.lo $(top_srcdir)/SDIF/sdif/SdifErrMess.lo $(top_srcdir)/SDIF/sdif/SdifError.lo $(top_srcdir)/SDIF/sdif/SdifFGet.lo $(top_srcdir)/SDIF/sdif/SdifFPrint.lo $(top_srcdir)/SDIF/sdif/SdifFPut.lo $(top_srcdir)/SDIF/sdif/SdifFRead.lo $(top_srcdir)/SDIF/sdif/SdifFScan.lo $(top_srcdir)/SDIF/sdif/SdifFWrite.lo $(top_srcdir)/SDIF/sdif/SdifFile.lo $(top_srcdir)/SDIF/sdif/SdifFrame.lo $(top_srcdir)/SDIF/sdif/SdifFrameType.lo $(top_srcdir)/SDIF/sdif/SdifGlobals.lo $(top_srcdir)/SDIF/sdif/SdifHard_OS.lo $(top_srcdir)/SDIF/sdif/SdifHash.lo $(top_srcdir)/SDIF/sdif/SdifHighLevel.lo $(top_srcdir)/SDIF/sdif/SdifList.lo $(top_srcdir)/SDIF/sdif/SdifMatrix.lo $(top_srcdir)/SDIF/sdif/SdifMatrixType.lo $(top_srcdir)/SDIF/sdif/SdifMemory.lo $(top_srcdir)/SDIF/sdif/SdifNameValue.lo $(top_srcdir)/SDIF/sdif/SdifPreTypes.lo $(top_srcdir)/SDIF/sdif/SdifPrint.lo $(top_srcdir)/SDIF/sdif/SdifRWLowLevel.lo $(top_srcdir)/SDIF/sdif/SdifSelect.lo $(top_srcdir)/SDIF/sdif/SdifSignatureTab.lo $(top_srcdir)/SDIF/sdif/SdifStreamID.lo $(top_srcdir)/SDIF/sdif/SdifString.lo $(top_srcdir)/SDIF/sdif/SdifTest.lo $(top_srcdir)/SDIF/sdif/SdifTextConv.lo $(top_srcdir)/SDIF/sdif/SdifTimePosition.lo
+libEasdif_la_LIBADD =  ../SDIF/sdif/SdifCheck.lo ../SDIF/sdif/SdifConvToText.lo ../SDIF/sdif/SdifErrMess.lo ../SDIF/sdif/SdifError.lo ../SDIF/sdif/SdifFGet.lo ../SDIF/sdif/SdifFPrint.lo ../SDIF/sdif/SdifFPut.lo ../SDIF/sdif/SdifFRead.lo ../SDIF/sdif/SdifFScan.lo ../SDIF/sdif/SdifFWrite.lo ../SDIF/sdif/SdifFile.lo ../SDIF/sdif/SdifFrame.lo ../SDIF/sdif/SdifFrameType.lo ../SDIF/sdif/SdifGlobals.lo ../SDIF/sdif/SdifHard_OS.lo ../SDIF/sdif/SdifHash.lo ../SDIF/sdif/SdifHighLevel.lo ../SDIF/sdif/SdifList.lo ../SDIF/sdif/SdifMatrix.lo ../SDIF/sdif/SdifMatrixType.lo ../SDIF/sdif/SdifMemory.lo ../SDIF/sdif/SdifNameValue.lo ../SDIF/sdif/SdifPreTypes.lo ../SDIF/sdif/SdifPrint.lo ../SDIF/sdif/SdifRWLowLevel.lo ../SDIF/sdif/SdifSelect.lo ../SDIF/sdif/SdifSignatureTab.lo ../SDIF/sdif/SdifStreamID.lo ../SDIF/sdif/SdifString.lo ../SDIF/sdif/SdifTest.lo ../SDIF/sdif/SdifTextConv.lo ../SDIF/sdif/SdifTimePosition.lo
 
 libEasdif_la_LDFLAGS = -no-undefined  -rpath $(libdir)
 
 INCLUDES = -I$(top_srcdir) -I$(top_srcdir)/SDIF/include -I$(top_srcdir)/SDIF/sdif   -DUSE_CONFIGURE
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
-CONFIG_HEADER = config.h
+CONFIG_HEADER = easdif_version.h
 CONFIG_CLEAN_FILES = 
 LTLIBRARIES =  $(lib_LTLIBRARIES)
 
@@ -137,7 +142,7 @@ CXXLD = $(CXX)
 CXXLINK = $(LIBTOOL) --mode=link $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(LDFLAGS) -o $@
 HEADERS =  $(noinst_HEADERS)
 
-DIST_COMMON =  ./stamp-h.in Makefile.am Makefile.in config.h.in
+DIST_COMMON =  ./stamp-h.in Makefile.am Makefile.in easdif_version.h.in
 
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
@@ -153,24 +158,24 @@ all: all-redirect
 .SUFFIXES:
 .SUFFIXES: .S .c .cpp .lo .o .obj .s
 $(srcdir)/Makefile.in: Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 
-	cd $(top_srcdir) && $(AUTOMAKE) --foreign src/Makefile
+	cd $(top_srcdir) && $(AUTOMAKE) --foreign easdif/Makefile
 
 Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status $(BUILT_SOURCES)
 	cd $(top_builddir) \
 	  && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
 
 
-config.h: stamp-h
+easdif_version.h: stamp-h
 	@if test ! -f $@; then \
 		rm -f stamp-h; \
 		$(MAKE) stamp-h; \
 	else :; fi
-stamp-h: $(srcdir)/config.h.in $(top_builddir)/config.status
+stamp-h: $(srcdir)/easdif_version.h.in $(top_builddir)/config.status
 	cd $(top_builddir) \
-	  && CONFIG_FILES= CONFIG_HEADERS=src/config.h \
+	  && CONFIG_FILES= CONFIG_HEADERS=easdif/easdif_version.h \
 	     $(SHELL) ./config.status
 	@echo timestamp > stamp-h 2> /dev/null
-$(srcdir)/config.h.in: $(srcdir)/stamp-h.in
+$(srcdir)/easdif_version.h.in: $(srcdir)/stamp-h.in
 	@if test ! -f $@; then \
 		rm -f $(srcdir)/stamp-h.in; \
 		$(MAKE) $(srcdir)/stamp-h.in; \
@@ -184,7 +189,7 @@ mostlyclean-hdr:
 clean-hdr:
 
 distclean-hdr:
-	-rm -f config.h
+	-rm -f easdif_version.h
 
 maintainer-clean-hdr:
 
@@ -270,15 +275,15 @@ ID: $(HEADERS) $(SOURCES) $(LISP)
 	here=`pwd` && cd $(srcdir) \
 	  && mkid -f$$here/ID $$unique $(LISP)
 
-TAGS:  $(HEADERS) $(SOURCES) config.h.in $(TAGS_DEPENDENCIES) $(LISP)
+TAGS:  $(HEADERS) $(SOURCES) easdif_version.h.in $(TAGS_DEPENDENCIES) $(LISP)
 	tags=; \
 	here=`pwd`; \
 	list='$(SOURCES) $(HEADERS)'; \
 	unique=`for i in $$list; do echo $$i; done | \
 	  awk '    { files[$$0] = 1; } \
 	       END { for (i in files) print i; }'`; \
-	test -z "$(ETAGS_ARGS)config.h.in$$unique$(LISP)$$tags" \
-	  || (cd $(srcdir) && etags $(ETAGS_ARGS) $$tags config.h.in $$unique $(LISP) -o $$here/TAGS)
+	test -z "$(ETAGS_ARGS)easdif_version.h.in$$unique$(LISP)$$tags" \
+	  || (cd $(srcdir) && etags $(ETAGS_ARGS) $$tags easdif_version.h.in $$unique $(LISP) -o $$here/TAGS)
 
 mostlyclean-tags:
 
@@ -291,14 +296,14 @@ maintainer-clean-tags:
 
 distdir = $(top_builddir)/$(PACKAGE)-$(VERSION)/$(subdir)
 
-subdir = src
+subdir = easdif
 
 distdir: $(DISTFILES)
 	here=`cd $(top_builddir) && pwd`; \
 	top_distdir=`cd $(top_distdir) && pwd`; \
 	distdir=`cd $(distdir) && pwd`; \
 	cd $(top_srcdir) \
-	  && $(AUTOMAKE) --include-deps --build-dir=$$here --srcdir-name=$(top_srcdir) --output-dir=$$top_distdir --foreign src/Makefile
+	  && $(AUTOMAKE) --include-deps --build-dir=$$here --srcdir-name=$(top_srcdir) --output-dir=$$top_distdir --foreign easdif/Makefile
 	@for file in $(DISTFILES); do \
 	  d=$(srcdir); \
 	  if test -d $$d/$$file; then \
@@ -368,7 +373,7 @@ check-am: all-am
 check: check-am
 installcheck-am:
 installcheck: installcheck-am
-all-recursive-am: config.h
+all-recursive-am: easdif_version.h
 	$(MAKE) $(AM_MAKEFLAGS) all-recursive
 
 install-exec-am: install-libLTLIBRARIES
@@ -382,7 +387,7 @@ install-am: all-am
 install: install-am
 uninstall-am: uninstall-libLTLIBRARIES
 uninstall: uninstall-am
-all-am: Makefile $(LTLIBRARIES) $(HEADERS) config.h
+all-am: Makefile $(LTLIBRARIES) $(HEADERS) easdif_version.h
 all-redirect: all-am
 install-strip:
 	$(MAKE) $(AM_MAKEFLAGS) AM_INSTALL_PROGRAM_FLAGS=-s install
@@ -446,13 +451,13 @@ maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 #
 # EXTRA rules and dependencies to generate easdif_version.h
 #
-$(top_srcdir)/src/easdif_version.h: $(top_srcdir)/Doxyfile
-	echo "/* Version automatically generated from Makefile/DoxyFile" >$@.h
-	echo " * do not edit */" >>$@.h
-	echo "#ifndef EASDIF_VERSION_MAJ"	 >>$@.h
-	echo "#define" EASDIF_VERSION_MAJ $(strip $(shell grep ^PROJECT_NUMBER  $< | cut -d"=" -f2| cut -d. -f1)) >>$@.h
-	echo "#define" EASDIF_VERSION_MIN $(strip $(shell grep ^PROJECT_NUMBER  $< | cut -d"=" -f2| cut -d. -f2)) >>$@.h
-	echo "#endif "	 >>$@.h
+#$(top_srcdir)/src/easdif_version.h: $(top_srcdir)/Doxyfile
+#	echo "/* Version automatically generated from Makefile/DoxyFile" >$@.h
+#	echo " * do not edit */" >>$@.h
+#	echo "#ifndef EASDIF_VERSION_MAJ"	 >>$@.h
+#	echo "#define" EASDIF_VERSION_MAJ $(strip $(shell grep ^PROJECT_NUMBER  $< | cut -d"=" -f2| cut -d. -f1)) >>$@.h
+#	echo "#define" EASDIF_VERSION_MIN $(strip $(shell grep ^PROJECT_NUMBER  $< | cut -d"=" -f2| cut -d. -f2)) >>$@.h
+#	echo "#endif "	 >>$@.h
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
