@@ -8,9 +8,14 @@
  * 
  *
  * 
- * $Id: sdifnamevaluetable.h,v 1.3 2002-10-10 10:49:09 roebel Exp $ 
+ * $Id: sdifnamevaluetable.h,v 1.4 2002-11-27 20:10:39 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.3  2002/10/10 10:49:09  roebel
+ * Now using namespace Easdif.
+ * Fixed handling of zero pointer arguments in initException.
+ * Reading past end of file now throws an exception.
+ *
  * Revision 1.2  2002/08/28 16:46:53  roebel
  * Internal reorganization and name changes.
  *
@@ -49,83 +54,159 @@ class SDIFNameValueTable
     SdifUInt4	     TypesVersion;	/* version of the description 
 					   type collection */
 
-    // std::map<std::string,std::string> map_NameValues;
 
-    int mNbNV;// number of NameValues in the NameValuesTable
+  typedef std::pair<const std::string,const int> Key;
+
+  struct nvtcmp {
+    bool operator()(const Key& s1, 
+		    const Key& s2) const
+    {
+      // either use ordering by strings for retrieval
+      if(s1.second <0 || s2.second <0)
+	return s1.first < s2.first;
+
+      //or ordering by index for keeping NVT in sequence
+      //defined by adding the name values.
+
+      return s1.second < s2.second;
+
+    }
+  };
+
+
+  /** 
+   * @brief map of string which are containing the Name Values
+   *
+   * we use our own less then comparator such that the NVT
+   * is always scanned in the same order that has been
+   * used to  add the entries.
+   */
+  std::map<Key,std::string,nvtcmp> map_NameValues;
+
 
  public:
 
     /* construct a NameValueTable*/
-    SDIFNameValueTable():mNbNV(0)
-	{};
+    SDIFNameValueTable() {};
+
     ~SDIFNameValueTable(){};
 
-    /* to have a map of NameValues */
+  /** 
+   *  \brief add a Name Value in the map
+   * 
+   * @param name 
+   * @param value 
+   * 
+   * @return  the number of Name Values in the map
+   */
+  int AddNameValue(const std::string& name, const std::string& value);
 
-/** 
- * @brief map of string which are containing the Name Values
- */
-    std::map<std::string,std::string> map_NameValues;
-
-
-
-/** 
- * add a Name Value in the map
- * @return the number of Name Values in the map
- */
-    int AddNameValue(std::string name, std::string value);
-
-
-/*************************************************************************/
-/*
-// FUNCTION GROUP:	get the members
-*/
-/** 
- * @brief get the number of Name Value
- */
-    int GetNbNameValue();
-
-/** 
- * @brief get the StreamID
- */
-    SdifUInt4 GetStreamID();
-
-/** 
- * @brief get the Value
- * @param name string
- * @return value string
- */
-    std::string GetValue(std::string name);
+  /** 
+   * \brief clear  all Name Values from the  table 
+   */
+  void clear() { map_NameValues.clear();};
 
 
-/*************************************************************************/
-/*
-// FUNCTION GROUP:	set the members
-*/
-/** 
- * @brief set the number of name value
- */
-    int SetNbNameValue(int nb);
+  /*************************************************************************/
+  /*
+    // FUNCTION GROUP:	set the members
+  */
+  
+  /**  
+   * @brief set the streamID
+   * 
+   * @param streamid 
+   * 
+   * @return 
+   */
+  SdifUInt4 SetStreamID(const SdifUInt4& streamid);
 
-/**  
- * @brief set the streamID
- */
-    SdifUInt4 SetStreamID(SdifUInt4 streamid);
+  /*************************************************************************/
+  /*
+    // FUNCTION GROUP:	to see
+  */
+  /** 
+   * @brief view a Name Value
+   * 
+   * 
+   * @param name 
+   */
+  void ViewNameValue(const std::string& name)const;
 
-/*************************************************************************/
-/*
-// FUNCTION GROUP:	to see
-*/
-/** 
- * @brief view a Name Value
- */
-    void ViewNameValue(std::string name);
+  /** 
+   * @brief view a Name Value Table
+   */
+  void ViewNameValueTable() const;
 
-/** 
- * @brief view a Name Value Table
- */
-    void ViewNameValueTable();
+
+  /*************************************************************************/
+  /*
+    // FUNCTION GROUP:   Iterator
+  */
+
+  
+  typedef map<Key,std::string,nvtcmp>::iterator iterator;
+  typedef map<Key,std::string,nvtcmp>::const_iterator const_iterator;
+
+
+  /** 
+   * /brief iterator over name value table
+   * 
+   * 
+   * @return iterator pointing to first name value entry
+   */
+  iterator  begin() { return map_NameValues.begin();  }
+  const_iterator  begin() const { return map_NameValues.begin();  }
+
+  /** 
+   * /brief iterator over name value table
+   * 
+   * 
+   * @return iterator pointing to end of name value table
+   */
+  iterator  end() { return map_NameValues.end();  }
+  const_iterator  end() const { return map_NameValues.end();  }
+
+  /*************************************************************************/
+  /*
+    // FUNCTION GROUP:	get the members
+  */
+  /** 
+   * @brief get the number of Name Value
+   */
+  int GetNbNameValue();
+  
+  /** 
+   * @brief get the StreamID
+   */
+  SdifUInt4 GetStreamID();
+
+  /** 
+   * @brief get the Value
+   * @param name string
+   * @return value string
+   */
+  std::string GetValue(const std::string& name) const;
+
+
 };
+
+
+  /** 
+   * @brief get the Value
+   * @param nvt iterator
+   * @return value string
+   */
+  std::string GetValueFromSDIFNVTIt(SDIFNameValueTable::const_iterator& it);
+
+
+  /** 
+   * @brief get the name
+   * @param nvt iterator
+   * @return name string
+   */
+  std::string GetNameFromSDIFNVTIt(SDIFNameValueTable::const_iterator& it);
+
 
 
 } // end of namespace Easdif
