@@ -1,28 +1,11 @@
-/* $Id: SdifFile.c,v 3.13.2.3 2000-10-25 18:35:56 roebel Exp $
+/* $Id: SdifFile.c,v 3.13.2.4 2000-11-15 15:16:50 ballany Exp $
  *
- * IRCAM SDIF Library (http://www.ircam.fr/sdif)
- *
- * Copyright (C) 1998, 1999, 2000 by IRCAM-Centre Georges Pompidou, Paris, France.
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * See file COPYING for further informations on licensing terms.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ *               Copyright (c) 1998 by IRCAM - Centre Pompidou
+ *                          All rights reserved.
  *
  *  For any information regarding this and other IRCAM software, please
  *  send email to:
- *                            sdif@ircam.fr
+ *                            manager@ircam.fr
  *
  *
  * SdifFile.c
@@ -33,11 +16,20 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
- * Revision 3.13.2.2  2000/08/21  21:35:15  tisseran
- * *** empty log message ***
+ * Revision 3.14  2000/08/22  13:17:24  schwarz
+ * Centralised error report function SdifFError, called from _SdifFError
+ * macro.  Error level names (gSdifErrorLevel) are printed, so that users
+ * can tell warnings from errors.  Errors are counted by level in
+ * SdifFileT.ErrorCount[].  Error counts can be queried with SdifFNumErrors.
  *
- * Revision 3.13.2.1  2000/08/21  14:04:15  tisseran
- * *** empty log message ***
+ * Revision 3.13  2000/08/21  10:02:50  tisseran
+ * Add information about compilation when use SdifPrintVersion:
+ * - Which SdifTypes.STYP is used.
+ * - Who made the compilation.
+ *
+ * Revision 3.12  2000/08/07  15:05:45  schwarz
+ * Error checking for read general header.
+ * Remove double definition of 1GAI matrix type.
  *
  * Revision 3.11  2000/05/12  14:41:47  schwarz
  * On behalf of Adrien, synchronisation with Mac sources, with some slight
@@ -144,13 +136,25 @@
 #include "SdifPreTypes.h"
 #include "SdifFScan.h"
 
-#include "SdifVersion.h"
-
-
-/* #include <sys/types.h> */
-#if HAVE_SYS_STAT_H
+#if HOST_OS_UNIX
+#include <sys/types.h>
 #include <sys/stat.h>
 #endif
+
+
+int        gSdifInitialised = 0;
+SdifFileT *gSdifPredefinedTypes;
+
+/* _SdifTypesFileName is normaly defined
+ * in the Makefile with -D_SdifTypesFileName="<FileNameWithPath>"
+ * then default _SdifTypesFileName is not used.
+ */
+#ifndef _SdifTypesFileName
+#define _SdifTypesFileName  "D:\\Programs\\SDIF\\SdifTypes.STYP"
+#endif
+
+/* Global variable to Know the SDIF declaration file type used */
+char *UsedSdifFileTypes;
 
 
 SdifFileT*
@@ -221,10 +225,14 @@ SdifFOpen(const char* Name, SdifFileModeET Mode)
 
       SdifF->TextStreamName   = NULL;
       SdifF->TextStream       = NULL;
-      SdifF->NbOfWarning = 0;
-
-      SdifF->Stream        = NULL;
-      SdifF->Errors        = SdifCreateErrorL(SdifF);
+      SdifF->Stream           = NULL;
+ 
+      SdifF->Errors		   = SdifCreateErrorL(SdifF);
+      SdifF->ErrorCount	[eFatal]   = 0;
+      SdifF->ErrorCount	[eError]   = 0;
+      SdifF->ErrorCount	[eWarning] = 0;
+      SdifF->ErrorCount	[eRemark]  = 0;
+      SdifF->ErrorCount	[eNoLevel] = 0;
 
       SdifF->NbUserData    = 0;
       
@@ -284,7 +292,7 @@ SdifFOpen(const char* Name, SdifFileModeET Mode)
       }
       else
       {   /* check if we can perform seeks (with Sdiffsetpos) on this file */
-#if HAVE_SYS_STAT_H
+#if HOST_OS_UNIX
 	  SdifF->isSeekable  =  stdio == eBinaryModeUnknown
 			        && !S_ISFIFO (fileno (SdifF->Stream));
 #else
@@ -592,10 +600,13 @@ SdifTakeCodedPredefinedTypes(SdifFileT *SdifF)
 void
 SdifFLoadPredefinedTypes(SdifFileT *SdifF, char *TypesFileName)
 {
+  UsedSdifFileTypes = (char *) malloc(1024*sizeof(char));
+  
   if (SdifStrEq(TypesFileName, ""))
     {
       _SdifRemark("Load Coded Predefinied Types, it can be incomplete (file name null)\n");
       SdifTakeCodedPredefinedTypes(SdifF);
+      UsedSdifFileTypes = strcpy(UsedSdifFileTypes,"Predefinied Types");
     }
   else
     {
@@ -604,11 +615,13 @@ SdifFLoadPredefinedTypes(SdifFileT *SdifF, char *TypesFileName)
         {
           _SdifRemark("Load Coded Predefinied Types, it can be incomplete (file not found)\n");
           SdifTakeCodedPredefinedTypes(SdifF);
+	  UsedSdifFileTypes = strcpy(UsedSdifFileTypes,"Predefinied Types");
         }
       else
         {
-            SdifFScanGeneralHeader   (SdifF);
-            SdifFScanAllASCIIChunks  (SdifF);
+	  UsedSdifFileTypes = strcpy(UsedSdifFileTypes,TypesFileName);
+	  SdifFScanGeneralHeader   (SdifF);
+	  SdifFScanAllASCIIChunks  (SdifF);
         }
     }
 }
@@ -618,16 +631,6 @@ SdifFLoadPredefinedTypes(SdifFileT *SdifF, char *TypesFileName)
 
 
 
-int        gSdifInitialised = 0;
-SdifFileT *gSdifPredefinedTypes;
-
-/* _SdifTypesFileName is normaly defined
- * in the Makefile with -D_SdifTypesFileName="<FileNameWithPath>"
- * then default _SdifTypesFileName is not used.
- */
-#ifndef _SdifTypesFileName
-#define _SdifTypesFileName  "SdifTypes.STYP"
-#endif
 
 void
 SdifGenInit(char *PredefinedTypesFile)
@@ -690,6 +693,10 @@ SdifGenKill(void)
 
 void SdifPrintVersion(void)
 {
+#ifndef lint
+    static char rcsid[]= "$Revision: 3.13.2.4 $ IRCAM $Date: 2000-11-15 15:16:50 $";
+#endif
+    
     if (SdifStdErr == NULL)
 	SdifStdErr = stderr;
 
@@ -700,7 +707,12 @@ void SdifPrintVersion(void)
     fprintf(SdifStdErr, "CVS: %s\n", rcsid);
 #endif
 
-    fprintf(SdifStdErr, "Release: %s, %s\n", VERSION, __DATE__);
+    fprintf(SdifStdErr, "Release: %s, %s\n", _SDIF_VERSION, __DATE__);
+
+    /* Print which SdifTypes.STYP file is used:
+       Environment variable or compilation setting */
+    fprintf(SdifStdErr, "SDIF File Types: %s \n", UsedSdifFileTypes);
+    
 }
 
 
@@ -912,6 +924,26 @@ SdifFPutInMtrxUsed (SdifFileT *SdifF, SdifSignature Sign)
 
 /* Error management */
 
+int SdifFNumErrors (SdifFileT *f, SdifErrorLevelET upto)
+{
+    int ret = 0;
+    switch (upto)	/* switch is much faster than loop */
+    {	/* sum no. of errors of level upto or more severe */
+    	case eNoLevel:	ret += f->ErrorCount [eNoLevel];
+    	case eRemark:	ret += f->ErrorCount [eRemark];
+    	case eWarning:	ret += f->ErrorCount [eWarning];
+    	case eError:	ret += f->ErrorCount [eError];
+    	case eFatal:	ret += f->ErrorCount [eFatal];
+    	break;
+    
+    	default:	assert (!"illegal argument for SdifErrorLevelET");
+    }
+    return (ret);
+}
+
+
+/* Return pointer to last error of file or NULL if there are no errors
+   present.  */
 SdifErrorT*
 SdifFLastError (SdifFileT *SdifF)
 {
@@ -919,7 +951,7 @@ SdifFLastError (SdifFileT *SdifF)
 }
 
 
-
+/* Return last error tag of file */
 SdifErrorTagET
 SdifFLastErrorTag (SdifFileT *SdifF)
 {
