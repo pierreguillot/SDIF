@@ -1,4 +1,4 @@
-/* $Id: SdifRWLowLevel.c,v 3.16 2003-05-01 18:50:32 roebel Exp $
+/* $Id: SdifRWLowLevel.c,v 3.17 2003-07-07 10:27:01 roebel Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -32,6 +32,9 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.16  2003/05/01 18:50:32  roebel
+ * SdifStringToSignature takes now const char * as argument.
+ *
  * Revision 3.15  2002/05/24 19:37:52  ftissera
  * Change code to be compatible with C++
  * Cast pointers to correct type.
@@ -310,6 +313,12 @@ SdiffReadChar (SdifChar *ptr, size_t nobj, FILE *stream)
     return Sdiffread(ptr, sizeof(SdifChar),  nobj, stream);
 }
 
+size_t
+SdiffReadInt1 (SdifInt1 *ptr, size_t nobj, FILE *stream)
+{
+  return Sdiffread(ptr, sizeof(SdifInt1),  nobj, stream);
+}
+
 
 size_t
 SdiffReadInt2 (SdifInt2 *ptr, size_t nobj, FILE *stream)
@@ -325,8 +334,11 @@ SdiffReadInt2 (SdifInt2 *ptr, size_t nobj, FILE *stream)
 }
 
 
-
-
+size_t
+SdiffReadUInt1 (SdifUInt1 *ptr, size_t nobj, FILE *stream)
+{
+  return Sdiffread(ptr, sizeof(SdifUInt1),  nobj, stream);
+}
 
 
 size_t
@@ -344,8 +356,6 @@ SdiffReadUInt2(SdifUInt2 *ptr, size_t nobj, FILE *stream)
 
 
 
-
-
 size_t
 SdiffReadInt4(SdifInt4 *ptr, size_t nobj, FILE *stream)
 {
@@ -358,10 +368,6 @@ SdiffReadInt4(SdifInt4 *ptr, size_t nobj, FILE *stream)
       return Sdiffread(ptr, sizeof(SdifInt4),  nobj, stream);
     }  
 }
-
-
-
-
 
 
 size_t
@@ -444,16 +450,6 @@ SdiffReadFloat8(SdifFloat8 *ptr, size_t nobj, FILE *stream)
  */
 
 
-
-
-
-
-
-
-
-
-
-
 /* Write */
 
 size_t
@@ -462,6 +458,11 @@ SdiffWriteChar (SdifChar *ptr, size_t nobj, FILE *stream)
     return Sdiffwrite(ptr, sizeof(SdifChar),  nobj, stream);
 }
 
+size_t
+SdiffWriteInt1 (SdifInt1 *ptr, size_t nobj, FILE *stream)
+{
+    return Sdiffwrite(ptr, sizeof(SdifInt1),  nobj, stream);
+}
 
 size_t
 SdiffWriteInt2 (SdifInt2 *ptr, size_t nobj, FILE *stream)
@@ -478,9 +479,11 @@ SdiffWriteInt2 (SdifInt2 *ptr, size_t nobj, FILE *stream)
     }  
 }
 
-
-
-
+size_t
+SdiffWriteUInt1 (SdifUInt1 *ptr, size_t nobj, FILE *stream)
+{
+    return Sdiffwrite(ptr, sizeof(SdifUInt1),  nobj, stream);
+}
 
 size_t
 SdiffWriteUInt2(SdifUInt2 *ptr, size_t nobj, FILE *stream)
@@ -1173,8 +1176,10 @@ SdiffGetStringWeakUntilfromSdifString(SdifStringT *SdifString, char* s,
 static const char *formatChar     = "%c";
 static const char *formatFloat4   = "%f";
 static const char *formatFloat8   = "%lf";
+static const char *formatInt1     = "%hhi";
 static const char *formatInt2     = "%hi";
 static const char *formatInt4     = "%i";
+static const char *formatUInt1    = "%hhu";
 static const char *formatUInt2    = "%hu";
 static const char *formatUInt4    = "%u";
 /* l or ll?

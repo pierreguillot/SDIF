@@ -1,6 +1,6 @@
 dnl -*-autoconf-*-  (No, it's an autoconf file!)
 dnl -*-m4-*- (He emacs, it's a m4 file)
-dnl $Id: configure.in,v 1.42 2003-06-13 10:05:40 schwarz Exp $
+dnl $Id: configure.in,v 1.43 2003-07-07 10:27:00 roebel Exp $
 dnl
 dnl configure.in		September 2000		Patrice Tisserand
 dnl
@@ -32,6 +32,11 @@ dnl send email to:  sdif@ircam.fr
 
 
 dnl $Log: not supported by cvs2svn $
+dnl Revision 1.42  2003/06/13 10:05:40  schwarz
+dnl Added latest projectbuilder mac os X project to cvs and dist.
+dnl Library version is 3.8.0-beta until we decide to announce the official release,
+dnl to avoid confusion.
+dnl
 dnl Revision 1.41  2003/05/30 17:43:35  schwarz
 dnl Bumped up version to 3.8.0 because of added API functions for
 dnl type definition access.
@@ -197,7 +202,7 @@ PACKAGE=SDIF
 
 SDIF_VERSION_MAJOR=3
 SDIF_VERSION_MINOR=8
-SDIF_VERSION_RELEASE=0-beta
+SDIF_VERSION_RELEASE=0-beta2
 
 VERSION=$SDIF_VERSION_MAJOR.$SDIF_VERSION_MINOR.$SDIF_VERSION_RELEASE
 
