@@ -1,8 +1,20 @@
-# $Id: Makefile.headers,v 2.1 1998-12-03 18:10:49 schwarz Exp $
+# $Id: Makefile.headers,v 2.2 1998-12-21 18:26:57 schwarz Exp $
+#
+#               Copyright (c) 1998 by IRCAM - Centre Pompidou
+#                          All rights reserved.
+#
+#  For any information regarding this and other IRCAM software, please
+#  send email to:
+#                            manager@ircam.fr
+#
 #
 # headers of sdif library
 #
 # $Log: not supported by cvs2svn $
+# Revision 2.1  1998/12/03  18:10:49  schwarz
+# Corrected and simplified generation of output directories,
+# added missing header files to list to be installed.
+#
 
 SDIF_HEADERS = \
 	SdifHash.h \

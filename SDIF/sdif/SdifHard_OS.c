@@ -1,4 +1,12 @@
-/* SdifHard_OS.c
+/* $Id: SdifHard_OS.c,v 2.1 1998-12-21 18:27:24 schwarz Exp $
+ *
+ *               Copyright (c) 1998 by IRCAM - Centre Pompidou
+ *                          All rights reserved.
+ *
+ *  For any information regarding this and other IRCAM software, please
+ *  send email to:
+ *                            manager@ircam.fr
+ *
  *
  *
  * author: Dominique Virolle 1998

@@ -1,4 +1,12 @@
-/* SdifPreTypes.c
+/* $Id: SdifPreTypes.c,v 2.1 1998-12-21 18:27:33 schwarz Exp $
+ *
+ *               Copyright (c) 1998 by IRCAM - Centre Pompidou
+ *                          All rights reserved.
+ *
+ *  For any information regarding this and other IRCAM software, please
+ *  send email to:
+ *                            manager@ircam.fr
+ *
  *
  * Compiled Predefined Types. If the predefined types file isn't find or understood,
  * then this types are used. But in this case, some types can miss.

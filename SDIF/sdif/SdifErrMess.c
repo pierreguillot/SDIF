@@ -1,4 +1,12 @@
-/*
+/* $Id: SdifErrMess.c,v 2.2 1998-12-21 18:27:01 schwarz Exp $
+ *
+ *               Copyright (c) 1998 by IRCAM - Centre Pompidou
+ *                          All rights reserved.
+ *
+ *  For any information regarding this and other IRCAM software, please
+ *  send email to:
+ *                            manager@ircam.fr
+ *
  *
  * sdifError.c
  *
