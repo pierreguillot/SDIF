@@ -1,6 +1,6 @@
 dnl -*-autoconf-*-  (No, it's an autoconf file!)
 dnl -*-m4-*- (He emacs, it's a m4 file)
-dnl $Id: configure.in,v 1.24 2002-11-08 15:58:25 livshin Exp $
+dnl $Id: configure.in,v 1.25 2002-11-27 17:59:19 roebel Exp $
 dnl
 dnl configure.in		September 2000		Patrice Tisserand
 dnl
@@ -31,6 +31,9 @@ dnl For any information regarding this and other IRCAM software, please
 dnl send email to:  sdif@ircam.fr
 dnl
 dnl $Log: not supported by cvs2svn $
+dnl Revision 1.24  2002/11/08 15:58:25  livshin
+dnl Added support for exe extensions on cygwin
+dnl
 dnl Revision 1.23  2002/10/24 13:51:09  tisseran
 dnl First version of SDIF library using libtool.
 dnl It hasn't been tested since I can't compile at home.
@@ -145,6 +148,7 @@ AC_SUBST(PACKAGE)
 AC_SUBST(VERSION)
 AC_SUBST(SDIF_VERSION_MINOR)
 AC_SUBST(SDIF_VERSION_MAJOR)
+AC_SUBST(SDIF_VERSION_RELEASE)
 AM_INIT_AUTOMAKE($PACKAGE,$VERSION)
 
 AM_CONFIG_HEADER(sdif/config.h)
@@ -219,20 +223,6 @@ dnl DEBUG feature
 AC_SUBST(SELLIB)
 AC_SUBST(PROGLIST)
 
-dnl AC_ARG_ENABLE(debug,
-dnl [--enable-debug            support additional library/programs with debug enabled],
-dnl [echo FEATURE enable-debug... $enableval; 
-dnl if test "$enableval" = "yes"; then
-dnl 	SELLIB=libsdif-debug.a; CFLAGS="-g2";
-dnl 	PROGLIST="querysdif-debug sdifextract-debug sdiftotext-debug tosdif-debug";
-dnl else 
-dnl 	SELLIB=libsdif.a;  CFLAGS="-O3";
-dnl 	PROGLIST="querysdif sdifextract sdiftotext tosdif";
-dnl fi ],
-dnl [
-dnl SELLIB=libsdif.a; CFLAGS="-O3";
-dnl PROGLIST="querysdif sdifextract sdiftotext tosdif";
-dnl ])
 AC_ARG_ENABLE(debug,
 [--enable-debug            support additional library/programs with debug enabled],
 [echo FEATURE enable-debug... $enableval; 
@@ -253,25 +243,9 @@ dnl compile with g++
 
 AC_SUBST(SELLIB)
 
-dnl AC_ARG_ENABLE(cpp,
-dnl [--enable-cpp            compile with g++ for C++ classes using the library],
-dnl [ dnl actions if enable-option given
-dnl   echo FEATURE enable-cpp... $enableval; 
-dnl   if test "$enableval" = "yes"; then
-dnl   dnl	SELLIB=libsdif-cpp.a; CFLAGS="-O3"; CC="g++"   ...debug for now
-dnl 	SELLIB=libsdif-cpp.a; CFLAGS="-g2"; CC="g++"
-dnl   else
-dnl 	dnl leave values unchanged
-dnl 	dummy=stupid
-dnl   fi 
-dnl ],
-dnl [ dnl actions if enable-option not given
-dnl   dummy=stupid
-dnl ])
-
 
 AC_ARG_ENABLE(cpp,
-[--enable-cpp            compile with g++ for C++ classes using the library],
+[--enable-cpp              compile with g++ for C++ classes using the library],
 [ dnl actions if enable-option given
   echo FEATURE enable-cpp... $enableval; 
   if test "$enableval" = "yes"; then
@@ -286,6 +260,23 @@ AC_ARG_ENABLE(cpp,
   dummy=stupid
 ])
 
+dnl ############################################################
+dnl checks for library functions
+
+AC_ARG_ENABLE(ftruncate,
+[--enable-ftruncate        enable/disable use of ftruncate in sdif library],
+[ dnl actions if enable-ftruncate given
+echo FEATURE enable-ftruncate... $enableval; 
+if test "$enableval" = "yes"; then
+  AC_CHECK_FUNCS(ftruncate)
+else
+unset HAVE_FTRUNCATE;
+fi
+],
+[ dnl actions if enable-ftruncate not given
+echo FEATURE disable-ftruncate... $enableval; 
+  AC_CHECK_FUNCS(ftruncate)
+])
 
 dnl ############################################################
 dnl CREATE OUTPUT FILES
@@ -295,7 +286,7 @@ sdif/Makefile
 tools/Makefile
 data/Makefile 
 include/Makefile 
-include/sdif_version.h 
+include/sdif_version.h
 doc/Makefile 
 doc/pics/Makefile 
 doc/extern/Makefile 
