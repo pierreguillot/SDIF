@@ -1,4 +1,4 @@
-/* $Id: SdifConvToText.h,v 3.1 1999-03-14 10:56:32 virolle Exp $
+/* $Id: SdifConvToText.h,v 3.2 1999-08-25 18:32:33 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -15,6 +15,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.1  1999/03/14  10:56:32  virolle
+ * SdifStdErr add
+ *
  * Revision 2.1  1998/12/21  18:27:00  schwarz
  * Inserted copyright message.
  *
@@ -53,6 +56,11 @@ size_t SdifFConvToTextFrame          (SdifFileT *SdifF);
 size_t SdifFConvToTextAllFrame       (SdifFileT *SdifF);
 size_t SdifFConvToText               (SdifFileT *SdifF);
 
+
+/*DOC: 
+  Converti un fichier texte pseudo-SDIF de nom TextStreamName en un
+  fichier SDIF binaire de non SdifF->Name. Le fichier doit avoir été
+  ouvert en écriture (eWriteFile).  */
 size_t SdifToText (SdifFileT *SdifF, char *TextStreamName);
 
 #endif /* _SdifConvToText_ */

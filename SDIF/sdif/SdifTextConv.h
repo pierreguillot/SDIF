@@ -1,4 +1,4 @@
-/* $Id: SdifTextConv.h,v 3.1 1999-03-14 10:57:26 virolle Exp $
+/* $Id: SdifTextConv.h,v 3.2 1999-08-25 18:32:38 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -6,8 +6,8 @@
  *  For any information regarding this and other IRCAM software, please
  *  send email to:
  *                            manager@ircam.fr
- *
- *
+
+LIBRARY
  * SdifTextConv.h
  *
  *
@@ -15,8 +15,16 @@
  *
  *
  * author: Dominique Virolle 1997
- *
+
+DESCRIPTION
+   La librairie possède deux fonctions permettant de faire des conversions
+   de fichiers SDIF binaire vers du texte ou l'inverse.
+
+LOG
  * $Log: not supported by cvs2svn $
+ * Revision 3.1  1999/03/14  10:57:26  virolle
+ * SdifStdErr add
+ *
  * Revision 2.1  1998/12/21  18:27:44  schwarz
  * Inserted copyright message.
  *
@@ -35,7 +43,6 @@
  * (function prototypes are automatically linked extern), and it
  * prohibits cocoon from generating an entry in the HTML documentation
  * for this function.
- *
  */
 
 
@@ -56,6 +63,10 @@ size_t SdifFTextConvFramesChunk    (SdifFileT *SdifF);
 size_t SdifFTextConv               (SdifFileT *SdifF);
 
 /* upper level : open the text in read mode */
+
+/*DOC: 
+  Converti un fichier SDIF ouvert en lecture (eReadFile) en un fichier
+  texte pseudo-SDIF de nom TextStreamName.  */
 size_t SdifTextToSdif (SdifFileT *SdifF, char *TextStreamName);
 
 #endif   /* _SdifTextConv_ */

@@ -1,4 +1,4 @@
-/* $Id: SdifTest.h,v 3.1 1999-03-14 10:57:24 virolle Exp $
+/* $Id: SdifTest.h,v 3.2 1999-08-25 18:32:37 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -8,6 +8,7 @@
  *                            manager@ircam.fr
  *
  *
+LIBRARY
  * SdifTest.h
  *
  * Tests with message on errors apply on a SdifFileT*
@@ -16,7 +17,11 @@
  *
  * author: Dominique Virolle 1997
  *
+LOG
  * $Log: not supported by cvs2svn $
+ * Revision 3.1  1999/03/14  10:57:24  virolle
+ * SdifStdErr add
+ *
  * Revision 2.1  1998/12/21  18:27:42  schwarz
  * Inserted copyright message.
  *
@@ -79,6 +84,12 @@ SdifInterpretationError(SdifInterpretationErrorET Error, SdifFileT* SdifF, const
 
 #define _SdifFileMess(sdiff, error, mess) 
 
+/*DOC: 
+  Cette fonction vérifie si le type de matrice est répertorié
+  dans SdifF.<br> S'il ne l'est pas, alors elle vérifie si c'est un
+  type prédéfinis. S'il est prédéfini, elle crée le lien de SdifF vers
+  le type prédéfini. Sinon, elle envoie un message sur l'erreur
+  standart.  */
 SdifMatrixTypeT* SdifTestMatrixType (SdifFileT *SdifF, SdifSignature Signature);
 SdifFrameTypeT*  SdifTestFrameType  (SdifFileT *SdifF, SdifSignature Signature);
 
@@ -98,6 +109,7 @@ SdifComponentT*  SdifTestComponent (SdifFileT* SdifF, SdifFrameTypeT *FramT, cha
 short SdifTestSignature            (SdifFileT *SdifF, int CharEnd, SdifSignature Signature, char *Mess);
 short SdifTestCharEnd              (SdifFileT *SdifF, int CharEnd, char MustBe,
 					   char *StringRead, short ErrCondition, char *Mess);
+
 
 short SdifTestMatrixTypeModifMode  (SdifFileT *SdifF, SdifMatrixTypeT *MatrixType);
 short SdifTestFrameTypeModifMode   (SdifFileT *SdifF, SdifFrameTypeT *FrameType);
