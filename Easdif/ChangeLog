@@ -1,3 +1,12 @@
+2004-07-13  Axel Roebel  <Axel.Roebel@ircam.fr>
+Version 0.8.4
+
+	* easdif/sdifmatrix.h, easdif/sdifmatrix.cpp
+	consistently use bytesread member variable.
+	
+	* easdif/sdifentity.h
+	removed unused variable mNbFrames!
+
 2004-03-05  Axel Roebel  <roebel@compaq.localdomain>
 Version 0.8.3
 
@@ -491,4 +500,4 @@ Version 0.21
 	* ChangeLog: Added changelog to repository.
 
 
-$Id: ChangeLog,v 1.31 2004-05-03 18:20:41 roebel Exp $
+$Id: ChangeLog,v 1.32 2004-07-13 15:02:14 roebel Exp $
