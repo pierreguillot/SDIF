@@ -1,4 +1,4 @@
-/* $Id: SdifErrMess.c,v 3.1 1999-03-14 10:56:33 virolle Exp $
+/* $Id: SdifErrMess.c,v 3.2 1999-09-28 10:34:47 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -15,6 +15,9 @@
  * author: Dominique Virolle 1998
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.1  1999/03/14  10:56:33  virolle
+ * SdifStdErr add
+ *
  */
 
 
@@ -26,6 +29,8 @@
 
 
 char gSdifBufferError[4096];
+int  gSdifErrorOutputEnabled = 1;
+
 
 const SdifErrorT gSdifErrMessFormat[] = {
 
@@ -280,5 +285,14 @@ SdifFsPrintError(char* oErrMess,
 }
 
 
+void	
+SdifEnableErrorOutput  (void)
+{
+    gSdifErrorOutputEnabled = 1;
+}
 
-
+void
+SdifDisableErrorOutput (void)
+{
+    gSdifErrorOutputEnabled = 0;
+}
