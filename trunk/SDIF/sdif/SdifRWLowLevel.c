@@ -1,4 +1,4 @@
-/* $Id: SdifRWLowLevel.c,v 3.19 2004-02-08 14:26:58 ellis Exp $
+/* $Id: SdifRWLowLevel.c,v 3.20 2004-06-03 09:16:19 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -32,6 +32,10 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.19  2004/02/08 14:26:58  ellis
+ *
+ * now the textual scanner parses correctly character datas
+ *
  * Revision 3.18  2003/11/07 21:47:18  roebel
  * removed XpGuiCalls.h and replaced preinclude.h  by local files
  *
@@ -188,6 +192,7 @@ Sdiffwrite(void *ptr, size_t size, size_t nobj, FILE *stream)
 /****************************************************/
 /************ little endian machine *****************/
 
+/* TODO: use hton[sl](3) when available (checked by configure) */
 
 /** fread **/
 
@@ -212,31 +217,75 @@ SdiffreadLittleEndianN (void *ptr, size_t size, size_t nobj, FILE *stream)
 }
 
 
-
-
-size_t
-SdiffreadLittleEndian2 (void *ptr, size_t nobj, FILE *stream)
+size_t SdiffreadLittleEndian2 (void *ptr, size_t nobj, FILE *stream)
 {
-  return SdiffreadLittleEndianN (ptr, 2, nobj, stream) ;
+#   define SWAP_SHORT(x)  ((((x) >> 8) & 0xFF) + (((x) & 0xFF) << 8))
+
+    size_t  nobjread;
+    short   temp, *intptr = (short *) ptr;
+    
+    nobjread = nobj = Sdiffread(ptr, 2, nobj, stream);
+
+    /* 2 byte array swapping */
+    while (nobj > 0)
+    {
+	nobj--;
+	temp         = intptr[nobj];
+	intptr[nobj] = SWAP_SHORT(temp);
+    }
+
+    return nobjread;
 }
 
 
-
-size_t
-SdiffreadLittleEndian4 (void *ptr, size_t nobj, FILE *stream)
+size_t SdiffreadLittleEndian4 (void *ptr, size_t nobj, FILE *stream)
 {
-  return SdiffreadLittleEndianN (ptr, 4, nobj, stream) ;
+#   define SWAP_INT(x)    ((((x) >> 24) & 0xFF)  + (((x) >> 8) & 0xFF00) + \
+			   (((x) & 0xFF00) << 8) + (((x) & 0xFF) << 24))
+
+    size_t  nobjread;
+    int     temp, *intptr = (int *) ptr;
+    
+    nobjread = nobj = Sdiffread(ptr, 4, nobj, stream);
+
+    /* 4 byte array swapping */
+    while (nobj > 0)
+    {
+	nobj--;
+	temp         = intptr[nobj];
+	intptr[nobj] = SWAP_INT(temp);
+    }
+
+    return nobjread;
 }
 
 
-
-size_t
-SdiffreadLittleEndian8 (void *ptr, size_t nobj, FILE *stream)
+size_t SdiffreadLittleEndian8 (void *ptr, size_t nobj, FILE *stream)
 {
-  return SdiffreadLittleEndianN (ptr, 8, nobj, stream) ;
+#   define SWAP(i,j)	temp      = ucptr [i]; \
+			ucptr [i] = ucptr [j]; \
+			ucptr [j] = temp
+
+    size_t	   nobjread;
+    unsigned char *ucptr, temp;
+    
+    nobjread = nobj = Sdiffread(ptr, 8, nobj, stream);
+
+    /* 8 byte array swapping */
+    ucptr = (unsigned char *) ptr + 8 * nobj;
+    while (nobj > 0)
+    {
+	nobj--;
+	ucptr -= 8;
+
+	SWAP(0, 7);
+	SWAP(1, 6);
+	SWAP(2, 5);
+	SWAP(3, 4);
+    }
+
+    return nobjread;
 }
-
-
 
 /** fwrite **/
 
@@ -307,12 +356,6 @@ SdiffwriteLittleEndian8 (void *ptr, size_t nobj, FILE *stream)
 /***************************************************************/
 /* Read */
 
-
-
-
-
-
-
 size_t
 SdiffReadChar (SdifChar *ptr, size_t nobj, FILE *stream)
 {
@@ -361,7 +404,6 @@ SdiffReadUInt2(SdifUInt2 *ptr, size_t nobj, FILE *stream)
 }
 
 
-
 size_t
 SdiffReadInt4(SdifInt4 *ptr, size_t nobj, FILE *stream)
 {
@@ -390,10 +432,6 @@ SdiffReadUInt4(SdifUInt4 *ptr, size_t nobj, FILE *stream)
 }
 
 
-
-
-
-
 /*
  *size_t
  *SdiffReadUInt8(SdifUInt8 *ptr, size_t nobj, FILE *stream)
@@ -412,7 +450,6 @@ SdiffReadUInt4(SdifUInt4 *ptr, size_t nobj, FILE *stream)
  */
 
 
-
 size_t
 SdiffReadFloat4(SdifFloat4 *ptr, size_t nobj, FILE *stream)
 {
@@ -425,10 +462,6 @@ SdiffReadFloat4(SdifFloat4 *ptr, size_t nobj, FILE *stream)
       return Sdiffread(ptr, sizeof(SdifFloat4),  nobj, stream);
     }  
 }
-
-
-
-
 
 
 size_t
@@ -445,15 +478,31 @@ SdiffReadFloat8(SdifFloat8 *ptr, size_t nobj, FILE *stream)
 }
 
 
+int SdiffReadSignature (SdifSignature *Signature, FILE *stream, size_t *nread)
+{
+    *nread = fread(Signature, sizeof(Signature), 1, stream);
+
+    if (*nread  &&  !feof(stream))
+    {
+    	switch (gSdifMachineType)
+    	{
+    	  case eLittleEndian   :
+    	  case eLittleEndian64 :
+	      SdifSwap4(Signature, 1);
+	  break;
+    	}
+
+	/* return last char, as SdiffGetSignature did */
+	return *((char *) Signature + *nread - 1);
+    }
+    else
+    {
+	*Signature = eEmptySignature;
+	return eEof;
+    }
+}
 
 
-/*
- * size_t
- * SdiffReadSignature(SdifSignature *Signature, FILE *stream)
- * {
- *   return Sdiffread(Signature, sizeof(Signature), 1, stream);
- * }
- */
 
 
 /* Write */
@@ -507,10 +556,6 @@ SdiffWriteUInt2(SdifUInt2 *ptr, size_t nobj, FILE *stream)
 }
 
 
-
-
-
-
 size_t
 SdiffWriteInt4(SdifInt4 *ptr, size_t nobj, FILE *stream)
 {
@@ -526,10 +571,6 @@ SdiffWriteInt4(SdifInt4 *ptr, size_t nobj, FILE *stream)
 }
 
 
-
-
-
-
 size_t
 SdiffWriteUInt4(SdifUInt4 *ptr, size_t nobj, FILE *stream)
 {
@@ -543,11 +584,6 @@ SdiffWriteUInt4(SdifUInt4 *ptr, size_t nobj, FILE *stream)
       return Sdiffwrite(ptr, sizeof(SdifUInt4),  nobj, stream);
     }  
 }
-
-
-
-
-
 
 
 /*
@@ -567,9 +603,6 @@ SdiffWriteUInt4(SdifUInt4 *ptr, size_t nobj, FILE *stream)
  */
 
 
-
-
-
 size_t
 SdiffWriteFloat4(SdifFloat4 *ptr, size_t nobj, FILE *stream)
 {
@@ -583,9 +616,6 @@ SdiffWriteFloat4(SdifFloat4 *ptr, size_t nobj, FILE *stream)
       return Sdiffwrite(ptr, sizeof(SdifFloat4),  nobj, stream);
     }  
 }
-
-
-
 
 
 size_t
@@ -603,10 +633,6 @@ SdiffWriteFloat8(SdifFloat8 *ptr, size_t nobj, FILE *stream)
 }
 
 
-
-
-
-
 size_t
 SdiffWriteSignature(SdifSignature *Signature, FILE *stream)
 {
@@ -619,15 +645,11 @@ SdiffWriteSignature(SdifSignature *Signature, FILE *stream)
       SdifLittleToBig(&SignW, Signature, sizeof(SdifSignature));
       break;
     default :
-      SignW = *Signature ;
+      SignW = *Signature;
       break;
     }
   return Sdiffwrite(&SignW, sizeof(SdifSignature),  1, stream);
 }
-
-
-
-
 
 
 size_t
@@ -732,7 +754,7 @@ SdiffGetString(FILE* fr, char* s, size_t ncMax, size_t *NbCharRead)
 	    *cs++ = c;
 
       cint=fgetc(fr);
-      c = (char) cint ;
+      c = (char) cint;
       (*NbCharRead)++;
     }
   
@@ -794,7 +816,12 @@ SdifStringToSignature (const char *str)
 
 
 
-/* retourne le caractere d'erreur */
+/* retourne le caractere d'erreur
+ *
+ * <b>Only to be used for ascii reading in text-to-sdif conversion!</b> 
+ * (see SdifTextConv)
+ * <b>For binary reading, use SdiffReadSignature!</b>
+ */
 int
 SdiffGetSignature(FILE* fr, SdifSignature *Signature, size_t *NbCharRead)
 {
@@ -804,15 +831,16 @@ SdiffGetSignature(FILE* fr, SdifSignature *Signature, size_t *NbCharRead)
   int cint = 0;
   unsigned int i;
   
+  /* skip spaces */
   do
     {
       cint = fgetc(fr); 
-      c = (char) cint ;
+      c = (char) cint;
       (*NbCharRead)++;
     }
   while (isspace(c) && (!feof(fr)) );
   
-  for(i=0; ((i<4) && (!feof(fr))) ; i++)
+  for (i=0; ((i<4) && (!feof(fr))); i++)
     {
       if ( (SdifIsAReservedChar(c) != -1) || (isspace(c)) )
 	break;
