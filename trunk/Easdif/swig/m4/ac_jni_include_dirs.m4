@@ -1,7 +1,7 @@
 dnl Available from the GNU Autoconf Macro Archive at:
 dnl http://www.gnu.org/software/ac-archive/htmldoc/ac_jni_include_dirs.html
 dnl
-AC_DEFUN(AC_JNI_INCLUDE_DIR,[
+AC_DEFUN([AC_JNI_INCLUDE_DIR],[
 
 JNI_INCLUDE_DIRS=""
 
@@ -49,7 +49,7 @@ done
 # Follows symbolic links on <path>,
 # finally setting variable _ACJNI_FOLLOWED
 # --------------------
-AC_DEFUN(_ACJNI_FOLLOW_SYMLINKS,[
+AC_DEFUN([_ACJNI_FOLLOW_SYMLINKS],[
 # find the include directory relative to the javac executable
 _cur="$1"
 while ls -ld "$_cur" 2>/dev/null | grep " -> " >/dev/null; do
