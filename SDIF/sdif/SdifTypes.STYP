@@ -68,7 +68,7 @@ SDIF
 		  1NRG Energy; }
 
   1MTD  1BND    { LowerFrequencyLimit, UpperFrequencyLimit }
-  1FTD  1BND    { 1BND Bands }
+  1FTD  1BND    { 1BND Bands; }
 
   1MTD  1HRE    { MeanDeltaFrequency, Harmonicity, WeightedHarmonicity }
   1FTD  1HRE    { 1HRE harm; }
