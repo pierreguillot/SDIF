@@ -1,11 +1,14 @@
-2003-03-07  Axel Roebel  <roebel@kempyang.ircam.fr>
+Version 3.7.3	2003-03-07  Axel Roebel  <roebel@kempyang.ircam.fr>
 
+        * maintenance release for Easdif integration
+	
 	* Improved handling of ircam include files.
 
         * cplusplus compilation takes place in separate directory and
         is not used for instalation.
 
-$Id: ChangeLog,v 1.13 2003-03-07 17:36:36 roebel Exp $
+
+$Id: ChangeLog,v 1.14 2003-03-07 17:43:06 roebel Exp $
 	
 Version 3.7.2	2002-12-17  Axel Roebel, Patrice Tisserand
 
