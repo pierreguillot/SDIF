@@ -1,4 +1,4 @@
-/* $Id: SdifFWrite.c,v 3.6 1999-11-03 16:42:34 schwarz Exp $
+/* $Id: SdifFWrite.c,v 3.7 2000-03-01 11:19:45 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -14,6 +14,11 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.6  1999/11/03  16:42:34  schwarz
+ * Use _SdifNVTStreamID for stream ID of 1NVT frames because of CNMAT
+ * restriction of only one frame type per stream.
+ * (See SdifNameValuesLNewTable)
+ *
  * Revision 3.5  1999/10/15  12:28:44  schwarz
  * Updated writing of types and stream-id chunks to frames.
  * No time parameter for name value tables and stream ID tables, since
@@ -89,6 +94,47 @@ SdifUpdateChunkSize(SdifFileT *SdifF, size_t ChunkSize)
 	    _SdifRemark("SdifUpdateChunkSize, SdifFSetPos erreur\n");
 	}
     }
+}
+
+
+/* Correct frame size and number of matrices */
+int
+SdifUpdateFrameHeader (SdifFileT *SdifF, size_t ChunkSize, SdifInt4 NumMatrix)
+{
+    int	      ret = -1;
+    SdiffPosT WritePos;
+    SdifInt4  ChunkSizeInt4;
+
+    ChunkSizeInt4 = (SdifInt4) ChunkSize;
+ 
+    /* proper solution:  SdifFileT.isSeekable flag is false for stdio and
+       pipe i/o.  In this case, don't even try to update chunk size. */
+    if (!SdifF->isSeekable)
+      _SdifRemark("SdifUpdateFrameHeader: Can't update non-seekable stream\n");
+    else
+    {
+	if (SdiffGetPos(SdifF->Stream, &(SdifF->Pos)) != 0)
+	    _SdifRemark("SdifUpdateFrameHeader, SdifFGetPos error\n");
+	else
+	{
+	    /* skip frame signature */
+	    WritePos = SdifF->StartChunkPos + sizeof(SdifSignature);
+	    SdiffSetPos (SdifF->Stream, &WritePos);
+	    SdiffWriteInt4 (&ChunkSizeInt4, 1, SdifF->Stream);
+
+	    /* skip frame signature, frame size, time, stream id */
+	    WritePos = SdifF->StartChunkPos  + sizeof(SdifSignature) 
+		     + 2 * sizeof (SdifInt4) + sizeof (SdifFloat8);
+	    SdiffSetPos (SdifF->Stream, &WritePos);
+	    SdiffWriteInt4 (&NumMatrix, 1, SdifF->Stream);
+
+	    if (SdiffSetPos (SdifF->Stream, &(SdifF->Pos)) !=0)
+		_SdifRemark ("SdifUpdateFrameHeader, SdifFSetPos error\n");
+	    else
+		ret = 0;
+	}
+    }
+    return (ret);
 }
 
 
@@ -404,6 +450,55 @@ SdifFWriteOneRow (SdifFileT *SdifF)
 }
 
 
+/* Write whole matrix data (but no padding).
+   Data points to NbRow * NbCol * SdifSizeofDataType (DataType) bytes in
+   row-major order. */
+size_t 
+SdifFWriteMatrixData (SdifFileT *SdifF, void *data)
+{
+    /* case template for type from SdifDataTypeET */
+#   define writemdatacase(type) \
+    case e##type:  return (sizeof (Sdif##type) * SdiffWrite##type (data, \
+        SdifF->CurrMtrxH->NbRow * SdifF->CurrMtrxH->NbCol, SdifF->Stream));
+
+    switch (SdifF->CurrMtrxH->DataType)
+    {
+        /* generate cases for all types */
+	sdif_foralltypes (writemdatacase)
+
+	default :
+	    sprintf(gSdifErrorMess, "OneRow 0x%04x, then Float4 used", 
+		    SdifF->CurrOneRow->DataType);
+	    _SdifFError(SdifF, eTypeDataNotSupported, gSdifErrorMess);
+	    return (sizeof (SdifFloat4) * 
+		    SdiffWriteFloat4(SdifF->CurrOneRow->Data.Float4,
+				     SdifF->CurrOneRow->NbData,
+				     SdifF->Stream));
+    }
+}
+
+
+/* Write whole matrix: header, data, and padding.
+   Data points to NbRow * NbCol * SdifSizeofDataType (DataType) bytes in
+   row-major order. */
+size_t
+SdifFWriteMatrix (SdifFileT     *f,
+		  SdifSignature  Signature,
+		  SdifDataTypeET DataType,
+		  SdifUInt4      NbRow,
+		  SdifUInt4      NbCol,
+		  void		*Data)
+{
+    int		i;
+    size_t	bytes = 0;
+
+    SdifFSetCurrMatrixHeader(f, Signature, DataType, NbRow, NbCol);
+    bytes += SdifFWriteMatrixHeader (f);
+    bytes += SdifFWriteMatrixData (f, Data);
+    bytes += SdifFWritePadding (f, SdifFPaddingCalculate (f->Stream, bytes));
+
+    return (bytes);
+}
 
 
 
@@ -421,6 +516,31 @@ SdifFWriteFrameHeader (SdifFileT *SdifF)
   SizeW += sizeof(SdifUInt4)     * SdiffWriteUInt4(     &(SdifF->CurrFramH->NbMatrix), 1, SdifF->Stream);
 
   return SizeW;
+}
+
+size_t  
+SdifFWriteFrameAndOneMatrix (SdifFileT	    *f,
+			     SdifSignature  FrameSignature,
+			     SdifUInt4      NumID,
+			     SdifFloat8     Time,
+			     SdifSignature  MatrixSignature,
+			     SdifDataTypeET DataType,
+			     SdifUInt4      NbRow,
+			     SdifUInt4      NbCol,
+			     void	    *Data)
+{
+    /* calculate frame size (frame sig and frame size field is not counted) */
+    SdifUInt4 fsz = 
+           /* frame  header  */ sizeof(SdifFloat8)    + 2 * sizeof(SdifUInt4) +
+           /* matrix header  */ sizeof(SdifSignature) + 3 * sizeof(SdifUInt4) +
+           /* matrix data    */ NbRow * NbCol * SdifSizeofDataType (DataType);
+    fsz += /* matrix padding */ SdifPaddingCalculate (fsz);
+
+    SdifFSetCurrFrameHeader (f, FrameSignature, fsz, 1, NumID, Time);
+    fsz  = SdifFWriteFrameHeader (f);
+    fsz += SdifFWriteMatrix (f, MatrixSignature, DataType, NbRow, NbCol, Data);
+
+    return (fsz);
 }
 
 
