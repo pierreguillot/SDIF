@@ -26,6 +26,7 @@
 
 
 #include <iostream>
+#include "easdif/easdif_config.h"
 #include "easdif/sdifexception.h"
 
 namespace Easdif {

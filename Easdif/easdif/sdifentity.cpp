@@ -32,9 +32,13 @@
  * 
  * 
  * 
- * $Id: sdifentity.cpp,v 1.6 2003-05-01 18:58:43 roebel Exp $ 
+ * $Id: sdifentity.cpp,v 1.7 2003-05-19 13:58:03 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.6  2003/05/01 18:58:43  roebel
+ * eof now true for uninitialized entity. eof is properly reset
+ * when opening for reading.
+ *
  * Revision 1.5  2003/04/29 15:41:30  schwarz
  * Changed all names View* to Print* and *Info to *Header for consistency
  * with SDIF library.
@@ -87,6 +91,7 @@
  * 
  */
 
+#include "easdif/easdif_config.h"
 #include "easdif/sdifentity.h"
 
 #include "SdifFPut.h"
