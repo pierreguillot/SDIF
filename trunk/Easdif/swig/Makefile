@@ -1,6 +1,11 @@
-# $Id: Makefile,v 1.10 2003-04-18 17:45:23 schwarz Exp $
+# $Id: Makefile,v 1.11 2003-04-29 16:27:47 schwarz Exp $
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.10  2003/04/18 17:45:23  schwarz
+# Renamed sdifsignature.i to sdiftypemap.i, because all types are in there.
+# Include typemap for std::string from SWIG library
+# Added typemap freearg SdifStringT *
+#
 # Revision 1.9  2003/04/18 16:00:22  schwarz
 # Generate separate large module SDIF.pm with all
 # low-level sdif lib wrappers.
@@ -42,7 +47,7 @@ PERL5_INCLUDE	= /usr/lib/perl5/5.6.1/i386-linux/CORE/
 INCL		= -I/usr/local/include -I$(PERL5_INCLUDE) \
 		  -I.. -I../SDIF/include -I../SDIF/sdif
 EASDIF_LIB_PATH	= ../easdif/.libs
-# dbflag = -g
+dbflag = -g
 
 
 modules		= eaSDIF SDIF
