@@ -1,7 +1,74 @@
-all:
-	@cd libsdif; $(MAKE)
+#
+# make general	
+#
+
+PRJ_DIR := $(shell pwd)
+
+include Makefile.preamble
 
 
-clean:
-	@cd libsdif; $(MAKE) clean
+#
+# compile
+#
 
+all: M_lib M_tosdif M_sdiftotext
+
+
+M_lib:
+	@cd libsdif ; $(MAKE)
+
+M_tosdif:
+	@cd tosdif ; $(MAKE)
+
+M_sdiftotext:
+	@cd sdiftotext ; $(MAKE)
+
+
+#
+# clean
+#
+
+clean_lib:
+	@cd libsdif ; $(MAKE)  clean
+
+clean_tosdif:
+	@cd tosdif; $(MAKE) clean
+
+clean_sdiftotext:
+	@cd sdiftotext; $(MAKE) clean
+
+clean: clean_lib clean_tosdif clean_sdiftotext
+
+
+
+#
+# install
+#
+
+install_lib:
+	@cd libsdif ; $(MAKE) install
+
+install_tosdif:
+	@cd tosdif; $(MAKE) install
+
+install_sdiftotext:
+	@cd sdiftotext; $(MAKE) install
+
+install: install_lib install_tosdif install_sdiftotext
+
+
+
+#
+# uninstall
+#
+
+uninstall_lib:
+	@cd libsdif ; $(MAKE) uninstall
+
+uninstall_tosdif:
+	@cd tosdif; $(MAKE) uninstall
+
+uninstall_sdiftotext:
+	@cd sdiftotext; $(MAKE) uninstall
+
+uninstall: uninstall_lib uninstall_tosdif uninstall_sdiftotext
