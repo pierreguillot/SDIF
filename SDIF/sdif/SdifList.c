@@ -35,6 +35,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.8  2003/12/15 13:15:55  schwarz
+ * SdifKillListCurr for SdifNameValuesLKillCurrNVT, untested
+ *
  * Revision 3.7  2003/11/07 21:47:18  roebel
  * removed XpGuiCalls.h and replaced preinclude.h  by local files
  *
@@ -75,6 +78,7 @@
 
 #include "sdif_portability.h"
 
+#include "SdifGlobals.h"
 #include "SdifList.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -191,7 +195,12 @@ SdifListNStockT gSdifListNodeStock;
 SdifListNStockT*
 SdifListNodeStock(void)
 {
+#if HAVE_PTHREAD
+	struct SdifGlobals* globals = GetSdifGlobals();
+	return &(globals->sdifListNodeStock);
+#else
     return & gSdifListNodeStock;
+#endif
 }
 
 void

@@ -1,4 +1,4 @@
-/* $Id: SdifErrMess.c,v 3.17 2003-11-07 21:47:18 roebel Exp $
+/* $Id: SdifErrMess.c,v 3.18 2004-07-22 14:47:55 bogaards Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -31,6 +31,9 @@
  * author: Dominique Virolle 1998
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.17  2003/11/07 21:47:18  roebel
+ * removed XpGuiCalls.h and replaced preinclude.h  by local files
+ *
  * Revision 3.16  2003/11/07 12:09:08  ellis
  * Added the declaration of of two functions in the header file
  * SdifFAllFrameTypeToSdifString and SdifFAllMatrixTypeToSdifString
@@ -282,6 +285,8 @@ SdifLastErrorTag(SdifErrorLT *ErrorL)
 SdifUInt4 SdifFError (SdifFileT* SdifF, SdifErrorTagET ErrorTag, 
 		      const char *UserMess, const char *file, const int line)
 {
+    char sdifBufferError[4096];
+    
     /* add to list and count error */
 
 /*
@@ -297,20 +302,20 @@ SdifUInt4 SdifFError (SdifFileT* SdifF, SdifErrorTagET ErrorTag,
 					   ErrorTag, UserMess);
     SdifErrorT* Error = SdifLastError(SdifF->Errors);
 
-    SdifFsPrintError (gSdifBufferError, SdifF, Error, __FILE__, __LINE__);
+    SdifFsPrintError (sdifBufferError, SdifF, Error, __FILE__, __LINE__);
 
     /* call error/warning callback that handles printing */
     switch (Error->Level)
     {
         case eFatal:
         case eError:
-	    (*gSdifErrorFunc)   (ErrorTag, eError, gSdifBufferError, 
+	    (*gSdifErrorFunc)   (ErrorTag, eError, sdifBufferError, 
 				 SdifF, Error, (char *)file, line);
 	    /* no exit, because it was always like that */
 	break;
 
         case eWarning:
-	    (*gSdifWarningFunc) (ErrorTag, eWarning, gSdifBufferError, 
+	    (*gSdifWarningFunc) (ErrorTag, eWarning, sdifBufferError, 
 				 SdifF, Error, (char *)file, line);
 	break;
 
@@ -321,7 +326,7 @@ SdifUInt4 SdifFError (SdifFileT* SdifF, SdifErrorTagET ErrorTag,
 */
         default:
 	    if (gSdifErrorOutputEnabled)
-		fprintf (SdifStdErr, "%s", gSdifBufferError);
+		fprintf (SdifStdErr, "%s", sdifBufferError);
 
 	break;
     }

@@ -1,4 +1,4 @@
-/* $Id: SdifMatrix.c,v 3.8 2003-11-07 21:47:18 roebel Exp $
+/* $Id: SdifMatrix.c,v 3.9 2004-07-22 14:47:56 bogaards Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -33,6 +33,9 @@
  *
  * author: Dominique Virolle 1997
  * $Log: not supported by cvs2svn $
+ * Revision 3.8  2003/11/07 21:47:18  roebel
+ * removed XpGuiCalls.h and replaced preinclude.h  by local files
+ *
  * Revision 3.7  2002/05/24 19:37:07  ftissera
  * Add include "sdif.h" to be compatible with C++
  *
@@ -150,6 +153,7 @@ SdifOneRowT*
 SdifCreateOneRow(SdifDataTypeET DataType, SdifUInt4  NbGranuleAlloc)
 {
   SdifOneRowT * NewOneRow = NULL;
+	char errorMess[_SdifStringLen];
 
   if (NbGranuleAlloc <= 0)
     {
@@ -172,8 +176,8 @@ SdifCreateOneRow(SdifDataTypeET DataType, SdifUInt4  NbGranuleAlloc)
 
   if (!SdifDataTypeKnown (DataType))
   {
-      sprintf(gSdifErrorMess, "Data of a OneRow : 0x%x", NewOneRow->DataType);
-      _SdifError(eNotInDataTypeUnion, gSdifErrorMess);
+      sprintf(errorMess, "Data of a OneRow : 0x%x", NewOneRow->DataType);
+      _SdifError(eNotInDataTypeUnion, errorMess);
       SdifFree(NewOneRow);
       return NULL;
   }
@@ -214,8 +218,8 @@ SdifCreateOneRow(SdifDataTypeET DataType, SdifUInt4  NbGranuleAlloc)
 	  else
 	    return NewOneRow;
 	default :
-	  sprintf(gSdifErrorMess, "Data of a OneRow : 0x%x", NewOneRow->DataType);
-	  _SdifError(eNotInDataTypeUnion, gSdifErrorMess);
+	  sprintf(errorMess, "Data of a OneRow : 0x%x", NewOneRow->DataType);
+	  _SdifError(eNotInDataTypeUnion, errorMess);
 	  SdifFree(NewOneRow);
 	  return NULL;
 	}
@@ -303,8 +307,8 @@ SdifReInitOneRow (SdifOneRowT *OneRow, SdifDataTypeET DataType, SdifUInt4 NbData
 	return OneRow;
     
     default :
-      sprintf(gSdifErrorMess, "Data of a OneRow : 0x%x", OneRow->DataType);
-      _SdifError(eNotInDataTypeUnion, gSdifErrorMess);
+      sprintf(errorMess, "Data of a OneRow : 0x%x", OneRow->DataType);
+      _SdifError(eNotInDataTypeUnion, errorMess);
       return NULL;
     }
 
@@ -321,6 +325,7 @@ SdifReInitOneRow (SdifOneRowT *OneRow, SdifDataTypeET DataType, SdifUInt4 NbData
 void
 SdifKillOneRow(SdifOneRowT *OneRow)
 {
+	char errorMess[_SdifStringLen];
   if (OneRow)
     {
 #if (_SdifFormatVersion >= 3)
@@ -328,9 +333,9 @@ SdifKillOneRow(SdifOneRowT *OneRow)
 #ifndef NDEBUG	
 	if (!SdifDataTypeKnown (OneRow->DataType))
 	{
-	    sprintf (gSdifErrorMess, "Data of a OneRow : 0x%x", 
+	    sprintf (errorMess, "Data of a OneRow : 0x%x", 
 		     OneRow->DataType);
-	    _SdifError (eNotInDataTypeUnion, gSdifErrorMess);
+	    _SdifError (eNotInDataTypeUnion, errorMess);
 	}
 #endif
 
@@ -362,8 +367,8 @@ SdifKillOneRow(SdifOneRowT *OneRow)
 	    _SdifError(eFreeNull, "OneRow->Data.Float8 free");
 	  break;
 	default :
-	  sprintf(gSdifErrorMess, "Data of a OneRow : 0x%x", OneRow->DataType);
-	  _SdifError(eNotInDataTypeUnion, gSdifErrorMess);
+	  sprintf(errorMess, "Data of a OneRow : 0x%x", OneRow->DataType);
+	  _SdifError(eNotInDataTypeUnion, errorMess);
 	  break;
 	}
      SdifFree(OneRow);
@@ -388,6 +393,7 @@ SdifKillOneRow(SdifOneRowT *OneRow)
 SdifOneRowT*
 SdifOneRowPutValue(SdifOneRowT *OneRow, SdifUInt4 numCol, SdifFloat8 Value)
 {
+	char errorMess[_SdifStringLen];
     /* case template for type from SdifDataTypeET */
 #   define setcase(type) 						   \
     case e##type:   OneRow->Data.type [numCol-1] = (Sdif##type) Value;  break;
@@ -405,8 +411,8 @@ SdifOneRowPutValue(SdifOneRowT *OneRow, SdifUInt4 numCol, SdifFloat8 Value)
       }
   else
     {
-      sprintf(gSdifErrorMess, "OneRow Put Value Col : %d ", numCol);
-      _SdifError(eArrayPosition, gSdifErrorMess);
+      sprintf(errorMess, "OneRow Put Value Col : %d ", numCol);
+      _SdifError(eArrayPosition, errorMess);
     }
   return OneRow;
 }
@@ -420,6 +426,7 @@ SdifOneRowPutValue(SdifOneRowT *OneRow, SdifUInt4 numCol, SdifFloat8 Value)
 SdifFloat8
 SdifOneRowGetValue(SdifOneRowT *OneRow, SdifUInt4 numCol)
 {
+	char errorMess[_SdifStringLen];
     /* case template for type from SdifDataTypeET */
 #   define getcase(type) 						   \
     case e##type:   return (Sdif##type) OneRow->Data.type [numCol-1];
@@ -436,8 +443,8 @@ SdifOneRowGetValue(SdifOneRowT *OneRow, SdifUInt4 numCol)
       }
   else
     {
-      sprintf(gSdifErrorMess, "OneRow Get Value Col : %d ", numCol);
-      _SdifError(eArrayPosition, gSdifErrorMess);
+      sprintf(errorMess, "OneRow Get Value Col : %d ", numCol);
+      _SdifError(eArrayPosition, errorMess);
       return _SdifFloat8Error;
     }
 }
@@ -557,13 +564,14 @@ SdifMatrixDataPutValue(SdifMatrixDataT *MatrixData,
 		       SdifUInt4  numCol,
 		       SdifFloat8 Value)
 {
+	char errorMess[_SdifStringLen];
   /* numRow is in [1, MatrixData->Header->NbRow] */
   if ((numRow <=  MatrixData->Header->NbRow) && (numRow > 0))
     SdifOneRowPutValue(MatrixData->Rows[numRow-1], numCol, Value);
   else
     {
-      sprintf(gSdifErrorMess, "MatrixData Put Value Row : %d ", numRow);
-      _SdifError(eArrayPosition, gSdifErrorMess);
+      sprintf(errorMess, "MatrixData Put Value Row : %d ", numRow);
+      _SdifError(eArrayPosition, errorMess);
     }
 
   return MatrixData;
@@ -582,13 +590,14 @@ SdifMatrixDataGetValue(SdifMatrixDataT *MatrixData,
 		       SdifUInt4  numRow,
 		       SdifUInt4  numCol)
 {
+	char errorMess[_SdifStringLen];
   /* numRow is in [1, MatrixData->Header->NbRow] */
   if ((numRow <=  MatrixData->Header->NbRow) && (numRow > 0))
     return SdifOneRowGetValue(MatrixData->Rows[numRow-1], numCol);
   else
     {
-      sprintf(gSdifErrorMess, "MatrixData Get Value Row : %d ", numRow);
-      _SdifError(eArrayPosition, gSdifErrorMess);
+      sprintf(errorMess, "MatrixData Get Value Row : %d ", numRow);
+      _SdifError(eArrayPosition, errorMess);
       return _SdifFloat8Error;
     }
 }
@@ -606,6 +615,7 @@ SdifMatrixDataColNamePutValue(SdifHashTableT *MatrixTypesTable,
 {
   SdifMatrixTypeT* MtrxT;
   SdifUInt4 numCol;
+	char errorMess[_SdifStringLen];
   
   MtrxT = SdifGetMatrixType(MatrixTypesTable, MatrixData->Header->Signature);
 
@@ -616,17 +626,17 @@ SdifMatrixDataColNamePutValue(SdifHashTableT *MatrixTypesTable,
 	SdifMatrixDataPutValue(MatrixData, numRow, numCol, Value);
       else
 	{
-	  sprintf(gSdifErrorMess,
+	  sprintf(errorMess,
 		  "'%s' of '%s' matrix type",
 		  ColName, SdifSignatureToString(MatrixData->Header->Signature));
-	  _SdifError(eNotFound, gSdifErrorMess);
+	  _SdifError(eNotFound, errorMess);
 	}
     }
   else
     {
-      sprintf(gSdifErrorMess,
+      sprintf(errorMess,
 	      "'%s' Matrix type",SdifSignatureToString(MatrixData->Header->Signature));
-      _SdifError(eNotFound, gSdifErrorMess);
+      _SdifError(eNotFound, errorMess);
     }
   return MatrixData;
 }
@@ -646,6 +656,7 @@ SdifMatrixDataColNameGetValue(SdifHashTableT *MatrixTypesTable,
 {
   SdifMatrixTypeT* MtrxT;
   SdifUInt4 numCol;
+	char errorMess[_SdifStringLen];
   
   MtrxT = SdifGetMatrixType(MatrixTypesTable, MatrixData->Header->Signature);
 
@@ -656,18 +667,18 @@ SdifMatrixDataColNameGetValue(SdifHashTableT *MatrixTypesTable,
 	return SdifMatrixDataGetValue(MatrixData, numRow, numCol);
       else
 	{
-	  sprintf(gSdifErrorMess,
+	  sprintf(errorMess,
 		  "'%s' of '%s' matrix type",
 		  ColName, SdifSignatureToString(MatrixData->Header->Signature));
-	  _SdifError(eNotFound, gSdifErrorMess);
+	  _SdifError(eNotFound, errorMess);
 	  return _SdifFloat8Error;
 	}
     }
   else
     {
-      sprintf(gSdifErrorMess,
+      sprintf(errorMess,
 	      "'%s' Matrix type", SdifSignatureToString(MatrixData->Header->Signature));
-      _SdifError(eNotFound, gSdifErrorMess);
+      _SdifError(eNotFound, errorMess);
       return _SdifFloat8Error;
     }
 }

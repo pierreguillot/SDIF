@@ -1,4 +1,4 @@
-/* $Id: SdifFWrite.c,v 3.18 2003-11-07 21:47:18 roebel Exp $
+/* $Id: SdifFWrite.c,v 3.19 2004-07-22 14:47:56 bogaards Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -31,6 +31,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.18  2003/11/07 21:47:18  roebel
+ * removed XpGuiCalls.h and replaced preinclude.h  by local files
+ *
  * Revision 3.17  2003/08/06 15:11:45  schwarz
  * Finally removed obsolete functions (like SdifSkip...).
  *
@@ -215,11 +218,12 @@ size_t
 SdifFWritePadding(SdifFileT *SdifF, size_t Padding)
 {
   size_t SizeW = 0;
+	char sdifString[_SdifStringLen];
   
   if (Padding > 0)
     {
-      memset(gSdifString, _SdifPaddingChar, Padding);
-      SizeW += sizeof(char) * Sdiffwrite(gSdifString, sizeof(char), Padding, SdifF->Stream);
+      memset(sdifString, _SdifPaddingChar, Padding);
+      SizeW += sizeof(char) * Sdiffwrite(sdifString, sizeof(char), Padding, SdifF->Stream);
     }
 
   return  SizeW;
@@ -513,6 +517,7 @@ SdifFWriteMatrixHeader (SdifFileT *SdifF)
 size_t 
 SdifFWriteOneRow (SdifFileT *SdifF)
 {
+	char errorMess[_SdifStringLen];
     /* case template for type from SdifDataTypeET */
 #   define writerowcase(type) \
     case e##type:  return (sizeof (Sdif##type) *			   \
@@ -526,9 +531,9 @@ SdifFWriteOneRow (SdifFileT *SdifF)
 	sdif_foralltypes (writerowcase);
 
 	default :
-	    sprintf(gSdifErrorMess, "OneRow 0x%04x, then Float4 used", 
+	    sprintf(errorMess, "OneRow 0x%04x, then Float4 used", 
 		    SdifF->CurrOneRow->DataType);
-	    _SdifFError(SdifF, eTypeDataNotSupported, gSdifErrorMess);
+	    _SdifFError(SdifF, eTypeDataNotSupported, errorMess);
 	    return (sizeof (SdifFloat4) * 
 		    SdiffWriteFloat4(SdifF->CurrOneRow->Data.Float4,
 				     SdifF->CurrOneRow->NbData,
@@ -543,6 +548,7 @@ SdifFWriteOneRow (SdifFileT *SdifF)
 size_t 
 SdifFWriteMatrixData (SdifFileT *SdifF, void *data)
 {
+	char errorMess[_SdifStringLen];
     /* case template for type from SdifDataTypeET */
 #   define writemdatacase(type) \
     case e##type:  return (sizeof (Sdif##type) * SdiffWrite##type ((Sdif##type *)  data, \
@@ -554,9 +560,9 @@ SdifFWriteMatrixData (SdifFileT *SdifF, void *data)
 	sdif_foralltypes (writemdatacase);
 
 	default :
-	    sprintf(gSdifErrorMess, "OneRow 0x%04x, then Float4 used", 
+	    sprintf(errorMess, "OneRow 0x%04x, then Float4 used", 
 		    SdifF->CurrOneRow->DataType);
-	    _SdifFError(SdifF, eTypeDataNotSupported, gSdifErrorMess);
+	    _SdifFError(SdifF, eTypeDataNotSupported, errorMess);
 	    return (sizeof (SdifFloat4) * 
 		    SdiffWriteFloat4(SdifF->CurrOneRow->Data.Float4,
 				     SdifF->CurrOneRow->NbData,

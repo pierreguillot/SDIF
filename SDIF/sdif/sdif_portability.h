@@ -1,6 +1,6 @@
 /******************************************************************************
  *
- * $Id: sdif_portability.h,v 3.1 2003-11-07 22:00:48 roebel Exp $
+ * $Id: sdif_portability.h,v 3.2 2004-07-22 14:47:56 bogaards Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -33,6 +33,9 @@
  *
  * LOG
  * $Log: not supported by cvs2svn $
+ * Revision 3.1  2003/11/07 22:00:48  roebel
+ * added preincluded.h replacement to CVS
+ *
  *
  *****************************************************************************/
 
@@ -48,6 +51,9 @@
 */
 #include <host_architecture.h>
 
+#if __MACH__
+#define HAVE_PTHREAD 1
+#endif
 
 /* Macro HOST_FOUR_CHAR_CODE()
    ---------------------------

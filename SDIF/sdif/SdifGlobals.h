@@ -1,4 +1,4 @@
-/* $Id: SdifGlobals.h,v 3.13 2001-05-02 09:34:44 tisseran Exp $
+/* $Id: SdifGlobals.h,v 3.14 2004-07-22 14:47:56 bogaards Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -31,6 +31,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.13  2001/05/02 09:34:44  tisseran
+ * Change License from GNU Public License to GNU Lesser Public License.
+ *
  * Revision 3.12  2000/11/21 16:34:49  roebel
  * New SdifSignatureConst builds integer signature according to
  * endianess of machine. Multicharacter constants are no longer
@@ -134,9 +137,21 @@
 
 #include <stdio.h>
 #include <float.h>
+#include "sdif_portability.h"
 #include "SdifError.h"
 #include "SdifMemory.h"
 #include "SdifHard_OS.h"
 
+#ifdef HAVE_PTHREAD
+extern pthread_key_t tGlobalsKey;
+#endif
 
+struct SdifGlobals{
+	char stringSignature[_SdifNbMaxPrintSignature][5];
+	int currStringPosSignature;
+	SdifListNStockT sdifListNodeStock;
+};
+
+struct SdifGlobals* GetSdifGlobals();
+void FreeGlobals(void *);
 #endif /* _SdifGlobals_ */

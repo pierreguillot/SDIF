@@ -1,4 +1,4 @@
-/* $Id: SdifFile.c,v 3.45 2004-06-09 10:54:43 schwarz Exp $
+/* $Id: SdifFile.c,v 3.46 2004-07-22 14:47:56 bogaards Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -33,6 +33,12 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.45  2004/06/09 10:54:43  schwarz
+ * Fixed compilation problems on Windows (thanks Jean Bresson):
+ * - void pointer arithmetic not allowed
+ * - open is a Unix system call, use fopen instead
+ * - strdup does not exists, so compile with -Dstrdup=_strdup
+ *
  * Revision 3.44  2004/05/27 13:35:53  ellis
  * if SdifGenKill called while Sdif not being initialised, directly returning
  * (allows to call SdifGenKill more than once)
@@ -275,6 +281,9 @@
 #include "SdifPreTypes.h"
 #include "SdifFScan.h"
 
+#ifdef HAVE_PTHREAD
+#include <pthread.h>
+#endif
 
 /* #include <sys/types.h> */
 #if HAVE_SYS_STAT_H
@@ -282,7 +291,7 @@
 #endif
 
 #ifndef lint
-    static char identstring[]= "$SDIFVersion: " SDIF_VERSION_STRING" $ IRCAM $SDIFcompiled: "__DATE__" $";;
+    static char identstring[]= "$SDIFVersion: " SDIF_VERSION_STRING" $ IRCAM $SDIFcompiled: "__DATE__" $";
 #endif
 
 /* Include all Frame Type */
@@ -671,6 +680,8 @@ SdifFCreateCurrMtrxH(SdifFileT* SdifF)
 FILE*
 SdifFGetFILE_SwitchVerbose(SdifFileT* SdifF, int Verbose)
 {
+  char errorMess[_SdifStringLen];
+
   switch (Verbose)
     {
     case 't' :
@@ -678,8 +689,8 @@ SdifFGetFILE_SwitchVerbose(SdifFileT* SdifF, int Verbose)
     case 's' :
       return SdifF->Stream;
     default :
-     sprintf(gSdifErrorMess, "*Sdif* %c not a verbose ('t': text; 's':SdifFile)\n", Verbose);
-      _Debug(gSdifErrorMess);
+     sprintf(errorMess, "*Sdif* %c not a verbose ('t': text; 's':SdifFile)\n", Verbose);
+      _Debug(errorMess);
       return NULL;
     }
 }
@@ -828,6 +839,10 @@ SdifGenInit(const char *PredefinedTypesFile)
 
     assert (!gSdifInitialised  &&  "SDIF library already initialised");
     gSdifInitialised = 1;
+    
+#ifdef HAVE_PTHREAD    
+    pthread_key_create(&tGlobalsKey,FreeGlobals);
+#endif
 
     if (SdifStdErr == NULL)
 	SdifStdErr = stderr;

@@ -1,4 +1,4 @@
-/* $Id: SdifFScan.c,v 3.15 2003-11-07 21:47:18 roebel Exp $
+/* $Id: SdifFScan.c,v 3.16 2004-07-22 14:47:56 bogaards Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -31,6 +31,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.15  2003/11/07 21:47:18  roebel
+ * removed XpGuiCalls.h and replaced preinclude.h  by local files
+ *
  * Revision 3.14  2003/08/06 15:11:45  schwarz
  * Finally removed obsolete functions (like SdifSkip...).
  *
@@ -121,17 +124,18 @@ size_t
 SdifFScanGeneralHeader(SdifFileT *SdifF)
 {
   size_t SizeR = 0;
+	char errorMess[_SdifStringLen];
   
   SdiffGetSignature(SdifF->TextStream, &(SdifF->CurrSignature), &SizeR);
   if (SdifF->CurrSignature != eSDIF)
     {
-      sprintf(gSdifErrorMess,
+      sprintf(errorMess,
 	      "'%s' not correctly read\t: '%s'.",
 	       SdifSignatureToString(eSDIF),
 	       SdifSignatureToString(SdifF->CurrSignature));
       /*_SdifFError(SdifF, eBadHeader, "SDIF not correctly read");
 	  */
-      _SdifFError(SdifF, eBadHeader, gSdifErrorMess);
+      _SdifFError(SdifF, eBadHeader, errorMess);
       return 0;
     }
 
@@ -214,6 +218,7 @@ size_t
 SdifFScanAllASCIIChunks(SdifFileT *SdifF)
 {
   size_t    SizeR = 0;
+	char errorMess[_SdifStringLen];
   
   while (   (SdiffGetSignature(SdifF->TextStream, &(SdifF->CurrSignature), &SizeR)) != eEof  )
     {
@@ -240,10 +245,10 @@ SdifFScanAllASCIIChunks(SdifFileT *SdifF)
 	  return SizeR;
 	  
 	default :
-	  sprintf(gSdifErrorMess,
+	  sprintf(errorMess,
 		  "It is not a chunk name : '%s'",
 		  SdifSignatureToString(SdifF->CurrSignature));
-	  _SdifFError(SdifF, eSyntax, gSdifErrorMess);
+	  _SdifFError(SdifF, eSyntax, errorMess);
 	}
     }
   return SizeR;
@@ -309,6 +314,7 @@ SdifFScanMatrixHeader(SdifFileT *SdifF)
 void
 SdifFScanOneRow(SdifFileT *SdifF)
 {
+	char errorMess[_SdifStringLen];
     /* case template for type from SdifDataTypeET */
 #   define scanrowcase(type)						  \
     case e##type:  							  \
@@ -322,8 +328,8 @@ SdifFScanOneRow(SdifFileT *SdifF)
 	sdif_foralltypes (scanrowcase);
 
 	default :
-	    sprintf (gSdifErrorMess, "in text file, OneRow 0x%04x, then Float4 used", SdifF->CurrOneRow->DataType);
-	    _SdifFError(SdifF, eTypeDataNotSupported, gSdifErrorMess);
+	    sprintf (errorMess, "in text file, OneRow 0x%04x, then Float4 used", SdifF->CurrOneRow->DataType);
+	    _SdifFError(SdifF, eTypeDataNotSupported, errorMess);
 	    SdiffScanFloat4(SdifF->TextStream, SdifF->CurrOneRow->Data.Float4,
 			    SdifF->CurrOneRow->NbData);
     }

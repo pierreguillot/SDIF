@@ -1,4 +1,4 @@
-/* $Id: SdifError.c,v 3.14 2003-11-07 21:47:18 roebel Exp $
+/* $Id: SdifError.c,v 3.15 2004-07-22 14:47:55 bogaards Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -31,6 +31,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.14  2003/11/07 21:47:18  roebel
+ * removed XpGuiCalls.h and replaced preinclude.h  by local files
+ *
  * Revision 3.13  2003/11/07 12:09:08  ellis
  * Added the declaration of of two functions in the header file
  * SdifFAllFrameTypeToSdifString and SdifFAllMatrixTypeToSdifString
@@ -136,7 +139,7 @@ int SdifErrorLine;
 
 int  gSdifErrorOutputEnabled = 1;
 FILE* SdifStdErr = NULL;
-char gSdifBufferError[4096];
+char gSdifBufferError[4096] = "unused error variable";
 
 
 static void 
