@@ -1,6 +1,6 @@
-# $Id: Makefile.am,v 1.25 2002-10-28 18:03:26 roebel Exp $
+# $Id: Makefile.am,v 1.26 2002-10-30 15:48:46 schwarz Exp $
 #
-# ./sdif/Makefile.am		September 2000			Patrice Tisserand
+# ./sdif/Makefile.am		September 2000		Patrice Tisserand
 #
 # Source file for GNU automake, generates Makefile.in.
 #
@@ -27,8 +27,12 @@
 #
 # For any information regarding this and other IRCAM software, please
 # send email to:  sdif@ircam.fr
-#
+
+
 # $Log: not supported by cvs2svn $
+# Revision 1.25  2002/10/28 18:03:26  roebel
+# Removed non portable --quiet flag of cmd. Use output redirection instead.
+#
 # Revision 1.24  2002/10/24 16:21:19  tisseran
 # Add rpath flag to lib*_LDFLAGS (need when libraries are determined at configure time)
 # See Automake Manual 9.3
@@ -121,7 +125,7 @@
 #
 # Revision 1.1.2.5  2000/10/26  17:27:39  schwarz
 # Added header with copyright and links to all Makefile.am and configure.in.
-#
+
 
 # EXTRA_LIBRARIES = libsdif.a libsdif-debug.a libsdif-cpp.a
 EXTRA_LTLIBRARIES = libsdif.la libsdif-debug.la libsdif-cpp.la
@@ -150,22 +154,7 @@ SDIF_H = ../include/sdif_version.h $(top_srcdir)/include/sdif.h \
 
 noinst_HEADERS = $(SDIF_H) $(addprefix $(top_srcdir)/sdif/,${FORMES_H})
 
-# libsdif_a_SOURCES =  SdifHash.c       SdifGlobals.c      SdifSignatureTab.c   \
-# 		     SdifMemory.c     SdifNameValue.c    SdifMatrixType.c     \
-# 		     SdifStreamID.c   SdifMatrix.c       SdifFrame.c          \
-# 		     SdifTest.c       SdifTimePosition.c SdifFile.c           \
-# 		     SdifFGet.c       SdifFRead.c        SdifFScan.c          \
-# 		     SdifFPrint.c     SdifFWrite.c       SdifTextConv.c       \
-# 		     SdifHard_OS.c    SdifErrMess.c      SdifList.c           \
-# 		     SdifSelect.c     SdifHighLevel.c    SdifCheck.c          \
-# 		     SdifString.c     SdifError.c        SdifFrameType.c      \
-# 		     SdifPrint.c      SdifRWLowLevel.c   SdifFPut.c           \
-# 		     SdifConvToText.c SdifPreTypes.c
-
-# libsdif_debug_a_SOURCES = $(libsdif_a_SOURCES)
-# libsdif_cpp_a_SOURCES   = $(libsdif_a_SOURCES)
-
-libsdif_la_SOURCES =  SdifHash.c       SdifGlobals.c      SdifSignatureTab.c   \
+libsdif_la_SOURCES = SdifHash.c       SdifGlobals.c      SdifSignatureTab.c   \
 		     SdifMemory.c     SdifNameValue.c    SdifMatrixType.c     \
 		     SdifStreamID.c   SdifMatrix.c       SdifFrame.c          \
 		     SdifTest.c       SdifTimePosition.c SdifFile.c           \
@@ -188,10 +177,17 @@ sdiftype = $(datadir)/SdifTypes.STYP
 
 INCLUDES = -I../include -I$(top_srcdir)/include -D_SdifTypesFileName=\"$(sdiftype)\" -DUSE_CONFIGURE
 
+
 $(libsdif_a_SOURCES) :  @IRCAMDEPS@
 $(libsdif_la_SOURCES) :  @IRCAMDEPS@
 
-SdifFile.o : $(top_srcdir)/sdif/SdifVersion.h
+
+
+#
+# EXTRA rules and dependencies to generate the checksum file SdifVersion.h
+#
+
+SdifFile.lo : $(top_srcdir)/sdif/SdifVersion.h
 
 # Versionsrc := $(libsdif_a_SOURCES) $(subst config.h,,$(subst $(top_srcdir)/sdif/SdifVersion.h,,$(noinst_HEADERS) )) 
 Versionsrc := $(libsdif_la_SOURCES) $(subst config.h,,$(subst $(top_srcdir)/sdif/SdifVersion.h,,$(noinst_HEADERS) )) 
@@ -202,7 +198,11 @@ $(top_srcdir)/sdif/SdifVersion.h : $(Versionsrc)
 	@echo '#define AUTOCKSUM "$$SDIFChecksum: '$(shell CMD_ENV=xpg4;export CMD_ENV;cksum $^ | cut -f1 -d' '|cksum |cut -f1 -d' ')' $$ IRCAM $$SDIFdate: "__DATE__" $$"'>>$@
 
 
+
+#
 # EXTRA FOR IRCAM STUFF
+#
+
 .PHONY: ircam_deps
 ircam_deps : $(FORMES_H:%=$(top_srcdir)/sdif/%)
 
