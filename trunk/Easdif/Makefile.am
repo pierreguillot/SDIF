@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.15 2003-05-02 13:39:25 roebel Exp $
+# $Id: Makefile.am,v 1.16 2003-11-18 12:31:37 roebel Exp $
 #
 # ./Makefile.am		Feb. 2003     Axel Roebel
 #
@@ -30,6 +30,9 @@
 # 
 
 # $Log: not supported by cvs2svn $
+# Revision 1.15  2003/05/02 13:39:25  roebel
+# Reinvented missing ircam_install_doc target.
+#
 # Revision 1.14  2003/04/10 14:06:03  roebel
 # Change name of doc directory in doc distribution to Easdif-VERSION.doc.
 #
@@ -91,7 +94,7 @@ doc:
 
 # only useful for IRCAM
 IRCAMDOCDIR = /usr/local/www/iii/analyse_synthese/documentation/easdif
-IRCAMDOCSERVER = maelzel
+IRCAMDOCSERVER = infirme
 
 ircam_install_doc: doc
 	chmod -R g+w doc/html
