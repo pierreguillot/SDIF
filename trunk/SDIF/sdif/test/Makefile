@@ -1,8 +1,11 @@
-# $Id: Makefile,v 1.3 2000-05-04 14:57:29 schwarz Exp $
+# $Id: Makefile,v 1.4 2002-05-24 19:38:07 ftissera Exp $
 #
 # SDIF/sdif/test/Makefile
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.3  2000/05/04 14:57:29  schwarz
+# test check for SdifCheckFrames funcs.
+#
 # Revision 1.2  1999/09/28  13:15:11  schwarz
 # Test case
 #
@@ -11,59 +14,23 @@
 # chosen part of SDIF data.  Can be added to a file name.
 #
 
-PRJ_DIR := $(shell pwd)/../..
-include $(PRJ_DIR)/Makefile.preamble
+# Version modifiee de SDIF
+MODIF_SDIF_LIBROOT = /u/formes/ftissera/src/SDIF
 
-LIBS 	  = -l$(LIBNAME)
+CC = gcc
+INC_DIR = -I$(MODIF_SDIF_LIBROOT)/include
+CFLAGS = -g -ggdb -Wall $(INC_DIR)
+LD_DIR = -L$(MODIF_SDIF_LIBROOT)/sdif
+LDFLAGS = $(LD_DIR) -lsdif -lm
 
-ifeq ($(ARCH),alpha)
-CC	  = gcc
-CAFLAGS	  = 
-endif
-
-ifeq ($(ARCH),sgi)
-LIBS 	 += -lgen
-endif
-
-INCFLAGS := -I. -I$(INCLUDE_DIR) -I$(SDIF_SRC_DIR)
-CFLAGS	 := -g $(CAFLAGS) $(DFLAGS) $(DOFLAGS)  $(INCFLAGS)
-LDFLAGS   = -L$(SDIF_LIB_DIR)
-
-
-%: 	%.c
-	$(CC) $^ $(CFLAGS) $(LDFLAGS) $(LFLAGS) $(OBJS) $(LIBS) -o $@
-
-$(SDIF_OBJ_DIR)/%.o:	$(SDIF_SRC_DIR)/%.c
-	@echo "----- making $@"
-	@echo "      from   $<"
-	$(MAKE) -C $(SDIF_SRC_DIR)
-
-
-TARGETS	= testcheck testselect
-
-
-all:	$(TARGETS)
-db:
-	$(MAKE) all DEBUG=1
-
-testselect:	testselect.c $(SDIF_OBJ_DIR)/SdifSelect.o
-testcheck:	testcheck.c  $(SDIF_LIB_DIR)/lib$(LIBNAME).a
-
-$(SDIF_LIB_DIR)/lib$(LIBNAME).a:	$(SDIF_SRC:%=../%)
-		$(MAKE) -C $(PRJ_DIR) lib
+essai_err: essai_err.c $(MODIF_SDIF_LIBROOT)/include/sdif.h
+	$(CC) essai_err.c -o $@ $(CFLAGS) $(LDFLAGS)
 
 clean:
-	$(RM) $(TARGETS)
+	-rm essai_err core *~
 
 
-# test cases:
-#	testselect asdf::aaaa,bbb@2+-.-3
 
-# querysdif ../../test/sdiffiles2000/pianoRes.m5.FIL.sdif
-# ./testcheck ../../test/sdiffiles2000/pianoRes.m5.FIL.sdif 1REB
-# Found 1REB frame, index 0.
-# ./testcheck ../../test/sdiffiles2000/pianoRes.m5.FIL.sdif 1NOI 1REB
-# Found 1REB frame, index 1.
-# ./testcheck ../../test/sdiffiles2000/pianoRes.m5.FIL.sdif 1HRM 1HRM 1HRM
-# Found no frame, index -1.
+
+
 
