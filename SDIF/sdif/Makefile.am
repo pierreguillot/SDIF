@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.30 2003-06-24 15:24:21 roebel Exp $
+# $Id: Makefile.am,v 1.31 2003-11-07 15:27:33 tisseran Exp $
 #
 # ./sdif/Makefile.am		September 2000		Patrice Tisserand
 #
@@ -30,6 +30,9 @@
 
 
 # $Log: not supported by cvs2svn $
+# Revision 1.30  2003/06/24 15:24:21  roebel
+# Removed UniversalEnvVar.h which in fact has never been used in SDIF.
+#
 # Revision 1.29  2003/05/26 08:15:50  tisseran
 # Added sdif.dsp in EXTRA_DIST
 #
@@ -153,7 +156,7 @@ SDIF_H = ../include/sdif_version.h $(top_srcdir)/include/sdif.h \
 	SdifCheck.h 	SdifErrMess.h	SdifConvToText.h 	\
 	SdifError.h 	SdifFGet.h 	SdifFPrint.h 		\
 	SdifFPut.h 	SdifFRead.h	SdifFScan.h 		\
-	SdifFWrite.h 	SdifFile.h	SdifTimePosition.h 	\
+	SdifFWrite.h 	SdifFile.h      SdifTimePosition.h 	\
 	SdifFrame.h 	SdifFrameType.h SdifGlobals.h 		\
 	SdifHard_OS.h 	SdifHash.h	SdifHighLevel.h 	\
 	SdifList.h 	SdifMatrix.h 	SdifMatrixType.h	\
@@ -161,7 +164,7 @@ SDIF_H = ../include/sdif_version.h $(top_srcdir)/include/sdif.h \
 	SdifPrint.h 	SdifSelect.h	SdifRWLowLevel.h	\
 	SdifStreamID.h	SdifString.h 	SdifSignatureTab.h	\
 	SdifTest.h 	SdifTextConv.h 	sdiftypes.h		\
-	$(top_srcdir)/sdif/SdifVersion.h project_preinclude.h config.h
+	project_preinclude.h config.h
 
 noinst_HEADERS = $(SDIF_H) $(addprefix $(top_srcdir)/sdif/,${FORMES_H})
 
@@ -191,21 +194,6 @@ INCLUDES = -I../include -I$(top_srcdir)/include -D_SdifTypesFileName=\"$(sdiftyp
 
 $(libsdif_a_SOURCES) :  $(FORMES_H:%=$(top_srcdir)/sdif/%)
 $(libsdif_la_SOURCES) : $(FORMES_H:%=$(top_srcdir)/sdif/%)
-
-#
-# EXTRA rules and dependencies to generate the checksum file SdifVersion.h
-#
-
-SdifFile.lo : $(top_srcdir)/sdif/SdifVersion.h
-
-# Versionsrc := $(libsdif_a_SOURCES) $(subst config.h,,$(subst $(top_srcdir)/sdif/SdifVersion.h,,$(noinst_HEADERS) )) 
-Versionsrc := $(libsdif_la_SOURCES) $(subst config.h,,$(subst $(top_srcdir)/sdif/SdifVersion.h,,$(noinst_HEADERS) )) 
-
-$(top_srcdir)/sdif/SdifVersion.h : $(Versionsrc)
-	@echo  "Updating  Library CKSUM"
-	@echo "/* Automatically generated File do not edit */" >$@
-	@echo '#define AUTOCKSUM "$$SDIFChecksum: '$(shell CMD_ENV=xpg4;export CMD_ENV;cksum $^ | cut -f1 -d' '|cksum |cut -f1 -d' ')' $$ IRCAM $$SDIFdate: "__DATE__" $$"'>>$@
-
 
 
 #
