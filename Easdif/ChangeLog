@@ -8,7 +8,7 @@ Version 0.7.2
 	Fixed warning due to comparison between int and unsigned int.
 
 	* easdif/sdifentity.h, easdif/sdifinit.h
-	Improved documentation.
+	Improved documentation. WriteNVTs is now private.
 	
 	* easdif/sdifframe.h, easdif/sdifframe.cpp
 	Added SetHeader with Signature as std::string
@@ -425,4 +425,4 @@ Version 0.21
 	* ChangeLog: Added changelog to repository.
 
 
-$Id: ChangeLog,v 1.21 2003-07-18 20:50:22 roebel Exp $
+$Id: ChangeLog,v 1.22 2003-07-18 21:20:18 roebel Exp $
