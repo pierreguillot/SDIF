@@ -1,4 +1,4 @@
-/* $Id: SdifSelect.h,v 3.13 2001-05-02 09:34:47 tisseran Exp $
+/* $Id: SdifSelect.h,v 3.14 2002-05-24 19:37:28 ftissera Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -88,6 +88,9 @@ TODO
 
 LOG
   $Log: not supported by cvs2svn $
+  Revision 3.13  2001/05/02 09:34:47  tisseran
+  Change License from GNU Public License to GNU Lesser Public License.
+
   Revision 3.12  2000/11/21 14:51:50  schwarz
   - sdif.h is now included by all sdif/Sdif*.c files.
   - Removed all public typedefs, enums, structs, and defines from the
@@ -209,71 +212,6 @@ char *SdifGetFilenameAndSelection (/*in*/  const char *filename,
 */
 void SdifPrintSelection (FILE *out, SdifSelectionT *sel, int options);
 
-
-
-/*
-// FUNCTION GROUP:	Add Selections to Element Lists
-*/
-
-/* Give documentation and fake prototype for _add... macro generated functions.
-   Cocoon ignores the #if 0.
-*/
-#if 0
-
-/*DOC:
-  Create and add one value to selection element list.  There are four 
-  functions generated automatically, with the meta type-variables _type_ and 
-  _datatype_:
-  [] _type_ is one of:  <br> Int, Real,   Signature,     String, for
-  [] _datatype_ of:	<br> int, double, SdifSignature, char *, respectively.
-*/
-void SdifSelectAdd_TYPE_ (SdifListT *list, _datatype_ value);
-
-/*DOC:
-  Create and add one range to selection element list.  There are four 
-  functions generated automatically, with the meta type-variables _type_ and 
-  _datatype_:
-  [] _type_ is one of:  <br> Int, Real,   Signature,     String, for
-  [] _datatype_ of:	<br> int, double, SdifSignature, char *, respectively.
-*/
-void SdifSelectAdd_TYPE_Range (SdifListT *list, 
-			       _datatype_ value, 
-			       SdifSelectTokens rt, 
-			       _datatype_ range);
-
-#endif	/* if 0 */
-
-
-#ifdef STDC_HEADERS
-
-#define _addrangeproto(name, type, field) \
-void SdifSelectAdd##name##Range (SdifListT *list, \
-				 type value, SdifSelectTokens rt, type range)
-
-#define _addsimpleproto(name, type, field) \
-void SdifSelectAdd##name (SdifListT *list, type value)
-
-#define _addproto(name, type, field) \
-_addsimpleproto (name, type, field); \
-_addrangeproto  (name, type, field);
-
-_addproto (Int,	      int,		integer)
-_addproto (Real,      double,		real)
-_addproto (Signature, SdifSignature,	signature)
-_addproto (String,    char *,		string)
-
-#else
-
-void SdifSelectAddInt (SdifListT *list, int value) ; 
-void SdifSelectAddIntRange (SdifListT *list, int value, SdifSelectTokens rt, int range) ; 
-void SdifSelectAddReal (SdifListT *list, double value) ; 
-void SdifSelectAddRealRange (SdifListT *list,                                   double value, SdifSelectTokens rt, double range) ; 
-void SdifSelectAddSignature (SdifListT *list, SdifSignature value) ; 
-void SdifSelectAddSignatureRange (SdifListT *list, SdifSignature value, SdifSelectTokens rt,   SdifSignature range) ; 
-void SdifSelectAddString (SdifListT *list, char * value) ; 
-void SdifSelectAddStringRange (SdifListT *list, char * value, SdifSelectTokens rt,      char * range) ; 
-
-#endif /* STDC_HEADERS */
 
 
 /*
