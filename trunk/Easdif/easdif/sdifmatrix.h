@@ -33,9 +33,12 @@
  * 
  * 
  * 
- * $Id: sdifmatrix.h,v 1.18 2004-03-19 22:09:50 roebel Exp $ 
+ * $Id: sdifmatrix.h,v 1.19 2004-05-04 14:56:56 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.18  2004/03/19 22:09:50  roebel
+ * Version 0.8.3: Added new methods to set marix signatures.
+ *
  * Revision 1.17  2003/11/25 10:55:42  roebel
  * Added missing namespace qualifier for exceptions.
  *
@@ -298,7 +301,7 @@ public:
     int Read(SdifFileT* file);
 
 /** 
- * \ingroup rwmat
+ * \ingroup create
  * \brief Re-Initialize matrix to hold data
  * 
  * @param sig    SDIFMatrix Signature
@@ -311,7 +314,7 @@ public:
     throw(SDIFMatrixDataError,std::bad_alloc);
 
 /** 
- * \ingroup rwmat
+ * \ingroup create
  * \brief Re-Initialize matrix to hold data
  * 
  * @param sig    SDIFMatrix Signature
@@ -325,7 +328,7 @@ public:
 
 
 /** 
- * \ingroup rwmat
+ * \ingroup create
  * \brief Resize matrix to hold rowsxcolumns
  * 
  *  Existing data is preserved in the correct locations
@@ -340,7 +343,7 @@ public:
   bool Resize(int nrows, int ncols);
 
   /** 
-   * \ingroup rwmat
+   * \ingroup create
    * \brief clear matrix 
    *
    *  all data entries are set to zero.
