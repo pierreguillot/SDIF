@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.1 2003-03-03 19:00:16 roebel Exp $
+# $Id: Makefile.am,v 1.2 2003-03-04 00:55:02 roebel Exp $
 #
 # ./Easdif/src/Makefile.am	Feb. 2003 Axel Roebel
 #
@@ -6,6 +6,9 @@
 #
 
 # $Log: not supported by cvs2svn $
+# Revision 1.1  2003/03/03 19:00:16  roebel
+# Moved src directory to new name easdif
+#
 # Revision 1.1  2003/03/03 10:03:50  roebel
 # Adapted for autoconf/automake...
 #
@@ -38,12 +41,12 @@ INCLUDES = -I$(top_srcdir) -I$(top_srcdir)/SDIF/include -I$(top_srcdir)/SDIF/sdi
 #
 # EXTRA rules and dependencies to generate easdif_version.h
 #
-$(top_srcdir)/src/easdif_version.h: $(top_srcdir)/Doxyfile
-	echo "/* Version automatically generated from Makefile/DoxyFile" >$@.h
-	echo " * do not edit */" >>$@.h
-	echo "#ifndef EASDIF_VERSION_MAJ"	 >>$@.h
-	echo "#define" EASDIF_VERSION_MAJ $(strip $(shell grep ^PROJECT_NUMBER  $< | cut -d"=" -f2| cut -d. -f1)) >>$@.h
-	echo "#define" EASDIF_VERSION_MIN $(strip $(shell grep ^PROJECT_NUMBER  $< | cut -d"=" -f2| cut -d. -f2)) >>$@.h
-	echo "#endif "	 >>$@.h
+#$(top_srcdir)/src/easdif_version.h: $(top_srcdir)/Doxyfile
+#	echo "/* Version automatically generated from Makefile/DoxyFile" >$@.h
+#	echo " * do not edit */" >>$@.h
+#	echo "#ifndef EASDIF_VERSION_MAJ"	 >>$@.h
+#	echo "#define" EASDIF_VERSION_MAJ $(strip $(shell grep ^PROJECT_NUMBER  $< | cut -d"=" -f2| cut -d. -f1)) >>$@.h
+#	echo "#define" EASDIF_VERSION_MIN $(strip $(shell grep ^PROJECT_NUMBER  $< | cut -d"=" -f2| cut -d. -f2)) >>$@.h
+#	echo "#endif "	 >>$@.h
 
 
