@@ -1,3 +1,15 @@
+2004-05-03  Axel Roebel and Diemo Schwarz
+Version 3.8.2
+
+	* SdifGlobals.c, SdifFRead.c, SdifFGet.c:
+	In order to make reading SDIF files from stdin and pipes possible,
+	fixed bugs in padding calculation for ascii chunks:
+	1. DON'T PAD FRAMES!
+	2. SdifFReadMatrixHeader already accounts for read signature.
+	
+	Now, calculating padding from ftell is redundant, but we leave it in,
+	with a warning, until everyone's code is tested.
+
 2004-02-10  Axel Roebel  <Axel.Roebel@ircam.fr>
 Version 3.8.1
 	
@@ -314,4 +326,4 @@ Version 3.3:
 	  Operating System.
 
 	
-$Id: ChangeLog,v 1.32 2004-02-11 15:44:04 roebel Exp $
+$Id: ChangeLog,v 1.33 2004-05-03 18:18:42 schwarz Exp $
