@@ -1,4 +1,4 @@
-$Id: sdif-matlab-readme,v 1.1 2000-08-27 14:24:10 schwarz Exp $
+$Id: sdif-matlab-readme,v 1.2 2000-12-19 17:00:45 roebel Exp $
 
 sdif-matlab-README	8.8.2000	Diemo Schwarz (schwarz@ircam.fr)
 -------------------------------------------------------------------------------
@@ -20,6 +20,11 @@ with documentation and support functions.
 
 
 RELEASES
+
+0.1.6   19.12.2000   Fixed Bug in loadsdif - crash when last matrix 
+                     was not selected
+                     Corrected sgi mex extension to mexsg such 
+                     that sgi is now in distribution
 
 0.1.5   27.08.2000   Clarified empty matrix issue:  The doc was wrong!
 		     loadsdif did always return empty time as eof flag.
