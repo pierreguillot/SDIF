@@ -1,4 +1,4 @@
-/* $Id: SdifSelect.c,v 3.20 2004-07-22 14:47:56 bogaards Exp $
+/* $Id: SdifSelect.c,v 3.21 2004-09-09 17:48:51 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -96,6 +96,9 @@ TODO
 
 LOG
   $Log: not supported by cvs2svn $
+  Revision 3.20  2004/07/22 14:47:56  bogaards
+  removed many global variables, moved some into the thread-safe SdifGlobals structure, added HAVE_PTHREAD define, reorganized the code for selection, made some arguments const, new version 3.8.6
+
   Revision 3.19  2003/11/07 21:47:18  roebel
   removed XpGuiCalls.h and replaced preinclude.h  by local files
 
@@ -291,6 +294,26 @@ void SdifKillSelectElement (/*SdifSelectionT*/ void *victim)
 }
 
 
+/* copy a selection list source, appending to an existing one dest the
+   same but freshly allocated elements from source */
+SdifListT *SdifSelectAppendList (SdifListT *dest, SdifListT *source)
+{
+    SdifListInitLoop(source);
+
+    while (SdifListIsNext(source))
+    {   /* allocate new element */
+	SdifSelectElementT *elem = SdifMalloc (SdifSelectElementT);
+
+	/* copy from old one */
+	*elem = *(SdifSelectElementT *) SdifListGetNext(source);
+
+	SdifListPutTail(dest, elem);
+    }
+
+    return dest;
+}
+
+
 int SdifInitSelectionLists (SdifSelectionT *sel)
 {
 
@@ -357,6 +380,11 @@ int SdifFreeSelection (SdifSelectionT *sel)
 
     SdifFreeSelectionLists (sel);
 
+#if defined(DEBUG)  &&  DEBUG
+    /* set ALL pointers to NULL */
+    memset(sel, 0, sizeof(SdifSelectionT));
+#endif
+    
     return (1);
 }
 
