@@ -1,4 +1,4 @@
-/* $Id: SdifFile.c,v 3.4 1999-09-28 13:08:57 schwarz Exp $
+/* $Id: SdifFile.c,v 3.5 1999-10-07 15:12:22 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -16,6 +16,10 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.4  1999/09/28  13:08:57  schwarz
+ * Included #include <preincluded.h> for cross-platform uniformisation,
+ * which in turn includes host_architecture.h and SDIF's project_preinclude.h.
+ *
  * Revision 3.3  1999/09/28  10:36:59  schwarz
  * Added SdifCheckFileFormat to test if a file is in SDIF.
  *
@@ -106,6 +110,23 @@ SdifFOpen(const char* Name, SdifFileModeET Mode)
   SdifF = SdifMalloc(SdifFileT);
   if (SdifF)
     {
+      /* Check if doing standard i/o or file i/o.  
+	 stdio holds the standard i/o type as eBinaryModeStd(Input|Output),
+	 eBinaryModeUnknown means file i/o */
+      SdifBinaryModeET    stdio;   
+
+      if (Name == NULL)
+	  Name = "";
+      if (Name [0] == 0  ||  SdifStrEq (Name, "-"))
+	  stdio = Mode == eReadFile          ?  eBinaryModeStdInput
+					     :  eBinaryModeStdOutput;
+      else
+	  stdio = SdifStrEq(Name, "stdin")   ?  eBinaryModeStdInput   :
+		  SdifStrEq(Name, "stdout")  ?  eBinaryModeStdOutput  :
+		  SdifStrEq(Name, "stderr")  ?  eBinaryModeStdError   : 
+						 eBinaryModeUnknown;
+
+      SdifF->isSeekable       = stdio == eBinaryModeUnknown;
       SdifF->Name             = SdifCreateStrNCpy(Name, SdifStrLen(Name)+1);
       SdifF->Mode             = Mode;
       SdifF->FormatVersion    = _SdifFormatVersion; /* default */
@@ -118,7 +139,6 @@ SdifFOpen(const char* Name, SdifFileModeET Mode)
 /*      SdifF->StreamIDsTable   = SdifCreateHashTable(1, eHashInt4, SdifKillStreamID);*/
       SdifF->StreamIDsTable   = SdifCreateStreamIDTable(1);
       SdifF->TimePositions    = SdifCreateTimePositionL();
-
 
       SdifF->CurrSignature = eEmptySignature;
       SdifF->CurrFramH     = NULL;
@@ -150,80 +170,61 @@ SdifFOpen(const char* Name, SdifFileModeET Mode)
       
 
       switch (Mode)
-        {
-      case eReadFile :
-        if (SdifStrCmp(Name, "stdin") == 0)
-          {
-            SdifF->Stream = SdiffBinOpen (Name, eBinaryModeStdInput);
-            return SdifF;
-		  }
-        else
-          {
-            if (    (SdifStrCmp(Name, "stdout") == 0)
-			     || (SdifStrCmp(Name, "stderr") == 0)   )
-              {
-                _SdifFError(SdifF, eBadStdFile, Name);
-                SdifFClose (SdifF);
-				return NULL;
-			  }
-            else
-              {
-                SdifF->Stream = SdiffBinOpen (Name, eBinaryModeRead);
-                if (! SdifF->Stream)
-                  {
-                    _SdifError(eFileNotFound, Name);
-                    SdifFClose (SdifF);
-                    return NULL;
-                  }
-                else
-                  {
-                    return SdifF;
-                  }
-              }
-          }
+      {
+          case eReadFile:
+	      switch (stdio)
+	      {
+	          case eBinaryModeStdInput:
+		      SdifF->Stream = SdiffBinOpen (Name, eBinaryModeStdInput);
+		  break;
 
-      case eWriteFile :
-          if (SdifStrCmp(Name, "stdout") == 0)
-            {
-              SdifF->Stream = SdiffBinOpen (Name, eBinaryModeStdOutput);
-              return SdifF;
-            }
-		  else
-            if (    (SdifStrCmp(Name, "stdin") == 0)
-			     || (SdifStrCmp(Name, "stderr") == 0)   )
-              {
-                _SdifFError(SdifF, eBadStdFile, Name);
-                SdifFClose (SdifF);
-                return NULL;
-              }
-            else
-              {
-                SdifF->Stream = SdiffBinOpen (Name, eBinaryModeWrite);
-                if (! SdifF->Stream)
-                 {
-                    _SdifError(eFileNotFound, Name);
-                    SdifFClose (SdifF);
-                    return NULL;
-                  }
-                else
-                  return SdifF;
-              }
+		  case eBinaryModeUnknown:
+		      SdifF->Stream = SdiffBinOpen (Name, eBinaryModeRead);
+		  break;
 
-      case ePredefinedTypes:
-        SdifF->Stream = NULL;
-        return SdifF;
+	          default:
+		      _SdifFError(SdifF, eBadStdFile, Name);
+		  break;
+	      }
+	  break;
 
-      default :
-        _SdifFError(SdifF, eBadMode, "this mode doesn't exist");
-        SdifFClose (SdifF);
-        return NULL;
+          case eWriteFile :
+	      switch (stdio)
+	      {
+	          case eBinaryModeStdOutput:
+		      SdifF->Stream = SdiffBinOpen(Name, eBinaryModeStdOutput);
+		  break;
+
+		  case eBinaryModeUnknown:
+		      SdifF->Stream = SdiffBinOpen (Name, eBinaryModeWrite);
+		  break;
+
+	          default:
+		      _SdifFError(SdifF, eBadStdFile, Name);
+		  break;
+              }
+	  break;
+
+          case ePredefinedTypes: /* special case:		  */
+	      return SdifF;	 /* stream is NULL, but that's ok */
+
+          default:
+	      _SdifFError(SdifF, eBadMode, "this mode doesn't exist");
+      }
+
+      if (!SdifF->Stream)
+      {
+	  _SdifError(eFileNotFound, Name);
+	  SdifFClose (SdifF);
+	  SdifF = NULL;
       }
   }
   else
   {
-    _SdifError(eAllocFail, "SdifFile");
-    return NULL;
+      _SdifError(eAllocFail, "SdifFile");
   }
+      
+  return SdifF;
 }
 
 
@@ -258,15 +259,15 @@ SdifFOpenText(SdifFileT *SdifF, const char* Name, SdifFileModeET Mode)
   switch (Mode)
   {
 	case eReadFile :
-      if (SdifStrCmp(Name, "stdin") == 0)
+      if (SdifStrEq(Name, "stdin"))
 	  {
 	    SdifF->TextStream = SdiffBinOpen (Name, eBinaryModeStdInput);
 	    return SdifF;
 	  }
 	  else
 	  {
-	    if (    (SdifStrCmp(Name, "stdout") == 0)
-			 || (SdifStrCmp(Name, "stderr") == 0)   )
+	    if (    (SdifStrEq(Name, "stdout"))
+			 || (SdifStrEq(Name, "stderr"))   )
 		{
 		  _SdifFError(SdifF, eBadStdFile, Name);
 		  return NULL;
@@ -287,21 +288,21 @@ SdifFOpenText(SdifFileT *SdifF, const char* Name, SdifFileModeET Mode)
 	  }
 
 	case eWriteFile :
-	  if (SdifStrCmp(Name, "stdout") == 0)
+	  if (SdifStrEq(Name, "stdout"))
 	  {
 	    SdifF->TextStream = SdiffBinOpen (Name, eBinaryModeStdOutput);
 	    return SdifF;
 	  }
 	  else
 	  {
-        if (SdifStrCmp(Name, "stderr") == 0)
+        if (SdifStrEq(Name, "stderr"))
 		{
 	      SdifF->TextStream = SdiffBinOpen (Name, eBinaryModeStdError);
 	      return SdifF;
 		}
 		else
 		{
-	      if (SdifStrCmp(Name, "stdin") == 0)
+	      if (SdifStrEq(Name, "stdin"))
 		  {
 		    _SdifFError(SdifF, eBadStdFile, Name);
 		    return NULL;
@@ -322,15 +323,15 @@ SdifFOpenText(SdifFileT *SdifF, const char* Name, SdifFileModeET Mode)
 		}
 	  }
 	case ePredefinedTypes:
-      if (SdifStrCmp(Name, "stdin") == 0)
+      if (SdifStrEq(Name, "stdin"))
 	  {
 	    SdifF->TextStream = SdiffBinOpen (Name, eBinaryModeStdInput);
 	    return SdifF;
 	  }
 	  else
 	  {
-	    if (    (SdifStrCmp(Name, "stdout") == 0)
-			 || (SdifStrCmp(Name, "stderr") == 0)   )
+	    if (    (SdifStrEq(Name, "stdout"))
+			 || (SdifStrEq(Name, "stderr"))   )
 		{
 		  _SdifFError(SdifF, eBadStdFile, Name);
 		  return NULL;
@@ -516,7 +517,7 @@ SdifFLoadPredefinedTypes(SdifFileT *SdifF, char *TypesFileName)
 {
   size_t SizeR =0;
 
-  if (SdifStrCmp(TypesFileName, "") == 0)
+  if (SdifStrEq(TypesFileName, ""))
     {
       _SdifRemark("Load Coded Predefinied Types, it can be incomplete (file name null)\n");
       SdifTakeCodedPredefinedTypes(SdifF);
@@ -606,7 +607,7 @@ SdifGenKill(void)
 void SdifPrintVersion(void)
 {
 #ifndef lint
-    static char rcsid[]= "$Revision: 3.4 $ IRCAM $Date: 1999-09-28 13:08:57 $";
+    static char rcsid[]= "$Revision: 3.5 $ IRCAM $Date: 1999-10-07 15:12:22 $";
 #endif
 
     if (SdifStdErr == NULL)
