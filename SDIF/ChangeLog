@@ -1,5 +1,20 @@
-2003-05-24  Axel Röbel  <roebel@ircam.fr>
-Version 3.7.5
+2003-05-30  Diemo Schwarz  <schwarz@ligeti.ircam.fr>
+
+	* configure.in:
+	Bumped up version to 3.8.0 because of added API functions for
+	type definition access.
+
+	* include/sdif.h, sdif/SdifFile.c:
+	Added SdifFGetMatrixType and SdifFGetFrameType.
+	Added SdifFGetMatrixTypesTable and SdifFGetFrameTypesTable.
+	Documented other type access functions.
+
+	* sdif/SdifFPrint.c:
+	Added text matrix case to SdifFPrintOneRow for sdiftotext conversion
+	(called from SdifConvToText.c)
+
+
+Version 3.7.5	2003-05-24  Axel Röbel  <roebel@ircam.fr>
 
 	* include/sdif_version.h.in: 
 	Renamed  VERSION string to SDIF_VERSION_STRING
@@ -162,4 +177,4 @@ Version 3.3:
 	  Operating System.
 
 	
-$Id: ChangeLog,v 1.19 2003-05-26 16:12:46 roebel Exp $
+$Id: ChangeLog,v 1.20 2003-05-30 17:48:47 schwarz Exp $
