@@ -34,9 +34,13 @@
  * 
  * 
  * 
- * $Id: sdifexception.h,v 1.6 2003-12-05 13:53:14 ellis Exp $ 
+ * $Id: sdifexception.h,v 1.7 2003-12-18 12:15:29 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.6  2003/12/05 13:53:14  ellis
+ *
+ * including <iostream> for the use of std::cout, cerr...
+ *
  * Revision 1.5  2003/11/25 10:57:05  roebel
  * Added missing namespace qualifier for exceptions.
  * Added missing exception specification to exception deconstructor.
@@ -96,7 +100,7 @@ namespace Easdif {
      */
     SDIFException(SdifErrorLevelET level,
 		  const char* message,
-		  SdifFileT* sdifFile,	
+		  SdifFileT* _sdifFile,	
 		  int error, // either SdifErrorE or SdifErrorTagE
 		  const char* sourceFileName,
 		  int sourceFileLine) {
@@ -113,7 +117,7 @@ namespace Easdif {
 	mMessage = std::string("");
       
       mLevel = level;
-      mSdifFile = sdifFile;
+      mSdifFile = _sdifFile;
       mError = error;
     };
 
@@ -203,9 +207,9 @@ protected:
 
 
 #define constructor(class1,class2) class1(SdifErrorLevelET level,  const char* message, \
-					 SdifFileT* sdifFile,   int error, \
+					 SdifFileT* _sdifFile,   int error, \
 					 const char* sourceFileName, int sourceFileLine) \
-  : class2(level,message,sdifFile,error,sourceFileName,sourceFileLine){}
+  : class2(level,message,_sdifFile,error,sourceFileName,sourceFileLine){}
 
 /****************** FILE ERRORS  *************************/
 
