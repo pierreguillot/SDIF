@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.10 2002-10-10 10:40:10 roebel Exp $
+# $Id: Makefile.am,v 1.11 2002-12-02 17:33:50 tisseran Exp $
 #
 # ./tools/Makefile.am		September 2000			Patrice Tisserand
 #
@@ -29,6 +29,9 @@
 # send email to:  sdif@ircam.fr
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.10  2002/10/10 10:40:10  roebel
+# Added support for c++ compilation.
+#
 # Revision 1.9  2002/09/24 13:36:25  schwarz
 # Need to define VERSION for tools.
 #
@@ -68,18 +71,18 @@ sdifextract_debug_SOURCES=sdifextract.c
 sdiftotext_debug_SOURCES=sdiftotext.c
 tosdif_debug_SOURCES=tosdif.c
 
-querysdif_debug_LDADD = -lsdif-debug
-querysdif_debug_LDFLAGS = -L../sdif
-querysdif_debug_DEPENDENCIES=../sdif/libsdif-debug.a
-sdifextract_debug_LDADD = -lsdif-debug
-sdifextract_debug_LDFLAGS = -L../sdif
-sdifextract_debug_DEPENDENCIES=../sdif/libsdif-debug.a
-sdiftotext_debug_LDADD = -lsdif-debug
-sdiftotext_debug_LDFLAGS = -L../sdif
-sdiftotext_debug_DEPENDENCIES=../sdif/libsdif-debug.a
-tosdif_debug_LDADD = -lsdif-debug
-tosdif_debug_LDFLAGS = -L../sdif
-tosdif_debug_DEPENDENCIES=../sdif/libsdif-debug.a
+querysdif_debug_LDADD = ../sdif/libsdif-debug.la
+querysdif_debug_DEPENDENCIES= ../sdif/libsdif-debug.la
+querysdif_debug_LDFLAGS = -static
+sdifextract_debug_LDADD = ../sdif/libsdif-debug.la
+sdifextract_debug_LDFLAGS = -static
+sdifextract_debug_DEPENDENCIES=../sdif/libsdif-debug.la
+sdiftotext_debug_LDADD = ../sdif/libsdif-debug.la
+sdiftotext_debug_LDFLAGS = -static
+sdiftotext_debug_DEPENDENCIES=../sdif/libsdif-debug.la
+tosdif_debug_LDADD = ../sdif/libsdif-debug.la
+tosdif_debug_LDFLAGS = -static
+tosdif_debug_DEPENDENCIES=../sdif/libsdif-debug.la
 
 querysdif_LDADD = -l$(basename $(subst lib,,@SELLIB@))
 querysdif_LDFLAGS = -L../sdif
