@@ -1,4 +1,4 @@
-/* $Id: SdifError.c,v 3.10 2002-05-24 19:35:24 ftissera Exp $
+/* $Id: SdifError.c,v 3.11 2002-06-18 13:55:11 ftissera Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -31,6 +31,10 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.10  2002/05/24 19:35:24  ftissera
+ * Change fprintf into sprintf
+ * Add error and warning handler
+ *
  * Revision 3.9  2002/05/02 15:30:48  schwarz
  * Unified error handling:
  * - introduced callback functions for errors and warnings
@@ -237,7 +241,7 @@ SdifErrorWarning(SdifErrorEnum Error, const char *inErrorMess)
 	exitit = 1;
 	break;
     default :	
-	    sprintf (outErrorMess, "Warning unknown", inErrorMess);
+	    sprintf (outErrorMess, "Warning unknown :'%s\n", inErrorMess);
 	    break;
     }
 
