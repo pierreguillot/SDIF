@@ -25,6 +25,22 @@
  */
 
 
+/**
+ * @file   sdifexception.h
+ * @author Axel Roebel
+ * @date   Wed May 21 22:03:04 2003
+ * 
+ * @brief   SDIFException - SDIF Error handling via exceptions
+ * 
+ * 
+ * 
+ * $Id: sdifexception.h,v 1.3 2003-05-21 20:40:30 roebel Exp $ 
+ * 
+ * $Log: not supported by cvs2svn $ 
+ * 
+ */
+
+
 #ifndef SDIFEXCEPTION_H_
 #define SDIFEXCEPTION_H_ 1
 
@@ -34,9 +50,24 @@
 
 namespace Easdif {
 
-  /*
-    in this class, we are interested just in errors (not warnings)
-  */
+  /*************************************************************************/
+  /* Exception Handling  */
+
+  /**
+   * \defgroup exception SDIFException - SDIF Error handling via exceptions
+   *
+   *
+   */
+
+  /** 
+   * \brief SDIFException - SDIF Error handling via exceptions
+   * 
+   *
+   * In Easdif all SDIF errors are mapped to corresponding exceptions
+   * the base class is SDIFException. All other exception 
+   * classes are derived from here.
+   *
+   */
   class SDIFException
   {
   public:
@@ -56,34 +87,40 @@ namespace Easdif {
 	{
 	};
 
-    inline bool initException(SdifErrorLevelET level,
-			      char* message,
-			      SdifFileT* sdifFile,	
-			      SdifErrorT* error,
-			      char* sourceFileName,
-			      int sourceFileLine)
+
+    bool initException(SdifErrorLevelET level,
+		       char* message,
+		       SdifFileT* sdifFile,	
+		       SdifErrorT* error,
+		       char* sourceFileName,
+		       int sourceFileLine)
+    {
+      if (!mIsInit)
 	{
-	    if (!mIsInit)
-	    {
-		mSourceFileLine = sourceFileLine;
-		if(sourceFileName)
-		  mSourceFileName = std::string(sourceFileName);
-		else
-		  mSourceFileName = std::string("");
-
-		if(message)
-		  mMessage = std::string(message);
-		else
-		  mMessage = std::string("");
-
-		mLevel = level;
-		mSdifFile = sdifFile;
-		mError = error;
-		mIsInit = true;
-	    }
-	    return mIsInit;
+	  mSourceFileLine = sourceFileLine;
+	  if(sourceFileName)
+	    mSourceFileName = std::string(sourceFileName);
+	  else
+	    mSourceFileName = std::string("");
+	  
+	  if(message)
+	    mMessage = std::string(message);
+	  else
+	    mMessage = std::string("");
+	  
+	  mLevel = level;
+	  mSdifFile = sdifFile;
+	  mError = error;
+	  mIsInit = true;
 	}
+      return mIsInit;
+    }
 
+    /** 
+     * \ingroup exception 
+     *  The member function ErrorMessage prints the SDIF error message
+     *  via  cerr.
+     */
     void ErrorMessage()
 	{
 
@@ -108,16 +145,53 @@ namespace Easdif {
 */
 	}
 
-    SdifFileT* sdifFile() { return mSdifFile;}
+    
 
+    /** 
+     * \ingroup exception 
+     *
+     * \brief get sdiffile pointer for file that causec exception
+     * 
+     * @return  sdiffile pointer
+     */
+    const SdifFileT* sdifFile() const { return mSdifFile;}
+
+
+    /** 
+     * \ingroup exception 
+     * \brief get  error message
+     * 
+     * @return returns mMessage string
+     */
+
+    const std::string& getmessage() const { return mMessage;}
+
+
+    /** 
+     * \ingroup exception 
+     * \brief get  source file name that emitted error
+     * 
+     * @return returns Source File name as a string
+     */
+    const std::string& getsourcename() const { return mSourceFileName;}
+
+     /** 
+     * \ingroup exception 
+     * \brief get SDIF error tag 
+     * 
+     * @return error tag
+     */
+     SdifErrorTagET getetag() const { 
+       if (mError)return mError->Tag;
+       return eUnknow;
+     }
+   
 protected:
     bool mIsInit;
     int mSourceFileLine;
     std::string mSourceFileName;
     std::string mMessage;
     SdifFileT* mSdifFile;
-    SdifErrorT* error;
-
     SdifErrorT* mError;
 
     SdifErrorLevelET mLevel;
