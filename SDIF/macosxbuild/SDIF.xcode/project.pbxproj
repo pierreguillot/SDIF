@@ -16,10 +16,9 @@
 			sourceTree = "<group>";
 		};
 		0F5C28A7047E732E006640BC = {
-			buildRules = (
-			);
 			buildSettings = {
 				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 3.8.6;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
@@ -30,8 +29,6 @@
 			name = Development;
 		};
 		0F5C28A8047E732E006640BC = {
-			buildRules = (
-			);
 			buildSettings = {
 				COPY_PHASE_STRIP = YES;
 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
@@ -53,6 +50,7 @@
 			projectDirPath = "";
 			targets = (
 				0F5C28FC047E7417006640BC,
+				F48FF1820715727100AC7FE9,
 			);
 		};
 		0F5C28AB047E7385006640BC = {
@@ -269,7 +267,6 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				FRAMEWORK_VERSION = A;
-				INSTALL_PATH = "/Library/Application Support/Ircam/SDIF";
 				OPTIMIZATION_CFLAGS = "-O3";
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = "";
@@ -286,7 +283,6 @@
 			);
 			isa = PBXFrameworkTarget;
 			name = SDIF;
-			productInstallPath = "/Library/Application Support/Ircam/SDIF";
 			productName = SDIF;
 			productReference = 0F5C28FD047E7417006640BC;
 			productSettingsXML = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
@@ -314,15 +310,14 @@
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>0.0.1d1</string>
+	<string>3.9.0</string>
 </dict>
 </plist>
 ";
 		};
 		0F5C28FD047E7417006640BC = {
 			explicitFileType = wrapper.framework;
-			fallbackIsa = PBXFileReference;
-			isa = PBXFrameworkReference;
+			isa = PBXFileReference;
 			path = SDIF.framework;
 			refType = 3;
 			sourceTree = BUILT_PRODUCTS_DIR;
@@ -361,6 +356,47 @@
 //0F2
 //0F3
 //0F4
+//F40
+//F41
+//F42
+//F43
+//F44
+		F48FF1810715727100AC7FE9 = {
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			isa = PBXShellScriptBuildPhase;
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "echo \"installing SDIF.framework into /Library/Frameworks...\"\ncp -r build/SDIF.framework /Library/Frameworks\necho \"...ok\"\n";
+		};
+		F48FF1820715727100AC7FE9 = {
+			buildPhases = (
+				F48FF1810715727100AC7FE9,
+			);
+			buildSettings = {
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = Install;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = "-Wmost -Wno-four-char-constants -Wno-unknown-pragmas";
+			};
+			dependencies = (
+			);
+			isa = PBXAggregateTarget;
+			name = Install;
+			productName = Install;
+		};
+//F40
+//F41
+//F42
+//F43
+//F44
 //F70
 //F71
 //F72
