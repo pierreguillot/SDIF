@@ -33,9 +33,15 @@
  * 
  * 
  * 
- * $Id: sdifmatrixdata.h,v 1.7 2004-07-20 19:32:36 roebel Exp $ 
+ * $Id: sdifmatrixdata.h,v 1.8 2004-07-21 13:27:12 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.7  2004/07/20 19:32:36  roebel
+ * Added support for row and column selection.
+ * Matrix reading/writing reorganized to handle complete matrices whenever
+ * possible (if no selection on row or column is used).
+ * Drastically improves IO performance!
+ *
  * Revision 1.6  2003/07/17 18:09:35  roebel
  * Improved Resize method, added Clear method and proper assigment operator
  *
@@ -194,18 +200,152 @@ public:
 
 
   /** 
-   *  template method for getting data
+   *  template method for getting data: only for internal use
    */
   template <class TT>
-  TT Get(int i, int j)
+  TT Get(int i, int j) const
   {
     if (i<0 || i >= m_Nrows || j >= m_Ncols || j<0)
       {
-	std::cerr<<"Error in Get(" <<i << "," <<j <<") out of matrix range ("<<m_Nrows<<","<<m_Ncols<<")" <<std::endl;
-	return -1;
+	throw SDIFArrayPosition(eError,
+				"Error in  SDIFMatrixData::Get!!! requested row is out of range !!!",
+				0,eArrayPosition,__FILE__,__LINE__);
       }
     return static_cast<TT>(m_Data[i*m_Ncols+j]);
   }
+
+
+  /**
+   * \ingroup getdata
+   * getting an entire row 
+   * 
+   * @param out  pointer to memory holding at least GetNbCols() elements
+   * @param irow row index
+   * 
+   */
+
+  template <class TT>
+  void _GetRow(TT* out,int irow) const throw (SDIFArrayPosition) 
+  {
+    if (irow<0 || irow >= m_Nrows)      {
+      throw SDIFArrayPosition(eError,
+			      "Error in  SDIFMatrixData::GetRow!!! requested row is out of range !!!",
+			  0,eArrayPosition,__FILE__,__LINE__);
+
+    }
+    
+    const T* start = &m_Data[irow*m_Ncols];
+    const T* end   = &m_Data[(irow+1)*m_Ncols];
+    while(start !=end)    *out++ = static_cast<TT>(*start++);
+
+    return;
+  }
+
+  /**
+   * \ingroup getdata
+   * getting an entire column
+   * 
+   * @param out  pointer to memory holding at least GetNbRows() elements
+   * @param icol column index
+   * 
+   */
+  template <class TT>
+  void _GetCol(TT* out,int icol) const throw (SDIFArrayPosition) 
+  {
+    if (icol<0 || icol >= m_Ncols)      {
+      throw SDIFArrayPosition(eError,
+			      "Error in  SDIFMatrixData::GetCol!!! requested column is out of range !!!",
+			  0,eArrayPosition,__FILE__,__LINE__);
+    }
+
+    const T* start = &m_Data[icol];
+    const T* end   = &m_Data[icol+m_Nrows*m_Ncols];
+    for(;start !=end;start += m_Nrows)    *out++ = static_cast<TT>(*start);
+
+    return;
+  }
+
+
+  /**
+   * \ingroup getdata
+   * getting an entire column as double
+   * 
+   * @param out  pointer to memory holding at least GetNbRows() elements
+   * @param icol col index
+   * 
+   */
+  void GetCol(double* out,int icol) const throw (SDIFArrayPosition){
+    _GetCol(out,icol);
+    return;
+  }
+
+  /**
+   * \ingroup getdata
+   * getting an entire column as float
+   * 
+   * @param out  pointer to memory holding at least GetNbRows() elements
+   * @param icol col index
+   * 
+   */
+  void GetCol(float* out,int icol) const throw (SDIFArrayPosition){
+    _GetCol(out,icol);
+    return;
+  }
+
+  /**
+   * \ingroup getdata
+   * getting an entire column as int
+   * 
+   * @param out  pointer to memory holding at least GetNbRows() elements
+   * @param icol col index
+   * 
+   */
+  void GetCol(int* out,int icol) const throw (SDIFArrayPosition){
+    _GetCol(out,icol);
+    return;
+  }
+
+
+  /**
+   * \ingroup getdata
+   * getting an entire row as double
+   * 
+   * @param out  pointer to memory holding at least GetNbRows() elements
+   * @param irow row index
+   * 
+   */
+  void GetRow(double* out,int irow) const throw (SDIFArrayPosition){
+    _GetRow(out,irow);
+    return;
+  }
+
+  /**
+   * \ingroup getdata
+   * getting an entire row as float
+   * 
+   * @param out  pointer to memory holding at least GetNbRows() elements
+   * @param irow row index
+   * 
+   */
+  void GetRow(float* out,int irow) const throw (SDIFArrayPosition){
+    _GetRow(out,irow);
+    return;
+  }
+
+  /**
+   * \ingroup getdata
+   * getting an entire row as int
+   * 
+   * @param out  pointer to memory holding at least GetNbRows() elements
+   * @param irow row index
+   * 
+   */
+  void GetRow(int* out,int irow) const throw (SDIFArrayPosition){
+    _GetRow(out,irow);
+    return;
+  }
+
+
 
 /**
  * \ingroup getdata
@@ -216,7 +356,7 @@ public:
  * 
  * @return the value
  */
-    double GetDouble(int i, int j)
+    double GetDouble(int i, int j) const
 	{
 	    return Get<double>(i, j);   
 	}
@@ -230,7 +370,7 @@ public:
  * 
  * @return the value
  */
-    float GetFloat(int i, int j)
+    float GetFloat(int i, int j) const
 	{
 	    return Get<float>(i, j);   
 	}
@@ -244,7 +384,7 @@ public:
  * 
  * @return the value
  */
-    int GetInt(int i, int j)
+    int GetInt(int i, int j) const
 	{	    
 	    return Get<int>(i, j);   
 	}
@@ -269,7 +409,7 @@ public:
  * \ingroup getmemb
  * @brief get the row number of values
  */
-   inline  int GetNbRow()
+   int GetNbRows() const
 	{
 	    return m_Nrows;
 	}
@@ -278,7 +418,7 @@ public:
  * \ingroup getmemb
  * @brief get the column number of values
  */
-    inline int GetNbCol() 
+    int GetNbCols() const
 	{
 	    return m_Ncols;
 	}
@@ -371,7 +511,7 @@ public:
  * \ingroup otherdata
  * used for printing the data 
  */
-    void print()
+  void print() const
 	{
 	    int row;
             int col;

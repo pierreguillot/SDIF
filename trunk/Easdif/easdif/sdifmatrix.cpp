@@ -32,9 +32,15 @@
  * 
  * 
  * 
- * $Id: sdifmatrix.cpp,v 1.20 2004-07-20 19:32:36 roebel Exp $ 
+ * $Id: sdifmatrix.cpp,v 1.21 2004-07-21 13:27:07 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.20  2004/07/20 19:32:36  roebel
+ * Added support for row and column selection.
+ * Matrix reading/writing reorganized to handle complete matrices whenever
+ * possible (if no selection on row or column is used).
+ * Drastically improves IO performance!
+ *
  * Revision 1.19  2004/07/13 15:02:00  roebel
  * Use member bytesread instead of local variable.
  *
@@ -267,8 +273,8 @@ bool SDIFMatrix::Clear() {
 int SDIFMatrix::Write(SdifFileT* file)
 {
     int SizeFrameW = 0;
-    int nrows=mInter->GetNbRow();
-    int ncols=mInter->GetNbCol();
+    int nrows=mInter->GetNbRows();
+    int ncols=mInter->GetNbCols();
 
     // SdifDataTypeET  type  = SdifFCurrDataType(file);
    
@@ -326,39 +332,10 @@ void SDIFMatrix::Print()
 }
 
 
-
-
-/* an other method to get value : */
-int SDIFMatrix::GetInt(int i, int j)
-{
-    return mInter->GetInt(i, j);
-}
-
-float SDIFMatrix::GetFloat(int i, int j)
-{
-    return mInter->GetFloat(i, j);
-}
-
-double SDIFMatrix::GetDouble(int i, int j)
-{
-    return mInter->GetDouble(i, j);
-}
-
-/* to get number of rows and columns*/
-int SDIFMatrix::GetNbCols() const
-{
-    return mInter->GetNbCol();
-}
-
-int SDIFMatrix::GetNbRows() const
-{
-    return mInter->GetNbRow();
-}
-
 /* to get the size of matrix in sdif file including padding */
 int SDIFMatrix::GetSize() const
 {
-    return SdifSizeOfMatrix(mType, mInter->GetNbCol(), mInter->GetNbRow());
+    return SdifSizeOfMatrix(mType, mInter->GetNbCols(), mInter->GetNbRows());
 }
 
 /* to get the SdifDataType of the matrix */

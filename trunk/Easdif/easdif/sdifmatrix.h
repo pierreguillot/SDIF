@@ -33,9 +33,12 @@
  * 
  * 
  * 
- * $Id: sdifmatrix.h,v 1.19 2004-05-04 14:56:56 roebel Exp $ 
+ * $Id: sdifmatrix.h,v 1.20 2004-07-21 13:27:22 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.19  2004/05/04 14:56:56  roebel
+ * Reorganized documentation.
+ *
  * Revision 1.18  2004/03/19 22:09:50  roebel
  * Version 0.8.3: Added new methods to set marix signatures.
  *
@@ -368,13 +371,13 @@ public:
  * \ingroup membmat 
  * get the number of rows of the matrix
  */
-    int GetNbRows() const;
+  int GetNbRows() const {return mInter->GetNbRows();};
 
 /** 
  * \ingroup membmat
  * get the number of columns of the matrix
  */
-    int GetNbCols() const;
+    int GetNbCols() const {return mInter->GetNbRows();};
 
   /**
    * \ingroup membmat 
@@ -433,7 +436,8 @@ public:
  * 
  * @return the value
  */
-    int GetInt(int i, int j);
+    int GetInt(int i, int j) const {return mInter->GetInt(i, j);};
+
 
 /**
  * \ingroup valmat  
@@ -443,7 +447,7 @@ public:
  * 
  * @return the value
  */
-    float GetFloat(int i, int j);
+  float GetFloat(int i, int j)const {    return mInter->GetFloat(i, j);}
 
 /**
  * \ingroup valmat  
@@ -454,7 +458,8 @@ public:
  * 
  * @return the value
  */
-    double GetDouble(int i, int j);
+  double GetDouble(int i, int j) const {   return mInter->GetDouble(i, j);}
+
 
   /** 
    * \ingroup valmat 
@@ -483,6 +488,8 @@ public:
     value = mInter->GetInt(i, j);
   }
 
+
+
   // std::string Get() ??? exception when not string matrix?
   void Get(std::string& value)
     throw(SDIFMatrixDataError)
@@ -496,6 +503,36 @@ public:
     for(int ii=0;ii<GetNbRows();++ii)
       value.append(1,static_cast<char>(GetInt(ii,0)));
 
+  }
+
+
+  /**
+   * \ingroup valmat
+   * getting an entire row 
+   * 
+   * @param out  pointer to memory holding at least GetNbCols() elements
+   * @param irow row index
+   * 
+   */
+
+  template <class TT>
+  void GetRow(TT* out,int irow) const throw (SDIFArrayPosition) {
+    mInter->GetRow(out,irow);
+    return;
+  }
+
+  /**
+   * \ingroup valmat
+   * getting an entire column
+   * 
+   * @param out  pointer to memory holding at least GetNbRows() elements
+   * @param icol row index
+   * 
+   */
+  template <class TT>
+  void GetCol(TT* out,int icol) const throw (SDIFArrayPosition){
+    mInter->GetCol(out,icol);
+    return;
   }
 
 
