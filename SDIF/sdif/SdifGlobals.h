@@ -13,7 +13,19 @@
 
 #define _SdifLibraryVersion "1.00"
 #define _SdifTypesVersion   "1.00"
-#define _SdifTypesFileName  "SdifTypes.STYP"
+
+
+
+/* _SdifEnvVar : Environnement variable which contains the name
+ * of the file which contains predefined types (the name contains the path).
+ * _SdifEnvVar is used in SdifFile.c SdifGenInit, the user can
+ * reference predefined types by this envvar name.
+ */
+#define _SdifEnvVar "SDIFTYPES"
+
+/* Default predefined types : _SdifTypesFileName see SdifFile.c
+ */
+
 
 #define _SdifGenHashSize 127
 #define _SdifUnknownSize 0xffffffff

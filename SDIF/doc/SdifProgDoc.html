@@ -25,7 +25,7 @@
   <li><a href="#Types de bas niveau, Valeurs précompilées et Variables Globales">
  <strong>Types de bas niveau, Valeurs et Variables Globales</strong></a></li>
   <ul>
-    <li><a href="#Formalisme des noms C">Formalisme des noms C dans la librairie Sdif</a></li>
+    <li><a href="#Formalisme des noms C">Formalisme des noms C dans la librairie SDIF</a></li>
     <li><a href="#Types de bas Niveau">Types de bas Niveau</a></li>
     <ul>
       <li><a href="#Dépendances matériel, système, compilateur">Dépendances matériel, système, compilateur</a></li>
@@ -60,7 +60,7 @@
   <ul>
     <li><a href="#MatrixTypeT">MatrixTypeT</a></li>
     <li><a href="#FrameTypeT">FrameTypeT</a></li>
-    <li><a href="#pseudo-Sdif TextStream">pseudo-Sdif TextStream</a></li>
+    <li><a href="#pseudo-SDIF TextStream">pseudo-SDIF TextStream</a></li>
   </ul>
 </ul>
 
@@ -79,7 +79,7 @@
   <h1>Types de bas niveau, Valeurs et Variables Globales</h1></a>
 
   <ul>
-    <li><a href="#Formalisme des noms C">Formalisme des noms C dans la librairie Sdif</a></li>
+    <li><a href="#Formalisme des noms C">Formalisme des noms C dans la librairie SDIF</a></li>
     <li><a href="#Types de bas Niveau">Types de bas Niveau</a></li>
     <ul>
       <li><a href="#Dépendances matériel, système, compilateur">Dépendances matériel, système, compilateur</a></li>
@@ -100,7 +100,7 @@
     </ul>
   </ul>
 
-  <a name="Formalisme des noms C"><h2>Formalisme des noms C dans la librairie Sdif</h2></a>
+  <a name="Formalisme des noms C"><h2>Formalisme des noms C dans la librairie SDIF</h2></a>
 <p> Sauf exceptions, les noms des types, structures, noeuds, listes... suivent ce formalisme:
 </p>
 
@@ -134,21 +134,21 @@
 <tr><td>Matrix</td>        <td>bloc de données matrice.</td></tr>
 <tr><td>Frame</td>         <td>bloc de données frame.</td></tr>
 <tr><td>Test</td>          <td>test d'erreur haut niveau sur un
-                               fichier Sdif (SdifFileT).</td></tr>
+                               fichier SDIF (SdifFileT).</td></tr>
 <tr><td>File</td>          <td>fonctionnalité de haut niveau sur
                                des instances de SdifFileT.</td></tr>
-<tr><td>Get et Put</td>    <td>lecture et écriture communes aux fichiers Sdif binaires
-                               et aux fichiers pseudo-Sdif textes. Ce sont aussi les
+<tr><td>Get et Put</td>    <td>lecture et écriture communes aux fichiers SDIF binaires
+                               et aux fichiers pseudo-SDIF textes. Ce sont aussi les
                                lectures et les écritures de certaines structures. </td></tr>
 <tr><td>Read et Write</td> <td>lecture et écriture exclusivement
-                               sur fichiers Sdif binaires.</td></tr>
-<tr><td>Print</td>         <td>écriture texte. SdifFPrint pour un fichier pseudo-Sdif et SdifPrint
+                               sur fichiers SDIF binaires.</td></tr>
+<tr><td>Print</td>         <td>écriture texte. SdifFPrint pour un fichier pseudo-SDIF et SdifPrint
                                pour des sorties sur stdout ou stderr (débugage).</td></tr>
-<tr><td>Scan</td>          <td>lecture exclusivement sur fichiers pseudo-Sdif textes.</td></tr>
+<tr><td>Scan</td>          <td>lecture exclusivement sur fichiers pseudo-SDIF textes.</td></tr>
 <tr><td>TextConv</td>      <td>conversion de texte à binaire.</td></tr>
 <tr><td>ConvToText</td>    <td>conversion de binaire à texte.</td></tr>
 <tr><td>All</td>           <td>tous les éléments d'un certain type dans 1 niveau de structure
-                              de fichier Sdif (ex AllMatrix : toutes les matrices d'1 frame).</td></tr>
+                              de fichier SDIF (ex AllMatrix : toutes les matrices d'1 frame).</td></tr>
 <tr><td>One</td>           <td>1 seul élément parmi une succession d'éléments de même sorte.</td></tr>
 <tr><td>TimePosition</td>  <td>position disque par rapport au temps.</td></tr>
 <tr><td>Create</td>        <td>construction d'un pointeur sur élément.</td></tr>
@@ -227,7 +227,7 @@ machines 64 bits).
   <li>sizeof(float)  == 4,</li>
   <li>sizeof(double) == 8.</li>
 </ul>
- La librairie Sdif ne fait pas la vérification de ces égalités mais elles
+ La librairie SDIF ne fait pas la vérification de ces égalités mais elles
  sont en général vraies pour des OS 32 et 64 bits.
 </p>
 
@@ -436,8 +436,8 @@ typedef struct SdifHashTableS
            <h3>Type de Machine gSdifMachineType</h3></a>
 
 <p> Le type de la machine (BigEndian ou LittleEndian) est détermineé par
- la librairie Sdif à l'exécution d'un programme et non en précompilation
- des sources sdif. Ainsi, on a une variable globale <code>gSdifMachineType</code>
+ la librairie SDIF à l'exécution d'un programme et non en précompilation
+ des sources SDIF. Ainsi, on a une variable globale <code>gSdifMachineType</code>
  accessible partout. Sa valeur est d'un type énuméré  <code>SdifMachineEnum</code>
  qui propose plusieurs type de machines (SdifRWLowLevel.h). Une fois que cette
  variable est affectée, il n'est plus nécessaire de la modifier. La fonction
@@ -532,19 +532,19 @@ extern char gSdifErrorMess[_SdifStringLen];
     </ul>
   </ul>
 
-<p> La librairie permet de contrôler plusieurs fichiers Sdif en lecture ou écriture
+<p> La librairie permet de contrôler plusieurs fichiers SDIF en lecture ou écriture
  simultanément. Ils sont représentés par une structure de haut niveau
  <code>SdifFileS</code> défini dans SdifFileStruct.h. Ils ont en commun la base
  des types prédéfinis (qui est elle-même considérée comme une structure SdifFileT).
  Ils ont chacun :
 <ul>
-  <li>Un nom de fichier Sdif (même s'il n'existe pas physiquement).</li>
+  <li>Un nom de fichier SDIF (même s'il n'existe pas physiquement).</li>
   <li>Une liste de tables de Name Values (NameValues).</li>
   <li>Une table des types de matrices utilisées (MatrixTypesTable).</li>
   <li>Une table des types de frames utilisées (FrameTypesTable).</li>
   <li>Une table (liste) de Stream ID (StreamIDsTable).</li>
-  <li>Un flot Sdif binaire de lecture ou d'écriture (Stream).</li>
-  <li>Un flot pseudo-Sdif text (TextStream) associé à un nom (TextStreamName).</li>
+  <li>Un flot SDIF binaire de lecture ou d'écriture (Stream).</li>
+  <li>Un flot pseudo-SDIF text (TextStream) associé à un nom (TextStreamName).</li>
   <li>Un mode d'ouverture: écriture, lecture ou lecture texte seulement (Mode).</li>
   <li>Une signature courante (CurrSignature).</li>
   <li>Une entête de frame courante (CurrFramH).</li>
@@ -556,8 +556,8 @@ extern char gSdifErrorMess[_SdifStringLen];
 
 <ul>
   <li> les tables comme une base de données (bdd) des informations d'entête du fichier,</li>
-  <li> Stream comme le fichier Sdif binaire,</li>
-  <li> TextStream comme le fichier de transfert de Sdif en texte ou de texte en Sdif.</li>
+  <li> Stream comme le fichier SDIF binaire,</li>
+  <li> TextStream comme le fichier de transfert de SDIF en texte ou de texte en SDIF.</li>
 </ul>
 
  La bdd permet de récupérer des paramètres ou d'en ajouter à tout moment,
@@ -617,7 +617,7 @@ Table contenant tous les Stream IDs associés à un fichier.
 <p> L'indexation est par l'entier <code>numID</code> des Stream IDs.
  La taille de la table de hashage est 1, donc il y a continuellement colision,
  il s'agit ainsi d'une liste triée par les IDs. Ceci uniquement pour que les
- fichiers sdif est ses Stream IDs triés. Aussi, pour des renumérotations des IDs,
+ fichiers SDIF est ses Stream IDs triés. Aussi, pour des renumérotations des IDs,
  on pourrait préférer cette structure triée.
 </p>
 <p> Les données de la table sont de type <code>SdifStreamIDT*</code> dont
@@ -630,7 +630,7 @@ Table contenant tous les Stream IDs associés à un fichier.
 
 
 <p>Variable globale: <code>SdifFileT *gSdifPredefinedTypes</code><br>
- Les types prédéfinis de Sdif sont interprétés par la librairie au même
+ Les types prédéfinis de SDIF sont interprétés par la librairie au même
  titre que les types spécifiques à un fichier. Ceci pour deux raisons:
 <ul>
   <li>Les types spécifiques peuvent être des complétions des types prédéfinis.</li>
@@ -805,12 +805,12 @@ struct SdifFrameTypeS
 </p>
 
 
-    <a name="pseudo-Sdif TextStream"><h2>pseudo-Sdif TextStream</h2></a>
+    <a name="pseudo-SDIF TextStream"><h2>pseudo-SDIF TextStream</h2></a>
 
-<p> Pour pouvoir créer manuellement et lire des fichiers Sdif, la librairie possède
- une gestion d'un format pseudo-Sdif texte. Toutes les données d'un fichier
- Sdif sont convertibles en texte exceptés les tailles de chunks. Les chunks
- ASCII ont  un contenu identique pour les fichiers Sdif binaires et les fichiers
+<p> Pour pouvoir créer manuellement et lire des fichiers SDIF, la librairie possède
+ une gestion d'un format pseudo-SDIF texte. Toutes les données d'un fichier
+ SDIF sont convertibles en texte exceptés les tailles de chunks. Les chunks
+ ASCII ont  un contenu identique pour les fichiers SDIF binaires et les fichiers
  texte
 </p>
 </body>

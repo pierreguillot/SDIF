@@ -23,7 +23,7 @@
 #define _SdifBSLittleE 4096
 
 #define _SdifPaddingChar  '\0'
-#define _SdifReservedChars  ",;{}[]:"
+#define _SdifReservedChars  ",;{}:"
 
 typedef enum SdifMachineE
 {

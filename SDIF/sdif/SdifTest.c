@@ -103,8 +103,9 @@ SdifInterpretationError(SdifInterpretationErrorET Error, SdifFileT* SdifF, void 
       /*SdifF->NbOfWarning++;*/
       break;
     case eBadHeader:
-      fprintf(stderr, "Bad Sdif Header : %s\n", ErrorMess);
+      fprintf(stderr, "EXIT: Bad Sdif Header : %s\n", ErrorMess);
       /*SdifF->NbOfWarning++;*/
+      exit(1);
       break;
     case  eRecursiveDetect :
       fprintf(stderr, "Recursive declaration detected : %s\n", ErrorMess);
