@@ -1,6 +1,6 @@
 dnl -*-autoconf-*-  (No, it's an autoconf file!)
 dnl -*-m4-*- (He emacs, it's a m4 file)
-dnl $Id: configure.in,v 1.24 2003-08-06 18:03:03 roebel Exp $
+dnl $Id: configure.in,v 1.25 2003-11-18 18:24:21 roebel Exp $
 dnl
 dnl configure.in		Feb 2003      Axel Roebel
 dnl
@@ -33,6 +33,9 @@ dnl
 dnl
 
 dnl $Log: not supported by cvs2svn $
+dnl Revision 1.24  2003/08/06 18:03:03  roebel
+dnl demo command line follows configured prefix
+dnl
 dnl Revision 1.23  2003/07/10 17:19:42  roebel
 dnl Finished gcc3_2 suffix support for test programs
 dnl
@@ -109,7 +112,7 @@ PACKAGE=Easdif
 
 EASDIF_VERSION_MAJ=0
 EASDIF_VERSION_MIN=7
-EASDIF_VERSION_RELEASE=2
+EASDIF_VERSION_RELEASE=3
 
 VERSION="${EASDIF_VERSION_MAJ}.${EASDIF_VERSION_MIN}.${EASDIF_VERSION_RELEASE}"
 
@@ -152,6 +155,8 @@ AC_MSG_RESULT(CHECK FOR HEADERS)
 AC_HEADER_STDC
 dnl AC_CHECK_HEADERS(SDIF/include/sdif.h)
 
+AC_LANG_CPLUSPLUS
+AC_CHECK_HEADERS(sstream strstream,break)
 
 
 dnl ############################################################
