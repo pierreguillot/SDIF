@@ -33,9 +33,12 @@
  * 
  * 
  * 
- * $Id: sdifmatrix.h,v 1.22 2004-07-27 17:40:19 roebel Exp $ 
+ * $Id: sdifmatrix.h,v 1.23 2004-07-28 14:57:34 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.22  2004/07/27 17:40:19  roebel
+ * Changed include directive to use user path and not system path for sdif.h
+ *
  * Revision 1.21  2004/07/26 14:49:16  roebel
  * Fixed compiler warnings due to implicite casts
  *
@@ -578,6 +581,13 @@ public:
     mInter->Set(i, j, value);
   }
 
+  void Set(int i, int j, const unsigned char value)
+  {
+    mInter->Set(i, j, value);
+  }
+
+
+
   /** 
    * Set matrix type to eText, change matrix size to num. of bytes in
    * string and set string data
@@ -590,6 +600,37 @@ public:
 
       for (i = 0; i < static_cast<int>(str.length()); i++)
 	  mInter->Set(i, 0, static_cast<int>(str[i]));
+  }
+
+
+
+  /**
+   * \ingroup setmat
+   * setting an entire row 
+   * 
+   * @param out  pointer to memory holding at least GetNbCols() elements
+   * @param irow row index
+   * 
+   */
+
+  template <class TT>
+  void SetRow(const TT* out,int irow)  throw (SDIFArrayPosition) {
+    mInter->SetRow(out,irow);
+    return;
+  }
+
+  /**
+   * \ingroup setmat
+   * setting an entire column
+   * 
+   * @param out  pointer to memory holding at least GetNbRows() elements
+   * @param icol row index
+   * 
+   */
+  template <class TT>
+  void SetCol(const TT* out,int icol)  throw (SDIFArrayPosition){
+    mInter->SetCol(out,icol);
+    return;
   }
 
 };

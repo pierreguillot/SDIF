@@ -33,9 +33,13 @@
  * 
  * 
  * 
- * $Id: sdifmatrixdata.h,v 1.10 2004-07-27 17:37:54 roebel Exp $ 
+ * $Id: sdifmatrixdata.h,v 1.11 2004-07-28 14:57:34 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.10  2004/07/27 17:37:54  roebel
+ * Changed include directive to use user path and not system path for sdif.h
+ * Properly cast return values in read and write method.
+ *
  * Revision 1.9  2004/07/26 14:49:16  roebel
  * Fixed compiler warnings due to implicite casts
  *
@@ -229,7 +233,7 @@ public:
    * getting an entire row 
    * 
    * @param out  pointer to memory holding at least GetNbCols() elements
-   * @param irow row index
+   * @param irow row index [0,m_Nrows[
    * 
    */
 
@@ -255,7 +259,7 @@ public:
    * getting an entire column
    * 
    * @param out  pointer to memory holding at least GetNbRows() elements
-   * @param icol column index
+   * @param icol column index [0,m_Ncols[
    * 
    */
   template <class TT>
@@ -280,7 +284,7 @@ public:
    * getting an entire column as double
    * 
    * @param out  pointer to memory holding at least GetNbRows() elements
-   * @param icol col index
+   * @param icol column index [0,m_Ncols[
    * 
    */
   void GetCol(double* out,int icol) const throw (SDIFArrayPosition){
@@ -293,7 +297,7 @@ public:
    * getting an entire column as float
    * 
    * @param out  pointer to memory holding at least GetNbRows() elements
-   * @param icol col index
+   * @param icol column index [0,m_Ncols[
    * 
    */
   void GetCol(float* out,int icol) const throw (SDIFArrayPosition){
@@ -306,10 +310,23 @@ public:
    * getting an entire column as int
    * 
    * @param out  pointer to memory holding at least GetNbRows() elements
-   * @param icol col index
+   * @param icol column index [0,m_Ncols[
    * 
    */
   void GetCol(int* out,int icol) const throw (SDIFArrayPosition){
+    _GetCol(out,icol);
+    return;
+  }
+
+  /**
+   * \ingroup getdata
+   * getting an entire column as unsigned char
+   * 
+   * @param out  pointer to memory holding at least GetNbRows() elements
+   * @param icol column index [0,m_Ncols[
+   * 
+   */
+  void GetCol(unsigned char* out,int icol) const throw (SDIFArrayPosition){
     _GetCol(out,icol);
     return;
   }
@@ -320,7 +337,7 @@ public:
    * getting an entire row as double
    * 
    * @param out  pointer to memory holding at least GetNbRows() elements
-   * @param irow row index
+   * @param irow row index [0,m_Nrows[
    * 
    */
   void GetRow(double* out,int irow) const throw (SDIFArrayPosition){
@@ -333,7 +350,7 @@ public:
    * getting an entire row as float
    * 
    * @param out  pointer to memory holding at least GetNbRows() elements
-   * @param irow row index
+   * @param irow row index [0,m_Nrows[
    * 
    */
   void GetRow(float* out,int irow) const throw (SDIFArrayPosition){
@@ -346,10 +363,23 @@ public:
    * getting an entire row as int
    * 
    * @param out  pointer to memory holding at least GetNbRows() elements
-   * @param irow row index
+   * @param irow row index [0,m_Nrows[
    * 
    */
   void GetRow(int* out,int irow) const throw (SDIFArrayPosition){
+    _GetRow(out,irow);
+    return;
+  }
+
+  /**
+   * \ingroup getdata
+   * getting an entire row as unsigned char
+   * 
+   * @param out  pointer to memory holding at least GetNbRows() elements
+   * @param irow row index [0,m_Nrows[
+   * 
+   */
+  void GetRow(unsigned char* out,int irow) const throw (SDIFArrayPosition){
     _GetRow(out,irow);
     return;
   }
@@ -358,10 +388,10 @@ public:
 
 /**
  * \ingroup getdata
- * get the value in double
+ * get the value as double
  * 
- * @param i row index
- * @param j column index
+ * @param i row index [0,m_Nrows[
+ * @param j column index [0,m_Ncols[
  * 
  * @return the value
  */
@@ -372,10 +402,10 @@ public:
 
 /** 
  * \ingroup getdata
- * get the value in float
+ * get the value as float
  * 
- * @param i row index
- * @param j column index
+ * @param i row index [0,m_Nrows[
+ * @param j column index [0,m_Ncols[
  * 
  * @return the value
  */
@@ -386,10 +416,10 @@ public:
 
 /** 
  * \ingroup getdata
- * get the value in int
+ * get the value as int
  * 
- * @param i row index
- * @param j column index
+ * @param i row index [0,m_Nrows[
+ * @param j column index [0,m_Ncols[
  * 
  * @return the value
  */
@@ -397,6 +427,21 @@ public:
 	{	    
 	    return Get<int>(i, j);   
 	}
+
+/** 
+ * \ingroup getdata
+ * get the value as unsigned char
+ * 
+ * @param i row index [0,m_Nrows[
+ * @param j column index [0,m_Ncols[
+ * 
+ * @return the value
+ */
+    unsigned char GetUChar(int i, int j) const
+	{	    
+	    return Get<unsigned char>(i, j);   
+	}
+
 
 /** 
  * \ingroup getdata
@@ -489,19 +534,8 @@ public:
 	{
 	    size_t SizeFrameW = 0;
 	    /* Write matrix data */
-#if 0
-	    for (int row = 0; row < m_Nrows; row++)
-	    {
-		for (int col = 1; col <= m_Ncols; col++)
-		{
-		    T value = static_cast<T>(m_Data[row*m_Ncols+col-1]);
-		    SdifFSetCurrOneRowCol (file, col, value);	   	 
-		}
-		SizeFrameW += SdifFWriteOneRow (file);
-	    }
-#else
 	    SizeFrameW += SdiffWriteMatrix(&m_Data[0],m_Nrows*m_Ncols,file->Stream);
-#endif
+
 	    /* Write matrix padding */
 	    SizeFrameW += SdifFWritePadding(file, SdifFPaddingCalculate (file->Stream, SizeFrameW));
 
@@ -648,8 +682,14 @@ public:
  * @param j 
  * @param value 
  */
-  void Set(int i, int j, const double& value)
+  void Set(int i, int j, double value)
   {
+    if (i<0 || i >= m_Nrows || j >= m_Ncols || j<0)
+      {
+	throw SDIFArrayPosition(eError,
+				"Error in  SDIFMatrixData::Set!!! requested pos is out of range !!!",
+				0,eArrayPosition,__FILE__,__LINE__);
+      }
     m_Data[i*m_Ncols+j] = static_cast<T>(value);
   }
 
@@ -661,8 +701,14 @@ public:
  * @param j 
  * @param value 
  */
-  void Set(int i, int j, const float& value)
+  void Set(int i, int j, float value)
   {
+    if (i<0 || i >= m_Nrows || j >= m_Ncols || j<0)
+      {
+	throw SDIFArrayPosition(eError,
+				"Error in  SDIFMatrixData::Set!!! requested pos is out of range !!!",
+				0,eArrayPosition,__FILE__,__LINE__);
+      }
     m_Data[i*m_Ncols+j] = static_cast<T>(value);
   }
 
@@ -674,9 +720,192 @@ public:
  * @param j 
  * @param value 
  */
-  void Set(int i, int j, const int& value)
+  void Set(int i, int j, int value)
   {
+    if (i<0 || i >= m_Nrows || j >= m_Ncols || j<0)
+      {
+	throw SDIFArrayPosition(eError,
+				"Error in  SDIFMatrixData::Set!!! requested pos is out of range !!!",
+				0,eArrayPosition,__FILE__,__LINE__);
+      }
     m_Data[i*m_Ncols+j] = static_cast<T>(value);
+  }
+
+
+/** 
+ * \ingroup setdata
+ * set a value in the matrix using unsigned char input type
+ * 
+ * @param i 
+ * @param j 
+ * @param value 
+ */
+  void Set(int i, int j, unsigned char value)
+  {
+    if (i<0 || i >= m_Nrows || j >= m_Ncols || j<0)
+      {
+	throw SDIFArrayPosition(eError,
+				"Error in  SDIFMatrixData::Set!!! requested pos is out of range !!!",
+				0,eArrayPosition,__FILE__,__LINE__);
+      }
+    m_Data[i*m_Ncols+j] = static_cast<T>(value);
+  }
+
+
+  /**
+   * \ingroup setdata
+   * setting an entire row 
+   * 
+   * @param out  pointer to memory holding at least  GetNbCols() elements
+   * @param irow row index [0,m_Nrows[
+   * 
+   */
+
+  template <class TT>
+  void _SetRow(const TT* in,int irow)  throw (SDIFArrayPosition) 
+  {
+    if (irow<0 || irow >= m_Nrows)      {
+      throw SDIFArrayPosition(eError,
+			      "Error in  SDIFMatrixData::SetRow!!! requested row is out of range !!!",
+			  0,eArrayPosition,__FILE__,__LINE__);
+
+    }
+    
+    T* start = &m_Data[irow*m_Ncols];
+    T* end   = &m_Data[(irow+1)*m_Ncols];
+    while(start !=end)    *start =  static_cast<T>(*in++) ;
+
+    return;
+  }
+
+  /**
+   * \ingroup setdata
+   * setting an entire column
+   * 
+   * @param out  pointer to memory holding at least  GetNbRows() elements
+   * @param icol column index [0,m_Ncols[
+   * 
+   */
+  template <class TT>
+  void _SetCol(const TT* in,int icol)  throw (SDIFArrayPosition) 
+  {
+    if (icol<0 || icol >= m_Ncols)      {
+      throw SDIFArrayPosition(eError,
+			      "Error in  SDIFMatrixData::SetCol!!! requested column is out of range !!!",
+			  0,eArrayPosition,__FILE__,__LINE__);
+    }
+
+    T* start = &m_Data[icol];
+    T* end   = &m_Data[icol+m_Nrows*m_Ncols];
+    for(;start !=end;start += m_Nrows)   *start =  static_cast<T>(*in++) ;
+
+    return;
+  }
+
+
+  /**
+   * \ingroup setdata
+   * setting an entire column as double
+   * 
+   * @param out  pointer to memory holding at least GetNbRows() elements
+   * @param icol column index [0,m_Ncols[
+   * 
+   */
+  void SetCol(const double* out,int icol)  throw (SDIFArrayPosition){
+    _SetCol(out,icol);
+    return;
+  }
+
+  /**
+   * \ingroup setdata
+   * setting an entire column as float
+   * 
+   * @param out  pointer to memory holding at least GetNbRows() elements
+   * @param icol column index [0,m_Ncols[
+   * 
+   */
+  void SetCol(const float* out,int icol)  throw (SDIFArrayPosition){
+    _SetCol(out,icol);
+    return;
+  }
+
+  /**
+   * \ingroup setdata
+   * setting an entire column as int
+   * 
+   * @param out  pointer to memory holding at least GetNbRows() elements
+   * @param icol column index [0,m_Ncols[
+   * 
+   */
+  void SetCol(const int* out,int icol)  throw (SDIFArrayPosition){
+    _SetCol(out,icol);
+    return;
+  }
+
+  /**
+   * \ingroup setdata
+   * setting an entire column as unsigned char
+   * 
+   * @param out  pointer to memory holding at least GetNbRows() elements
+   * @param icol column index [0,m_Ncols[
+   * 
+   */
+  void SetCol(const unsigned char* out,int icol)  throw (SDIFArrayPosition){
+    _SetCol(out,icol);
+    return;
+  }
+
+
+  /**
+   * \ingroup setdata
+   * setting an entire row as double
+   * 
+   * @param out  pointer to memory holding at least GetNbRows() elements
+   * @param irow row index [0,m_Nrows[
+   * 
+   */
+  void SetRow(const double* out,int irow)  throw (SDIFArrayPosition){
+    _SetRow(out,irow);
+    return;
+  }
+
+  /**
+   * \ingroup setdata
+   * setting an entire row as float
+   * 
+   * @param out  pointer to memory holding at least GetNbRows() elements
+   * @param irow row index [0,m_Nrows[
+   * 
+   */
+  void SetRow(const float* out,int irow)  throw (SDIFArrayPosition){
+    _SetRow(out,irow);
+    return;
+  }
+
+  /**
+   * \ingroup setdata
+   * setting an entire row as int
+   * 
+   * @param out  pointer to memory holding at least GetNbRows() elements
+   * @param irow row index [0,m_Nrows[
+   * 
+   */
+  void SetRow(const int* out,int irow)  throw (SDIFArrayPosition){
+    _SetRow(out,irow);
+    return;
+  }
+
+  /**
+   * \ingroup setdata
+   * setting an entire row as unsigned char
+   * 
+   * @param out  pointer to memory holding at least GetNbRows() elements
+   * @param irow row index [0,m_Nrows[
+   * 
+   */
+  void SetRow(const unsigned char* out,int irow)  throw (SDIFArrayPosition){
+    _SetRow(out,irow);
+    return;
   }
 
 };

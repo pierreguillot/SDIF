@@ -33,9 +33,12 @@
  * 
  * 
  * 
- * $Id: sdifmatrixdatainterface.h,v 1.6 2004-07-27 17:40:19 roebel Exp $ 
+ * $Id: sdifmatrixdatainterface.h,v 1.7 2004-07-28 14:57:34 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.6  2004/07/27 17:40:19  roebel
+ * Changed include directive to use user path and not system path for sdif.h
+ *
  * Revision 1.5  2004/07/21 13:27:17  roebel
  * Added new data accessing functions to read complete columns
  * GetCol(double *,int icol), GetCol(float *,int icol), GetCol(int *,int icol)
@@ -97,13 +100,16 @@ public:
   virtual double GetDouble(int i, int j) const=0;
   virtual float  GetFloat(int i, int j)const=0;
   virtual int    GetInt(int i, int j)const=0;
+  virtual unsigned char    GetUChar(int i, int j)const=0;
 
   virtual void   GetRow(double *,int i)const=0;
   virtual void   GetRow(float *,int i)const=0;
   virtual void   GetRow(int *,int i)const=0;
+  virtual void   GetRow(unsigned char *,int i)const=0;
   virtual void   GetCol(double *,int i)const=0;
   virtual void   GetCol(float *,int i)const=0;
   virtual void   GetCol(int *,int i)const=0;
+  virtual void   GetCol(unsigned char *,int i)const=0;
 
   virtual int    GetNbRows()const=0;
   virtual int    GetNbCols()const=0;
@@ -113,9 +119,20 @@ public:
   virtual void   Clear()=0;
   virtual int    write(SdifFileT* file)=0;
   
-  virtual void   Set(int row, int col, const int& value)=0;
-  virtual void   Set(int row, int col, const float& value)=0;
-  virtual void   Set(int row, int col, const double& value)=0;
+  virtual void   Set(int row, int col, unsigned char value)=0;
+  virtual void   Set(int row, int col, int    value)=0;
+  virtual void   Set(int row, int col, float  value)=0;
+  virtual void   Set(int row, int col, double  value)=0;
+
+  virtual void   SetRow(const double *,int i)=0;
+  virtual void   SetRow(const float *,int i)=0;
+  virtual void   SetRow(const int *,int i)=0;
+  virtual void   SetRow(const unsigned char *,int i)=0;
+  virtual void   SetCol(const double *,int i)=0;
+  virtual void   SetCol(const float *,int i)=0;
+  virtual void   SetCol(const int *,int i)=0;
+  virtual void   SetCol(const unsigned char *,int i)=0;
+
   
   virtual SDIFMatrixDataInterface * clone()=0;
 
