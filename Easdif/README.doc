@@ -1,0 +1,7 @@
+The programmer documentation of the Easdif library can either be 
+downloaded from http://www/ircam.fr/sdif or if doxygen is installed
+may be generated from the local sources by means of calling
+
+> make doc
+
+in a configured source directory.
