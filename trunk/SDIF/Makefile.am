@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.18 2003-04-09 12:28:25 roebel Exp $
+# $Id: Makefile.am,v 1.19 2003-04-09 16:36:11 roebel Exp $
 #
 # ./Makefile.am		September 2000			Patrice Tisserand
 #
@@ -30,6 +30,10 @@
 
 
 # $Log: not supported by cvs2svn $
+# Revision 1.18  2003/04/09 12:28:25  roebel
+# Changed default configuration back to enable-shared but added
+# README.MacOSX to announce problems with shared libraries to users.
+#
 # Revision 1.17  2003/04/06 16:28:57  roebel
 # Added to CVS
 #
@@ -168,16 +172,11 @@ EXTRA_PUBLISH     = README COPYING AUTHORS INSTALL ChangeLog #  doc
 # todo: configure PUBLISH_HOST
 PUBLISH_DIR       = sdif/download
 PUBLISH_FILES     = $(PUBLISH_FILE) $(PUBLISH_RPM) $(EXTRA_PUBLISH)
+PUBLISH_HOST      = www.ircam.fr
+PUBLISH_USER      = wwwas
 
 publish-ftp:	# (experimental)
-		cat <<END_OF_FTP_COMMANDS \
-$$< \
-$$< \
-cd $(PUBLISH_DIR) \
-mput $(PUBLISH_FILES) \
-END_OF_FTP_COMMANDS \
-		| ftp $(PUBLISH_HOST)
-
+	echo -e put $(PUBLISH_FILES)  | ncftp -u$(PUBLISH_USER) -p$(PW) ftp://$(PUBLISH_HOST)/$(PUBLISH_DIR)
 
 
 # tag the cvsrepository with the current version 
