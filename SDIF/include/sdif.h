@@ -1,8 +1,11 @@
-/* $Id: sdif.h,v 1.18 2002-08-13 10:52:56 schwarz Exp $
+/* $Id: sdif.h,v 1.19 2002-08-27 10:51:30 schwarz Exp $
  *
  * This file contains type declaration of variables used in SDIF library.
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.18  2002/08/13 10:52:56  schwarz
+ * Add SdifFReadNextSelectedFrameHeader (from SdifHighLevel.h).
+ *
  * Revision 1.17  2002/08/05 14:22:42  roebel
  * Added support to replace a selection.
  *
@@ -84,7 +87,7 @@
  * Revision 1.1.2.1  2000/08/21  13:07:41  tisseran
  * *** empty log message ***
  *
- * $Date: 2002-08-13 10:52:56 $
+ * $Date: 2002-08-27 10:51:30 $
  *
  */
 
@@ -100,7 +103,7 @@ extern "C" {
 #endif
 
 
-static const char _sdif_h_cvs_revision_ [] = "$Id: sdif.h,v 1.18 2002-08-13 10:52:56 schwarz Exp $";
+static const char _sdif_h_cvs_revision_ [] = "$Id: sdif.h,v 1.19 2002-08-27 10:51:30 schwarz Exp $";
 
 
 #include <stdio.h>
@@ -171,6 +174,36 @@ struct SdifBlockListS
 };
 
 
+/*
+//FUNCTION GROUP: File positioning
+*/
+
+/* SdifFile.c */
+
+/*DOC:
+  Truncate file at current position
+*/
+int SdifFTruncate(SdifFileT *file);
+
+
+/* Give documentation and fake prototype for positioning macros.
+   Cocoon ignores the #if 0.
+*/
+#if 0
+
+/*DOC:
+  Return position in file.
+  SdiffPosT is actually long.
+ */
+int SdiffGetPos(SdifFileT *file, SdiffPosT *pos);
+
+/*DOC:
+  Set absolute position in file.
+  SdiffPosT is actually long.
+ */
+int SdiffSetPos(SdifFileT *file, SdiffPosT *pos);
+
+#endif	/* if 0 */
 
 
 /* to do fpos_t compatible on MacinTosh */
@@ -200,6 +233,7 @@ struct SdifBlockListS
 #   define SdiffGetPos(f,p)	((*(p) = ftell(f)) == -1  ?  -1  :  0)
 #   define SdiffSetPos(f,p)	fseek(f, (long)(*(p)), SEEK_SET) 
 #endif
+
 
 
 
@@ -2697,14 +2731,16 @@ char		   *SdifStreamIDEntryGetTreeWay	(SdifStreamIDT *SID);
 
 
 
-#define _SdifStringGranule 128 /* Default memory size allocated for string */
+/*
+//FUNCTION GROUP: Sdif String Handling
+*/
 
+/* SdifString.h */
 
 /* Function declaration */
 
 /*DOC:
   Make a memory allocation for a SdifStringT structure.
-  The size for the string is defined in SdifString.h; define _SdifStringGranule 128.
 */
 SdifStringT * SdifStringNew(void);
 
@@ -2720,7 +2756,7 @@ void SdifStringFree(SdifStringT * SdifString);
   Manage memory reallocation.
   Return a boolean for the succes of the function's call.
 */
-int SdifStringAppend(SdifStringT * SdifString ,char *strToAppend);
+int SdifStringAppend(SdifStringT * SdifString, const char *strToAppend);
 
 
 /*DOC:
