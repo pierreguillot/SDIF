@@ -1,6 +1,11 @@
-# $Id: Makefile,v 1.5 2000-08-17 14:34:45 schwarz Exp $
+# $Id: Makefile,v 1.6 2000-08-22 16:19:54 schwarz Exp $
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.5  2000/08/17  14:34:45  schwarz
+# HTML table of contents is generated!  Use file index.html to get
+# the generated navigation frame toc.html and sdiftypes.html.
+# More HTML tags copied through.
+#
 # Revision 1.4  2000/08/09  14:43:48  schwarz
 # Put all SDIF types into XML format.  Lots of descriptions still missing.
 # Full "about this document" info.
@@ -19,11 +24,17 @@ endif
 
 PERL		= perl $(PERLFLAGS)
 
+# where to generate html
+HTMLDIR		= ../doc/standard
+htmldoc		= $(HTMLDIR)/types-doc.html
+htmltoc		= $(HTMLDIR)/types-toc.html
+
+genfiles	= sdiftypes.styp sdiftypes.html toc.html $(htmldoc) $(htmltoc)
 
 .DELETE_ON_ERROR:	# remove targets when the command failed
 
 
-all:		sdiftypes.styp sdiftypes.html
+all:		$(genfiles)
 new:		clean all
 
 sdiftypes.styp:	sdiftypes.xml xmltostyp.pl
@@ -31,13 +42,19 @@ sdiftypes.styp:	sdiftypes.xml xmltostyp.pl
 
 sdiftypes.html:	sdiftypes.xml xmltohtml.pl
 		$(PERL) xmltohtml.pl $< $@ toc.html
-#		 generate in doc?
+
+# generate in doc
+$(htmldoc):	sdiftypes.xml xmltohtml.pl
+		$(PERL) xmltohtml.pl $< $@ $(htmltoc)
 
 install:	sdiftypes.styp
 #		cp -p ...
 
 clean:
-		rm -f sdiftypes.styp sdiftypes.html
+		rm -f $(genfiles)
+
+reload:		sdiftypes.html $(htmldoc)
+		netscape -remote 'reload()'
 
 show:		sdiftypes.html
 		netscape -remote 'reload(file:$(PWD)/$<)'
