@@ -34,9 +34,13 @@
  * 
  * 
  * 
- * $Id: sdifexception.h,v 1.5 2003-11-25 10:57:05 roebel Exp $ 
+ * $Id: sdifexception.h,v 1.6 2003-12-05 13:53:14 ellis Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.5  2003/11/25 10:57:05  roebel
+ * Added missing namespace qualifier for exceptions.
+ * Added missing exception specification to exception deconstructor.
+ *
  * Revision 1.4  2003/11/18 18:18:40  roebel
  * Reorganized exception handling and interface such that
  * sdifexcpetions are now derived from standard exception and
@@ -409,7 +413,7 @@ ExceptionThrower(int errnum,
 		 SdifErrorT* error, 
 		 char* sourcefilename, 
 		 int sourcefileline);
-};
 
+}
 } // end of namespace Easdif
 #endif
