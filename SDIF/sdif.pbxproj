@@ -1,0 +1,1312 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 38;
+	objects = {
+		0F5C28A5047E732E006640BC = {
+			children = (
+				0F5C28AB047E7385006640BC,
+				0F5C28AD047E73A1006640BC,
+				0F5C28AE047E73B1006640BC,
+			);
+			isa = PBXGroup;
+			refType = 4;
+		};
+		0F5C28A7047E732E006640BC = {
+			buildRules = (
+			);
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+			};
+			isa = PBXBuildStyle;
+			name = Development;
+		};
+		0F5C28A8047E732E006640BC = {
+			buildRules = (
+			);
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+			};
+			isa = PBXBuildStyle;
+			name = Deployment;
+		};
+		0F5C28A9047E732E006640BC = {
+			buildStyles = (
+				0F5C28A7047E732E006640BC,
+				0F5C28A8047E732E006640BC,
+			);
+			isa = PBXProject;
+			mainGroup = 0F5C28A5047E732E006640BC;
+			projectDirPath = "";
+			targets = (
+				0F5C28FC047E7417006640BC,
+			);
+		};
+		0F5C28AB047E7385006640BC = {
+			children = (
+				0F5C28AF047E7402006640BC,
+				0F5C28B0047E7402006640BC,
+				0F5C28B1047E7402006640BC,
+				0F5C28B2047E7402006640BC,
+				0F5C28B3047E7402006640BC,
+				0F5C28B4047E7402006640BC,
+				0F5C28B5047E7402006640BC,
+				0F5C28B6047E7402006640BC,
+				0F5C28B7047E7402006640BC,
+				0F5C28B8047E7402006640BC,
+				0F5C28B9047E7402006640BC,
+				0F5C28BA047E7402006640BC,
+				0F5C28BB047E7402006640BC,
+				0F5C28BC047E7402006640BC,
+				0F5C28BD047E7402006640BC,
+				0F5C28BE047E7402006640BC,
+				0F5C28BF047E7402006640BC,
+				0F5C28C0047E7402006640BC,
+				0F5C28C1047E7402006640BC,
+				0F5C28C2047E7402006640BC,
+				0F5C28C3047E7402006640BC,
+				0F5C28C4047E7402006640BC,
+				0F5C28C5047E7402006640BC,
+				0F5C28C6047E7402006640BC,
+				0F5C28C7047E7402006640BC,
+				0F5C28C8047E7402006640BC,
+				0F5C28C9047E7402006640BC,
+				0F5C28CA047E7402006640BC,
+				0F5C28CB047E7402006640BC,
+				0F5C28CC047E7402006640BC,
+				0F5C28CD047E7402006640BC,
+				0F5C28CE047E7402006640BC,
+				0F5C28CF047E7402006640BC,
+				0F5C28D0047E7402006640BC,
+				0F5C28D1047E7402006640BC,
+				0F5C28D2047E7402006640BC,
+				0F5C28D3047E7402006640BC,
+				0F5C28D4047E7402006640BC,
+				0F5C28D5047E7402006640BC,
+				0F5C28D6047E7402006640BC,
+				0F5C28D7047E7402006640BC,
+				0F5C28D8047E7402006640BC,
+				0F5C28D9047E7402006640BC,
+				0F5C28DA047E7402006640BC,
+				0F5C28DB047E7402006640BC,
+				0F5C28DC047E7402006640BC,
+				0F5C28DD047E7402006640BC,
+				0F5C28DE047E7402006640BC,
+				0F5C28DF047E7402006640BC,
+				0F5C28E0047E7402006640BC,
+				0F5C28E1047E7402006640BC,
+				0F5C28E2047E7402006640BC,
+				0F5C28E3047E7402006640BC,
+				0F5C28E4047E7402006640BC,
+				0F5C28E5047E7402006640BC,
+				0F5C28E6047E7402006640BC,
+				0F5C28E7047E7402006640BC,
+				0F5C28E8047E7402006640BC,
+				0F5C28E9047E7402006640BC,
+				0F5C28EA047E7402006640BC,
+				0F5C28EB047E7402006640BC,
+				0F5C28EC047E7402006640BC,
+				0F5C28ED047E7402006640BC,
+				0F5C28EE047E7402006640BC,
+				0F5C28EF047E7402006640BC,
+				0F5C28F0047E7402006640BC,
+				0F5C28F1047E7402006640BC,
+				0F5C28F2047E7402006640BC,
+				0F5C28F3047E7402006640BC,
+				0F5C28F4047E7402006640BC,
+				0F5C28F5047E7402006640BC,
+				0F5C28F6047E7402006640BC,
+				0F5C2947047E7471006640BC,
+			);
+			isa = PBXGroup;
+			name = Sources;
+			refType = 4;
+		};
+		0F5C28AD047E73A1006640BC = {
+			children = (
+				0F5C2958047E760E006640BC,
+			);
+			isa = PBXGroup;
+			name = Resources;
+			refType = 4;
+		};
+		0F5C28AE047E73B1006640BC = {
+			children = (
+				0F5C28FD047E7417006640BC,
+			);
+			isa = PBXGroup;
+			name = Products;
+			path = "";
+			refType = 4;
+		};
+		0F5C28AF047E7402006640BC = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = config.h;
+			path = sdif/config.h;
+			refType = 4;
+		};
+		0F5C28B0047E7402006640BC = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = host_architecture.h;
+			path = sdif/host_architecture.h;
+			refType = 4;
+		};
+		0F5C28B1047E7402006640BC = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = preincluded.h;
+			path = sdif/preincluded.h;
+			refType = 4;
+		};
+		0F5C28B2047E7402006640BC = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = project_preinclude.h;
+			path = sdif/project_preinclude.h;
+			refType = 4;
+		};
+		0F5C28B3047E7402006640BC = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = SdifCheck.c;
+			path = sdif/SdifCheck.c;
+			refType = 4;
+		};
+		0F5C28B4047E7402006640BC = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = SdifCheck.h;
+			path = sdif/SdifCheck.h;
+			refType = 4;
+		};
+		0F5C28B5047E7402006640BC = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = SdifConvToText.c;
+			path = sdif/SdifConvToText.c;
+			refType = 4;
+		};
+		0F5C28B6047E7402006640BC = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = SdifConvToText.h;
+			path = sdif/SdifConvToText.h;
+			refType = 4;
+		};
+		0F5C28B7047E7402006640BC = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = SdifErrMess.c;
+			path = sdif/SdifErrMess.c;
+			refType = 4;
+		};
+		0F5C28B8047E7402006640BC = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = SdifErrMess.h;
+			path = sdif/SdifErrMess.h;
+			refType = 4;
+		};
+		0F5C28B9047E7402006640BC = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = SdifError.c;
+			path = sdif/SdifError.c;
+			refType = 4;
+		};
+		0F5C28BA047E7402006640BC = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = SdifError.h;
+			path = sdif/SdifError.h;
+			refType = 4;
+		};
+		0F5C28BB047E7402006640BC = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = SdifFGet.c;
+			path = sdif/SdifFGet.c;
+			refType = 4;
+		};
+		0F5C28BC047E7402006640BC = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = SdifFGet.h;
+			path = sdif/SdifFGet.h;
+			refType = 4;
+		};
+		0F5C28BD047E7402006640BC = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = SdifFile.c;
+			path = sdif/SdifFile.c;
+			refType = 4;
+		};
+		0F5C28BE047E7402006640BC = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = SdifFile.h;
+			path = sdif/SdifFile.h;
+			refType = 4;
+		};
+		0F5C28BF047E7402006640BC = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = SdifFPrint.c;
+			path = sdif/SdifFPrint.c;
+			refType = 4;
+		};
+		0F5C28C0047E7402006640BC = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = SdifFPrint.h;
+			path = sdif/SdifFPrint.h;
+			refType = 4;
+		};
+		0F5C28C1047E7402006640BC = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = SdifFPut.c;
+			path = sdif/SdifFPut.c;
+			refType = 4;
+		};
+		0F5C28C2047E7402006640BC = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = SdifFPut.h;
+			path = sdif/SdifFPut.h;
+			refType = 4;
+		};
+		0F5C28C3047E7402006640BC = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = SdifFrame.c;
+			path = sdif/SdifFrame.c;
+			refType = 4;
+		};
+		0F5C28C4047E7402006640BC = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = SdifFrame.h;
+			path = sdif/SdifFrame.h;
+			refType = 4;
+		};
+		0F5C28C5047E7402006640BC = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = SdifFrameType.c;
+			path = sdif/SdifFrameType.c;
+			refType = 4;
+		};
+		0F5C28C6047E7402006640BC = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = SdifFrameType.h;
+			path = sdif/SdifFrameType.h;
+			refType = 4;
+		};
+		0F5C28C7047E7402006640BC = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = SdifFRead.c;
+			path = sdif/SdifFRead.c;
+			refType = 4;
+		};
+		0F5C28C8047E7402006640BC = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = SdifFRead.h;
+			path = sdif/SdifFRead.h;
+			refType = 4;
+		};
+		0F5C28C9047E7402006640BC = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = SdifFScan.c;
+			path = sdif/SdifFScan.c;
+			refType = 4;
+		};
+		0F5C28CA047E7402006640BC = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = SdifFScan.h;
+			path = sdif/SdifFScan.h;
+			refType = 4;
+		};
+		0F5C28CB047E7402006640BC = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = SdifFWrite.c;
+			path = sdif/SdifFWrite.c;
+			refType = 4;
+		};
+		0F5C28CC047E7402006640BC = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = SdifFWrite.h;
+			path = sdif/SdifFWrite.h;
+			refType = 4;
+		};
+		0F5C28CD047E7402006640BC = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = SdifGlobals.c;
+			path = sdif/SdifGlobals.c;
+			refType = 4;
+		};
+		0F5C28CE047E7402006640BC = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = SdifGlobals.h;
+			path = sdif/SdifGlobals.h;
+			refType = 4;
+		};
+		0F5C28CF047E7402006640BC = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = SdifHard_OS.c;
+			path = sdif/SdifHard_OS.c;
+			refType = 4;
+		};
+		0F5C28D0047E7402006640BC = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = SdifHard_OS.h;
+			path = sdif/SdifHard_OS.h;
+			refType = 4;
+		};
+		0F5C28D1047E7402006640BC = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = SdifHash.c;
+			path = sdif/SdifHash.c;
+			refType = 4;
+		};
+		0F5C28D2047E7402006640BC = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = SdifHash.h;
+			path = sdif/SdifHash.h;
+			refType = 4;
+		};
+		0F5C28D3047E7402006640BC = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = SdifHighLevel.c;
+			path = sdif/SdifHighLevel.c;
+			refType = 4;
+		};
+		0F5C28D4047E7402006640BC = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = SdifHighLevel.h;
+			path = sdif/SdifHighLevel.h;
+			refType = 4;
+		};
+		0F5C28D5047E7402006640BC = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = SdifList.c;
+			path = sdif/SdifList.c;
+			refType = 4;
+		};
+		0F5C28D6047E7402006640BC = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = SdifList.h;
+			path = sdif/SdifList.h;
+			refType = 4;
+		};
+		0F5C28D7047E7402006640BC = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = SdifMatrix.c;
+			path = sdif/SdifMatrix.c;
+			refType = 4;
+		};
+		0F5C28D8047E7402006640BC = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = SdifMatrix.h;
+			path = sdif/SdifMatrix.h;
+			refType = 4;
+		};
+		0F5C28D9047E7402006640BC = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = SdifMatrixType.c;
+			path = sdif/SdifMatrixType.c;
+			refType = 4;
+		};
+		0F5C28DA047E7402006640BC = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = SdifMatrixType.h;
+			path = sdif/SdifMatrixType.h;
+			refType = 4;
+		};
+		0F5C28DB047E7402006640BC = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = SdifMemory.c;
+			path = sdif/SdifMemory.c;
+			refType = 4;
+		};
+		0F5C28DC047E7402006640BC = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = SdifMemory.h;
+			path = sdif/SdifMemory.h;
+			refType = 4;
+		};
+		0F5C28DD047E7402006640BC = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = SdifNameValue.c;
+			path = sdif/SdifNameValue.c;
+			refType = 4;
+		};
+		0F5C28DE047E7402006640BC = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = SdifNameValue.h;
+			path = sdif/SdifNameValue.h;
+			refType = 4;
+		};
+		0F5C28DF047E7402006640BC = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = SdifPreTypes.c;
+			path = sdif/SdifPreTypes.c;
+			refType = 4;
+		};
+		0F5C28E0047E7402006640BC = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = SdifPreTypes.h;
+			path = sdif/SdifPreTypes.h;
+			refType = 4;
+		};
+		0F5C28E1047E7402006640BC = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = SdifPrint.c;
+			path = sdif/SdifPrint.c;
+			refType = 4;
+		};
+		0F5C28E2047E7402006640BC = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = SdifPrint.h;
+			path = sdif/SdifPrint.h;
+			refType = 4;
+		};
+		0F5C28E3047E7402006640BC = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = SdifRWLowLevel.c;
+			path = sdif/SdifRWLowLevel.c;
+			refType = 4;
+		};
+		0F5C28E4047E7402006640BC = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = SdifRWLowLevel.h;
+			path = sdif/SdifRWLowLevel.h;
+			refType = 4;
+		};
+		0F5C28E5047E7402006640BC = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = SdifSelect.c;
+			path = sdif/SdifSelect.c;
+			refType = 4;
+		};
+		0F5C28E6047E7402006640BC = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = SdifSelect.h;
+			path = sdif/SdifSelect.h;
+			refType = 4;
+		};
+		0F5C28E7047E7402006640BC = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = SdifSignatureTab.c;
+			path = sdif/SdifSignatureTab.c;
+			refType = 4;
+		};
+		0F5C28E8047E7402006640BC = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = SdifSignatureTab.h;
+			path = sdif/SdifSignatureTab.h;
+			refType = 4;
+		};
+		0F5C28E9047E7402006640BC = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = SdifStreamID.c;
+			path = sdif/SdifStreamID.c;
+			refType = 4;
+		};
+		0F5C28EA047E7402006640BC = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = SdifStreamID.h;
+			path = sdif/SdifStreamID.h;
+			refType = 4;
+		};
+		0F5C28EB047E7402006640BC = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = SdifString.c;
+			path = sdif/SdifString.c;
+			refType = 4;
+		};
+		0F5C28EC047E7402006640BC = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = SdifString.h;
+			path = sdif/SdifString.h;
+			refType = 4;
+		};
+		0F5C28ED047E7402006640BC = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = SdifTest.c;
+			path = sdif/SdifTest.c;
+			refType = 4;
+		};
+		0F5C28EE047E7402006640BC = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = SdifTest.h;
+			path = sdif/SdifTest.h;
+			refType = 4;
+		};
+		0F5C28EF047E7402006640BC = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = SdifTextConv.c;
+			path = sdif/SdifTextConv.c;
+			refType = 4;
+		};
+		0F5C28F0047E7402006640BC = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = SdifTextConv.h;
+			path = sdif/SdifTextConv.h;
+			refType = 4;
+		};
+		0F5C28F1047E7402006640BC = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = SdifTimePosition.c;
+			path = sdif/SdifTimePosition.c;
+			refType = 4;
+		};
+		0F5C28F2047E7402006640BC = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = SdifTimePosition.h;
+			path = sdif/SdifTimePosition.h;
+			refType = 4;
+		};
+		0F5C28F3047E7402006640BC = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = sdiftypes.h;
+			path = sdif/sdiftypes.h;
+			refType = 4;
+		};
+		0F5C28F4047E7402006640BC = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = SdifVersion.h;
+			path = sdif/SdifVersion.h;
+			refType = 4;
+		};
+		0F5C28F5047E7402006640BC = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = UniversalEnvVar.h;
+			path = sdif/UniversalEnvVar.h;
+			refType = 4;
+		};
+		0F5C28F6047E7402006640BC = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = XpGuiCalls.h;
+			path = sdif/XpGuiCalls.h;
+			refType = 4;
+		};
+		0F5C28F7047E7417006640BC = {
+			buildActionMask = 2147483647;
+			files = (
+				0F5C28FE047E7421006640BC,
+				0F5C28FF047E7422006640BC,
+				0F5C2900047E7422006640BC,
+				0F5C2901047E7423006640BC,
+				0F5C2903047E7424006640BC,
+				0F5C2905047E7425006640BC,
+				0F5C2907047E7426006640BC,
+				0F5C2909047E7427006640BC,
+				0F5C290B047E7428006640BC,
+				0F5C290D047E7429006640BC,
+				0F5C2911047E742D006640BC,
+				0F5C2912047E742E006640BC,
+				0F5C2914047E7430006640BC,
+				0F5C2916047E7431006640BC,
+				0F5C2918047E7433006640BC,
+				0F5C291A047E7434006640BC,
+				0F5C291C047E7436006640BC,
+				0F5C291E047E743A006640BC,
+				0F5C2920047E743B006640BC,
+				0F5C2922047E743C006640BC,
+				0F5C2924047E743E006640BC,
+				0F5C2926047E743F006640BC,
+				0F5C2928047E7441006640BC,
+				0F5C292A047E7443006640BC,
+				0F5C292C047E7444006640BC,
+				0F5C292E047E7445006640BC,
+				0F5C2930047E7448006640BC,
+				0F5C2932047E744A006640BC,
+				0F5C2934047E744C006640BC,
+				0F5C2936047E7454006640BC,
+				0F5C2938047E7455006640BC,
+				0F5C293A047E7457006640BC,
+				0F5C293C047E7458006640BC,
+				0F5C293E047E745A006640BC,
+				0F5C2940047E745B006640BC,
+				0F5C2942047E745D006640BC,
+				0F5C2943047E745D006640BC,
+				0F5C2944047E745F006640BC,
+				0F5C2945047E745F006640BC,
+				0F5C2946047E7460006640BC,
+				0F5C294C047E7471006640BC,
+				0F5C294D047E7471006640BC,
+			);
+			isa = PBXHeadersBuildPhase;
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		0F5C28F8047E7417006640BC = {
+			buildActionMask = 2147483647;
+			files = (
+			);
+			isa = PBXResourcesBuildPhase;
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		0F5C28F9047E7417006640BC = {
+			buildActionMask = 2147483647;
+			files = (
+				0F5C2902047E7423006640BC,
+				0F5C2904047E7425006640BC,
+				0F5C2906047E7426006640BC,
+				0F5C2908047E7427006640BC,
+				0F5C290A047E7428006640BC,
+				0F5C290C047E7429006640BC,
+				0F5C290F047E742B006640BC,
+				0F5C2910047E742C006640BC,
+				0F5C2913047E742F006640BC,
+				0F5C2915047E7430006640BC,
+				0F5C2917047E7432006640BC,
+				0F5C2919047E7433006640BC,
+				0F5C291B047E7435006640BC,
+				0F5C291D047E7439006640BC,
+				0F5C291F047E743A006640BC,
+				0F5C2921047E743B006640BC,
+				0F5C2923047E743D006640BC,
+				0F5C2925047E743E006640BC,
+				0F5C2927047E7440006640BC,
+				0F5C2929047E7442006640BC,
+				0F5C292B047E7443006640BC,
+				0F5C292D047E7445006640BC,
+				0F5C292F047E7447006640BC,
+				0F5C2931047E7449006640BC,
+				0F5C2933047E744B006640BC,
+				0F5C2935047E744D006640BC,
+				0F5C2937047E7454006640BC,
+				0F5C2939047E7456006640BC,
+				0F5C293B047E7457006640BC,
+				0F5C293D047E7458006640BC,
+				0F5C293F047E745A006640BC,
+				0F5C2941047E745C006640BC,
+			);
+			isa = PBXSourcesBuildPhase;
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		0F5C28FA047E7417006640BC = {
+			buildActionMask = 2147483647;
+			files = (
+			);
+			isa = PBXFrameworksBuildPhase;
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		0F5C28FB047E7417006640BC = {
+			buildActionMask = 2147483647;
+			files = (
+			);
+			isa = PBXRezBuildPhase;
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		0F5C28FC047E7417006640BC = {
+			buildPhases = (
+				0F5C28F7047E7417006640BC,
+				0F5C28F8047E7417006640BC,
+				0F5C28F9047E7417006640BC,
+				0F5C28FA047E7417006640BC,
+				0F5C28FB047E7417006640BC,
+			);
+			buildSettings = {
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				FRAMEWORK_VERSION = A;
+				OPTIMIZATION_CFLAGS = "-O3";
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				OTHER_LIBTOOL_FLAGS = "";
+				OTHER_REZFLAGS = "";
+				PRINCIPAL_CLASS = "";
+				PRODUCT_NAME = SDIF;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = "-Wmost -Wno-four-char-constants -Wno-unknown-pragmas";
+				WRAPPER_EXTENSION = framework;
+			};
+			dependencies = (
+			);
+			isa = PBXFrameworkTarget;
+			name = SDIF;
+			productInstallPath = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+			productName = SDIF;
+			productReference = 0F5C28FD047E7417006640BC;
+			productSettingsXML = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
+<!DOCTYPE plist PUBLIC \"-//Apple Computer//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">
+<plist version=\"1.0\">
+<dict>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>English</string>
+	<key>CFBundleExecutable</key>
+	<string></string>
+	<key>CFBundleGetInfoString</key>
+	<string></string>
+	<key>CFBundleIconFile</key>
+	<string></string>
+	<key>CFBundleIdentifier</key>
+	<string></string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleName</key>
+	<string></string>
+	<key>CFBundlePackageType</key>
+	<string>FMWK</string>
+	<key>CFBundleShortVersionString</key>
+	<string></string>
+	<key>CFBundleSignature</key>
+	<string>????</string>
+	<key>CFBundleVersion</key>
+	<string>0.0.1d1</string>
+</dict>
+</plist>
+";
+			shouldUseHeadermap = 0;
+		};
+		0F5C28FD047E7417006640BC = {
+			isa = PBXFrameworkReference;
+			path = SDIF.framework;
+			refType = 3;
+		};
+		0F5C28FE047E7421006640BC = {
+			fileRef = 0F5C28AF047E7402006640BC;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		0F5C28FF047E7422006640BC = {
+			fileRef = 0F5C28B0047E7402006640BC;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		0F5C2900047E7422006640BC = {
+			fileRef = 0F5C28B1047E7402006640BC;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		0F5C2901047E7423006640BC = {
+			fileRef = 0F5C28B2047E7402006640BC;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		0F5C2902047E7423006640BC = {
+			fileRef = 0F5C28B3047E7402006640BC;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		0F5C2903047E7424006640BC = {
+			fileRef = 0F5C28B4047E7402006640BC;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		0F5C2904047E7425006640BC = {
+			fileRef = 0F5C28B5047E7402006640BC;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		0F5C2905047E7425006640BC = {
+			fileRef = 0F5C28B6047E7402006640BC;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		0F5C2906047E7426006640BC = {
+			fileRef = 0F5C28B7047E7402006640BC;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		0F5C2907047E7426006640BC = {
+			fileRef = 0F5C28B8047E7402006640BC;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		0F5C2908047E7427006640BC = {
+			fileRef = 0F5C28B9047E7402006640BC;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		0F5C2909047E7427006640BC = {
+			fileRef = 0F5C28BA047E7402006640BC;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		0F5C290A047E7428006640BC = {
+			fileRef = 0F5C28BB047E7402006640BC;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		0F5C290B047E7428006640BC = {
+			fileRef = 0F5C28BC047E7402006640BC;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		0F5C290C047E7429006640BC = {
+			fileRef = 0F5C28BD047E7402006640BC;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		0F5C290D047E7429006640BC = {
+			fileRef = 0F5C28BE047E7402006640BC;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		0F5C290F047E742B006640BC = {
+			fileRef = 0F5C28BF047E7402006640BC;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		0F5C2910047E742C006640BC = {
+			fileRef = 0F5C28C1047E7402006640BC;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		0F5C2911047E742D006640BC = {
+			fileRef = 0F5C28C0047E7402006640BC;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		0F5C2912047E742E006640BC = {
+			fileRef = 0F5C28C2047E7402006640BC;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		0F5C2913047E742F006640BC = {
+			fileRef = 0F5C28C3047E7402006640BC;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		0F5C2914047E7430006640BC = {
+			fileRef = 0F5C28C4047E7402006640BC;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		0F5C2915047E7430006640BC = {
+			fileRef = 0F5C28C5047E7402006640BC;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		0F5C2916047E7431006640BC = {
+			fileRef = 0F5C28C6047E7402006640BC;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		0F5C2917047E7432006640BC = {
+			fileRef = 0F5C28C7047E7402006640BC;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		0F5C2918047E7433006640BC = {
+			fileRef = 0F5C28C8047E7402006640BC;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		0F5C2919047E7433006640BC = {
+			fileRef = 0F5C28C9047E7402006640BC;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		0F5C291A047E7434006640BC = {
+			fileRef = 0F5C28CA047E7402006640BC;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		0F5C291B047E7435006640BC = {
+			fileRef = 0F5C28CB047E7402006640BC;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		0F5C291C047E7436006640BC = {
+			fileRef = 0F5C28CC047E7402006640BC;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		0F5C291D047E7439006640BC = {
+			fileRef = 0F5C28CD047E7402006640BC;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		0F5C291E047E743A006640BC = {
+			fileRef = 0F5C28CE047E7402006640BC;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		0F5C291F047E743A006640BC = {
+			fileRef = 0F5C28CF047E7402006640BC;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		0F5C2920047E743B006640BC = {
+			fileRef = 0F5C28D0047E7402006640BC;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		0F5C2921047E743B006640BC = {
+			fileRef = 0F5C28D1047E7402006640BC;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		0F5C2922047E743C006640BC = {
+			fileRef = 0F5C28D2047E7402006640BC;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		0F5C2923047E743D006640BC = {
+			fileRef = 0F5C28D3047E7402006640BC;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		0F5C2924047E743E006640BC = {
+			fileRef = 0F5C28D4047E7402006640BC;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		0F5C2925047E743E006640BC = {
+			fileRef = 0F5C28D5047E7402006640BC;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		0F5C2926047E743F006640BC = {
+			fileRef = 0F5C28D6047E7402006640BC;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		0F5C2927047E7440006640BC = {
+			fileRef = 0F5C28D7047E7402006640BC;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		0F5C2928047E7441006640BC = {
+			fileRef = 0F5C28D8047E7402006640BC;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		0F5C2929047E7442006640BC = {
+			fileRef = 0F5C28D9047E7402006640BC;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		0F5C292A047E7443006640BC = {
+			fileRef = 0F5C28DA047E7402006640BC;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		0F5C292B047E7443006640BC = {
+			fileRef = 0F5C28DB047E7402006640BC;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		0F5C292C047E7444006640BC = {
+			fileRef = 0F5C28DC047E7402006640BC;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		0F5C292D047E7445006640BC = {
+			fileRef = 0F5C28DD047E7402006640BC;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		0F5C292E047E7445006640BC = {
+			fileRef = 0F5C28DE047E7402006640BC;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		0F5C292F047E7447006640BC = {
+			fileRef = 0F5C28DF047E7402006640BC;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		0F5C2930047E7448006640BC = {
+			fileRef = 0F5C28E0047E7402006640BC;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		0F5C2931047E7449006640BC = {
+			fileRef = 0F5C28E1047E7402006640BC;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		0F5C2932047E744A006640BC = {
+			fileRef = 0F5C28E2047E7402006640BC;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		0F5C2933047E744B006640BC = {
+			fileRef = 0F5C28E3047E7402006640BC;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		0F5C2934047E744C006640BC = {
+			fileRef = 0F5C28E4047E7402006640BC;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		0F5C2935047E744D006640BC = {
+			fileRef = 0F5C28E5047E7402006640BC;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		0F5C2936047E7454006640BC = {
+			fileRef = 0F5C28E6047E7402006640BC;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		0F5C2937047E7454006640BC = {
+			fileRef = 0F5C28E7047E7402006640BC;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		0F5C2938047E7455006640BC = {
+			fileRef = 0F5C28E8047E7402006640BC;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		0F5C2939047E7456006640BC = {
+			fileRef = 0F5C28E9047E7402006640BC;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		0F5C293A047E7457006640BC = {
+			fileRef = 0F5C28EA047E7402006640BC;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		0F5C293B047E7457006640BC = {
+			fileRef = 0F5C28EB047E7402006640BC;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		0F5C293C047E7458006640BC = {
+			fileRef = 0F5C28EC047E7402006640BC;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		0F5C293D047E7458006640BC = {
+			fileRef = 0F5C28ED047E7402006640BC;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		0F5C293E047E745A006640BC = {
+			fileRef = 0F5C28EE047E7402006640BC;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		0F5C293F047E745A006640BC = {
+			fileRef = 0F5C28EF047E7402006640BC;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		0F5C2940047E745B006640BC = {
+			fileRef = 0F5C28F0047E7402006640BC;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		0F5C2941047E745C006640BC = {
+			fileRef = 0F5C28F1047E7402006640BC;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		0F5C2942047E745D006640BC = {
+			fileRef = 0F5C28F2047E7402006640BC;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		0F5C2943047E745D006640BC = {
+			fileRef = 0F5C28F3047E7402006640BC;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		0F5C2944047E745F006640BC = {
+			fileRef = 0F5C28F4047E7402006640BC;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		0F5C2945047E745F006640BC = {
+			fileRef = 0F5C28F5047E7402006640BC;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		0F5C2946047E7460006640BC = {
+			fileRef = 0F5C28F6047E7402006640BC;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		0F5C2947047E7471006640BC = {
+			children = (
+				0F5C2949047E7471006640BC,
+				0F5C294A047E7471006640BC,
+			);
+			isa = PBXGroup;
+			path = include;
+			refType = 4;
+		};
+		0F5C2949047E7471006640BC = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = sdif.h;
+			refType = 4;
+		};
+		0F5C294A047E7471006640BC = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = sdif_version.h;
+			refType = 4;
+		};
+		0F5C294C047E7471006640BC = {
+			fileRef = 0F5C2949047E7471006640BC;
+			isa = PBXBuildFile;
+			settings = {
+				ATTRIBUTES = (
+					Public,
+				);
+			};
+		};
+		0F5C294D047E7471006640BC = {
+			fileRef = 0F5C294A047E7471006640BC;
+			isa = PBXBuildFile;
+			settings = {
+				ATTRIBUTES = (
+					Public,
+				);
+			};
+		};
+		0F5C2958047E760E006640BC = {
+			children = (
+				0F5C2959047E760E006640BC,
+			);
+			isa = PBXVariantGroup;
+			name = InfoPlist.strings;
+			path = "";
+			refType = 4;
+		};
+		0F5C2959047E760E006640BC = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = English;
+			path = English.lproj/InfoPlist.strings;
+			refType = 4;
+		};
+	};
+	rootObject = 0F5C28A9047E732E006640BC;
+}
