@@ -1,8 +1,11 @@
 <html>
-<!-- $Id: Todo.html,v 3.7 2000-08-27 15:19:52 schwarz Exp $-->
+<!-- $Id: Todo.html,v 3.8 2000-09-27 10:16:12 schwarz Exp $-->
 <!--
 
 $Log: not supported by cvs2svn $
+Revision 3.7  2000/08/27  15:19:52  schwarz
+Lots of stuff done.
+
 Revision 3.6  2000/08/22  16:33:53  schwarz
 Types points.
 
@@ -48,7 +51,7 @@ is already done.
 
 <tr align=left valign=top>
   <th>Revision
-  <td>$Id: Todo.html,v 3.7 2000-08-27 15:19:52 schwarz Exp $
+  <td>$Id: Todo.html,v 3.8 2000-09-27 10:16:12 schwarz Exp $
 </tr>
 
 <tr align=left valign=top>
@@ -59,6 +62,9 @@ is already done.
 <tr valign=top align=left>
   <th>Change log
   <td><pre>$Log: not supported by cvs2svn $
+Revision 3.7  2000/08/27  15:19:52  schwarz
+Lots of stuff done.
+
 Revision 3.6  2000/08/22  16:33:53  schwarz
 Types points.
 
@@ -123,6 +129,8 @@ is already done.
 	Smith, Julien Boissinot, iii@ircam.fr, Matt, Roebel)
 	</ul>
 
+<li> Generate export symbols for Macintosh (from autoconf'ed sources)
+
 </ul>
 
 
@@ -176,15 +184,14 @@ is already done.
      <li> ability to merge/replace types to default types (-T option)
      </ul>
 
-<li> Matlab (writesdif): writing of text, int, float matrices according to type of matlab matrices
-
-<li> Matlab (writesdif): write multiple matrix in frame
-
-<li> Matlab (loadsdif): Bug: last matrix is not returned!
-
-<li> Matlab: open multiple files
+<li> Matlab
+	<ul><li> writesdif: writing of text, int, float matrices according to type of matlab matrices
+	<li> open multiple files
+	</ul>
 
 <li> Make: generate version info (date, user, host) on build of programs and lib
+
+<li> Distrib: make, package bin/src releases for all architectures
 
 <li> High level writing: 
      <pre>
@@ -224,6 +231,11 @@ is already done.
 	<li> create test cases
 	</ul>
 
+<li> Matlab (26.08.2000)
+	<ul>
+	<li> writesdif: write multiple matrix in frame
+	<li> loadsdif: Bug: last matrix is not returned!
+	</ul>
 </ul>
 
 </body>
