@@ -1,0 +1,24 @@
+librairie SDIF avec 2 utilitaires, tosdif, sdiftotext
+-----------------------------------------------------
+
+
+Makefile		Makefile general: all, clean, install, uninstall
+Makefile.preamble	variables generales aux makefiles. INSTALL_ROOT
+			permet de controler le lieu d'installation de
+			la librairie.
+Makefile.postamble	regles communes aux makefiles.
+
+
+
+
+doc/		documentations de la librairie en html: index.html
+sdif/		SOURCES de la librairie + fichiers des types predefinis.
+others/		autres sources non incluses dans la librairie (obsolettes
+		mais pourraient redevenir importantes)
+obj/		.o repartis par machine
+libsdif/	libsdif.a repartis par machine
+tosdif/		utilitaire de conversion d'un fichier sdif text en fichier binaire
+sdiftotext/	inverse de tosdif
+files/		fichier tests. seul files/txt n'est pas vide au cvs checkout
+test/		pour tester des fonctions particulieres
+CVS/		gestion CVS

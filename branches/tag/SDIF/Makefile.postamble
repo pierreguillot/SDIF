@@ -1,0 +1,24 @@
+# postamble 
+
+
+
+
+
+
+$(SDIF_OBJ_DIR)/%.o: %.c
+	@echo Compilation of $< 
+	@$(CC) $(CFLAGS) -o $@ -c $<
+
+$(SDIF_LIB): $(SDIF_OBJS)
+	@rm -f $(SDIF_LIB)
+	ar r $(SDIF_LIB) $(SDIF_OBJS)
+	if ( $(RANLIB) != 0 ) $(RANLIB) $@
+
+
+install_dirs: $(INSTALL_DIRS:%=%-dir)
+
+%-dir: 
+	@if ( ! -e $* ) mkdir -p $*
+
+
+
