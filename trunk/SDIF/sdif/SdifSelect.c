@@ -1,4 +1,4 @@
-/* $Id: SdifSelect.c,v 3.16 2002-08-05 14:20:53 roebel Exp $
+/* $Id: SdifSelect.c,v 3.17 2002-09-20 14:43:03 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -96,6 +96,10 @@ TODO
 
 LOG
   $Log: not supported by cvs2svn $
+  Revision 3.16  2002/08/05 14:20:53  roebel
+  Fixed compiler warning.
+  Added support to replace a selection.
+
   Revision 3.15  2002/05/24 19:37:52  ftissera
   Change code to be compatible with C++
   Cast pointers to correct type.
@@ -183,8 +187,7 @@ LOG
 static int debug = 0;
 
 
-char *
-SdifBaseName (const char* path)
+char *SdifBaseName (const char* path)
 {
 	const char* retFileName = strrchr (path, HOST_DIRECTORY_DIVIDER);
 
@@ -194,8 +197,7 @@ SdifBaseName (const char* path)
 	    return ((char *) path);
 }
 
-int 
-SdifFreeSelectionLists (SdifSelectionT *sel)
+int SdifFreeSelectionLists (SdifSelectionT *sel)
 {
 
     SdifKillList (sel->stream);
@@ -249,8 +251,7 @@ static char *getstring (SdifSelectValueT val);
 */
 
 /* init module, called by SdifGenInit */
-int 
-SdifInitSelect (void)
+int SdifInitSelect (void)
 {
     int i;
 
@@ -268,28 +269,25 @@ SdifInitSelect (void)
 
 
 /* killer function for SdifKillList: free one SdifSelectElement */
-static void 
-elimselelem (/*SdifSelectionT*/ void *victim)
+void SdifKillSelectElement (/*SdifSelectionT*/ void *victim)
 {
     SdifFree (victim);
 }
 
-int 
-SdifInitSelectionLists (SdifSelectionT *sel)
+int SdifInitSelectionLists (SdifSelectionT *sel)
 {
 
-    sel->stream = SdifCreateList (elimselelem);
-    sel->frame  = SdifCreateList (elimselelem);
-    sel->matrix = SdifCreateList (elimselelem);
-    sel->column = SdifCreateList (elimselelem);
-    sel->row    = SdifCreateList (elimselelem);
-    sel->time   = SdifCreateList (elimselelem);
+    sel->stream = SdifCreateList (SdifKillSelectElement);
+    sel->frame  = SdifCreateList (SdifKillSelectElement);
+    sel->matrix = SdifCreateList (SdifKillSelectElement);
+    sel->column = SdifCreateList (SdifKillSelectElement);
+    sel->row    = SdifCreateList (SdifKillSelectElement);
+    sel->time   = SdifCreateList (SdifKillSelectElement);
 
     return (1);
 }
 
-int 
-SdifInitSelection (SdifSelectionT *sel, const char *filename, int namelen)
+int SdifInitSelection (SdifSelectionT *sel, const char *filename, int namelen)
 {
     assert (gSdifInitialised  &&  "SDIF library not initialised!");
 
@@ -306,15 +304,13 @@ SdifInitSelection (SdifSelectionT *sel, const char *filename, int namelen)
 }
 
 
-SdifSelectionT *
-SdifCreateSelection ()
+SdifSelectionT *SdifCreateSelection ()
 {
     return (SdifMalloc (SdifSelectionT));
 }
 
 
-int 
-SdifFreeSelection (SdifSelectionT *sel)
+int SdifFreeSelection (SdifSelectionT *sel)
 {
     if (sel->filename)	
 	SdifFree (sel->filename);
@@ -335,23 +331,17 @@ SdifFreeSelection (SdifSelectionT *sel)
 
 
 /* abbreviations */
-#ifndef __alpha
 #define symbol(token)	(assert(token <= sst_num), \
 			 SdifSelectSeparators [token])
 #define symlen(token)	(assert(token <= sst_num), \
 			 SdifSelectSeparatorLen [token])
-#else
-#define symbol(token)	(SdifSelectSeparators   [token])
-#define symlen(token)	(SdifSelectSeparatorLen [token])
-#endif
 
 
 static SdifSelectTokens	TOKEN;
 static const char	*INPUT, *SYMBOL, *ORIG;
 
 
-static SdifSelectTokens 
-findtoken ()
+static SdifSelectTokens findtoken ()
 {
     SdifSelectTokens t = sst_norange;
     while (t < sst_num  &&  strncmp (INPUT, symbol(t), symlen(t)) != 0) {
@@ -366,8 +356,7 @@ findtoken ()
 
 
 /* skip space by advancing INPUT to first non-space character */
-static void 
-skipspace (void)
+static void skipspace (void)
 {
     INPUT += strspn (INPUT, SdifSelectWhitespace);
 }
@@ -376,8 +365,7 @@ skipspace (void)
 /* Sets TOKEN to next token read.  Consumes INPUT, when token found
    (if not, caller has to advance).  Returns true if a token from
    SdifSelectTokens was found. */
-static SdifSelectTokens
-parsenexttoken ()
+static SdifSelectTokens parsenexttoken ()
 {
     skipspace ();
     TOKEN  = findtoken ();				/* find token */
@@ -398,8 +386,7 @@ parsenexttoken ()
    for error output.)  They return true on success 
 */
 
-static int 
-parseint (SdifSelectValueT *valu)
+static int parseint (SdifSelectValueT *valu)
 {
     SYMBOL = INPUT;
     valu->integer = strtol (SYMBOL, (/*not const*/ char **) &INPUT, 10);
@@ -410,8 +397,7 @@ parseint (SdifSelectValueT *valu)
 				   successfully parsed something */
 }
 
-static int 
-parsereal (SdifSelectValueT *valu)
+static int parsereal (SdifSelectValueT *valu)
 {
     SYMBOL = INPUT;
     valu->real = strtod (SYMBOL, (/*not const*/ char **) &INPUT);
@@ -424,8 +410,7 @@ parsereal (SdifSelectValueT *valu)
    Later: handle quoting "..." or '...'
    Set SYMBOL to string read (non-terminated!), return length, advance INPUT.
 */
-static int 
-parsestring ()
+static int parsestring ()
 {
     int len;
 
@@ -442,8 +427,7 @@ parsestring ()
 
 /* read until next separator character
    Later: read only allowed chars for signature, handle "...". */
-static int 
-parsesig (SdifSelectValueT *valu)
+static int parsesig (SdifSelectValueT *valu)
 {
     char sigstr [4];
     int	 siglen = parsestring ();
@@ -465,8 +449,7 @@ parsesig (SdifSelectValueT *valu)
 /* read either column name (later) or number
    Later: handle quotes "...". 
 */
-static int 
-parsecol (SdifSelectValueT *valu)
+static int parsecol (SdifSelectValueT *valu)
 {
     if (parseint (valu))	/* see if we can find a number */
 	return (1);
@@ -496,9 +479,8 @@ parsecol (SdifSelectValueT *valu)
 
 /* Parse one element's list of values plus range or delta.  
    Return true if ok. */
-static int 
-parse (int (*parseval) (SdifSelectValueT *valu), SdifListP list, 
-       int range_allowed, char *name)
+static int parse (int (*parseval) (SdifSelectValueT *valu), SdifListP list, 
+		  int range_allowed, char *name)
 {
 #   define print_error1(msg, arg)	/* todo: use sdiferr... */       \
 	   fprintf (stderr,						 \
@@ -574,8 +556,7 @@ parse (int (*parseval) (SdifSelectValueT *valu), SdifListP list,
 */
 
 /* parse elements #stream :frame /matrix .column _row @time in any order */
-int 
-SdifParseSelection (SdifSelectionT *sel, const char *str)
+int SdifParseSelection (SdifSelectionT *sel, const char *str)
 {
     int ret = 2;	/* first iteration */
 
@@ -611,10 +592,18 @@ SdifParseSelection (SdifSelectionT *sel, const char *str)
 }
 
 
+/* parse comma-separated list of signatures into list of SdifSelectElementT,
+   return true if ok */
+int SdifParseSignatureList (SdifListT *list, const char *str)
+{
+    INPUT = ORIG = str;
+    return (parse (parsesig,  list,  0, "signature-list"));
+}
+
+
 /* Returns pointer to first char of select spec (starting with ::), or
    NULL if not found.  */
-char *
-SdifSelectFindSelection (const char *filename)
+char *SdifSelectFindSelection (const char *filename)
 {
     const char  *spec = filename;
     char	*last = NULL;
@@ -634,9 +623,8 @@ SdifSelectFindSelection (const char *filename)
 }
 
 
-char *
-SdifGetFilenameAndSelection (/*in*/  const char *filename, 
-			     /*out*/ SdifSelectionT *sel)
+char *SdifGetFilenameAndSelection (/*in*/  const char *filename, 
+				   /*out*/ SdifSelectionT *sel)
 {
     const char *spec = SdifSelectFindSelection (filename);
 
@@ -648,9 +636,8 @@ SdifGetFilenameAndSelection (/*in*/  const char *filename,
     return (sel->filename);
 }
 
-void
-SdifReplaceSelection (/*in*/  const char *selectionstr, 
-			     /*out*/ SdifSelectionT *sel)
+void SdifReplaceSelection (/*in*/  const char *selectionstr, 
+			   /*out*/ SdifSelectionT *sel)
 {
 
     SdifFreeSelectionLists (sel);
@@ -662,8 +649,7 @@ SdifReplaceSelection (/*in*/  const char *selectionstr,
 }
 
 
-void 
-SdifPrintSelection (FILE *out, SdifSelectionT *sel, int options)
+void SdifPrintSelection (FILE *out, SdifSelectionT *sel, int options)
 {
     char *tn [] = {" ", " any\n"}, 
 	 *nc [] = {"\n", ", "};
@@ -761,10 +747,9 @@ _foralltypes (_add)
    until it returns 0.
 */
 
-int 
-SdifSelectGetNextIntRange  (/*in*/  SdifListP list, 
-			    /*out*/ SdifSelectElementIntT  *range, 
-			    /*in*/  int force_range)
+int SdifSelectGetNextIntRange  (/*in*/  SdifListP list, 
+				/*out*/ SdifSelectElementIntT  *range, 
+				/*in*/  int force_range)
 {
     int avail, delta;
 
@@ -805,10 +790,9 @@ SdifSelectGetNextIntRange  (/*in*/  SdifListP list,
 }
 
 
-int 
-SdifSelectGetNextRealRange (/*in*/  SdifListP list, 
-			    /*out*/ SdifSelectElementRealT *range, 
-			    /*in*/  int force_range)
+int SdifSelectGetNextRealRange (/*in*/  SdifListP list, 
+				/*out*/ SdifSelectElementRealT *range, 
+				/*in*/  int force_range)
 {
     int		avail;
     double	delta;
@@ -850,8 +834,7 @@ SdifSelectGetNextRealRange (/*in*/  SdifListP list,
 }
 
 
-char *
-SdifSelectGetNextString    (/*in*/  SdifListP list)
+char *SdifSelectGetNextString    (/*in*/  SdifListP list)
 {
      return (SdifListIsNext (list)  
 	     ?  ((SdifSelectElementT *) SdifListGetNext (list))->value.string
@@ -859,8 +842,7 @@ SdifSelectGetNextString    (/*in*/  SdifListP list)
 }
 
 
-SdifSignature 
-SdifSelectGetNextSignature (/*in*/  SdifListP list)
+SdifSignature SdifSelectGetNextSignature (/*in*/  SdifListP list)
 {
      return (SdifListIsNext (list)  
 	     ?  ((SdifSelectElementT *) SdifListGetNext(list))->value.signature
@@ -894,8 +876,7 @@ _foralltypes (_getfirst)
 // FUNCTION GROUP:	Selection Testing Functions
 */
 
-int
-SdifSelectTestIntRange (SdifSelectElementT *elem, int cand)
+int SdifSelectTestIntRange (SdifSelectElementT *elem, int cand)
 {
     if (!elem)   return (0);
 
@@ -917,8 +898,7 @@ SdifSelectTestIntRange (SdifSelectElementT *elem, int cand)
 }
 
 
-int
-SdifSelectTestRealRange (SdifSelectElementT *elem, double cand)
+int SdifSelectTestRealRange (SdifSelectElementT *elem, double cand)
 {
     if (!elem)   return (0);
 
@@ -940,8 +920,7 @@ SdifSelectTestRealRange (SdifSelectElementT *elem, double cand)
 }
 
 
-int
-SdifSelectTestInt (SdifListT *list, int cand)
+int SdifSelectTestInt (SdifListT *list, int cand)
 {
     if (SdifListIsEmpty (list))
 	return (1);	/* no select spec means: take everything */
@@ -954,8 +933,7 @@ SdifSelectTestInt (SdifListT *list, int cand)
     return (0);
 }
 
-int
-SdifSelectTestReal (SdifListT *list, double cand)
+int SdifSelectTestReal (SdifListT *list, double cand)
 {
     if (SdifListIsEmpty (list))
 	return (1);	/* no select spec means: take everything */
@@ -973,8 +951,7 @@ SdifSelectTestReal (SdifListT *list, double cand)
     return (0);
 }
 
-int
-SdifSelectTestSignature (SdifListT *list, const SdifSignature cand)
+int SdifSelectTestSignature (SdifListT *list, const SdifSignature cand)
 {
     if (SdifListIsEmpty (list))
 	return (1);	/* no select spec means: take everything */
@@ -988,8 +965,7 @@ SdifSelectTestSignature (SdifListT *list, const SdifSignature cand)
     return (0);
 }
 
-int
-SdifSelectTestString (SdifListT *list, const char *cand)
+int SdifSelectTestString (SdifListT *list, const char *cand)
 {
     if (SdifListIsEmpty (list))
 	return (1);	/* no select spec means: take everything */
@@ -1010,8 +986,7 @@ SdifSelectTestString (SdifListT *list, const char *cand)
 
 /* Test the selection elements applicable to frames: time, stream,
    frame type.  Can be called after SdifFReadFrameHeader().  */
-int
-SdifFrameIsSelected (SdifFrameHeaderT *frame, SdifSelectionT *sel)
+int SdifFrameIsSelected (SdifFrameHeaderT *frame, SdifSelectionT *sel)
 {
     return ((SdifSelectTestInt	     (sel->stream, frame->NumID)
 	     ||  frame->NumID == _SdifAllStreamID)	         &&
@@ -1021,8 +996,7 @@ SdifFrameIsSelected (SdifFrameHeaderT *frame, SdifSelectionT *sel)
 
 /* Test the selection elements applicable to matrices: the matrix
    signature Can be called after SdifFReadMatrixHeader().  */
-int
-SdifMatrixIsSelected (SdifMatrixHeaderT *matrix, SdifSelectionT *sel)
+int SdifMatrixIsSelected (SdifMatrixHeaderT *matrix, SdifSelectionT *sel)
 {
     return (SdifSelectTestSignature (sel->matrix, matrix->Signature));
 }
@@ -1030,16 +1004,14 @@ SdifMatrixIsSelected (SdifMatrixHeaderT *matrix, SdifSelectionT *sel)
 
 /* Test the selection elements applicable to frames: time, stream,
    frame type.  Can be called after SdifFReadFrameHeader().  */
-int
-SdifFCurrFrameIsSelected (SdifFileT *file)
+int SdifFCurrFrameIsSelected (SdifFileT *file)
 {
     return (SdifFrameIsSelected (file->CurrFramH, file->Selection));
 }
 
 /* Test the selection elements applicable to matrices: the matrix
    signature Can be called after SdifFReadMatrixHeader().  */
-int
-SdifFCurrMatrixIsSelected (SdifFileT *file)
+int SdifFCurrMatrixIsSelected (SdifFileT *file)
 {
     return (SdifMatrixIsSelected (file->CurrMtrxH, file->Selection));
 }

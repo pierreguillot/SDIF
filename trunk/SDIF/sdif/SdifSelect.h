@@ -1,4 +1,4 @@
-/* $Id: SdifSelect.h,v 3.14 2002-05-24 19:37:28 ftissera Exp $
+/* $Id: SdifSelect.h,v 3.15 2002-09-20 14:43:03 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -88,6 +88,9 @@ TODO
 
 LOG
   $Log: not supported by cvs2svn $
+  Revision 3.14  2002/05/24 19:37:28  ftissera
+  Change macro to be compatible with C++
+
   Revision 3.13  2001/05/02 09:34:47  tisseran
   Change License from GNU Public License to GNU Lesser Public License.
 
@@ -204,6 +207,8 @@ char *SdifSelectFindSelection (const char *filename);
 
 
 /*DOC: 
+  Returns pointer to a copy of only the filename part of the input filename.
+  Writes parsed selection to sel.
 */
 char *SdifGetFilenameAndSelection (/*in*/  const char *filename, 
 				   /*out*/ SdifSelectionT *sel);
