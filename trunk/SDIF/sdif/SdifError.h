@@ -1,4 +1,4 @@
-/* $Id: SdifError.h,v 1.4 1998-11-10 15:31:39 schwarz Exp $
+/* $Id: SdifError.h,v 2.0 1998-11-29 11:41:26 virolle Exp $
  * 
  * SdifError.h
  *
@@ -7,6 +7,12 @@
  * author: Dominique Virolle 1997
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.4  1998/11/10  15:31:39  schwarz
+ * Removed all 'extern' keywords for prototypes, since this is redundant
+ * (function prototypes are automatically linked extern), and it
+ * prohibits cocoon from generating an entry in the HTML documentation
+ * for this function.
+ *
  * Revision 1.3  1998/04/24  12:40:32  schwarz
  * Made char * arguments constant for SdifNameValuesLPut and functions called by it.
  *

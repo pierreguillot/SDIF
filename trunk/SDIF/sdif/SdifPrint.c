@@ -72,42 +72,50 @@ SdifPrintAllMatrixType(FILE *fw, SdifFileT* SdifF)
 void
 SdifPrintFrameType(FILE *fw, SdifFrameTypeT *FrameType)
 {
-  SdifComponentNT *Node;
-
+  SdifUInt4 iC;
+  SdifComponentT* Component;
+  
   fprintf(fw, "  %s  %s",
 	  SdifSignatureToString(e1FTD),
 	  SdifSignatureToString(FrameType->Signature));
 
   if (FrameType->FrameTypePre)
     {
-      if (FrameType->FrameTypePre->HeadUse)
-	{
-	  fprintf(fw, "\n    Pre {\n");
-	  for(Node = FrameType->FrameTypePre->HeadUse; Node;  Node = Node->Next)
-	    {
-	      fprintf(fw, "          ");
-	      fprintf(fw, "%s  %s(%d);\n",
-		      SdifSignatureToString(Node->Component->MatrixSignature),
-		      Node->Component->Name,
-		      Node->Component->Num);
+      if (FrameType->FrameTypePre->NbComponentUse > 0)
+        {
+	      fprintf(fw, "\n    Pre {\n");
+          for(iC = 1;
+              iC<= FrameType->FrameTypePre->NbComponentUse;
+              iC++)
+	        {
+              Component = SdifFrameTypeGetNthComponent(FrameType->FrameTypePre, iC);
+	          fprintf(fw, "          ");
+	          fprintf(fw, "%s  %s(%d);\n",
+		              SdifSignatureToString(Component->MtrxS),
+                      Component->Name,
+                      Component->Num);
+              }
+          fprintf(fw, "        }");
 	    }
-	  fprintf(fw, "        }");
-	}
     }
+  
+    if (FrameType->NbComponentUse > 0)
+      {
+	    fprintf(fw, "\n    Use {\n");
+        for(iC = 1;
+            iC<= FrameType->NbComponentUse;
+            iC++)
+	      {
+            Component = SdifFrameTypeGetNthComponent(FrameType, iC);
+	        fprintf(fw, "          ");
+	        fprintf(fw, "%s  %s(%d);\n",
+	             SdifSignatureToString(Component->MtrxS),
+                    Component->Name,
+                    Component->Num);
+            }
+        fprintf(fw, "        }");
+	  }
 
-  if (FrameType->HeadUse)
-    {
-      fprintf(fw, "\n    Use {\n");
-      for(Node = FrameType->HeadUse; Node;  Node = Node->Next)
-	{
-	  fprintf(fw, "          ");
-	  fprintf(fw, "%s  %s(%d);\n",
-		  SdifSignatureToString(Node->Component->MatrixSignature),
-		  Node->Component->Name,
-		  Node->Component->Num);
-	}
-      fprintf(fw, "        }");
-    }
   fprintf(fw, "\n\n");
 }
 

@@ -24,9 +24,10 @@ SdifCreateMatrixHeader(SdifSignature Signature,
 		       SdifUInt4 NbRow,
 		       SdifUInt4 NbCol)
 {
-  SdifMatrixHeaderT *NewMatrixHeader;
+  SdifMatrixHeaderT *NewMatrixHeader = NULL;
   
-  if (NewMatrixHeader = (SdifMatrixHeaderT*) malloc (sizeof(SdifMatrixHeaderT)))
+  NewMatrixHeader = (SdifMatrixHeaderT*) malloc (sizeof(SdifMatrixHeaderT));
+  if (NewMatrixHeader)
     {
       NewMatrixHeader->Signature = Signature;
       NewMatrixHeader->DataType = (SdifDataTypeET) (int) DataType;
@@ -80,7 +81,7 @@ SdifKillMatrixHeader(SdifMatrixHeaderT *MatrixHeader)
 SdifOneRowT*
 SdifCreateOneRow(SdifDataTypeET DataType, SdifUInt4  NbGranuleAlloc)
 {
-  SdifOneRowT * NewOneRow;
+  SdifOneRowT * NewOneRow = NULL;
 
   if (NbGranuleAlloc <= 0)
     {
@@ -88,7 +89,8 @@ SdifCreateOneRow(SdifDataTypeET DataType, SdifUInt4  NbGranuleAlloc)
       return NULL;
     }
 
-  if (NewOneRow = (SdifOneRowT*) malloc (sizeof(SdifOneRowT)))
+  NewOneRow = (SdifOneRowT*) malloc (sizeof(SdifOneRowT));
+  if (NewOneRow)
     {
       NewOneRow->DataType = DataType;
       NewOneRow->NbGranuleAlloc = NbGranuleAlloc;
@@ -98,7 +100,8 @@ SdifCreateOneRow(SdifDataTypeET DataType, SdifUInt4  NbGranuleAlloc)
 	{
 
 	case eFloat4 :
-	  if (! (NewOneRow->Data.F4 = (SdifFloat4*) malloc (NewOneRow->NbGranuleAlloc * _SdifGranule)))
+	  NewOneRow->Data.F4 = (SdifFloat4*) malloc (NewOneRow->NbGranuleAlloc * _SdifGranule);
+	  if (! NewOneRow->Data.F4)
 	    {
 	      _SdifError(eAllocFail, "OneRow->Data.F4 allocation");
 	      free(NewOneRow);
@@ -108,7 +111,8 @@ SdifCreateOneRow(SdifDataTypeET DataType, SdifUInt4  NbGranuleAlloc)
 	    return NewOneRow;
 
 	case eFloat8 :
-	  if (! (NewOneRow->Data.F8 = (SdifFloat8*) malloc (NewOneRow->NbGranuleAlloc * _SdifGranule)))
+	  NewOneRow->Data.F8 = (SdifFloat8*) malloc (NewOneRow->NbGranuleAlloc * _SdifGranule);
+	  if (! NewOneRow->Data.F8)
 	    {
 	      _SdifError(eAllocFail, "OneRow->Data.F8 allocation");
 	      free(NewOneRow);
@@ -150,7 +154,8 @@ SdifReInitOneRow (SdifOneRowT *OneRow, SdifDataTypeET DataType, SdifUInt4 NbData
 	{
 	  NewNbGranule = (SdifUInt4)(OneRow->NbData * sizeof(SdifFloat4)) / _SdifGranule;
 	  /* NewNbGranule = (NewNbGranule) ? NewNbGranule : 1; This case cannot appear */
-	  if (! (OneRow->Data.F4 = (SdifFloat4*) realloc (OneRow->Data.F4, NewNbGranule * _SdifGranule)))
+	  OneRow->Data.F4 = (SdifFloat4*) realloc (OneRow->Data.F4, NewNbGranule * _SdifGranule);
+	  if (! OneRow->Data.F4)
 	    {
 	      _SdifError(eAllocFail, "OneRow->Data.F4 RE-allocation");
 	      return NULL;
@@ -170,7 +175,8 @@ SdifReInitOneRow (SdifOneRowT *OneRow, SdifDataTypeET DataType, SdifUInt4 NbData
 	{
 	  NewNbGranule = (SdifUInt4)(OneRow->NbData * sizeof(SdifFloat8)) / _SdifGranule;
 	  /* NewNbGranule = (NewNbGranule) ? NewNbGranule : 1; This case cannot appear */
-	  if (! (OneRow->Data.F8 = (SdifFloat8*) realloc (OneRow->Data.F8, NewNbGranule * _SdifGranule)))
+	  OneRow->Data.F8 = (SdifFloat8*) realloc (OneRow->Data.F8, NewNbGranule * _SdifGranule);
+	  if (! OneRow->Data.F8)
 	    {
 	      _SdifError(eAllocFail, "OneRow->Data.F8 RE-allocation");
 	      return NULL;
@@ -325,12 +331,13 @@ SdifCreateMatrixData(SdifSignature Signature,
 		     SdifUInt4 NbRow,
 		     SdifUInt4 NbCol)
 {
-  SdifMatrixDataT *NewMatrixData;
+  SdifMatrixDataT *NewMatrixData = NULL;
   SdifUInt4 iRow;
   SdifUInt4 NbGranule;
   SdifUInt4 MatrixSize;
   
-  if (NewMatrixData = (SdifMatrixDataT*) malloc (sizeof(SdifMatrixDataT)))
+  NewMatrixData = (SdifMatrixDataT*) malloc (sizeof(SdifMatrixDataT));
+  if (NewMatrixData)
     {
       NewMatrixData->Header = SdifCreateMatrixHeader(Signature,
 						     DataType,
@@ -344,7 +351,8 @@ SdifCreateMatrixData(SdifSignature Signature,
       /* Padding size added */
       NewMatrixData->Size = (MatrixSize + SdifPaddingCalculate(MatrixSize));
 
-      if (NewMatrixData->Rows = (SdifOneRowT**) malloc (sizeof(SdifOneRowT*) * NbRow))
+      NewMatrixData->Rows = (SdifOneRowT**) malloc (sizeof(SdifOneRowT*) * NbRow);
+      if (NewMatrixData->Rows)
 	{
 	  NbGranule = (NbCol*SdifSizeofDataType(DataType))/_SdifGranule;
 	  NbGranule = NbGranule ? NbGranule : 1;

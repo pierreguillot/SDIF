@@ -1,4 +1,4 @@
-/* $Id: SdifPreTypes.h,v 1.2 1998-11-10 15:31:53 schwarz Exp $
+/* $Id: SdifPreTypes.h,v 2.0 1998-11-29 11:42:01 virolle Exp $
  *
  * SdifPreTypes.h
  *
@@ -9,6 +9,12 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  1998/11/10  15:31:53  schwarz
+ * Removed all 'extern' keywords for prototypes, since this is redundant
+ * (function prototypes are automatically linked extern), and it
+ * prohibits cocoon from generating an entry in the HTML documentation
+ * for this function.
+ *
  */
 
 
@@ -73,22 +79,10 @@ extern SdifColumnDefNT  M_1DIS_AmplitudeNode;
 extern SdifColumnDefNT  M_1DIS_DistributionNode;
 extern SdifMatrixTypeT  M_1DIS;
 
-extern SdifComponentT   F_1FOB_PitchModeHit;
-extern SdifComponentT   F_1FOB_Formants;
-extern SdifComponentT   F_1FOB_FormantsChannels;
-extern SdifComponentNT  F_1FOB_FormantsChannelsNode;
-extern SdifComponentNT  F_1FOB_FormantsNode;
-extern SdifComponentNT  F_1FOB_PitchModeHitNode;
-extern SdifFrameTypeT   F_1FOB;
-
-extern SdifComponentT   F_1REB_Filters;
-extern SdifComponentT   F_1REB_FiltersChannels;
-extern SdifComponentNT  F_1REB_FiltersChannelsNode;
-extern SdifComponentNT  F_1REB_FiltersNode;
-extern SdifFrameTypeT   F_1REB;
-
-extern SdifComponentT   F_1NOI_NoiseInfo;
-extern SdifComponentNT  F_1NOI_NoiseInfoNode;
-extern SdifFrameTypeT   F_1NOI;
+SdifFrameTypeT* CreateF_1FOB(void);
+SdifFrameTypeT* CreateF_1REB(void);
+SdifFrameTypeT* CreateF_1NOI(void);
+void SdifCreatePredefinedTypes(SdifHashTableT *MatrixTypesHT,
+                                      SdifHashTableT *FrameTypesHT);
 
 #endif /* _SdifPreTypes_ */

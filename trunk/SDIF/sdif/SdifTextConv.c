@@ -16,6 +16,7 @@
 
 #include "SdifFScan.h"
 #include "SdifFWrite.h"
+#include "SdifErrMess.h"
 
 #include <stdlib.h>
 
@@ -28,13 +29,15 @@ SdifFTextConvMatrixData(SdifFileT *SdifF)
   SdifUInt4
     iRow;
 
-  if ( (SdifCurrNbCol(SdifF) > 0) && (SdifCurrNbRow(SdifF) > 0) )
+  if ( (SdifFCurrNbCol(SdifF) > 0) && (SdifFCurrNbRow(SdifF) > 0) )
     {      
-      for(iRow=0; iRow<SdifCurrNbRow(SdifF); iRow++)
-	{
-	  SdifFScanOneRow(SdifF);
-	  SizeW += SdifFWriteOneRow(SdifF);
-	}
+      for(iRow=0; iRow<SdifFCurrNbRow(SdifF); iRow++)
+        {
+	      SdifFScanOneRow(SdifF);
+	      SizeW += SdifFWriteOneRow(SdifF);
+          if (SdifFLastErrorTag (SdifF)  != eNoError)
+            return SizeW;
+	    }
       
       return SizeW;
     }
@@ -55,7 +58,8 @@ SdifFTextConvMatrix(SdifFileT *SdifF)
   size_t SizeW = 0;
 
   SdifFScanMatrixHeader(SdifF);
-  SdifTestMatrixHeader(SdifF);
+  if (SdifFLastErrorTag (SdifF)  != eNoError)
+     return SizeW;
 
   SizeW += SdifFWriteMatrixHeader(SdifF);
   SizeW += SdifFTextConvMatrixData(SdifF);
@@ -78,10 +82,11 @@ SdifFTextConvFrameData(SdifFileT *SdifF)
   size_t  SizeW = 0;
   SdifUInt4  iMtrx;
 
-  for(iMtrx=1; iMtrx<=SdifCurrNbMatrix(SdifF); iMtrx++)
+  for(iMtrx=1; iMtrx<=SdifFCurrNbMatrix(SdifF); iMtrx++)
     {
       SizeW += SdifFTextConvMatrix(SdifF);
-      SdifTestFrameWithMatrixHeader(SdifF, iMtrx);
+      if (SdifFLastErrorTag (SdifF)  != eNoError)
+        return SizeW;
     }
   
   return SizeW;
@@ -114,7 +119,11 @@ SdifFTextConvFrame(SdifFileT *SdifF)
   size_t SizeW;
   
   SizeW = SdifFTextConvFrameHeader(SdifF);
+  if (SdifFLastErrorTag (SdifF)  != eNoError)
+    return SizeW;
   SizeW += SdifFTextConvFrameData(SdifF);
+  if (SdifFLastErrorTag (SdifF)  != eNoError)
+    return SizeW;
   SdifF->CurrFramH->Size = (SdifUInt4) SizeW;
 
   SdifUpdateChunkSize(SdifF, SizeW - sizeof(SdifSignature) - sizeof(SdifInt4));
@@ -138,10 +147,12 @@ SdifFTextConvAllFrame(SdifFileT *SdifF)
   int
     CharEnd = 0;
 
-  while ((CharEnd != eEof) && (SdifCurrSignature(SdifF) != eENDC))
+  while ((CharEnd != eEof) && (SdifFCurrSignature(SdifF) != eENDC))
     {
       SizeW += SdifFTextConvFrame(SdifF);
-      SdifCleanCurrSignature(SdifF);
+      if (SdifFLastErrorTag (SdifF)  != eNoError)
+         return SizeW;
+      SdifFCleanCurrSignature(SdifF);
       CharEnd = SdiffGetSignature (SdifF->TextStream, &(SdifF->CurrSignature), &SizeR);
     }
 
@@ -168,13 +179,15 @@ SdifFTextConvFramesChunk(SdifFileT *SdifF)
   SdiffGetSignature(SdifF->TextStream, &(SdifF->CurrSignature), &SizeR);
   SdifF->ChunkSize = SdifFTextConvAllFrame(SdifF);
   SizeW += SdifF->ChunkSize;
+  if (SdifFLastErrorTag (SdifF)  != eNoError)
+     return SizeW;
 
-  if (SdifCurrSignature(SdifF) ==  eENDC)
+  if (SdifFCurrSignature(SdifF) ==  eENDC)
     /*SdifUpdateChunkSize(SdifF, SdifF->ChunkSize)
      */
       ;
   else
-    _SdifFileMess(SdifF, eSyntax, "Attempt to read 'ENDC' failed");
+    _SdifFError(SdifF, eSyntax, "Attempt to read 'ENDC' failed");
   
   return SizeW;
 }
@@ -201,7 +214,7 @@ SdifFTextConv(SdifFileT *SdifF)
   SdifFScanAllASCIIChunks(SdifF);
   SdifF->FileSize += SdifFWriteAllASCIIChunks(SdifF);
 
-  switch (SdifCurrSignature(SdifF))
+  switch (SdifFCurrSignature(SdifF))
     {
     case eSDFC:
       SizeW = SdifFTextConvFramesChunk(SdifF);
@@ -214,13 +227,15 @@ SdifFTextConv(SdifFileT *SdifF)
     default:
       sprintf(gSdifErrorMess,
 	      "It is not a chunk signature : '%s'",
-	      SdifSignatureToString(SdifCurrSignature(SdifF)));
-      _SdifFileMess(SdifF, eSyntax, gSdifErrorMess);
+	      SdifSignatureToString(SdifFCurrSignature(SdifF)));
+      _SdifFError(SdifF, eSyntax, gSdifErrorMess);
       break;
     }
     
-  if (SdifCurrSignature(SdifF) != eENDC)
-    _SdifFileMess(SdifF, eSyntax, "Attempt to read 'ENDF' failed");
+  if (SdifFLastErrorTag (SdifF)  != eNoError)
+      return SizeW;
+  if (SdifFCurrSignature(SdifF) != eENDC)
+    _SdifFError(SdifF, eSyntax, "Attempt to read 'ENDF' failed");
   
   return SdifF->FileSize;
 }
@@ -241,42 +256,37 @@ SdifTextToSdif(SdifFileT *SdifF, char *TextStreamName)
   
 
   if (SdifF->Mode != eWriteFile)
-    _SdifFileMess(SdifF, eBadMode, "it must be eWriteFile");
+    _SdifFError(SdifF, eBadMode, "it must be eWriteFile");
 
   if (SdifF->TextStream)
     {
-      fclose(SdifF->TextStream);
+      SdiffBinClose(SdifF->TextStream);
       if (SdifF->TextStreamName)
-	free(SdifF->TextStreamName);
+	     free(SdifF->TextStreamName);
       _SdifRemark("TextStream Re-initialisation\n");
     }
   
-  SdifF->TextStreamName = SdifCreateStrNCpy(TextStreamName, SdifStrLen(TextStreamName)+1);
-
-  if (SdifStrCmp(SdifF->TextStreamName, SdifF->Name) == 0)
+  if (SdifStrCmp(TextStreamName, SdifF->Name) == 0)
     {
-      sprintf(gSdifErrorMess, "Read=%s, Write=%s.", SdifF->TextStreamName, SdifF->Name);
-      _SdifFileMess(SdifF, eReadWriteOnSameFile, gSdifErrorMess);
+      sprintf(gSdifErrorMess, "Read=%s, Write=%s.", TextStreamName, SdifF->Name);
+      _SdifFError(SdifF, eReadWriteOnSameFile, gSdifErrorMess);
       return FileSizeW;
     }
   else
-    if (    (SdifStrCmp(TextStreamName, "stderr")==0)
-	 || (SdifStrCmp(TextStreamName, "stdout")==0) )
-      _SdifFileMess(SdifF, eBadStdFile, "read on stderr or stdout forbidden");
-    else
-      if (SdifStrCmp(TextStreamName, "stdin")==0)
-	SdifF->TextStream = stdin;
+    {
+      SdifFOpenText(SdifF, TextStreamName, eReadFile);
+      if (! SdifF->TextStream)
+	    {
+	      return  FileSizeW;
+	    }
       else
-	if (! (SdifF->TextStream = fopen(SdifF->TextStreamName, "rb")) )
-	  {
-	    _SdifError(eFileNotFound, TextStreamName);
-	    free(SdifF->TextStreamName);
-	    return  FileSizeW;
-	  }
-    
-  FileSizeW = SdifFTextConv(SdifF);
-  fflush(SdifF->Stream);
+        {
+          FileSizeW = SdifFTextConv(SdifF);
+          fflush(SdifF->Stream);
+          return FileSizeW;
+        }
+    }
   
-  return FileSizeW;
+  /*  return FileSizeW; */
 }
 

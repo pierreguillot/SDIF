@@ -14,6 +14,7 @@
 #include "SdifHash.h"
 #include "SdifRWLowLevel.h"
 #include "SdifFPut.h"
+#include "SdifErrMess.h"
 
 #include <string.h>
 
@@ -36,8 +37,8 @@ SdifUpdateChunkSize(SdifFileT *SdifF, size_t ChunkSize)
 	  WritePos = sizeof(SdifSignature) + SdifF->StartChunkPos;
 	  SdiffSetPos(SdifF->Stream, &WritePos);
 
-	  /*  ChunkSizeInt4 = (SdifF->Pos - SdifF->StartChunkPos) -sizeof(SdifSignature) -sizeof(SdifUInt4);
-	   */
+    /*  ChunkSizeInt4 = (SdifF->Pos - SdifF->StartChunkPos) -sizeof(SdifSignature) -sizeof(SdifUInt4);
+	*/
 	  SdiffWriteInt4(&ChunkSizeInt4, 1, SdifF->Stream);
 	  if (SdiffSetPos(SdifF->Stream, &(SdifF->Pos)) !=0)
 	    _SdifRemark("SdifUpdateChunkSize, SdifFSetPos erreur\n");
@@ -68,24 +69,6 @@ SdifFWritePadding(SdifFileT *SdifF, size_t Padding)
 
 
 
-size_t SdifFWriteGeneralHeader(SdifFileT *SdifF)
-{
-  size_t SizeW = 0;
-  SdifUInt4 NONE = 0;
-
-  SdifF->CurrSignature = eSDIF;
-  SizeW += sizeof(SdifSignature) * SdiffWriteSignature (&SdifF->CurrSignature, SdifF->Stream);
-  SizeW += sizeof(SdifUInt4)     * SdiffWriteUInt4     (&NONE, 1, SdifF->Stream);
-
-  return SizeW;
-}
-
-
-
-
-
-
-
 size_t SdifFWriteChunkHeader (SdifFileT *SdifF, SdifSignature ChunkSignature, size_t ChunkSize)
 {
   size_t SizeW = 0;
@@ -97,6 +80,25 @@ size_t SdifFWriteChunkHeader (SdifFileT *SdifF, SdifSignature ChunkSignature, si
   SizeW += sizeof(SdifInt4)      * SdiffWriteInt4(&ChunkSizeInt4, 1, SdifF->Stream);
 
   return SizeW;
+}
+
+
+
+
+
+
+
+size_t SdifFWriteGeneralHeader(SdifFileT *SdifF)
+{
+  SdiffGetPos(SdifF->Stream, &(SdifF->StartChunkPos));
+
+  SdifF->ChunkSize  = SdifFWriteChunkHeader(SdifF, eSDIF, 8);
+  SdifF->ChunkSize += sizeof(SdifUInt4) * SdiffWriteUInt4(&(SdifF->FormatVersion), 1, SdifF->Stream);
+  SdifF->ChunkSize += SdifFWritePadding(SdifF, SdifFPaddingCalculate(SdifF->Stream, SdifF->ChunkSize));
+
+  SdifUpdateChunkSize(SdifF, SdifF->ChunkSize -sizeof(SdifSignature) -sizeof(SdifInt4));
+  
+  return SdifF->ChunkSize;  
 }
 
 
@@ -220,7 +222,7 @@ SdifFWriteAllType (SdifFileT *SdifF)
       return SdifF->ChunkSize;
     }
   else
-    _SdifFileMess(SdifF, eOnlyOneChunkOf, SdifSignatureToString(e1TYP));
+    _SdifFError(SdifF, eOnlyOneChunkOf, SdifSignatureToString(e1TYP));
   
   return 0;
 }
@@ -259,7 +261,7 @@ SdifFWriteAllStreamID (SdifFileT *SdifF)
       return SdifF->ChunkSize;
     }
   else
-    _SdifFileMess(SdifF, eOnlyOneChunkOf, SdifSignatureToString(e1IDS));
+    _SdifFError(SdifF, eOnlyOneChunkOf, SdifSignatureToString(e1IDS));
 
   return 0;
 }
@@ -294,14 +296,14 @@ size_t
 SdifFWriteMatrixHeader (SdifFileT *SdifF)
 {
   size_t SizeW = 0;
-  SdifFloat4 FloatTab[3];
+  SdifUInt4 UIntTab[3];
 
-  FloatTab[0] = (SdifFloat4) SdifF->CurrMtrxH->DataType;
-  FloatTab[1] = (SdifFloat4) SdifF->CurrMtrxH->NbRow;
-  FloatTab[2] = (SdifFloat4) SdifF->CurrMtrxH->NbCol;
+  UIntTab[0] = SdifF->CurrMtrxH->DataType;
+  UIntTab[1] = SdifF->CurrMtrxH->NbRow;
+  UIntTab[2] = SdifF->CurrMtrxH->NbCol;
   
   SizeW += sizeof(SdifSignature) * SdiffWriteSignature( &(SdifF->CurrMtrxH->Signature), SdifF->Stream);
-  SizeW += sizeof(SdifFloat4)    * SdiffWriteFloat4(FloatTab, 3, SdifF->Stream);
+  SizeW += sizeof(SdifUInt4)     * SdiffWriteUInt4(UIntTab, 3, SdifF->Stream);
   return SizeW;
 }
 
@@ -324,7 +326,7 @@ size_t SdifFWriteOneRow (SdifFileT *SdifF)
 						   SdifF->Stream);
     default :
       sprintf(gSdifErrorMess, "OneRow 0x%04x, then Float4 used", SdifF->CurrOneRow->DataType);
-      _SdifFileMess(SdifF, eTypeDataNotSupported, gSdifErrorMess);
+      _SdifFError(SdifF, eTypeDataNotSupported, gSdifErrorMess);
       return sizeof(SdifFloat4) * SdiffWriteFloat4(SdifF->CurrOneRow->Data.F4,
 						   SdifF->CurrOneRow->NbData,
 						   SdifF->Stream);
@@ -339,17 +341,14 @@ size_t
 SdifFWriteFrameHeader (SdifFileT *SdifF)
 {
   size_t SizeW = 0;
-  SdifUInt4 UInt4Tab[3];
-
-  UInt4Tab[0] =  SdifF->CurrFramH->Size;
-  UInt4Tab[1] =  SdifF->CurrFramH->NbMatrix;
-  UInt4Tab[2] =  SdifF->CurrFramH->NumID;
 
   SdiffGetPos(SdifF->Stream, &(SdifF->StartChunkPos));
 
   SizeW += sizeof(SdifSignature) * SdiffWriteSignature( &(SdifF->CurrFramH->Signature), SdifF->Stream);
-  SizeW += sizeof(SdifUInt4)     * SdiffWriteUInt4( UInt4Tab , 3, SdifF->Stream);
-  SizeW += sizeof(SdifFloat8)    * SdiffWriteFloat8( &(SdifF->CurrFramH->Time), 1, SdifF->Stream);
+  SizeW += sizeof(SdifUInt4)     * SdiffWriteUInt4(     &(SdifF->CurrFramH->Size), 1, SdifF->Stream);
+  SizeW += sizeof(SdifFloat8)    * SdiffWriteFloat8(    &(SdifF->CurrFramH->Time), 1, SdifF->Stream);
+  SizeW += sizeof(SdifUInt4)     * SdiffWriteUInt4(     &(SdifF->CurrFramH->NumID), 1, SdifF->Stream);
+  SizeW += sizeof(SdifUInt4)     * SdiffWriteUInt4(     &(SdifF->CurrFramH->NbMatrix), 1, SdifF->Stream);
 
   return SizeW;
 }

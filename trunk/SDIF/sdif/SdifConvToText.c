@@ -17,6 +17,8 @@
 #include "SdifFRead.h"
 #include "SdifFPrint.h"
 
+#include "SdifErrMess.h"
+
 #include <stdlib.h>
 
 
@@ -31,9 +33,9 @@ SdifFConvToTextMatrixData(SdifFileT *SdifF)
   SdifUInt4
     iRow;
 
-  if ( (SdifCurrNbCol(SdifF) > 0) && (SdifCurrNbRow(SdifF) > 0) )
+  if ( (SdifFCurrNbCol(SdifF) > 0) && (SdifFCurrNbRow(SdifF) > 0) )
     {
-      for(iRow=0; iRow<SdifCurrNbRow(SdifF); iRow++)
+      for(iRow=0; iRow<SdifFCurrNbRow(SdifF); iRow++)
 	{
 	  SizeR += SdifFReadOneRow(SdifF);
 	  SdifFPrintOneRow(SdifF);
@@ -57,7 +59,6 @@ SdifFConvToTextMatrixHeader(SdifFileT *SdifF)
   size_t SizeR = 0;
 
   SizeR += SdifFReadMatrixHeader(SdifF);
-  SdifTestMatrixHeader(SdifF);
   SdifFPrintMatrixHeader(SdifF);
 
   return SizeR;
@@ -97,10 +98,9 @@ SdifFConvToTextFrameData(SdifFileT *SdifF)
   size_t SizeR = 0;
   SdifUInt4  iMtrx;
 
-  for(iMtrx=1; iMtrx<=SdifCurrNbMatrix(SdifF); iMtrx++)
+  for(iMtrx=1; iMtrx<=SdifFCurrNbMatrix(SdifF); iMtrx++)
     {
       SizeR += SdifFConvToTextMatrix(SdifF);
-      SdifTestFrameWithMatrixHeader(SdifF, iMtrx);
     }
   
   return SizeR;
@@ -158,7 +158,7 @@ SdifFConvToTextAllFrame(SdifFileT *SdifF)
   while (CharEnd != eEof)
     {
       SizeR += SdifFConvToTextFrame(SdifF);
-      SdifCleanCurrSignature(SdifF);
+      SdifFCleanCurrSignature(SdifF);
       CharEnd = SdifFGetSignature(SdifF, &SizeRSign);
       if (CharEnd != eEof)
 	{
@@ -188,7 +188,7 @@ SdifFConvToText(SdifFileT *SdifF)
   SizeR += SdifFReadAllASCIIChunks(SdifF);
   SdifFPrintAllASCIIChunks(SdifF);
 
-  if (SdifCurrSignature(SdifF) != eEmptySignature)
+  if (SdifFCurrSignature(SdifF) != eEmptySignature)
     {
       fprintf(SdifF->TextStream, "\n%s\n", SdifSignatureToString(eSDFC));
       SizeR += SdifFConvToTextAllFrame(SdifF);
@@ -214,11 +214,11 @@ SdifToText(SdifFileT *SdifF, char *TextStreamName)
   size_t  SizeR = 0;
   
   if (SdifF->Mode != eReadFile)
-    _SdifFileMess(SdifF, eBadMode, "it must be eReadFile");
+      _SdifFError(SdifF, eBadMode, "it must be eReadFile");
 
   if (SdifF->TextStream)
     {
-      fclose(SdifF->TextStream);
+      SdiffBinClose(SdifF->TextStream);
       if (SdifF->TextStreamName)
 	free(SdifF->TextStreamName);
       _SdifRemark("TextStream Re-initialisation\n");
@@ -229,17 +229,17 @@ SdifToText(SdifFileT *SdifF, char *TextStreamName)
   if (SdifStrCmp(SdifF->TextStreamName, SdifF->Name) == 0)
     {
       sprintf(gSdifErrorMess, "Write=%s, Read=%s.", SdifF->TextStreamName, SdifF->Name);
-      _SdifFileMess(SdifF, eReadWriteOnSameFile, gSdifErrorMess);
+      _SdifFError(SdifF, eReadWriteOnSameFile, gSdifErrorMess);
       return SizeR;
     }
   else
     if (SdifStrCmp(TextStreamName, "stdin")==0)
-      _SdifFileMess(SdifF, eBadStdFile, "write on stdin forbidden");
+      _SdifFError(SdifF, eBadStdFile, "write on stdin forbidden");
     else
       if (SdifStrCmp(TextStreamName, "stdout")==0)
 	SdifF->TextStream = stdout;
       else
-	if (! (SdifF->TextStream = fopen(SdifF->TextStreamName, "wb")) )
+	if (! (SdifF->TextStream = SdiffBinOpen(SdifF->TextStreamName, eBinaryModeWrite)) )
 	  {
 	    _SdifError(eFileNotFound, TextStreamName);
 	    free(SdifF->TextStreamName);
@@ -254,3 +254,5 @@ SdifToText(SdifFileT *SdifF, char *TextStreamName)
   
   return SizeR;
 }
+
+

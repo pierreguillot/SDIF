@@ -19,9 +19,10 @@ SdifCreateFrameHeader(SdifSignature Signature,
 		      SdifUInt4 NumID,
 		      SdifFloat8 Time)
 {
-  SdifFrameHeaderT *NewFrameHeader;
+  SdifFrameHeaderT *NewFrameHeader = NULL;
   
-  if (NewFrameHeader = (SdifFrameHeaderT*) malloc (sizeof(SdifFrameHeaderT)))
+  NewFrameHeader = (SdifFrameHeaderT*) malloc (sizeof(SdifFrameHeaderT));
+  if (NewFrameHeader)
     {
       NewFrameHeader->Signature = Signature;
       NewFrameHeader->Size      = Size;
@@ -79,11 +80,12 @@ SdifCreateFrameData(SdifHashTableT *FrameTypesTable,
 		    SdifUInt4 NumID,
 		    SdifFloat8 Time)
 {
-  SdifFrameDataT *NewFrameData;
-  SdifFrameTypeT *FrameType;
+  SdifFrameDataT *NewFrameData = NULL;
+  SdifFrameTypeT *FrameType = NULL;
   SdifUInt4 iMtrxD;
 
-  if (! (FrameType = SdifGetFrameType(FrameTypesTable, FrameSignature)))
+  FrameType = SdifGetFrameType(FrameTypesTable, FrameSignature);
+  if (! FrameType)
     {
       sprintf(gSdifErrorMess, "Frame Type '%s'",
 	      SdifSignatureToString(FrameSignature));
@@ -91,7 +93,8 @@ SdifCreateFrameData(SdifHashTableT *FrameTypesTable,
       return NULL;
     }
   
-  if (NewFrameData = (SdifFrameDataT*) malloc (sizeof(SdifFrameDataT)))
+  NewFrameData = (SdifFrameDataT*) malloc (sizeof(SdifFrameDataT));
+  if (NewFrameData)
     {
       NewFrameData->Header = SdifCreateFrameHeader(FrameSignature,
 						   _SdifFrameHeaderSize,
@@ -221,7 +224,7 @@ SdifFrameDataPutComponentMatrixData(SdifHashTableT *FrameTypesTable,
       return NULL;
     }
   
-  if (Component->MatrixSignature == MatrixData->Header->Signature)
+  if (Component->MtrxS == MatrixData->Header->Signature)
     return SdifFrameDataPutNthMatrixData(FrameData, Component->Num,MatrixData);
   else
     {
@@ -232,7 +235,7 @@ SdifFrameDataPutComponentMatrixData(SdifHashTableT *FrameTypesTable,
 	      FrameData->Header->Time,
 	      SdifSignatureToString(MatrixData->Header->Signature),
 	      CompoName,
-	      SdifSignatureToString(Component->MatrixSignature));
+	      SdifSignatureToString(Component->MtrxS));
       _SdifError(eAffectationOrder, gSdifErrorMess);
       return NULL;
     }

@@ -7,6 +7,8 @@
  *          Data : Frame type (SdifFrameTypeT*)
  *        Killer : SdifKillFrameType
  *
+ * Frame Components are into a hash table too
+ *
  * author: Dominique Virolle 1997
  *
  */
@@ -23,13 +25,14 @@
 
 
 SdifComponentT*
-SdifCreateComponent(SdifSignature MatrixSignature, char *Name, SdifUInt4 Num)
+SdifCreateComponent(SdifSignature MtrxS, char *Name, SdifUInt4 Num)
 {
-  SdifComponentT *NewComponent;
+  SdifComponentT *NewComponent = NULL;
 
-  if (NewComponent = (SdifComponentT*) malloc(sizeof(SdifComponentT)))
+  NewComponent = (SdifComponentT*) malloc (sizeof(SdifComponentT));
+  if (NewComponent)
     {
-      NewComponent->MatrixSignature = MatrixSignature;
+      NewComponent->MtrxS = MtrxS;
       NewComponent->Name = SdifCreateStrNCpy(Name, SdifStrLen(Name)+1);
       NewComponent->Num = Num;
       
@@ -66,80 +69,27 @@ SdifKillComponent(SdifComponentT *Component)
 
 
 
-
-SdifComponentNT*
-SdifCreateComponentN(SdifComponentNT *Next, SdifComponentT *Component)
-{
-  SdifComponentNT *NewComponentNode;
-
-  if (NewComponentNode = (SdifComponentNT*) malloc (sizeof(SdifComponentNT)))
-    {
-      NewComponentNode->Next = Next;
-      NewComponentNode->Component = Component;
-
-      return NewComponentNode;
-    }
-  else
-    {
-      _SdifError(eAllocFail, "ComponentNode allocation");
-      return NULL;
-    }
-}
-
-
-
-
-
-
-
-SdifComponentNT*
-SdifKillComponentN(SdifComponentNT *ComponentNode)
-{
-  SdifComponentNT *Next;
-
-  if (ComponentNode)
-    {
-      Next = ComponentNode->Next;
-      SdifKillComponent(ComponentNode->Component);
-      free(ComponentNode);
-      
-      return Next;
-    }
-  else
-    {
-      _SdifError(eFreeNull, "ComponentNode free");
-      return NULL;
-    }
-}
-
-
-
-
-
-
-
-
 SdifFrameTypeT*
-SdifCreateFrameType(SdifSignature FrameSignature, SdifFrameTypeT *PredefinedFrameType)
+SdifCreateFrameType(SdifSignature FramS, SdifFrameTypeT *PredefinedFrameType)
 {
-  SdifFrameTypeT *NewFrameType;
+  SdifFrameTypeT *NewFrameType = NULL;
   
-  if (NewFrameType = (SdifFrameTypeT*) malloc (sizeof(SdifFrameTypeT)))
+  NewFrameType = (SdifFrameTypeT*) malloc (sizeof(SdifFrameTypeT));
+  if (NewFrameType)
     {
-      NewFrameType->Signature = FrameSignature;
+      NewFrameType->Signature = FramS;
 
-      NewFrameType->HeadUse = NULL;
-      NewFrameType->TailUse = NULL;
+      NewFrameType->ComponentUseHT = SdifCreateHashTable(13, eHashInt4, SdifKillComponent);
       NewFrameType->NbComponentUse   = 0;
       NewFrameType->ModifMode = eCanModif;
 
       if (PredefinedFrameType)
-	{
-	  if (PredefinedFrameType->Signature != FrameSignature)
+      {
+	    if (PredefinedFrameType->Signature != FramS)
 	    {
 	      sprintf(gSdifErrorMess, "'%s'(Pre) != '%s'",
 		      SdifSignatureToString(PredefinedFrameType->Signature),
-		      SdifSignatureToString(FrameSignature));
+		      SdifSignatureToString(FramS));
 	      _SdifError(eInvalidPreType, gSdifErrorMess);
 	    }
 	  else
@@ -147,12 +97,12 @@ SdifCreateFrameType(SdifSignature FrameSignature, SdifFrameTypeT *PredefinedFram
 	      NewFrameType->FrameTypePre = PredefinedFrameType;
 	      NewFrameType->NbComponent  = PredefinedFrameType->NbComponent;
 	    }
-	}
+      }
       else
-	{
-	  NewFrameType->FrameTypePre = NULL;
-	  NewFrameType->NbComponent  = 0;
-	}
+      {
+        NewFrameType->FrameTypePre = NULL;
+        NewFrameType->NbComponent  = 0;
+      }
           
       return NewFrameType;
     }
@@ -175,9 +125,7 @@ SdifKillFrameType(SdifFrameTypeT *FrameType)
 {
   if (FrameType)
     {
-      while (FrameType->HeadUse)
-	FrameType->HeadUse = SdifKillComponentN(FrameType->HeadUse);
-
+      SdifKillHashTable(FrameType->ComponentUseHT);
       free(FrameType);
     }
   else
@@ -188,32 +136,23 @@ SdifKillFrameType(SdifFrameTypeT *FrameType)
 
 
 
-
-
-
-
-
-SdifUInt4
-SdifFrameTypeGetNumComponent(SdifFrameTypeT *FrameType, char *NameC)
+SdifComponentT*
+SdifFrameTypeGetComponent_MtrxS(SdifFrameTypeT *FrameType, SdifSignature MtrxS)
 {
-  SdifComponentNT *Node;
-  SdifUInt4 Num = 0;
-  
+  SdifComponentT* Component;
+
+  Component = NULL;
   if (FrameType->FrameTypePre)
-    Num = SdifFrameTypeGetNumComponent(FrameType->FrameTypePre, NameC);
+    Component = SdifFrameTypeGetComponent_MtrxS(FrameType->FrameTypePre, MtrxS);
 
+  if (! Component)
+  {
+    Component = (SdifComponentT*) SdifHashTableSearch(FrameType->ComponentUseHT,
+                                                     &MtrxS,
+                                                     1);
+  }
 
-  if (Num == 0)
-    {
-      for (Node = FrameType->HeadUse; Node; Node = Node->Next)
-	if (SdifStrCmp (Node->Component->Name, NameC) == 0)
-	  {
-	    Num = Node->Component->Num;
-	    break;
-	  }
-    }
-
-  return Num;
+  return Component;
 }
 
 
@@ -225,26 +164,28 @@ SdifFrameTypeGetNumComponent(SdifFrameTypeT *FrameType, char *NameC)
 SdifComponentT*
 SdifFrameTypeGetComponent(SdifFrameTypeT *FrameType, char *NameC)
 {
-  SdifComponentNT *Node;
-  SdifComponentT* Component = NULL;
+  unsigned int     iHTN;
+  SdifHashNT*      pHTN;
+  SdifHashTableT*  ComponentUseHT = FrameType->ComponentUseHT;
+  SdifComponentT*  Component;
+  SdifComponentT*  ComponentTmp;
 
+  Component = NULL;
   if (FrameType->FrameTypePre)
     Component = SdifFrameTypeGetComponent(FrameType->FrameTypePre, NameC);
 
-  if (! Component)
+  for(iHTN=0; iHTN<ComponentUseHT->HashSize && !Component; iHTN++)
+    for (pHTN = ComponentUseHT->Table[iHTN]; pHTN && !Component;  pHTN=pHTN->Next)
     {
-      for (Node = FrameType->HeadUse; Node; Node = Node->Next)
-	if (SdifStrCmp (Node->Component->Name, NameC) == 0)
-	  {
-	    Component = Node->Component;
-	    break;
-	  }
+      ComponentTmp = (SdifComponentT*) pHTN->Data;
+      if (SdifStrCmp (ComponentTmp->Name, NameC) == 0)
+      {
+        Component = ComponentTmp;
+      }
     }
 
   return Component;
 }
-
-
 
 
 
@@ -252,51 +193,52 @@ SdifFrameTypeGetComponent(SdifFrameTypeT *FrameType, char *NameC)
 SdifComponentT*
 SdifFrameTypeGetNthComponent(SdifFrameTypeT *FrameType, SdifUInt4 NumC)
 {
-  SdifComponentNT *Node;
-  SdifComponentT* Component = NULL;
+  unsigned int     iHTN;
+  SdifHashNT*      pHTN;
+  SdifHashTableT*  ComponentUseHT = FrameType->ComponentUseHT;
+  SdifComponentT*  Component;
+  SdifComponentT*  ComponentTmp;
 
+  Component = NULL;
   if (FrameType->FrameTypePre)
     Component = SdifFrameTypeGetNthComponent(FrameType->FrameTypePre, NumC);
 
-  if (! Component)
+  for(iHTN=0; iHTN<ComponentUseHT->HashSize && !Component; iHTN++)
+    for (pHTN = ComponentUseHT->Table[iHTN]; pHTN && !Component;  pHTN=pHTN->Next)
     {
-      for (Node = FrameType->HeadUse; Node; Node = Node->Next)
-	if (Node->Component->Num == NumC)
-	  {
-	    Component = Node->Component;
-	    break;
-	  }
+      ComponentTmp = (SdifComponentT*) pHTN->Data;
+      if (ComponentTmp->Num == NumC)
+      {
+        Component = ComponentTmp;
+      }
     }
+
   return Component;
 }
 
 
 
-
-
-
 SdifFrameTypeT*
-SdifFrameTypeInsertTailComponent(SdifHashTableT *MatrixTypesTable,
-				 SdifFrameTypeT *FrameType,
-				 SdifSignature MatrixSignature,
-				 char *NameC)
+SdifFrameTypePutComponent(SdifFrameTypeT *FrameType,
+                          SdifSignature MtrxS,
+                          char *NameC)
 {
-  SdifComponentNT *NewDefNode;
-  
-  if (SdifFrameTypeGetComponent(FrameType, NameC))
+  SdifComponentT *NewComponent = NULL;
+
+
+
+  if (SdifFrameTypeGetComponent_MtrxS(FrameType, MtrxS))
     {
-      _SdifError(eExistYet, NameC);
+      _SdifError(eExistYet, SdifSignatureToString(MtrxS));
       return NULL;
     }
   else
-    
-  if (! SdifGetMatrixType(MatrixTypesTable, MatrixSignature))
-    {
-      sprintf(gSdifErrorMess, "Matrix Type '%s'", SdifSignatureToString(MatrixSignature));
-      _SdifError(eNotFound, gSdifErrorMess);
-      return NULL;
-    }
-  else
+    if (SdifFrameTypeGetComponent(FrameType, NameC))
+      {
+        _SdifError(eExistYet, NameC);
+        return NULL;
+      }
+    else
     
   switch (FrameType->ModifMode)
     {
@@ -305,16 +247,8 @@ SdifFrameTypeInsertTailComponent(SdifHashTableT *MatrixTypesTable,
       return NULL;
       
     case eCanModif:
-      NewDefNode = SdifCreateComponentN(NULL,
-					SdifCreateComponent(MatrixSignature,
-							    NameC,
-							    FrameType->NbComponent+1));
-      if (! FrameType->HeadUse)
-	FrameType->HeadUse = NewDefNode;
-      else
-	FrameType->TailUse->Next = NewDefNode;
-      
-      FrameType->TailUse = NewDefNode;
+      NewComponent = SdifCreateComponent(MtrxS, NameC, FrameType->NbComponent+1);
+      SdifHashTablePut(FrameType->ComponentUseHT, &MtrxS, 1, NewComponent);
       
       FrameType->NbComponentUse++;
       FrameType->NbComponent++;
@@ -331,36 +265,39 @@ SdifFrameTypeInsertTailComponent(SdifHashTableT *MatrixTypesTable,
 
 
 SdifFrameTypeT*
-SdifGetFrameType(SdifHashTableT *FrameTypesTable, SdifSignature FrameSignature)
+SdifGetFrameType(SdifHashTableT *FrameTypeHT, SdifSignature FramS)
 {
-  return SdifHashTableSearch(FrameTypesTable, &FrameSignature, 1);
+  return SdifHashTableSearch(FrameTypeHT, &FramS, 1);
 }
 
 
 
 
 void
-SdifPutFrameType(SdifHashTableT *FrameTypesTable, SdifFrameTypeT *FrameType)
+SdifPutFrameType(SdifHashTableT *FrameTypeHT, SdifFrameTypeT *FrameType)
 {
-  SdifHashTablePut(FrameTypesTable, &(FrameType->Signature), 1, FrameType);
+  SdifHashTablePut(FrameTypeHT, &(FrameType->Signature), 1, FrameType);
 }
 
 
 
 
+
+
+
 SdifUInt2
-SdifExistUserFrameType(SdifHashTableT *FrameTypesTable)
+SdifExistUserFrameType(SdifHashTableT *FrameTypeHT)
 {
   unsigned int     iName;
   SdifHashNT*      pName;
   SdifFrameTypeT*  FramT;
   
-  for(iName=0; iName<FrameTypesTable->HashSize; iName++)
-    for (pName = FrameTypesTable->Table[iName]; pName;  pName=pName->Next)
+  for(iName=0; iName<FrameTypeHT->HashSize; iName++)
+    for (pName = FrameTypeHT->Table[iName]; pName;  pName=pName->Next)
       {
-	FramT = (SdifFrameTypeT*) pName->Data;
-	if (FramT->NbComponentUse > 0)
-	  return 1;
+        FramT = (SdifFrameTypeT*) pName->Data;
+	    if (FramT->NbComponentUse > 0)
+	      return 1;
       }
   return 0;
 }

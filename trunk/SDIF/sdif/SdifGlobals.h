@@ -1,4 +1,4 @@
-/* $Id: SdifGlobals.h,v 1.6 1998-11-10 15:31:48 schwarz Exp $
+/* $Id: SdifGlobals.h,v 2.0 1998-11-29 11:41:48 virolle Exp $
  *
  * SdifGlobals.h
  *
@@ -6,6 +6,12 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.6  1998/11/10  15:31:48  schwarz
+ * Removed all 'extern' keywords for prototypes, since this is redundant
+ * (function prototypes are automatically linked extern), and it
+ * prohibits cocoon from generating an entry in the HTML documentation
+ * for this function.
+ *
  * Revision 1.5  1998/07/23  17:02:53  virolle
  * *** empty log message ***
  *
@@ -17,11 +23,12 @@
 #define _SdifGlobals_
 
 #include <stdio.h>
+#include <float.h>
 #include "SdifError.h"
 #include "SdifHard_OS.h"
 
-#define _SdifLibraryVersion "1.00"
-#define _SdifTypesVersion   "1.00"
+#define _SdifFormatVersion 2
+#define _SdifTypesVersion  1
 
 
 /* _SdifEnvVar : Environnement variable which contains the name
@@ -40,19 +47,9 @@
 #define _SdifPadding 8
 #define _SdifGranule 1024 /* for OneRow allocation in bytes */
 
-#define _SdifFloat8Error 0xffffffff
-
-typedef short          SdifInt2;
-typedef unsigned short SdifUInt2;
-typedef int            SdifInt4;
-typedef unsigned int   SdifUInt4;
-typedef float          SdifFloat4;
-typedef double         SdifFloat8;
-typedef unsigned int   SdifSignature;
-
-
-
-
+#define _SdifFloat8Error  0xffffffff
+#define _SdifNoStreamID   0xffffffff
+#define _SdifUnknownUInt4 0xffffffff
 
 typedef enum SdifSignatureE
 {
@@ -72,7 +69,7 @@ typedef enum SdifSignatureE
 
 
 
-#define _SdifFloatEps  1.0e-20
+#define _SdifFloatEps  FLT_EPSILON
 
 typedef enum SdifModifModeE
 {
@@ -81,20 +78,17 @@ typedef enum SdifModifModeE
 } SdifModifModeET;
 
 /* DataTypeEnum
- * 8 bits at zero
- * 4 bits : 0-->float,  1-->int, 2->char
- * 4 bits : 0-->signed, 1-->unsigned
- * 8 bits : data width
  */
 typedef enum SdifDataTypeE
 {
-  eFloat4 = 0x20,
-  eFloat8 = 0x40,
-  eInt2   = 0x1010,
-  eUInt2  = 0x1110,
-  eInt4   = 0x1020,
-  eUInt4  = 0x1120,
-  eChar4  = 0x2020
+  eFloat4 = 1,
+  eFloat8 = 2,
+  eInt4   = 3,
+  eUInt4  = 4,
+  eChar4  = 5,
+  eInt2   = 6,
+  eUInt2  = 7,
+  eFloat4Old = 32
 } SdifDataTypeET;
 
 
@@ -108,21 +102,14 @@ extern char gSdifErrorMess[_SdifStringLen];
 extern char gSdifStringSignature[_SdifNbMaxPrintSignature][5];
 extern int  CurrStringPosSignature;
 
-char*     SdifSignatureToString     (SdifSignature Signature);
-short     SdifSignatureCmpNoVersion (SdifSignature Signature1, 
-				     SdifSignature Signature2);
-int       SdifStrLen  (const char *s);
-int       SdifStrCmp  (const char *s1, const char *s2);
-int       SdifStrNCmp (const char *s1, const char *s2, unsigned int n);
-char*     SdifStrNCpy (char *s1, const char *s2, unsigned int n);
-char*     SdifCreateStrNCpy (const char* Source, size_t Size);
-void      SdifKillStr (char* String);
+char*     SdifSignatureToString(SdifSignature Signature);
+short     SdifSignatureCmpNoVersion(SdifSignature Signature1, SdifSignature Signature2);
 SdifUInt4 SdifSizeofDataType (SdifDataTypeET DataType);
 size_t    SdifPaddingCalculate  (size_t NbBytes);
 size_t    SdifFPaddingCalculate (FILE *f, size_t NbBytes);
 
 /* (double f1) == (double f2) with _SdifFloatEps for error */
-extern short SdifFloat8Equ(SdifFloat8 f1, SdifFloat8 f2);
+short SdifFloat8Equ(SdifFloat8 f1, SdifFloat8 f2);
 
 
 #endif /* _SdifGlobals_ */

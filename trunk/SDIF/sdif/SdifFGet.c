@@ -22,6 +22,7 @@
 #include "SdifMatrixType.h"
 #include "SdifFrameType.h"
 #include "SdifStreamID.h"
+#include "SdifErrMess.h"
 
 #include "SdifTimePosition.h"
 
@@ -48,7 +49,7 @@ SdifFGetOneNameValue(SdifFileT *SdifF, int Verbose, size_t *SizeR)
   static char  CharsEnd[] = " \t\n\f\r\v{},;:";
 
 
-  file = SdifFileGetFILE_SwitchVerbose(SdifF, Verbose);
+  file = SdifFGetFILE_SwitchVerbose(SdifF, Verbose);
 
   /* Name */
   CharEnd = SdiffGetStringUntil(file, gSdifString, _SdifStringLen, SizeR, CharsEnd);
@@ -62,14 +63,14 @@ SdifFGetOneNameValue(SdifFileT *SdifF, int Verbose, size_t *SizeR)
 	      gSdifString,
 	      CharEnd,
 	      CharEnd);
-      _SdifFileMess(SdifF, eSyntax, gSdifErrorMess);
+      _SdifFError(SdifF, eSyntax, gSdifErrorMess);
       return  CharEnd;
     }
   
-  if (SdifNameValuesLGet(SdifF->NameValues, gSdifString))
+  if (SdifNameValuesLGetCurrHT(SdifF->NameValues, gSdifString))
     {
       sprintf(gSdifErrorMess, "NameValue : %s ", gSdifString);
-      _SdifFileMess(SdifF, eReDefined, gSdifErrorMess);
+      _SdifFError(SdifF, eReDefined, gSdifErrorMess);
       CharEnd = SdiffGetStringUntil(file, gSdifString, _SdifStringLen, SizeR, ";");
       return  CharEnd;
     }
@@ -85,11 +86,11 @@ SdifFGetOneNameValue(SdifFileT *SdifF, int Verbose, size_t *SizeR)
 	      "Attempt to read ';' : '%s%c' ",
 	      gSdifString2,
 	      CharEnd);
-      _SdifFileMess(SdifF, eSyntax, gSdifErrorMess);
+      _SdifFError(SdifF, eSyntax, gSdifErrorMess);
       return  CharEnd;
     }
   
-  SdifNameValuesLPut(SdifF->NameValues, gSdifString, gSdifString2);
+  SdifNameValuesLPutCurrHT(SdifF->NameValues, gSdifString, gSdifString2);
   return  CharEnd;
 }
 
@@ -108,7 +109,7 @@ SdifFGetNameValueCurrHT(SdifFileT *SdifF, int Verbose)
   int       CharEnd;
   FILE      *file;
 
-  file = SdifFileGetFILE_SwitchVerbose(SdifF, Verbose);
+  file = SdifFGetFILE_SwitchVerbose(SdifF, Verbose);
   
   CharEnd = SdiffGetStringUntil(file, gSdifString, _SdifStringLen, &SizeR,_SdifReservedChars);
   if (SdifTestCharEnd(SdifF,     CharEnd,    '{',    gSdifString, 
@@ -141,7 +142,7 @@ SdifFGetOneMatrixType(SdifFileT *SdifF, int Verbose)
   FILE             *file;
 
 
-  file = SdifFileGetFILE_SwitchVerbose(SdifF, Verbose);
+  file = SdifFGetFILE_SwitchVerbose(SdifF, Verbose);
 
   CharEnd = SdiffGetSignature(file, &Signature, &SizeR);
 
@@ -150,7 +151,8 @@ SdifFGetOneMatrixType(SdifFileT *SdifF, int Verbose)
  
 
   /* Matrix type Creation, Put or Recuperation from SdifF->MatrixTypesTable */
-  if (! (MatrixType = SdifGetMatrixType(SdifF->MatrixTypesTable, Signature)))
+  MatrixType = SdifGetMatrixType(SdifF->MatrixTypesTable, Signature);
+  if (! MatrixType)
     {
       MatrixType = SdifCreateMatrixType(Signature,
 					SdifGetMatrixType(gSdifPredefinedTypes->MatrixTypesTable, Signature));
@@ -211,7 +213,7 @@ SdifFGetOneComponent(SdifFileT *SdifF, int Verbose,
   FILE *file;
 
 
-  file = SdifFileGetFILE_SwitchVerbose(SdifF, Verbose);
+  file = SdifFGetFILE_SwitchVerbose(SdifF, Verbose);
   
   
   ComponentName[0]= '\0';
@@ -231,7 +233,7 @@ SdifFGetOneComponent(SdifFileT *SdifF, int Verbose,
 		  "Incomplete Component : '%s%c'",
 		  SdifSignatureToString(*MatrixSignature),
 		  CharEnd);
-	  _SdifFileMess(SdifF, eSyntax, gSdifErrorMess);
+	  _SdifFError(SdifF, eSyntax, gSdifErrorMess);
 	  return CharEnd;
 	}
     }
@@ -270,7 +272,7 @@ SdifFGetOneFrameType(SdifFileT *SdifF, int Verbose)
     MtrxSignature = 0;  
 
 
-  file = SdifFileGetFILE_SwitchVerbose(SdifF, Verbose);
+  file = SdifFGetFILE_SwitchVerbose(SdifF, Verbose);
   
 
   /* FramSignature */
@@ -282,7 +284,8 @@ SdifFGetOneFrameType(SdifFileT *SdifF, int Verbose)
  
 
   /* Frame type Creation, Put or Recuperation from SdifF->FrameTypesTable */
-  if (! (FramT =  SdifGetFrameType(SdifF->FrameTypesTable, FramSignature)))
+  FramT =  SdifGetFrameType(SdifF->FrameTypesTable, FramSignature);
+  if (! FramT)
     {
       FramT = SdifCreateFrameType(FramSignature,
 				  SdifGetFrameType(gSdifPredefinedTypes->FrameTypesTable, FramSignature));
@@ -313,14 +316,18 @@ SdifFGetOneFrameType(SdifFileT *SdifF, int Verbose)
     }
   else
     {
-      while ( SdifFGetOneComponent(SdifF, Verbose, &MtrxSignature, gSdifString, &SizeR) != (unsigned) '}'  )
-	{
-	  if (SdifTestMatrixType(SdifF, MtrxSignature))
-	    {
-	      SdifFrameTypeInsertTailComponent(SdifF->MatrixTypesTable, FramT, MtrxSignature, gSdifString);
-	      MtrxSignature = 0;
+      while ( SdifFGetOneComponent(SdifF,
+                                   Verbose,
+                                   &MtrxSignature,
+                                   gSdifString, &SizeR)
+              != (unsigned) '}'  )
+        {
+          if (SdifTestMatrixType(SdifF, MtrxSignature))
+	        {
+	          SdifFrameTypePutComponent(FramT, MtrxSignature, gSdifString);
+	          MtrxSignature = 0;
+	        }
 	    }
-	}
     }
 
 
@@ -347,11 +354,11 @@ SdifFGetAllType(SdifFileT *SdifF, int Verbose)
   FILE          *file;
   
 
-  file = SdifFileGetFILE_SwitchVerbose(SdifF, Verbose);
+  file = SdifFGetFILE_SwitchVerbose(SdifF, Verbose);
   
   
   if (SdifF->TypeDefPass != eNotPass)
-    _SdifFileMess(SdifF, eOnlyOneChunkOf, SdifSignatureToString(e1TYP));
+    _SdifFError(SdifF, eOnlyOneChunkOf, SdifSignatureToString(e1TYP));
   /* Read anyway */
   
   CharEnd = SdiffGetStringUntil(file, gSdifString, _SdifStringLen, &SizeR, _SdifReservedChars);
@@ -378,7 +385,7 @@ SdifFGetAllType(SdifFileT *SdifF, int Verbose)
 		  SdifSignatureToString(e1MTD),
 		  SdifSignatureToString(e1FTD),
 		  SdifSignatureToString(TypeOfType));
-	  _SdifFileMess(SdifF, eSyntax, gSdifErrorMess);
+	  _SdifFError(SdifF, eSyntax, gSdifErrorMess);
 	  SdifTestCharEnd(SdifF,
 			  SdifSkipASCIIUntil(file, &SizeR, "}:[]"),
 			  '}', "", eFalse,
@@ -390,7 +397,7 @@ SdifFGetAllType(SdifFileT *SdifF, int Verbose)
   
   if (TypeOfType != 0)
     {
-      _SdifFileMess(SdifF, eSyntax, SdifSignatureToString(TypeOfType));
+      _SdifFError(SdifF, eSyntax, SdifSignatureToString(TypeOfType));
       return SizeR;
     }
   
@@ -417,7 +424,7 @@ SdifFGetOneStreamID(SdifFileT *SdifF, int Verbose, size_t *SizeR)
   FILE            *file;
 
 
-  file = SdifFileGetFILE_SwitchVerbose(SdifF, Verbose);
+  file = SdifFGetFILE_SwitchVerbose(SdifF, Verbose);
   
   
 
@@ -435,7 +442,7 @@ SdifFGetOneStreamID(SdifFileT *SdifF, int Verbose, size_t *SizeR)
       sprintf(gSdifErrorMess,
 	      "Wait a space_char after NumId '%s', read char: (%d) '%c'",
 	      gSdifString, CharEnd, CharEnd);
-      _SdifFileMess(SdifF, eSyntax, gSdifErrorMess);
+      _SdifFError(SdifF, eSyntax, gSdifErrorMess);
       if (CharEnd != (unsigned)';')
 	SdifTestCharEnd(SdifF,
 			SdifSkipASCIIUntil(file, SizeR, ";"),
@@ -450,7 +457,7 @@ SdifFGetOneStreamID(SdifFileT *SdifF, int Verbose, size_t *SizeR)
   if (SdifHashTableSearch(SdifF->StreamIDsTable, &(NumID), 1))
     {
       sprintf(gSdifErrorMess, "StreamID : %u ", NumID);
-      _SdifFileMess(SdifF, eReDefined, gSdifErrorMess);
+      _SdifFError(SdifF, eReDefined, gSdifErrorMess);
       if (CharEnd != (unsigned)';')
 	SdifTestCharEnd(SdifF,
 			SdifSkipASCIIUntil(file, SizeR, ";"),
@@ -483,7 +490,8 @@ SdifFGetOneStreamID(SdifFileT *SdifF, int Verbose, size_t *SizeR)
     }
   
 
-  if (StreamID = SdifCreateStreamID(NumID, gSdifString, gSdifString2))
+  StreamID = SdifCreateStreamID(NumID, gSdifString, gSdifString2);
+  if (StreamID)
     {
       SdifHashTablePut(SdifF->StreamIDsTable, &(StreamID->NumID), 1, StreamID);
       return  CharEnd;
@@ -503,10 +511,10 @@ SdifFGetAllStreamID(SdifFileT *SdifF, int Verbose)
   int        CharEnd;
   FILE      *file;
   
-  file = SdifFileGetFILE_SwitchVerbose(SdifF, Verbose);
+  file = SdifFGetFILE_SwitchVerbose(SdifF, Verbose);
 
   if (SdifF->StreamIDPass != eNotPass)
-    _SdifFileMess(SdifF, eOnlyOneChunkOf, SdifSignatureToString(e1IDS));
+    _SdifFError(SdifF, eOnlyOneChunkOf, SdifSignatureToString(e1IDS));
   /* Read anyway */
   
   CharEnd = SdiffGetStringUntil(file, gSdifString, _SdifStringLen, &SizeR, _SdifReservedChars);

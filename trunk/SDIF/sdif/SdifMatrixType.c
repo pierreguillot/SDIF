@@ -23,7 +23,7 @@
 SdifColumnDefT*
 SdifCreateColumnDef(char *Name, SdifUInt4 Num)
 {
-  SdifColumnDefT *NewColumnDef;
+  SdifColumnDefT *NewColumnDef = NULL;
   
   NewColumnDef = (SdifColumnDefT*) malloc (sizeof(SdifColumnDefT));
   if (NewColumnDef != NULL)
@@ -66,9 +66,10 @@ SdifKillColumnDef(SdifColumnDefT *ColumnDef)
 SdifColumnDefNT*
 SdifCreateColumnDefN(SdifColumnDefNT *Next, SdifColumnDefT *ColumnDef)
 {
-  SdifColumnDefNT *NewColDefN;
+  SdifColumnDefNT *NewColDefN = NULL;
 
-  if (NewColDefN = (SdifColumnDefNT*) malloc (sizeof(SdifColumnDefNT)))
+  NewColDefN = (SdifColumnDefNT*) malloc (sizeof(SdifColumnDefNT));
+  if (NewColDefN)
     {
       NewColDefN->Next = Next;
       NewColDefN->ColumnDef = ColumnDef;
@@ -116,9 +117,10 @@ SdifKillColumnDefN(SdifColumnDefNT *ColDefN)
 SdifMatrixTypeT*
 SdifCreateMatrixType(SdifSignature Signature, SdifMatrixTypeT *PredefinedMatrixType)
 {
-  SdifMatrixTypeT *NewMatrixType;
+  SdifMatrixTypeT *NewMatrixType = NULL;
 
-  if (NewMatrixType = (SdifMatrixTypeT*) malloc (sizeof(SdifMatrixTypeT)))
+  NewMatrixType = (SdifMatrixTypeT*) malloc (sizeof(SdifMatrixTypeT));
+  if (NewMatrixType)
     {
       NewMatrixType->Signature      = Signature;
       NewMatrixType->HeadUse        = NULL;
@@ -271,7 +273,7 @@ SdifMatrixTypeGetNthColumnDef(SdifMatrixTypeT *MatrixType, SdifUInt4 NumCD)
 SdifMatrixTypeT*
 SdifMatrixTypeInsertTailColumnDef(SdifMatrixTypeT *MatrixType, char *NameCD)
 {
-  SdifColumnDefNT *NewDefN;
+  SdifColumnDefNT *NewDefN = NULL;
   
   if (SdifMatrixTypeGetColumnDef(MatrixType, NameCD))
     {

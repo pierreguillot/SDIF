@@ -18,9 +18,10 @@
 SdifTimePositionT*
 SdifCreateTimePosition(SdifFloat8 Time, SdiffPosT Position)
 {
-  SdifTimePositionT* NewTimePosition;
+  SdifTimePositionT* NewTimePosition = NULL;
   
-  if (NewTimePosition = (SdifTimePositionT*) malloc (sizeof(SdifTimePositionT)))
+  NewTimePosition = (SdifTimePositionT*) malloc (sizeof(SdifTimePositionT));
+  if (NewTimePosition)
     {
       NewTimePosition->Time = Time;
       NewTimePosition->Position = Position;
@@ -63,9 +64,10 @@ SdifKillTimePosition(SdifTimePositionT* TimePosition)
 SdifTimePositionNT*
 SdifCreateTimePositionN(SdifTimePositionNT* Next, SdifTimePositionT* TimePosition)
 {
-  SdifTimePositionNT* NewTimePositionNode;
+  SdifTimePositionNT* NewTimePositionNode = NULL;
   
-  if (NewTimePositionNode = (SdifTimePositionNT*) malloc(sizeof(SdifTimePositionNT)))
+  NewTimePositionNode = (SdifTimePositionNT*) malloc(sizeof(SdifTimePositionNT));
+  if (NewTimePositionNode)
     {
       NewTimePositionNode->Next = Next;
       NewTimePositionNode->TP = TimePosition;
@@ -115,9 +117,10 @@ SdifKillTimePositionN(SdifTimePositionNT* TPNode)
 SdifTimePositionLT*
 SdifCreateTimePositionL(void)
 {
-  SdifTimePositionLT *NewTimePositionL;
+  SdifTimePositionLT *NewTimePositionL = NULL;
   
-  if (NewTimePositionL = (SdifTimePositionLT*) malloc (sizeof(SdifTimePositionLT)))
+  NewTimePositionL = (SdifTimePositionLT*) malloc (sizeof(SdifTimePositionLT));
+  if (NewTimePositionL)
     {
       NewTimePositionL->Head = NULL;
       NewTimePositionL->Tail = NULL;

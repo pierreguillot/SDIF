@@ -20,34 +20,11 @@
 #include "SdifMatrixType.h"
 #include "SdifFrameType.h"
 #include "SdifStreamID.h"
+#include "SdifErrMess.h"
 
 #include "SdifTimePosition.h"
 
 #include "SdifFGet.h"
-
-
-
-
-size_t 
-SdifFReadGeneralHeader(SdifFileT *SdifF)
-{
-  size_t SizeR = 0;
-  SdifUInt4 NONE = 0;
-  
-  SdifFGetSignature(SdifF, &SizeR);
-  if (SdifF->CurrSignature != eSDIF)
-    {
-      sprintf(gSdifErrorMess,
-	      "%s not correctly read",
-	      SdifSignatureToString(eSDIF));
-      _SdifFileMess(SdifF, eBadHeader, gSdifErrorMess);
-    }
-
-  SizeR += sizeof(SdifUInt4) * SdiffReadUInt4(&NONE, 1, SdifF->Stream);
-      
-  return SizeR;
-}
-
 
 
 
@@ -65,6 +42,35 @@ SdifFReadChunkSize(SdifFileT *SdifF)
 }
 
 
+
+
+
+size_t 
+SdifFReadGeneralHeader(SdifFileT *SdifF)
+{
+  size_t SizeR = 0;
+  
+  SdiffGetPos(SdifF->Stream, &(SdifF->StartChunkPos));
+
+  SdifFGetSignature(SdifF, &SizeR);
+  SizeR += SdifFReadChunkSize(SdifF);
+  SizeR += sizeof(SdifUInt4) * SdiffReadUInt4 ( &(SdifF->FormatVersion), 1, SdifF->Stream);
+  SizeR += SdifFReadPadding(SdifF, SdifFPaddingCalculate(SdifF->Stream, SizeR-8));
+  
+  if (SdifF->CurrSignature != eSDIF)
+    {
+      sprintf(gSdifErrorMess, "%s not correctly read", SdifSignatureToString(eSDIF));
+      _SdifFError(SdifF, eBadHeader, gSdifErrorMess);
+    }
+
+  if (SdifF->FormatVersion > _SdifFormatVersion)
+    {
+      sprintf(gSdifErrorMess, "%d is hupper than %d", SdifF->FormatVersion, _SdifFormatVersion);
+      _SdifFError(SdifF, eBadFormatVersion, gSdifErrorMess);
+    }
+    
+  return SizeR;
+}
 
 
 
@@ -244,24 +250,29 @@ size_t
 SdifFReadMatrixHeader(SdifFileT *SdifF)
 {
   size_t SizeR = 0;
-  SdifFloat4 FloatTab[3];
+  SdifUInt4 UIntTab[3];
   
-  SdifFileCreateCurrMtrxH(SdifF); /* create only if it's necessary */
+  SdifFCreateCurrMtrxH(SdifF); /* create only if it's necessary */
   
   SdiffGetSignature(SdifF->Stream, &(SdifF->CurrMtrxH->Signature), &SizeR);
-  SizeR += sizeof(SdifFloat4) * SdiffReadFloat4( FloatTab, 3, SdifF->Stream);
-  
-  SdifF->CurrMtrxH->DataType  = (SdifDataTypeET) (int) (float) FloatTab[0];
-  SdifF->CurrMtrxH->NbRow     = (SdifUInt4) FloatTab[1];
-  SdifF->CurrMtrxH->NbCol     = (SdifUInt4) FloatTab[2];
+  SizeR += sizeof(SdifUInt4) * SdiffReadUInt4( UIntTab, 3, SdifF->Stream);
+ 
+  /* when DataType was 32 for Float4 at Ircam 
+  if ((SdifDataTypeET) UIntTab[0] == eFloat4Old)
+    UIntTab[0] = eFloat4;
+  */
+
+  SdifF->CurrMtrxH->DataType  = (SdifDataTypeET) UIntTab[0];
+  SdifF->CurrMtrxH->NbRow     = UIntTab[1];
+  SdifF->CurrMtrxH->NbCol     = UIntTab[2];
   
   SdifF->CurrOneRow->DataType = SdifF->CurrMtrxH->DataType;
 
-  if (    (SdifTestMatrixType(SdifF, SdifF->CurrMtrxH->Signature))
-       && (SdifF->CurrMtrxH->NbCol > 0)
-       && (SdifF->CurrMtrxH->NbRow > 0)   )
+  if ( SdifFTestMatrixHeader(SdifF) )
     {
-      SdifReInitOneRow(SdifF->CurrOneRow, SdifF->CurrMtrxH->DataType, SdifF->CurrMtrxH->NbCol);
+      SdifReInitOneRow(SdifF->CurrOneRow,
+                       SdifF->CurrMtrxH->DataType,
+                       SdifF->CurrMtrxH->NbCol);
     }
 
   return SizeR;
@@ -287,7 +298,7 @@ SdifFReadOneRow(SdifFileT *SdifF)
 						  SdifF->Stream);
     default :
       sprintf(gSdifErrorMess, "OneRow 0x%04x, then Float4 used", SdifF->CurrOneRow->DataType);
-      _SdifFileMess(SdifF, eTypeDataNotSupported, gSdifErrorMess);
+      _SdifFError(SdifF, eTypeDataNotSupported, gSdifErrorMess);
       return sizeof(SdifFloat4) * SdiffReadFloat4(SdifF->CurrOneRow->Data.F4,
 						  SdifF->CurrOneRow->NbData,
 						  SdifF->Stream);
@@ -311,16 +322,20 @@ SdifFReadFrameHeader(SdifFileT *SdifF)
   SdifF->StartChunkPos -= sizeof(SdifSignature);
 
   /* Create only if it's necessary else update signature */
-  SdifFileCreateCurrFramH(SdifF, SdifF->CurrSignature);
+  SdifFCreateCurrFramH(SdifF, SdifF->CurrSignature);
 
   SizeR += sizeof(SdifUInt4)  * SdiffReadUInt4 ( &(SdifF->CurrFramH->Size), 1, SdifF->Stream);
-  SizeR += sizeof(SdifUInt4)  * SdiffReadUInt4(  UInt4Tab, 2, SdifF->Stream);
   SizeR += sizeof(SdifFloat8) * SdiffReadFloat8( &(SdifF->CurrFramH->Time), 1, SdifF->Stream);
+  SizeR += sizeof(SdifUInt4)  * SdiffReadUInt4(  UInt4Tab, 2, SdifF->Stream);
 
-  SdifF->CurrFramH->NbMatrix = UInt4Tab[0];
-  SdifF->CurrFramH->NumID    = UInt4Tab[1];
+  SdifF->CurrFramH->NumID    = UInt4Tab[0];
+  SdifF->CurrFramH->NbMatrix = UInt4Tab[1];
 
-  SdifTestFrameType(SdifF, SdifF->CurrFramH->Signature);
+  /*SdifFSetCurrFrameHeader (SdifF, Signature, Size, NbMatrix, NumID, Time);*/
+
+  SdifF->CurrFramT = SdifTestFrameType(SdifF, SdifF->CurrFramH->Signature);
+  if (SdifF->CurrFramT)
+    SdifFReInitMtrxUsed(SdifF);
 
   return SizeR;
 }
@@ -444,7 +459,8 @@ SdifSkipFrameData(SdifFileT *SdifF)
     {
       for (iMtrx = 0; iMtrx<SdifF->CurrFramH->NbMatrix; iMtrx++)
 	{
-	  if (Boo = SdifSkipMatrix(SdifF) == -1)
+	  Boo = SdifSkipMatrix(SdifF);
+	  if (Boo == -1)
 	    {
 	      sprintf(gSdifErrorMess,
 		      "Skip Matrix %d in FrameData %s ID:%u T:%g\n",

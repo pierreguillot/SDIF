@@ -1,4 +1,4 @@
-/* $Id: SdifError.c,v 1.3 1998-04-24 12:40:31 schwarz Exp $
+/* $Id: SdifError.c,v 2.0 1998-11-29 11:41:25 virolle Exp $
  * sdifError.c
  *
  * Fatal or program error management
@@ -6,6 +6,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.3  1998/04/24  12:40:31  schwarz
+ * Made char * arguments constant for SdifNameValuesLPut and functions called by it.
+ *
  */
 
 
@@ -33,21 +36,30 @@ SdifErrorWarning(SdifErrorEnum Error, const void *ErrorMess)
       break;
     case  eFreeNull :
       fprintf(stderr, "Attempt to free a NULL pointer : '%s'\n", ErrorMess);
+      fflush(stderr);
+      exit(1);
       break;
     case  eAllocFail :
       fprintf(stderr, "Attempt to allocate memory : '%s'\n", ErrorMess);
+      fflush(stderr);
+      exit(1);
       break;
     case  eInvalidPreType:
       fprintf(stderr, "Invalid Predefined Type : %s\n", ErrorMess);
       break;
     case eArrayPosition :
       fprintf(stderr, "Attempt to access to a non-existing square in an array : '%s'\n", ErrorMess);
+      fflush(stderr);
+      exit(1);
       break;
     case  eEof :
       fprintf(stderr, "End of file : %s\n", ErrorMess);
+      fflush(stderr);
+      exit(1);
       break;
     case  eFileNotFound :
       fprintf(stderr, "File Not Found : \"%s\"\n",ErrorMess);
+      fflush(stderr);
       break;            
     case  eAffectationOrder :
       fprintf(stderr, "Affectation must be in order : '%s'\n", ErrorMess);
@@ -57,6 +69,8 @@ SdifErrorWarning(SdifErrorEnum Error, const void *ErrorMess)
       break;      
     case  eNotInDataTypeUnion :
       fprintf(stderr, "Type of data Not in DataTypeUnion  : '%s'\n", ErrorMess);
+      fflush(stderr);
+      exit(1);
       break;      
     case  eNotFound :
       fprintf(stderr, "Not Find : '%s'\n", ErrorMess);
@@ -69,11 +83,11 @@ SdifErrorWarning(SdifErrorEnum Error, const void *ErrorMess)
       break;
     case  eTokenLength :
       fprintf(stderr, "Token too long : '%s'\n", ErrorMess);
+      fflush(stderr);
+      exit(1);
       break;
     default :
       fprintf(stderr, "Warning unknown", ErrorMess);
       break;
     }
-  fflush(stderr);
-  exit(1);
 }
