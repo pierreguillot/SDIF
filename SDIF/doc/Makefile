@@ -1,4 +1,4 @@
-# $Id: Makefile,v 3.2 1999-04-30 13:45:53 schwarz Exp $
+# $Id: Makefile,v 3.3 1999-08-26 15:29:23 schwarz Exp $
 #
 #               Copyright (c) 1998 by IRCAM - Centre Pompidou
 #                          All rights reserved.
@@ -13,6 +13,10 @@
 # Makefile for automatic documentation.
 #
 # $Log: not supported by cvs2svn $
+# Revision 3.2  1999/04/30  13:45:53  schwarz
+# Don't blurp horrible perl code, rather lightly put decent
+# "Gendoc from to" message.
+#
 # Revision 3.1  1999/03/14  10:54:42  virolle
 # SdifStdErr add
 #
@@ -41,16 +45,12 @@
 # Added makefile to generate cocoon documentation.
 #
 
-# web pages are accessible from INSTALLHOST and to be placed to INSTALLWEBBASE
+# web pages are accessible from INSTALLHOST and to be placed to INSTALLDIR
 INSTALLHOST	= maelzel
-INSTALLWEBBASE	= /usr/local/www/ircam/equipes/analyse-synthese/sdif/test
-INSTALLURLBASE	= /equipes/analyse-synthese/sdif/test
-# all files that are to be copied and are not generated 
-# (in extern, all the non-default -main and -sec and alpha-toc are generated)
-INSTALLSRC	= Makefile sdif.src $(wildcard *.html) $(wildcard pics/*.gif) \
-		  $(wildcard [ie][nx]tern/default-*.html) \
-		  $(wildcard [ie][nx]tern/by-subject-toc.html) \
-		  $(wildcard [ie][nx]tern/[tu]*-[td]oc.html)
+INSTALLDIR	= /usr/local/www/ircam/equipes/analyse-synthese/sdif
+INSTALLURLBASE	= /equipes/analyse-synthese/sdif
+INSTALLSRC	= Makefile $(wildcard *.html) $(INSTALLDIRS)
+
 INSTALLDIRS	= pics extern intern
 
 # these are all overriden when installing
@@ -59,12 +59,17 @@ ABS_ROOT	= $(HERE)/..
 WEBBASE		= $(HERE)
 URLBASE		= $(HERE)
 
-WEBROOT		= $(WEBBASE)/$*/cocoon
-URLROOT		= $(URLBASE)/$*/cocoon
 # ($* is what matches % in a pattern rule)
+COCOONDIR	= $*/cocoon
+WEBROOT		= $(WEBBASE)/$(COCOONDIR)
+URLROOT		= $(URLBASE)/$(COCOONDIR)
+INSTALLURL	= $(INSTALLURLBASE)/$(COCOONDIR)
+#		  http://www.ircam.fr/$(INSTALLURLBASE)/$(COCOONDIR)
 
 COCOON		= /u/formes/schwarz/bin/$(ARCH)/cocoon
 PREPROC		= gcc -E -P -ansi -x c 
+INSTALLHTML	= perl -pi -e '$$c+=s|(href="*)$(URLROOT)|$$1$(INSTALLURL)|i;'\
+			   -e 'END { print STDERR "$$c substitutions\n"; }'
 
 makedependency	= # Makefile # when changing preprocessor options
 headerdir	= $(ABS_ROOT)/sdif
@@ -102,10 +107,12 @@ extern-defs	= "-DSENTINELS="  "-DMEMBERSENTINEL=membersentinel /*DOC:" \
 
 
 %/cocoon/SDIF.lnk:	sdif.%.cocoon
-		$(COCOON) -s -x $<   # -s: leave SDIF.lnk 
+		$(RM) $(@D)/*		# cocoon 3.2 works only on clean dir
+		$(COCOON) -s -x $<	# -s: leave SDIF.lnk 
 
 # generate cocoon config file for one big web page with all defs
 sdif.%.cocoon:	sdif.src $(headerfiles) $(makedependency)
+		@echo Generating cocoon config file $@ from $<
 		$(PREPROC) $< -o $@  $($*-defs) \
 			-DWEBROOT=$(WEBROOT) -DURLROOT=$(URLROOT) \
 			"-DLIBRARY=library SDIF $(ABS_ROOT)/sdif/ ."
@@ -142,7 +149,7 @@ eindsuf		= by-subject alpha tutorial utilities
 iindsuf		= by-subject alpha
 emain		= $(eindsuf:%=extern/%-main.html)
 esec		= $(eindsuf:%=extern/%-sec.html)
-egenerated	= $(emain) $(esuf) extern/by-subject-doc.html
+egenerated	= $(emain) $(esec) extern/by-subject-doc.html
 imain		= $(iindsuf:%=intern/%-main.html)
 isuf		= $(iindsuf:%=intern/%-sec.html)
 igenerated	= $(imain) $(isuf) intern/by-subject-doc.html
@@ -195,30 +202,17 @@ $(isec):	intern/default-sec.html
 # Install
 #
 
-install:
-		rsh $(INSTALLHOST) cd $(INSTALLWEBBASE) \; \
-			$(MAKE) -f $(HERE)/Makefile instdir instcp all \
-				FROM=$(HERE) \
-				ABS_ROOT=$(ABS_ROOT) \
-		 		WEBBASE=$(INSTALLWEBBASE) \
-				URLBASE=$(INSTALLURLBASE) \
-				TOCPX=`echo $(INSTALLSRC) | tr " " @`
-
-TOCP		:= $(shell echo $(TOCPX) | tr @ " ")
+install:	$(INSTALLSRC) 
+		rsh $(INSTALLHOST) \
+		  	cp -r $(INSTALLSRC:%=$(PWD)/%) $(INSTALLDIR) \; \
+		  	$(MAKE) -C $(INSTALLDIR) URLBASE=$(URLBASE) \
+				postinst-intern postinst-extern
 
 # this is running on INSTALLHOST!
-instdir:	$(INSTALLDIRS)
-$(INSTALLDIRS):	
-		mkdir -p $@
-instcp:		$(TOCP)
-#		@echo TOCP = $(TOCP)
-#		tar cf - -C $(FROM) $(TOCP) | tar xvf -		
-$(TOCP): %:	$(FROM)/%
-		cp -p $< $@
-
-instclean:
-		rsh $(INSTALLHOST) cd $(INSTALLWEBBASE) \; \
-			$(MAKE) -f $(HERE)/Makefile clean
+postinst-%:
+		@echo ----- replacing links in $(INSTALLDIR)/$*
+		@find $(INSTALLDIR)/$* -name \*.html -print \
+		| xargs $(INSTALLHTML) 
 
 
 #
