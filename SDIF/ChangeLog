@@ -1,8 +1,15 @@
 
-$Id: ChangeLog,v 1.7 2002-09-20 14:36:09 schwarz Exp $
+$Id: ChangeLog,v 1.8 2002-10-10 11:17:12 schwarz Exp $
 	
-Version 3.7	2002-09-20  Diemo Schwarz  <schwarz@lithium.ircam.fr>
+Version 3.7.0	2002-09-20  Diemo Schwarz  <schwarz@lithium.ircam.fr>
 
+	* Reintroduced 3-field version numbering scheme:
+	  - first number:  major version, only gigantic changes
+	  - second number: minor version, records changes in API 
+			   (added/removed functions, changed prototypes)
+	  - third number:  release number, for intermediate releases, 
+			   bug fixes, etc. that don't change the API
+	
 	* Functions added:
 	  - SdifFRewind		   rewind file to beginning
 	  - SdifFTruncate	   file truncate function
