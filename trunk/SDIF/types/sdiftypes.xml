@@ -2,6 +2,10 @@
 
 <!-- 
  $Log: not supported by cvs2svn $
+ Revision 1.11  2001/05/02 15:28:48  schwarz
+ Reconstituted compatibility by reintroducing Ircam's 1RES matrix def
+ and actually creating the 2RES "official" definition.  To be cleared up.
+
  Revision 1.10  2001/04/20 16:58:38  schwarz
  Temporarily removed IDIS matrix reference, because no-one remembers
  how it is defined and its not used anyway.
@@ -41,13 +45,15 @@
  First preliminary trial test version of SDIF types definition using XML:
  xmltostyp.pl generates library-types file sdiftypes.styp from sdiftypes.xml,
  xmltohtml.pl generates documentation file sdiftypes.html from sdiftypes.xml.
+
+ END OF CHANGE-LOG
 -->
 
 
 <types-version>Ircam_1.6</types-version>
 
 <types-revision>
-  $Id: sdiftypes.xml,v 1.11 2001-05-02 15:28:48 schwarz Exp $
+  $Id: sdiftypes.xml,v 1.12 2001-06-08 18:48:11 schwarz Exp $
 </types-revision>
 
 
@@ -453,8 +459,8 @@ Some points to note about the SDIF types XML format:
 
 <matrix signature="IENV" name="SpectralEnvelopeInfo">
   <description>
-	Spectral envelopes information matrix, defines interpretation 
-	of following <matrixref signature="1ENV">1ENV matrix</matrixref>
+	Spectral envelopes information matrix, defines the interpretation 
+	of the following <matrixref signature="1ENV">1ENV matrix</matrixref>
         The linear+logarithmic scaling is linear under a certain
 	frequency called Break Frequency, then logarithmic above.
         The exact formula is described in:
@@ -466,8 +472,8 @@ Some points to note about the SDIF types XML format:
   <rows num="1"/>
 
   <column name="HighestBinFrequency" unit="Hz">	
-	?? frequency of the highest bin of the <matrixref signature="1ENV">
-        1ENV matrix ??</matrixref>
+	Frequency of the highest bin of the 
+	<matrixref signature="1ENV">1ENV matrix</matrixref>
   </column>
 
   <column name="ScaleType">
@@ -479,6 +485,7 @@ Some points to note about the SDIF types XML format:
   </column>
 </matrix>
 
+
 <matrix signature="1ENV" name="SpectralEnvelope">
   <float/><double/>
   <description>
@@ -487,12 +494,22 @@ Some points to note about the SDIF types XML format:
      A spectral envelope is the envelope of the magnitude of
      a short-time frequency estimate such
      as the Short Time Fourier Transform. 
+
+     The <i>n</i> envelope bins in the rows of this matrix define
+     <i>n</i> equidistant spectral envelope points from 0 Hz to
+     <i>HighestBinFrequency</i>.  The envelope's amplitude outside
+     this range is to be considered as zero.
+
      See for instance:
 	Diemo Schwarz, <a href="http://www.ircam.fr/anasyn/schwarz/da/"><i>Spectral Envelopes in Sound Analysis and Synthesis</i></a>, Master's thesis, 1998.
   </description>
-  <rows>A row corresponds to one bin of the spectral envelope</rows>
-  <column name="Env">envelope bin</column>
+  <rows>
+	A row corresponds to one bin of the spectral envelope,
+	containing its linear amplitude
+  </rows> 
+  <column name="Env">envelope bins</column>
 </matrix>
+
 
 <frame signature="1ENV" name="SpectralEnvelope" status="proposed">
   <description>
@@ -506,6 +523,7 @@ Some points to note about the SDIF types XML format:
     gain of the original signal = desired gain for the synthesised signal
   </matrixref>
 </frame>
+
 
 
 <matrix signature="ITFC" name="TransferFunctionCoefficientsInfo">
