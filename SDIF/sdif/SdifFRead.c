@@ -1,4 +1,4 @@
-/* $Id: SdifFRead.c,v 3.22 2004-09-10 09:15:56 roebel Exp $
+/* $Id: SdifFRead.c,v 3.23 2004-09-14 15:45:33 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -31,6 +31,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.22  2004/09/10 09:15:56  roebel
+ * Added missing prototype for SdifMatrixDataUpdateHeader. This is necessary to compile with c++.
+ *
  * Revision 3.21  2004/09/09 17:47:53  schwarz
  * SdifFReadMatrixData allows to read and store a whole matrix's data as
  * one block in an SdifMatrixDataT, with automatic reallocation.
@@ -191,9 +194,6 @@ SdifFReadChunkSize(SdifFileT *SdifF)
 }
 
 
-
-
-
 size_t 
 SdifFReadGeneralHeader(SdifFileT *SdifF)
 {
@@ -209,11 +209,12 @@ SdifFReadGeneralHeader(SdifFileT *SdifF)
   SizeR += SdiffReadUInt4 (&(SdifF->TypesVersion),  1, SdifF->Stream) * sizeof(SdifUInt4);
   
   if (SdifF->CurrSignature != eSDIF)
-    {
+  {
       sprintf(errorMess, "%s not correctly read", 
 	      SdifSignatureToString(eSDIF));
       _SdifFError(SdifF, eBadHeader, errorMess);
-    }
+      return 0;
+  }
 
   /* read rest of header chunk (might contain additional data) */
   SdifFReadPadding (SdifF, SdifF->ChunkSize - (SizeR - SizeS));
@@ -227,14 +228,14 @@ SdifFReadGeneralHeader(SdifFileT *SdifF)
 
       sprintf (errorMess, mfmt, SdifF->FormatVersion, _SdifFormatVersion);
       _SdifFError(SdifF, eBadFormatVersion, errorMess);
-    }
+      return 0;
+  }
     
   return SizeR;
 }
 
 
-
-size_t
+size_t 
 SdifFReadNameValueLCurrNVT(SdifFileT *SdifF)
 {
   /* Signature of chunck already read and checked for 1NVT */
@@ -267,7 +268,6 @@ SdifFReadNameValueLCurrNVT(SdifFileT *SdifF)
 }
 
 
-
 size_t
 SdifFReadOneMatrixType(SdifFileT *SdifF)
 {
@@ -275,11 +275,11 @@ SdifFReadOneMatrixType(SdifFileT *SdifF)
 }
 
 
-
 size_t SdifFReadOneFrameType(SdifFileT *SdifF)
 {
   return SdifFGetOneFrameType(SdifF, 's');
 }
+
 
 /****************************************************************************/
 /* THE FOLLOWING FUNCTION DOESN'T TAKE CARE ANYMORE ABOUT THE OLD SDIF SPECIFICATION */
