@@ -1,4 +1,4 @@
-/* $Id: loadsdif-subs.c,v 1.9 2001-05-28 16:32:32 roebel Exp $
+/* $Id: loadsdif-subs.c,v 1.10 2001-05-29 09:55:21 roebel Exp $
 
    loadsdif_subs.c	25. January 2000	Diemo Schwarz
 
@@ -14,6 +14,12 @@
    endread ('close')
 
   $Log: not supported by cvs2svn $
+  Revision 1.9  2001/05/28 16:32:32  roebel
+  Added support for reading char data and 1NVT frames
+  and matrices. The initial loadsdif call now returns
+  the ASCII chunks of type 1NVT and 1IDS that make up
+  the header of the SDIF file.
+
   Revision 1.8  2001/04/19 18:28:29  roebel
   Changed error handling in readframe to be consistent with the
   behavior of sdifextract
@@ -136,6 +142,7 @@ SdifFileT *beginread (int nlhs, mxArray *plhs [], char *filename, char *types)
 	  strcpy(localstr,string->str);
 	  plhs[0] = mxCreateString(localstr);
 	  SdifStringFree(string);
+	  free(localstr);
 	}
     }
 
@@ -248,13 +255,11 @@ static size_t readmatrix (SdifFileT *f, mxArray *mxarray [MaxNumOut])
 		 nrow = SdifFCurrNbRow(f);
 
     SdifDataTypeET DataType = SdifFCurrDataType(f);
-    printf("dat %d t = %d \n",DataType,eText);
 
     switch (DataType){
     case eText:{
       char *str = calloc(nrow*ncol+1,1);
       double matData;
-    printf("read cahr \n");
 
       mxarray [1] = mxCreateDoubleMatrix (1, 1, mxREAL);
       *(mxGetPr (mxarray [1])) = SdifFCurrTime (f);
@@ -279,13 +284,13 @@ static size_t readmatrix (SdifFileT *f, mxArray *mxarray [MaxNumOut])
 							     bytesread));
 
       mxarray [0] = mxCreateString(str);
+      free(str);
     }
     break;
 
     case eFloat4:
       /* alloc output array and scalars */
 
-    printf("read float \n");
 
       mxarray [0] = mxCreateDoubleMatrix (nrow, ncol, mxREAL);
       mxarray [1] = mxCreateDoubleMatrix (1, 1, mxREAL);
@@ -298,7 +303,6 @@ static size_t readmatrix (SdifFileT *f, mxArray *mxarray [MaxNumOut])
       prmtx		     = mxGetPr (mxarray [0]);
       *(mxGetPr (mxarray [1])) = SdifFCurrTime (f);
       *(mxGetPr (mxarray [2])) = SdifFCurrID (f);
-    printf("read row %d col %d \n",nrow,ncol);
       
       for (row = 0; row < nrow; row++)
 	{
@@ -323,6 +327,8 @@ static size_t readmatrix (SdifFileT *f, mxArray *mxarray [MaxNumOut])
 				    SdifSignatureToString (SdifFCurrFrameSignature(f)));
       mxarray [4] = mxCreateString (
 				    SdifSignatureToString (SdifFCurrMatrixSignature(f)));
+      bytesread   += SdifFSkipMatrixData(f);
+
       break;
     }
     return (bytesread);
