@@ -1,6 +1,6 @@
 dnl -*-autoconf-*-  (No, it's an autoconf file!)
 dnl -*-m4-*- (He emacs, it's a m4 file)
-dnl $Id: configure.in,v 1.16 2003-05-19 14:06:00 roebel Exp $
+dnl $Id: configure.in,v 1.17 2003-05-21 20:40:49 roebel Exp $
 dnl
 dnl configure.in		Feb 2003      Axel Roebel
 dnl
@@ -33,6 +33,12 @@ dnl
 dnl
 
 dnl $Log: not supported by cvs2svn $
+dnl Revision 1.16  2003/05/19 14:06:00  roebel
+dnl Resolved possible name conflict due to declaration of VERSION in installed files.
+dnl easdif_config.h is used only locally while easdif_version.h is installed and used by
+dnl user applications.
+dnl VERSION is now a c-string.
+dnl
 dnl Revision 1.15  2003/05/18 21:12:03  roebel
 dnl Version 0.5.0
 dnl
@@ -81,7 +87,7 @@ PACKAGE=Easdif
 
 versmaj=0
 versmin=5
-versrel=0
+versrel=1
 VERSION="${versmaj}.${versmin}.${versrel}"
 
 AC_SUBST(PACKAGE)
