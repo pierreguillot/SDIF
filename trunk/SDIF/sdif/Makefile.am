@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.21 2002-10-07 12:24:14 roebel Exp $
+# $Id: Makefile.am,v 1.22 2002-10-24 13:51:09 tisseran Exp $
 #
 # ./sdif/Makefile.am		September 2000			Patrice Tisserand
 #
@@ -29,6 +29,9 @@
 # send email to:  sdif@ircam.fr
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.21  2002/10/07 12:24:14  roebel
+# Fixed dependence with respect to include files in /u/formes/share/include for non ircam configuration
+#
 # Revision 1.20  2002/10/04 13:14:04  roebel
 # Changed update check of formes include files from date comparison
 # to comparison with cmp.
@@ -107,8 +110,13 @@
 # Added header with copyright and links to all Makefile.am and configure.in.
 #
 
-EXTRA_LIBRARIES = libsdif.a libsdif-debug.a libsdif-cpp.a
-lib_LIBRARIES = @SELLIB@
+# EXTRA_LIBRARIES = libsdif.a libsdif-debug.a libsdif-cpp.a
+EXTRA_LTLIBRARIES = libsdif.la libsdif-debug.la libsdif-cpp.la
+
+# lib_LIBRARIES = @SELLIB@
+lib_LTLIBRARIES = @SELLIB@
+
+
 FORMES_H=host_architecture.h  preincluded.h UniversalEnvVar.h  XpGuiCalls.h
 FORMES_INCLUDE=/u/formes/share/include
 
@@ -128,7 +136,22 @@ SDIF_H = ../include/sdif_version.h $(top_srcdir)/include/sdif.h \
 
 noinst_HEADERS = $(SDIF_H) $(addprefix $(top_srcdir)/sdif/,${FORMES_H})
 
-libsdif_a_SOURCES =  SdifHash.c       SdifGlobals.c      SdifSignatureTab.c   \
+# libsdif_a_SOURCES =  SdifHash.c       SdifGlobals.c      SdifSignatureTab.c   \
+# 		     SdifMemory.c     SdifNameValue.c    SdifMatrixType.c     \
+# 		     SdifStreamID.c   SdifMatrix.c       SdifFrame.c          \
+# 		     SdifTest.c       SdifTimePosition.c SdifFile.c           \
+# 		     SdifFGet.c       SdifFRead.c        SdifFScan.c          \
+# 		     SdifFPrint.c     SdifFWrite.c       SdifTextConv.c       \
+# 		     SdifHard_OS.c    SdifErrMess.c      SdifList.c           \
+# 		     SdifSelect.c     SdifHighLevel.c    SdifCheck.c          \
+# 		     SdifString.c     SdifError.c        SdifFrameType.c      \
+# 		     SdifPrint.c      SdifRWLowLevel.c   SdifFPut.c           \
+# 		     SdifConvToText.c SdifPreTypes.c
+
+# libsdif_debug_a_SOURCES = $(libsdif_a_SOURCES)
+# libsdif_cpp_a_SOURCES   = $(libsdif_a_SOURCES)
+
+libsdif_la_SOURCES =  SdifHash.c       SdifGlobals.c      SdifSignatureTab.c   \
 		     SdifMemory.c     SdifNameValue.c    SdifMatrixType.c     \
 		     SdifStreamID.c   SdifMatrix.c       SdifFrame.c          \
 		     SdifTest.c       SdifTimePosition.c SdifFile.c           \
@@ -140,8 +163,12 @@ libsdif_a_SOURCES =  SdifHash.c       SdifGlobals.c      SdifSignatureTab.c   \
 		     SdifPrint.c      SdifRWLowLevel.c   SdifFPut.c           \
 		     SdifConvToText.c SdifPreTypes.c
 
-libsdif_debug_a_SOURCES = $(libsdif_a_SOURCES)
-libsdif_cpp_a_SOURCES   = $(libsdif_a_SOURCES)
+libsdif_debug_la_SOURCES = $(libsdif_la_SOURCES)
+libsdif_cpp_la_SOURCES   = $(libsdif_la_SOURCES)
+
+libsdif_la_LDFLAGS = -release @SDIF_VERSION@
+libsdif_debug_la_LDFLAGS = $(libsdif_la_LDFLAGS)
+libsdif_cpp_la_LDFLAGS   = $(libsdif_la_LDFLAGS) -lstdc++
 
 sdiftype = $(datadir)/SdifTypes.STYP
 
