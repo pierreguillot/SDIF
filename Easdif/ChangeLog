@@ -1,3 +1,7 @@
+2003-05-28  Axel Roebel  <Axel.Roebel@ircam.fr>
+
+	* Added configuration dependend map support for swig.
+
 2003-05-26  Axel Roebel  <Axel.Roebel@ircam.fr>
 Version 0.7.1
 	
@@ -384,4 +388,4 @@ Version 0.21
 	* ChangeLog: Added changelog to repository.
 
 
-$Id: ChangeLog,v 1.17 2003-05-26 16:10:17 roebel Exp $
+$Id: ChangeLog,v 1.18 2003-05-28 16:58:24 roebel Exp $
