@@ -1,7 +1,20 @@
-<sdif-tdl version="0.3alpha">
+<!-- emacs mode: -*-xml-*- -->
 
-<!-- 
+<sdif-tdl version="0.3alpha"> 
+
+<types-version>Ircam_1.7</types-version>
+
+<types-revision>
+  $Id: sdiftypes.xml,v 1.14 2002-08-28 17:27:53 schwarz Exp $
+</types-revision>
+
+
+<!-----------------------------------------------------------------------------
+
  $Log: not supported by cvs2svn $
+ Revision 1.13  2002/08/08 15:08:52  schwarz
+ sample
+
  Revision 1.12  2001/06/08 18:48:11  schwarz
  CHANGE OF DEFINITION OF A SPECTRAL ENVELOPE!
 
@@ -55,17 +68,11 @@
  xmltohtml.pl generates documentation file sdiftypes.html from sdiftypes.xml.
 
  END OF CHANGE-LOG
--->
+
+------------------------------------------------------------------------------>
 
 
-<types-version>Ircam_1.6</types-version>
-
-<types-revision>
-  $Id: sdiftypes.xml,v 1.13 2002-08-08 15:08:52 schwarz Exp $
-</types-revision>
-
-
-<!-- READ THIS FIRST:
+<!-- READ THIS FIRST ----------------------------------------------------------
 
 Some points to note about the SDIF types XML format:
 
@@ -95,14 +102,38 @@ Some points to note about the SDIF types XML format:
   <frameref>, in description text to insert a hyperlink to the
   matrix/frame definition.
 
--->
+------------------------------------------------------------------------------>
 
 
-<!-- SOME OPEN QUESTIONS ABOUT THE SDIF-TDL XML-FORMAT:
+<!-- TYPE DEFINITION TEMPLATES ------------------------------------------------
+
+<matrix signature="" name="" status="">
+  <description>
+
+  </description>
+  <float/>
+  <column name=""></column>
+</matrix>
+
+
+<frame signature="" name="" status="">
+  <description>
+
+  </description>
+
+  <matrixref signature="" occurrence=""></matrixref>
+</frame>
+
+------------------------------------------------------------------------------>
+
+
+<!-- SOME OPEN QUESTIONS ABOUT THE SDIF-TDL XML-FORMAT ------------------------
 
 - Matrix data types are declared like this:
 
-  <float/><double/>
+  any of:
+
+  <float/><double/><int16/><uint16/><int32/><uint32/><text/>
 
   alternative data type definitions: 
 
@@ -110,7 +141,9 @@ Some points to note about the SDIF types XML format:
   <data type="float"/> <data type="double"/> <data type="float" type="double"/>
 					     <data type="float|double"/>
 !!<datatype><integer size="2"/> or <integer width="16"/>
-	    <float/> <double/>  or <real size="4"/> or <real width="32"/>
+         or <int16/><uint16/><int32/><uint32/>
+            <real size="4"/> or <real width="32"/>
+	 or <float/> <double/>
 	    <text/> <rawbyte/>
   </datatype>
 
@@ -148,12 +181,13 @@ Some points to note about the SDIF types XML format:
 
   Can we plug something like MathML into sdif-tdl?
 
--->
+------------------------------------------------------------------------------>
 
 
 
-
+<!---------------------------------------------------------------------------->
 <section>Supporting Types</section>
+<!---------------------------------------------------------------------------->
 
 
 <matrix signature="1NVT" name="NameValueTable" status="standard">
@@ -226,7 +260,10 @@ Some points to note about the SDIF types XML format:
 
 
 
+<!---------------------------------------------------------------------------->
 <section>Types used in different contexts</section>
+<!---------------------------------------------------------------------------->
+
 
 <matrix signature="1GAI" name="Gain">
   <description>
@@ -314,7 +351,11 @@ Some points to note about the SDIF types XML format:
 
 
 
+
+
+<!---------------------------------------------------------------------------->
 <section>Fundamental Frequency Estimation</section>
+<!---------------------------------------------------------------------------->
 
 
 <matrix signature="1FQ0" name="FundamentalFrequencyEstimate">
@@ -352,8 +393,9 @@ Some points to note about the SDIF types XML format:
 
 
 
+<!---------------------------------------------------------------------------->
 <section>Sinusoidal Modeling</section>
-
+<!---------------------------------------------------------------------------->
 
 
 <matrix signature="1PIC" name="PickedPeaks" status="standard">
@@ -462,7 +504,9 @@ Some points to note about the SDIF types XML format:
 
 
 
+<!---------------------------------------------------------------------------->
 <section>Spectral Envelopes, Transfer Functions and Filters</section>
+<!---------------------------------------------------------------------------->
 
 
 <matrix signature="IENV" name="SpectralEnvelopeInfo">
@@ -630,7 +674,10 @@ Some points to note about the SDIF types XML format:
 
 
 
+<!---------------------------------------------------------------------------->
 <section>Resonances</section>
+<!---------------------------------------------------------------------------->
+
 
 <description title="Note">There exists a little confusion about the <matrixref
 signature="1RES">1RES</matrixref> and <matrixref
@@ -759,9 +806,9 @@ signature="2RES">2RES</matrixref> matrix type.  To be cleared up.</description>
 
 
 
-
-
+<!---------------------------------------------------------------------------->
 <section>Fourier Transform</section>
+<!---------------------------------------------------------------------------->
 
 
 <matrix signature="ISTF" name="FourierTransformInfo">
@@ -844,9 +891,10 @@ Notes:
 
 
 
-
-
+<!---------------------------------------------------------------------------->
 <section>Energy</section>
+<!---------------------------------------------------------------------------->
+
 
 <matrix signature="INRG" name="ScaleAndFactor">
   <description>
@@ -906,7 +954,11 @@ Notes:
 </frame>
 
 
+
+
+<!---------------------------------------------------------------------------->
 <section>Time-Domain Samples</section>
+<!---------------------------------------------------------------------------->
 
 
 <matrix signature="ITDS" name="TimeDomainSamplesInfo">
@@ -947,8 +999,9 @@ Notes:
 
 
 
-
+<!---------------------------------------------------------------------------->
 <section>Time markers</section>
+<!---------------------------------------------------------------------------->
 
 
 <matrix signature="1PEM" name="PeriodMarker">
@@ -1028,9 +1081,100 @@ analysis frame gives the time of the mark
 </matrix>
 
 
+<matrix signature="1BEG" name="SegmentStart" status="proposed">
+  <description>
+    This matrix type describes the start of a temporal segment of
+    sound.  Segments can be identified by a unique Id (over the whole
+    SDIF file or entity).
+  </description>
+  <uint16/><uint32/>
+  <rows>One row per segment that starts at this frame's time </rows>
+  <column name="Id" occurrence="optional">
+    File-unique identifier of segment.
+  </column>
+</matrix>
+
+<matrix signature="1END" name="SegmentEnd" status="proposed">
+  <description>
+    This matrix type describes the end of a temporal segment of
+    sound.  Segments can be identified by a unique Id (over the whole
+    SDIF file or entity).
+  </description>
+  <uint16/><uint32/>
+  <rows>One row per segment that starts at this frame's time </rows>
+  <column name="Id" occurrence="optional">
+    File-unique identifier of segment.
+  </column>
+</matrix>
 
 
+<matrix signature="1SEG" name="Segmentation" status="proposed">
+  <description>
+    This matrix type describes a temporal segmentation mark of
+    sound.
+  </description>
+  <float/><double/>
+  <rows>One</rows>
+  <column name="Confidence" occurrence="optional">
+    Confidence that the placement of the segmentation mark was correct.
+  </column>
+</matrix>
+
+<frame signature="1SEG" name="Segmentation" status="proposed">
+  <description>
+    This frame type describes a temporal segmentation mark of sound.
+  </description>
+  <matrixref signature="1SEG" occurrence="required">Segmentation</matrixref>
+</frame>
+
+
+<matrix signature="1LAB" name="Label" status="proposed">
+  <description>
+    This string matrix type gives the label of any temporal mark
+    described in a <frameref signature="1MRK">Mark frame</frameref>.
+  </description>
+  <text/>
+  <column name="Chars">The text</column>
+</matrix>
+
+
+<frame signature="1MRK" name="Marker" status="proposed">
+  <description>
+    <strong>1MRK</strong> frame type stands for
+    <strong>Marker</strong>.  Usually analysis method estimate
+    parameters at a given time (examples: sinusoidal analysis,
+    spectral analysis, ...). In the opposite, the results of some
+    analysis method can be a serie of times (examples: detection of
+    the times where abrupt changes occur, detection of the times of
+    glottal closures, ...). The results of these analysis, which is
+    essentially a series of times, is stored in as a series of frames.
+    The time of each of these frames is the resulis of the analysis
+    and the matrix inside each frame describe what this frame refer
+    to, or in other word which analysis method has decided to point to
+    this time (example: this frame time has been pointed by a glottal
+    closure detection algorithm). In some cases, it is also important
+    to add information related to the results (example: coded waveform
+    of a transient).
+  </description>
+
+  <matrixref signature="1BEG" occurrence="optional">SegmentStart</matrixref>
+  <matrixref signature="1END" occurrence="optional">SegmentEnd</matrixref>
+  <matrixref signature="1SEG" occurrence="optional">Segmentation</matrixref>
+  <matrixref signature="1LAB" occurrence="optional">Label</matrixref>
+  <matrixref signature="1PEM" occurrence="optional">PeriodMarker</matrixref>
+  <matrixref signature="ITMR" occurrence="optional">TransientMarkerRepresentation</matrixref>
+  <matrixref signature="ITMI" occurrence="optional">TransientMarkerIdentifier</matrixref> 
+
+</frame>
+
+
+
+
+
+
+<!---------------------------------------------------------------------------->
 <section>Voiced-Unvoiced Decision</section>
+<!---------------------------------------------------------------------------->
 
 
 <matrix signature="1VUN" name="VoicedUnvoicedNorm">
@@ -1061,28 +1205,6 @@ or noisy in the general case).  Range: [0, 1/2 Nyquist Frequency].
   <column name="CuttingFrequency" unit="Hz">Voiced/Unvoiced cutting frequency, range: [0, 1/2 Nyquist Frequency]</column>
 </matrix>
 
-<frame signature="1MRK" name="Marker" status="proposed">
-  <description>
-<strong>1MRK</strong> frame type stands for <strong>Marker</strong>.
-Usually analysis method estimate parameters at a given time (examples:
-sinusoidal analysis, spectral analysis, ...). In the opposite, the
-results of some analysis method can be a serie of times (examples:
-detection of the times where abrupt changes occur, detection of the
-times of glottal closures, ...). The results of these analysis, which
-is essentially a series of times, is stored in as a series of frames.
-The time of each of these frames is the resulis of the analysis and
-the matrix inside each frame describe what this frame refer to, or in
-other word which analysis method has decided to point to this time
-(example: this frame time has been pointed by a glottal closure
-detection algorithm). In some cases, it is also important to add
-information related to the results (example: coded waveform of a
-transient).
-</description>
-  <matrixref signature="1PEM" occurrence="required">PeriodMarker</matrixref>
-  <matrixref signature="ITMR" occurrence="required">TransientMarkerRepresentation</matrixref>
-  <matrixref signature="ITMI" occurrence="required">TransientMarkerIdentifier</matrixref> 
-</frame>
-
 
 <frame signature="1VUV" name="VoicedUnvoiced" status="proposed">
   <description>
@@ -1098,7 +1220,60 @@ property of the current time.
 
 
 
+
+<!---------------------------------------------------------------------------->
+<section>MIDI Data</section>
+<!---------------------------------------------------------------------------->
+
+
+<matrix signature="1MID" name="MIDIEvent" status="proposed">
+  <description>
+    This matrix contains raw MIDI event data.
+  </description>
+  <byte/>
+  <rows>MIDI events occuring at the frame's time</rows>
+  <column name="Status" occurrence="required">
+    MIDI status byte.
+  </column>
+  <column name="Data1" occurrence="optional">
+    First data byte.
+  </column>
+  <column name="Data2" occurrence="optional">
+    Second data byte.
+  </column>
+</matrix>
+
+<matrix signature="1SYX" name="MIDISystemExclusive" status="proposed">
+  <description>
+    This matrix contains one raw MIDI system exclusive event.
+  </description>
+  <byte/>
+  <rows>Sysex bytes, including the leading and the closing bytes</rows>
+  <column name="Data" occurrence="required">
+    Raw data bytes.
+  </column>
+</matrix>
+
+<frame signature="1MID" name="MIDI" status="proposed">
+  <description>
+    This frame type contains raw MIDI event data.
+  </description>
+  <matrixref signature="1MID" occurrence="optional">
+    MIDI event data
+  </matrixref>
+  <matrixref signature="1SYX" occurrence="optional">
+    MIDI system exclusive data
+  </matrixref>
+</frame>
+
+
+
+
+
+
+<!---------------------------------------------------------------------------->
 <section>jMax Physical Model Parameters</section>
+<!---------------------------------------------------------------------------->
 
 
 <matrix signature="EMPM" name="Tableau">
