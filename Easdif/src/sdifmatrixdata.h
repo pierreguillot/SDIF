@@ -8,9 +8,12 @@
  * 
  * 
  * 
- * $Id: sdifmatrixdata.h,v 1.3 2002-07-12 10:27:34 ftissera Exp $ 
+ * $Id: sdifmatrixdata.h,v 1.4 2002-08-28 16:46:53 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.3  2002/07/12 10:27:34  ftissera
+ * *** empty log message ***
+ *
  * Revision 1.2  2002/06/18 14:47:45  ftissera
  * add comments
  * 
@@ -26,16 +29,25 @@
 
 #include <vector>
 #include <sdif.h>
-#include "sdifmatrixdatainterface.h"
+#include "easdif/sdifmatrixdatainterface.h"
 
+
+/** 
+ * @brief class which can store the value in template type
+ *  class for the data storage and the operation on data
+ */
 template <class T>
-class SDIFMatrixData : public SdifMatrixDataInterface
+class SDIFMatrixData : public SDIFMatrixDataInterface//SdifMatrixDataInterface
 {
 
 private:
 
     int m_Nrows;
     int m_Ncols;
+
+/** 
+ * vector which store the data in natural type
+ */
     std::vector<T> m_Data;
 
 public:
@@ -57,6 +69,16 @@ public:
 	};
 	
 
+/*************************************************************************/
+/* Get data */
+/**
+* \defgroup getdata SDIFMatrixData - Get data 
+*/
+
+
+/** 
+ *  template method for getting data
+ */
     template <class TT>
     TT Get(int i, int j)
 	{
@@ -68,28 +90,94 @@ public:
 	   return  static_cast<TT>(m_Data[i*m_Ncols+j]);
 	}
 
+/**
+ * \ingroup getdata
+ * get the value in double
+ * 
+ * @param i row index
+ * @param j column index
+ * 
+ * @return the value
+ */
     double GetDouble(int i, int j)
 	{
 	    return Get<double>(i, j);   
 	}
 
+/** 
+ * \ingroup getdata
+ * get the value in float
+ * 
+ * @param i row index
+ * @param j column index
+ * 
+ * @return the value
+ */
     float GetFloat(int i, int j)
 	{
 	    return Get<float>(i, j);   
 	}
 
+/** 
+ * \ingroup getdata
+ * get the value in int
+ * 
+ * @param i row index
+ * @param j column index
+ * 
+ * @return the value
+ */
     int GetInt(int i, int j)
 	{	    
 	    return Get<int>(i, j);   
 	}
 
-    void Resize(int nrows, int ncols)
+/** 
+ * \ingroup getdata
+ * get the vector of data
+ * @return vector of template type
+ */
+    inline std::vector<T>& GetData()
 	{
-	    m_Nrows = nrows;
-	    m_Ncols = ncols;
-	    m_Data.resize(m_Nrows*m_Ncols);
+	    return m_Data;
 	}
 
+
+/*************************************************************************/
+/* Get members*/
+/**
+* \defgroup getmemb SDIFMatrixData - Get members
+*/
+/** 
+ * \ingroup getmemb
+ * @brief get the row number of values
+ */
+   inline  int GetNbRow()
+	{
+	    return m_Nrows;
+	}
+
+/** 
+ * \ingroup getmemb
+ * @brief get the column number of values
+ */
+    inline int GetNbCol() 
+	{
+	    return m_Ncols;
+	}
+
+/*************************************************************************/
+/* Read and Write data */
+/**
+* \defgroup rnwdata SDIFMatrixData - Read and Write data 
+*/
+
+/** 
+ * \ingroup rnwdata
+ * read the data in the file and store in a vector of data in template type
+ * 
+ * @param file 
+ */
     int read(SdifFileT* file)
 	{
 	    int bytesread = 0;
@@ -106,6 +194,13 @@ public:
 	    return bytesread; 
 	}
 
+/**
+ * \ingroup rnwdata 
+ * take the SDIFMatrixData values in the vector and write them in the
+ * file
+ * 
+ * @param file 
+ */
     int write(SdifFileT* file)
 	{
 	    int SizeFrameW = 0;
@@ -126,6 +221,18 @@ public:
 	    return SizeFrameW;
 	}
 
+
+/*************************************************************************/
+/* Other */
+/**
+* \defgroup otherdata SDIFMatrixData - Other
+*/
+
+
+/** 
+ * \ingroup otherdata
+ * used for viewing the data 
+ */
     void view()
 	{
 	    int row;
@@ -141,39 +248,73 @@ public:
 
 	}
 
-
-   inline  int GetNbRow()
-	{
-	    return m_Nrows;
-	}
-    inline int GetNbCol() 
-	{
-	    return m_Ncols;
-	}
-
-    inline std::vector<T>& GetData()
-	{
-	    return m_Data;
-	}
-
+/**
+ * \ingroup otherdata 
+ * @brief 
+ */
     inline int CopyData(std::vector<T>& data)
 	{
 	    data.resize(m_Data.size());
 	    std::copy(m_Data.begin(), m_Data.end(), data.begin());
 	}
 
+/** 
+ * \ingroup otherdata
+ * resize the vector
+ * 
+ * @param nrows 
+ * @param ncols 
+ */
+    void Resize(int nrows, int ncols)
+	{
+	    m_Nrows = nrows;
+	    m_Ncols = ncols;
+	    m_Data.resize(m_Nrows*m_Ncols);
+	}
+
+
+/*************************************************************************/
+/* Set the data */
+/**
+* \defgroup setdata SDIFMatrixData - Set data 
+*/
+
+/** 
+ * \ingroup setdata
+ * set a value of type int
+ * 
+ * @param i 
+ * @param j 
+ * @param value 
+ */
     inline int Set(int i, int j, const int& value)
 	{
 	    m_Data[i*m_Ncols+j] = static_cast<T>(value);
 	    return 1;
 	}
 
+/** 
+ * \ingroup setdata
+ * set a value of type float
+ * 
+ * @param i 
+ * @param j 
+ * @param value 
+ */
     inline int Set(int i, int j, const float& value)
 	{
 	    m_Data[i*m_Ncols+j] = static_cast<T>(value);
 	    return 1;
 	}
 
+/** 
+ * \ingroup setdata
+ * set a value of type double
+ * 
+ * @param i 
+ * @param j 
+ * @param value
+ */
     inline int Set(int i, int j, const double& value)
 	{
 	    m_Data[i*m_Ncols+j] = static_cast<T>(value);

@@ -7,9 +7,12 @@
  * 
  * 
  * 
- * $Id: sdifframe.cpp,v 1.4 2002-07-12 10:18:17 ftissera Exp $ 
+ * $Id: sdifframe.cpp,v 1.5 2002-08-28 16:46:53 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.4  2002/07/12 10:18:17  ftissera
+ * Read has changed for selection
+ *
  * Revision 1.3  2002/06/18 14:50:19  ftissera
  * add methods with SDIFEntity for reading and writing
  *
@@ -19,54 +22,41 @@
  * 
  */
 
-#include "sdifframe.h"
-#include "sdifentity.h"
-
-/* for the frame selection */
-int SDIFFrame::Select()
-{
-   return  mSelected = 1;
-}
-
-int SDIFFrame::DeSelect()
-{
-    return mSelected = 0;
-}
-
-int SDIFFrame::IsSelected()
-{
-    return mSelected;
-}
+#include "easdif/sdifframe.h"
+#include "easdif/sdifentity.h"
 
 /* for reading */
-int SDIFFrame::Read(SdifFileT* file)
+int SDIFFrame::Read(SdifFileT* file,int &eof)
 {
     mFrameBytesRead = 0;
-    // int eof = 0;//
 
     mFrameBytesRead += ReadInfo(file);
     /* for selection */
     if (mFrameBytesRead == 0)
     {
 	SdifFSkipFrameData (file);
-	//eof = SdifFGetSignature (file, &mFrameBytesRead) == eEof;
-	SdifFGetSignature (file, &mFrameBytesRead);
+	//to have exception
+	eof = (SdifFGetSignature (file, &mFrameBytesRead) == eEof);
 	return 0;
     }
-
-    Resize(file);
+    Resize();
     mFrameBytesRead += ReadData(file);
 
+    /* to have exception */
+    eof = (SdifFGetSignature (file, &mFrameBytesRead) == eEof);
     return mFrameBytesRead;    
 }
 
 /* for reading with SDIFEntity */
 //void SDIFFrame::Read(const SDIFEntity& entity)
-int SDIFFrame::Read(const SDIFEntity& entity)
+//int SDIFFrame::Read(const SDIFEntity& entity)
+int SDIFFrame::Read(SDIFEntity& entity)
 {
     mFrameBytesRead = 0;
     SdifFileT* file = entity.GetFile();
-    return Read(file);
+
+    if(entity.eof()) return -1;
+    return Read(file,entity.eof());
 
 /*
     SdifFileT* file = entity.GetFile();
@@ -81,33 +71,39 @@ int SDIFFrame::ReadData(SdifFileT* file)
 {
     int BytesRead = 0;
     SdifUInt4 index;
-    for (index = 0; index < mNbMatrix; index++)
+    for (index = 0; index < mNbMatrix; ){
 	BytesRead += mv_Matrix[index].Read(file);
-
+	if(mv_Matrix[index].GetSignature() == 0)
+	    mNbMatrix --;
+	else
+	    index++;
+    }
+    Resize();
     return BytesRead;
 }
 
 /* reading the data with SDIFEntity*/
-void SDIFFrame::ReadData(const SDIFEntity& entity)
+int SDIFFrame::ReadData(const SDIFEntity& entity)
 {
-    SdifUInt4 index;
+
     SdifFileT* file = entity.GetFile();
-    for (index = 0; index < mNbMatrix; index++)
-	mFrameBytesRead += mv_Matrix[index].Read(file);
+    return ReadData(file);
 }
 
 /* reading the informations */
 int SDIFFrame::ReadInfo(SdifFileT* file)
 {
     int BytesRead = 0;  
+    //size_t BytesRead = 0;
+    //int eof = 0;
 
     BytesRead += SdifFReadFrameHeader(file);
 
     /* for selection*/
        if (!SdifFCurrFrameIsSelected (file))
 	  {
-	//SdifFSkipFrameData (file);
-	    //    eof = SdifFGetSignature (file, &bytesread) == eEof;
+	      //SdifFSkipFrameData (file);
+	      //eof = SdifFGetSignature (file, &bytesread) == eEof;
 	 return 0;
 	  }
 
@@ -117,21 +113,14 @@ int SDIFFrame::ReadInfo(SdifFileT* file)
     mNbMatrix  = SdifFCurrNbMatrix(file);
 
     return BytesRead;
-//    return 0;
 }
 
 
 /* reading the informations with SDIFEntity */
-void SDIFFrame::ReadInfo(const SDIFEntity& entity)
+int SDIFFrame::ReadInfo(const SDIFEntity& entity)
 {
     SdifFileT* file = entity.GetFile();
-    mFrameBytesRead = 0;
-    mFrameBytesRead += SdifFReadFrameHeader(file);
-    
-    mTime    = SdifFCurrTime(file);
-    mSig      = SdifFCurrFrameSignature(file);
-    mStreamID = SdifFCurrID(file);
-    mNbMatrix  = SdifFCurrNbMatrix(file);
+    return ReadInfo(file);
 }
 
 
@@ -147,14 +136,9 @@ int SDIFFrame::Write(SdifFileT* file)
 }
 
 /* for writing with SDIFEntity */
-void SDIFFrame::Write(const SDIFEntity& entity)
-{       
-    SdifUInt4 index;
-    SdifFileT* file = entity.GetFile();
-    WriteInfo(file);
-    for (index = 0; index < mNbMatrix; index++)	    
-	mv_Matrix[index].Write(file);  
-    // entity.SetFile(file);
+int SDIFFrame::Write(const SDIFEntity& entity)
+{ 
+    return Write(entity.GetFile());    
 }
 
 /* writing informations */
@@ -167,9 +151,9 @@ int SDIFFrame::WriteInfo(SdifFileT* file)
 }
 
 /* writing informations with SDIFEntity*/
-void SDIFFrame::WriteInfo(const SDIFEntity& entity)
+int SDIFFrame::WriteInfo(const SDIFEntity& entity)
 {
-    WriteInfo(entity.GetFile());
+   return WriteInfo(entity.GetFile());
 }
 
 /* to see */
@@ -178,7 +162,7 @@ void SDIFFrame::ViewInfo()
     std::cout << "\nFrame signature : " << SdifSignatureToString(mSig)
 	      << std::endl;
     std::cout << "StreamID: " << mStreamID;
-    std::cout << " Time=" << mTime;
+    std::cout << " Time: " << mTime;
     std::cout << " number of Matrix in current Frame : " << mNbMatrix << std::endl; 
 }
 
@@ -213,7 +197,7 @@ void SDIFFrame::SetStreamID(SdifUInt4 streamID)
     mStreamID = streamID;
 }
 
-void SDIFFrame::SetStringSignature(const std::string& signature)
+void SDIFFrame::SetSignature(const std::string& signature)
 {
     mSig = SdifStringToSignature(const_cast<char*>(signature.c_str()));
 }
@@ -233,6 +217,22 @@ SDIFMatrix& SDIFFrame::GetMatrix(unsigned int index)
 	return mv_Matrix[0];
     }
     return mv_Matrix[index];
+}
+SDIFMatrix& SDIFFrame::GetMatrixIfSelected(SdifFileT* file, unsigned int index)
+{
+    SdifSignature sig, sigm;
+    sig = GetMatrixSelection(file);
+    sigm = mv_Matrix[index].GetSignature();
+    if( (sig != 0 && sig == sigm) || sig == 0 )
+    {	
+	return GetMatrix(index);
+    }
+    else
+    {
+	std::cerr << " No such matrix selected " << std::endl;	   
+	return mv_Matrix[0];
+    }
+
 }
 
 SdifUInt4 SDIFFrame::GetNbMatrix()
@@ -270,24 +270,38 @@ void SDIFFrame::ClearData()
 }
 
 /* add a matrix */
-void SDIFFrame::AddMatrix(const SDIFMatrix& aMatrix)
+int SDIFFrame::AddMatrix(const SDIFMatrix& aMatrix)
 {
     mv_Matrix.insert(mv_Matrix.end(), aMatrix);
     mSize += aMatrix.GetSize();
     mNbMatrix++;
+    return mNbMatrix;
+}
+
+int SDIFFrame::AddMatrixSelected(SdifFileT* file, const SDIFMatrix& aMatrix)
+{
+    SdifSignature sig, sigm;
+    sig = GetMatrixSelection(file);
+    sigm = aMatrix.GetSignature();
+    if(sig != 0)
+    {
+	if(sig == sigm)
+	{
+	    return AddMatrix(aMatrix);
+	}
+	else
+	    return 0;
+    }
+    else/* no selection on matrix : all matrix are selected*/
+	return AddMatrix(aMatrix);
 }
 
 /* resize */
-void SDIFFrame::Resize(SdifFileT* file)
+void SDIFFrame::Resize()
 {
     mv_Matrix.resize(mNbMatrix);    
 }
 
-/* resize with SDIFEntity */
-void SDIFFrame::Resize(const SDIFEntity& entity)
-{
-    Resize(entity.GetFile());   
-}
 
 
 bool SDIFFrame::MatrixExists(const SdifSignature& sig)
@@ -341,7 +355,7 @@ SDIFMatrix& SDIFFrame::GetMatrix(const std::string& signature)
 
     SdifSignature sig = SdifStringToSignature(const_cast<char*>
 					      (signature.c_str()));
-/* with GetMatrixWithSig(sig) */
+    /* with GetMatrixWithSig(sig) */
     return GetMatrixWithSig(sig);
 
 /*
@@ -362,10 +376,24 @@ SDIFMatrix& SDIFFrame::GetMatrix(const std::string& signature)
 }
 
 
+SdifSignature SDIFFrame::GetMatrixSelection(SdifFileT* file)
+{
+    SdifListT* listsel;
+    SdifSignature sig = 0;
+    listsel = file->Selection->matrix;
+    SdifListInitLoop (listsel);
+    while (SdifListIsNext (listsel))
+    {
+	sig = ((SdifSelectElementT *) SdifListGetNext 
+	       (listsel))->value.signature;
+    }
+    return sig;
+}
 
-
-
-
+SdifSignature SDIFFrame::GetMatrixSelection(const SDIFEntity& entity)
+{
+    return GetMatrixSelection(entity.GetFile());
+}
 
 
 

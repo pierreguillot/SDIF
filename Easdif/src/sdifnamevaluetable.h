@@ -8,9 +8,12 @@
  * 
  *
  * 
- * $Id: sdifnamevaluetable.h,v 1.1 2002-06-18 17:56:06 ftissera Exp $ 
+ * $Id: sdifnamevaluetable.h,v 1.2 2002-08-28 16:46:53 roebel Exp $ 
  * 
- * $Log: not supported by cvs2svn $ 
+ * $Log: not supported by cvs2svn $
+ * Revision 1.1  2002/06/18 17:56:06  ftissera
+ * Project for new SDIF API
+ * 
  * 
  */
 
@@ -23,6 +26,13 @@
 #include <iterator>
 #include <sdif.h>
 
+
+/** 
+ * @brief class which can be associated with a Name Value Table
+ *
+ * SDIFNameValueTable is composed of different methods which permits to
+ * manipulate a Name Value Table.
+ */
 class SDIFNameValueTable
 {
  private:
@@ -46,18 +56,69 @@ class SDIFNameValueTable
     ~SDIFNameValueTable(){};
 
     /* to have a map of NameValues */
+
+/** 
+ * @brief map of string which are containing the Name Values
+ */
     std::map<std::string,std::string> map_NameValues;
 
-    int AddNameValue(std::string, std::string);
 
+
+/** 
+ * add a Name Value in the map
+ * @return the number of Name Values in the map
+ */
+    int AddNameValue(std::string name, std::string value);
+
+
+/*************************************************************************/
+/*
+// FUNCTION GROUP:	get the members
+*/
+/** 
+ * @brief get the number of Name Value
+ */
     int GetNbNameValue();
-    SdifUInt4 GetStreamID();
-    std::string GetNameValue(std::string name);
 
+/** 
+ * @brief get the StreamID
+ */
+    SdifUInt4 GetStreamID();
+
+/** 
+ * @brief get the Value
+ * @param name string
+ * @return value string
+ */
+    std::string GetValue(std::string name);
+
+
+/*************************************************************************/
+/*
+// FUNCTION GROUP:	set the members
+*/
+/** 
+ * @brief set the number of name value
+ */
     int SetNbNameValue(int nb);
+
+/**  
+ * @brief set the streamID
+ */
     SdifUInt4 SetStreamID(SdifUInt4 streamid);
 
+/*************************************************************************/
+/*
+// FUNCTION GROUP:	to see
+*/
+/** 
+ * @brief view a Name Value
+ */
     void ViewNameValue(std::string name);
+
+/** 
+ * @brief view a Name Value Table
+ */
     void ViewNameValueTable();
 };
 
