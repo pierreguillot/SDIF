@@ -1,3 +1,9 @@
+2003-05-26  Axel Roebel  <Axel.Roebel@ircam.fr>
+Version 0.7.1
+	
+	* configure.in, easdif/easdif_version.h.in,easdif_config.h.in
+	the version macros were not working, now they do
+
 2003-05-24  Axel Röbel  <roebel@ircam.fr>
 Version 0.7.0
 	
@@ -378,4 +384,4 @@ Version 0.21
 	* ChangeLog: Added changelog to repository.
 
 
-$Id: ChangeLog,v 1.16 2003-05-24 00:28:00 roebel Exp $
+$Id: ChangeLog,v 1.17 2003-05-26 16:10:17 roebel Exp $
