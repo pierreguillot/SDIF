@@ -1,6 +1,6 @@
 dnl -*-autoconf-*-  (No, it's an autoconf file!)
 dnl -*-m4-*- (He emacs, it's a m4 file)
-dnl $Id: configure.in,v 1.22 2003-07-09 21:19:47 roebel Exp $
+dnl $Id: configure.in,v 1.23 2003-07-10 17:19:42 roebel Exp $
 dnl
 dnl configure.in		Feb 2003      Axel Roebel
 dnl
@@ -33,6 +33,10 @@ dnl
 dnl
 
 dnl $Log: not supported by cvs2svn $
+dnl Revision 1.22  2003/07/09 21:19:47  roebel
+dnl Provide configure switch to add gccversion to library name to distinguish
+dnl gcc3.2 from gcc2.96 compiled libraries.
+dnl
 dnl Revision 1.21  2003/07/07 10:29:46  roebel
 dnl Added support for eInt1 and eUInt1 data types, resize of matrix now reinitializes all elements to 0
 dnl
@@ -153,15 +157,18 @@ dnl DEBUG feature
 AC_SUBST(SELLIB)
 
 AC_ARG_ENABLE(suffix,
-[  --enable-suffix         add suffix gcc3_2 to library name to distinguish between old and new C++ interface],
+[  --enable-suffix         add suffix _gcc3_2 to library name to distinguish between old and new C++ ABI],
 [echo FEATURE enable-suffix... $enableval;
 if test "$enableval" = "yes"; then
         SELLIB=libEasdif_gcc3_2.la;
+	AM_CONDITIONAL(GCCSUFFIX,true)
 else
         SELLIB=libEasdif.la
+	AM_CONDITIONAL(GCCSUFFIX,false)
 fi ],
 [
 SELLIB=libEasdif.la;
+AM_CONDITIONAL(GCCSUFFIX,false)
 ])
 
 
