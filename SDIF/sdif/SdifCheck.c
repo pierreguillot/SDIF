@@ -1,4 +1,4 @@
-/* $Id: SdifCheck.c,v 3.1 2000-05-04 14:59:34 schwarz Exp $
+/* $Id: SdifCheck.c,v 3.2 2000-05-15 16:22:02 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -13,6 +13,10 @@
  * File test functions.
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.1  2000/05/04  14:59:34  schwarz
+ * Added modules SdifCheck and SdifSignatureTab, containing functions
+ * formerly in SdifFile.
+ *
  */
 
 #include "SdifCheck.h"
@@ -100,7 +104,7 @@ SdifCheckNextFrame (/*in*/  SdifFileT *in, const SdifSignatureTabT *frames,
 	SdifFReadFrameHeader (in);
 	
 	/* Check frame time, type, and stream id */
-	if (SdifFCurrFrameIsSelected (in, in->Selection))
+	if (SdifFCurrFrameIsSelected (in))
 	{   /* Test if frame header is in list */
 	    ret = SdifFindInSignatureTab (frames, SdifFCurrSignature (in));
 	}

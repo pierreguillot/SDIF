@@ -1,4 +1,4 @@
-/* $Id: SdifSelect.c,v 3.8 2000-05-12 16:55:30 schwarz Exp $
+/* $Id: SdifSelect.c,v 3.9 2000-05-15 16:22:03 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -79,6 +79,10 @@ TODO
 
 LOG
   $Log: not supported by cvs2svn $
+  Revision 3.8  2000/05/12  16:55:30  schwarz
+  Added prototype and doc for SdifBaseName.
+  Avoid avoidable warnings.
+
   Revision 3.7  2000/05/12  14:38:13  schwarz
   Finally getting rid of basename, which always caused trouble:
   On some unix systems, libgen was needed, on Mac it didn't exist at all.
@@ -913,27 +917,39 @@ SdifSelectTestString (SdifListT *list, const char *cand)
 // FUNCTION GROUP:	Using a Selection in File I/O.
 */
 
-/*DOC:
-  Test the selection elements applicable to frames: time, stream, frame type.
-  Can be called after SdifFReadFrameHeader().
-*/
+
+/* Test the selection elements applicable to frames: time, stream,
+   frame type.  Can be called after SdifFReadFrameHeader().  */
 int
-SdifFCurrFrameIsSelected (SdifFileT *file, SdifSelectionT *sel)
+SdifFrameIsSelected (SdifFrameHeaderT *frame, SdifSelectionT *sel)
 {
-    return (
-       (SdifSelectTestInt	(sel->stream, SdifFCurrID   (file))
-        ||  SdifFCurrID (file) == _SdifAllStreamID)		     &&
-        SdifSelectTestReal	(sel->time,   SdifFCurrTime (file))  &&
-	SdifSelectTestSignature (sel->frame,  SdifFCurrFrameSignature (file)));
+    return ((SdifSelectTestInt	     (sel->stream, frame->NumID)
+	     ||  frame->NumID == _SdifAllStreamID)	         &&
+	     SdifSelectTestReal	     (sel->time,   frame->Time)  &&
+	     SdifSelectTestSignature (sel->frame,  frame->Signature));
 }
 
-/*DOC:
-  Test the selection elements applicable to matrices: the matrix signature
-  Can be called after SdifFReadMatrixHeader().
-*/
+/* Test the selection elements applicable to matrices: the matrix
+   signature Can be called after SdifFReadMatrixHeader().  */
 int
-SdifFCurrMatrixIsSelected (SdifFileT *file, SdifSelectionT *sel)
+SdifMatrixIsSelected (SdifMatrixHeaderT *matrix, SdifSelectionT *sel)
 {
-    return (SdifSelectTestSignature (sel->matrix, 
-				     SdifFCurrMatrixSignature (file)));
+    return (SdifSelectTestSignature (sel->matrix, matrix->Signature));
+}
+
+
+/* Test the selection elements applicable to frames: time, stream,
+   frame type.  Can be called after SdifFReadFrameHeader().  */
+int
+SdifFCurrFrameIsSelected (SdifFileT *file)
+{
+    return (SdifFrameIsSelected (file->CurrFramH, file->Selection));
+}
+
+/* Test the selection elements applicable to matrices: the matrix
+   signature Can be called after SdifFReadMatrixHeader().  */
+int
+SdifFCurrMatrixIsSelected (SdifFileT *file)
+{
+    return (SdifMatrixIsSelected (file->CurrMtrxH, file->Selection));
 }
