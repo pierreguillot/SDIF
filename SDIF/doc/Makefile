@@ -1,4 +1,4 @@
-# $Id: Makefile,v 2.2 1999-01-06 14:50:13 schwarz Exp $
+# $Id: Makefile,v 2.3 1999-01-21 16:36:23 schwarz Exp $
 #
 #               Copyright (c) 1998 by IRCAM - Centre Pompidou
 #                          All rights reserved.
@@ -13,6 +13,12 @@
 # Makefile for automatic documentation.
 #
 # $Log: not supported by cvs2svn $
+# Revision 2.2  1999/01/06  14:50:13  schwarz
+# Automatic Cocoon documentation of the sdif library in one single web
+# page.  It comes in two flavours: intern and extern.  Intern
+# describes ALL functions and data structures, extern describes only
+# the API that users of the library should use.
+#
 # Revision 2.1  1998/12/21  18:26:48  schwarz
 # Inserted copyright message.
 #
@@ -23,63 +29,191 @@
 # Added makefile to generate cocoon documentation.
 #
 
+# web pages are accessible from INSTALLHOST and to be placed to INSTALLWEBBASE
+INSTALLHOST	= maelzel
+INSTALLWEBBASE	= /usr/local/www/ircam/equipes/analyse-synthese/sdif/test
+INSTALLURLBASE	= /equipes/analyse-synthese/sdif/test
+# all files that are to be copied and are not generated 
+# (in extern, all the non-default -main and -sec and alpha-toc are generated)
+INSTALLSRC	= Makefile sdif.src $(wildcard *.html) $(wildcard pics/*.gif) \
+		  $(wildcard [ie][nx]tern/default-*.html) \
+		  $(wildcard [ie][nx]tern/by-subject-toc.html) \
+		  $(wildcard [ie][nx]tern/[tu]*-[td]oc.html)
+INSTALLDIRS	= pics extern intern
+
+# these are all overriden when installing
 HERE		= $(subst /a/,/net/,$(PWD))
 ABS_ROOT	= $(HERE)/..
-XROOT		= $(HERE)/$*	# $* is what matches % in a pattern rule
+WEBBASE		= $(HERE)
+URLBASE		= $(HERE)
 
-COCOON		= cocoon
+WEBROOT		= $(WEBBASE)/$*/cocoon
+URLROOT		= $(URLBASE)/$*/cocoon
+# ($* is what matches % in a pattern rule)
+
+COCOON		= /u/formes/schwarz/bin/$(ARCH)/cocoon
 PREPROC		= gcc -E -P -ansi -x c 
 
 makedependency	= # Makefile # when changing preprocessor options
 headerdir	= $(ABS_ROOT)/sdif
 headerfiles	= $(wildcard $(headerdir)/*.h)	# same as $(shell ls .../*.h)
 
+VPATH		= pics intern extern
+
+
+all:		cocoon eframes iframes
+.PHONY:		cocoon eframes iframes abc new clean iclean eclean
+
 
 #
 # cocoon
 #
 
-outdirs		= intern extern
-
-cocoon:		ext index-extern.html int index-intern.html 
-abc:		index-intern.html index-extern.html
+cocoon:		ext extern/alpha-toc.html int intern/alpha-toc.html 
+abc:		extern/alpha-toc.html intern/alpha-toc.html
+new:		clean all
 
 show:		showintern
 show%:		%
-		netscape -remote 'openURL(file:$(HERE)/$*/SDIF.html)'
+		netscape -remote 'openURL(file:$(WEBROOT)/SDIF.html)'
 
-int: 		intern/SDIF.lnk
-ext: 		extern/SDIF.lnk
+int: 		intern/cocoon/SDIF.lnk
+ext: 		extern/cocoon/SDIF.lnk
 
 
-intern-defs	= "-DSENTINELS=nosentinels"  "-DMEMBERSENTINEL=" \
-		  "-DCUSTOMIZE=preformatted"
-
-extern-defs	= "-DSENTINELS="  "-DMEMBERSENTINEL=membersentinel /*DOC:" \
+intern-defs	= "-DSENTINELS=nosentinels" \
+		  "-DMEMBERSENTINEL=librarysentinel xxxnosentinelxxx" \
 		  "-DCUSTOMIZE="
 
+extern-defs	= "-DSENTINELS="  "-DMEMBERSENTINEL=membersentinel /*DOC:" \
+		  "-DCUSTOMIZE=librarysentinel xxxnosentinelxxx"
 
-%/SDIF.lnk:	sdif.%.cocoon
-		rm -f $*/*
+
+%/cocoon/SDIF.lnk:	sdif.%.cocoon
 		$(COCOON) -s -x $<   # -s: leave SDIF.lnk 
 
 # generate cocoon config file for one big web page with all defs
 sdif.%.cocoon:	sdif.src $(headerfiles) $(makedependency)
 		$(PREPROC) $< -o $@  $($*-defs) \
-			-DWEBROOT=$(XROOT) -DURLROOT=$(XROOT) \
+			-DWEBROOT=$(WEBROOT) -DURLROOT=$(URLROOT) \
 			"-DLIBRARY=library SDIF $(ABS_ROOT)/sdif/ ."
 
 
 # alphabetical list of all declarations
 
-index-%.html:	%/SDIF.lnk
-		sort $< | perl -n -e 's|\\#|$(XROOT)/SDIF.html#|; split "%"; print "$$_[2]<br>\n"' >$@
+ahead-extern	= <a href="$(URLROOT)/SDIF.html\#functions" target=doc><strong>Function Prototypes</strong></a><br><br>
+ahead-intern	= <a href="$(URLROOT)/SDIF.html\#data" target=doc><strong>Data Structures</strong></a><br>$(ahead-extern)
+
+%/alpha-toc.html:	%/cocoon/SDIF.lnk Makefile
+		sort $< | perl -n -e '\
+		BEGIN { print qq|<body bgcolor=white>\n$(ahead-$*)\n\
+				 <strong>All Declarations:</strong><br>\n|; } \
+		END {print "</body>";} \
+		s|\\#|$(URLROOT)/SDIF.html#|; s|<a href=|<a target=doc href=|;\
+		split "%";  print "$$_[2]<br>\n"' >$@
+
+# make substitution file for anchor to replace function names in
+# SdifManuelDoc.html by bold link to def in cocoon doc 
+%/linkit.lnk:	%/cocoon/SDIF.lnk Makefile
+		perl -n -e '\
+		s|\\#|cocoon/SDIF.html\\#|;  s|<a href=|<a href=|; \
+		split "%";  print "%$$_[1]%<b>$$_[2]</b>%\n"' $< >$@
 
 
-boldit:		intern/SDIF.lnk
-		perl -n -e 'split "%"; print "%$$_[1]%<b>$$_[1]</b>%\n"' $< >$@
+#
+# augmented HTML
+#
+
+eindsuf		= by-subject alpha tutorial utilities
+iindsuf		= by-subject alpha
+emain		= $(eindsuf:%=extern/%-main.html)
+esec		= $(eindsuf:%=extern/%-sec.html)
+egenerated	= $(emain) $(esuf) extern/by-subject-doc.html
+imain		= $(iindsuf:%=intern/%-main.html)
+isuf		= $(iindsuf:%=intern/%-sec.html)
+igenerated	= $(imain) $(isuf) intern/by-subject-doc.html
+
+var-by-subject	= SUBJECT
+var-alpha	= ALPHA
+var-tutorial	= TUTORIAL
+var-utilities	= UTILITIES
+doc-by-subject	= by-subject-doc.html
+doc-alpha	= cocoon/SDIF.html\#functions
+doc-tutorial	= tutorial-doc.html
+doc-utilities	= utilities-doc.html
+src-extern	= SdifManuelDoc.html
+src-intern	= SdifProgDoc.html
+
+selcolor	= bgcolor="yellow"
+ewarn		= 's"(\$$Id.*\$$)"DO NOT EDIT!!!\n     This file $@ is generated from $<\n     $$1\n     by the Makefile target eframes.\n";'
 
 
-$(outdirs):
-		mkdir $@
+eframes:	$(egenerated)
+iframes:	$(igenerated)
 
+# dependencies
+$(emain):	extern/default-main.html
+$(esec):	extern/default-sec.html
+$(imain):	intern/default-main.html
+$(isec):	intern/default-sec.html
+%/default-sec.html %/default-main.html:
+		# avoid making (thus destroying) these source files!
+
+%-sec.html:	default-sec.html Makefile
+		perl -p -e $(ewarn) -e 's!$(var-$(*F))!$(selcolor)!;' $(@D)/$(<F) >$@
+		@echo
+
+%-main.html:	default-main.html Makefile
+		perl -p -e $(ewarn) -e 's!default-doc\.html!$(doc-$(*F))!;' \
+		     -e 's!default-(sec|toc)\.html!$(*F)-$$1.html!;' $(@D)/$(<F) >$@
+		@echo
+
+# use cocoon's anchor to replace function names in
+# SdifManuelDoc.html by bold link to def in cocoon doc 
+%/by-subject-doc.html:	%/linkit.lnk $(src-$*)
+		anchor $< $(src-$(*F)) $@
+		perl -pi -e $(ewarn) -e 's|(src="*)pics|$$1../pics|;' $@
+
+
+#
+# Install
+#
+
+install:
+		rsh $(INSTALLHOST) cd $(INSTALLWEBBASE) \; \
+			$(MAKE) -f $(HERE)/Makefile instdir instcp all \
+				FROM=$(HERE) \
+				ABS_ROOT=$(ABS_ROOT) \
+		 		WEBBASE=$(INSTALLWEBBASE) \
+				URLBASE=$(INSTALLURLBASE) \
+				TOCPX=`echo $(INSTALLSRC) | tr " " @`
+
+TOCP		:= $(shell echo $(TOCPX) | tr @ " ")
+
+# this is running on INSTALLHOST!
+instdir:	$(INSTALLDIRS)
+$(INSTALLDIRS):	
+		mkdir -p $@
+instcp:		$(TOCP)
+#		@echo TOCP = $(TOCP)
+#		tar cf - -C $(FROM) $(TOCP) | tar xvf -		
+$(TOCP): %:	$(FROM)/%
+		cp -p $< $@
+
+instclean:
+		rsh $(INSTALLHOST) cd $(INSTALLWEBBASE) \; \
+			$(MAKE) -f $(HERE)/Makefile clean
+
+
+#
+# Misc
+#
+
+clean:		eclean iclean
+		rm -f intern/cocoon/* extern/cocoon/* sdif.*.cocoon
+
+eclean:
+		rm -f $(egenerated)
+
+iclean:
+		rm -f $(igenerated)

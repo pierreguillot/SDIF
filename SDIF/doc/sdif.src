@@ -1,4 +1,4 @@
-/* $Id: sdif.src,v 2.1 1999-01-06 14:50:15 schwarz Exp $
+/* $Id: sdif.src,v 2.2 1999-01-21 16:36:31 schwarz Exp $
 
    sdif.src	23. Dec 1998	Diemo Schwarz
 
@@ -13,6 +13,12 @@
 			"-DLIBRARY=SDIF $(ABS_ROOT)/sdif ."
 
    $Log: not supported by cvs2svn $
+# Revision 2.1  1999/01/06  14:50:15  schwarz
+# Automatic Cocoon documentation of the sdif library.  It comes in two
+# flavours: inter and extern.  Intern describes ALL functions and data
+# structures, extern describes only the API that users of the library
+# should use.
+#
 */
 
 /* defaults, can be overridden by -D options for gcc */
@@ -20,7 +26,7 @@
 #define CUSTOMIZE
 #endif
 
-#define HEAD		# DO NOT EDIT!!!  This file is generated from $Id: sdif.src,v 2.1 1999-01-06 14:50:15 schwarz Exp $
+#define HEAD		# DO NOT EDIT!!!  This file is generated from $Id: sdif.src,v 2.2 1999-01-21 16:36:31 schwarz Exp $
 
 HEAD
 
@@ -39,6 +45,7 @@ customize
 
 	# page layout
 	usetable 
+	backcolor white
 	#attop filename 
 	#atbottom filename 
 	

@@ -1,4 +1,8 @@
-<!-- $Id: SdifManuelDoc.html,v 2.1 1999-01-21 16:36:26 schwarz Exp $
+<!-- DO NOT EDIT!!!
+     This file extern/by-subject-doc.html is generated from extern/linkit.lnk
+     $Id: by-subject-doc.html,v 1.1 1999-01-21 16:36:40 schwarz Exp $
+     by the Makefile target eframes.
+
 
      SdifManuelDoc.html		23/12/1997	Dominique Virolle
 
@@ -17,7 +21,7 @@
 <body BGCOLOR="white">
 
 <p>
-<a href=http://www.ircam.fr><img src="pics/logo.gif" alt="IRCAM - Centre Georges Pompidou" height=22 witdh=276 align=lefttop border=0></a>
+<img src="../pics/logo.gif" alt="Image logo.gif" height=22 witdh=276 align=lefttop>
 </p>
 
 <p><hr width="100%"></p>
@@ -26,7 +30,7 @@
 <h1>Manuel d'utilisation des fonctions en C</h1>
 
 <em>
-<p><a href=http://www.ircam.fr/departements/recherche/ana-syn.html>Analyse/Synthèse</a>
+<p>Analyse/Synthèse <br>
 <!--#echo var="LAST_MODIFIED"-->
 </p>
 </em>
@@ -132,7 +136,7 @@ type <code>fpos_t</code>, Little ou Big endian).
 Avant d'utiliser les fonctions SDIF, il est nécessaire d'initialiser
 la librairie, ce qui consiste à charger les types prédéfinis du fichier
 <code>SdifTypes.STYP</code>. La fonction à utiliser est
-<code>SdifGenInit(char*)</code> où l'argument est le nom du fichier
+<code><b><a href="cocoon/SDIF.html#void_SdifGenInit_(char_*PredefinedTypesFile)$">SdifGenInit</a></b>(char*)</code> où l'argument est le nom du fichier
 des types prédéfinis avec le path. Il suffit d'une seule initialisation
 par execution du programme pour manipuler plusieurs fichier SDIF.
 Les types prédéfinis sont stockés dans une variable globale
@@ -141,7 +145,7 @@ SdifFileT* gSdifPredefinedTypes.
 <p>
 A la fin de tous les traitements de fichiers SDIF, il est préférable
 d'annuler l'initialisation de SDIF avec la procédure
-<code>SdifGenKill(void)</code>. Ainsi toute la mémoire allouée par
+<code><b><a href="cocoon/SDIF.html#void_SdifGenKill_(void)$">SdifGenKill</a></b>(void)</code>. Ainsi toute la mémoire allouée par
 l'initialisation est rendue au système.
 </p>
 <p>
@@ -175,7 +179,7 @@ void main(void)
   SdifFileT *MySdifFileToWrite;
   SdifFileT *MySdifFileToRead;
 
-  SdifGenInit("SdifTypes.STYP");
+  <b><a href="cocoon/SDIF.html#void_SdifGenInit_(char_*PredefinedTypesFile)$">SdifGenInit</a></b>("SdifTypes.STYP");
 
   MySdifFileToWrite = SdifOpenFile("NewFile.sdif",      eWriteFile);
   MySdifFileToRead  = SdifOpenFile("ExistingFile.sdif", eReadFile);
@@ -183,7 +187,7 @@ void main(void)
   SdifCloseFile(MySdifFileToWrite);
   SdifCloseFile(MySdifFileToRead);
 
-  SdifGenKill();
+  <b><a href="cocoon/SDIF.html#void_SdifGenKill_(void)$">SdifGenKill</a></b>();
 }
 </pre>
 <p>
@@ -280,11 +284,11 @@ SdifF = SdifOpenFile("Name", OpenOption);
               <h4>Opérations sur NameValues</h4>
 
 <p>
-SdifNameValuesLT* SdifNameValuesLNewHT
+SdifNameValuesLT* <b><a href="cocoon/SDIF.html#SdifNameValuesLT*_SdifNameValuesLNewHT_(SdifNameValuesLT_*NameValuesL)$">SdifNameValuesLNewHT</a></b>
 (SdifNameValuesLT *NameValuesL)<br>
 Cette fonction permet d'ajouter une nouvelle NVT dans la liste de
 tables passée par argument:
-<code>SdifNameValuesLNewHT(SdifF->NamefValues);</code><br>
+<code><b><a href="cocoon/SDIF.html#SdifNameValuesLT*_SdifNameValuesLNewHT_(SdifNameValuesLT_*NameValuesL)$">SdifNameValuesLNewHT</a></b>(SdifF->NamefValues);</code><br>
 Attention, à l'ouverture de SdifF, il n'y a aucune table dans
 SdifF->NamefValues. Il faudra donc au moins en ajouter une
 pour pouvoir y mettre des NameValue.
@@ -298,13 +302,13 @@ courante. Name et Value doivent être des chaines caractères
 ASCII sans espacements.
 </p>
 <p>
-SdifHashTableT* SdifNameValuesLSetCurrHT
+SdifHashTableT* <b><a href="cocoon/SDIF.html#SdifHashTableT*_SdifNameValuesLSetCurrHT_(SdifNameValuesLT_*NameValuesL,_SdifUInt4_NumCurrHT)$">SdifNameValuesLSetCurrHT</a></b>
 (SdifNameValuesLT *NameValuesL, SdifUInt4 NumCurrHT)<br>
 Cette fonction permet de définir la nième NVT de la liste
 des tables comme NVT courante.
 </p>
 <p>
-SdifNameValueT* SdifNameValuesLGet
+SdifNameValueT* <b><a href="cocoon/SDIF.html#SdifNameValueT*_SdifNameValuesLGet_(SdifNameValuesLT_*NameValuesL,_char_*Name)$">SdifNameValuesLGet</a></b>
 (SdifNameValuesLT *NameValuesL, char *Name)<br>
 Cette fonction permet de récupérer une Name-Value de
 la liste des NVTs en passant le Name en argument.
@@ -314,7 +318,7 @@ Le pointeur retourné est de type SdifNameValueT qui contient
 deux champs: Name et Value.
 </p>
 <p>
-SdifNameValueT* SdifNameValuesLGetCurrHT
+SdifNameValueT* <b><a href="cocoon/SDIF.html#SdifNameValueT*_SdifNameValuesLGetCurrHT_(SdifNameValuesLT_*NameValuesL,_char_*Name)$">SdifNameValuesLGetCurrHT</a></b>
 (SdifNameValuesLT *NameValuesL, char *Name)<br>
 Cette fonction réalise aussi une requête en fonction de Name
 mais uniquement dans la NVT courante.
@@ -328,15 +332,15 @@ mais uniquement dans la NVT courante.
   /* adition de NVTs et de Name-Values dans chaque NVT */
 
   /* first table */
-  SdifNameValuesLNewHT(SdifF->NameValues);
+  <b><a href="cocoon/SDIF.html#SdifNameValuesLT*_SdifNameValuesLNewHT_(SdifNameValuesLT_*NameValuesL)$">SdifNameValuesLNewHT</a></b>(SdifF->NameValues);
   SdifNameValuesLPut(SdifF->NameValues, "NameTable", "General");
   /* second table */
-  SdifNameValuesLNewHT(SdifF->NameValues);
+  <b><a href="cocoon/SDIF.html#SdifNameValuesLT*_SdifNameValuesLNewHT_(SdifNameValuesLT_*NameValuesL)$">SdifNameValuesLNewHT</a></b>(SdifF->NameValues);
   SdifNameValuesLPut(SdifF->NameValues, "NameTable", "analyse");
   SdifNameValuesLPut(SdifF->NameValues, "WindowSize", "512");
   SdifNameValuesLPut(SdifF->NameValues, "SamplingRate", "32000.0");
   /* third table */
-  SdifNameValuesLNewHT(SdifF->NameValues);
+  <b><a href="cocoon/SDIF.html#SdifNameValuesLT*_SdifNameValuesLNewHT_(SdifNameValuesLT_*NameValuesL)$">SdifNameValuesLNewHT</a></b>(SdifF->NameValues);
   SdifNameValuesLPut(SdifF->NameValues, "NameTable", "synthesis");
   SdifNameValuesLPut(SdifF->NameValues, "NumberOfChannels", "2");
   SdifNameValuesLPut(SdifF->NameValues, "EndTime", "1.0");
@@ -345,14 +349,14 @@ mais uniquement dans la NVT courante.
 
   /* Requêtes */
 
-  NV = SdifNameValuesLGet(SdifF->NameValues, "NameTable");
+  NV = <b><a href="cocoon/SDIF.html#SdifNameValueT*_SdifNameValuesLGet_(SdifNameValuesLT_*NameValuesL,_char_*Name)$">SdifNameValuesLGet</a></b>(SdifF->NameValues, "NameTable");
   /* alors NV est ("NameTable", "General") */
   NV = SdifNameValuesLGetFromCurrHT(SdifF->NameValues, "NameTable");
   /* alors NV est ("NameTable", "synthesis") */
-  SdifNameValuesLSetCurrHT(SdifF->NameValues, 2);
+  <b><a href="cocoon/SDIF.html#SdifHashTableT*_SdifNameValuesLSetCurrHT_(SdifNameValuesLT_*NameValuesL,_SdifUInt4_NumCurrHT)$">SdifNameValuesLSetCurrHT</a></b>(SdifF->NameValues, 2);
   NV = SdifNameValuesLGetFromCurrHT(SdifF->NameValues, "NameTable");
   /* alors NV est ("NameTable", "analyse") */
-  NV = SdifNameValuesLGet(SdifF->NameValues, "EndTime");
+  NV = <b><a href="cocoon/SDIF.html#SdifNameValueT*_SdifNameValuesLGet_(SdifNameValuesLT_*NameValuesL,_char_*Name)$">SdifNameValuesLGet</a></b>(SdifF->NameValues, "EndTime");
   /* alors NV est ("EndTime", "1.0") */
 
 }</pre>
@@ -363,7 +367,7 @@ mais uniquement dans la NVT courante.
              <h4>Opérations sur MatrixTypesTable</h4>
 
 <p>
-SdifMatrixTypeT* SdifCreateMatrixType
+SdifMatrixTypeT* <b><a href="cocoon/SDIF.html#SdifMatrixTypeT*_SdifCreateMatrixType_(SdifSignature_Signature,_SdifMatrixTypeT_*PredefinedMatrixType)$">SdifCreateMatrixType</a></b>
 (SdifSignature Signature, SdifMatrixTypeT *PredefinedMatrixType)<br>
 premet de créer un objet 'type de matrice'. Le premier argument est
 la signature de ce type. Le second est l'objet 'type de matrice'
@@ -373,12 +377,12 @@ prédéfini dans SDIF.
 dans une instance de SdifFileT doivent être ajoutés aux tables de
 cette instance, de façon a créer le lien avec les types
 prédéfinis.</strong> L'hors de la lecture des entêtes avec les
-fonctions SdifFReadMatrixHeader et SdifFReadFrameHeader, cette mise à
-jour se fait automatiquement à l'aide des fonctions SdifTestMatrixType
+fonctions <b><a href="cocoon/SDIF.html#size_t_SdifFReadMatrixHeader_(SdifFileT_*SdifF)$">SdifFReadMatrixHeader</a></b> et <b><a href="cocoon/SDIF.html#size_t_SdifFReadFrameHeader_(SdifFileT_*SdifF)$">SdifFReadFrameHeader</a></b>, cette mise à
+jour se fait automatiquement à l'aide des fonctions <b><a href="cocoon/SDIF.html#SdifMatrixTypeT*_SdifTestMatrixType_(SdifFileT_*SdifF,_SdifSignature_Signature)$">SdifTestMatrixType</a></b>
 et SdifTestFrameType.
 </p>
 <p>
-SdifMatrixTypeT* SdifTestMatrixType
+SdifMatrixTypeT* <b><a href="cocoon/SDIF.html#SdifMatrixTypeT*_SdifTestMatrixType_(SdifFileT_*SdifF,_SdifSignature_Signature)$">SdifTestMatrixType</a></b>
 (SdifFileT* SdifF, SdifSignature Signature)<br>
 Cette fonction vérifie si le type de matrice est répertorié
 dans SdifF.<br>
@@ -387,39 +391,39 @@ type prédéfinis. S'il est prédéfini, elle crée le lien de
 SdifF vers le type prédéfini. Sinon, elle envoie un message
 sur l'erreur standart.
 <p>
-SdifMatrixTypeT* SdifMatrixTypeInsertTailColumnDef
+SdifMatrixTypeT* <b><a href="cocoon/SDIF.html#SdifMatrixTypeT*_SdifMatrixTypeInsertTailColumnDef_(SdifMatrixTypeT_*MatrixType,_char_*NameCD)$">SdifMatrixTypeInsertTailColumnDef</a></b>
 (SdifMatrixTypeT *MatrixType, char *NameCD)<br>
 permet d'ajouter une colonne à un type (toujours la dernière colonne).
 </p>
 <p>
-void SdifPutMatrixType
+void <b><a href="cocoon/SDIF.html#void_SdifPutMatrixType(SdifHashTableT_*MatrixTypesTable,_SdifMatrixTypeT*_MatrixType)$">SdifPutMatrixType</a></b>
 (SdifHashTableT *MatrixTypesTable, SdifMatrixTypeT* MatrixType)<br>
 permet d'ajouter un type de matrice dans une table.
 </p>
 <p>
-SdifUInt4 SdifMatrixTypeGetNumColumnDef
+SdifUInt4 <b><a href="cocoon/SDIF.html#SdifUInt4_SdifMatrixTypeGetNumColumnDef_(SdifMatrixTypeT_*MatrixType,_char_*NameCD)$">SdifMatrixTypeGetNumColumnDef</a></b>
 (SdifMatrixTypeT *MatrixType, char *NameCD)<br>
 renvoie la position de la colonne de nom NameCD.
 (0 si elle n'existe pas)
 </p>
 <p>
-SdifColumnDefT* SdifMatrixTypeGetColumnDef
+SdifColumnDefT* <b><a href="cocoon/SDIF.html#SdifColumnDefT*_SdifMatrixTypeGetColumnDef_(SdifMatrixTypeT_*MatrixType,_char_*NameCD)$">SdifMatrixTypeGetColumnDef</a></b>
 (SdifMatrixTypeT *MatrixType, char *NameCD)<br>
 renvoie la définition de la colonne (numéro, nom) en fonction du
 nom.(NULL si introuvable)
 </p>
 <p>
-SdifColumnDefT* SdifMatrixTypeGetNthColumnDef
+SdifColumnDefT* <b><a href="cocoon/SDIF.html#SdifColumnDefT*_SdifMatrixTypeGetNthColumnDef_(SdifMatrixTypeT_*MatrixType,_SdifUInt4_NumCD)$">SdifMatrixTypeGetNthColumnDef</a></b>
 (SdifMatrixTypeT *MatrixType, SdifUInt4 NumCD)<br>
 renvoie la définition de la colonne (numéro, nom) en fonction du
 numero.(NULL si introuvable)
 </p>
 <p>
-SdifMatrixTypeT* SdifGetMatrixType
+SdifMatrixTypeT* <b><a href="cocoon/SDIF.html#SdifMatrixTypeT*_SdifGetMatrixType_(SdifHashTableT_*MatrixTypesTable,_SdifSignature_Signature)$">SdifGetMatrixType</a></b>
 (SdifHashTableT *MatrixTypesTable, SdifSignature Signature)<br>
 renvoie le type de matrice en fonction de la Signature. Renvoie NULL
 si le type est introuvable. Attention, si Signature est la signature
-d'un type prédéfini, SdifGetMatrixType(SdifF->MatrixTypeTable,Signature)
+d'un type prédéfini, <b><a href="cocoon/SDIF.html#SdifMatrixTypeT*_SdifGetMatrixType_(SdifHashTableT_*MatrixTypesTable,_SdifSignature_Signature)$">SdifGetMatrixType</a></b>(SdifF->MatrixTypeTable,Signature)
 renvoie NULL si le lien avec entre SdifF et gSdifPredefinedType
 n'a pas été mis à jour.
 </p>
@@ -432,25 +436,25 @@ nouvelle colonne appelée NewCol et ensuite créer un type exclusif.
   SdifMatrixTypeT *MtrxTFOF, *NewMtrxT;
   
   /* Mise à jour du lien sur le type prédéfini '1FOF' si nécessaire*/
-  MtrxTFOF = SdifTestMatrixType(SdifF, '1FOF');
+  MtrxTFOF = <b><a href="cocoon/SDIF.html#SdifMatrixTypeT*_SdifTestMatrixType_(SdifFileT_*SdifF,_SdifSignature_Signature)$">SdifTestMatrixType</a></b>(SdifF, '1FOF');
   /* Maintenant le type de matrice '1FOF' est directement accessible par SdifF et
    * non uniquement par gSdifPredefinedTypes. */
 
   /* ajout d'une nouvelle colonne (en complétion) */
   if (MtrxTFOF)
-    SdifMatrixTypeInsertTailColumnDef(MtrxTFOF, "NewCol");
-  else ; /* un message d'erreur a été dans ce cas envoyer par SdifTestMatrixType*/
+    <b><a href="cocoon/SDIF.html#SdifMatrixTypeT*_SdifMatrixTypeInsertTailColumnDef_(SdifMatrixTypeT_*MatrixType,_char_*NameCD)$">SdifMatrixTypeInsertTailColumnDef</a></b>(MtrxTFOF, "NewCol");
+  else ; /* un message d'erreur a été dans ce cas envoyer par <b><a href="cocoon/SDIF.html#SdifMatrixTypeT*_SdifTestMatrixType_(SdifFileT_*SdifF,_SdifSignature_Signature)$">SdifTestMatrixType</a></b>*/
 
   /* Création d'un type exclusif (le premier caractère de la signature doit donc
    * être 'E') */
-   NewMtrxT = SdifCreateMatrixType('ENMT', NULL);
+   NewMtrxT = <b><a href="cocoon/SDIF.html#SdifMatrixTypeT*_SdifCreateMatrixType_(SdifSignature_Signature,_SdifMatrixTypeT_*PredefinedMatrixType)$">SdifCreateMatrixType</a></b>('ENMT', NULL);
    /* il n'y a pas de type prédéfini pour 'ENMT' donc le deuxième argument est NULL */
-   SdifPutMatrixType (SdifF->MatrxTypesTable, NewMtrxT); /* ajout à la base */
+   <b><a href="cocoon/SDIF.html#void_SdifPutMatrixType(SdifHashTableT_*MatrixTypesTable,_SdifMatrixTypeT*_MatrixType)$">SdifPutMatrixType</a></b> (SdifF->MatrxTypesTable, NewMtrxT); /* ajout à la base */
    /* ajout des colonnes */
-   SdifMatrixTypeInsertTailColumnDef(NewMtrxT, "Col1");
-   SdifMatrixTypeInsertTailColumnDef(NewMtrxT, "Col2");
-   SdifMatrixTypeInsertTailColumnDef(NewMtrxT, "Col3");
-   SdifMatrixTypeInsertTailColumnDef(NewMtrxT, "Col4");
+   <b><a href="cocoon/SDIF.html#SdifMatrixTypeT*_SdifMatrixTypeInsertTailColumnDef_(SdifMatrixTypeT_*MatrixType,_char_*NameCD)$">SdifMatrixTypeInsertTailColumnDef</a></b>(NewMtrxT, "Col1");
+   <b><a href="cocoon/SDIF.html#SdifMatrixTypeT*_SdifMatrixTypeInsertTailColumnDef_(SdifMatrixTypeT_*MatrixType,_char_*NameCD)$">SdifMatrixTypeInsertTailColumnDef</a></b>(NewMtrxT, "Col2");
+   <b><a href="cocoon/SDIF.html#SdifMatrixTypeT*_SdifMatrixTypeInsertTailColumnDef_(SdifMatrixTypeT_*MatrixType,_char_*NameCD)$">SdifMatrixTypeInsertTailColumnDef</a></b>(NewMtrxT, "Col3");
+   <b><a href="cocoon/SDIF.html#SdifMatrixTypeT*_SdifMatrixTypeInsertTailColumnDef_(SdifMatrixTypeT_*MatrixType,_char_*NameCD)$">SdifMatrixTypeInsertTailColumnDef</a></b>(NewMtrxT, "Col4");
 }</pre>
 
 
@@ -502,7 +506,7 @@ SdifFrameTypeT* SdifGetFrameType
 <p>Il n'y a pas encore de fonctions de haut niveau pour remplir et
 interroger la table des StreamID (StreamIDsTable).
 <p>
-SdifStreamIDT* SdifCreateStreamID
+SdifStreamIDT* <b><a href="cocoon/SDIF.html#SdifStreamIDT*_SdifCreateStreamID(SdifUInt4_NumID,_char_*Source,_char_*TreeWay)$">SdifCreateStreamID</a></b>
 (SdifUInt4 NumID, char *Source, char *TreeWay)<br>
 permet de créer un pointeur sur un objet de type StreamIDT.
 </p>
@@ -525,7 +529,7 @@ void ConsOneStreamID(SdifFileT *SdifF,
 
   sprintf(TreeWay, "%s/%d/%s/%d/%d/%s/%f", PatchType, NumPatch, ObjType,
 		    NumObj, NbSubObj, StartTime, EndTime);
-  StreamID = SdifCreateStreamID(NumID, "Chant", TreeWay);
+  StreamID = <b><a href="cocoon/SDIF.html#SdifStreamIDT*_SdifCreateStreamID(SdifUInt4_NumID,_char_*Source,_char_*TreeWay)$">SdifCreateStreamID</a></b>(NumID, "Chant", TreeWay);
 
   SdifHashTablePut(SdifF->StreamIDsTable, &(StreamID->NumID), 1, StreamID);
 }
@@ -545,7 +549,7 @@ void ConsOneStreamID(SdifFileT *SdifF,
            <h3>Opérations sur les éléments temporaires de SdifFileT*</h3>
 
 <p>
-SdifFrameHeaderT* SdifFSetCurrFrameHeader
+SdifFrameHeaderT* <b><a href="cocoon/SDIF.html#SdifFrameHeaderT*_SdifFSetCurrFrameHeader_(SdifFileT_*SdifF,_SdifSignature_Signature,_SdifUInt4_Size,_SdifUInt4_NbMatrix,_SdifUInt4_NumID,_SdifFloat8_Time)$">SdifFSetCurrFrameHeader</a></b>
 (SdifFileT *SdifF, SdifSignature Signature, SdifUInt4 Size,
  SdifUInt4 NbMatrix, SdifUInt4 NumID, SdifFloat8 Time)<br>
 permet de donner des valeurs à chaque champ de l'entête de frame
@@ -553,7 +557,7 @@ temporaire de SdifF.<br>
 Exemple: <code>SdifSetCurrFrameHeader(SdifF, '1FOB', 3, NumID, 1.0);</code>
 </p>
 <p>
-SdifMatrixHeaderT* SdifFSetCurrMatrixHeader
+SdifMatrixHeaderT* <b><a href="cocoon/SDIF.html#SdifMatrixHeaderT*_SdifFSetCurrMatrixHeader_(SdifFileT_*SdifF,_SdifSignature_Signature,_SdifDataTypeET_DataType,_SdifUInt4_NbRow,_SdifUInt4_NbCol)$">SdifFSetCurrMatrixHeader</a></b>
 (SdifFileT *SdifF, SdifSignature Signature,
  SdifDataTypeET DataType, SdifUInt4 NbRow, SdifUInt4 NbCol)<br>
 permet de donner des valeurs à chaque champ de l'entête de matice
@@ -561,7 +565,7 @@ temporaire de SdifF.<br>
 Exemple: <code>SdifSetCurrMatrixHeader(SdifF, '1FOF', eFloat4, NbFofs, 7);</code>
 </p>
 <p>
-SdifOneRowT* SdifFSetCurrOneRow
+SdifOneRowT* <b><a href="cocoon/SDIF.html#SdifOneRowT*_SdifFSetCurrOneRow_(SdifFileT_*SdifF,_void_*Values)$">SdifFSetCurrOneRow</a></b>
 (SdifFileT *SdifF, void *Values)<br>
 recopie la mémoire pointée par Values en fonction de l'entête de matrice
 courante.<br>
@@ -584,67 +588,67 @@ Diphone Ircam a un bon exemple de lecture avec transposition automatique, généra
 pour tout type de matrice.
 </p>
 <p>
-SdifOneRowT* SdifFSetCurrOneRowCol
+SdifOneRowT* <b><a href="cocoon/SDIF.html#SdifOneRowT*_SdifFSetCurrOneRowCol_(SdifFileT_*SdifF,_SdifUInt4_numCol,_SdifFloat8_Value)$">SdifFSetCurrOneRowCol</a></b>
 (SdifFileT *SdifF, SdifUInt4 numCol, SdifFloat8 Value)<br>
 permet de donner la valeur Value dans la ligbe de matrice temporaire
 de SdifF à la colonne numCol (0<numCol<=SdifF->CurrMtrxH->NbCol).
 </p>
 <p>
-SdifFloat8 SdifFCurrOneRowCol
+SdifFloat8 <b><a href="cocoon/SDIF.html#SdifFloat8_SdifFCurrOneRowCol_(SdifFileT_*SdifF,_SdifUInt4_numCol)$">SdifFCurrOneRowCol</a></b>
 (SdifFileT *SdifF, SdifUInt4 numCol)<br>
 recupère la valeur stockée à la colonne numCol de la ligne temporaire.
 C'est un SdifFloat8 donc un double!!
 </p>
 <p>
-SdifFloat8 SdifFCurrOneRowColName
+SdifFloat8 <b><a href="cocoon/SDIF.html#SdifFloat8_SdifFCurrOneRowColName_(SdifFileT_*SdifF,_SdifMatrixTypeT_*MatrixType,_char_*NameCD)$">SdifFCurrOneRowColName</a></b>
 (SdifFileT *SdifF, SdifMatrixTypeT *MatrixType, char *NameCD)<br>
 idem que la fonction précédente mais en utilisant le type de la matrice
 et le nom de la colonne.
 </p>
 <p>
-SdifSignature SdifFCurrSignature (SdifFileT *SdifF)<br>
+SdifSignature <b><a href="cocoon/SDIF.html#SdifSignature_SdifFCurrSignature_(SdifFileT_*SdifF)$">SdifFCurrSignature</a></b> (SdifFileT *SdifF)<br>
 renvoie la signature temporaire de Chunk ou de Frame.
 </p>
 <p>
-SdifSignature SdifFCleanCurrSignature (SdifFileT *SdifF)<br>
+SdifSignature <b><a href="cocoon/SDIF.html#SdifSignature_SdifFCleanCurrSignature_(SdifFileT_*SdifF)$">SdifFCleanCurrSignature</a></b> (SdifFileT *SdifF)<br>
 met à 0 tous les bits de la signature temporaire.
 </p>
 <p>
-SdifSignature SdifFCurrFrameSignature (SdifFileT *SdifF)<br>
+SdifSignature <b><a href="cocoon/SDIF.html#SdifSignature_SdifFCurrFrameSignature_(SdifFileT_*SdifF)$">SdifFCurrFrameSignature</a></b> (SdifFileT *SdifF)<br>
 renvoie la signature temporaire du dernier Frame lu ou du
 prochain à écrire.
 </p>
 <p>
-SdifSignature SdifFCurrMatrixSignature (SdifFileT *SdifF)<br>
+SdifSignature <b><a href="cocoon/SDIF.html#SdifSignature_SdifFCurrMatrixSignature_(SdifFileT_*SdifF)$">SdifFCurrMatrixSignature</a></b> (SdifFileT *SdifF)<br>
 renvoie la signature temporaire de la dernier matrice lue ou de
 la prochaine à écrire.
 </p>
 <p>
-SdifOneRowT* SdifFCurrOneRow (SdifFileT *SdifF)<br>
+SdifOneRowT* <b><a href="cocoon/SDIF.html#SdifOneRowT*_SdifFCurrOneRow_(SdifFileT_*SdifF)$">SdifFCurrOneRow</a></b> (SdifFileT *SdifF)<br>
 renvoie la ligne temporaire de SdifF.
 </p>
 <p>
-SdifUInt4 SdifFCurrNbCol (SdifFileT *SdifF)<br>
+SdifUInt4 <b><a href="cocoon/SDIF.html#SdifUInt4_SdifFCurrNbCol_(SdifFileT_*SdifF)$">SdifFCurrNbCol</a></b> (SdifFileT *SdifF)<br>
 renvoie SdifF->CurrMtrx->NbCol, nombre de colonnes
 de la matrice en cours de traitement.
 </p>
 <p>
-SdifUInt4 SdifFCurrNbRow (SdifFileT *SdifF)<br>
+SdifUInt4 <b><a href="cocoon/SDIF.html#SdifUInt4_SdifFCurrNbRow_(SdifFileT_*SdifF)$">SdifFCurrNbRow</a></b> (SdifFileT *SdifF)<br>
 renvoie SdifF->CurrMtrx->NbRow, nombre de lignes
 de la matrice en cours de traitement.
 </p>
 <p>
-SdifUInt4 SdifFCurrNbMatrix (SdifFileT *SdifF)<br>
+SdifUInt4 <b><a href="cocoon/SDIF.html#SdifUInt4_SdifFCurrNbMatrix_(SdifFileT_*SdifF)$">SdifFCurrNbMatrix</a></b> (SdifFileT *SdifF)<br>
 renvoie SdifF->CurrFramH->NbMatrix, mombre de matrices
 du frame courant.
 </p>
 <p>
-SdifUInt4 SdifFCurrID (SdifFileT *SdifF)<br>
+SdifUInt4 <b><a href="cocoon/SDIF.html#SdifUInt4_SdifFCurrID_(SdifFileT_*SdifF)$">SdifFCurrID</a></b> (SdifFileT *SdifF)<br>
 renvoie SdifF->CurrFramH->NumID, index de l'objet
 du frame courant.
 </p>
 <p>
-SdifFloat8 SdifFCurrTime (SdifFileT *SdifF)<br>
+SdifFloat8 <b><a href="cocoon/SDIF.html#SdifFloat8_SdifFCurrTime_(SdifFileT_*SdifF)$">SdifFCurrTime</a></b> (SdifFileT *SdifF)<br>
 renvoie SdifF->CurrFramH->Time.
 </p>
 
@@ -656,11 +660,11 @@ renvoie SdifF->CurrFramH->Time.
 
 
 <p>
-size_t  SdifFWriteGeneralHeader (SdifFileT *SdifF)<br>
+size_t  <b><a href="cocoon/SDIF.html#size_t_SdifFWriteGeneralHeader_(SdifFileT_*SdifF)$">SdifFWriteGeneralHeader</a></b> (SdifFileT *SdifF)<br>
 écrit sur le fichier 'SDIF' puis 4 bytes à 0.
 </p>
 <p>
-size_t  SdifFWriteAllASCIIChunks (SdifFileT *SdifF)<br>
+size_t  <b><a href="cocoon/SDIF.html#size_t_SdifFWriteAllASCIIChunks_(SdifFileT_*SdifF)$">SdifFWriteAllASCIIChunks</a></b> (SdifFileT *SdifF)<br>
 écrit tous les chunks ASCII. C'est à dire: les tables de names values,
 les types créés ou complétés, et les Stream ID. Il faut donc au
 préalable avoir rempli complétement les tables avant de la
@@ -668,33 +672,33 @@ lancer. Cette fonction de peut donc pas être executer une 2nd fois
 durant une écriture.
 </p>
 <p>
-size_t  SdifFWriteMatrixHeader (SdifFileT *SdifF)<br>
+size_t  <b><a href="cocoon/SDIF.html#size_t_SdifFWriteMatrixHeader_(SdifFileT_*SdifF)$">SdifFWriteMatrixHeader</a></b> (SdifFileT *SdifF)<br>
 Après avoir donner une valeur à chaque champ de SdifF->CurrMtrxH gràce
-à la fonction SdifFSetCurrMatrixHeader, SdifFWriteMatrixHeader écrit
+à la fonction <b><a href="cocoon/SDIF.html#SdifMatrixHeaderT*_SdifFSetCurrMatrixHeader_(SdifFileT_*SdifF,_SdifSignature_Signature,_SdifDataTypeET_DataType,_SdifUInt4_NbRow,_SdifUInt4_NbCol)$">SdifFSetCurrMatrixHeader</a></b>, <b><a href="cocoon/SDIF.html#size_t_SdifFWriteMatrixHeader_(SdifFileT_*SdifF)$">SdifFWriteMatrixHeader</a></b> écrit
 toute l'entête de la matrice.  Cette fonction réalise aussi une mise à
 jour de SdifF->CurrOneRow, tant au niveau de l'allocation mémoire que
 du type de données.
 </p>
 <p>
-size_t  SdifFWriteOneRow (SdifFileT *SdifF)<br>
+size_t  <b><a href="cocoon/SDIF.html#size_t_SdifFWriteOneRow_(SdifFileT_*SdifF)$">SdifFWriteOneRow</a></b> (SdifFileT *SdifF)<br>
 Après avoir donner les valeurs à chaque case de SdifF->CurrOneRow à
-l'aide de SdifFSetCurrOneRow ou de SdifFSetCurrOneRowCol (suivant que
+l'aide de <b><a href="cocoon/SDIF.html#SdifOneRowT*_SdifFSetCurrOneRow_(SdifFileT_*SdifF,_void_*Values)$">SdifFSetCurrOneRow</a></b> ou de <b><a href="cocoon/SDIF.html#SdifOneRowT*_SdifFSetCurrOneRowCol_(SdifFileT_*SdifF,_SdifUInt4_numCol,_SdifFloat8_Value)$">SdifFSetCurrOneRowCol</a></b> (suivant que
 l'on possède déjà un tableau flottant ou respectivement une méthode
-pour retrouver une valeur de colonne), SdifFWriteOneRow écrit 1 ligne
+pour retrouver une valeur de colonne), <b><a href="cocoon/SDIF.html#size_t_SdifFWriteOneRow_(SdifFileT_*SdifF)$">SdifFWriteOneRow</a></b> écrit 1 ligne
 de matrice suivant les paramètres de SdifF->CurrMtrxH.
 </p>
 <p>
-size_t  SdifFWriteFrameHeader (SdifFileT *SdifF)<br>
+size_t  <b><a href="cocoon/SDIF.html#size_t_SdifFWriteFrameHeader_(SdifFileT_*SdifF)$">SdifFWriteFrameHeader</a></b> (SdifFileT *SdifF)<br>
 Après avoir donner une valueur à chaque champ de SdifF->CurrFramH
-gràce à la fonction SdifFSetCurrFrameHeader, SdifFWriteFrameHeader
+gràce à la fonction <b><a href="cocoon/SDIF.html#SdifFrameHeaderT*_SdifFSetCurrFrameHeader_(SdifFileT_*SdifF,_SdifSignature_Signature,_SdifUInt4_Size,_SdifUInt4_NbMatrix,_SdifUInt4_NumID,_SdifFloat8_Time)$">SdifFSetCurrFrameHeader</a></b>, <b><a href="cocoon/SDIF.html#size_t_SdifFWriteFrameHeader_(SdifFileT_*SdifF)$">SdifFWriteFrameHeader</a></b>
 écrit toute l'entête de frame.  Lorsque la taille est inconnue au
 moment de l'écriture, donner la valeur _SdifUnknownSize. Ensuite,
 compter le nombre de bytes écrit dans le frame et réaliser un
-SdifUpdateChunkSize avec la taille
+<b><a href="cocoon/SDIF.html#void_SdifUpdateChunkSize_(SdifFileT_*SdifF,_size_t_ChunkSize)$">SdifUpdateChunkSize</a></b> avec la taille
 calculée.
 </p>
 <p>
-size_t  SdifFWritePadding (SdifFileT *SdifF, size_t Padding)<br>
+size_t  <b><a href="cocoon/SDIF.html#size_t_SdifFWritePadding_(SdifFileT_*SdifF,_size_t_Padding)$">SdifFWritePadding</a></b> (SdifFileT *SdifF, size_t Padding)<br>
 Cette fonction permet en fin d'écriture de matrice d'ajouter le
 Padding nécessaire. Il faut cependant avoir la taille de ce
 Padding. On utilise SdifFPaddingCalculate(SdifF->Stream,
@@ -705,7 +709,7 @@ est aligné sur 64 bits (en général, c'est la taille de la matrice en
 cours d'écriture: NbRow*NbCol*DatWitdh).
 </p>
 <p>
-void SdifUpdateChunkSize (SdifFileT *SdifF, size_t ChunkSize)<br>
+void <b><a href="cocoon/SDIF.html#void_SdifUpdateChunkSize_(SdifFileT_*SdifF,_size_t_ChunkSize)$">SdifUpdateChunkSize</a></b> (SdifFileT *SdifF, size_t ChunkSize)<br>
 execute un retour fichier de ChunkSize bytes et l'écrit, donc on
 écrase la taille du chunk ou du frame.  Dans le cas où le fichier est
 stderr ou stdout, l'action n'est pas réalisée.
@@ -733,7 +737,7 @@ void main(void)
 
   pTabValue = TabValue; /* pour permettre le cast par pointeur */
 
-  SdifGenInit("SdifTypes.STYP");
+  <b><a href="cocoon/SDIF.html#void_SdifGenInit_(char_*PredefinedTypesFile)$">SdifGenInit</a></b>("SdifTypes.STYP");
 
   SdifF = SdifOpenFile("NewFile.sdif",      eWriteFile);
 
@@ -744,37 +748,37 @@ void main(void)
   [ ..... ]
 
   /* écriture de l'entête */
-  SdifFWriteGeneralHeader (SdifF);
+  <b><a href="cocoon/SDIF.html#size_t_SdifFWriteGeneralHeader_(SdifFileT_*SdifF)$">SdifFWriteGeneralHeader</a></b> (SdifF);
   /* écriture des chunks ASCII */
-  SdifFWriteAllASCIIChunks (SdifF)
+  <b><a href="cocoon/SDIF.html#size_t_SdifFWriteAllASCIIChunks_(SdifFileT_*SdifF)$">SdifFWriteAllASCIIChunks</a></b> (SdifF)
 
 
   /****FRAME HEADER*****/
   /* Mise à jour le l'entête de frame à écrire */
   SdifSetCurrFrameHeader (SdifF, '1FOB', _SdifUnknownSize, NbMatrix, NumID, Time);
   /* écriture de l'entête de frame */
-  SizeFrameW = SdifFWriteFrameHeader (SdifF);
+  SizeFrameW = <b><a href="cocoon/SDIF.html#size_t_SdifFWriteFrameHeader_(SdifFileT_*SdifF)$">SdifFWriteFrameHeader</a></b> (SdifF);
 
 
   /****FIRST MATRIX***/
   /* Mise à jour le l'entête de matrice à écrire : 1 ligne, 1 colonne*/
   SdifSetCurrMatrixHeader (SdifF, '1FQ0', eFloat4, 1, 1);
   /* écriture de l'entête de frame */
-  SizeMatrixW = SdifFWriteMatrixHeader (SdifF);
+  SizeMatrixW = <b><a href="cocoon/SDIF.html#size_t_SdifFWriteMatrixHeader_(SdifFileT_*SdifF)$">SdifFWriteMatrixHeader</a></b> (SdifF);
 
   /* Mise à jour de la ligne-buffer de SdifF
    * La largeur des données est conservée par le eFloat4 de l'entête de matrice*/
   SdifSetCurrOneRow (SdifF, (void*) pTabValue);
   /* écriture de la ligne */
-  SizeMatrixW += SdifFWriteOneRow (SdifF);
+  SizeMatrixW += <b><a href="cocoon/SDIF.html#size_t_SdifFWriteOneRow_(SdifFileT_*SdifF)$">SdifFWriteOneRow</a></b> (SdifF);
   /* Si on a d'autres lignes à écrire alors
-   * on répette SdifSetCurrOneRow et SizeMatrixW += SdifFWriteOneRow...
+   * on répette SdifSetCurrOneRow et SizeMatrixW += <b><a href="cocoon/SDIF.html#size_t_SdifFWriteOneRow_(SdifFileT_*SdifF)$">SdifFWriteOneRow</a></b>...
    */
 
   /* écriture du Padding en fin de matrice et ajout de la taille de la matrice écrite
    * à la taile du frame.
    */
-  SizeMatrixW += SdifFWritePadding(SdifF,
+  SizeMatrixW += <b><a href="cocoon/SDIF.html#size_t_SdifFWritePadding_(SdifFileT_*SdifF,_size_t_Padding)$">SdifFWritePadding</a></b>(SdifF,
                        SdifFPaddingCalculate(SdifF->Stream, SizeMatrixW))  
   SizeFrameW += SizeMatrixW;
 
@@ -793,7 +797,7 @@ void main(void)
 
   SdifCloseFile(SdifF);
 
-  SdifGenKill();
+  <b><a href="cocoon/SDIF.html#void_SdifGenKill_(void)$">SdifGenKill</a></b>();
 }
 </pre>
 
@@ -808,18 +812,18 @@ lecture suivant le type de données: chunk ou frame.
 </p>
 
 <p>
-int SdifFGetSignature (SdifFileT *SdifF, size_t *NbCharRead)<br>
+int <b><a href="cocoon/SDIF.html#int_SdifFGetSignature_(SdifFileT_*SdifF,_size_t_*NbCharRead)$">SdifFGetSignature</a></b> (SdifFileT *SdifF, size_t *NbCharRead)<br>
 lit 4 bytes, les considère comme une signature qui est placée dans
 SdifF->CurrSignature, incrémente NbCharRead du nombre de bytes lus et
 renvoie le dernier caractère lu convert en int (-1 si erreur).
 </p>
 <p>
-size_t SdifFReadGeneralHeader (SdifFileT *SdifF)<br>
+size_t <b><a href="cocoon/SDIF.html#size_t_SdifFReadGeneralHeader_(SdifFileT_*SdifF)$">SdifFReadGeneralHeader</a></b> (SdifFileT *SdifF)<br>
 lit l'entête du fichier, c'est à dire 'SDIF' puis 4 bytes.  affiche un
 message en cas de non reconnaissance du format.
 </p>
 <p>
-size_t SdifFReadAllASCIIChunks (SdifFileT *SdifF)<br>
+size_t <b><a href="cocoon/SDIF.html#size_t_SdifFReadAllASCIIChunks_(SdifFileT_*SdifF)$">SdifFReadAllASCIIChunks</a></b> (SdifFileT *SdifF)<br>
 Cette fonction permet de lire tous les Chunk ASCII qui se trouveraient
 en début de fichier juste après l'entête générale. Elle s'arrête
 lorsqu'elle ne reconnaît pas la signature de chunk comme un ASCII
@@ -828,7 +832,7 @@ stockée dans SdifF->CurrSignature. <sttrong>Il n'est donc pas
 nécessaire de la relire</strong>.
 </p>
 <p>
-size_t SdifFReadMatrixHeader (SdifFileT *SdifF)<br>
+size_t <b><a href="cocoon/SDIF.html#size_t_SdifFReadMatrixHeader_(SdifFileT_*SdifF)$">SdifFReadMatrixHeader</a></b> (SdifFileT *SdifF)<br>
 Cette fonction lit une entête de matrice <strong>signature
 incluse</strong>.  Elle vérifie le type de matrice, le champ
 DataType. Toute les données se trouvent stockées dans
@@ -840,43 +844,43 @@ matrice.</strong> Ainsi, on est normalement près pour lire chaque
 ligne de la matrice courrante.
 </p>
 <p>
-size_t SdifFReadOneRow (SdifFileT *SdifF)<br>
+size_t <b><a href="cocoon/SDIF.html#size_t_SdifFReadOneRow_(SdifFileT_*SdifF)$">SdifFReadOneRow</a></b> (SdifFileT *SdifF)<br>
 Cette fonction permet de lire 1 ligne de matrice. Les données lues
 sont stockées dans SdifF->CurrOneRow (jusqu'à une prochaine lecture
 d'entête de matrice qui réinitialise ses paramètres).
 </p>
 <p>
-size_t SdifFReadFrameHeader (SdifFileT *SdifF)<br>
+size_t <b><a href="cocoon/SDIF.html#size_t_SdifFReadFrameHeader_(SdifFileT_*SdifF)$">SdifFReadFrameHeader</a></b> (SdifFileT *SdifF)<br>
 Cette fonction lit l'entête d'un frame à partir de la taille et
 jusqu'au temps. Donc <strong>elle ne lit pas la signature</strong>
 mais donne à SdifF->CurrFramH->Signature la valeur de
 SdifF->CurrSignature.  La lecture doit se faire avant, avec
-SdifFGetSignature.
+<b><a href="cocoon/SDIF.html#int_SdifFGetSignature_(SdifFileT_*SdifF,_size_t_*NbCharRead)$">SdifFGetSignature</a></b>.
 </p>
 <p>
-size_t SdifSkipMatrix (SdifFileT *SdifF)<br>
+size_t <b><a href="cocoon/SDIF.html#size_t_SdifSkipMatrix_(SdifFileT_*SdifF)$">SdifSkipMatrix</a></b> (SdifFileT *SdifF)<br>
 Cette fonction permet de passer une matrice toute entière entête
 incluse. Elle est utile lorsque qu'un frame contient plus de matrices
 que le programme lecteur n'en connaît. Il peut ainsi les passer pour
 retomber sur un autre frame.
 </p>
 <p>
-size_t SdifSkipMatrixData (SdifFileT *SdifF)<br>
+size_t <b><a href="cocoon/SDIF.html#size_t_SdifSkipMatrixData_(SdifFileT_*SdifF)$">SdifSkipMatrixData</a></b> (SdifFileT *SdifF)<br>
 Cette fonction permet de passer une matrice mais après la lecture de
 l'entête. On s'en sert lorsque le type de matrice est mauvais,
 inconnu, non interprétable par le programme lecteur.
 </p>
 <p>
-size_t SdifSkipFrameData (SdifFileT *SdifF)<br>
-Cette fonction à le même sens que SdifSkipMatrixData mais pour les
+size_t <b><a href="cocoon/SDIF.html#size_t_SdifSkipFrameData_(SdifFileT_*SdifF)$">SdifSkipFrameData</a></b> (SdifFileT *SdifF)<br>
+Cette fonction à le même sens que <b><a href="cocoon/SDIF.html#size_t_SdifSkipMatrixData_(SdifFileT_*SdifF)$">SdifSkipMatrixData</a></b> mais pour les
 frames. Il faut donc pour l'utiliser avoir au préalable lu la
 signature et l'entête.
 </p>
 <p>
-size_t SdifFReadPadding (SdifFileT *SdifF, size_t Padding)<br>
+size_t <b><a href="cocoon/SDIF.html#size_t_SdifFReadPadding_(SdifFileT_*SdifF,_size_t_Padding)$">SdifFReadPadding</a></b> (SdifFileT *SdifF, size_t Padding)<br>
 Cette fonction permet de lire le Padding en fin de matrice.
 l'utilisation classique de cette fonctin est:<br>
-<code> SizeR = SdifFReadPadding(SdifF,
+<code> SizeR = <b><a href="cocoon/SDIF.html#size_t_SdifFReadPadding_(SdifFileT_*SdifF,_size_t_Padding)$">SdifFReadPadding</a></b>(SdifF,
 SdifFPaddingCalculate(SdifF->Stream, SizeR));</code><br>
 où SizeR est la taille en bytes lue depuis le début de la matrice,
 c'est à dire NbRow*NbCol*DataWith. En réalité, pour que
@@ -890,11 +894,11 @@ fichier et un byte, repère d'allignement sur 64 bits.
 <p>La librairie possède deux fonctions permettant de faire des conversions
 de fichiers SDIF binaire vers du texte ou l'inverse.
 </p>
-<p>size_t SdifTextToSdif (SdifFileT *SdifF, char *TextStreamName)<br>
+<p>size_t <b><a href="cocoon/SDIF.html#size_t_SdifTextToSdif_(SdifFileT_*SdifF,_char_*TextStreamName)$">SdifTextToSdif</a></b> (SdifFileT *SdifF, char *TextStreamName)<br>
 converti un fichier SDIF ouvert en lecture (eReadFile) en un fichier
 texte pseudo-SDIF de nom TextStreamName.
 </p>
-<p>size_t SdifToText (SdifFileT *SdifF, char *TextStreamName)<br>
+<p>size_t <b><a href="cocoon/SDIF.html#size_t_SdifToText_(SdifFileT_*SdifF,_char_*TextStreamName)$">SdifToText</a></b> (SdifFileT *SdifF, char *TextStreamName)<br>
 converti un fichier texte pseudo-SDIF de nom TextStreamName en un
 fichier SDIF binaire de non SdifF->Name. Le fichier doit avoir été
 ouvert en écriture (eWriteFile).
