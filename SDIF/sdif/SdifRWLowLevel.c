@@ -1,4 +1,4 @@
-/* $Id: SdifRWLowLevel.c,v 3.10 2000-07-18 15:08:38 tisseran Exp $
+/* $Id: SdifRWLowLevel.c,v 3.10.2.1 2000-08-21 18:34:11 tisseran Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -15,6 +15,20 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.10  2000/07/18  15:08:38  tisseran
+ * This release implements the New SDIF Specification (june 1999):
+ * - Name Values Table are written in a 1NVT frame which contains a 1NVT matrix
+ * - Frame and matrix type declaration are written in a 1TYP frame which contains a 1TYP matrix.
+ * - Stream ID are written in a 1IDS frame which contains a 1IDS matrix.
+ *
+ * Read function accept the previous version of the specification (read a text frame without matrix) to be compatible with older SDIF files.
+ *
+ * SdifString.h and SdifString.c implements some string mangement (creation, destruction, append, test of end of string, getc, ungetc).
+ *
+ * WATCH OUT:
+ *      We don't care about the old SDIF Specification (_SdifFormatVersion < 3)
+ * To use _SdifFormatVersion < 3, get the previous release.
+ *
  * Revision 3.9  2000/05/15  16:23:10  schwarz
  * Avoided avoidable warnings.
  *
@@ -1187,6 +1201,34 @@ SdifSkipASCIIUntil(FILE* fr, size_t *NbCharRead, char *CharsEnd)
     }
 
   if (feof(fr))
+    return eEof;
+  else
+    return c;
+
+}
+
+int
+SdifSkipASCIIUntilfromSdifString(SdifStringT *SdifString, size_t *NbCharRead, char *CharsEnd)
+{
+  int c=0;
+  int CharsEndLen;
+  
+  CharsEndLen = SdifStrLen(CharsEnd);
+  
+  while(   (c = SdifStringGetC(SdifString)) && (!SdifStringIsEOS(SdifString))   )
+    {
+      (*NbCharRead)++;
+      
+      if (memchr(CharsEnd, (char) c, CharsEndLen))
+	return c;
+      else
+	if ((!isspace(c)) && (!isprint(c)))
+	  {
+	    break;
+	  }
+    }
+
+  if (SdifStringIsEOS(SdifString))
     return eEof;
   else
     return c;

@@ -1,4 +1,4 @@
-/* $Id: SdifFRead.h,v 3.6.2.1 2000-08-21 14:04:11 tisseran Exp $
+/* $Id: SdifFRead.h,v 3.6.2.2 2000-08-21 18:34:10 tisseran Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -16,6 +16,9 @@ LIBRARY
 
 LOG
  * $Log: not supported by cvs2svn $
+ * Revision 3.6.2.1  2000/08/21  14:04:11  tisseran
+ * *** empty log message ***
+ *
  * Revision 3.6  2000/07/18  15:08:33  tisseran
  * This release implements the New SDIF Specification (june 1999):
  * - Name Values Table are written in a 1NVT frame which contains a 1NVT matrix
@@ -131,11 +134,15 @@ size_t SdifFReadOneRow           (SdifFileT *SdifF);
   SdifFGetSignature.  */
 size_t SdifFReadFrameHeader      (SdifFileT *SdifF);
 
+
 /*DOC: 
   Cette fonction permet de passer une matrice toute entière entête
   incluse. Elle est utile lorsque qu'un frame contient plus de
   matrices que le programme lecteur n'en connaît. Il peut ainsi les
   passer pour retomber sur un autre frame.  */
+size_t SdifFSkipMatrix            (SdifFileT *SdifF);
+
+/* obsolete */
 size_t SdifSkipMatrix            (SdifFileT *SdifF);
 
 /*DOC: 
@@ -144,12 +151,18 @@ size_t SdifSkipMatrix            (SdifFileT *SdifF);
   inconnu, non interprétable par le programme lecteur.
 
   Note:  The matrix padding is skipped also. */
+size_t SdifFSkipMatrixData        (SdifFileT *SdifF);
+
+/* obsolete */
 size_t SdifSkipMatrixData        (SdifFileT *SdifF);
 
 /*DOC: 
   Cette fonction à le même sens que SdifSkipMatrixData mais pour les
   frames. Il faut donc pour l'utiliser avoir au préalable lu la
   signature et l'entête.  */
+size_t SdifFSkipFrameData         (SdifFileT *SdifF);
+
+/* obsolete */
 size_t SdifSkipFrameData         (SdifFileT *SdifF);
 
 /*DOC: 
