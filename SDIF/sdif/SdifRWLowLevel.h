@@ -1,4 +1,4 @@
-/* $Id: SdifRWLowLevel.h,v 3.6 1999-10-15 12:23:48 schwarz Exp $
+/* $Id: SdifRWLowLevel.h,v 3.7 2000-05-15 16:23:11 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -17,6 +17,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.6  1999/10/15  12:23:48  schwarz
+ * Added SdifStringToNV.
+ *
  * Revision 3.5  1999/10/13  16:05:57  schwarz
  * Changed data type codes (SdifDataTypeET) to SDIF format version 3, as
  * decided with Matt Wright June 1999, added integer data types.
@@ -144,7 +147,7 @@ int SdiffGetStringWeakUntil(FILE* fr, char* s, size_t ncMax, size_t *NbCharRead,
 int SdifSkipASCIIUntil  (FILE* fr, size_t *NbCharRead, char *CharsEnd);
 
 
-#if 0	/* for cocoon */
+#if 0	/* for cocoon's eyes only */
 /* scan nobj items of TYPE from stream, return number sucessfully read */
 size_t SdiffScan_TYPE   (FILE *stream, Sdif_TYPE  *ptr, size_t nobj);
 size_t SdiffScanFloat4  (FILE *stream, SdifFloat4 *ptr, size_t nobj);
@@ -173,5 +176,7 @@ SdifSignature _SdifStringToSignature (char *str);
   str can point to any string position of any length.  
 */
 SdifSignature SdifStringToSignature (char *str);
+
+
 
 #endif /* _SdifRWLowLevel_ */

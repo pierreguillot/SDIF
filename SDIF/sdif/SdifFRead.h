@@ -1,4 +1,4 @@
-/* $Id: SdifFRead.h,v 3.4 2000-03-01 11:19:58 schwarz Exp $
+/* $Id: SdifFRead.h,v 3.5 2000-05-15 16:23:07 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -16,6 +16,10 @@ LIBRARY
 
 LOG
  * $Log: not supported by cvs2svn $
+ * Revision 3.4  2000/03/01  11:19:58  schwarz
+ * Assert Padding, added SdifFReadAndIgnore.
+ * SdiffSetPos checks for pipe and then uses SdifFReadAndIgnore to seek forward.
+ *
  * Revision 3.3  1999/09/28  13:08:54  schwarz
  * Included #include <preincluded.h> for cross-platform uniformisation,
  * which in turn includes host_architecture.h and SDIF's project_preinclude.h.
@@ -79,7 +83,7 @@ size_t SdifFReadAllStreamID      (SdifFileT *SdifF);
   trouveraient en début de fichier juste après l'entête générale. Elle
   s'arrête lorsqu'elle ne reconnaît pas la signature de chunk comme un
   ASCII Chunk. Cette signature est donc normalement celle d'un
-  frame. Elle est stockée dans SdifF->CurrSignature. <sttrong>Il n'est
+  frame. Elle est stockée dans SdifF->CurrSignature. <strong>Il n'est
   donc pas nécessaire de la relire</strong>.  */
 size_t SdifFReadAllASCIIChunks   (SdifFileT *SdifF);
 

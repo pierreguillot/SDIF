@@ -1,4 +1,4 @@
-/* $Id: SdifRWLowLevel.c,v 3.8 1999-10-15 12:23:46 schwarz Exp $
+/* $Id: SdifRWLowLevel.c,v 3.9 2000-05-15 16:23:10 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -15,6 +15,9 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.8  1999/10/15  12:23:46  schwarz
+ * Added SdifStringToNV.
+ *
  * Revision 3.7  1999/10/13  16:05:56  schwarz
  * Changed data type codes (SdifDataTypeET) to SDIF format version 3, as
  * decided with Matt Wright June 1999, added integer data types.
@@ -77,7 +80,7 @@ Sdiffread(void *ptr, size_t size, size_t nobj, FILE *stream)
   nobjread = fread(ptr, size, nobj, stream);
   if (nobjread != nobj)
     {
-      sprintf(gSdifErrorMess, "Sdiffread %d", ftell(stream));
+      sprintf(gSdifErrorMess, "Sdiffread %ld", ftell(stream));
       _SdifError(eEof, gSdifErrorMess);
     }
   
@@ -98,7 +101,7 @@ Sdiffwrite(void *ptr, size_t size, size_t nobj, FILE *stream)
   nobjwrite = fwrite(ptr, size, nobj, stream);
   if (nobjwrite != nobj)
     {
-      sprintf(gSdifErrorMess, "Sdiffwrite %d", ftell(stream));
+      sprintf(gSdifErrorMess, "Sdiffwrite %ld", ftell(stream));
       _SdifError(eEof, gSdifErrorMess);
     }
 
@@ -735,10 +738,10 @@ SdifStringToSignature (char *str)
   SdifSignature sigarr = eEmptySignature;  /* force 4 byte alignment */
   char		*sig   = (char *) &sigarr;
 
-  if (*sig++ = *str++)
-    if (*sig++ = *str++)
-      if (*sig++ = *str++)
-	if (*sig++ = *str++)
+  if ((*sig++ = *str++))
+    if ((*sig++ = *str++))
+      if ((*sig++ = *str++))
+	if ((*sig++ = *str++))
 	  /* do nothing */;
   return _SdifStringToSignature ((char *) &sigarr);
 }  
@@ -817,7 +820,7 @@ SdiffReadSpace(FILE* fr)
       Pos --;
       if (SdiffSetPos(fr, &Pos)==0) ::: it is a bad solution with stdin, virolle 99/01 
 */
-      if (c = (char) ungetc(c, fr))
+      if ((c = (char) ungetc(c, fr)))
         return NbCharRead;
       else
         {
@@ -960,7 +963,7 @@ SdiffGetStringWeakUntil(FILE* fr, char* s, size_t ncMax, size_t *NbCharRead, cha
 
 /* read ASCII */
 
-static const char *formatText	  = "%c";   /* todo */
+/* static const char *formatText	  = "%c";   todo */
 static const char *formatChar     = "%c";
 static const char *formatFloat4   = "%f";
 static const char *formatFloat8   = "%lf";
