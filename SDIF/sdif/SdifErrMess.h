@@ -1,4 +1,4 @@
-/* $Id: SdifErrMess.h,v 3.1 1999-03-14 10:56:34 virolle Exp $
+/* $Id: SdifErrMess.h,v 3.2 1999-09-28 10:35:43 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -15,6 +15,9 @@
  * author: Dominique Virolle 1998
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 3.1  1999/03/14  10:56:34  virolle
+ * SdifStdErr add
+ *
  *
  */
 
@@ -106,11 +109,24 @@ SdifInt4		SdifFsPrintError	(char* oErrMess, SdifFileT* SdifF,
 									 SdifErrorT* Error,
 									const char *LibFile, int LibLine);
 
+/*DOC:
+  Switch output of error messages on stderr by _SdifFError on. 
+*/
+void	SdifEnableErrorOutput  (void);
+
+/*DOC:
+  Switch output of error messages on stderr by _SdifFError off. 
+*/
+void	SdifDisableErrorOutput (void);
+
+
 extern char	gSdifBufferError[4096];
+extern int	gSdifErrorOutputEnabled;
+
 
 #define _SdifFError(SdifF, ErrorTag, UserMess) \
 (SdifInsertTailError(SdifF->Errors, ErrorTag, UserMess), \
  SdifFsPrintError(gSdifBufferError, SdifF, SdifLastError(SdifF->Errors), __FILE__, __LINE__), \
- fprintf(SdifStdErr,"%s", gSdifBufferError))
+gSdifErrorOutputEnabled  ?  fprintf(SdifStdErr,"%s", gSdifBufferError)  :  0)
 
 #endif  /* _SdifErrMess_ */
