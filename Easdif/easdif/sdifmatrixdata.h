@@ -33,9 +33,12 @@
  * 
  * 
  * 
- * $Id: sdifmatrixdata.h,v 1.9 2004-07-26 14:49:16 roebel Exp $ 
+ * $Id: sdifmatrixdata.h,v 1.10 2004-07-27 17:37:54 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.9  2004/07/26 14:49:16  roebel
+ * Fixed compiler warnings due to implicite casts
+ *
  * Revision 1.8  2004/07/21 13:27:12  roebel
  * Added new data accessing functions to read complete columns
  * GetCol(double *,int icol), GetCol(float *,int icol), GetCol(int *,int icol)
@@ -97,7 +100,7 @@
 #define SDIFMATRIXDATA_H_ 1
 
 #include <vector>
-#include <sdif.h>
+#include "sdif.h"
 #include "easdif/sdifmatrixdatainterface.h"
 
 
@@ -472,7 +475,7 @@ public:
     }
     /*Read matrix padding*/
     bytesread += SdifFReadPadding(file, SdifFPaddingCalculate(file->Stream, bytesread));
-    return bytesread; 
+    return static_cast<int>(bytesread); 
   }
 
 /**
@@ -502,7 +505,7 @@ public:
 	    /* Write matrix padding */
 	    SizeFrameW += SdifFWritePadding(file, SdifFPaddingCalculate (file->Stream, SizeFrameW));
 
-	    return SizeFrameW;
+	    return static_cast<int>(SizeFrameW);
 	}
 
 
