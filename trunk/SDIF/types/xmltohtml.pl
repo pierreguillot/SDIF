@@ -1,12 +1,16 @@
 #!/usr/bin/perl
 #
-# $Id: xmltohtml.pl,v 1.11 2001-05-02 15:21:33 schwarz Exp $
+# $Id: xmltohtml.pl,v 1.12 2001-06-08 18:46:58 schwarz Exp $
 #
 # xmltohtml.pl		6. July 2000		Diemo Schwarz
 #
 # Translate SDIF types description in XML to HTML.
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.11  2001/05/02 15:21:33  schwarz
+# Added top-level description for section descriptions.
+# Tweaked table-disguised-as-heading layout.
+#
 # Revision 1.10  2000/08/22 16:21:48  schwarz
 # Allow attributes to HTML-like tags.
 # Back/Home/etc. links at bottom.
@@ -68,7 +72,7 @@ my %tagsing = (map { (uc $_, uc $_, lc $_, uc $_ ) } @singlehtmltags);
 
 
 # init
-my $cvsrev     = '$Id: xmltohtml.pl,v 1.11 2001-05-02 15:21:33 schwarz Exp $ ';
+my $cvsrev     = '$Id: xmltohtml.pl,v 1.12 2001-06-08 18:46:58 schwarz Exp $ ';
 my $tdlversion = '';
 my $version    = 'unknown';
 my $revision   = '';
@@ -398,13 +402,13 @@ sub addmatrix
 
 sub matrixref_char
 {
-    $h->A(HREF=>"#Matrix_$refsig")->t($_[1])->_A;    
+    $h->A(href => "#Matrix_$refsig")->t($_[1])->_A;    
     $refsig = '';
 }
 
 sub frameref_char
 {
-    $h->A(HREF=>"#Frame_$refsig")->t($_[1])->_A;    
+    $h->A(href => "#Frame_$refsig")->t($_[1])->_A;    
     $refsig = '';
 }
 
