@@ -1,4 +1,4 @@
-/* $Id: SdifString.c,v 3.5 2000-11-15 14:53:36 lefevre Exp $
+/* $Id: SdifString.c,v 3.6 2001-02-08 15:26:56 tisseran Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -32,6 +32,9 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.5  2000/11/15 14:53:36  lefevre
+ * no message
+ *
  * Revision 3.4  2000/10/27  20:03:44  roebel
  * autoconf merged back to main trunk
  *
@@ -77,6 +80,13 @@ SdifStringT * SdifStringNew(void)
   TotalSize = _SdifStringGranule;
   
   SdifString->str = (char *)malloc(TotalSize * sizeof(char));
+  if (SdifString->str == NULL) /* Check result of memory allocation */
+  {
+      /* Error with memory allocation */
+      perror("SdifStringNew memory allocation: ");
+      /* Call SdifError checker (not yet...) */
+      _SdifError(eAllocFail,"SdifString Memory Allocation");
+  }
   SdifString->SizeW = SizeW;
   SdifString->TotalSize = TotalSize;
   SdifString->NbCharRead = 0;

@@ -1,4 +1,4 @@
-/* $Id: sdifextract.c,v 1.4 2000-12-06 13:43:43 lefevre Exp $
+/* $Id: sdifextract.c,v 1.5 2001-02-08 15:26:56 tisseran Exp $
  
                 Copyright (c) 1998 by IRCAM - Centre Pompidou
                            All rights reserved.
@@ -13,6 +13,9 @@
    Extract data from an SDIF-file.  
    
    $Log: not supported by cvs2svn $
+   Revision 1.4  2000/12/06 13:43:43  lefevre
+   Mix HostArchiteture and AutoConfigure mechanisms
+
  * Revision 1.3  2000/11/16  12:02:23  lefevre
  * no message
  *
@@ -163,7 +166,7 @@ void usage (char *msg, char *arg, int longhelp)
     }
     if (longhelp)
     {
-    	fprintf (SdifStdErr, "\n" PROG "version $Revision: 1.4 $\n\n");
+    	fprintf (SdifStdErr, "\n" PROG "version $Revision: 1.5 $\n\n");
     
     	if (types)
     	{
@@ -673,7 +676,7 @@ int main(int argc, char** argv)
 	    }
 	    
 	    /* a frame type we're not interested in, so we skip it */
-	    SdifSkipFrameData (in);
+	    SdifFSkipFrameData (in);
 	    eof = SdifFGetSignature (in, &bytesread) == eEof;
 	    continue;		/* START NEXT ITERATION of while frames loop */
 	}
@@ -699,7 +702,7 @@ int main(int argc, char** argv)
 	    /* Check matrix type */
 	    if (!SdifFCurrMatrixIsSelected (in))
 	    {   /* a matrix type we're not interested in, so we skip it */
-		SdifSkipMatrixData (in);
+		SdifFSkipMatrixData (in);
 		continue;	/* START NEXT ITERATION of for matrices loop */
 	    }
 

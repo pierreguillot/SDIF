@@ -1,4 +1,4 @@
-/* $Id: SdifString.h,v 3.3 2000-11-21 14:51:51 schwarz Exp $
+/* $Id: SdifString.h,v 3.4 2001-02-08 15:26:56 tisseran Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -32,6 +32,16 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.3  2000/11/21 14:51:51  schwarz
+ * - sdif.h is now included by all sdif/Sdif*.c files.
+ * - Removed all public typedefs, enums, structs, and defines from the
+ *   individual sdif/Sdif*.h files, because they were duplicated in sdif.h.
+ * - Todo: Do the same for the function prototypes, decide which types and
+ *   prototypes really need to be exported.
+ * - Removed SdifFileStruct.h.
+ * - Preliminary new version of SdiffGetPos, SdiffSetPos.  They used the
+ *   type fpos_t, which is no longer a long on RedHat 7 Linux.
+ *
  * Revision 3.2  2000/10/27 20:03:45  roebel
  * autoconf merged back to main trunk
  *
@@ -54,8 +64,8 @@
  *
  */
 
-#ifndef _SdifString_
-#define _SdifString_
+#ifndef _SDIFSTRING_H
+#define _SDIFSTRING_H 1
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -107,5 +117,5 @@ int SdifStringUngetC(SdifStringT * SdifString);
 */
 int SdifStringIsEOS(SdifStringT *SdifString);
 
-#endif /* _SdifString_ */
+#endif /* _SDIFSTRING_H */
 
