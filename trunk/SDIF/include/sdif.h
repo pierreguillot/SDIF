@@ -1,4 +1,4 @@
-/* $Id: sdif.h,v 1.31 2003-07-07 10:27:01 roebel Exp $
+/* $Id: sdif.h,v 1.32 2003-07-21 15:46:47 roebel Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -30,6 +30,9 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.31  2003/07/07 10:27:01  roebel
+ * Added support for eInt1 and eUInt1 data types
+ *
  * Revision 1.30  2003/06/06 10:25:40  schwarz
  * Added eReadWriteFile that eventually opens a file in read-write mode.
  *
@@ -160,7 +163,7 @@
  * Revision 1.1.2.1  2000/08/21  13:07:41  tisseran
  * *** empty log message ***
  *
- * $Date: 2003-07-07 10:27:01 $
+ * $Date: 2003-07-21 15:46:47 $
  *
  */
 
@@ -175,7 +178,7 @@ extern "C" {
 #endif
 
 
-static const char _sdif_h_cvs_revision_ [] = "$Id: sdif.h,v 1.31 2003-07-07 10:27:01 roebel Exp $";
+static const char _sdif_h_cvs_revision_ [] = "$Id: sdif.h,v 1.32 2003-07-21 15:46:47 roebel Exp $";
 
 
 #include <stdio.h>
@@ -1966,8 +1969,9 @@ void *SdifGetColumn ();
 
 
 
-// Error handling
-
+/*
+ * Error handling
+ */
 
 int /*bool*/ SdifFCheckStatus (SdifFileT *file)
 {
