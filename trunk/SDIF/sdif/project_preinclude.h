@@ -1,4 +1,4 @@
-/* $Id: project_preinclude.h,v 3.3 2000-11-15 14:53:37 lefevre Exp $
+/* $Id: project_preinclude.h,v 3.4 2000-12-06 13:43:42 lefevre Exp $
 
    SDIF/sdif/project_preinclude.h	28. Sep 1999	Diemo Schwarz
 
@@ -20,6 +20,9 @@
    use Makefiles and such declarations would therefore get lost.
   
    $Log: not supported by cvs2svn $
+ * Revision 3.3  2000/11/15  14:53:37  lefevre
+ * no message
+ *
  * Revision 3.2  2000/05/12  14:41:50  schwarz
  * On behalf of Adrien, synchronisation with Mac sources, with some slight
  * changes because of cross-platform issues:
@@ -55,17 +58,18 @@ Sdif preinclude
 
 #if HOST_OS_MAC
 
-/* Deal with AutoConf
-   TODO Mix our "" with AutoConf
-*/
 #define VERSION "Macintosh Sdif 3.2"
+#define PACKAGE "SDIF"
 
-#define SIZEOF_LONG 4
+#elif HOST_OS_WIN32
 
-#ifdef __STDC__
-#define STDC_HEADERS
+#define VERSION "Windows Sdif 3.2"
+#define PACKAGE "SDIF"
+
 #endif
 
-#endif /* HOST_OS_MAC */
-
 #endif /* __H_PROJECT_PREINCLUDE__ */
+
+
+
+

@@ -1,4 +1,4 @@
-/* $Id: querysdif.c,v 1.3 2000-11-16 12:02:23 lefevre Exp $
+/* $Id: querysdif.c,v 1.4 2000-12-06 13:43:43 lefevre Exp $
  
                 Copyright (c) 1998 by IRCAM - Centre Pompidou
                            All rights reserved.
@@ -13,6 +13,9 @@
    View summary of data in an SDIF-file.  
    
    $Log: not supported by cvs2svn $
+ * Revision 1.3  2000/11/16  12:02:23  lefevre
+ * no message
+ *
  * Revision 1.2  2000/11/15  14:53:40  lefevre
  * no message
  *
@@ -58,10 +61,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
 
 void usage (void)
 {
