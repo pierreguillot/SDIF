@@ -1,4 +1,4 @@
-/* $Id: sdifextract.c,v 1.2 2000-10-30 16:22:11 roebel Exp $
+/* $Id: sdifextract.c,v 1.3 2000-11-16 12:02:23 lefevre Exp $
  
                 Copyright (c) 1998 by IRCAM - Centre Pompidou
                            All rights reserved.
@@ -13,6 +13,13 @@
    Extract data from an SDIF-file.  
    
    $Log: not supported by cvs2svn $
+ * Revision 1.2  2000/10/30  16:22:11  roebel
+ * Merge changes proposed by Schwarz:
+ * Removed _SdifFError by fprintf to remove dependency on low-level
+ *    function.
+ * Using CVS revision as version for sdifextract.
+ * Use SdifFSkipFrameData for SdifSkipFrameData.
+ *
  * Revision 1.1  2000/10/30  14:44:03  roebel
  * Moved all tool sources into central tools directory and added config.h to sources
  *
@@ -29,7 +36,7 @@
  * *** empty log message ***
  *
    Revision 3.6  2000/06/02  12:57:30  schwarz
-   Fixed crash-on-exit bug.
+   Fixed crash-on-XpExit bug.
 
    Revision 3.5  2000/05/15  16:22:10  schwarz
    Changed prototypes of existing functions (we apologize for the inconvenience)
@@ -99,11 +106,19 @@
 */
 
 
+#include <preincluded.h>
+#include "XpGuiCalls.h"
+
+#include "sdif.h"
 #include <stdlib.h>
 #include <stdio.h>
-#include <unistd.h>
 #include <string.h>
-#include "sdif.h"
+
+#if HOST_OS_UNIX
+#include <unistd.h>
+#elif HOST_OS_MAC
+#include <unix.h>
+#endif
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -149,7 +164,7 @@ void usage (char *msg, char *arg, int longhelp)
     }
     if (longhelp)
     {
-    	fprintf (SdifStdErr, "\n" PROG "version $Revision: 1.2 $\n\n");
+    	fprintf (SdifStdErr, "\n" PROG "version $Revision: 1.3 $\n\n");
     
     	if (types)
     	{
@@ -235,7 +250,7 @@ void usage (char *msg, char *arg, int longhelp)
 "       ASCII with sufficient precision to be exactly equal to the double value\n"
 "       in the SDIF-file.\n"
 "\n");
-    exit(0);
+    XpExit(0);
 }
 
 
@@ -278,18 +293,18 @@ outsdif (OutAction what, double data)
 	case OpenFile:
 	    if (!(out = SdifFOpen (outfile, eWriteFile)))
 		fprintf (SdifStdErr, PROG "can't open SDIF output file %s.\n", 
-			 outfile), exit (2);
+			 outfile), XpExit (2);
 
 	    if (isatty (fileno (out->Stream)))
 		fprintf (SdifStdErr, PROG"won't write SDIF to your screen.\n"),
-		exit (3);
+		XpExit (3);
 
 	    if (!(SdifListIsEmpty(in->Selection->row)  &&  
 		  SdifListIsEmpty(in->Selection->column)))
 	    {
 		if (!out->isSeekable)
 		    fprintf (SdifStdErr, PROG "can't use row or column selection with SDIF output to stdout.\n"),
-		    exit (4);
+		    XpExit (4);
 		else if (verb > 0)
 		    fprintf (SdifStdErr, PROG "warning: row or column selection might produce invalid SDIF output types.\n");
 	    }
@@ -358,7 +373,7 @@ outsdif (OutAction what, double data)
 			 SdifSignatureToString (SdifFCurrFrameSignature(out)), 
 			 SdifFCurrTime(out), 
 			 !out->isSeekable ? " (output is not seekable)" : "");
-		exit (5);
+		XpExit (5);
 	    }
 	break;
 
@@ -383,7 +398,7 @@ outbpf (OutAction what, double data)
 	    {
 		if (!(out = fopen (outfile, "w")))
 		    fprintf (SdifStdErr, "Can't open bpf output file %s.\n", 
-			     outfile), exit (0);
+			     outfile), XpExit (0);
 	    }
 	    else
 		out = stdout;
@@ -418,7 +433,7 @@ outformat (OutAction what, double data)
 	    {
 		if (!(out = fopen (outfile, "w")))
 		    fprintf (SdifStdErr, "Can't open format output file %s.\n",
-			     outfile), exit (0);
+			     outfile), XpExit (0);
 	    }
 	    else
 		out = stdout;
@@ -438,13 +453,23 @@ outformat (OutAction what, double data)
     }
 }
 
+/*--------------------------------------------------------------------------*/
+/*	KERmain / main															*/
+/*--------------------------------------------------------------------------*/
 
-/*
- *  main
- */
+#if HOST_OS_MAC
 
-int 
-main (int argc, char **argv)
+int KERmain(int argc, char** argv);
+int KERmain(int argc, char** argv)
+{
+	fprintf(SdifStdErr, "Nothing for the moment (Arien 11 May 2000)\n");
+   return (0);
+}
+
+#else
+
+int main(int argc, char** argv);
+int main(int argc, char** argv)
 {
     int		i, m, r, c;
     int		eof = 0;
@@ -454,7 +479,7 @@ main (int argc, char **argv)
 
 #   define	maxintsel	65536	/* todo: make dynamic */
 #   define	get(arr, ind)	((ind) < maxintsel  ?  arr [ind]  :  	      \
-		   (fprintf(stderr, PROG "Number of columns out of bounds, exiting\n"), exit (9), 0))
+		   (fprintf(stderr, PROG "Number of columns out of bounds, exiting\n"), XpExit (9), 0))
     int		flatcol [maxintsel], cumulcol [maxintsel + 1], numcolsel,
     		flatrow [maxintsel], cumulrow [maxintsel + 1], numrowsel;
 
@@ -556,7 +581,7 @@ main (int argc, char **argv)
     if (!in)
     {
         SdifGenKill ();
-        exit (1);
+        XpExit (1);
     }
     isel = in->Selection;
 
@@ -611,9 +636,9 @@ main (int argc, char **argv)
     SdifFReadAllASCIIChunks (in);
     if (SdifFLastError(in))
     {   /* error has already been printed by the library, just clean
-           up and exit */
+           up and XpExit */
         SdifGenKill ();
-        exit (1);
+        XpExit (1);
     }
     output (OpenFile, 0);
 
@@ -649,7 +674,7 @@ main (int argc, char **argv)
 	    }
 	    
 	    /* a frame type we're not interested in, so we skip it */
-	    SdifFSkipFrameData (in);
+	    SdifSkipFrameData (in);
 	    eof = SdifFGetSignature (in, &bytesread) == eEof;
 	    continue;		/* START NEXT ITERATION of while frames loop */
 	}
@@ -747,6 +772,9 @@ main (int argc, char **argv)
 }
 
 
+#endif /* main */
+
+
 
 
 /* flat  [i] = enumerates selected columns (sorted), i = 0..cumul [n]-1
@@ -804,11 +832,11 @@ list_to_set (SdifListT *list, int maxmax, int set [])
     {
 	if (range.value <= 0)
 	    fprintf (SdifStdErr, PROG "integer selection must be greater than 0 (you specified %d)\n", range.value), 
-	    exit (1);
+	    XpExit (1);
 	if (range.range >= maxmax)
 	    fprintf (SdifStdErr, PROG "can't handle integer selections "
 		     "greater than %d (you wanted %d)\n", maxmax, range.range),
-	    exit (2);
+	    XpExit (2);
 	if (range.range >= realmax)
 	    realmax = range.range;
 

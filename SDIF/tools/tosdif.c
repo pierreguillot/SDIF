@@ -1,4 +1,4 @@
-/* $Id: tosdif.c,v 1.1 2000-10-30 14:44:04 roebel Exp $
+/* $Id: tosdif.c,v 1.2 2000-11-16 12:02:24 lefevre Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -10,6 +10,9 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.1  2000/10/30  14:44:04  roebel
+ * Moved all tool sources into central tools directory and added config.h to sources
+ *
  * Revision 1.2  2000/10/27  20:04:22  roebel
  * autoconf merged back to main trunk
  *
@@ -42,6 +45,9 @@
  */
 
 
+#include <preincluded.h>
+#include "XpGuiCalls.h"
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -68,7 +74,7 @@ usage(void)
  e :   error file (default is \"stderr\")\n\
  t :   sdif types file (default is env SDIFTYPES\n\t\tor \"SdifTypes.STYP\" in current dir)\n\
  T :   input is a pseudo-sdif text file\n");
-  exit(1);
+  XpExit(1);
 }
 
 
@@ -94,8 +100,21 @@ GetArgOfOption(int *iArg, int argc, char**argv)
 
 
 
-int
-main(int argc, char **argv)
+/*--------------------------------------------------------------------------*/
+/*	KERmain / main															*/
+/*--------------------------------------------------------------------------*/
+
+#if HOST_OS_MAC
+
+int KERmain(int argc, char** argv);
+int KERmain(int argc, char** argv)
+
+#else
+
+int main(int argc, char** argv);
+int main(int argc, char** argv)
+
+#endif
 {
     int
 	TypeIn = eTextIn,

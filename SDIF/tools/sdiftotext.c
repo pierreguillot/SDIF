@@ -1,4 +1,4 @@
-/* $Id: sdiftotext.c,v 1.1 2000-10-30 14:44:04 roebel Exp $
+/* $Id: sdiftotext.c,v 1.2 2000-11-16 12:02:23 lefevre Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -11,6 +11,9 @@
  * sdiftotext.c
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.1  2000/10/30  14:44:04  roebel
+ * Moved all tool sources into central tools directory and added config.h to sources
+ *
  * Revision 1.2  2000/10/27  20:04:21  roebel
  * autoconf merged back to main trunk
  *
@@ -44,8 +47,8 @@
  *
  */
 
-
-
+#include <preincluded.h>
+#include "XpGuiCalls.h"
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -67,7 +70,7 @@ usage(void)
  o :   output file (default is \"stdout\")\n\
  e :   error file (default is \"stderr\")\n\
  t :   sdif types file (default is env SDIFTYPES\n\t\tor \"SdifTypes.STYP\" in current dir)\n");
-  exit(1);
+  XpExit(1);
 }
 
 
@@ -93,8 +96,21 @@ GetArgOfOption(int *iArg, int argc, char**argv)
 
 
 
-int
-main(int argc, char **argv)
+/*--------------------------------------------------------------------------*/
+/*	KERmain / main															*/
+/*--------------------------------------------------------------------------*/
+
+#if HOST_OS_MAC
+
+int KERmain(int argc, char** argv);
+int KERmain(int argc, char** argv)
+
+#else
+
+int main(int argc, char** argv);
+int main(int argc, char** argv)
+
+#endif
 {
     int
 	SizeR = 0,

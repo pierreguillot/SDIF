@@ -1,8 +1,11 @@
-/* $Id: sdif.h,v 1.3 2000-11-15 14:53:22 lefevre Exp $
+/* $Id: sdif.h,v 1.4 2000-11-16 12:02:22 lefevre Exp $
  *
  * This file contains type declaration of variables used in SDIF library.
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.3  2000/11/15  14:53:22  lefevre
+ * no message
+ *
  * Revision 1.2  2000/10/27  20:03:18  roebel
  * autoconf merged back to main trunk
  *
@@ -15,7 +18,7 @@
  * Revision 1.1.2.1  2000/08/21  13:07:41  tisseran
  * *** empty log message ***
  *
- * $Date: 2000-11-15 14:53:22 $
+ * $Date: 2000-11-16 12:02:22 $
  *
  */
 
@@ -613,11 +616,14 @@ struct SdifStringS
 };
 
 
-/* $Id: sdif.h,v 1.3 2000-11-15 14:53:22 lefevre Exp $
+/* $Id: sdif.h,v 1.4 2000-11-16 12:02:22 lefevre Exp $
  *
  * This file contains prototype of functions used in SDIF library.
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.3  2000/11/15  14:53:22  lefevre
+ * no message
+ *
  * Revision 1.2  2000/10/27  20:03:18  roebel
  * autoconf merged back to main trunk
  *
@@ -630,7 +636,7 @@ struct SdifStringS
  * Revision 1.1.2.1  2000/08/21  13:07:39  tisseran
  * *** empty log message ***
  *
- * $Date: 2000-11-15 14:53:22 $
+ * $Date: 2000-11-16 12:02:22 $
  *
  */
 
@@ -787,6 +793,7 @@ size_t SdifSkipMatrix            (SdifFileT *SdifF);
 
   Note:  The matrix padding is skipped also. */
 size_t SdifSkipMatrixData        (SdifFileT *SdifF);
+size_t SdifFSkipMatrixData       (SdifFileT *SdifF);
 
 /*DOC: 
   Cette fonction à le même sens que SdifSkipMatrixData mais pour les
@@ -1389,7 +1396,7 @@ SdifUInt4 SdifSignatureConst (SdifUInt4 four_char_code);
 /* generate prototype template for all types */
 #define sdif_proto_foralltypes(macro)	sdif__foralltypes(macro,;)
 
-#endif /* __STDC__ */
+#endif /* STDC_HEADERS */
 
 
 #define _SdifStringLen 1024
@@ -2266,8 +2273,6 @@ void SdifSelectAdd_TYPE_Range (SdifListT *list,
 
 
 #ifdef STDC_HEADERS
-/* #ifdefined (__STDC__) */
-/*#if defined (_ANSI_C_SOURCE)  ||  defined (__STDC__)*/
 
 #define _addrangeproto(name, type, field) \
 void SdifSelectAdd##name##Range (SdifListT *list, \
@@ -2672,6 +2677,24 @@ SdifTimePositionLT* SdifTimePositionLPutTail(SdifTimePositionLT* TimePositionL,
 SdifTimePositionT*  SdifTimePositionLGetTail(SdifTimePositionLT* TimePositionL);
 
 #endif /* _SdifTimePosition_ */
+
+
+
+/* SdifFPrint */
+
+size_t SdifFPrintGeneralHeader      (SdifFileT *SdifF);
+size_t SdifFPrintNameValueLCurrNVT  (SdifFileT *SdifF);
+size_t SdifFPrintAllNameValueNVT    (SdifFileT *SdifF);
+size_t SdifFPrintAllType            (SdifFileT *SdifF);
+size_t SdifFPrintAllStreamID        (SdifFileT *SdifF);
+size_t SdifFPrintAllASCIIChunks     (SdifFileT *SdifF);
+size_t SdifFPrintMatrixHeader       (SdifFileT *SdifF);
+size_t SdifFPrintFrameHeader        (SdifFileT *SdifF);
+size_t SdifFPrintOneRow             (SdifFileT *SdifF);
+
+size_t SdifFPrintMatrixType         (SdifFileT *SdifF, SdifMatrixTypeT *MatrixType);
+size_t SdifFPrintFrameType          (SdifFileT *SdifF, SdifFrameTypeT  *FrameType);
+
 
 
 #ifdef __cplusplus

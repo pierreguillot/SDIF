@@ -1,4 +1,4 @@
-/* $Id: querysdif.c,v 1.2 2000-11-15 14:53:40 lefevre Exp $
+/* $Id: querysdif.c,v 1.3 2000-11-16 12:02:23 lefevre Exp $
  
                 Copyright (c) 1998 by IRCAM - Centre Pompidou
                            All rights reserved.
@@ -13,6 +13,9 @@
    View summary of data in an SDIF-file.  
    
    $Log: not supported by cvs2svn $
+ * Revision 1.2  2000/11/15  14:53:40  lefevre
+ * no message
+ *
  * Revision 1.1  2000/10/30  14:44:03  roebel
  * Moved all tool sources into central tools directory and added config.h to sources
  *
@@ -51,10 +54,7 @@
 #include <preincluded.h>
 #include "XpGuiCalls.h"
 
-#include "SdifGlobals.h"
-#include "SdifFile.h"
-#include "SdifFRead.h"
-#include "SdifFPrint.h"
+#include "sdif.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
