@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.15 2001-07-12 14:11:48 roebel Exp $
+# $Id: Makefile.am,v 1.16 2002-06-18 16:31:27 tisseran Exp $
 #
 # ./sdif/Makefile.am		September 2000			Patrice Tisserand
 #
@@ -29,6 +29,9 @@
 # send email to:  sdif@ircam.fr
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.15  2001/07/12 14:11:48  roebel
+# Added include file holding library version defines to the distribution.
+#
 # Revision 1.14  2001/05/02 09:34:40  tisseran
 # Change License from GNU Public License to GNU Lesser Public License.
 #
@@ -142,16 +145,16 @@ $(top_srcdir)/sdif/SdifVersion.h : $(Versionsrc)
 ircam_deps : $(FORMES_H:%=$(top_srcdir)/sdif/%)
 
 $(top_srcdir)/sdif/host_architecture.h:
-	cp -p ${FORMES_INCLUDE}/host_architecture.h $@
+	cp ${FORMES_INCLUDE}/host_architecture.h $@
 
 $(top_srcdir)/sdif/preincluded.h :
-	cp -p ${FORMES_INCLUDE}/preincluded.h $@
+	cp ${FORMES_INCLUDE}/preincluded.h $@
 
 $(top_srcdir)/sdif/UniversalEnvVar.h : 
-	cp -p ${FORMES_INCLUDE}/UniversalEnvVar.h $@
+	cp ${FORMES_INCLUDE}/UniversalEnvVar.h $@
 
 $(top_srcdir)/sdif/host_configure.h: 
-	cp -p ${FORMES_INCLUDE}/host_configure.h $@
+	cp ${FORMES_INCLUDE}/host_configure.h $@
 
 $(top_srcdir)/sdif/XpGuiCalls.h:
-	cp -p ${FORMES_INCLUDE}/XpGuiCalls.h $@
+	cp ${FORMES_INCLUDE}/XpGuiCalls.h $@
