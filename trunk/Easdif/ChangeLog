@@ -1,12 +1,13 @@
 2003-05-01  Axel Röbel  <roebel@ircam.fr>
 
 	* easdif/sdifmatrix.h/cpp:
-	CreateMatrixData is now simply called Init. Added missing 
-	Resize method. Replaced cout in sdifmatrix.h by exception
-	to prevent the need to include iostream to use easdif.
+	CreateMatrixData is now simply called Init. 
+	Added missing Resize method. 
+	Replaced cout in sdifmatrix.h by exception to prevent the 
+	  need to include iostream to use easdif.
 	Avoid const_cast in CreateMatrixData (now Init) and
-	only initialize members in SDIFMatrix only if 
-	valid type is given. Removed redundant member m_Signature.
+	  initialize members in SDIFMatrix only if valid type is given. 
+	Removed redundant member m_Signature.
 
 	* adapted documentation example and test programs to new
 	method names.
@@ -310,4 +311,4 @@ Version 0.21
 	* ChangeLog: Added changelog to repository.
 
 
-$Id: ChangeLog,v 1.10 2003-05-02 13:23:25 roebel Exp $
+$Id: ChangeLog,v 1.11 2003-05-02 13:40:36 roebel Exp $
