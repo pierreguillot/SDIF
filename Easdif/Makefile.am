@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.2 2003-03-04 00:50:01 roebel Exp $
+# $Id: Makefile.am,v 1.3 2003-03-07 17:38:41 roebel Exp $
 #
 # ./Makefile.am		Feb. 2003     Axel Roebel
 #
@@ -7,12 +7,15 @@
 
 
 # $Log: not supported by cvs2svn $
+# Revision 1.2  2003/03/04 00:50:01  roebel
+# Changed src difrectory to easdif, fixed distribution of SDIF
+#
 # Revision 1.1  2003/03/03 10:03:24  roebel
 # Adapted for autoconf/automake...
 #
 
-SUBDIRS = SDIF easdif  test
-DIST_SUBDIRS = easdif  test
+SUBDIRS =  SDIF easdif  test 
+EXTRA_DIST = Doxyfile
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = Easdif.pc

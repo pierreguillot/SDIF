@@ -1,6 +1,6 @@
 dnl -*-autoconf-*-  (No, it's an autoconf file!)
 dnl -*-m4-*- (He emacs, it's a m4 file)
-dnl $Id: configure.in,v 1.4 2003-03-05 19:47:54 roebel Exp $
+dnl $Id: configure.in,v 1.5 2003-03-07 17:38:41 roebel Exp $
 dnl
 dnl configure.in		Feb 2003      Axel Roebel
 dnl
@@ -43,9 +43,10 @@ AC_PROG_RANLIB
 dnl Check for libtool
 dnl disable shared libraries on darwin
 dnl they do not work there
-AC_CHECK_PROG (uname_available, uname, "yes","no")
-if [ "$uname_available" = "yes" ];then
-   if [ `uname -s` = Darwin ];then
+
+AC_CHECK_PROG(uname_available, uname, yes,no)
+if test "$uname_available" = "yes" ;then
+   if test `uname -s` = Darwin ;then
       AC_DISABLE_SHARED
    fi
 fi
@@ -60,12 +61,6 @@ AC_MSG_RESULT(CHECK FOR HEADERS)
 AC_HEADER_STDC
 dnl AC_CHECK_HEADERS(SDIF/include/sdif.h)
 
-AC_SUBST(IRCAMDEPS)
-if test -f /u/formes/share/include/preincluded.h ; then
- IRCAMDEPS=ircam_deps
-else
- IRCAMDEPS=;
-fi
 
 
 dnl ############################################################
@@ -74,12 +69,26 @@ dnl DEBUG feature
 AC_SUBST(SELLIB)
 SELLIB=libEasdif.la
 
+
+AC_ARG_ENABLE(debug,
+[--enable-debug        compile with debug enabled],
+[echo FEATURE enable-debug... $enableval; 
+if test "$enableval" = "yes"; then
+	CXXFLAGS="-g2";
+else 
+	CXXFLAGS="-O3";
+fi ],
+[
+CXXFLAGS="-O3";
+])
+
+
 dnl ############################################################
 dnl find SDIF objects that have to be included into Easdif
 AC_MSG_RESULT(FIND SDIF FILES)
 AC_SUBST(SDIFOBJECTS)
 for ss in SDIF/sdif/*.c ; do
-    SDIFOBJECTS="$SDIFOBJECTS ../SDIF/sdif/`basename $ss .c`.lo"
+    SDIFOBJECTS="$SDIFOBJECTS ../SDIF/sdifcpp/`basename $ss .c`.o"
 done
 
 dnl ############################################################
