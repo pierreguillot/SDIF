@@ -1,0 +1,29 @@
+How to compile matlab sdif tools
+================================
+
+1.) Compile and install the sdif library version 3.2.2 or above.
+
+2.) Edit the  makefile to specify the location of your mex script,
+the sdif library/include file location and the installation directory.
+(For compilation of sdif tools for matlab 5 and 6 you may specify 
+two different mex commands devided by spaces.)
+
+3.) run:
+
+make 
+
+4.) For testing run:
+
+ make test 
+
+Not all tests are very meaningful. However, they should run without 
+a crash. The first (testrw) and the last (t1.sdif) have some sort of
+result checking and should report an error if the output is not correct.
+
+5.) to install files run:
+
+ make install
+
+6.) Have fun!
+
+
