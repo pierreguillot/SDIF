@@ -1,4 +1,4 @@
-/* $Id: sdif.src,v 3.3 2000-10-27 20:02:51 roebel Exp $
+/* $Id: sdif.src,v 3.4 2001-10-26 15:02:08 schwarz Exp $  -*-C-*-
 
    sdif.src	23. Dec 1998	Diemo Schwarz
 
@@ -13,6 +13,9 @@
 			"-DLIBRARY=SDIF $(ABS_ROOT)/sdif ."
 
    $Log: not supported by cvs2svn $
+   Revision 3.3  2000/10/27 20:02:51  roebel
+   autoconf merged back to main trunk
+
 # Revision 3.2.2.1  2000/08/21  12:42:35  tisseran
 # *** empty log message ***
 #
@@ -42,44 +45,46 @@
 #
 */
 
+#define EMPTY
+
 /* defaults, can be overridden by -D options for gcc */
 #ifndef CUSTOMIZE
 #define CUSTOMIZE
 #endif
 
-#define HEAD		# DO NOT EDIT!!!  This file is generated from $Id: sdif.src,v 3.3 2000-10-27 20:02:51 roebel Exp $
+#define HEAD		# DO NOT EDIT!!!  This file is generated from $Id: sdif.src,v 3.4 2001-10-26 15:02:08 schwarz Exp $
 
 HEAD
 
-# basic options
+/* basic options */
 webroot  WEBROOT
 urlroot  URLROOT
 
 customize
-	# functionality options
+	/* functionality options */
 	SENTINELS 
 	MEMBERSENTINEL
 	autokeywords 
-	# nowebserver
-	# Cocoon ver 3.1 only (works only for C++)
-	# accessimplementation 
+	/* nowebserver */
+	/* Cocoon ver 3.1 only (works only for C++) */
+	/* accessimplementation  */
 
-	# page layout
+	/* page layout */
 	usetable 
 	backcolor white
-	#attop filename 
-	#atbottom filename 
+	/* attop filename  */
+	/* atbottom filename  */
 	
-	# substitute keyword by HTML text
-	# link keyword substitution 
-	# link additive <a href=...>additive</a> 
-	# link chant <a href=...>CHANT</a> 
+	/* substitute keyword by HTML text */
+	/* link keyword substitution  */
+	/* link additive <a href=...>additive</a>  */
+	/* link chant <a href=...>CHANT</a>  */
 	
-	# otherdata extension sourcepath websubdir [binary] 
+	/* otherdata extension sourcepath websubdir [binary]  */
 
 	CUSTOMIZE
 end_customize
 
 
-# libraries to process
+/* libraries to process */
 LIBRARY
