@@ -33,9 +33,12 @@
  * 
  * 
  * 
- * $Id: sdifmatrixdata.h,v 1.12 2004-07-29 10:23:36 bogaards Exp $ 
+ * $Id: sdifmatrixdata.h,v 1.13 2004-07-29 13:44:44 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.12  2004/07/29 10:23:36  bogaards
+ * GetCol uses col increment instead of row increment
+ *
  * Revision 1.11  2004/07/28 14:57:34  roebel
  * Added support for accessing data as unsigned char.
  * Added SetRow and SetCol functions.
@@ -801,7 +804,7 @@ public:
 
     T* start = &m_Data[icol];
     T* end   = &m_Data[icol+m_Nrows*m_Ncols];
-    for(;start !=end;start += m_Nrows)   *start =  static_cast<T>(*in++) ;
+    for(;start !=end;start += m_Ncols)   *start =  static_cast<T>(*in++) ;
 
     return;
   }
