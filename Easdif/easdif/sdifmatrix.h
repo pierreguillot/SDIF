@@ -33,9 +33,12 @@
  * 
  * 
  * 
- * $Id: sdifmatrix.h,v 1.15 2003-07-18 20:42:22 roebel Exp $ 
+ * $Id: sdifmatrix.h,v 1.16 2003-11-18 18:21:21 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.15  2003/07/18 20:42:22  roebel
+ * Moved constructor implementations to .cpp, fixed bug in constructor with allocation
+ *
  * Revision 1.14  2003/07/18 19:31:13  roebel
  * Improved documentation.
  * Changed constructor to use  const std::string as argument.
@@ -297,7 +300,8 @@ public:
  * @param type   SDIFDataType = type of internal representation of the matrix
  */
   void Init(SdifSignature sig, 
-	      int nrows, int ncols, SdifDataTypeET  type);
+	      int nrows, int ncols, SdifDataTypeET  type)   
+    throw(SDIFMatrixDataError,bad_alloc);
 
 /** 
  * \ingroup rwmat
@@ -309,7 +313,8 @@ public:
  * @param type   SDIFDataType = type of internal representation of the matrix
  */
   void Init(const std::string &sig, 
-	      int nrows, int ncols, SdifDataTypeET  type);
+	      int nrows, int ncols, SdifDataTypeET  type)
+    throw(SDIFMatrixDataError,bad_alloc);
 
 
 /** 
@@ -451,13 +456,17 @@ public:
 
   // std::string Get() ??? exception when not string matrix?
   void Get(std::string& value)
+    throw(SDIFMatrixDataError)
   {
-    SDIFMatrixDataError exc;
-    exc.initException(eError,
-		      "Error in  SDIFMatrix::!!! string matrix access to be implemented !!!",
-		      0,0,0,0);      
 
-    throw exc; // to be implemented
+    if (mType != eText)
+      throw SDIFMatrixDataError(eError,
+				"Error in  SDIFMatrix::!!! string matrix access to matrix containing binary data !!!",
+				0,eUnknown,0,0); 
+
+    for(int ii=0;ii<GetNbRows();++ii)
+      value.append(1,static_cast<char>(GetInt(ii,0)));
+
   }
 
 
