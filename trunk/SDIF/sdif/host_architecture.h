@@ -1,25 +1,25 @@
 /******************************************************************************
 
-  $Id: host_architecture.h,v 3.1 2003-11-06 16:19:23 tisseran Exp $
+  $Id: host_architecture.h,v 3.2 2004-02-08 14:26:58 ellis Exp $
 
   host_architecture.h provides the following conditionals:
   
-  HOST_ARCH_ALPHA	- Current architecture is Alpha
-  HOST_ARCH_SGI		- Current architecture is SGI
-  HOST_ARCH_SUN		- Current architecture is Sun
-  HOST_ARCH_NEXT	- Current architecture is NeXT
-  HOST_ARCH_PPC		- Current architecture is PowerPC
-  HOST_ARCH_68K		- Current architecture is 680x0
+  HOST_ARCH_ALPHA       - Current architecture is Alpha
+  HOST_ARCH_SGI         - Current architecture is SGI
+  HOST_ARCH_SUN         - Current architecture is Sun
+  HOST_ARCH_NEXT        - Current architecture is NeXT
+  HOST_ARCH_PPC         - Current architecture is PowerPC
+  HOST_ARCH_68K         - Current architecture is 680x0
   HOST_ARCH_X86         - Current architecture is Intel PC (386..Pentium)
   HOST_ARCH_n86         - Current architecture is Intel (3|4)86, Pentium/K5 (586), 
-							or Pentium II (686)
+                                                        or Pentium II (686)
 
-  HOST_OS_UNIX		- Generated code will run under Unix
-  HOST_OS_MAC		- Generated code will run under Mac OS
-  HOST_OS_WIN32		- Generated code will run under 32-bit Windows
-  			
-  HOST_ENDIAN_BIG	- Generated code uses big endian format for integers
-  HOST_ENDIAN_LITTLE	- Generated code uses little endian format for integers
+  HOST_OS_UNIX          - Generated code will run under Unix
+  HOST_OS_MAC           - Generated code will run under Mac OS
+  HOST_OS_WIN32         - Generated code will run under 32-bit Windows
+                        
+  HOST_ENDIAN_BIG       - Generated code uses big endian format for integers
+  HOST_ENDIAN_LITTLE    - Generated code uses little endian format for integers
   
   The following is used to parse pathnames on different platforms which use
   different characters as dividers. On Unix, for instance, a slash is used whereas
@@ -36,7 +36,7 @@
   This conditional does the proper byte swapping to assue that a four character
   code (e.g. 'TEXT') is compiled down to the correct value on all compilers.
   
-  HOST_FOUR_CHAR_CODE('abcd')	- Convert a four-char-code to the correct 32-bit value
+  HOST_FOUR_CHAR_CODE('abcd')   - Convert a four-char-code to the correct 32-bit value
   
   
   Alberto Ricci, 19990315
@@ -103,43 +103,43 @@
 
 #if   defined(__alpha) 
 
-#     define HOST_ARCH_ALPHA			1
+#     define HOST_ARCH_ALPHA                    1
 
 #elif defined(sgi) || defined(__sgi) || defined(mips) || defined(__mips64)
 
-#     define HOST_ARCH_SGI				1
+#     define HOST_ARCH_SGI                              1
 
 #elif defined(__sparc) || defined(sun)
 
-#     define HOST_ARCH_SUN				1
+#     define HOST_ARCH_SUN                              1
 
 #elif defined(NeXT)
 
-#     define HOST_ARCH_NEXT				1
+#     define HOST_ARCH_NEXT                             1
 
 #elif defined(__powerpc__) || defined(__ppc__)
 
-#     define HOST_ARCH_PPC				1
+#     define HOST_ARCH_PPC                              1
 
 #elif defined(i386) || defined(__i386)
 
-#     define HOST_ARCH_386				1
-#     define HOST_ARCH_X86				1
+#     define HOST_ARCH_386                              1
+#     define HOST_ARCH_X86                              1
 
 #elif defined(i486) || defined(__i486)
 
-#     define HOST_ARCH_486				1
-#     define HOST_ARCH_X86				1
+#     define HOST_ARCH_486                              1
+#     define HOST_ARCH_X86                              1
 
 #elif defined(i586) || defined(__i586)
 
-#     define HOST_ARCH_586				1
-#     define HOST_ARCH_X86				1
+#     define HOST_ARCH_586                              1
+#     define HOST_ARCH_X86                              1
 
 #elif defined(i686) || defined(__i686)
 
-#     define HOST_ARCH_686				1
-#     define HOST_ARCH_X86				1
+#     define HOST_ARCH_686                              1
+#     define HOST_ARCH_X86                              1
 
 #endif
 
@@ -159,7 +159,7 @@
 
 /* Type definitions for integers with known size
 */
-typedef unsigned char	    UInt8;
+typedef unsigned char       UInt8;
 typedef signed char         SInt8;
 typedef unsigned short      UInt16;
 typedef signed short        SInt16;
@@ -169,6 +169,7 @@ typedef unsigned char       Boolean;
 typedef unsigned long       FourCharCode;
 typedef char*               Ptr;
 typedef unsigned char       Str255[256];
+typedef unsigned char *     StringPtr;
 
 #if HOST_ARCH_SGI || HOST_ARCH_NEXT || HOST_ARCH_PPC
 #   define HOST_ENDIAN_BIG  1
@@ -179,21 +180,21 @@ typedef unsigned char       Str255[256];
 #endif
 
 #if HOST_ARCH_ALPHA
-#define SIZEOF_LONG						8
+#define SIZEOF_LONG                                     8
 #else
-#define SIZEOF_LONG						4
+#define SIZEOF_LONG                                     4
 #endif
 
-#define HAVE_ERRNO_H					1
+#define HAVE_ERRNO_H                                    1
 
 #ifdef __STDC__
-#define STDC_HEADERS					1
+#define STDC_HEADERS                                    1
 #endif
 
-#define	HOST_DIRECTORY_DIVIDER			'/'
-#define	HOST_DIRECTORY_DIVIDER_STR		"/"
+#define HOST_DIRECTORY_DIVIDER                         '/'
+#define HOST_DIRECTORY_DIVIDER_STR                     "/"
 
-#define	HOST_CALLBACK_API_C(_type, _name)	_type (*_name)
+#define HOST_CALLBACK_API_C(_type, _name)       _type (*_name)
 
 
 /*===========================================================================*/
@@ -201,58 +202,58 @@ typedef unsigned char       Str255[256];
 
 #elif defined(macintosh)
 
-#define HOST_OS_MAC						1
+#define HOST_OS_MAC                                      1
 #include <ConditionalMacros.h>
 
 #if TARGET_CPU_PPC
-#define	HOST_ARCH_PPC					1
+#define HOST_ARCH_PPC                                    1
 #elif TARGET_CPU_68K
-#define	HOST_ARCH_68K					1
+#define HOST_ARCH_68K                                    1
 #endif
 
 #if TARGET_RT_BIG_ENDIAN
-#define	HOST_ENDIAN_BIG					1
-#define WORDS_BIGENDIAN					1
+#define HOST_ENDIAN_BIG                                  1
+#define WORDS_BIGENDIAN                                  1
 #elif TARGET_RT_LITTLE_ENDIAN
-#define	HOST_ENDIAN_LITTLE				1
+#define HOST_ENDIAN_LITTLE                               1
 #undef  WORDS_BIGENDIAN
 #endif
 
-#define SIZEOF_LONG						4
+#define SIZEOF_LONG                                      4
 #undef  HAVE_ERRNO_H
 
 #ifdef __STDC__
-#define STDC_HEADERS					1
+#define STDC_HEADERS                                     1
 #endif
 
-#define	HOST_DIRECTORY_DIVIDER			':'
-#define	HOST_DIRECTORY_DIVIDER_STR		":"
+#define HOST_DIRECTORY_DIVIDER                          ':'
+#define HOST_DIRECTORY_DIVIDER_STR                      ":"
 
-#define	HOST_CALLBACK_API_C				CALLBACK_API_C
+#define HOST_CALLBACK_API_C                             CALLBACK_API_C
 
 
 /*===========================================================================*/
 /* WINDOWS */
 
-#elif	(defined(__INTEL__) && __INTEL__) || defined(_M_IX86) \
-	||	defined(WIN32) || defined(OS2) || defined(__DOS__)
+#elif   (defined(__INTEL__) && __INTEL__) || defined(_M_IX86) \
+        ||      defined(WIN32) || defined(OS2) || defined(__DOS__)
 
-#define HOST_OS_WIN32					1
-#define	HOST_ARCH_X86					1
-#define	HOST_ENDIAN_LITTLE				1
+#define HOST_OS_WIN32                                   1
+#define HOST_ARCH_X86                                   1
+#define HOST_ENDIAN_LITTLE                              1
 #undef  WORDS_BIGENDIAN
 
-#define SIZEOF_LONG						4
+#define SIZEOF_LONG                                             4
 #undef  HAVE_ERRNO_H
 
 #ifdef __STDC__
-#define STDC_HEADERS					1
+#define STDC_HEADERS                                    1
 #endif
 
-#define	HOST_DIRECTORY_DIVIDER			'/'
-#define	HOST_DIRECTORY_DIVIDER_STR		"/"
+#define HOST_DIRECTORY_DIVIDER                  '/'
+#define HOST_DIRECTORY_DIVIDER_STR              "/"
 
-#define	HOST_CALLBACK_API_C(_type, _name)	_type (__cdecl * _name)
+#define HOST_CALLBACK_API_C(_type, _name)       _type (__cdecl * _name)
 
 
 /*===========================================================================*/
