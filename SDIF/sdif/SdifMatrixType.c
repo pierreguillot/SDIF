@@ -1,4 +1,4 @@
-/* $Id: SdifMatrixType.c,v 3.6 2001-05-02 09:34:46 tisseran Exp $
+/* $Id: SdifMatrixType.c,v 3.7 2002-05-24 19:37:52 ftissera Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -37,6 +37,9 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.6  2001/05/02 09:34:46  tisseran
+ * Change License from GNU Public License to GNU Lesser Public License.
+ *
  * Revision 3.5  2000/11/15 14:53:32  lefevre
  * no message
  *
@@ -206,7 +209,8 @@ SdifMatrixTypeGetNumColumnDef(SdifMatrixTypeT *MatrixType, char *NameCD)
         SdifListInitLoop(MatrixType->ColumnUserList);
         while (SdifListIsNext(MatrixType->ColumnUserList))
         {
-            CurrColumnDef = SdifListGetNext(MatrixType->ColumnUserList);
+            CurrColumnDef = (SdifColumnDefT*) 
+		SdifListGetNext(MatrixType->ColumnUserList);
             if (SdifStrCmp(CurrColumnDef->Name, NameCD) == 0)
             {
 	            Num = CurrColumnDef->Num;
@@ -240,7 +244,8 @@ SdifMatrixTypeGetColumnDef(SdifMatrixTypeT *MatrixType, char *NameCD)
         SdifListInitLoop(MatrixType->ColumnUserList);
         while (SdifListIsNext(MatrixType->ColumnUserList))
         {
-            CurrColumnDef = SdifListGetNext(MatrixType->ColumnUserList);
+            CurrColumnDef = (SdifColumnDefT*)
+		SdifListGetNext(MatrixType->ColumnUserList);
             if (SdifStrCmp(CurrColumnDef->Name, NameCD) == 0)
             {
 	            ColumnDef = CurrColumnDef;
@@ -271,7 +276,8 @@ SdifMatrixTypeGetNthColumnDef(SdifMatrixTypeT *MatrixType, SdifUInt4 NumCD)
         SdifListInitLoop(MatrixType->ColumnUserList);
         while (SdifListIsNext(MatrixType->ColumnUserList))
         {
-            CurrColumnDef = SdifListGetNext(MatrixType->ColumnUserList);
+            CurrColumnDef = (SdifColumnDefT*)
+		SdifListGetNext(MatrixType->ColumnUserList);
             if (CurrColumnDef->Num == NumCD)
             {
 	            ColumnDef = CurrColumnDef;
@@ -325,7 +331,7 @@ SdifMatrixTypeInsertTailColumnDef(SdifMatrixTypeT *MatrixType, char *NameCD)
 SdifMatrixTypeT*
 SdifGetMatrixType(SdifHashTableT *MatrixTypesTable, SdifSignature Signature)
 {
-  return SdifHashTableSearch(MatrixTypesTable, &Signature, 1);
+  return (SdifMatrixTypeT*)SdifHashTableSearch(MatrixTypesTable, &Signature, 1);
 }
 
 

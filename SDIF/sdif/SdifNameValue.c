@@ -1,4 +1,4 @@
-/* $Id: SdifNameValue.c,v 3.10 2001-07-19 14:24:34 lefevre Exp $
+/* $Id: SdifNameValue.c,v 3.11 2002-05-24 19:37:52 ftissera Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -34,6 +34,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.10  2001/07/19 14:24:34  lefevre
+ * Macintosh Compilation
+ *
  * Revision 3.9  2001/05/04  18:14:18  schwarz
  * Comments for last checkin.
  *
@@ -169,7 +172,8 @@ SdifCreateNameValueTable (SdifUInt4 StreamID,
     if (NewNVTable)
     {
         NewNVTable->StreamID   = StreamID;
-        NewNVTable->NVHT       = SdifCreateHashTable(HashSize, eHashChar, SdifKillNameValue);
+        NewNVTable->NVHT       = SdifCreateHashTable(HashSize, eHashChar, 
+						     (void(* )(void *)) SdifKillNameValue);
         NewNVTable->NumTable   = NumTable;
         return NewNVTable;
     }
@@ -312,13 +316,14 @@ SdifNameValuesLSetCurrNVT(SdifNameValuesLT *NameValuesL, SdifUInt4 NumCurrNVT)
 {
     SdifNameValueTableT* NVT=NULL;
 
-    NVT = SdifListGetCurr(NameValuesL->NVTList);
+    NVT = (SdifNameValueTableT*) SdifListGetCurr(NameValuesL->NVTList);
     if (NVT)
     {
         if (    (NVT->NumTable == NumCurrNVT-1)
              && (NumCurrNVT < SdifListGetNbData(NameValuesL->NVTList))    )
         {
-            NameValuesL->CurrNVT = SdifListGetNext(NameValuesL->NVTList);
+            NameValuesL->CurrNVT = (SdifNameValueTableT*)
+		SdifListGetNext(NameValuesL->NVTList);
             return NameValuesL->CurrNVT;
         }
     }
@@ -328,7 +333,7 @@ SdifNameValuesLSetCurrNVT(SdifNameValuesLT *NameValuesL, SdifUInt4 NumCurrNVT)
     SdifListInitLoop(NameValuesL->NVTList);
     while (SdifListIsNext(NameValuesL->NVTList))
     {
-        NVT = SdifListGetNext(NameValuesL->NVTList);
+        NVT = (SdifNameValueTableT*) SdifListGetNext(NameValuesL->NVTList);
         if ((NVT->NumTable = NumCurrNVT))
         {
             NameValuesL->CurrNVT = NVT;
@@ -351,8 +356,8 @@ SdifNameValuesLGet(SdifNameValuesLT *NameValuesL, char *Name)
   SdifListInitLoop(NameValuesL->NVTList);
   while (   (!NameValue)  && (SdifListIsNext(NameValuesL->NVTList)) )
   {
-      CurrTable = SdifListGetNext(NameValuesL->NVTList);
-      NameValue = SdifNameValueTableGetNV(CurrTable, Name);
+      CurrTable = (SdifNameValueTableT *)SdifListGetNext(NameValuesL->NVTList);
+      NameValue = (SdifNameValueT *) SdifNameValueTableGetNV(CurrTable, Name);
   }
 
   return NameValue;
@@ -384,8 +389,8 @@ SdifNameValuesLPutCurrNVTTranslate(SdifNameValuesLT *NameValuesL,
 				   const char *Name,  const char *Value)
 {
     SdifNameValueT* ret;
-	char *tname  = malloc(strlen(Name)  + 4);
-	char *tvalue = malloc(strlen(Value) + 4);
+	char *tname  = (char *) malloc(strlen(Name)  + 4);
+	char *tvalue = (char *) malloc(strlen(Value) + 4);
 
 	strcpy(tname,  Name);
 	strcpy(tvalue, Value);
@@ -413,7 +418,7 @@ SdifNameValuesLIsNotEmpty(SdifNameValuesLT *NameValuesL)
         SdifListInitLoop(NameValuesL->NVTList);
         while (SdifListIsNext(NameValuesL->NVTList))
         {
-            NVT = SdifListGetNext(NameValuesL->NVTList);
+            NVT = (SdifNameValueTableT*)SdifListGetNext(NameValuesL->NVTList);
             if (NVT->NVHT->NbOfData > 0)
                 return 1;
         }

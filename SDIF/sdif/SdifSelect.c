@@ -1,4 +1,4 @@
-/* $Id: SdifSelect.c,v 3.14 2001-05-02 09:34:47 tisseran Exp $
+/* $Id: SdifSelect.c,v 3.15 2002-05-24 19:37:52 ftissera Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -96,6 +96,9 @@ TODO
 
 LOG
   $Log: not supported by cvs2svn $
+  Revision 3.14  2001/05/02 09:34:47  tisseran
+  Change License from GNU Public License to GNU Lesser Public License.
+
   Revision 3.13  2000/11/15 14:53:34  lefevre
   no message
 
@@ -331,8 +334,13 @@ static SdifSelectTokens
 findtoken ()
 {
     SdifSelectTokens t = sst_norange;
-    while (t < sst_num  &&  strncmp (INPUT, symbol(t), symlen(t)) != 0)
-	t++;
+    while (t < sst_num  &&  strncmp (INPUT, symbol(t), symlen(t)) != 0) {
+#ifdef __cplusplus
+	t = (SdifSelectTokens) ((int) t+1);
+#else
+	++t;
+#endif
+    }
     return (t);
 }
 
@@ -417,8 +425,10 @@ parsestring ()
 static int 
 parsesig (SdifSelectValueT *valu)
 {
-    char sigstr [4] = "\0\0\0\0";
+    char sigstr [4];
     int	 siglen = parsestring ();
+
+    memset(sigstr,0,4);
 
     strncpy (sigstr, SYMBOL, MIN (siglen, 4));
     valu->signature = SdifStringToSignature (sigstr);
@@ -723,7 +733,7 @@ SdifSelectGetNextIntRange  (/*in*/  SdifListP list,
 
     if ((avail = SdifListIsNext (list)))
     {
-	SdifSelectElementT *elem = SdifListGetNext (list);
+	SdifSelectElementT *elem = (SdifSelectElementT *) SdifListGetNext (list);
 	
 	if (force_range)
 	{
@@ -768,7 +778,7 @@ SdifSelectGetNextRealRange (/*in*/  SdifListP list,
 
     if ((avail = SdifListIsNext (list)))
     {
-	SdifSelectElementT *elem = SdifListGetNext (list);
+	SdifSelectElementT *elem = (SdifSelectElementT *) SdifListGetNext (list);
 	
 	if (force_range)
 	{
@@ -780,7 +790,7 @@ SdifSelectGetNextRealRange (/*in*/  SdifListP list,
 	    	break;
     
 	    	case sst_delta:
-		    delta        = abs (elem->range.real);
+		    delta        = fabs (elem->range.real);
 		    range->value = elem->value.real - delta;
 		    range->range = elem->value.real + delta;
 	    	break;
@@ -901,7 +911,7 @@ SdifSelectTestInt (SdifListT *list, int cand)
     SdifListInitLoop (list);
     while (SdifListIsNext (list))
     {
-	if (SdifSelectTestIntRange (SdifListGetNext (list), cand))
+	if (SdifSelectTestIntRange ((SdifSelectElementT *)SdifListGetNext (list), cand))
 	    return (1);
     }
     return (0);
@@ -914,13 +924,13 @@ SdifSelectTestReal (SdifListT *list, double cand)
 	return (1);	/* no select spec means: take everything */
 
     /* first test from current select element onwards */
-    if (SdifSelectTestRealRange (SdifListGetCurr (list), cand))
+    if (SdifSelectTestRealRange ((SdifSelectElementT *)SdifListGetCurr (list), cand))
         return (1);
 
     SdifListInitLoop (list);
     while (SdifListIsNext (list))
     {
-	if (SdifSelectTestRealRange (SdifListGetNext (list), cand))
+	if (SdifSelectTestRealRange ((SdifSelectElementT *) SdifListGetNext (list), cand))
 	    return (1);
     }
     return (0);

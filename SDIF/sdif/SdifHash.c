@@ -1,4 +1,4 @@
-/* $Id: SdifHash.c,v 3.5 2001-05-02 09:34:44 tisseran Exp $
+/* $Id: SdifHash.c,v 3.6 2002-05-24 19:37:52 ftissera Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -35,6 +35,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.5  2001/05/02 09:34:44  tisseran
+ * Change License from GNU Public License to GNU Lesser Public License.
+ *
  * Revision 3.4  2000/11/15 14:53:31  lefevre
  * no message
  *
@@ -84,7 +87,7 @@
 SdifHashTableT*
 SdifCreateHashTable(unsigned int HashSize,
 		    SdifHashIndexTypeET IndexType,
-		    void (*Killer)())
+		    void (*Killer)(void *))
 {
 /*
  * The hash table size is better if it is a prime number like : 31, 61, 127, 251...
@@ -140,35 +143,31 @@ SdifMakeEmptyHashTable(SdifHashTableT* HTable)
 {
   unsigned int i;
   SdifHashNT *pNode;
-
+  
   for(i=0; i<HTable->HashSize; i++)
-    {
+  {
       while (HTable->Table[i])
-        {
+      {
           pNode = HTable->Table[i];
           if (HTable->IndexType == eHashChar)
-            SdifFree(pNode->Index.Char[0]);
+	      SdifFree(pNode->Index.Char[0]);
           if (HTable->Killer)
-            (*(HTable->Killer))(pNode->Data); /* this line can occasion a warning */
+	      (*(HTable->Killer))((void *)(pNode->Data)); /* this line can occasion a warning */
           else
-            {
+	  {
               /* if (pNode->Data)
-              *   SdifFree(pNode->Data);
-	          *else
-	          *   fprintf(stderr, "HashTable->Data kill memory error : \n");
-	          */
-	          /* consider that the object pNode->Data cannot be kill because static
-	           */
-	        }
-	      HTable->Table[i] = pNode->Next;
-	      SdifFree(pNode);
-	    }
-    }
+	       *   SdifFree(pNode->Data);
+	       *else
+	       *   fprintf(stderr, "HashTable->Data kill memory error : \n");
+	       */
+	      /* consider that the object pNode->Data cannot be kill because static
+	       */
+	  }
+	  HTable->Table[i] = pNode->Next;
+	  SdifFree(pNode);
+      }
+  }
 }
-
-
-
-
 
 
 void
@@ -356,7 +355,7 @@ SdifHashTableSearch(SdifHashTableT* HTable, void *ptr, unsigned int nobj)
   switch (HTable->IndexType)
     {
     case eHashChar :
-      return SdifHashTableSearchChar(HTable, ptr, nobj);
+      return SdifHashTableSearchChar(HTable, (const char *) ptr, nobj);
     case eHashInt4 :
       return SdifHashTableSearchInt4(HTable, *((unsigned int*) ptr));
     default :
@@ -375,7 +374,7 @@ SdifHashTablePut(SdifHashTableT* HTable, const void *ptr, unsigned int nobj, voi
   switch (HTable->IndexType)
     {
     case eHashChar :
-      return SdifHashTablePutChar(HTable, ptr, nobj, Data);
+      return SdifHashTablePutChar(HTable, (const char*)ptr, nobj, Data);
     case eHashInt4 :
       return SdifHashTablePutInt4(HTable, *((const unsigned int*)ptr), Data);
     default :

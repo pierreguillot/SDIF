@@ -1,4 +1,4 @@
-/* $Id: SdifStreamID.c,v 3.7 2001-05-02 09:34:48 tisseran Exp $
+/* $Id: SdifStreamID.c,v 3.8 2002-05-24 19:37:52 ftissera Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -32,6 +32,9 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.7  2001/05/02 09:34:48  tisseran
+ * Change License from GNU Public License to GNU Lesser Public License.
+ *
  * Revision 3.6  2000/11/15 14:53:36  lefevre
  * no message
  *
@@ -134,7 +137,9 @@ SdifCreateStreamIDTable(SdifUInt4 HashSize)
     if (NewSIDTable)
     {
         NewSIDTable->StreamID   = _SdifNoStreamID;
-        NewSIDTable->SIDHT      = SdifCreateHashTable(HashSize, eHashInt4, SdifKillStreamID);;
+        NewSIDTable->SIDHT      = SdifCreateHashTable(HashSize, eHashInt4, 
+						      (void(*)(void *))
+						      SdifKillStreamID);;
         return NewSIDTable;
     }
     else
@@ -180,7 +185,7 @@ SdifStreamIDTablePutSID(SdifStreamIDTableT* SIDTable, SdifUInt4 NumID, char *Sou
 SdifStreamIDT*
 SdifStreamIDTableGetSID(SdifStreamIDTableT* SIDTable, SdifUInt4 NumID)
 {
-    return SdifHashTableSearch(SIDTable->SIDHT, &(NumID), 1);
+    return (SdifStreamIDT*)SdifHashTableSearch(SIDTable->SIDHT, &(NumID), 1);
 }
 
 

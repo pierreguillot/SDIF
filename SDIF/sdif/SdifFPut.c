@@ -1,4 +1,4 @@
-/* $Id: SdifFPut.c,v 3.11 2001-05-02 09:34:41 tisseran Exp $
+/* $Id: SdifFPut.c,v 3.12 2002-05-24 19:37:52 ftissera Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -33,6 +33,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.11  2001/05/02 09:34:41  tisseran
+ * Change License from GNU Public License to GNU Lesser Public License.
+ *
  * Revision 3.10  2000/11/15 14:53:26  lefevre
  * no message
  *
@@ -140,7 +143,7 @@ SdifFPutNameValueLCurrNVT (SdifFileT *SdifF, int Verbose)
   SizeW += fprintf(file, "{\n");
   for(iNV=0; iNV<HTable->HashSize; iNV++)
     for (pNV = HTable->Table[iNV]; pNV; pNV = pNV->Next)
-      SizeW += SdifFPutOneNameValue(SdifF, Verbose, pNV->Data);
+      SizeW += SdifFPutOneNameValue(SdifF, Verbose, (SdifNameValueT *)pNV->Data);
   
   SizeW += fprintf(file, "}");  
 
@@ -172,7 +175,7 @@ SdifFNameValueLCurrNVTtoSdifString (SdifFileT *SdifF, SdifStringT *SdifString)
   for(iNV=0; iNV<HTable->HashSize; iNV++)
     for (pNV = HTable->Table[iNV]; pNV; pNV = pNV->Next)
       {
-	SdifNameValueT *NameValue = pNV->Data;
+	SdifNameValueT *NameValue = (SdifNameValueT *) pNV->Data;
 	result = SdifStringAppend(SdifString, NameValue->Name);
 	result *= SdifStringAppend(SdifString, "\t");
 	result *= SdifStringAppend(SdifString, NameValue->Value);
@@ -200,12 +203,12 @@ SdifFPutOneMatrixType(SdifFileT* SdifF, int Verbose, SdifMatrixTypeT *MatrixType
       SizeW += sizeof(SdifSignature) * SdiffWriteSignature(&(MatrixType->Signature), file);
       SizeW += fprintf(file, "\t{");
 
-      ColumnDef = SdifListGetHead(MatrixType->ColumnUserList); /* Reinit GetNext */
+      ColumnDef = (SdifColumnDefT    *)SdifListGetHead(MatrixType->ColumnUserList); /* Reinit GetNext */
 	  SizeW += fprintf(file, "%s",ColumnDef->Name);
 
       while (SdifListIsNext(MatrixType->ColumnUserList))
       {
-          ColumnDef = SdifListGetNext(MatrixType->ColumnUserList);
+          ColumnDef = (SdifColumnDefT    *)SdifListGetNext(MatrixType->ColumnUserList);
 	      SizeW += fprintf(file, ", %s",ColumnDef->Name);
       }
       SizeW += fprintf(file, "}\n");  
@@ -238,13 +241,13 @@ int SdifFOneMatrixTypeToSdifString(SdifMatrixTypeT *MatrixType, SdifStringT *Sdi
       success *= SdifStringAppend(SdifString,SdifSignatureToString(MatrixType->Signature));
       success *= SdifStringAppend(SdifString,"\t{");
       
-      ColumnDef = SdifListGetHead(MatrixType->ColumnUserList); /* Reinit GetNext */
+      ColumnDef = (SdifColumnDefT    *)SdifListGetHead(MatrixType->ColumnUserList); /* Reinit GetNext */
 
       success *= SdifStringAppend(SdifString,ColumnDef->Name);
       
       while (SdifListIsNext(MatrixType->ColumnUserList))
 	{
-	  ColumnDef = SdifListGetNext(MatrixType->ColumnUserList);
+	  ColumnDef = (SdifColumnDefT    *)SdifListGetNext(MatrixType->ColumnUserList);
 	  success *= SdifStringAppend(SdifString,", ");
 	  success *= SdifStringAppend(SdifString,ColumnDef->Name);
 	}
@@ -264,7 +267,7 @@ SdifFPutAllMatrixType(SdifFileT* SdifF, int Verbose)
 
   for(iName=0; iName<SdifF->MatrixTypesTable->HashSize; iName++)
     for (pName = SdifF->MatrixTypesTable->Table[iName]; pName;  pName=pName->Next)
-      SizeW += SdifFPutOneMatrixType(SdifF, Verbose, pName->Data);
+      SizeW += SdifFPutOneMatrixType(SdifF, Verbose, (SdifMatrixTypeT *)pName->Data);
   
   return SizeW;
 }
@@ -291,7 +294,7 @@ int SdifFAllMatrixTypeToSdifString(SdifFileT *SdifF, SdifStringT *SdifString)
     for(pName=SdifF->MatrixTypesTable->Table[iName]; pName; 
 	pName = pName->Next)
       {
-	success *= SdifFOneMatrixTypeToSdifString(pName->Data, SdifString);
+	success *= SdifFOneMatrixTypeToSdifString((SdifMatrixTypeT *)pName->Data, SdifString);
       }
   return success;
 }
@@ -417,7 +420,7 @@ SdifFPutAllFrameType(SdifFileT *SdifF, int Verbose)
 
   for(iName=0; iName<SdifF->FrameTypesTable->HashSize; iName++)
     for (pName = SdifF->FrameTypesTable->Table[iName]; pName;  pName=pName->Next)
-      SizeW += SdifFPutOneFrameType(SdifF, Verbose, pName->Data);
+      SizeW += SdifFPutOneFrameType(SdifF, Verbose,(SdifFrameTypeT *) pName->Data);
 
   return SizeW;
 }
@@ -442,7 +445,7 @@ SdifFAllFrameTypeToSdifString(SdifFileT *SdifF, SdifStringT *SdifString)
 
   for(iName=0; iName<SdifF->FrameTypesTable->HashSize; iName++)
     for (pName = SdifF->FrameTypesTable->Table[iName]; pName;  pName=pName->Next)
-      success *= SdifFOneFrameTypeToSdifString(pName->Data, SdifString);
+      success *= SdifFOneFrameTypeToSdifString((SdifFrameTypeT *)pName->Data, SdifString);
 
   return success;
 }  
@@ -537,7 +540,7 @@ SdifFPutAllStreamID(SdifFileT *SdifF, int Verbose)
   
   for(iID=0; iID<SdifF->StreamIDsTable->SIDHT->HashSize; iID++)
     for (pID = SdifF->StreamIDsTable->SIDHT->Table[iID]; pID; pID = pID->Next)
-      SizeW += SdifFPutOneStreamID(SdifF, Verbose, pID->Data);
+      SizeW += SdifFPutOneStreamID(SdifF, Verbose, (SdifStreamIDT *)pID->Data);
   
   SizeW += fprintf(file, "}");
 
@@ -565,7 +568,7 @@ SdifFAllStreamIDToSdifString(SdifFileT *SdifF, SdifStringT *SdifString)
   
   for (iID = 0; iID<SdifF->StreamIDsTable->SIDHT->HashSize; iID++)
     for (pID = SdifF->StreamIDsTable->SIDHT->Table[iID]; pID; pID = pID->Next)
-      success *= SdifFOneStreamIDToSdifString(SdifString, pID->Data);
+      success *= SdifFOneStreamIDToSdifString(SdifString, (SdifStreamIDT *)pID->Data);
 
   return success;
 }
