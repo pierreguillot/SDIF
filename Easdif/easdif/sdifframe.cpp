@@ -32,9 +32,12 @@
  * 
  * 
  * 
- * $Id: sdifframe.cpp,v 1.7 2003-07-18 20:41:05 roebel Exp $ 
+ * $Id: sdifframe.cpp,v 1.8 2003-11-18 18:17:00 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.7  2003/07/18 20:41:05  roebel
+ * Added SetHeader with Signature as std::string
+ *
  * Revision 1.6  2003/05/19 14:00:20  roebel
  * Include new easdif_config.h.
  *
@@ -86,6 +89,13 @@
 #include "easdif/easdif_config.h"
 #include "easdif/sdifframe.h"
 #include "easdif/sdifentity.h"
+#ifdef HAVE_SSTREAM
+#include <sstream>
+#else
+#ifdef HAVE_STRSTREAM
+#include <strstream>
+#endif
+#endif
 
 namespace Easdif {
 
@@ -120,20 +130,11 @@ int SDIFFrame::Read(SDIFEntity& entity)
     SdifFileT* file = entity.GetFile();
 
     if(entity.eof()) {
-      // return -1;
-      Easdif::SDIFEof exc;
-      exc.initException(eError,"Error in SDIFFrame::Read -- Eof reached",
-			file,0,0,0);      
-      throw exc;
+      throw Easdif::SDIFEof(eError,"Error in SDIFFrame::Read -- Eof reached",
+			    file,eEof,0,0);
     }
     return Read(file, entity.mEof);
 
-/*
-    SdifFileT* file = entity.GetFile();
-    ReadHeader(file);   
-    Resize(file);
-    ReadData(file);
-*/
 }
 
 /* reading the data */
@@ -205,9 +206,7 @@ int SDIFFrame::Write(SdifFileT* file)
 	_size += mv_Matrix[index].Write(file);     
 
     if(_size != mSize){
-      Easdif::SDIFFrameHeaderSizeError exc;
-      exc.initException(eError,"Error in SDIFFrame::Write -- FrameSize in Header does not match size of matrices in header",file,0,0,0);      
-      throw exc;
+      throw Easdif::SDIFFrameHeaderSizeError(eError,"Error in SDIFFrame::Write -- FrameSize in Header does not match size of matrices in header",file,eBadHeader,0,0);
     }
     return mSize; 
 }
@@ -294,25 +293,53 @@ void SDIFFrame::SetTime(float time)
 }
 
 /* to Get */
-SDIFMatrix& SDIFFrame::GetMatrix(unsigned int index) 
+SDIFMatrix& SDIFFrame::GetMatrix(unsigned int index)   
+  throw(SDIFMatrixNotAvailable)
 {
     // Check index
     if (index > (mv_Matrix.size()-1))
     {
-	std::cerr << " No such matrix " << std::endl;
-	return mv_Matrix[0];
+      const char *cmsg = "GetMatrix(unsigned int):: Matrix index  out of range! ";
+#ifdef HAVE_SSTREAM
+      std::ostringstream msg;
+      msg << "GetMatrix(unsigned int):: Matrix index " << index << " out of range! ";
+      cmsg = msg.str().c_str();
+#else
+#ifdef HAVE_STRSTREAM
+      std::ostrstream msg;
+      msg << "GetMatrix(unsigned int):: Matrix index " << index << " out of range! ";
+      cmsg = msg.str();
+#endif
+#endif
+      throw Easdif::SDIFMatrixNotAvailable(eError, cmsg, 0, eNotFound, 
+					   __FILE__, __LINE__);
     }
     return mv_Matrix[index];
 }
 
 /* to Get */
-const SDIFMatrix& SDIFFrame::GetMatrix(unsigned int index) const
+const SDIFMatrix& SDIFFrame::GetMatrix(unsigned int index) const  
+  throw(SDIFMatrixNotAvailable)
+
 {
     // Check index
     if (index > (mv_Matrix.size()-1))
     {
-	std::cerr << " No such matrix " << std::endl;
-	return mv_Matrix[0];
+      const char *cmsg = "GetMatrix(unsigned int) const:: Matrix index  out of range! ";
+#ifdef HAVE_SSTREAM
+      std::ostringstream msg;
+      msg << "GetMatrix(unsigned int) const:: Matrix index " << index << " out of range! ";
+      cmsg = msg.str().c_str();
+#else
+#ifdef HAVE_STRSTREAM
+      std::ostrstream msg;
+      msg << "GetMatrix(unsigned int) const:: Matrix index " << index << " out of range! ";
+      cmsg = msg.str();
+#endif
+#endif
+
+      throw Easdif::SDIFMatrixNotAvailable(eError, cmsg, 0, eNotFound, 
+					   __FILE__, __LINE__);
     }
     return mv_Matrix[index];
 }
@@ -409,6 +436,7 @@ bool SDIFFrame::MatrixExists(const std::string& signature) const
 
 
 SDIFMatrix& SDIFFrame::GetMatrixWithSig(const SdifSignature sig)
+  throw(SDIFMatrixNotAvailable)
 {
     bool test = false;    
     SdifUInt4 index = 0;
@@ -423,12 +451,16 @@ SDIFMatrix& SDIFFrame::GetMatrixWithSig(const SdifSignature sig)
 	return mv_Matrix[index-1];
     else
     {
-	std::cerr << " No such matrix " << std::endl;
-	return mv_Matrix[0];
+      std::string msg = "GetMatrixWithSig(const SdifSignature sig) :: Matrix signature ";
+      msg += SdifSignatureToString(sig);
+      msg += " not contained in Frame !";
+      throw Easdif::SDIFMatrixNotAvailable(eError, msg.c_str(), 0, eNotFound, 
+					   __FILE__, __LINE__);
     }
 }
 
 const SDIFMatrix& SDIFFrame::GetMatrixWithSig(const SdifSignature sig) const
+  throw(SDIFMatrixNotAvailable)
 {
     bool test = false;    
     SdifUInt4 index = 0;
@@ -443,14 +475,18 @@ const SDIFMatrix& SDIFFrame::GetMatrixWithSig(const SdifSignature sig) const
 	return mv_Matrix[index-1];
     else
     {
-	std::cerr << " No such matrix " << std::endl;
-	return mv_Matrix[0];
+      std::string msg = "GetMatrixWithSig(const SdifSignature sig) const:: Matrix signature ";
+      msg += SdifSignatureToString(sig);
+      msg += " not contained in Frame !";
+      throw Easdif::SDIFMatrixNotAvailable(eError, msg.c_str(), 0, eNotFound, 
+					   __FILE__, __LINE__);
     }
 }
 
 
 
 SDIFMatrix& SDIFFrame::GetMatrix(const std::string& signature)
+  throw(SDIFMatrixNotAvailable)
 {   
     /*
       bool test = false;    
@@ -460,12 +496,19 @@ SDIFMatrix& SDIFFrame::GetMatrix(const std::string& signature)
     SdifSignature sig = SdifStringToSignature(const_cast<char*>
 					      (signature.c_str()));
     /* with GetMatrixWithSig(sig) */
-    return GetMatrixWithSig(sig);
-
+    try {
+      return GetMatrixWithSig(sig);
+    }
+    catch (Easdif::SDIFMatrixNotAvailable) {
+      std::string msg = "GetMatrix(const std::string) :: Matrix signature "+ signature + " not contained in Frame !";
+      throw Easdif::SDIFMatrixNotAvailable(eError, msg.c_str(), 0, eNotFound, 
+					   __FILE__, __LINE__);      
+    }
 }
 
 
 const SDIFMatrix& SDIFFrame::GetMatrix(const std::string& signature) const
+  throw(SDIFMatrixNotAvailable)
 {   
     /*
       bool test = false;    
@@ -474,7 +517,15 @@ const SDIFMatrix& SDIFFrame::GetMatrix(const std::string& signature) const
 
     SdifSignature sig = SdifStringToSignature(signature.c_str());
     /* with GetMatrixWithSig(sig) */
-    return GetMatrixWithSig(sig);
+    try {
+      return GetMatrixWithSig(sig);
+    }
+    catch (Easdif::SDIFMatrixNotAvailable) {
+      std::string msg = "GetMatrix(const std::string) const:: Matrix signature "+ signature + " not contained in Frame !";
+      throw Easdif::SDIFMatrixNotAvailable(eError, msg.c_str(), 0, eNotFound, 
+					   __FILE__, __LINE__);      
+    }
+
 
 }
 
