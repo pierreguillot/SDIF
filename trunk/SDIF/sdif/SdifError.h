@@ -1,4 +1,4 @@
-/* $Id: SdifError.h,v 3.1 1999-03-14 10:56:36 virolle Exp $
+/* $Id: SdifError.h,v 3.2 2000-03-01 11:17:34 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -15,6 +15,9 @@
  * author: Dominique Virolle 1997
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 3.1  1999/03/14  10:56:36  virolle
+ * SdifStdErr add
+ *
  * Revision 2.3  1999/02/28  12:16:38  virolle
  * memory report
  *
@@ -70,10 +73,14 @@ typedef enum SdifErrorE
   eTokenLength
 } SdifErrorEnum;
 
+typedef void (*SdifExitFuncT) (void);
+
+extern SdifExitFuncT gSdifExitFunc;
 extern char *SdifErrorFile;
 extern int SdifErrorLine;
 extern FILE* SdifStdErr;
 
+void SdifSetExitFunc (SdifExitFuncT func);
 void SdifErrorWarning(SdifErrorEnum Error, const void *ErrorMess);
 
 #define _SdifError(error, mess) \
@@ -89,9 +96,3 @@ fprintf(SdifStdErr, "%s\n",(mess)))
 fprintf(SdifStdErr, "*Sdif* %s\n", mess)
 
 #endif /* _SdifError_ */
-
-
-
-
-
-
