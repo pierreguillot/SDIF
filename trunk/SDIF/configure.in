@@ -1,6 +1,6 @@
 dnl -*-autoconf-*-  (No, it's an autoconf file!)
 dnl -*-m4-*- (He emacs, it's a m4 file)
-dnl $Id: configure.in,v 1.37 2003-04-06 16:30:17 roebel Exp $
+dnl $Id: configure.in,v 1.38 2003-04-09 12:28:28 roebel Exp $
 dnl
 dnl configure.in		September 2000		Patrice Tisserand
 dnl
@@ -32,6 +32,9 @@ dnl send email to:  sdif@ircam.fr
 
 
 dnl $Log: not supported by cvs2svn $
+dnl Revision 1.37  2003/04/06 16:30:17  roebel
+dnl Disable shared libraries by default due to problmes on Mac OSX
+dnl
 dnl Revision 1.36  2003/03/18 15:19:44  roebel
 dnl Improved docu.
 dnl
@@ -199,10 +202,8 @@ AC_PROG_CC
 AC_PROG_INSTALL
 AC_PROG_RANLIB
 
-dnl disable shared libraries by defauylt due to problems with 
+dnl you better disable shared libraries  due to problems with 
 dnl libtool when building under Mac OSX
-
-AC_DISABLE_SHARED
 AC_PROG_LIBTOOL
 
 dnl Check for librairies

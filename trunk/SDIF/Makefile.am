@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.17 2003-04-06 16:28:57 roebel Exp $
+# $Id: Makefile.am,v 1.18 2003-04-09 12:28:25 roebel Exp $
 #
 # ./Makefile.am		September 2000			Patrice Tisserand
 #
@@ -30,6 +30,9 @@
 
 
 # $Log: not supported by cvs2svn $
+# Revision 1.17  2003/04/06 16:28:57  roebel
+# Added to CVS
+#
 # Revision 1.16  2003/03/07 17:55:01  roebel
 # Added switch for doc compilation.
 #
@@ -104,7 +107,7 @@ DOC_SRC_DIR =
 endif 
 
 SUBDIRS = sdif include tools data test sdifcpp $(DOC_SRC_DIR)
-EXTRA_DIST = README.shared
+EXTRA_DIST = README.MacOSX
 
 sdifincdir = @top_srcdir@/include
 
