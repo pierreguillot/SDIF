@@ -7,9 +7,14 @@
  * 
  * 
  * 
- * $Id: sdifentity.cpp,v 1.5 2002-10-10 10:49:09 roebel Exp $ 
+ * $Id: sdifentity.cpp,v 1.6 2002-10-30 15:27:32 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.5  2002/10/10 10:49:09  roebel
+ * Now using namespace Easdif.
+ * Fixed handling of zero pointer arguments in initException.
+ * Reading past end of file now throws an exception.
+ *
  * Revision 1.4  2002/10/03 11:26:56  tisseran
  * Check if efile is not null before trying to close it.
  * Initialize efile to 0 by sdifentity::sdifentity()
@@ -51,11 +56,21 @@ SDIFEntity::SDIFEntity(): efile(0), mSize(0), mEof(0), mNbNVT(0),
 };
 
 /* to open a file in mode Read  */
-int SDIFEntity::OpenRead(const char* filename)
+bool SDIFEntity::OpenRead(const char* filename)
 {
     int n;
     efile = SdifFOpen (filename, eReadFile);
+
+    if(!efile)
+      return false;
+
     generalHeader = SdifFReadGeneralHeader(efile);
+    if(!generalHeader){
+      SdifFClose(efile);
+      efile = 0;
+      return false;
+    }
+
     asciiChunks = SdifFReadAllASCIIChunks(efile);
 
     /* to put matrix and frame's types in the SdifString : mDescription */
@@ -82,15 +97,24 @@ int SDIFEntity::OpenRead(const char* filename)
 	    AddNVT(NVT, _SdifNVTStreamID);
 	}
     }  
-    return  mOpen = 2;
+    mOpen = 2;
+    return true;
 }
 
 /* to open a file in mode Write  */
-int SDIFEntity::OpenWrite(const char* filename)
+bool SDIFEntity::OpenWrite(const char* filename)
 {
     efile = SdifFOpen ( filename, eWriteFile);
-    /* write on the file 'SDIF' and 4 bytes chunk size */
-    generalHeader = SdifFWriteGeneralHeader(efile);
+
+    if(!efile)
+      return false;
+
+   /* write on the file 'SDIF' and 4 bytes chunk size */
+    if(!(generalHeader = SdifFWriteGeneralHeader(efile))){
+      SdifFClose(efile);
+      efile = 0;
+      return false;
+    }
 
     /* to add member data (NVTs) to sdif file */
     if (mNbNVT != 0)	
@@ -100,23 +124,24 @@ int SDIFEntity::OpenWrite(const char* filename)
     WriteTypes();
 	
     asciiChunks = SdifFWriteAllASCIIChunks(efile);
-    return  mOpen = 1;
+    mOpen = 1; 
+    return true; 
 }
 
 /* to open completely (with Header and ASCII Chunks)  a file in mode : Mode  */
-int SDIFEntity::Open(const char* filename, SdifFileModeET Mode)
+bool SDIFEntity::Open(const char* filename, SdifFileModeET Mode)
 {
     efile = SdifFOpen (filename, Mode);
     switch(Mode)
     {
     case eReadFile:
     {
-	OpenRead(filename);
+	return OpenRead(filename);
     }
     break;
     case eWriteFile:
     {	
-	OpenWrite(filename);
+	return OpenWrite(filename);
     }
     break;
 
@@ -124,11 +149,11 @@ int SDIFEntity::Open(const char* filename, SdifFileModeET Mode)
      *case ePredefinedTypes, case eModeMask, case eParseSelection:
      */
     default:
-	std::cerr << "Default in Opening" << std::endl;
+	std::cerr << " SDIFEntity::Open:: Mode specification error" << std::endl;
 	//_SdifFError(file, eBadMode, "Default in Opening");
 	break;
     }
-    return mOpen = Mode;
+    return false;
 }
 
 SdifFileT* SDIFEntity::GetFile() const
@@ -147,17 +172,17 @@ int SDIFEntity::GetNbNVT()const
     return mNbNVT;
 }
 
-int SDIFEntity::AddNVT(const SDIFNameValueTable& nvt, 
+bool SDIFEntity::AddNVT(const SDIFNameValueTable& nvt, 
 			       SdifUInt4 StreamId)
 {
     mv_NVT.insert(mv_NVT.end(), nvt);
     mv_NVT[mNbNVT].SetStreamID(StreamId);
     //mSize += mv_NVT.GetSize(); like in SDIFFrame
     mNbNVT++;
-    return 1;
+    return true;
 }
 
-int SDIFEntity::WriteNVTs()
+bool SDIFEntity::WriteNVTs()
 {
     SdifNameValuesLT* NVlist;
     const char* name;
@@ -183,7 +208,7 @@ int SDIFEntity::WriteNVTs()
     }
     /* for writing the Name Value Table in the file */
     //  asciiChunks = SdifFWriteAllASCIIChunks(efile);
-    return 1;
+    return true;
 }
 
 /* to get a NVT of a file */
@@ -222,14 +247,15 @@ SDIFNameValueTable& SDIFEntity::GetNVT(unsigned int i)
     return mv_NVT[i];
 }
 
-int SDIFEntity::Close()
+bool SDIFEntity::Close()
 {
     if (0 != efile)
     {
 	SdifFClose(efile);
 	efile = 0;
+	return true;
     }
-    return 1;
+    return false;
 }
 
 /* temporary  */
