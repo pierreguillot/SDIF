@@ -1,10 +1,15 @@
-// $Id: easdif.i,v 1.8 2003-04-18 17:45:23 schwarz Exp $ -*-c-*-
+// $Id: easdif.i,v 1.9 2003-04-29 15:20:38 schwarz Exp $ -*-c-*-
 //
 // easdif.i		16.04.2003		Diemo Schwarz
 //
 // Interface file for swig, defining the callable easdif functions
 //
 // $Log: not supported by cvs2svn $
+// Revision 1.8  2003/04/18 17:45:23  schwarz
+// Renamed sdifsignature.i to sdiftypemap.i, because all types are in there.
+// Include typemap for std::string from SWIG library
+// Added typemap freearg SdifStringT *
+//
 // Revision 1.7  2003/04/18 15:41:18  schwarz
 // Don't include all definitions from sdif.h, only the ones needed by
 // easdif, defined in sdifdefine.i.  -> smaller wrapper size:
@@ -55,6 +60,16 @@ using namespace Easdif;
     EasdifInit();
 %}
 
+
+// would have to zap other constructors, if not, SdifSignature is invisible...
+//%ignore SDIFMatrix(const SdifDataTypeET);
+//%ignore SDIFMatrix(const SDIFMatrix&);
+
+// have to ignore constructor, because SdifSignature and
+// SdifDataTypeET are indistinguishably int for swig
+%ignore SDIFMatrix(SdifSignature, int, int, SdifDataTypeET);
+//%ignore CreateMatrixData(SdifSignature, int, int, SdifDataTypeET);
+%ignore CreateMatrixData(std::string &, int, int, SdifDataTypeET);
 
 // define only the needed basic SDIF stuff from sdif.h
 %include sdifdefines.i
