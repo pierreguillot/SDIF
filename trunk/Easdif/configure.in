@@ -1,6 +1,6 @@
 dnl -*-autoconf-*-  (No, it's an autoconf file!)
 dnl -*-m4-*- (He emacs, it's a m4 file)
-dnl $Id: configure.in,v 1.29 2004-03-19 01:03:25 roebel Exp $
+dnl $Id: configure.in,v 1.30 2004-03-19 22:09:49 roebel Exp $
 dnl
 dnl configure.in		Feb 2003      Axel Roebel
 dnl
@@ -33,6 +33,9 @@ dnl
 dnl
 
 dnl $Log: not supported by cvs2svn $
+dnl Revision 1.29  2004/03/19 01:03:25  roebel
+dnl Finalized support for --enable-ddebug
+dnl
 dnl Revision 1.28  2004/02/11 19:28:16  roebel
 dnl Added inline function to test state of entity. Added function to access NVTs that indicates existance of name.
 dnl
@@ -126,7 +129,7 @@ PACKAGE=Easdif
 
 EASDIF_VERSION_MAJ=0
 EASDIF_VERSION_MIN=8
-EASDIF_VERSION_RELEASE=2
+EASDIF_VERSION_RELEASE=3
 
 VERSION="${EASDIF_VERSION_MAJ}.${EASDIF_VERSION_MIN}.${EASDIF_VERSION_RELEASE}"
 
