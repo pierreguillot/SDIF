@@ -1,0 +1,29 @@
+#####################################
+# SDIF VERSION 3.3: (26 April 2001) #
+#####################################	
+The main changes are:
+
+1: Modification of standard SDIF description types initialisation: The
+   types can now be defined in the file SdifTypes.STYP OR a built-in
+   definition can be used.  This allows effectively to drop the
+   SdifTypes.STYP file altogether and avoid frequent installation
+   problems.
+
+   The name of the built-in definition string is SDIFTYPES_STRING (in file sdiftypes.h).
+   This string is used by SDIF library when the file SdifTypes.STYP define at compilation (in directory 
+   datadir, by default /usr/local/share or $PREFIX/share) or file specified in environnement variable
+   SDIFTYPES is not found.   
+
+   TODO:   This string is generated at IRCAM, by a perl script which should be included in future version
+   of library.
+
+2: Fix for autoconfiguration tools.  autoconf will now work on all
+   UNIX-like operating systems (OSF1, IRIX, Linux and Mac OS X).
+
+   Beware, we have suppose than in each platform will use configure mechanism, the directory divider is "/".
+
+   TODO:   We will include a test at configuration to know the directory divider use on Operating System.
+   
+
+
+
