@@ -1,0 +1,28 @@
+dnl configure for SDIF and easdif swig
+
+dnl Init file
+AC_INIT(sdif-common.i.in)
+
+dnl Package name
+PACKAGE_NAME=swig-easdif
+
+dnl Package version
+PACKAGE_VERSION=0.0.1
+
+dnl Init automake
+AM_INIT_AUTOMAKE(${PACKAGE_NAME}, ${PACKAGE_VERSION})
+
+EASDIF_INC_DIR="../.."
+AC_SUBST(EASDIF_INC_DIR)
+
+EASDIF_LIB_PATH="../../easdif/.libs"
+AC_SUBST(EASDIF_LIB_PATH)
+SDIF_INC_DIR="../../SDIF/include"
+AC_SUBST(SDIF_INC_DIR)
+
+AC_OUTPUT(
+easdif-common.i
+sdif-common.i
+Makefile
+perl5/Makefile
+)
