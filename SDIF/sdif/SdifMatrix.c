@@ -1,4 +1,4 @@
-/* $Id: SdifMatrix.c,v 3.6 2001-05-02 09:34:45 tisseran Exp $
+/* $Id: SdifMatrix.c,v 3.7 2002-05-24 19:37:07 ftissera Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -33,6 +33,9 @@
  *
  * author: Dominique Virolle 1997
  * $Log: not supported by cvs2svn $
+ * Revision 3.6  2001/05/02 09:34:45  tisseran
+ * Change License from GNU Public License to GNU Lesser Public License.
+ *
  * Revision 3.5  2000/11/15 14:53:32  lefevre
  * no message
  *
@@ -76,7 +79,7 @@
 #include "SdifMatrix.h"
 #include <stdlib.h>
 #include <assert.h>
-
+#include "sdif.h"
 
 
 
