@@ -1,4 +1,4 @@
-/* $Id: SdifRWLowLevel.c,v 3.15 2002-05-24 19:37:52 ftissera Exp $
+/* $Id: SdifRWLowLevel.c,v 3.16 2003-05-01 18:50:32 roebel Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -32,6 +32,10 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.15  2002/05/24 19:37:52  ftissera
+ * Change code to be compatible with C++
+ * Cast pointers to correct type.
+ *
  * Revision 3.14  2001/05/02 09:34:47  tisseran
  * Change License from GNU Public License to GNU Lesser Public License.
  *
@@ -766,7 +770,7 @@ _SdifStringToSignature (char *str)
    position of any length.  
 */
 SdifSignature
-SdifStringToSignature (char *str)
+SdifStringToSignature (const char *str)
 {
   SdifSignature sigarr = eEmptySignature;  /* force 4 byte alignment */
   char		*sig   = (char *) &sigarr;
