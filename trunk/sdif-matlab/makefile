@@ -1,10 +1,13 @@
-# $Id: makefile,v 1.19 2001-02-07 16:00:13 roebel Exp $
+# $Id: makefile,v 1.20 2001-04-20 14:33:33 roebel Exp $
 #
 # makefile	26. January 2000	Diemo Schwarz
 #
 # formesutils matlab library
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.19  2001/02/07 16:00:13  roebel
+# Version 0.1.7b with README.first
+#
 # Revision 1.18  2001/02/07 15:56:42  roebel
 # Added README.first to distribution
 #
@@ -76,11 +79,36 @@
 # Matlab mex extension and support functions to load SDIF files.
 #
 
+# Please edit this section to match
+# Your mex compiler script (comes with matlab and is usually
+# MATLABROOT/bin/mex you may use mex for matlab 5 or matlab 6
+# if you specify multiple commands you may compile
+# for matlab 5 and 6 with one make call
+MEXCMD    = mex
 
-# include mex definitions from the right places
-MAKEFLAGS = -I . -I /u/formes/share/lib/matlab/
-include mex.makedefs
+# The path to sdif.h 
+SDIF_INCL  = /u/formes/share/include
 
+# The path of the sdif library 
+SDIF_LIB  = /u/formes/share/lib/$(SYS)/libsdif.a
+
+# Special flags to link mex files, if you do not have a proper
+# libc5 development environment installed on linux you may
+# try:  LINKFLAGS = "LDFLAGS=-shared -nodefaultlibs"
+LINKFLAGS = 
+
+# install mex files and supporting m-files INSTALL_FILES into INSTALL_DIR
+INSTALL_DIR	= /u/formes/share/lib/matlab
+
+
+# It should not be necessary to edit below this line
+#===================================================
+
+ARCH = $(shell arch)
+
+ifeq ($(wildcard setup.ircam),setup.ircam)
+include setup.ircam
+endif
 
 #
 # VERSION
@@ -88,61 +116,66 @@ include mex.makedefs
 
 V_MAJOR 	= 0
 V_MINOR 	= 1
-V_RELEASE	= 7b
+V_RELEASE	= 8
 VERSION		= $(V_MAJOR).$(V_MINOR).$(V_RELEASE)
 CVSTAG		= sdif_matlab_v$(V_MAJOR)_$(V_MINOR)_$(V_RELEASE)
 
+
+ALLMEXSUF := mexsg mexglx mexlx mexaxp
+
+.PHONY:		t1.sdif test testl
+
 #
-# PATHS and SETTINGS
+# targets
 #
+all:			allmex
+new:			clean all
 
-# under IMPORT_ROOT, imported lib and include directories are used
-ifeq ($(USER),schwarz)
-  IMPORT_ROOT	 = $(HOME)
-else
-ifeq ($(USER),tisseran)
-  IMPORT_ROOT	 = $(HOME)
-endif
-endif
+# find matlab interpreters that belong to the given mex commands
+MATLABCMDS = $(subst mex,matlab,$(MEXCMD))
 
-CFLAGS	   	 = -g -Wall -DTEST '-DVERSION="$(VERSION)"'
-LFLAGS		 = $(MEXLFLAGS)
-CC		 = gcc
+# determine suffix for current mex script
+mexsuf.inc.$(ARCH): 
+	@echo determining mex suffixes for your system
+	@rm -f testmexext.mex*
+	@for mexcmd in $(MEXCMD); do  $$mexcmd testmexext.c; done 
+	@echo -n "MEXSUF := "  > mexsuf.inc.$(ARCH)
+	@for mexout in testmexext.mex*; do echo -n `expr $$mexout : ".*[.]\(.*\)$$"` " " ; done >>   mexsuf.inc.$(ARCH);
+	@echo >> mexsuf.inc.$(ARCH)
+	@rm -f testmexext.mex*
+	@echo suffix list is 
+	@cat 	mexsuf.inc.$(ARCH)
 
-OBJ_DIR	   	 = obj/$(ARCH)
-OUT_DIRS	 = $(OBJ_DIR) $(INSTALL_DIR) gen
-VPATH		 = $(OBJ_DIR)
+-include mexsuf.inc.$(ARCH)
 
 
 #
 # FILES
 #
-
 mexbase		= loadsdif writesdif
+loadsdif_mex    = $(foreach suf,$(MEXSUF),loadsdif.$(suf))
+writesdif_mex    = $(foreach suf,$(MEXSUF),writesdif.$(suf))
+
 loadsdif_src	= loadsdif-subs.c
 writesdif_src	= writesdif-subs.c
-loadsdif_obj	= $(loadsdif_src:%.c=$(OBJ_DIR)/%.o)
-writesdif_obj	= $(writesdif_src:%.c=$(OBJ_DIR)/%.o)
 cfiles		= $(mexbase:%=%.c) $(loadsdif_src) $(writesdif_src) 
+hfiles		= $(mexbase:%=%.h)
+mexfiles	= $(loadsdif_mex)  $(writesdif_mex) 
 
-ifeq ($(ARCH),i686)
-mexfiles	= $(notdir $(mexbase:%=%.$(MEXSUF))) $(notdir $(mexbase:%=%.$(MEX6SUF)))
-else
-mexfiles	= $(notdir $(mexbase:%=%.$(MEXSUF)))
-endif
 mfiles		= loadsdif.m loadsdiffile.m loadsdifflat.m \
 		  writesdif.m sdifexist.m 
-allsrc		= $(cfiles)
+allsrc		= $(cfiles) $(hfiles) testmexext.c
+srcmfiles       = $(mfiles) tt.m testl.m sdifexist.m testreadwrite.m testrw.m \
+testwrite.m
+datadir         = data/*sdif data/*.sdif.ascii 
 
+allmex:		$(mexfiles)
 
 #
 # INSTALL and DISTRIBUTION
 #
 
-# install mex files and supporting m-files INSTALL_FILES into INSTALL_DIR
-#INSTALL_DIR	= /u/formes/lib/matlab
-INSTALL_DIR	= /u/formes/share/lib/matlab
-INSTALL_FILES	= $(mexfiles) $(mfiles) mex.makedefs
+INSTALL_FILES	= $(mexfiles) $(mfiles) 
 INSTALLED_FILES = $(INSTALL_FILES:%=$(INSTALL_DIR)/%)
 
 DIST_DIR	= /usr/local/www/ircam/equipes/analyse-synthese/sdif/download
@@ -150,107 +183,118 @@ DIST_FILES	= $(foreach s, $(ALLMEXSUF), $(mexbase:%=%.$s)) \
 		  sdif-matlab-readme README.first $(mfiles) \
 		  -C $(SDIF_TYPES_DIR) $(SDIF_TYPES_FILE) \
 #		  -C $(subst /lib/,/bin/,$(SDIF_LIB_DIR)) querysdif
+SRC_DIST_FILES	=  $(allsrc) $(srcmfiles) $(datadir) \
+		  sdif-matlab-readme README.first INSTALL makefile \
+		  testtypes.styp -C $(SDIF_TYPES_DIR) $(SDIF_TYPES_FILE) 
 DIST_HOST	= maelzel
 DIST_BASE	= sdif-matlab-$(VERSION)
-DIST_COPYFILES  = $(DIST_BASE).tar.gz sdif-matlab-readme
+DIST_COPYFILES  = $(DIST_BASE).tar.gz $(DIST_BASE)-src.tar.gz sdif-matlab-readme
 
-
+# Compiler includes
 #
-# RULES
-#
-
-$(OBJ_DIR)/%.o:	%.c
-		$(MEX-COMPILE)
-
-.PHONY:		t1.sdif test testl
+INCL	 = -I$(SDIF_INCL) -I/usr/include 
 
 
-#
-# targets
-#
+# compile -- will produce mexfiles with proper extension
+# for all mex commands given
+$(loadsdif_mex) : loadsdif.c  loadsdif-subs.c  $(SDIF_LIB) loadsdif.h 	
+	@for mexcmd in $(MEXCMD); do \
+	   echo Compiling:; \
+	   echo $$mexcmd -O '-DVERS=\"$(VERSION)\"' $(INCL) $(LINKFLAGS) loadsdif.c  loadsdif-subs.c $(SDIF_LIB); \
+	   $$mexcmd -O '-DVERS=\"$(VERSION)\"' $(INCL) $(LINKFLAGS) loadsdif.c  loadsdif-subs.c $(SDIF_LIB);\
+	done	
 
-all:			$(OBJ_DIR) $(mexfiles)
-new:			clean all
-loadsdif:		loadsdif.$(MEXSUF)
-writesdif:		writesdif.$(MEXSUF) 
 
-# dependencies
-loadsdif.$(MEXSUF):	loadsdif.c  $(loadsdif_obj)  $(SDIF_LIB)
-loadsdif.c:		loadsdif.h 
-$(loadsdif_obj):	$(loadsdif_src)  loadsdif.h
+$(writesdif_mex) : writesdif.c writesdif-subs.c $(SDIF_LIB) writesdif.h 
+	@for mexcmd in $(MEXCMD); do \
+	   echo Compiling:; \
+	   echo $$mexcmd  -O '-DVERS=\"$(VERSION)\"' $(INCL) $(LINKFLAGS) writesdif.c writesdif-subs.c $(SDIF_LIB);\
+	   $$mexcmd  -O '-DVERS=\"$(VERSION)\"' $(INCL) $(LINKFLAGS) writesdif.c writesdif-subs.c $(SDIF_LIB);\
+	done	
 
-writesdif.$(MEXSUF):	writesdif.c $(writesdif_obj) $(SDIF_LIB)
-writesdif.c:		writesdif.h 
-$(writesdif_obj):	$(writesdif_src) writesdif.h
-
-ifeq ($(ARCH),i686)
-loadsdif.$(MEX6SUF):	loadsdif.c  $(loadsdif_obj)  $(SDIF_LIB)
-writesdif.$(MEX6SUF):	writesdif.c $(writesdif_obj) $(SDIF_LIB)
-endif
 
 # external builds
 sdif:
 		$(MAKE) -C $(HOME)/src/SDIF
-db:
-		$(MAKE) DEBUG=1
 
 test:		$(mexfiles) testrw testl t1.sdif
 
-testrw rw:	gen
-		echo 'testrw'  |  matlab -nosplash
-ifeq ($(ARCH),i686)
-		echo 'testrw'  |  matlab6 -nojvm -nosplash
-endif
+# unsetting the display variable prevents the start of java environment
+# for matlab 6
+testrw:	  gen
+	@rm -f error.found 
+	@unset DISPLAY;\
+	for cmd in $(MATLABCMDS); do\
+		echo "testrw;quit"  |  $$cmd -nosplash; \
+	        if [ -f error.found ];then \
+	           echo error running testrw with $$cmd ;\
+		   rm -f error.found; \
+		   exit 1; \
+		fi; \
+	done	
+testl:	gen
+	@unset DISPLAY;\
+	for cmd in $(MATLABCMDS); do\
+		echo "testl;quit" | $$cmd -nosplash |  sed -e "1,5 s/.*//" >gen/testl.out; \
+	        if [ "`diff data/testlm5.out gen/testl.out`" != "" -a "`diff data/testlm6.out gen/testl.out`" != "" ]; then \
+		  echo error running testl with $$cmd; \
+		  exit 1; \
+		else \
+		  echo "OK running testl with $$cmd !!";\
+		fi;\
+	done
 
-testl:
-		echo testl     | matlab -nosplash
-ifeq ($(ARCH),i686)
-		echo testl     | matlab6 -nojvm -nosplash
-endif
-
-t1t:	
-		SDIFTYPES=testtypes.styp;export SDIFTYPES; $(MAKE) t1.sdif
-t1.sdif:
-		echo "testwrite('$@'), loadsdiffile('$@')"  |  matlab -nosplash
-		querysdif $@
-		sdiftotext -i $@
-ifeq ($(ARCH),i686)
-		echo "testwrite('$@'), loadsdiffile('$@')"  |  matlab6 -nojvm -nosplash
-		querysdif $@
-		sdiftotext -i $@
-endif
+t1.sdif:  gen
+	@unset DISPLAY;\
+	SDIFTYPES=testtypes.styp;export SDIFTYPES;\
+	for cmd in $(MATLABCMDS); do\
+		echo "testwrite('gen/$@'), loadsdiffile('gen/$@');quit" | $$cmd -nosplash >/dev/null;\
+		querysdif gen/$@ | fgrep -v Version >gen/t1.sdif.out; \
+		sdiftotext -i gen/$@ | fgrep -v Version >>gen/t1.sdif.out;\
+	        if [ "`diff data/t1.sdif.ascii gen/t1.sdif.out`" != "" ]; then \
+		  echo error running testwrite/loadsdiffile with $$cmd; \
+		  exit 1; \
+		else \
+		  echo "OK running t1.sdif with $$cmd !!"; \
+		fi;\
+	done
 
 install:	all $(INSTALL_DIR)
-		cp -f $(INSTALL_FILES) $(INSTALL_DIR)
-		chmod g-w $(INSTALLED_FILES) # assure ownership-change
-installdefs:
-		cp -f mex.makedefs $(INSTALL_DIR)
-dist:		all
-		tar cvfz $(DIST_BASE).tar.gz $(DIST_FILES)
-		@echo now do: cvs tag $(CVSTAG)
-publish:	dist
-		rsh $(DIST_HOST) cp -f $(DIST_COPYFILES:%=$(PWD)/%) $(DIST_DIR)
+	cp -f $(INSTALL_FILES) $(INSTALL_DIR)
+	chmod g+w $(INSTALLED_FILES) # assure ownership-change
 
-clean mexclean cl:
-		-rm -f $(mexfiles) $(loadsdif_obj) $(writesdif_obj) 
+dist:		all
+	tar cvfz $(DIST_BASE).tar.gz $(DIST_FILES)
+	tar cvfz $(DIST_BASE)-src.tar.gz $(SRC_DIST_FILES)
+	@echo now do: cvs tag $(CVSTAG)
+publish:	dist
+	rsh $(DIST_HOST) cp -f $(DIST_COPYFILES:%=$(PWD)/%) $(DIST_DIR)
+
+clean: mexclean
+	-rm -f mexsuf.inc.$(ARCH) gen/*
+
+mexclean:
+	-rm -f $(mexfiles)
 
 ls:	   
-		@echo $(mexfiles)
+	@echo $(mexfiles)
 ll:	   
-		@echo $(CFLAGS)
-		@echo $(INCL)
-		@echo $(INCLUDE)
+	@echo $(MATLABCMDS)
+	@echo $(INCL)
 
 # report missing symbols in loadsdif lib
 mis missing:	$(mexfiles)
-		@echo; echo [missing objects in loadsdif]
-		nm loadsdif.$(MEXSUF) | grep '| U | 0*$$'
-		echo [missing objects in writesdif]
-		nm writesdif.$(MEXSUF) | grep '| U | 0*$$'
+	for mexf in $(mexfiles); do\
+	  echo; echo [missing objects in $$mexf];\
+		nm $$mexf | grep ' U ';\
+	done
 
-$(OUT_DIRS):
-	mkdir -p $@
+gen: 
+	mkdir gen
+
+$(INSTALL_DIR): 
+	mkdir $(INSTALL_DIR)
 
 tags:		TAGS
 TAGS:		$(allsrc)
-		etags $(allsrc)
+	etags $(allsrc)
