@@ -1,6 +1,6 @@
 dnl -*-autoconf-*-  (No, it's an autoconf file!)
 dnl -*-m4-*- (He emacs, it's a m4 file)
-dnl $Id: configure.in,v 1.18 2002-09-20 14:37:47 schwarz Exp $
+dnl $Id: configure.in,v 1.19 2002-10-07 12:24:14 roebel Exp $
 dnl
 dnl configure.in		September 2000		Patrice Tisserand
 dnl
@@ -31,6 +31,10 @@ dnl For any information regarding this and other IRCAM software, please
 dnl send email to:  sdif@ircam.fr
 dnl
 dnl $Log: not supported by cvs2svn $
+dnl Revision 1.18  2002/09/20 14:37:47  schwarz
+dnl Bumped up version to 3.7.0 (reintroduced release number for small changes
+dnl that don't change the API)
+dnl
 dnl Revision 1.17  2002/08/30 17:28:34  schwarz
 dnl Added enable-option to compile with g++ to use the lib with easdif.
 dnl
@@ -140,10 +144,13 @@ AC_CHECK_HEADERS( sys/types.h sys/stat.h)
 AC_CHECK_HEADERS(errno.h)
 AC_CHECK_HEADERS(unistd.h)
 AC_SUBST(IRCAMDEPS)
+AC_SUBST(FORCE_CMP)
 if test -f /u/formes/share/include/preincluded.h ; then
  IRCAMDEPS=ircam_deps
+ FORCE_CMP=ircam_force_cmp
 else
  IRCAMDEPS=;
+ FORCE_CMP=;
 fi
 
 dnl ############################################################
