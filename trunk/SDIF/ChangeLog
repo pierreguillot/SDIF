@@ -1,5 +1,24 @@
-Version 3.6:
-2002-08-05  Axel Roebel  <roebel@kempyang.ircam.fr>
+
+$Id: ChangeLog,v 1.7 2002-09-20 14:36:09 schwarz Exp $
+	
+Version 3.7	2002-09-20  Diemo Schwarz  <schwarz@lithium.ircam.fr>
+
+	* Functions added:
+	  - SdifFRewind		   rewind file to beginning
+	  - SdifFTruncate	   file truncate function
+	  - SdifParseSignatureList Parse comma-separated list of signatures
+	  - SdifKillSelectElement  now public
+	
+	* Compilation with g++ configurable with --enable-cpp
+
+	* Changed description types (types/sdiftypes.xml)
+	  - added segmentation and midi frame and matrix types
+	  - changed definition of matrix data type: 
+	    use <datatype>...</datatype> tag around!	
+	  -> tdl-version 0.4beta
+	
+	
+Version 3.6	2002-08-05  Axel Roebel  <roebel@kempyang.ircam.fr>
 
 	* Fixed some unwanted redeclaration.
 
@@ -8,16 +27,22 @@ Version 3.6:
 	* Support for replacing a selection.
 
 	* Support for error and warning callbacks.
+
 	
 Version 3.5:
+	
 -- Fixed bugs in preincluded.h and UniversalEnvVar.h (thanks to Kelly Fitz for pointing out the problem).
 -- Fixed sdif output bug in sdifextract.
+
+	
 Version 3.4:
+	
 -- Added defines SDIF_VERSION_MAJOR/SDIF_VERSION_MINOR
 	for version indication.
 -- No more warnings if the number of columns exceeds the number defined 
 	in the types file.
 -- Minor changes in the default sdiftypes file.
+
 	
 Version 3.3:
 	
