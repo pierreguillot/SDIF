@@ -1,4 +1,4 @@
-/* $Id: sdif.h,v 1.39 2004-06-03 11:39:57 schwarz Exp $
+/* $Id: sdif.h,v 1.40 2004-06-14 15:56:29 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -30,6 +30,9 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.39  2004/06/03 11:39:57  schwarz
+ * added array swapping and binary signature reading functions.
+ *
  * Revision 1.38  2004/01/09 11:29:24  schwarz
  * Removed declaration of SdifFGetFrameType and SdifFGetMatrixType from
  * public API because they are misleading.
@@ -195,7 +198,7 @@
  * Revision 1.1.2.1  2000/08/21  13:07:41  tisseran
  * *** empty log message ***
  *
- * $Date: 2004-06-03 11:39:57 $
+ * $Date: 2004-06-14 15:56:29 $
  *
  */
 
@@ -210,7 +213,7 @@ extern "C" {
 #endif
 
 
-static const char _sdif_h_cvs_revision_ [] = "$Id: sdif.h,v 1.39 2004-06-03 11:39:57 schwarz Exp $";
+static const char _sdif_h_cvs_revision_ [] = "$Id: sdif.h,v 1.40 2004-06-14 15:56:29 schwarz Exp $";
 
 
 #include <stdio.h>
@@ -1738,11 +1741,15 @@ SdifUInt2       SdifExistUserFrameType (SdifHashTableT *FrameTypeHT);
 /* Default predefined types : _SdifTypesFileName see SdifFile.c
  */
 
-#define _SdifListNodeStockSize 0x400 /*1024*/
-#define _SdifGenHashSize 127
-#define _SdifUnknownSize 0xffffffff
-#define _SdifPadding 8
-#define _SdifGranule 1024 /* for OneRow allocation in bytes */
+/* allocation constants
+   TODO: should these be public? */
+#define _SdifListNodeStockSize 0x400 /* 1024 */
+#define _SdifGenHashSize         127 /* size of matrix/frame type table */
+#define _SdifNameValueHashSize    31 /* size of hash table for NVTs */
+#define _SdifUnknownSize  0xffffffff
+#define _SdifGranule	        1024 /* for OneRow allocation in bytes */
+#define _SdifPadding		   8
+#define _SdifPaddingBitMask (_SdifPadding - 1)
 
 #define _SdifFloat8Error  0xffffffff
 #define _SdifNoTime	  _Sdif_MIN_DOUBLE_	/* for header ASCII frames */
@@ -1780,7 +1787,8 @@ SdifUInt2       SdifExistUserFrameType (SdifHashTableT *FrameTypeHT);
 #ifndef SWIG
 /* #ifdef STDC_HEADERS */  /* Is the compiler ANSI? */
 
-/* generate template for all types */
+/* generate template for all types, 
+   called by sdif_foralltypes and sdif_proto_foralltypes. */
 #define sdif__foralltypes(macro, post)	macro(Float4)post \
 					macro(Float8)post \
 					macro(Int1  )post \
@@ -1801,7 +1809,6 @@ SdifUInt2       SdifExistUserFrameType (SdifHashTableT *FrameTypeHT);
 /* generate template for all types */
 #define sdif_foralltypes(macro)		\
 	sdif__foralltypes(macro,sdif_foralltypes_post_body)
-/* old: #define sdif_foralltypes(macro)          sdif__foralltypes(macro,) */
 
 
 /* generate prototype template for all types */
@@ -2322,7 +2329,6 @@ SdifMr_free(&SdifMrReport, (void*) _ptr))
 
 #endif /* _SdifMemoryReport */
 
-#define _SdifNameValueHashSize 31
 
 
 /*
@@ -2609,8 +2615,10 @@ size_t SdiffScanFloat4  (FILE *stream, SdifFloat4 *ptr, size_t nobj);
 size_t SdiffScanFloat8  (FILE *stream, SdifFloat8 *ptr, size_t nobj);
 #endif
 
-
 #ifndef SWIG	/* are we scanned by SWIG? */
+
+/* generate function prototypes for all types TYPE for the 
+   SdiffScan<TYPE> functions */
 
 #define sdif_scanproto(type) \
 size_t SdiffScan##type (FILE *stream, Sdif##type *ptr, size_t nobj)
