@@ -8,9 +8,12 @@
  * 
  * 
  * 
- * $Id: sdifmatrixdata.h,v 1.1.1.1 2002-04-11 16:13:31 ftissera Exp $ 
+ * $Id: sdifmatrixdata.h,v 1.2 2002-06-18 14:47:45 ftissera Exp $ 
  * 
- * $Log: not supported by cvs2svn $ 
+ * $Log: not supported by cvs2svn $
+ * Revision 1.1.1.1  2002/04/11 16:13:31  ftissera
+ * Project for new SDIF API	
+ * 
  * 
  */
 
@@ -83,9 +86,10 @@ public:
 	    m_Data.resize(m_Nrows*m_Ncols);
 	}
 
-    int read(SdifFileT* file)/////read matrix
+    int read(SdifFileT* file)
 	{
-	    int bytesread = 0;	    
+	    int bytesread = 0;
+	    /*Read matrix data*/
 	    for (int row = 0; row < m_Nrows; row++)
 	    {
 		bytesread += SdifFReadOneRow(file);
@@ -93,6 +97,7 @@ public:
 		
 		std::copy(p,p+m_Ncols,&(m_Data[row*m_Ncols]));
 	    }
+	    /*Read matrix padding*/
 	    bytesread += SdifFReadPadding(file, SdifFPaddingCalculate(file->Stream, bytesread));
 	    return bytesread; 
 	}
