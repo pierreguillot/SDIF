@@ -1,4 +1,4 @@
-/* $Id: SdifRWLowLevel.c,v 3.24 2004-07-13 15:10:24 roebel Exp $
+/* $Id: SdifRWLowLevel.c,v 3.25 2004-07-13 18:03:16 roebel Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -32,6 +32,10 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.24  2004/07/13 15:10:24  roebel
+ * Fixed SdiffReadSignature to not override the btesread variable
+ * but to add the number of  bytes read.
+ *
  * Revision 3.23  2004/06/14 15:52:04  schwarz
  * Fix sdif__foralltypes double-defined error for stricter compilers,
  * such as Codewarrior: Nicolas Ellis redefined that macro locally,
@@ -453,7 +457,7 @@ SdiffReadFloat8(SdifFloat8 *ptr, size_t nobj, FILE *stream)
 
 int SdiffReadSignature (SdifSignature *Signature, FILE *stream, size_t *nread)
 {
-  int localread =  fread(Signature, sizeof(Signature), 1, stream);
+  size_t localread =  fread(Signature, sizeof(Signature), 1, stream);
   
   if (localread  &&  !feof(stream))
     {
@@ -468,11 +472,10 @@ int SdiffReadSignature (SdifSignature *Signature, FILE *stream, size_t *nread)
       *nread += localread * sizeof(Signature);
       
       /* return last char, as SdiffGetSignature did */
-      return *((char *) Signature + *nread - 1);
+      return *((char *) Signature + sizeof(Signature) - 1);
     }
   else
-    {
- 
+    { 
       *Signature = eEmptySignature;
       return eEof;
     }
