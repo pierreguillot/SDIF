@@ -1,6 +1,9 @@
-# $Id: Makefile,v 1.8 2001-04-27 13:38:36 schwarz Exp $
+# $Id: Makefile,v 1.9 2001-04-27 13:50:54 schwarz Exp $
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.8  2001/04/27 13:38:36  schwarz
+# Generate SdifTypes.STYP in its new place ../data.
+#
 # Revision 1.7  2001/04/18 16:24:52  schwarz
 # Generate ../sdif/sdiftypes.h with xmltostyp.pl to include standard types
 # into the code as #define'd string SDIFTYPES_STRING
@@ -55,11 +58,11 @@ all:		$(genfiles)
 new:		clean all
 
 $(sdiftypes_styp) $(sdiftypes_h):	sdiftypes.xml xmltostyp.pl
-		$(PERL) xmltostyp.pl $< $@ $(sdiftypes_h)
+		$(PERL) xmltostyp.pl $< $(sdiftypes_styp) $(sdiftypes_h)
 
 # generate in doc
 $(htmldoc) $(htmltoc): sdiftypes.xml xmltohtml.pl $(HTMLDIR)
-		$(PERL) xmltohtml.pl $< $@ $(htmltoc)
+		$(PERL) xmltohtml.pl $< $(htmldoc) $(htmltoc)
 
 # test: generate here
 sdiftypes.html:	sdiftypes.xml xmltohtml.pl
