@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.4 2001-04-20 17:35:45 schwarz Exp $
+# $Id: Makefile.am,v 1.5 2001-04-20 17:55:07 schwarz Exp $
 #
 # ./Makefile.am		September 2000			Patrice Tisserand
 #
@@ -29,6 +29,9 @@
 # send email to:  sdif@ircam.fr
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.4  2001/04/20 17:35:45  schwarz
+# Oops, make doesn't like a rule and a variable of the same name.
+#
 # Revision 1.3  2001/04/20 17:33:35  schwarz
 # Added cvstag target and publish target to publish a new version.
 # Removed all Makefile.in from CVS.
@@ -59,10 +62,17 @@ ircam_deps:
 
 test	:	check
 
-# cvs tag
-CVSTAG	= $(shell echo $(PACKAGE)_lib_version_$(VERSION) | tr . _)
+# tag the cvsrepository with the current version 
+# (to exactly reconstitute a published version)
+CVSTAG	      = $(shell echo $(PACKAGE)_lib_version_$(VERSION) | tr . _)
 cvstag:
-	cvs tag $(CVSTAG)
+		cvs tag $(CVSTAG)
 
-# call this to publish a new version
+# call this as "make DISTHOST=yourwebhost publish" to publish a new version
+# we publish by copying to DISTDIR, logged on DISTHOST
+# this might work differently for other places
+DISTDIR       = /usr/local/www/ircam/equipes/analyse-synthese/sdif/download
+DISTFILE      = $(distdir).tar.gz
 publish:	cvstag dist
+		rsh $(DISTHOST) cp $(PWD)/$(DISTFILE) $(DISTDIR) \;\
+				chmod g+w $(DISTDIR)/$(DISTFILE)
