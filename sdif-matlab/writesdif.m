@@ -1,28 +1,52 @@
-% Write a SDIF file.
+% writesdif -- Create and write data to an SDIF file.
 %
-% To open a SDIF file in Write Mode:
-% Usage: writesdif(filename)
-%        writesdif(filename,sdif types definition file)
-%        writesdif(filename,file of types definition, number of parameters)
+% This mex-function has three ways of calling it to perform the three
+% sub-tasks of opening, writing, and closing an SDIF file.  All functions
+% can only work on one file at a time.
+% 
+% - To open the SDIF file for writing, use one of:
+%
+%	writesdif(filename)
+%	writesdif(filename, SDIF types definition file)
+%
+%   The optional types definition file can only be given at the very first
+%   call of writesdif and stays valid from then on, until restarting Matlab.
+%
+% - To write a data frame containing any number of matrices to the SDIF file, 
+%   use:
+%
+%	writesdif(Time, StreamID, FrameSignature, 
+%                 MatrixSignature1, MatrixData1,
+%                 MatrixSignature2, MatrixData2, ...)
+%
+%   Time and StreamID are double values, FrameSignature and MatrixSignature
+%   are strings, MatrixData must be double for the moment.  (Later, the Matlab
+%   matrix data type will determine the SDIF matrix data type, so that you can
+%   write text and integer matrices as well.)
+%
+%  - To close the SDIF file, use:
+%
+%	writesdif('close')
+%
+
+
+% REMOVED FROM PUBLIC DOC:
+%       writesdif(filename, SDIF types definition file, number of parameters)
 %
 % The number of parameters is need for use with jmax sdifplayer. It is
 %        written in Information Value Table
-%
-% To write value in SDIF file:
-% Usage: writesdif(time,streamId,FrameSignature, MatrixSignature, MatrixData)
-%        time and streamId are float.
-%        Frame and Matrix signature are string.
-%
-% To close SDIF file:
-% Usage: writesdif('close')
-%
 
-%
-% $Id: writesdif.m,v 1.3 2000-05-15 13:11:59 tisseran Exp $
+
+% $Id: writesdif.m,v 1.4 2001-05-14 11:20:15 schwarz Exp $
 %
 % writesdif.m	12. May 2000	Patrice Tisserand
 %
+% Matlab mex extension and support functions to write SDIF files.
+
 % $Log: not supported by cvs2svn $
+% Revision 1.3  2000/05/15  13:11:59  tisseran
+% Corrected comments style
+%
 % Revision 1.2  2000/05/15  13:07:49  tisseran
 % Added test for input arguments:
 %    Is Matrix Signature a char?
@@ -35,5 +59,3 @@
 % TODO: add possibility to use several file at same time.
 %       add test on arguments
 %
-%
-% Matlab mex extension and support functions to write SDIF files.
