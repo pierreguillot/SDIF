@@ -11,7 +11,7 @@ function testl(name)
 %	testfile ('test2.sdif::@0+0.01#0')
 %	testfile ('test2.sdif::@0+0.01#1')
 	testfile ('data/test2.sdif::1TRC/1TRC')
-	%testfile ('data/sequence4seg1.energy.sdif::1NRG/INRG')
+	testfile ('data/sequence4seg1.energy.sdif::1NRG/INRG')
     end
 return
 
