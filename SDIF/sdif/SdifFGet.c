@@ -1,4 +1,4 @@
-/* $Id: SdifFGet.c,v 2.3 1999-01-23 15:55:39 virolle Exp $
+/* $Id: SdifFGet.c,v 3.1 1999-03-14 10:56:37 virolle Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -14,6 +14,7 @@
  *
  * author: Dominique Virolle 1997
  *
+ * $Log: not supported by cvs2svn $
  *
  */
 

@@ -1,4 +1,4 @@
-# $Id: Makefile,v 2.3 1999-01-21 16:36:23 schwarz Exp $
+# $Id: Makefile,v 3.1 1999-03-14 10:54:42 virolle Exp $
 #
 #               Copyright (c) 1998 by IRCAM - Centre Pompidou
 #                          All rights reserved.
@@ -13,6 +13,15 @@
 # Makefile for automatic documentation.
 #
 # $Log: not supported by cvs2svn $
+# Revision 2.3  1999/01/21  16:36:23  schwarz
+# Beefed up the SDIF library user manual.  It now has the sections
+# User Manual		(as before, but with navigating toc frame and
+# 			 crosslinked to the function reference)
+# Function Reference	(automatic cocoon doc with navigating toc)
+# Tutorial		(coming soon, a quick introduction to get started)
+# Utilities		(description of the utility programs coming with
+# 			 the library)
+#
 # Revision 2.2  1999/01/06  14:50:13  schwarz
 # Automatic Cocoon documentation of the sdif library in one single web
 # page.  It comes in two flavours: intern and extern.  Intern

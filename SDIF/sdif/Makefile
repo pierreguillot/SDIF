@@ -1,4 +1,4 @@
-# $Id: Makefile,v 2.2 1998-12-21 18:26:56 schwarz Exp $
+# $Id: Makefile,v 3.1 1999-03-14 10:56:28 virolle Exp $
 #
 #               Copyright (c) 1998 by IRCAM - Centre Pompidou
 #                          All rights reserved.
@@ -11,6 +11,9 @@
 # Makefile only for .o files of sdif library
 #
 # $Log: not supported by cvs2svn $
+# Revision 2.2  1998/12/21  18:26:56  schwarz
+# Inserted copyright message.
+#
 # Revision 2.1  1998/12/03  18:10:47  schwarz
 # Corrected and simplified generation of output directories,
 # added missing header files to list to be installed.

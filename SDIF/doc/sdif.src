@@ -1,4 +1,4 @@
-/* $Id: sdif.src,v 2.2 1999-01-21 16:36:31 schwarz Exp $
+/* $Id: sdif.src,v 3.1 1999-03-14 10:54:58 virolle Exp $
 
    sdif.src	23. Dec 1998	Diemo Schwarz
 
@@ -13,6 +13,15 @@
 			"-DLIBRARY=SDIF $(ABS_ROOT)/sdif ."
 
    $Log: not supported by cvs2svn $
+# Revision 2.2  1999/01/21  16:36:31  schwarz
+# Beefed up the SDIF library user manual.  It now has the sections
+# User Manual		(as before, but with navigating toc frame and
+# 			 crosslinked to the function reference)
+# Function Reference	(automatic cocoon doc with navigating toc)
+# Tutorial		(coming soon, a quick introduction to get started)
+# Utilities		(description of the utility programs coming with
+# 			 the library)
+#
 # Revision 2.1  1999/01/06  14:50:15  schwarz
 # Automatic Cocoon documentation of the sdif library.  It comes in two
 # flavours: inter and extern.  Intern describes ALL functions and data
@@ -26,7 +35,7 @@
 #define CUSTOMIZE
 #endif
 
-#define HEAD		# DO NOT EDIT!!!  This file is generated from $Id: sdif.src,v 2.2 1999-01-21 16:36:31 schwarz Exp $
+#define HEAD		# DO NOT EDIT!!!  This file is generated from $Id: sdif.src,v 3.1 1999-03-14 10:54:58 virolle Exp $
 
 HEAD
 

@@ -47,7 +47,7 @@ clean:
 	rm -f $(PROG)
 	rm -f $(OBJS)
 	rm -f *~
-# $Id: Makefile,v 2.1 1998-12-21 18:28:03 schwarz Exp $
+# $Id: Makefile,v 3.1 1999-03-14 10:58:00 virolle Exp $
 #
 #               Copyright (c) 1998 by IRCAM - Centre Pompidou
 #                          All rights reserved.

@@ -1,4 +1,4 @@
-/* $Id: SdifMatrix.c,v 2.4 1999-02-28 12:16:49 virolle Exp $
+/* $Id: SdifMatrix.c,v 3.1 1999-03-14 10:57:06 virolle Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -16,6 +16,9 @@
  *
  * author: Dominique Virolle 1997
  * $Log: not supported by cvs2svn $
+ * Revision 2.4  1999/02/28  12:16:49  virolle
+ * memory report
+ *
  * Revision 2.3  1999/01/23  15:55:54  virolle
  * add querysdif.dsp, delete '\r' chars from previous commit
  *

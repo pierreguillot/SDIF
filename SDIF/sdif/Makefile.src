@@ -1,4 +1,4 @@
-# $Id: Makefile.src,v 2.3 1999-02-28 12:16:35 virolle Exp $
+# $Id: Makefile.src,v 3.1 1999-03-14 10:56:29 virolle Exp $
 #
 #               Copyright (c) 1998 by IRCAM - Centre Pompidou
 #                          All rights reserved.
@@ -8,6 +8,9 @@
 #                            manager@ircam.fr
 #
 # $Log: not supported by cvs2svn $
+# Revision 2.3  1999/02/28  12:16:35  virolle
+# memory report
+#
 #
 # src of sdif library
 

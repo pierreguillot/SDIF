@@ -1,4 +1,4 @@
-/* $Id: SdifError.c,v 2.5 1999-02-28 12:16:37 virolle Exp $
+/* $Id: SdifError.c,v 3.1 1999-03-14 10:56:35 virolle Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -14,6 +14,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 2.5  1999/02/28  12:16:37  virolle
+ * memory report
+ *
  * Revision 2.4  1999/01/23  15:55:38  virolle
  * add querysdif.dsp, delete '\r' chars from previous commit
  *
@@ -47,7 +50,7 @@
 
 char *SdifErrorFile;
 int SdifErrorLine;
-FILE* SdifStdErr = stderr;
+FILE* SdifStdErr = NULL;
 
 
 

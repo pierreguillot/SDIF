@@ -1,4 +1,4 @@
-/* $Id: SdifTextConv.c,v 2.4 1999-02-28 12:16:56 virolle Exp $
+/* $Id: SdifTextConv.c,v 3.1 1999-03-14 10:57:25 virolle Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -15,6 +15,9 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 2.4  1999/02/28  12:16:56  virolle
+ * memory report
+ *
  * Revision 2.3  1999/01/23  15:56:02  virolle
  * add querysdif.dsp, delete '\r' chars from previous commit
  *

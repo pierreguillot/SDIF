@@ -1,4 +1,4 @@
-/* $Id: SdifMemory.h,v 2.1 1999-02-28 12:16:53 virolle Exp $
+/* $Id: SdifMemory.h,v 3.1 1999-03-14 10:57:11 virolle Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -14,6 +14,9 @@
  * author: Dominique Virolle 1999
  *
  * $Log: not supported by cvs2svn $
+ * Revision 2.1  1999/02/28  12:16:53  virolle
+ * memory report
+ *
  *
  */
 

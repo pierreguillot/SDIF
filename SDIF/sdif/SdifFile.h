@@ -1,4 +1,4 @@
-/* $Id: SdifFile.h,v 2.3 1999-02-28 12:16:42 virolle Exp $
+/* $Id: SdifFile.h,v 3.1 1999-03-14 10:56:51 virolle Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -16,6 +16,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 2.3  1999/02/28  12:16:42  virolle
+ * memory report
+ *
  * Revision 2.2  1999/01/23  13:57:33  virolle
  * General Lists, and special chunk preparation to become frames
  *

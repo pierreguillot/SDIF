@@ -1,4 +1,4 @@
-/* $Id: SdifFile.c,v 2.5 1999-02-28 12:16:39 virolle Exp $
+/* $Id: SdifFile.c,v 3.1 1999-03-14 10:56:49 virolle Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -16,6 +16,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 2.5  1999/02/28  12:16:39  virolle
+ * memory report
+ *
  * Revision 2.4  1999/01/23  15:55:47  virolle
  * add querysdif.dsp, delete '\r' chars from previous commit
  *
@@ -521,25 +524,30 @@ SdifFileT *gSdifPredefinedTypes;
 void
 SdifGenInit(char *PredefinedTypesFile)
 {
-  char *PreTypesEnvVar=NULL;
-  
-  SdifInitMachineType();
-  SdifSetStdIOBinary (); /* only WIN32 */
-  SdifInitListNodeStock(_SdifListNodeStockSize);
+    char *PreTypesEnvVar=NULL;
 
-  gSdifPredefinedTypes = SdifFOpen("Predefined", ePredefinedTypes);
 
-  if ( (!PredefinedTypesFile) || (strlen(PredefinedTypesFile)== 0) )
+    if (SdifStdErr == NULL)
+	SdifStdErr = stderr;
+
+
+    SdifInitMachineType();
+    SdifSetStdIOBinary (); /* only WIN32 */
+    SdifInitListNodeStock(_SdifListNodeStockSize);
+
+    gSdifPredefinedTypes = SdifFOpen("Predefined", ePredefinedTypes);
+
+    if ( (!PredefinedTypesFile) || (strlen(PredefinedTypesFile)== 0) )
     {
-      PreTypesEnvVar = getenv(_SdifEnvVar);
-      if (PreTypesEnvVar)
-        SdifFLoadPredefinedTypes(gSdifPredefinedTypes, PreTypesEnvVar);
-      else
-        SdifFLoadPredefinedTypes(gSdifPredefinedTypes,  _SdifTypesFileName);
+	PreTypesEnvVar = getenv(_SdifEnvVar);
+	if (PreTypesEnvVar)
+	    SdifFLoadPredefinedTypes(gSdifPredefinedTypes, PreTypesEnvVar);
+	else
+	    SdifFLoadPredefinedTypes(gSdifPredefinedTypes,  _SdifTypesFileName);
     }
-  else
+    else
     {
-      SdifFLoadPredefinedTypes(gSdifPredefinedTypes, PredefinedTypesFile);
+        SdifFLoadPredefinedTypes(gSdifPredefinedTypes, PredefinedTypesFile);
     }
 
 }
@@ -564,18 +572,20 @@ SdifGenKill(void)
 void SdifPrintVersion(void)
 {
 #ifndef lint
-  static char rcsid[]= "$Revision: 2.5 $ IRCAM $Date: 1999-02-28 12:16:39 $";
+    static char rcsid[]= "$Revision: 3.1 $ IRCAM $Date: 1999-03-14 10:56:49 $";
 #endif
 
+    if (SdifStdErr == NULL)
+	SdifStdErr = stderr;
 
-  fprintf(SdifStdErr, "SDIF Library\n");
-  fprintf(SdifStdErr, "Format version : %d\n", _SdifFormatVersion);
+    fprintf(SdifStdErr, "SDIF Library\n");
+    fprintf(SdifStdErr, "Format version : %d\n", _SdifFormatVersion);
 
 #ifndef lint
-  fprintf(SdifStdErr, "CVS: %s\n", rcsid);
+    fprintf(SdifStdErr, "CVS: %s\n", rcsid);
 #endif
 
-  fprintf(SdifStdErr, "Release: %s, %s\n", _SDIF_VERSION, __DATE__);
+    fprintf(SdifStdErr, "Release: %s, %s\n", _SDIF_VERSION, __DATE__);
 }
 
 
