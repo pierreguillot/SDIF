@@ -1,0 +1,70 @@
+dnl configure for SDIF and easdif swig
+
+dnl Init file
+AC_INIT(sdif-common.i.in)
+
+dnl Package name
+PACKAGE_NAME=swig-easdif
+
+dnl Package version
+PACKAGE_VERSION=0.0.1
+
+dnl Init automake
+AM_INIT_AUTOMAKE(${PACKAGE_NAME}, ${PACKAGE_VERSION})
+
+AC_SUBST(HAVESWIG)
+SWIG_PYTHON_SUPPORTS_STLMAP=no
+SWIG_PERL_SUPPORTS_STLMAP=no
+SWIG_JAVA_SUPPORTS_STLMAP=no
+AC_CHECK_PROG(HAVESWIG,swig,yes,no)
+if test $HAVESWIG = yes;then
+   AC_MSG_CHECKING(swig version)
+   dnl Bindings use std::map provided by swig >= 1.3.18
+   tt=`swig -version 2>&1`
+   changequote({,})
+   swigversion=`expr "$tt" : ".*SWIG Version[\t\n ]*\([.0-9\]*\).*"`
+   changequote([,])
+   swigversionmajor=`echo $swigversion | cut -f1 -d.`
+   swigversionminor=`echo $swigversion | cut -f2 -d.`
+   swigversionrelease=`echo $swigversion | cut -f3 -d.`
+   if test $swigversionmajor \< 1 ;then
+     AC_MSG_ERROR([$swigversionmajor.$swigversionminor.$swigversionrelease < 1.3.18] )
+   fi
+   if test $swigversionmajor == 1 -a $swigversionminor \< 3 ;then
+     AC_MSG_ERROR([$swigversionmajor.$swigversionminor.$swigversionrelease < 1.3.18] )
+   fi	    
+   if test $swigversionmajor == 1 -a $swigversionminor == 3 -a $swigversionrelease \< 12 ;then
+     AC_MSG_ERROR([$swigversionmajor.$swigversionminor.$swigversionrelease < 1.3.18] )
+   fi	    
+   if test $swigversionmajor == 1 -a $swigversionminor == 3 -a $swigversionrelease \> 17 ;then
+	SWIG_PYTHON_SUPPORTS_STLMAP=yes
+        AC_MSG_RESULT([$swigversionmajor.$swigversionminor.$swigversionrelease >= 1.3.18 (stl map enabled for python)] )
+   else
+      AC_MSG_RESULT([$swigversionmajor.$swigversionminor.$swigversionrelease >= 1.3.12] )
+   fi
+else
+   AC_MSG_ERROR(not found)
+fi
+
+
+AM_CONDITIONAL(SWIG_PYTHON_HAS_STLMAP, test "$SWIG_PYTHON_SUPPORTS_STLMAP" = "yes" )
+AM_CONDITIONAL(SWIG_JAVA_HAS_STLMAP, test "$SWIG_JAVA_SUPPORTS_STLMAP" = "yes" )
+AM_CONDITIONAL(SWIG_PERL_HAS_STLMAP, test "$SWIG_PERL_SUPPORTS_STLMAP" = "yes" )
+
+
+EASDIF_INC_DIR="../.."
+AC_SUBST(EASDIF_INC_DIR)
+
+EASDIF_LIB_PATH="../../easdif/.libs"
+AC_SUBST(EASDIF_LIB_PATH)
+SDIF_INC_DIR="../../SDIF/include"
+AC_SUBST(SDIF_INC_DIR)
+
+AC_OUTPUT(
+easdif-common.i
+sdif-common.i
+Makefile
+java/Makefile
+perl5/Makefile
+python/Makefile
+)
