@@ -32,9 +32,18 @@
  * 
  * 
  * 
- * $Id: sdifentity.cpp,v 1.11 2003-05-24 00:27:21 roebel Exp $ 
+ * $Id: sdifentity.cpp,v 1.12 2003-11-18 18:28:00 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.11  2003/05/24 00:27:21  roebel
+ * Internal representation of types now using std::string.
+ * Parameters for type handling routines completely moved
+ * to std::string
+ *
+ * SDIFEntity::SetTypeString no longer appends but sets
+ * the internal string. In fact there was now way to reset
+ * the type string before.
+ *
  * Revision 1.10  2003/05/22 21:23:58  roebel
  * SDIFNameValueTable now derived from std::map which makes handling more conform
  * to standard and handling in swig easier.
@@ -111,16 +120,6 @@
 #include "SdifFPut.h"
 
 
-//inline int EasdifInit(std::string PredefinedType)
-//inline int EasdifInit(char* PredefinedType)
-//{
-/*
-  char* Predefined;    
-  Predefined = const_cast<char*>(PredefinedType.c_str());
-*/
-//  SdifGenInit(PredefinedType);
-//  SdifSetErrorFunc(ExceptionThrower);
-//}
 
 namespace Easdif {
 
@@ -231,12 +230,8 @@ bool SDIFEntity::Open(const char* filename, SdifFileModeET Mode)
      *case ePredefinedTypes, case eModeMask, case eParseSelection:
      */
     default:
-
-      SDIFBadMode exc;
-      exc.initException(eError,
-			"Error in SDIFEntity::Open:: Mode specification error",
-			0,0,0,0);      
-      throw exc;
+      throw SDIFBadMode(eError,"Error in SDIFEntity::Open:: Mode specification error",
+			0,eBadMode,0,0);
       break;
     }
     return false;
@@ -365,11 +360,8 @@ int SDIFEntity::ReadNextFrame(SDIFFrame& frame)
 
     if(eof()) {
       // return -1;
-      SDIFEof exc;
-      exc.initException(eError,
-			"Error in SDIFEntity::ReadNextFrame -- Eof reached",
-			efile,0,0,0);      
-      throw exc;
+      throw SDIFEof(eError,"Error in SDIFEntity::ReadNextFrame -- Eof reached",
+		    efile,eEof,0,0); 
     }
 
     //bytesread = frame.Read(efile, eof());
