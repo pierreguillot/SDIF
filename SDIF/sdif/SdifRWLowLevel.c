@@ -1,4 +1,4 @@
-/* $Id: SdifRWLowLevel.c,v 3.9 2000-05-15 16:23:10 schwarz Exp $
+/* $Id: SdifRWLowLevel.c,v 3.10 2000-07-18 15:08:38 tisseran Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -15,6 +15,9 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.9  2000/05/15  16:23:10  schwarz
+ * Avoided avoidable warnings.
+ *
  * Revision 3.8  1999/10/15  12:23:46  schwarz
  * Added SdifStringToNV.
  *
@@ -64,7 +67,7 @@
 #include "SdifRWLowLevel.h"
 #include "SdifHard_OS.h"
 #include "SdifError.h"
-
+#include "SdifString.h"
 
 extern int        gSdifInitialised;	/* can't include SdifFile.h */
 static char gSdifLittleToBig [_SdifBSLittleE];
@@ -796,7 +799,51 @@ SdiffGetSignature(FILE* fr, SdifSignature *Signature, size_t *NbCharRead)
 }
 
 
+/*DOC:
+  Function return the signature in a SdifString
+*/
+int
+SdiffGetSignaturefromSdifString(SdifStringT *SdifString, SdifSignature *Signature)
+{
+  SdifSignature sig = eEmptySignature; /* force 4 byte alignment */
+  char *Name = (char *) &sig;
+  char c = 0;
+  int cint = 0;
+  unsigned int i;
 
+  do
+    {
+      cint = SdifStringGetC(SdifString);
+      c = (char) cint;
+    }
+  while (isspace(c) && (!SdifStringIsEOS(SdifString)));
+
+  for (i=0; ((i<4) && (!SdifStringIsEOS(SdifString))); i++)
+    {
+      if ( (SdifIsAReservedChar(c) != -1) || (isspace(c)) )
+	break;
+      else
+	{
+	  Name[i] = c;
+	  if (i < 4-1)
+	    {
+	      cint = SdifStringGetC(SdifString);
+	      c = (char) cint;
+	    }
+	}
+    }
+  
+  if (SdifStringIsEOS(SdifString))
+    {
+      *Signature = eEmptySignature;
+      return eEof;
+    }
+  else
+    {
+      *Signature = _SdifStringToSignature (Name);
+      return cint;
+    }
+}
 
 
 size_t
@@ -832,7 +879,32 @@ SdiffReadSpace(FILE* fr)
 }
 
 
+size_t
+SdiffReadSpacefromSdifString(SdifStringT *SdifString)
+{
+  char c;
+  size_t NbCharRead = 0;
+  
+  while ( isspace(c = (char) SdifStringGetC(SdifString)))
+    {
+      NbCharRead++;
+    }
 
+  if (SdifStringIsEOS(SdifString))
+    return -1;
+  
+  else
+    {
+      if (SdifStringUngetC(SdifString))
+	return NbCharRead;
+      else
+	{
+	  sprintf(gSdifErrorMess, "ungetc failed : (%d,%c) ", c, c);
+	  _SdifError(eEof, gSdifErrorMess);
+	}
+    }
+  return NbCharRead;
+}
 
 
 
@@ -898,6 +970,63 @@ SdiffGetWordUntil(FILE* fr, char* s, size_t ncMax, size_t *NbCharRead, char *Cha
 
 
 
+/* fGetWordUntil : read word until a char which is a member of "CharsEnd".
+ * the string (SdifString->str) must be set at the begining of the word
+ * (spaces before not read).
+ * the spaces chars between the word and final char are ignored.
+ * it return the final char.
+ */
+int
+SdiffGetWordUntilfromSdifString(SdifStringT *SdifString, char* s, size_t ncMax,char *CharsEnd)
+{
+  char c=0;
+  char *cs;
+  int CharsEndLen;
+  size_t SizeR = 0;
+  
+  CharsEndLen = SdifStrLen(CharsEnd);
+  cs = s;
+  
+  while( (c = (char) SdifStringGetC(SdifString))&& (ncMax-- > 0) && (!SdifStringIsEOS(SdifString)) )
+    {
+      if (memchr(CharsEnd, c, CharsEndLen))
+	{
+	  *cs = '\0';
+	  return (int) c;
+	}
+
+      if (isspace(c))
+	{
+	  SizeR += SdiffReadSpacefromSdifString(SdifString);
+	  c = (char) SdifStringGetC(SdifString);
+	  if (memchr(CharsEnd, c, CharsEndLen))
+	    {
+	      *cs = '\0';
+	      return (int) c;
+	    }
+	  else
+	    {
+	      *cs++ = '\0';
+	      /*_SdifError(eWordCut, s);*/
+	      return -1;
+	    }
+	}
+
+      *cs++ = c;
+    }
+    
+  if (SdifStringIsEOS(SdifString))
+    return eEof;
+  
+  if (ncMax <= 0)
+    {
+      *cs = '\0';
+      _SdifError(eTokenLength, s);
+      return eTokenLength;
+    }
+  return eFalse;
+}
+
 
 
 
@@ -913,7 +1042,16 @@ SdiffGetStringUntil(FILE* fr, char* s, size_t ncMax, size_t *NbCharRead, char *C
   return SdiffGetWordUntil(fr, s, ncMax, NbCharRead, CharsEnd);
 }
 
-
+/* fGetStringUntil : is like fGetWordUntil.
+ * but the space chars before the word are ignored.
+ */
+int
+SdiffGetStringUntilfromSdifString(SdifStringT *SdifString, char *s, size_t ncMax, char *CharsEnd)
+{
+  size_t SizeR = 0;
+  SizeR += SdiffReadSpacefromSdifString(SdifString);
+  return SdiffGetWordUntilfromSdifString(SdifString, s, ncMax, CharsEnd);
+}
 
 
 
@@ -957,6 +1095,40 @@ SdiffGetStringWeakUntil(FILE* fr, char* s, size_t ncMax, size_t *NbCharRead, cha
 
 
 
+int
+SdiffGetStringWeakUntilfromSdifString(SdifStringT *SdifString, char* s,
+				      size_t ncMax, char *CharsEnd)
+{
+  char c=0;
+  char *cs;
+  int CharsEndLen;
+  
+  CharsEndLen = SdifStrLen(CharsEnd);
+  cs = s;
+  
+  while( (c = (char) SdifStringGetC(SdifString))
+	 && (ncMax-- > 0)
+	 && (!SdifStringIsEOS(SdifString)))
+    {
+      if (memchr(CharsEnd, c, CharsEndLen))
+	{
+	  *cs = '\0';
+	  return (int) c;
+	}
+      *cs++ = c;
+    }
+  
+  if (SdifStringIsEOS(SdifString))
+    return eEof;
+  
+  if (ncMax <= 0)
+    {
+      *cs = '\0';
+      _SdifError(eTokenLength, s);
+      return eTokenLength;
+    }
+  return eFalse;
+}
 
 
 

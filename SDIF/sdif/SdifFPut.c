@@ -1,4 +1,4 @@
-/* $Id: SdifFPut.c,v 3.6 2000-07-06 19:01:46 tisseran Exp $
+/* $Id: SdifFPut.c,v 3.7 2000-07-18 15:08:29 tisseran Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -16,6 +16,12 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.6  2000/07/06  19:01:46  tisseran
+ * Add function for frame and matrix type declaration
+ * Remove string size limitation for NameValueTable
+ * TODO: 1TYP and 1IDS frame must contain an 1NVT (text) matrix
+ *       Actually, data are written with fprintf.
+ *
  * Revision 3.5  2000/05/12  14:41:45  schwarz
  * On behalf of Adrien, synchronisation with Mac sources, with some slight
  * changes because of cross-platform issues:
@@ -53,8 +59,7 @@
 #include "SdifList.h"
 #include "SdifHash.h"
 
-
-
+#include "SdifString.h"
 
 
 
@@ -104,23 +109,62 @@ SdifFPutNameValueLCurrNVT (SdifFileT *SdifF, int Verbose)
 
 
 
-
 char *
 SdifFNameValueLCurrNVTtoString (SdifFileT *SdifF)
 {
-  size_t          SizeW = 0;
   SdifUInt4       iNV;
   SdifHashNT     *pNV;
   SdifHashTableT *HTable;
 
-  /* For memory reallocation */
-  int             memorySizeNeeded = 0;
-  char           *newStr;
   char           *tmpStr; /* To conserve value if the reallocation
 			     is impossible */
+  SdifStringT *SdifString; /* Structure used for memory reallocation */
+  int result;
   
   /* Memory allocation */
-  newStr = (char *)malloc(_SdifStringLen * sizeof(char));
+  SdifString = SdifStringNew();
+
+  HTable = SdifF->NameValues->CurrNVT->NVHT;
+  
+  for(iNV=0; iNV<HTable->HashSize; iNV++)
+    for (pNV = HTable->Table[iNV]; pNV; pNV = pNV->Next)
+      {
+	SdifNameValueT *NameValue = pNV->Data;
+	result = SdifStringAppend(SdifString, NameValue->Name);
+	result *= SdifStringAppend(SdifString, "\t");
+	result *= SdifStringAppend(SdifString, NameValue->Value);
+	result *= SdifStringAppend(SdifString, "\n");	
+      }
+
+  tmpStr = strdup(SdifString->str);
+  
+  /* ERROR TRAITEMENT MUST BE VERIFIED !!!!! */
+  if (!tmpStr)
+      fprintf(stderr,"No more memory avaluable!!\n");
+
+  SdifStringFree(SdifString);
+  
+  return tmpStr;
+}
+
+
+/*DOC:
+  Remark:
+         This function implements the new SDIF Specification (June 1999):
+	 Name Value Table, Matrix and Frame Type declaration, Stream ID declaration are
+	 defined in text matrix:
+	 1NVT 1NVT
+	 1TYP 1TYP
+	 1IDS 1IDS
+  This function put NameValue to SdifString
+*/
+int
+SdifFNameValueLCurrNVTtoSdifString (SdifFileT *SdifF, SdifStringT *SdifString)
+{
+  SdifUInt4       iNV;
+  SdifHashNT     *pNV;
+  SdifHashTableT *HTable;
+  int result;
   
   HTable = SdifF->NameValues->CurrNVT->NVHT;
   
@@ -128,38 +172,14 @@ SdifFNameValueLCurrNVTtoString (SdifFileT *SdifF)
     for (pNV = HTable->Table[iNV]; pNV; pNV = pNV->Next)
       {
 	SdifNameValueT *NameValue = pNV->Data;
-	
-	/* Memory reallocation according to size */
-	if (SizeW + strlen (NameValue->Name) + strlen (NameValue->Value) + 3 < _SdifStringLen)
-	  {
-	    SizeW += sprintf (newStr + SizeW, "%s\t", NameValue->Name);
-	    SizeW += sprintf (newStr + SizeW, "%s\n", NameValue->Value);
-	  }
-	else /* Not enough memory space */
-	  {
-	    memorySizeNeeded = SizeW + strlen (NameValue->Name) + strlen (NameValue->Value) + 3;
-	    tmpStr = (char *)realloc(newStr, memorySizeNeeded * sizeof(char));
-
-	    if (!tmpStr)
-	      {
-		/*
-		  _SdifFError(SdifStdErr, eBadMode, "Cannot allocate memory");
-		*/
-		fprintf(stderr,"%s:%d Cannot allocate more memory!!\n",__FILE__,__LINE__);
-
-		return newStr;
-	      }
-	    newStr = tmpStr;
-	    SizeW += sprintf (newStr + SizeW, "%s\t", NameValue->Name);
-	    SizeW += sprintf (newStr + SizeW, "%s\n", NameValue->Value);  
-
-	  }
-
+	result = SdifStringAppend(SdifString, NameValue->Name);
+	result *= SdifStringAppend(SdifString, "\t");
+	result *= SdifStringAppend(SdifString, NameValue->Value);
+	result *= SdifStringAppend(SdifString, "\n");	
       }
 
-  return newStr;
+  return result;
 }
-
 
 
 
@@ -194,7 +214,43 @@ SdifFPutOneMatrixType(SdifFileT* SdifF, int Verbose, SdifMatrixTypeT *MatrixType
 }
 
 
+/*DOC:
+  Remark:
+         This function implements the new SDIF Specification (June 1999):
+	 Name Value Table, Matrix and Frame Type declaration, Stream ID declaration are
+	 defined in text matrix:
+	 1NVT 1NVT
+	 1TYP 1TYP
+	 1IDS 1IDS
+  Append matrix type declaration in SdifString
+*/
+int SdifFOneMatrixTypeToSdifString(SdifMatrixTypeT *MatrixType, SdifStringT *SdifString)
+{
+  int success = 1;
+  SdifColumnDefT    *ColumnDef;
+  
+  if (! SdifListIsEmpty(MatrixType->ColumnUserList))
+    {
+      success *= SdifStringAppend(SdifString, "  ");
+      success *= SdifStringAppend(SdifString,SdifSignatureToString(e1MTD));
+      success *= SdifStringAppend(SdifString, "  ");
+      success *= SdifStringAppend(SdifString,SdifSignatureToString(MatrixType->Signature));
+      success *= SdifStringAppend(SdifString,"\t{");
+      
+      ColumnDef = SdifListGetHead(MatrixType->ColumnUserList); /* Reinit GetNext */
 
+      success *= SdifStringAppend(SdifString,ColumnDef->Name);
+      
+      while (SdifListIsNext(MatrixType->ColumnUserList))
+	{
+	  ColumnDef = SdifListGetNext(MatrixType->ColumnUserList);
+	  success *= SdifStringAppend(SdifString,", ");
+	  success *= SdifStringAppend(SdifString,ColumnDef->Name);
+	}
+      success *= SdifStringAppend(SdifString,"}\n");
+    }  
+  return(success);
+}
 
 
 
@@ -214,6 +270,32 @@ SdifFPutAllMatrixType(SdifFileT* SdifF, int Verbose)
 
 
 
+/*DOC:
+  Remark:
+         This function implements the new SDIF Specification (June 1999):
+	 Name Value Table, Matrix and Frame Type declaration, Stream ID declaration are
+	 defined in text matrix:
+	 1NVT 1NVT
+	 1TYP 1TYP
+	 1IDS 1IDS
+  Write all Matrix type in SdifString
+*/
+int SdifFAllMatrixTypeToSdifString(SdifFileT *SdifF, SdifStringT *SdifString)
+{
+  unsigned int iName;
+  SdifHashNT *pName;
+  int success = 1;
+  
+  for(iName=0;iName<SdifF->MatrixTypesTable->HashSize; iName++)
+    for(pName=SdifF->MatrixTypesTable->Table[iName]; pName; 
+	pName = pName->Next)
+      {
+	success *= SdifFOneMatrixTypeToSdifString(pName->Data, SdifString);
+      }
+  return success;
+}
+
+
 
 size_t
 SdifFPutOneComponent(SdifFileT *SdifF, int Verbose, SdifComponentT *Component)
@@ -231,7 +313,29 @@ SdifFPutOneComponent(SdifFileT *SdifF, int Verbose, SdifComponentT *Component)
 }
 
 
+/*DOC:
+  Remark:
+         This function implements the new SDIF Specification (June 1999):
+	 Name Value Table, Matrix and Frame Type declaration, Stream ID declaration are
+	 defined in text matrix:
+	 1NVT 1NVT
+	 1TYP 1TYP
+	 1IDS 1IDS
+  Append one Component to SdifString
+*/
+int
+SdifFOneComponentToSdifString(SdifComponentT *Component, SdifStringT *SdifString)
+{
+  int success = 1;
 
+  success *= SdifStringAppend(SdifString, "\t  ");
+  success *= SdifStringAppend(SdifString, SdifSignatureToString(Component->MtrxS));
+  success *= SdifStringAppend(SdifString, "\t");
+  success *= SdifStringAppend(SdifString, Component->Name);
+  success *= SdifStringAppend(SdifString, ";\n");
+  
+  return success;
+}
 
 
 
@@ -263,6 +367,44 @@ SdifFPutOneFrameType(SdifFileT *SdifF, int Verbose, SdifFrameTypeT *FrameType)
 }
 
 
+/*DOC:
+  Remark:
+         This function implements the new SDIF Specification (June 1999):
+	 Name Value Table, Matrix and Frame Type declaration, Stream ID declaration are
+	 defined in text matrix:
+	 1NVT 1NVT
+	 1TYP 1TYP
+	 1IDS 1IDS
+  Append one frame type to SdifString
+*/
+int
+SdifFOneFrameTypeToSdifString(SdifFrameTypeT *FrameType, SdifStringT *SdifString)
+{
+  SdifUInt4 iC;
+  int success = 1; /* success of SdifStringAppend */
+
+  if (FrameType->NbComponentUse > 0)
+    {
+      success *= SdifStringAppend(SdifString, "  ");
+      success *= SdifStringAppend(SdifString, SdifSignatureToString(e1FTD));
+      success *= SdifStringAppend(SdifString, "  ");
+      success *= SdifStringAppend(SdifString, SdifSignatureToString(FrameType->Signature));
+      success *= SdifStringAppend(SdifString, "\n\t{\n");
+      
+      for(iC = FrameType->NbComponent - FrameType->NbComponentUse + 1;
+          iC<= FrameType->NbComponent;
+          iC++)
+	    {
+	      success *= SdifFOneComponentToSdifString(
+			      SdifFrameTypeGetNthComponent(FrameType, iC),
+			      SdifString);
+	    }
+      success *= SdifStringAppend(SdifString,"\t}\n");
+    }
+
+  return success;      
+}
+
 
 
 size_t
@@ -279,6 +421,30 @@ SdifFPutAllFrameType(SdifFileT *SdifF, int Verbose)
   return SizeW;
 }
 
+
+/*DOC:
+  Remark:
+         This function implements the new SDIF Specification (June 1999):
+	 Name Value Table, Matrix and Frame Type declaration, Stream ID declaration are
+	 defined in text matrix:
+	 1NVT 1NVT
+	 1TYP 1TYP
+	 1IDS 1IDS
+  Write all frame type in SdifString
+*/
+int
+SdifFAllFrameTypeToSdifString(SdifFileT *SdifF, SdifStringT *SdifString)
+{
+  unsigned int  iName;
+  SdifHashNT   *pName;
+  int           success = 0;
+
+  for(iName=0; iName<SdifF->FrameTypesTable->HashSize; iName++)
+    for (pName = SdifF->FrameTypesTable->Table[iName]; pName;  pName=pName->Next)
+      success *= SdifFOneFrameTypeToSdifString(pName->Data, SdifString);
+
+  return success;
+}  
 
 
 
@@ -300,25 +466,6 @@ SdifFPutAllType(SdifFileT *SdifF, int Verbose)
 }
 
 
-#if 0
-size_t
-SdifFAllTypeToString (SdifFileT *SdifF, char *str, int maxlen)
-{
-  size_t  SizeW = 0;
- 
-  SizeW += fprintf(file, "{\n");  
-  SizeW += SdifFPutAllMatrixType(SdifF, Verbose);
-  SizeW += SdifFPutAllFrameType(SdifF, Verbose);  
-  SizeW += fprintf(file, "}");
-
-  return SizeW;
-}
-#endif
-
-
-
-
-
 
 
 size_t
@@ -336,13 +483,43 @@ SdifFPutOneStreamID(SdifFileT *SdifF, int Verbose, SdifStreamIDT *StreamID)
   return  SizeW;
 }
 
+/*DOC:
+  Remark:
+         This function implements the new SDIF Specification (June 1999):
+	 Name Value Table, Matrix and Frame Type declaration, Stream ID declaration are
+	 defined in text matrix:
+	 1NVT 1NVT
+	 1TYP 1TYP
+	 1IDS 1IDS
+  Append one StreamID to SdifString
+*/
+int
+SdifFOneStreamIDToSdifString(SdifStringT *SdifString,
+				  SdifStreamIDT *StreamID)
+{
+  int success = 1;
+  char *tmpStr;
+  int SizeW = 0;
+  
+  success *= SdifStringAppend(SdifString," ");
+  
+  /* Add StreamID->NumID  (unsigned int) */
+  /* We use a temporary string for conversion in unsigned int */
+  /* Memory allocation */
+  tmpStr = (char *) malloc(_SdifStringGranule*sizeof(char));
+  SizeW = sprintf(tmpStr,"%u",StreamID->NumID);
+  success *=  SdifStringAppend(SdifString,tmpStr);
+  free(tmpStr);
+  
+  success *= SdifStringAppend(SdifString," ");
+  success *= SdifStringAppend(SdifString,StreamID->Source);
+  success *= SdifStringAppend(SdifString,":");
+  success *= SdifStringAppend(SdifString,StreamID->TreeWay);
+  success *= SdifStringAppend(SdifString,";");
+  success *= SdifStringAppend(SdifString,"\n");
 
-
-
-
-
-
-
+  return success;
+}
 
 /* SdifFPutAllStreamID doesn't write '1IDS', chunk size and padding */
 size_t
@@ -366,6 +543,32 @@ SdifFPutAllStreamID(SdifFileT *SdifF, int Verbose)
   return SizeW;
 }
 
+/*DOC:
+  Remark:
+         This function implements the new SDIF Specification (June 1999):
+	 Name Value Table, Matrix and Frame Type declaration, Stream ID declaration are
+	 defined in text matrix:
+	 1NVT 1NVT
+	 1TYP 1TYP
+	 1IDS 1IDS
+  Write all StreamID in SdifString
+*/
+int
+SdifFAllStreamIDToSdifString(SdifFileT *SdifF, SdifStringT *SdifString)
+{
+  unsigned int iID;
+  SdifHashNT   *pID;
+  int          success;
+  
+  success = 1;
+  
+  for (iID = 0; iID<SdifF->StreamIDsTable->SIDHT->HashSize; iID++)
+    for (pID = SdifF->StreamIDsTable->SIDHT->Table[iID]; pID; pID = pID->Next)
+      success *= SdifFOneStreamIDToSdifString(SdifString, pID->Data);
+
+  return success;
+}
+
 
 /*
  * obsolete
@@ -378,4 +581,10 @@ SdifFPutNameValueCurrHT (SdifFileT *SdifF, int Verbose)
     _Debug("SdifFPutNameValueCurrHT is obsolete, use SdifFPutNameValueLCurrNVT");
     return SdifFPutNameValueLCurrNVT(SdifF, Verbose);
 }
+
+
+
+
+
+
 

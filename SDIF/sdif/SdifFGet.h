@@ -1,4 +1,4 @@
-/* $Id: SdifFGet.h,v 3.4 2000-04-11 14:31:20 schwarz Exp $
+/* $Id: SdifFGet.h,v 3.5 2000-07-18 15:08:29 tisseran Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -27,6 +27,9 @@ DESCRIPTION
 
 LOG
  * $Log: not supported by cvs2svn $
+ * Revision 3.4  2000/04/11  14:31:20  schwarz
+ * Read/write NVT as frame with 1 text matrix, conforming to SDIF spec.
+ *
  * Revision 3.3  1999/09/28  13:08:52  schwarz
  * Included #include <preincluded.h> for cross-platform uniformisation,
  * which in turn includes host_architecture.h and SDIF's project_preinclude.h.
@@ -69,6 +72,7 @@ LOG
 
 #include "SdifGlobals.h"
 #include "SdifFileStruct.h"
+#include "SdifString.h"
 #include <stdio.h>
 
 
@@ -81,15 +85,127 @@ int    SdifFGetSignature	(SdifFileT *SdifF, size_t *NbCharRead);
 int    SdifFGetOneNameValue     (SdifFileT *SdifF, int Verbose, size_t *NbCharRead);
 size_t SdifFGetNameValueLCurrNVT(SdifFileT *SdifF, int Verbose);
 int    SdifFNameValueLCurrNVTfromString (SdifFileT *SdifF, char *str);
+
+/*DOC:
+  Remark:
+         This function implements the old SDIF Specification (before June 1999)
+  Get the current matrix type from a file
+*/
 size_t SdifFGetOneMatrixType    (SdifFileT *SdifF, int Verbose);
+
+
+/*DOC:
+  Remark:
+         This function implements the new SDIF Specification (June 1999):
+	 Name Value Table, Matrix and Frame Type declaration, Stream ID declaration are
+	 defined in text matrix:
+	 1NVT 1NVT
+	 1TYP 1TYP
+	 1IDS 1IDS
+  Return the current matrix type from a SdifStringT
+*/
+size_t SdifFGetOneMatrixTypefromSdifString(SdifFileT *SdifF, SdifStringT *SdifString);
+
+/*DOC:
+  Remark:
+         This function implements the old SDIF Specification (before June 1999)
+  Get the current component from a file
+*/
 int    SdifFGetOneComponent     (SdifFileT *SdifF, int Verbose,
-				SdifSignature *MatrixSignature,
-				char *ComponentName,           size_t *NbCharRead);
+				 SdifSignature *MatrixSignature,
+				 char *ComponentName,
+				 size_t *NbCharRead);
+
+/*DOC:
+  Remark:
+         This function implements the new SDIF Specification (June 1999):
+	 Name Value Table, Matrix and Frame Type declaration, Stream ID declaration are
+	 defined in text matrix:
+	 1NVT 1NVT
+	 1TYP 1TYP
+	 1IDS 1IDS
+  Return the current component from a SdifStringT
+*/
+int    SdifFGetOneComponentfromSdifString(SdifFileT *SdifF,
+					  SdifStringT *SdifString,
+					  SdifSignature *MatrixSignature,
+					  char *ComponentName);
+
+/*DOC:
+  Remark:
+         This function implements the old SDIF Specification (before June 1999)
+  Get the current Frame type from a file
+*/
 size_t SdifFGetOneFrameType     (SdifFileT *SdifF, int Verbose);
+
+/*DOC:
+  Remark:
+         This function implements the new SDIF Specification (June 1999):
+	 Name Value Table, Matrix and Frame Type declaration, Stream ID declaration are
+	 defined in text matrix:
+	 1NVT 1NVT
+	 1TYP 1TYP
+	 1IDS 1IDS
+  Return the current frame type from a SdifStringT
+*/
+size_t SdifFGetOneFrameTypefromSdifString(SdifFileT *SdifF, SdifStringT *SdifString);
+
+/*DOC:
+  Remark:
+         This function implements the old SDIF Specification (before June 1999)
+  Get all types from a file
+*/
 size_t SdifFGetAllType          (SdifFileT *SdifF, int Verbose);
+
+/*DOC:
+  Remark:
+         This function implements the new SDIF Specification (June 1999):
+	 Name Value Table, Matrix and Frame Type declaration, Stream ID declaration are
+	 defined in text matrix:
+	 1NVT 1NVT
+	 1TYP 1TYP
+	 1IDS 1IDS
+  Get all types from a SdifStringT
+*/
+size_t    SdifFGetAllTypefromSdifString   (SdifFileT *SdifF, SdifStringT *SdifString);
+
+/*DOC:
+  Remark:
+         This function implements the old SDIF Specification (before June 1999)
+  Get the current Stream ID from a file
+*/
 int    SdifFGetOneStreamID      (SdifFileT *SdifF, int Verbose, size_t *NbBytesRead);
+
+/*DOC:
+  Remark:
+         This function is implements the new SDIF Specification (June 1999):
+	 Name Value Table, Matrix and Frame Type declaration, Stream ID declaration are
+	 defined in text matrix:
+	 1NVT 1NVT
+	 1TYP 1TYP
+	 1IDS 1IDS
+  Get the current Stream ID from a SdifStringT
+*/
+int SdifFgetOneStreamIDfromSdifString(SdifFileT *SdifF, SdifStringT *SdifString);
+
+/*DOC:
+  Remark:
+         This function implements the old SDIF Specification (before June 1999)
+  Get all Stream ID from a file
+*/
 size_t SdifFGetAllStreamID      (SdifFileT *SdifF, int Verbose);
 
+/*DOC:
+  Remark:
+         This function implements the new SDIF Specification (June 1999):
+	 Name Value Table, Matrix and Frame Type declaration, Stream ID declaration are
+	 defined in text matrix:
+	 1NVT 1NVT
+	 1TYP 1TYP
+	 1IDS 1IDS
+  Get the current Stream ID from a SdifStringT
+*/
+size_t SdifFGetAllStreamIDfromSdifString(SdifFileT *SdifF, SdifStringT *SdifString);
 
 /*
  * obsolete
