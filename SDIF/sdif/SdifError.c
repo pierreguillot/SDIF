@@ -1,4 +1,4 @@
-/* $Id: SdifError.c,v 3.9 2002-05-02 15:30:48 schwarz Exp $
+/* $Id: SdifError.c,v 3.10 2002-05-24 19:35:24 ftissera Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -31,6 +31,13 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.9  2002/05/02 15:30:48  schwarz
+ * Unified error handling:
+ * - introduced callback functions for errors and warnings
+ * - added set functions for these
+ * - moved output enable/disable functions and some global variables here
+ * - still todo: sprintf replaces fprintf, callbacks in SdifErrMsg, sdif.h
+ *
  * Revision 3.8  2001/05/02 09:34:41  tisseran
  * Change License from GNU Public License to GNU Lesser Public License.
  *
@@ -155,88 +162,97 @@ SdifDisableErrorOutput (void)
 }
 
 
-
+/* low-level error handler, called by _SdifError macro */
 void
-SdifErrorWarning(SdifErrorEnum Error, const void *ErrorMess)
+SdifErrorWarning(SdifErrorEnum Error, const char *inErrorMess)
 {
   int exitit = 0;
+  int outMessageLength = 0;
+  // char* outErrorMess = NULL;
+  char outErrorMess [4096];
 
-  fprintf(SdifStdErr, "*Sdif* Error (%s, %d)\n  ", SdifErrorFile, SdifErrorLine);
+  // fprintf(SdifStdErr, "*Sdif* Error (%s, %d)\n  ", SdifErrorFile, SdifErrorLine);
+  /*
+    outMessageLength += strlen(inErrorMess);
+  */
 
   switch(Error)
     {
     case  eFalse :
-      fprintf(SdifStdErr, "False : '%s'\n");
-      break;
+	/*
+	outMessageLength += strlen("False : '%s'\n");
+	outErrorMess = (char*)malloc(outMessageLength * sizeof(char));
+	if (outErrorMess != NULL)
+	{
+	*/
+	    sprintf (outErrorMess, "False : '%s\n", inErrorMess);
+/*	}*/
+	    break;
     case  eTrue :
-      fprintf(SdifStdErr, "True\n");
-      break;
+	    sprintf (outErrorMess, "True : '%s'\n", inErrorMess);
+	    break;
     case  eFreeNull :
-      fprintf(SdifStdErr, "Attempt to free a NULL pointer : '%s'\n", ErrorMess);
-      fflush(SdifStdErr);
-      exitit = 1;
-      break;
+	    sprintf (outErrorMess, "Attempt to free a NULL pointer : '%s'\n", inErrorMess);
+	    exitit = 1;
+	    break;
     case  eAllocFail :
-      fprintf(SdifStdErr, "Attempt to allocate memory : '%s'\n", ErrorMess);
-      fflush(SdifStdErr);
-      exitit = 1;
-      break;
+	    sprintf (outErrorMess,"Attempt to allocate memory : '%s'\n", inErrorMess );	
+	    exitit = 1;
+	    break;
     case  eInvalidPreType:
-      fprintf(SdifStdErr, "Invalid Predefined Type : %s\n", ErrorMess);
-      break;
-    case eArrayPosition :
-      fprintf(SdifStdErr, "Attempt to access to a non-existing square in an array : '%s'\n", ErrorMess);
-      fflush(SdifStdErr);
-      exitit = 1;
-      break;
-    case  eEof :
-      fprintf(SdifStdErr, "End of file : %s\n", ErrorMess);
-      fflush(SdifStdErr);
-      exitit = 1;
-      break;
-    case  eFileNotFound :
-      fprintf(SdifStdErr, "File Not Found or no Authorizations: \"%s\"\n",ErrorMess);
-      fflush(SdifStdErr);
-      break;            
+	sprintf (outErrorMess,"Invalid Predefined Type : %s\n", inErrorMess);	
+ 	break;
+    case eArrayPosition :	
+	sprintf (outErrorMess,"Attempt to access to a non-existing square in an array : '%s'\n", inErrorMess);
+ 	exitit = 1;
+	break;
+    case  eEof :	
+	sprintf (outErrorMess, "End of file : %s\n", inErrorMess);	
+	exitit = 1;
+ 	break;
+    case  eFileNotFound :	
+	sprintf (outErrorMess, "File Not Found or no Authorizations: \"%s\"\n", inErrorMess); 	
+	break;            
     case  eAffectationOrder :
-      fprintf(SdifStdErr, "Affectation must be in order : '%s'\n", ErrorMess);
-      break;
+	sprintf (outErrorMess, "Affectation must be in order : '%s'\n", inErrorMess);
+	break;
     case  eNoModifErr :
-      fprintf(SdifStdErr, "Type has been defined yet: '%s'\n", ErrorMess);
-      break;      
-    case  eNotInDataTypeUnion :
-      fprintf(SdifStdErr, "Type of data Not in DataTypeUnion  : '%s'\n", ErrorMess);
-      fflush(SdifStdErr);
-      exitit = 1;
-      break;      
+	sprintf (outErrorMess, "Type has been defined yet: '%s'\n", inErrorMess);	
+	break;      
+    case  eNotInDataTypeUnion :	
+	sprintf (outErrorMess, "Type of data Not in DataTypeUnion  : '%s'\n", inErrorMess);	
+	exitit = 1;
+	break;      
     case  eNotFound :
-      fprintf(SdifStdErr, "Not Find : '%s'\n", ErrorMess);
-      break;      
-    case  eExistYet :
-      fprintf(SdifStdErr, "Object Exists Yet : '%s'\n", ErrorMess);
-      break;      
+	sprintf (outErrorMess, "Not Find : '%s'\n", inErrorMess);
+	break;      
+    case  eExistYet :	
+	sprintf (outErrorMess, "Object Exists Yet : '%s'\n", inErrorMess);	
+	break;      
     case eWordCut :
-      fprintf(SdifStdErr, "Word cut read : '%s'\n", ErrorMess);
-      break;
-    case  eTokenLength :
-      fprintf(SdifStdErr, "Token too long : '%s'\n", ErrorMess);
-      fflush(SdifStdErr);
-      exitit = 1;
-      break;
-    default :
-      fprintf(SdifStdErr, "Warning unknown", ErrorMess);
-      break;
+	sprintf (outErrorMess, "Word cut read : '%s'\n", inErrorMess);
+	break;
+    case  eTokenLength :	
+	sprintf (outErrorMess, "Token too long : '%s'\n", inErrorMess);
+	exitit = 1;
+	break;
+    default :	
+	    sprintf (outErrorMess, "Warning unknown", inErrorMess);
+	    break;
     }
 
     if (exitit)
-    {
-	(*gSdifErrorFunc) (Error, eError, msg, NULL, 
+    {	/* error: call error callback and exit */
+	(*gSdifErrorFunc) (Error, eError, outErrorMess, 
+			   NULL, NULL,
 			   SdifErrorFile, SdifErrorLine);
         (*gSdifExitFunc) ();
     }
     else
-    {
-	(*gSdifWarningFunc) (Error, eWarning, msg, NULL, 
+    {   /* warning: call warning callback that may do the 
+	   printing */
+	(*gSdifWarningFunc) (Error, eWarning, outErrorMess, 
+			     NULL, NULL,  
 			     SdifErrorFile, SdifErrorLine);
     }
 }
@@ -244,7 +260,7 @@ SdifErrorWarning(SdifErrorEnum Error, const void *ErrorMess)
 
 void
 SdifDefaultErrorFunc (int errnum, SdifErrorLevelET errlev, 
-		      char *msg, SdifFileT *file,
+		      char *msg, SdifFileT *file, SdifErrorT *error,
 		      char *sourcefilename, int sourcefileline)
 {
     if (gSdifErrorOutputEnabled)
@@ -256,9 +272,13 @@ SdifDefaultErrorFunc (int errnum, SdifErrorLevelET errlev,
 
 void
 SdifDefaultWarningFunc (int errnum, SdifErrorLevelET errlev, 
-			char *msg, SdifFileT *file,
+			char *msg, SdifFileT *file, SdifErrorT *error,
 			char *sourcefilename, int sourcefileline)
 {
     if (gSdifErrorOutputEnabled)
+    {
 	fprintf(SdifStdErr, msg);
+	//ff
+	fflush(SdifStdErr);
+    } 
 }
