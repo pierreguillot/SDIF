@@ -7,9 +7,14 @@
  * 
  * 
  * 
- * $Id: sdifnamevaluetable.cpp,v 1.3 2002-10-10 10:49:09 roebel Exp $ 
+ * $Id: sdifnamevaluetable.cpp,v 1.4 2002-11-27 20:10:39 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.3  2002/10/10 10:49:09  roebel
+ * Now using namespace Easdif.
+ * Fixed handling of zero pointer arguments in initException.
+ * Reading past end of file now throws an exception.
+ *
  * Revision 1.2  2002/08/28 16:46:53  roebel
  * Internal reorganization and name changes.
  *
@@ -24,15 +29,16 @@
 
 namespace Easdif {
 
-int SDIFNameValueTable::AddNameValue(std::string name,std::string value)
+int SDIFNameValueTable::AddNameValue(const std::string& name,
+				     const std::string& value) 
 {
-    map_NameValues[name] = value;
-    return mNbNV ++;
+    map_NameValues[Key(name,GetNbNameValue())] = value;
+    return GetNbNameValue();
 }
 
 int SDIFNameValueTable::GetNbNameValue()
 {
-    return mNbNV;
+    return map_NameValues.size();
 }
 
 SdifUInt4 SDIFNameValueTable::GetStreamID()
@@ -40,39 +46,53 @@ SdifUInt4 SDIFNameValueTable::GetStreamID()
     return mStreamID;
 }
 
-std::string SDIFNameValueTable::GetValue(std::string name)
+std::string SDIFNameValueTable::GetValue(const std::string& name) const
 {
-    return map_NameValues[name];
+  std::map<Key,std::string>::const_iterator it;
+  if((it= map_NameValues.find(Key(name,-1))) != map_NameValues.end())
+    return it->second;
+  else
+    return std::string("UNKNOWN NAME");
 }
 
-int SDIFNameValueTable::SetNbNameValue(int nb)
-{
-    return mNbNV = nb;
-}
 
-SdifUInt4 SDIFNameValueTable::SetStreamID(SdifUInt4 streamid)
+SdifUInt4 SDIFNameValueTable::SetStreamID(const SdifUInt4& streamid)
 {
     return mStreamID = streamid;
 }
 
 
-void SDIFNameValueTable::ViewNameValue(std::string name)
+void SDIFNameValueTable::ViewNameValue(const std::string& name) const
 {
-    std::cout << name << "\t\t"
-	      << map_NameValues[name] << std::endl;
+  std::cout << name << "\t\t"
+	    << GetValue(name) << std::endl;
 }
 
 
-void SDIFNameValueTable::ViewNameValueTable()
+void SDIFNameValueTable::ViewNameValueTable() const
 {
-   typedef std::map<std::string, std::string>::const_iterator CI;
 
-    for (CI p = map_NameValues.begin(); p != map_NameValues.end() ; ++p)
+    for (const_iterator p = begin(); 
+	 p != end() ; ++p)
     {
-	std::cout << p->first << "\t\t" 
-		  << p->second << std::endl;
+	std::cout << GetNameFromSDIFNVTIt(p) << "\t\t" 
+		  << GetValueFromSDIFNVTIt(p) << "\n";
     }
 }
+
+
+
+std::string GetNameFromSDIFNVTIt(SDIFNameValueTable::const_iterator& it) 
+{
+    return it->first.first;
+}
+
+std::string GetValueFromSDIFNVTIt(SDIFNameValueTable::const_iterator& it)
+{
+    return it->second;
+}
+
+
 
 } // end of namespace Easdif
 
