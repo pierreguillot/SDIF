@@ -82,7 +82,7 @@ endif
 
 ifeq ($(SYSTEM), OSF1) 
 	CC = cc
-	CAFLAGS = -Dmips -fullwarn
+	CAFLAGS = -Dmips -fullwarn 
 	LFLAGS =
 
 	ifeq ($(DEBUG),1) 

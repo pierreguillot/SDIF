@@ -4,6 +4,8 @@
  * Every HashTable have its own size and data type.
  * Every data type must have a function to free memory : 
  *     void <KillerName>(<type>* ptr).
+ *
+ * author: Dominique Virolle 1997
  */
 
 #include "SdifHash.h"
@@ -27,22 +29,22 @@
  *     To achieve better type-checking, there should be a full prototype for
  *     the function being called.
  */
-SdifHashTableType*
+SdifHashTableT*
 SdifCreateHashTable(unsigned int HashSize,
-		    SdifHashIndexTypeEnum IndexType,
+		    SdifHashIndexTypeET IndexType,
 		    void (*Killer)())
 {
-  SdifHashTableType *NewTable;
-  SdifHashNodeType **CurrTable;
+  SdifHashTableT *NewTable;
+  SdifHashNT **CurrTable;
   unsigned int i;
 
-  if (NewTable = (SdifHashTableType*) malloc (sizeof(SdifHashTableType)))
+  if (NewTable = (SdifHashTableT*) malloc (sizeof(SdifHashTableT)))
     {
       NewTable->HashSize = HashSize;
       NewTable->NbOfData = 0;
       NewTable->IndexType = IndexType;
       NewTable->Killer = Killer;
-      if (NewTable->Table = (SdifHashNodeType**) malloc (sizeof(SdifHashNodeType*) * HashSize))
+      if (NewTable->Table = (SdifHashNT**) malloc (sizeof(SdifHashNT*) * HashSize))
 	{
 	  CurrTable = NewTable->Table;
 	  for(i=0; i<HashSize; i++)
@@ -68,10 +70,10 @@ SdifCreateHashTable(unsigned int HashSize,
 
 
 void
-SdifMakeEmptyHashTable(SdifHashTableType* HTable)
+SdifMakeEmptyHashTable(SdifHashTableT* HTable)
 {
   unsigned int i;
-  SdifHashNodeType *pNode;
+  SdifHashNT *pNode;
 
   for(i=0; i<HTable->HashSize; i++)
     {
@@ -83,10 +85,15 @@ SdifMakeEmptyHashTable(SdifHashTableType* HTable)
 	  if (HTable->Killer)
 	    (*(HTable->Killer))(pNode->Data); /* this line can occasion a warning */
 	  else
-	    if (pNode->Data)
-	      free(pNode->Data);
-	    else
-	      fprintf(stderr, "HashTable->Data kill memory error : \n");
+	    {
+	      /* if (pNode->Data)
+	       *   free(pNode->Data);
+	       *else
+	       *   fprintf(stderr, "HashTable->Data kill memory error : \n");
+	       */
+	      /* consider that the object pNode->Data cannot be kill because static
+	       */
+	    }
 	  HTable->Table[i] = pNode->Next;
 	  free(pNode);
 	}
@@ -99,11 +106,8 @@ SdifMakeEmptyHashTable(SdifHashTableType* HTable)
 
 
 void
-SdifKillHashTable(SdifHashTableType* HTable)
+SdifKillHashTable(SdifHashTableT* HTable)
 {
-  unsigned int i;
-  SdifHashNodeType *pNode;
-
   if (HTable)
     {
       SdifMakeEmptyHashTable(HTable);
@@ -143,9 +147,9 @@ SdifHashChar(char* s, unsigned int nchar, unsigned int HashSize)
 
 
 void*
-SdifHashTableSearchChar(SdifHashTableType* HTable, char *s, unsigned int nchar)
+SdifHashTableSearchChar(SdifHashTableT* HTable, char *s, unsigned int nchar)
 {
-  SdifHashNodeType *pNode;
+  SdifHashNT *pNode;
   
   
   for (pNode = HTable->Table[SdifHashChar(s, nchar, HTable->HashSize)]; pNode!=NULL; pNode = pNode->Next)
@@ -164,18 +168,18 @@ SdifHashTableSearchChar(SdifHashTableType* HTable, char *s, unsigned int nchar)
 
 
 
-SdifHashTableType*
-SdifHashTablePutChar(SdifHashTableType* HTable,
+SdifHashTableT*
+SdifHashTablePutChar(SdifHashTableT* HTable,
 		     char *s,
 		     unsigned int nchar,
 		     void* Data)
 {
-  SdifHashNodeType *pNode;
+  SdifHashNT *pNode;
   unsigned int valHash;
 
   if ( ! SdifHashTableSearchChar(HTable, s, nchar))
     {
-      pNode = (SdifHashNodeType*) malloc (sizeof(SdifHashNodeType));
+      pNode = (SdifHashNT*) malloc (sizeof(SdifHashNT));
       if (pNode)
 	{
 	  if (pNode->Index.Char[0] = (char*) malloc (nchar * sizeof(char)))
@@ -212,9 +216,9 @@ SdifHashInt4(unsigned int i, unsigned int HashSize)
 
 
 void*
-SdifHashTableSearchInt4(SdifHashTableType* HTable, unsigned int i)
+SdifHashTableSearchInt4(SdifHashTableT* HTable, unsigned int i)
 {
-  SdifHashNodeType *pNode;
+  SdifHashNT *pNode;
   
   for (pNode = HTable->Table[SdifHashInt4(i, HTable->HashSize)]; pNode!=NULL; pNode = pNode->Next)
     if (pNode->Index.Int4 == i)
@@ -226,16 +230,16 @@ SdifHashTableSearchInt4(SdifHashTableType* HTable, unsigned int i)
 
 
 
-SdifHashTableType*
-SdifHashTablePutInt4(SdifHashTableType* HTable, unsigned int i, void* Data)
+SdifHashTableT*
+SdifHashTablePutInt4(SdifHashTableT* HTable, unsigned int i, void* Data)
 {
-  SdifHashNodeType *pNode;
-  SdifHashNodeType *CurrNode;
+  SdifHashNT *pNode;
+  SdifHashNT *CurrNode;
   unsigned int valHash;
   
   if ( ! SdifHashTableSearchInt4(HTable, i))
     {
-      pNode = (SdifHashNodeType*) malloc (sizeof(SdifHashNodeType));
+      pNode = (SdifHashNT*) malloc (sizeof(SdifHashNT));
       if (pNode)
 	{
 	  pNode->Index.Int4 = i;
@@ -280,7 +284,7 @@ SdifHashTablePutInt4(SdifHashTableType* HTable, unsigned int i, void* Data)
 
 
 void*
-SdifHashTableSearch(SdifHashTableType* HTable, void *ptr, unsigned int nobj)
+SdifHashTableSearch(SdifHashTableT* HTable, void *ptr, unsigned int nobj)
 {
   switch (HTable->IndexType)
     {
@@ -298,8 +302,8 @@ SdifHashTableSearch(SdifHashTableType* HTable, void *ptr, unsigned int nobj)
 
 
 
-SdifHashTableType*
-SdifHashTablePut(SdifHashTableType* HTable, void *ptr, unsigned int nobj, void* Data)
+SdifHashTableT*
+SdifHashTablePut(SdifHashTableT* HTable, void *ptr, unsigned int nobj, void* Data)
 {
   switch (HTable->IndexType)
     {

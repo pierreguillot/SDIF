@@ -1,6 +1,8 @@
 /* SdifMatrixType.h
  *
+ * Matrix Types management (interpreted sdif frame types)
  *
+ * author: Dominique Virolle 1997
  *
  */
 
@@ -9,100 +11,56 @@
 #define _SdifMatrixType_
 
 #include "SdifGlobals.h"
+#include "SdifHash.h"
 
-#include <stdio.h>
 
-typedef struct SdifColumnDefT
+
+typedef struct SdifColumnDefS
 {
   char *Name;
   SdifUInt4 Num;
-} SdifColumnDefType;
+} SdifColumnDefT;
 
-extern SdifColumnDefType*
-SdifCreateColumnDef(char *Name,  unsigned int Num);
+typedef struct SdifColumnDefNS SdifColumnDefNT;
 
-extern void
-SdifKillColumnDef(SdifColumnDefType *ColumnDef);
-
-
-
-
-typedef struct SdifColumnDefNodeT SdifColumnDefNodeType;
-
-struct SdifColumnDefNodeT
+struct SdifColumnDefNS
 {
-  SdifColumnDefNodeType *Next;
-  SdifColumnDefType *ColumnDef;
+  SdifColumnDefNT *Next;
+  SdifColumnDefT *ColumnDef;
 };
 
-extern SdifColumnDefNodeType*
-SdifCreateColumnDefNode(SdifColumnDefNodeType *Next, SdifColumnDefType *ColumnDef);
+typedef struct SdifMatrixTypeS SdifMatrixTypeT;
 
-extern SdifColumnDefNodeType*
-SdifKillColumnDefNode(SdifColumnDefNodeType *ColDefNode);
-
-
-typedef struct SdifMatrixTypeT
+struct SdifMatrixTypeS
 {
-  char Name[_SdifNameLen];
+  SdifSignature      Signature;
 
-  SdifColumnDefNodeType *HeadColumnDefPre;
-  SdifColumnDefNodeType *TailColumnDefPre;
-  SdifUInt4             NbColumnDefPre;
+  SdifMatrixTypeT    *MatrixTypePre;
 
-  SdifColumnDefNodeType *HeadColumnDefUse;
-  SdifColumnDefNodeType *TailColumnDefUse;
-  SdifUInt4             NbColumnDefUse;
+  SdifColumnDefNT *HeadUse;
+  SdifColumnDefNT *TailUse;
+  SdifUInt4       NbColumnDefUse;
 
-  SdifUInt4             NbColumnDef;
-  SdifPredefinedEnum    Predefined;
-} SdifMatrixTypeType;
+  SdifUInt4       NbColumnDef;
+  SdifModifModeET ModifMode;
+};
 
-extern SdifMatrixTypeType*
-SdifCreateMatrixType(char *Name,
-		     SdifPredefinedEnum Predefined);
+extern SdifColumnDefT*  SdifCreateColumnDef (char *Name,  unsigned int Num);
+extern void             SdifKillColumnDef   (SdifColumnDefT *ColumnDef);
 
-extern void
-SdifKillMatrixType(SdifMatrixTypeType *MatrixType);
+extern SdifColumnDefNT* SdifCreateColumnDefN (SdifColumnDefNT *Next, SdifColumnDefT *ColumnDef);
+extern SdifColumnDefNT* SdifKillColumnDefN   (SdifColumnDefNT *ColDefNode);
 
-extern SdifMatrixTypeType*
-SdifGetMatrixType(char *Name);
+extern SdifMatrixTypeT* SdifCreateMatrixType              (SdifSignature Signature,
+							   SdifMatrixTypeT *PredefinedMatrixType);
+extern void             SdifKillMatrixType                (SdifMatrixTypeT *MatrixType);
+extern SdifMatrixTypeT* SdifMatrixTypeInsertTailColumnDef (SdifMatrixTypeT *MatrixType, char *NameCD);
+extern SdifUInt4        SdifMatrixTypeGetNumColumnDef     (SdifMatrixTypeT *MatrixType, char *NameCD);
+extern SdifColumnDefT*  SdifMatrixTypeGetColumnDef        (SdifMatrixTypeT *MatrixType, char *NameCD);
+extern SdifColumnDefT*  SdifMatrixTypeGetNthColumnDef     (SdifMatrixTypeT *MatrixType, SdifUInt4 NumCD);
 
-extern void
-SdifPutMatrixType(char *Name, SdifMatrixTypeType* MatrixType);
-
-extern SdifMatrixTypeType*
-SdifMatrixTypeInsertTailColumnDef(SdifMatrixTypeType *MatrixType,
-				  char *NameCD,
-				  SdifPredefinedEnum Predefined);
-
-extern SdifUInt4
-SdifMatrixTypeGetNumColumnDef(SdifMatrixTypeType *MatrixType,
-			      char *NameCD);
-
-extern SdifColumnDefType*
-SdifMatrixTypeGetColumnDef(SdifMatrixTypeType *MatrixType,
-			   char *NameCD);
-
-extern SdifColumnDefType*
-SdifMatrixTypeGetNthColumnDef(SdifMatrixTypeType *MatrixType,
-			      SdifUInt4 NumCD);
-
-extern int
-SdifFWriteOneMatrixType(SdifMatrixTypeType *MatrixType,
-			SdifPredefinedEnum Predefined, FILE *fw);
-
-extern int
-SdifFWriteAllMatrixType(SdifPredefinedEnum Predefined,
-			FILE *fw);
-
-extern int
-SdifFReadMatrixType(SdifPredefinedEnum Predefined,
-		    FILE *fr);
+extern SdifMatrixTypeT* SdifGetMatrixType(SdifHashTableT *MatrixTypesTable, SdifSignature Signature);
+extern void             SdifPutMatrixType(SdifHashTableT *MatrixTypesTable, SdifMatrixTypeT* MatrixType);
+extern SdifUInt2        SdifExistUserMatrixType(SdifHashTableT *MatrixTypesTable);
 
 #endif /* _SdifMatrixType_  */
-
-
-
-
-

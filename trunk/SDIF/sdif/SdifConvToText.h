@@ -1,6 +1,8 @@
 /* SdifConvToText.h
  *
+ * functions to convert an sdif file into a pseudo-sdif text file.
  *
+ * author: Dominique Virolle 1997
  *
  *
  */
@@ -9,30 +11,19 @@
 #define _SdifConvToText_
 
 #include "SdifGlobals.h"
+#include "SdifFileStruct.h"
 
-#include "SdifMatrix.h"
 
-#include <stdio.h>
 
-extern int
-SdifFConvRowsFloat4ToText(SdifMatrixHeaderType *MtrxH, FILE *fsdif, FILE *ftext);
+extern size_t SdifFConvToTextMatrixData     (SdifFileT *SdifF);
+extern size_t SdifFConvToTextMatrixHeader   (SdifFileT *SdifF);
+extern size_t SdifFConvToTextMatrix         (SdifFileT *SdifF);
+extern size_t SdifFConvToTextFrameData      (SdifFileT *SdifF);
+extern size_t SdifFConvToTextFrameHeader    (SdifFileT *SdifF);
+extern size_t SdifFConvToTextFrame          (SdifFileT *SdifF);
+extern size_t SdifFConvToTextAllFrame       (SdifFileT *SdifF);
+extern size_t SdifFConvToText               (SdifFileT *SdifF);
 
-extern int
-SdifFConvRowsFloat8ToText(SdifMatrixHeaderType *MtrxH, FILE *fsdif, FILE *ftext);
-
-extern int
-SdifFConvFrameToText(char *Name, FILE *fsdif, FILE *ftext);
-
-extern int
-SdifFConvFramesChunkToText(FILE *fsdif, FILE *ftext);
-
-extern int
-SdifFConvChunkToText(char *Name, FILE *fsdif, FILE *ftext);
-
-extern SdifUInt8
-SdifFConvToText(FILE *fsdif, FILE *ftext);
-
-extern SdifUInt8
-SdifConvToText(char *NameFSdif, char *NameFText);
+extern size_t SdifToText (SdifFileT *SdifF, char *TextStreamName);
 
 #endif /* _SdifConvToText_ */

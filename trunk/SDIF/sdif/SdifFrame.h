@@ -1,6 +1,8 @@
 /* SdifFrame.h
  *
+ * Frame Header, Frame Data structures management
  *
+ * author: Dominique Virolle 1997
  *
  */
 
@@ -8,92 +10,58 @@
 #define _SdifFrame_
 
 #include "SdifGlobals.h"
+#include "SdifHash.h"
 #include "SdifMatrix.h"
 
+#define _SdifFrameHeaderSize 16  /* (ID=4)+(size=4)+(time=8) */
 
-#define _SdifFrameHeaderSize 24  /* (name=4)+(version=2)+(count=2)+(ID=4)+(size=4)+(time=8) */
-
-typedef struct SdifFrameHeaderT
+typedef struct SdifFrameHeaderS
 {
-  char FrameName[_SdifNameLen];
+  SdifSignature Signature;
   SdifUInt4  Size;
   SdifUInt4  NbMatrix;
   SdifUInt4  NumID;
   SdifFloat8 Time;
-} SdifFrameHeaderType;
+} SdifFrameHeaderT;
 
 
-extern SdifFrameHeaderType*
-SdifCreateFrameHeader(char *FrameName,
-		      SdifUInt4  Size,
-		      SdifUInt4  NbMatrix,
-		      SdifUInt4  NumID,
-		      SdifFloat8 Time);
-
-
-extern SdifFrameHeaderType*
-SdifCreateFrameHeaderEmpty(char *FrameName);
-
-extern void
-SdifKillFrameHeader(SdifFrameHeaderType *FrameHeader);
-
-extern void
-SdifFScanFrameHeader(FILE *fr, char *FrameName, SdifFrameHeaderType* FrameHeader);
-
-extern int
-SdifFPrintFrameHeader(FILE *f, SdifFrameHeaderType* FrameHeader);
-
-extern int
-SdifFReadFrameHeader(char *FrameName, SdifFrameHeaderType* FrameHeader, FILE *fr);
-	      
-extern int
-SdifFWriteFrameHeader(SdifFrameHeaderType* FrameHeader, FILE *fw);
-
-
-typedef struct SdifFrameDataT
+typedef struct SdifFrameDataS
 {
-  SdifFrameHeaderType *Header;
-  SdifMatrixDataType* *Matrix_s;
-} SdifFrameDataType;
+  SdifFrameHeaderT *Header;
+  SdifMatrixDataT* *Matrix_s;
+} SdifFrameDataT;
 
-extern SdifFrameDataType*
-SdifCreateFrameData(char *FrameName,
-		    SdifUInt4 NumID,
-		    SdifFloat8 Time);
 
-extern void
-SdifKillFrameData(SdifFrameDataType *FrameData);
+extern SdifFrameHeaderT* SdifCreateFrameHeader(SdifSignature Signature,
+					       SdifUInt4 Size,
+					       SdifUInt4 NbMatrix,
+					       SdifUInt4 NumID,
+					       SdifFloat8 Time);
 
-extern SdifFrameDataType*
-SdifFrameDataPutNthMatrixData(SdifFrameDataType *FrameData,
-			      unsigned int NthMatrix,
-			      SdifMatrixDataType *MatrixData);
+extern SdifFrameHeaderT* SdifCreateFrameHeaderEmpty(SdifSignature Signature);
 
-extern SdifFrameDataType*
-SdifFrameDataPutComponentMatrixData(SdifFrameDataType *FrameData,
-				    char *CompoName,
-				    SdifMatrixDataType *MatrixData);
+extern void              SdifKillFrameHeader  (SdifFrameHeaderT *FrameHeader);
 
-extern SdifMatrixDataType*
-SdifFrameDataGetNthMatrixData(SdifFrameDataType *FrameData,
-			      SdifUInt4 NthMatrix);
+extern SdifFrameDataT* SdifCreateFrameData(SdifHashTableT *FrameTypesTable,
+					   SdifSignature FrameSignature,
+					   SdifUInt4 NumID,
+					   SdifFloat8 Time);
 
-extern SdifMatrixDataType*
-SdifFrameDataGetComponentMatrixData(SdifFrameDataType *FrameData,
-				    char *CompoName);
+extern void            SdifKillFrameData   (SdifHashTableT *FrameTypesTable, SdifFrameDataT *FrameData);
 
-extern int
-SdifFWriteMatrix_s(SdifFrameDataType *FrameData, FILE *fw);
+extern SdifFrameDataT* SdifFrameDataPutNthMatrixData(SdifFrameDataT *FrameData, unsigned int NthMatrix,
+						     SdifMatrixDataT *MatrixData);
 
-extern int
-SdifFWriteFrameData(SdifFrameDataType *FrameData, FILE *fw);
+extern SdifFrameDataT* SdifFrameDataPutComponentMatrixData(SdifHashTableT *FrameTypesTable,
+							   SdifFrameDataT *FrameData,
+							   char *CompoName, SdifMatrixDataT *MatrixData);
 
-extern int
-SdifFReadFrameMatrix_s(SdifFrameHeaderType *FramH,
-		       SdifFrameDataType *FramD,
-		       FILE *fr);
+extern SdifMatrixDataT* SdifFrameDataGetNthMatrixData(SdifFrameDataT *FrameData, unsigned int NthMatrix);
 
-extern int
-SdifSkipFrameData(SdifFrameHeaderType *FramH, FILE *fr);
+extern SdifMatrixDataT* SdifFrameDataGetComponentMatrixData(SdifHashTableT *FrameTypesTable,
+							    SdifFrameDataT *FrameData,
+							    char *CompoName);
 
 #endif /* _SdifFrame_ */
+
+

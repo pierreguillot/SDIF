@@ -1,35 +1,31 @@
 /* SdifMatrixType.c
  *
+ * Matrix Types management (interpreted sdif frame types)
  *  
+ * author: Dominique Virolle 1997
  *
  *
- * SdifHashTableType *gSdifMatrixTypesTable 
- *      index : matrix type name (HashChar : 4 bytes)
- *       Data : matrix type (SdifMatrixTypeType*)
- *     Killer : SdifKillMatrixType
+ * SdifHashTableType to stock Matrix Types
+ *      index : matrix type signature (HashInt4)
+ *       Data : matrix type (SdifMatrixTypeT*)
+ *     Killer : SdifKillMatrixType (if types are coded, Killer  == NULL)
  */
 
 
 #include "SdifMatrixType.h"
-#include "SdifHash.h"
-#include "SdifRWLowLevel.h"
 
 #include <stdlib.h>
-#include <string.h>
-#include <ctype.h>
 
 
 
 
 
-
-
-SdifColumnDefType*
+SdifColumnDefT*
 SdifCreateColumnDef(char *Name, SdifUInt4 Num)
 {
-  SdifColumnDefType *NewColumnDef;
+  SdifColumnDefT *NewColumnDef;
   
-  NewColumnDef = (SdifColumnDefType*) malloc (sizeof(SdifColumnDefType));
+  NewColumnDef = (SdifColumnDefT*) malloc (sizeof(SdifColumnDefT));
   if (NewColumnDef != NULL)
     {
       NewColumnDef->Name = SdifCreateStrNCpy(Name, SdifStrLen(Name)+1);
@@ -50,7 +46,7 @@ SdifCreateColumnDef(char *Name, SdifUInt4 Num)
 
 
 void
-SdifKillColumnDef(SdifColumnDefType *ColumnDef)
+SdifKillColumnDef(SdifColumnDefT *ColumnDef)
 {
   if (ColumnDef)
     {
@@ -67,21 +63,21 @@ SdifKillColumnDef(SdifColumnDefType *ColumnDef)
 
 
 
-SdifColumnDefNodeType*
-SdifCreateColumnDefNode(SdifColumnDefNodeType *Next, SdifColumnDefType *ColumnDef)
+SdifColumnDefNT*
+SdifCreateColumnDefN(SdifColumnDefNT *Next, SdifColumnDefT *ColumnDef)
 {
-  SdifColumnDefNodeType *NewColDefNode;
+  SdifColumnDefNT *NewColDefN;
 
-  if (NewColDefNode = (SdifColumnDefNodeType*) malloc (sizeof(SdifColumnDefNodeType)))
+  if (NewColDefN = (SdifColumnDefNT*) malloc (sizeof(SdifColumnDefNT)))
     {
-      NewColDefNode->Next = Next;
-      NewColDefNode->ColumnDef = ColumnDef;
+      NewColDefN->Next = Next;
+      NewColDefN->ColumnDef = ColumnDef;
 
-      return NewColDefNode;
+      return NewColDefN;
     }
   else
     {
-      _SdifError(eAllocFail, "ColumnDefNode allocation");
+      _SdifError(eAllocFail, "ColumnDefN allocation");
       return NULL;
     }
 }
@@ -91,22 +87,22 @@ SdifCreateColumnDefNode(SdifColumnDefNodeType *Next, SdifColumnDefType *ColumnDe
 
 
 
-SdifColumnDefNodeType*
-SdifKillColumnDefNode(SdifColumnDefNodeType *ColDefNode)
+SdifColumnDefNT*
+SdifKillColumnDefN(SdifColumnDefNT *ColDefN)
 {
-  SdifColumnDefNodeType *Next;
+  SdifColumnDefNT *Next;
 
-  if (ColDefNode)
+  if (ColDefN)
     {
-      Next = ColDefNode->Next;
-      SdifKillColumnDef(ColDefNode->ColumnDef);
-      free(ColDefNode);
+      Next = ColDefN->Next;
+      SdifKillColumnDef(ColDefN->ColumnDef);
+      free(ColDefN);
       
       return Next;
     }
   else
     {
-      _SdifError(eFreeNull, "ColumnDefNode free");
+      _SdifError(eFreeNull, "ColumnDefN free");
       return NULL;
     }
 }
@@ -117,23 +113,40 @@ SdifKillColumnDefNode(SdifColumnDefNodeType *ColDefNode)
 
 
 
-SdifMatrixTypeType*
-SdifCreateMatrixType(char *Name, SdifPredefinedEnum Predefined)
+SdifMatrixTypeT*
+SdifCreateMatrixType(SdifSignature Signature, SdifMatrixTypeT *PredefinedMatrixType)
 {
-  SdifMatrixTypeType *NewMatrixType;
+  SdifMatrixTypeT *NewMatrixType;
 
-  if (NewMatrixType = (SdifMatrixTypeType*) malloc (sizeof(SdifMatrixTypeType)))
+  if (NewMatrixType = (SdifMatrixTypeT*) malloc (sizeof(SdifMatrixTypeT)))
     {
-      SdifStrNCpy(NewMatrixType->Name, Name, _SdifNameLen);
-      NewMatrixType->HeadColumnDefPre = NULL;
-      NewMatrixType->TailColumnDefPre = NULL;
-      NewMatrixType->NbColumnDefPre = 0;
-      NewMatrixType->HeadColumnDefUse = NULL;
-      NewMatrixType->TailColumnDefUse = NULL;
+      NewMatrixType->Signature      = Signature;
+      NewMatrixType->HeadUse        = NULL;
+      NewMatrixType->TailUse        = NULL;
       NewMatrixType->NbColumnDefUse = 0;
-      NewMatrixType->NbColumnDef = 0;
-      NewMatrixType->Predefined = Predefined;
-      
+      NewMatrixType->ModifMode      = eCanModif;
+
+      if (PredefinedMatrixType)
+	{
+	  if (PredefinedMatrixType->Signature != Signature)
+	    {
+	      sprintf(gSdifErrorMess, "'%s'(Pre) != '%s'",
+		      SdifSignatureToString(PredefinedMatrixType->Signature),
+		      SdifSignatureToString(Signature));
+	      _SdifError(eInvalidPreType, gSdifErrorMess);
+	    }
+	  else
+	    {
+	      NewMatrixType->MatrixTypePre  = PredefinedMatrixType;
+	      NewMatrixType->NbColumnDef    = PredefinedMatrixType->NbColumnDef;
+	    }
+	}
+      else
+	{
+	  NewMatrixType->MatrixTypePre  = NULL;
+	  NewMatrixType->NbColumnDef    = 0;
+	}
+     
       return NewMatrixType;
     }
   else
@@ -149,15 +162,15 @@ SdifCreateMatrixType(char *Name, SdifPredefinedEnum Predefined)
 
 
 void
-SdifKillMatrixType(SdifMatrixTypeType *MatrixType)
+SdifKillMatrixType(SdifMatrixTypeT *MatrixType)
 {
+
+  /* don't kill the predfined type because it is one of another bank of types (Predefined Types)*/
+
   if (MatrixType)
     {
-      while (MatrixType->HeadColumnDefPre)
-	MatrixType->HeadColumnDefPre = SdifKillColumnDefNode(MatrixType->HeadColumnDefPre);
-
-      while (MatrixType->HeadColumnDefUse)
-	MatrixType->HeadColumnDefUse = SdifKillColumnDefNode(MatrixType->HeadColumnDefUse);
+      while (MatrixType->HeadUse)
+	MatrixType->HeadUse = SdifKillColumnDefN(MatrixType->HeadUse);
 
       free(MatrixType);
     }
@@ -171,12 +184,26 @@ SdifKillMatrixType(SdifMatrixTypeType *MatrixType)
 
 
 
-
-
-SdifMatrixTypeType*
-SdifGetMatrixType(char *Name)
+SdifUInt4
+SdifMatrixTypeGetNumColumnDef(SdifMatrixTypeT *MatrixType, char *NameCD)
 {
-  return SdifHashTableSearch(gSdifMatrixTypesTable, Name, _SdifNameLen);
+  SdifColumnDefNT *Node;
+  int Num = 0;
+
+  if (MatrixType->MatrixTypePre)
+    Num = SdifMatrixTypeGetNumColumnDef(MatrixType->MatrixTypePre, NameCD);
+
+  if (Num == 0)
+    {
+      for (Node = MatrixType->HeadUse; Node; Node = Node->Next)
+	if (SdifStrCmp (Node->ColumnDef->Name, NameCD) == 0)
+	  {
+	    Num = Node->ColumnDef->Num;
+	    break;
+	  }
+    }
+  
+  return Num;
 }
 
 
@@ -185,10 +212,28 @@ SdifGetMatrixType(char *Name)
 
 
 
-void
-SdifPutMatrixType(char *Name, SdifMatrixTypeType* MatrixType)
+
+
+SdifColumnDefT*
+SdifMatrixTypeGetColumnDef(SdifMatrixTypeT *MatrixType, char *NameCD)
 {
-  SdifHashTablePut(gSdifMatrixTypesTable, Name, _SdifNameLen, MatrixType);
+  SdifColumnDefNT *Node;
+  SdifColumnDefT *ColumnDef = NULL;
+
+  if (MatrixType->MatrixTypePre)
+    ColumnDef = SdifMatrixTypeGetColumnDef(MatrixType->MatrixTypePre, NameCD);
+  
+  if (! ColumnDef)
+    {
+      for (Node = MatrixType->HeadUse; Node; Node = Node->Next)
+	if (SdifStrCmp (Node->ColumnDef->Name, NameCD) == 0)
+	  {
+	    ColumnDef = Node->ColumnDef;
+	    break;
+	  }
+    }
+  
+  return ColumnDef;
 }
 
 
@@ -196,267 +241,104 @@ SdifPutMatrixType(char *Name, SdifMatrixTypeType* MatrixType)
 
 
 
-SdifMatrixTypeType*
-SdifMatrixTypeInsertTailColumnDef(SdifMatrixTypeType *MatrixType,
-				  char *NameCD,
-				  SdifPredefinedEnum Predefined)
+SdifColumnDefT*
+SdifMatrixTypeGetNthColumnDef(SdifMatrixTypeT *MatrixType, SdifUInt4 NumCD)
 {
-  SdifColumnDefNodeType *NewDefNode;
+  SdifColumnDefNT *Node;
+  SdifColumnDefT *ColumnDef = NULL;
+
+  if (MatrixType->MatrixTypePre)
+    ColumnDef = SdifMatrixTypeGetNthColumnDef(MatrixType->MatrixTypePre, NumCD);
+
+  if (! ColumnDef)
+    {
+      for (Node = MatrixType->HeadUse; Node; Node = Node->Next)
+	if (Node->ColumnDef->Num == NumCD)
+	  {
+	    ColumnDef = Node->ColumnDef;
+	    break;
+	  }
+    }
+  
+  return ColumnDef;
+}
+
+
+
+
+
+
+SdifMatrixTypeT*
+SdifMatrixTypeInsertTailColumnDef(SdifMatrixTypeT *MatrixType, char *NameCD)
+{
+  SdifColumnDefNT *NewDefN;
   
   if (SdifMatrixTypeGetColumnDef(MatrixType, NameCD))
     {
-      sprintf(gSdifErrorMess, "Column definition '%s' ", NameCD);
-      _SdifError(eReDefined, gSdifErrorMess);	      
+      _SdifError(eExistYet, NameCD);
       return NULL;
     }
-  else
+
+  switch (MatrixType->ModifMode)
     {
-      NewDefNode = SdifCreateColumnDefNode(NULL, SdifCreateColumnDef(NameCD, ++MatrixType->NbColumnDef));
-      
-      switch (Predefined)
-	{
-	case ePredefined :       /* then add ColumnDef in the Predefined Columns list */
-	  if (MatrixType->Predefined == ePredefined)
-	    {
-	      if (! MatrixType->HeadColumnDefPre)
-		MatrixType->HeadColumnDefPre = NewDefNode;
-	      else
-		MatrixType->TailColumnDefPre->Next = NewDefNode;
-	      
-	      MatrixType->TailColumnDefPre = NewDefNode;
-	      MatrixType->NbColumnDefPre++;
-	    }
-	  else
-	    {
-	      _SdifError(eUserdefBefore, NameCD);
-	      return NULL;
-	    }
-	  break;
-	  
-	case eUserdefined :      /* then add ColumnDef in the Userdefined Columns list */
-	  if (! MatrixType->HeadColumnDefUse)
-	    MatrixType->HeadColumnDefUse = NewDefNode;
-	  else
-	    MatrixType->TailColumnDefUse->Next = NewDefNode;
-	  
-	  MatrixType->TailColumnDefUse = NewDefNode;
-	  MatrixType->NbColumnDefUse++;
-	  MatrixType->Predefined = eUserdefined;
-	  break;
-	  
-	default :
-	  return NULL;
-	}
-      return MatrixType;
-    }
-}
-
-
-
-
-
-
-
-
-SdifUInt4
-SdifMatrixTypeGetNumColumnDef(SdifMatrixTypeType *MatrixType, char *NameCD)
-{
-  SdifColumnDefNodeType *Node;
-  
-  for (Node = MatrixType->HeadColumnDefPre; Node; Node = Node->Next)
-    if (SdifStrCmp (Node->ColumnDef->Name, NameCD) == 0)
-      return Node->ColumnDef->Num;
-  
-  for (Node = MatrixType->HeadColumnDefUse; Node; Node = Node->Next)
-    if (SdifStrCmp (Node->ColumnDef->Name, NameCD) == 0)
-      return Node->ColumnDef->Num;
-  
-  return 0;
-}
-
-
-
-
-
-
-
-
-
-SdifColumnDefType*
-SdifMatrixTypeGetColumnDef(SdifMatrixTypeType *MatrixType, char *NameCD)
-{
-  SdifColumnDefNodeType *Node;
-  
-  for (Node = MatrixType->HeadColumnDefPre; Node; Node = Node->Next)
-    if (SdifStrCmp (Node->ColumnDef->Name, NameCD) == 0)
-      return Node->ColumnDef;
-  
-  for (Node = MatrixType->HeadColumnDefUse; Node; Node = Node->Next)
-    if (SdifStrCmp (Node->ColumnDef->Name, NameCD) == 0)
-      return Node->ColumnDef;
-  
-  return NULL;
-}
-
-
-
-
-
-
-
-
-SdifColumnDefType*
-SdifMatrixTypeGetNthColumnDef(SdifMatrixTypeType *MatrixType, SdifUInt4 NumCD)
-{
-  SdifColumnDefNodeType *Node;
-
-  if (NumCD <= MatrixType->NbColumnDefPre)
-    {
-      for (Node = MatrixType->HeadColumnDefPre; Node; Node = Node->Next)
-	if (Node->ColumnDef->Num == NumCD)
-	  return Node->ColumnDef;
+    case eNoModif:
+      _SdifError(eNoModifErr, SdifSignatureToString(MatrixType->Signature));
       return NULL;
-    }
-  else
-    {
-      for (Node = MatrixType->HeadColumnDefUse; Node; Node = Node->Next)
-	if (Node->ColumnDef->Num == NumCD)
-	  return Node->ColumnDef;
-      return NULL;
-    }
-}
+    case eCanModif:
+      /* then add ColumnDef in the Columns list */
+      NewDefN = SdifCreateColumnDefN(NULL, SdifCreateColumnDef(NameCD, MatrixType->NbColumnDef+1));
 
-
-
-
-
-
-
-
-int
-SdifFWriteOneMatrixType(SdifMatrixTypeType *MatrixType, SdifPredefinedEnum Predefined, FILE *fw)
-{
-  SdifColumnDefNodeType *Node;
-  int NbBytesWrite = 0;
-
-  switch (Predefined)
-    {
-    case ePredefined :
-      if (MatrixType->HeadColumnDefPre)
-	{
-	  NbBytesWrite += fprintf(fw, "  Mtrx\t");
-	  NbBytesWrite += SdifPrintName(fw, MatrixType->Name);
-	  NbBytesWrite += fprintf(fw, "\t{");
-	  for(Node = MatrixType->HeadColumnDefPre; Node->Next;  Node = Node->Next)
-	    NbBytesWrite += fprintf(fw, "%s, ",Node->ColumnDef->Name);
-	  NbBytesWrite += fprintf(fw, "%s}\n",Node->ColumnDef->Name);  
-	}
-      break;
-    case eUserdefined :
-      if (MatrixType->HeadColumnDefUse)
-	{
-	  NbBytesWrite += fprintf(fw, "  Mtrx\t");
-	  NbBytesWrite += SdifPrintName(fw, MatrixType->Name);
-	  NbBytesWrite += fprintf(fw, "\t{");
-	  for(Node = MatrixType->HeadColumnDefUse; Node->Next;  Node = Node->Next)
-	    NbBytesWrite += fprintf(fw, "%s, ",Node->ColumnDef->Name);
-	  NbBytesWrite += fprintf(fw, "%s}\n",Node->ColumnDef->Name);  
-	}
-      break;
-    default :
-      return 0;
-    }
-  return NbBytesWrite;
-}
-
-
-
-
-
-
-
-int
-SdifFWriteAllMatrixType(SdifPredefinedEnum Predefined, FILE *fw)
-{
-  unsigned int
-    iName;
-  SdifHashNodeType
-    *pName;
-  int
-    NbBytesWrite = 0;
-  
-  for(iName=0; iName<gSdifMatrixTypesTable->HashSize; iName++)
-    for (pName = gSdifMatrixTypesTable->Table[iName]; pName;  pName=pName->Next)
-      NbBytesWrite += SdifFWriteOneMatrixType(pName->Data, Predefined, fw);
-  
-  return NbBytesWrite;
-}
-
-
-
-
-
-int
-SdifFReadMatrixType(SdifPredefinedEnum Predefined, FILE *fr)
-{
-  SdifMatrixTypeType
-    *MatrixType;
-  int
-    NbCharRead = 0,
-    CharEnd;
-  
-  char Name[_SdifNameLen];  
-
-  CharEnd = SdifFGetName(Name, fr, &NbCharRead);
-  if ( (SdifIsAReservedChar((char) CharEnd) != -1) || (isspace((char) CharEnd)) )
-    {
-      sprintf(gSdifErrorMess,
-	      "Matrix Name not correctly read : '%c%c%c%c'. Last char read : '%d'",
-	      Name[0],
-	      Name[1],
-	      Name[2],
-	      Name[3],
-	      (char) CharEnd);
-      _SdifError(eNameLength, gSdifErrorMess);
-      return NbCharRead;
-    }
-  
-  
-  /* Matrix type Creation, Put or Recuperation from gSdifMatrixTypesTable */
-  if (! (MatrixType = SdifGetMatrixType(Name)))
-    {
-      MatrixType = SdifCreateMatrixType(Name, Predefined);
-      SdifPutMatrixType(Name, MatrixType);
-    }
-  
-  /* ColumnDefs */
-  CharEnd = SdifFGetStringUntil(gSdifString, _SdifStringLen, fr, &NbCharRead, _SdifReservedChars);
-  if ( (CharEnd != (int) '{') || (SdifStrLen(gSdifString)!=0) )
-    {
-      sprintf(gSdifErrorMess, "Attempt to read '{' failed : '%s%c'", gSdifString, CharEnd);
-      _SdifError(eSyntax, gSdifErrorMess);
-      return NbCharRead;
-    }
-  else
-    {
-      while ((CharEnd = SdifFGetStringUntil(gSdifString,
-					    _SdifStringLen,
-					    fr,
-					    &NbCharRead,
-					    _SdifReservedChars)) == (int) ',')
-	{
-	  SdifMatrixTypeInsertTailColumnDef(MatrixType, gSdifString, Predefined);
-	}
-
-      if (CharEnd != (int) '}')
-	{
-	  sprintf(gSdifErrorMess, "Attempt to read '}' failed : '%s%c' ", gSdifString, CharEnd);
-	  _SdifError(eSyntax, gSdifErrorMess);
-	  return NbCharRead;
-	}
+      if (! MatrixType->HeadUse)
+	MatrixType->HeadUse = NewDefN;
       else
-	if (SdifStrLen(gSdifString) != 0)
-	  SdifMatrixTypeInsertTailColumnDef(MatrixType, gSdifString, Predefined);
+	MatrixType->TailUse->Next = NewDefN;
+      
+      MatrixType->TailUse = NewDefN;
+      MatrixType->NbColumnDefUse++;
+      break;
+      
+    default :
+      return NULL;
     }
-  return NbCharRead;
+  MatrixType->NbColumnDef++;
+  return MatrixType;
+}
+
+
+
+
+
+
+
+SdifMatrixTypeT*
+SdifGetMatrixType(SdifHashTableT *MatrixTypesTable, SdifSignature Signature)
+{
+  return SdifHashTableSearch(MatrixTypesTable, &Signature, 1);
+}
+
+
+void
+SdifPutMatrixType(SdifHashTableT *MatrixTypesTable, SdifMatrixTypeT* MatrixType)
+{
+  SdifHashTablePut(MatrixTypesTable, &(MatrixType->Signature), 1, MatrixType);
+}
+
+
+
+
+SdifUInt2
+SdifExistUserMatrixType(SdifHashTableT *MatrixTypesTable)
+{
+  unsigned int     iName;
+  SdifHashNT*      pName;
+  SdifMatrixTypeT*  MtrxT;
+  
+  for(iName=0; iName<MatrixTypesTable->HashSize; iName++)
+    for (pName = MatrixTypesTable->Table[iName]; pName;  pName=pName->Next)
+      {
+	MtrxT = (SdifMatrixTypeT*) pName->Data;
+	if (MtrxT->NbColumnDefUse > 0)
+	  return 1;
+      }
+  return 0;
 }

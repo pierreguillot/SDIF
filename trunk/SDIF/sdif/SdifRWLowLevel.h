@@ -1,14 +1,23 @@
 /* SdifRWLowLevel.h
  *
  *
+ * Read Write Low Level. Machine sex, little-big endian control
+ *
+ *
+ * author: Dominique Virolle 1997
+ *
  */
 
 #ifndef _SdifRWLowLevel_
 #define _SdifRWLowLevel_
 
-#include "SdifGlobals.h"
-#include "SdifUInt8.h"
+#if defined(__mips64) || defined(__alpha)
+#define _LONG64BITS_
+#else
+#define _LONG32BITS_
+#endif
 
+#include "SdifGlobals.h"
 #include <stdio.h>
 
 #define _SdifBSLittleE 4096
@@ -24,114 +33,59 @@ typedef enum SdifMachineE
   eBigEndian64,
   eLittleEndian64,
   ePDPEndian
-} SdifMachineEnum;
+} SdifMachineET;
 
-extern SdifMachineEnum
-SdifGetMachineType(void);
+extern SdifMachineET SdifGetMachineType(void);
+extern SdifMachineET gSdifMachineType;
+extern SdifMachineET SdifInitMachineType(void);
 
-extern SdifMachineEnum gSdifMachineType;
+extern size_t Sdiffread  (void *ptr, size_t size, size_t nobj, FILE *stream);
+extern size_t Sdiffwrite (void *ptr, size_t size, size_t nobj, FILE *stream);
 
-extern SdifMachineEnum
-SdifInitMachineType(void);
+/* Read, return the number of objects */
 
+extern size_t SdiffReadInt2   (SdifInt2   *ptr, size_t nobj, FILE *stream);
+extern size_t SdiffReadUInt2  (SdifUInt2  *ptr, size_t nobj, FILE *stream);
+extern size_t SdiffReadInt4   (SdifInt4   *ptr, size_t nobj, FILE *stream);
+extern size_t SdiffReadUInt4  (SdifUInt4  *ptr, size_t nobj, FILE *stream);
+extern size_t SdiffReadFloat4 (SdifFloat4 *ptr, size_t nobj, FILE *stream);
+extern size_t SdiffReadFloat8 (SdifFloat8 *ptr, size_t nobj, FILE *stream);
 
-/* Read */
-
-extern int
-SdifFReadInt2   (SdifInt2 *ptr, unsigned int nobj, FILE *stream);
-
-extern int
-SdifFReadUInt2  (SdifUInt2 *ptr, unsigned int nobj, FILE *stream);
-
-extern int
-SdifFReadInt4   (SdifInt4 *ptr, unsigned int nobj, FILE *stream);
-
-extern int
-SdifFReadUInt4  (SdifUInt4 *ptr, unsigned int nobj, FILE *stream);
-
-extern int
-SdifFReadUInt8  (SdifUInt8 *ptr, unsigned int nobj, FILE *stream);
-
-extern int
-SdifFReadFloat4 (SdifFloat4 *ptr, unsigned int nobj, FILE *stream);
-
-extern int
-SdifFReadFloat8 (SdifFloat8 *ptr, unsigned int nobj, FILE *stream);
-
-extern int
-SdifFRead4Char (char *ptr, FILE *stream);
+extern size_t SdiffReadSignature (SdifSignature *Signature, FILE *stream);
 
 
 
-/* Write */
+/* Write, return the number of objects */
 
-extern int
-SdifFWriteInt2   (SdifInt2 *ptr, unsigned int nobj, FILE *stream);
+extern size_t SdiffWriteInt2   (SdifInt2   *ptr, size_t nobj, FILE *stream);
+extern size_t SdiffWriteUInt2  (SdifUInt2  *ptr, size_t nobj, FILE *stream);
+extern size_t SdiffWriteInt4   (SdifInt4   *ptr, size_t nobj, FILE *stream);
+extern size_t SdiffWriteUInt4  (SdifUInt4  *ptr, size_t nobj, FILE *stream);
+extern size_t SdiffWriteFloat4 (SdifFloat4 *ptr, size_t nobj, FILE *stream);
+extern size_t SdiffWriteFloat8 (SdifFloat8 *ptr, size_t nobj, FILE *stream);
 
-extern int
-SdifFWriteUInt2  (SdifUInt2 *ptr, unsigned int nobj, FILE *stream);
+extern size_t SdiffWriteSignature (SdifSignature *Signature, FILE *stream);
+extern size_t SdiffWriteString (char* ptr, FILE *stream);
 
-extern int
-SdifFWriteInt4   (SdifInt4 *ptr, unsigned int nobj, FILE *stream);
-
-extern int
-SdifFWriteUInt4  (SdifUInt4 *ptr, unsigned int nobj, FILE *stream);
-
-extern int
-SdifFWriteUInt8  (SdifUInt8 *ptr, unsigned int nobj, FILE *stream);
-
-extern int
-SdifFWriteFloat4 (SdifFloat4 *ptr, unsigned int nobj, FILE *stream);
-
-extern int
-SdifFWriteFloat8 (SdifFloat8 *ptr, unsigned int nobj, FILE *stream);
-
-extern int
-SdifFWrite4Char (char *ptr, FILE *stream);
-
-extern int
-SdifFWriteString(char* ptr, FILE *stream);
-
-
-
-
-/**Ascii**/
-/* FGet --> return the last char
- * FRead --> return the number of read char
+/*
+ *extern size_t SdiffReadUInt8  (SdifUInt8  *ptr, size_t nobj, FILE *stream);
+ *extern size_t SdiffWriteUInt8  (SdifUInt8  *ptr, size_t nobj, FILE *stream);
  */
 
+/**Ascii**/
+/* fGet --> return the last char
+ */
+extern size_t SdiffReadSpace   (FILE* fr);
 
-extern int
-SdifIsAReservedChar(char c);
+extern int SdifIsAReservedChar (char c);
+extern int SdiffGetString      (FILE* fr, char* s, size_t ncMax, size_t *NbCharRead);
+extern int SdiffGetSignature   (FILE* fr, SdifSignature *Signature, size_t *NbCharRead);
+extern int SdiffGetWordUntil   (FILE* fr, char* s, size_t ncMax, size_t *NbCharRead, char *CharsEnd);
+extern int SdiffGetStringUntil (FILE* fr, char* s, size_t ncMax, size_t *NbCharRead, char *CharsEnd);
+extern int SdiffGetStringWeakUntil(FILE* fr, char* s, size_t ncMax, size_t *NbCharRead, char *CharsEnd);
+extern int SdifSkipASCIIUntil  (FILE* fr, size_t *NbCharRead, char *CharsEnd);
 
-extern int
-SdifFGetString(char* s, int ncMax, FILE* fr, int *NbCharRead);
-
-extern int
-SdifFGetName(char *Name, FILE* fr, int *NbCharRead);
-
-extern int
-SdifFWritePadding(unsigned int Padding, FILE *fw);
-
-extern int
-SdifFReadPadding(unsigned int Padding, FILE *fr);
-
-extern int
-SdifFReadUndeterminatedPadding(FILE *fr);
-
-extern int
-SdifFReadSpace(FILE* fr);
-
-extern int
-SdifFGetWordUntil(char* s, int ncMax, FILE* fr, int *NbCharRead,char *CharsEnd);
-
-extern int
-SdifFGetStringUntil(char* s, int ncMax, FILE* fr, int *NbCharRead, char *CharsEnd);
-
-extern int
-SdifFScanFloat4(FILE *stream, SdifFloat4 *ptr, unsigned int nobj);
-
-extern int
-SdifFScanFloat8(FILE *stream, SdifFloat8 *ptr, unsigned int nobj);
+extern size_t SdiffScanFloat4  (FILE *stream, SdifFloat4 *ptr, size_t nobj);
+extern size_t SdiffScanFloat8  (FILE *stream, SdifFloat8 *ptr, size_t nobj);
 
 #endif /* _SdifRWLowLevel_ */

@@ -1,82 +1,60 @@
 /* SdifGlobals.c
  *
  *
+ * author: Dominique Virolle 1997
  *
  */
 
 #include "SdifGlobals.h"
-
-#include <stdlib.h>
 #include <string.h>
+#include <stdlib.h>
 #include <ctype.h>
-
-
-/* !attention! recursive include */
-#include "SdifMatrixType.h"
-#include "SdifFrameType.h"
-#include "SdifStreamID.h"
-#include "SdifNameValue.h"
-
-SdifHashTableType *gSdifMatrixTypesTable;
-SdifHashTableType *gSdifFrameTypesTable;
-SdifHashTableType *gSdifStreamIDsTable;
-SdifNameValuesLType *gSdifNameValues;
 
 char gSdifString[_SdifStringLen];
 char gSdifString2[_SdifStringLen];
 char gSdifErrorMess[_SdifStringLen];
 
+char gSdifStringSignature[_SdifNbMaxPrintSignature][5];
+/* [_SdifNbMaxPrintSignature] : it's possible to print  _SdifNbMaxPrintSignature
+ * signatures on stream in an unique expression but not more.
+ */
 
-void
-SdifInitAllHashTables(unsigned int HashSize)
+static int  CurrSringSignature = 0;
+
+char *
+SdifSignatureToString(SdifSignature Signature)
 {
-  gSdifMatrixTypesTable = SdifCreateHashTable(HashSize, eHashChar, SdifKillMatrixType);
-  gSdifFrameTypesTable  = SdifCreateHashTable(HashSize, eHashChar, SdifKillFrameType);
-  gSdifStreamIDsTable   = SdifCreateHashTable(1, eHashInt4, SdifKillStreamID);
+  char *pS, *Ret;
+
+  pS = (char*) &Signature;
+  
+  gSdifStringSignature[CurrSringSignature][0] = pS[0];
+  gSdifStringSignature[CurrSringSignature][1] = pS[1];
+  gSdifStringSignature[CurrSringSignature][2] = pS[2];
+  gSdifStringSignature[CurrSringSignature][3] = pS[3];
+  gSdifStringSignature[CurrSringSignature][4] = 0;
+
+  Ret = gSdifStringSignature[CurrSringSignature];
+  CurrSringSignature = (CurrSringSignature+1) % _SdifNbMaxPrintSignature;
+  return Ret;
 }
 
 
-
-
-
-
-
-
-void
-SdifKillAllHashTables(void)
+short
+SdifSignatureCmpNoVersion(SdifSignature Signature1, SdifSignature Signature2)
 {
-  SdifKillHashTable(gSdifMatrixTypesTable);
-  SdifKillHashTable(gSdifFrameTypesTable);
-  SdifKillHashTable(gSdifStreamIDsTable);
+  SdifUInt4 S1, S2;
+
+  S1 = Signature1 & 0x00ffffff;
+  S2 = Signature2 & 0x00ffffff;
+
+  return (S1 == S2);
 }
-
-
-
-
-
-
-
-
-
-int
-SdifPrintName(FILE* fw, char *Name)
-{
-  unsigned i;
-  int NbCharPrint = 0;
-
-  for(i=0; i<_SdifNameLen; i++)
-    if (fputc((int) Name[i], fw))
-      NbCharPrint++;
-  return NbCharPrint;
-}
-
-
-
 
 int
 SdifStrLen(const char *s)
 {
-  return strlen(s);
+  return (int) strlen(s);
 }
 
 
@@ -104,36 +82,8 @@ SdifStrNCpy(char *s1, const char *s2, unsigned int n)
 
 
 
-
-
-int
-SdifNameCmpWithoutVersion(const char NToTest[],
-			  const char WithN[])
-{
-  int
-    iC,
-    Dif = 0;
-
-  if (isdigit(NToTest[0]) && isdigit(WithN[0]))
-    {
-      for(iC=1; iC<_SdifNameLen; iC++)
-	if (NToTest[iC]!=WithN[iC])
-	  Dif++;
-      return Dif;
-    }
-  else
-    return SdifStrNCmp(NToTest, WithN, _SdifNameLen);
-}
-
-
-
-
-
-
-
-
 char*
-SdifCreateStrNCpy(char* Source, unsigned int Size)
+SdifCreateStrNCpy(char* Source, size_t Size)
 {
   char *NewString;
 
@@ -169,7 +119,7 @@ SdifKillStr(char* String)
 
 
 SdifUInt4
-SdifSizeofDataType(SdifDataTypeEnum DataType)
+SdifSizeofDataType(SdifDataTypeET DataType)
 {
   return (DataType & 0xff)>>3;  /* 8 last bits of DataType DIV 8 */
 }
@@ -177,10 +127,10 @@ SdifSizeofDataType(SdifDataTypeEnum DataType)
 
 
 
-unsigned int
-SdifPaddingCalculate(int NbBytes)
+size_t
+SdifPaddingCalculate(size_t NbBytes)
 {
-  unsigned int mod;
+  size_t mod;
 
   mod = NbBytes % _SdifPadding;
   return mod ? (_SdifPadding - mod) : 0;
@@ -189,50 +139,19 @@ SdifPaddingCalculate(int NbBytes)
 
 
 
-unsigned int
-SdifFPaddingCalculate(FILE *f, int NbBytes)
+size_t
+SdifFPaddingCalculate(FILE *f, size_t NbBytes)
 {
-  unsigned int mod;
+  size_t mod;
 
   if ((f != stdin) && (f != stdout) && (f != stderr))
     {
-      mod = ftell(f) % _SdifPadding;
+      mod = (size_t) ftell(f) % _SdifPadding;
       return mod ? (_SdifPadding - mod) : 0;
     }
   else
     return SdifPaddingCalculate(NbBytes);
 }
-
-
-
-
-
-
-/* !attention! recursive include */
-#include "SdifRWHighLevel.h"
-#include "SdifRWLowLevel.h"
-
-void
-SdifGenInit(unsigned int HashSize, char* TypesFileName)
-{
-  SdifInitMachineType();
-  SdifInitAllHashTables(HashSize);
-  SdifLoadPredefinedTypes(TypesFileName);
-  gSdifNameValues = SdifCreateNameValuesL(_SdifNameValueHashSize);
-}
-
-
-
-void
-SdifGenKill(void)
-{
-  SdifKillAllHashTables();
-  SdifKillNameValuesL(gSdifNameValues);
-}
-
-
-
-
 
 
 short

@@ -1,28 +1,28 @@
 /* SdifNameValue.c
  *
+ * Name values management. For 1 SdifFileT*, we have one SdifNameValueLT*
+ * which contains a list of hash tables. Each hach table contains name-values.
  *
  *
+ * author: Dominique Virolle 1997
  *
  */
 
 
 #include "SdifNameValue.h"
-
-#include "SdifRWLowLevel.h"
-
 #include <stdlib.h>
-#include <ctype.h>
 
 
 
 
 
-SdifNameValueType*
+
+SdifNameValueT*
 SdifCreateNameValue(char *Name,  char *Value)
 {
-  SdifNameValueType *NewNameValue;
+  SdifNameValueT *NewNameValue;
 
-  if (NewNameValue = (SdifNameValueType*) malloc (sizeof(SdifNameValueType)))
+  if (NewNameValue = (SdifNameValueT*) malloc (sizeof(SdifNameValueT)))
     {
       NewNameValue->Name  = SdifCreateStrNCpy(Name, SdifStrLen(Name)+1);
       NewNameValue->Value = SdifCreateStrNCpy(Value, SdifStrLen(Value)+1);
@@ -42,7 +42,7 @@ SdifCreateNameValue(char *Name,  char *Value)
 
 
 void
-SdifKillNameValue(SdifNameValueType *NameValue)
+SdifKillNameValue(SdifNameValueT *NameValue)
 {
   if (NameValue)
     {
@@ -58,41 +58,14 @@ SdifKillNameValue(SdifNameValueType *NameValue)
 
 
 
-
-
-
-
-
-int
-SdifFWriteOneNameValue(SdifNameValueType *NameValue, FILE *fw)
-{
-  int NbBytesWrite = 0;
-  
-  NbBytesWrite += SdifFWriteString(NameValue->Name, fw);
-  NbBytesWrite += fprintf(fw, "\t");
-  NbBytesWrite += SdifFWriteString(NameValue->Value, fw);
-  NbBytesWrite += fprintf(fw, ";\n");
-
-  return  NbBytesWrite;
-}
-
-
-
-
-
-
-
-
-
-
-SdifNameValueHTNType*
-SdifCreateNameValueHTN(SdifNameValueHTNType *Next,
-		       SdifHashTableType *NameValueHT,
+SdifNameValueHTNT*
+SdifCreateNameValueHTN(SdifNameValueHTNT *Next,
+		       SdifHashTableT *NameValueHT,
 		       SdifUInt4 NumHT)
 {
-  SdifNameValueHTNType *NewNVHTN;
+  SdifNameValueHTNT *NewNVHTN;
   
-  if (NewNVHTN = (SdifNameValueHTNType*) malloc (sizeof(SdifNameValueHTNType)))
+  if (NewNVHTN = (SdifNameValueHTNT*) malloc (sizeof(SdifNameValueHTNT)))
     {
       NewNVHTN->Next = Next;
       NewNVHTN->NameValueHT = NameValueHT;
@@ -110,17 +83,10 @@ SdifCreateNameValueHTN(SdifNameValueHTNType *Next,
 
 
 
-
-
-
-
-
-
-
-SdifNameValueHTNType*
-SdifKillNameValueHTN(SdifNameValueHTNType *NVHTN)
+SdifNameValueHTNT*
+SdifKillNameValueHTN(SdifNameValueHTNT *NVHTN)
 {
-  SdifNameValueHTNType *Next;
+  SdifNameValueHTNT *Next;
   
   if (NVHTN)
     {
@@ -142,20 +108,12 @@ SdifKillNameValueHTN(SdifNameValueHTNType *NVHTN)
 
 
 
-
-
-
-
-
-
-
-
-SdifNameValuesLType*
+SdifNameValuesLT*
 SdifCreateNameValuesL(SdifUInt4  HashSize)
 {
-  SdifNameValuesLType *NewNameValuesL;
+  SdifNameValuesLT *NewNameValuesL;
   
-  if (NewNameValuesL = (SdifNameValuesLType*) malloc (sizeof(SdifNameValuesLType)))
+  if (NewNameValuesL = (SdifNameValuesLT*) malloc (sizeof(SdifNameValuesLT)))
     {
       NewNameValuesL->HeadHTN = NULL;
       NewNameValuesL->TailHTN = NULL;
@@ -183,7 +141,7 @@ SdifCreateNameValuesL(SdifUInt4  HashSize)
 
 
 void
-SdifKillNameValuesL(SdifNameValuesLType *NameValuesL)
+SdifKillNameValuesL(SdifNameValuesLT *NameValuesL)
 {
   if (NameValuesL)
     {
@@ -209,10 +167,10 @@ SdifKillNameValuesL(SdifNameValuesLType *NameValuesL)
 
 
 
-SdifNameValuesLType*
-SdifNameValuesLNewHT(SdifNameValuesLType *NameValuesL)
+SdifNameValuesLT*
+SdifNameValuesLNewHT(SdifNameValuesLT *NameValuesL)
 {
-  SdifNameValueHTNType
+  SdifNameValueHTNT
     *NewNode;
 
   NewNode = SdifCreateNameValueHTN(NULL,
@@ -243,10 +201,10 @@ SdifNameValuesLNewHT(SdifNameValuesLType *NameValuesL)
 
 
 
-SdifHashTableType*
-SdifNameValuesLSetCurrHT(SdifNameValuesLType *NameValuesL, SdifUInt4 NumCurrHT)
+SdifHashTableT*
+SdifNameValuesLSetCurrHT(SdifNameValuesLT *NameValuesL, SdifUInt4 NumCurrHT)
 {
-  SdifNameValueHTNType 
+  SdifNameValueHTNT 
     *pNode;
   
   for(pNode = NameValuesL->HeadHTN; pNode; pNode = pNode->Next)
@@ -266,12 +224,12 @@ SdifNameValuesLSetCurrHT(SdifNameValuesLType *NameValuesL, SdifUInt4 NumCurrHT)
 
 
 
-SdifNameValueType*
-SdifNameValuesLGet(SdifNameValuesLType *NameValuesL, char *Name)
+SdifNameValueT*
+SdifNameValuesLGet(SdifNameValuesLT *NameValuesL, char *Name)
 {
-  SdifNameValueType
+  SdifNameValueT
     *NameValue;
-  SdifNameValueHTNType
+  SdifNameValueHTNT
     *pNode;
 
   for(pNode = NameValuesL->HeadHTN; pNode; pNode = pNode->Next)
@@ -289,8 +247,8 @@ SdifNameValuesLGet(SdifNameValuesLType *NameValuesL, char *Name)
 
 
 
-SdifNameValueType*
-SdifNameValuesLGetFromCurrHT(SdifNameValuesLType *NameValuesL, char *Name)
+SdifNameValueT*
+SdifNameValuesLGetFromCurrHT(SdifNameValuesLT *NameValuesL, char *Name)
 {
   return SdifHashTableSearch(NameValuesL->CurrHT, Name, SdifStrLen(Name)+1);
 }
@@ -304,10 +262,10 @@ SdifNameValuesLGetFromCurrHT(SdifNameValuesLType *NameValuesL, char *Name)
 
 
 
-SdifNameValueType*
-SdifNameValuesLPut(SdifNameValuesLType *NameValuesL, char *Name,  char *Value)
+SdifNameValueT*
+SdifNameValuesLPut(SdifNameValuesLT *NameValuesL, char *Name,  char *Value)
 {
-  SdifNameValueType
+  SdifNameValueT
     *NewNameValue;
   
   NewNameValue = SdifCreateNameValue(Name, Value);
@@ -320,62 +278,15 @@ SdifNameValuesLPut(SdifNameValuesLType *NameValuesL, char *Name,  char *Value)
 
 
 
-
-
-
-
-
-
-
-
-int
-SdifFScanOneNameValue(FILE *fr, int *NbBytesRead)
+SdifUInt2
+SdifNameValuesLIsNotEmpty(SdifNameValuesLT *NameValuesL)
 {
-  int
-    CharEnd;
-  static char 
-    CharsEnd[] = {' ', '\t', '\n', '\f', '\r', '\v', '{', '}', ',', ';',':','\0'};
+  SdifNameValueHTNT
+    *pNode;
+  
+  for(pNode = NameValuesL->HeadHTN; pNode; pNode = pNode->Next)
+    if (pNode->NameValueHT->NbOfData > 0)
+      return 1;
 
-  
-  /* Name */
-  CharEnd = SdifFGetStringUntil(gSdifString, _SdifStringLen, fr, NbBytesRead, CharsEnd);
-
-  if ( (CharEnd == '}') && (SdifStrLen(gSdifString) == 0) ) /* no more NameValue */
-    return  CharEnd;
-  if (! isspace(CharEnd))
-    {
-      sprintf(gSdifErrorMess,
-	      "Wait a space_char after \"%s\", read char : '%c' = %d",
-	      gSdifString,
-	      CharEnd,
-	      CharEnd);
-      _SdifError(eSyntax, gSdifErrorMess);
-      return  CharEnd;
-    }
-  
-  if (SdifNameValuesLGet(gSdifNameValues, gSdifString))
-    {
-      sprintf(gSdifErrorMess, "NameValue : %s ", gSdifString);
-      _SdifError(eReDefined, gSdifErrorMess);
-      CharEnd = SdifFGetStringUntil(gSdifString, _SdifStringLen, fr, NbBytesRead, ";");
-      return  CharEnd;
-    }
-  
-  
-  
-  /* Value */
-  CharEnd = SdifFGetStringUntil(gSdifString2, _SdifStringLen, fr, NbBytesRead, _SdifReservedChars);
-
-  if (CharEnd != (unsigned) ';')
-    {
-      sprintf(gSdifErrorMess,
-	      "Attempt to read ';' : \"%s%c\" ",
-	      gSdifString2,
-	      CharEnd);
-      _SdifError(eSyntax, gSdifErrorMess);
-      return  CharEnd;
-    }
-  
-  SdifNameValuesLPut(gSdifNameValues, gSdifString, gSdifString2);
-  return  CharEnd;
+  return 0;
 }

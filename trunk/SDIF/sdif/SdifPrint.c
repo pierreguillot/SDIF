@@ -4,6 +4,8 @@
  * print of structures with some reference
  * FILE* is usually stdout or stderr
  *
+ * author: Dominique Virolle 1997
+ *
  */
 
 
@@ -15,23 +17,29 @@
 
 
 void
-SdifPrintMatrixType(FILE *fw, SdifMatrixTypeType *MatrixType)
+SdifPrintMatrixType(FILE *fw, SdifMatrixTypeT *MatrixType)
 {
-  SdifColumnDefNodeType *Node;
+  SdifColumnDefNT *Node;
 
-  fprintf(fw, "  Mtrx  ");
-  SdifPrintName(fw, MatrixType->Name);
-  if (MatrixType->HeadColumnDefPre)
+  fprintf(fw, "  %s  %s",
+	  SdifSignatureToString(e1MTD),
+	  SdifSignatureToString(MatrixType->Signature));
+
+  if (MatrixType->MatrixTypePre)
     {
-      fprintf(fw, "\n    Pre {");
-      for(Node = MatrixType->HeadColumnDefPre; Node->Next;  Node = Node->Next)
-	fprintf(fw, "%s(%d), ",Node->ColumnDef->Name, Node->ColumnDef->Num);
-      fprintf(fw, "%s(%d)}",Node->ColumnDef->Name, Node->ColumnDef->Num);  
+      if (MatrixType->MatrixTypePre->HeadUse)
+	{
+	  fprintf(fw, "\n    Pre {");
+	  for(Node = MatrixType->MatrixTypePre->HeadUse; Node->Next;  Node = Node->Next)
+	    fprintf(fw, "%s(%d), ",Node->ColumnDef->Name, Node->ColumnDef->Num);
+	  fprintf(fw, "%s(%d)}",Node->ColumnDef->Name, Node->ColumnDef->Num);  
+	}
     }
-  if (MatrixType->HeadColumnDefUse)
+
+  if (MatrixType->HeadUse)
     {
       fprintf(fw, "\n    Use {");
-      for(Node = MatrixType->HeadColumnDefUse; Node->Next;  Node = Node->Next)
+      for(Node = MatrixType->HeadUse; Node->Next;  Node = Node->Next)
 	fprintf(fw, "%s(%d), ",Node->ColumnDef->Name, Node->ColumnDef->Num);
       fprintf(fw, "%s(%d)}",Node->ColumnDef->Name, Node->ColumnDef->Num);
     }
@@ -39,48 +47,64 @@ SdifPrintMatrixType(FILE *fw, SdifMatrixTypeType *MatrixType)
 }
 
 
+
+
+
 void
-SdifPrintAllMatrixType(FILE *fw)
+SdifPrintAllMatrixType(FILE *fw, SdifFileT* SdifF)
 {
   unsigned int
     iName;
-  SdifHashNodeType
+  SdifHashNT
     *pName;
   
-  for(iName=0; iName<gSdifMatrixTypesTable->HashSize; iName++)
-    for (pName = gSdifMatrixTypesTable->Table[iName]; pName;  pName=pName->Next)
+  for(iName=0; iName<SdifF->MatrixTypesTable->HashSize; iName++)
+    for (pName = SdifF->MatrixTypesTable->Table[iName]; pName;  pName=pName->Next)
       SdifPrintMatrixType(fw, pName->Data);
   
 }
 
+
+
+
 /*************** Frame Type ***************/
 
 void
-SdifPrintFrameType(FILE *fw, SdifFrameTypeType *FrameType)
+SdifPrintFrameType(FILE *fw, SdifFrameTypeT *FrameType)
 {
-  SdifComponentNodeType *Node;
+  SdifComponentNT *Node;
 
-  fprintf(fw, "  Fram  ");
-  SdifPrintName(fw, FrameType->Name);
-  if (FrameType->HeadComponentPre)
+  fprintf(fw, "  %s  %s",
+	  SdifSignatureToString(e1FTD),
+	  SdifSignatureToString(FrameType->Signature));
+
+  if (FrameType->FrameTypePre)
     {
-      fprintf(fw, "\n    Pre {\n");
-      for(Node = FrameType->HeadComponentPre; Node;  Node = Node->Next)
+      if (FrameType->FrameTypePre->HeadUse)
 	{
-	  fprintf(fw, "          ");
-	  SdifPrintName(fw,  Node->Component->MatrixTypeName);
-	  fprintf(fw, "  %s(%d);\n", Node->Component->Name, Node->Component->Num);
+	  fprintf(fw, "\n    Pre {\n");
+	  for(Node = FrameType->FrameTypePre->HeadUse; Node;  Node = Node->Next)
+	    {
+	      fprintf(fw, "          ");
+	      fprintf(fw, "%s  %s(%d);\n",
+		      SdifSignatureToString(Node->Component->MatrixSignature),
+		      Node->Component->Name,
+		      Node->Component->Num);
+	    }
+	  fprintf(fw, "        }");
 	}
-      fprintf(fw, "        }");
     }
-  if (FrameType->HeadComponentUse)
+
+  if (FrameType->HeadUse)
     {
       fprintf(fw, "\n    Use {\n");
-      for(Node = FrameType->HeadComponentUse; Node;  Node = Node->Next)
+      for(Node = FrameType->HeadUse; Node;  Node = Node->Next)
 	{
 	  fprintf(fw, "          ");
-	  SdifPrintName(fw,  Node->Component->MatrixTypeName);
-	  fprintf(fw, "  %s(%d);\n", Node->Component->Name, Node->Component->Num);
+	  fprintf(fw, "%s  %s(%d);\n",
+		  SdifSignatureToString(Node->Component->MatrixSignature),
+		  Node->Component->Name,
+		  Node->Component->Num);
 	}
       fprintf(fw, "        }");
     }
@@ -91,15 +115,15 @@ SdifPrintFrameType(FILE *fw, SdifFrameTypeType *FrameType)
 
 
 void
-SdifPrintAllFrameType(FILE *fw)
+SdifPrintAllFrameType(FILE *fw, SdifFileT* SdifF)
 {
   unsigned int
     iNode;
-  SdifHashNodeType
+  SdifHashNT
     *pNode;
   
-  for(iNode=0; iNode<gSdifFrameTypesTable->HashSize; iNode++)
-    for(pNode = gSdifFrameTypesTable->Table[iNode]; pNode; pNode = pNode->Next)
+  for(iNode=0; iNode<SdifF->FrameTypesTable->HashSize; iNode++)
+    for(pNode = SdifF->FrameTypesTable->Table[iNode]; pNode; pNode = pNode->Next)
       SdifPrintFrameType(fw, pNode->Data);
   
 }
@@ -108,11 +132,11 @@ SdifPrintAllFrameType(FILE *fw)
 /********** Matrix **********/
 
 void
-SdifPrintMatrixHeader(FILE *f, SdifMatrixHeaderType *MatrixHeader)
+SdifPrintMatrixHeader(FILE *f, SdifMatrixHeaderT *MatrixHeader)
 {
-  SdifPrintName(f, MatrixHeader->MatrixName);
   fprintf(f,
-	  "  DW: 0x%x     R: %d     C: %d\n",
+	  "%s  DataWidth: 0x%04x       Rows: %d   \t   Columns: %d\n",
+	  SdifSignatureToString(MatrixHeader->Signature),
 	  MatrixHeader->DataType,
 	  MatrixHeader->NbRow,
 	  MatrixHeader->NbCol);
@@ -120,7 +144,7 @@ SdifPrintMatrixHeader(FILE *f, SdifMatrixHeaderType *MatrixHeader)
 
 
 void
-SdifPrintOneRow(FILE *f, SdifOneRowType *OneRow)
+SdifPrintOneRow(FILE *f, SdifOneRowT *OneRow)
 {
   unsigned int iCol;
   
@@ -135,66 +159,20 @@ SdifPrintOneRow(FILE *f, SdifOneRowType *OneRow)
 	fprintf(f, "%8g  ", OneRow->Data.F8[iCol]);
       break;
     default :
-      sprintf(gSdifErrorMess, "Data of a OneRow : 0x%x", OneRow->DataType);
-      _SdifError(eTypeDataNotSupported, gSdifErrorMess);
+      fprintf(f, "data type not supported: 0x%x\n", OneRow->DataType);
       break;
     }
   fprintf(f, "\n");
 }
 
-void
-SdifPrintMatrixRows(FILE* f, SdifMatrixDataType *MatrixData)
-{
-  SdifUInt4 iRow;
-
-  for(iRow=0; iRow<MatrixData->Header->NbRow; iRow++)
-    {
-      fprintf(f, "  ");
-      SdifPrintOneRow(f, MatrixData->Rows[iRow]);
-    }
-}
-
-void
-SdifPrintMatrixData(FILE* f, SdifMatrixDataType *MtrxD)
-{
-  SdifMatrixTypeType *MtrxT;
-  SdifColumnDefNodeType *Node;
-  SdifUInt4 iCol;
-  
-  SdifPrintMatrixHeader(f, MtrxD->Header);
-  fprintf(f, "  ");  
-  if (MtrxT = SdifGetMatrixType(MtrxD->Header->MatrixName))
-    {
-      iCol = 0;
-      if (MtrxT->HeadColumnDefPre)
-	for(Node = MtrxT->HeadColumnDefPre;
-	    Node && (iCol<MtrxD->Header->NbCol);
-	      Node = Node->Next)
-	  {
-	    fprintf(f, "%8s  ",Node->ColumnDef->Name);
-	    iCol++;
-	  }
-      if (MtrxT->HeadColumnDefUse)
-	for(Node = MtrxT->HeadColumnDefUse;
-	    Node && (iCol<MtrxD->Header->NbCol);
-	    Node = Node->Next)
-	  {
-	    fprintf(f, "%8s  ",Node->ColumnDef->Name);
-	    iCol++;
-	  }
-    }
-  fprintf(f, "\n");  
-  SdifPrintMatrixRows(f, MtrxD);
-}
-
 /********** Frame ***********/
 
 void
-SdifPrintFrameHeader(FILE *f, SdifFrameHeaderType* FrameHeader)
+SdifPrintFrameHeader(FILE *f, SdifFrameHeaderT* FrameHeader)
 {
-  SdifPrintName(f, FrameHeader->FrameName);
   fprintf(f,
-	  "  S: 0x%x    Mc: %u     ID: %u     T: %g\n",
+	  "%s         Size: 0x%04x   NbMatrix: %u    \t NumID: %u     \t Time: %g\n",
+	  SdifSignatureToString(FrameHeader->Signature),
 	  FrameHeader->Size,
 	  FrameHeader->NbMatrix,
 	  FrameHeader->NumID,
@@ -202,35 +180,15 @@ SdifPrintFrameHeader(FILE *f, SdifFrameHeaderType* FrameHeader)
 }
 
 
-void
-SdifPrintFrameData(FILE *f, SdifFrameDataType *FrameData)
-{
-  SdifFrameTypeType *FrameType;
-  SdifComponentType *Component;
-  unsigned int iMtrxD;  
-  
-  FrameType = SdifGetFrameType(FrameData->Header->FrameName);
-  
-  SdifPrintFrameHeader(f, FrameData->Header);
-  if(FrameData->Matrix_s)
-    for(iMtrxD=0; iMtrxD<FrameData->Header->NbMatrix; iMtrxD++)
-      if (FrameData->Matrix_s[iMtrxD])
-	{
-	  Component = SdifFrameTypeGetNthComponent(FrameType, iMtrxD+1);
-	  fprintf(f, "'%s'\n", Component->Name);
-	  SdifPrintMatrixData(f, SdifFrameDataGetNthMatrixData(FrameData, Component->Num));
-	}
-  fprintf(f,"\n");
-}
-
-
 /************ High ***********/
 
 void
-SdifPrintAllType(FILE *fw)
+SdifPrintAllType(FILE *fw, SdifFileT* SdifF)
 {
-  fprintf(fw, "%s\n{\n", _STYP);
-  SdifPrintAllMatrixType(fw);
-  SdifPrintAllFrameType(fw);  
+  fprintf(fw, "%s\n{\n", SdifSignatureToString(e1TYP));
+  SdifPrintAllMatrixType(fw, SdifF);
+  SdifPrintAllFrameType(fw, SdifF);  
   fprintf(fw, "}\n\n");
 }
+
+

@@ -1,114 +1,67 @@
 /* SdifNameValue.h
  *
+ * Name values management. For 1 SdifFileT*, we have one SdifNameValueLT*
+ * which contains a list of hash tables. Each hach table contains name-values.
  *
  *
+ * author: Dominique Virolle 1997
  *
  */
 
 #ifndef _SdifNameValue_
 #define _SdifNameValue_
 
+
 #include "SdifGlobals.h"
-
 #include "SdifHash.h"
-
-#include <stdio.h>
-
-
 
 #define _SdifNameValueHashSize 31
 
 
-typedef struct SdifNameValueT
+typedef struct SdifNameValueS
 {
   char *Name;
   char *Value;
-} SdifNameValueType;
+} SdifNameValueT;
 
 
-extern SdifNameValueType*
-SdifCreateNameValue(char *Name,  char *Value);
-
-extern void
-SdifKillNameValue(SdifNameValueType *NameValue);
-
-extern int
-SdifFWriteOneNameValue(SdifNameValueType *NameValue, FILE *fw);
-
-/* SdifFScanOneNameValue after the NameValuesLType functions 
- */
+extern SdifNameValueT* SdifCreateNameValue(char *Name,  char *Value);
+extern void            SdifKillNameValue  (SdifNameValueT *NameValue);
 
 
 
+typedef struct SdifNameValueHTNS SdifNameValueHTNT;
 
-
-
-typedef struct SdifNameValueHTNT SdifNameValueHTNType;
-
-struct SdifNameValueHTNT
+struct SdifNameValueHTNS
 {
-  SdifNameValueHTNType *Next;
-  SdifHashTableType *NameValueHT;
+  SdifNameValueHTNT *Next;
+  SdifHashTableT *NameValueHT;
   SdifUInt4 NumHT;
 };
 
-extern SdifNameValueHTNType*
-SdifCreateNameValueHTN(SdifNameValueHTNType *Next,
-		       SdifHashTableType *NameValueHT,
-		       SdifUInt4 NumHT);
-
-extern SdifNameValueHTNType*
-SdifKillNameValueHTN(SdifNameValueHTNType *NVHTN);
+extern SdifNameValueHTNT* SdifCreateNameValueHTN(SdifNameValueHTNT *Next,
+						 SdifHashTableT *NameValueHT,
+						 SdifUInt4 NumHT);
+extern SdifNameValueHTNT* SdifKillNameValueHTN  (SdifNameValueHTNT *NVHTN);
 
 
 
-
-
-
-
-typedef struct SdifNameValuesLT
+typedef struct SdifNameValuesLS
 {
-  SdifNameValueHTNType *HeadHTN;
-  SdifNameValueHTNType *TailHTN;
-  SdifUInt4            NbHTN;
-  SdifHashTableType    *CurrHT;
-  SdifUInt4            HashSize;
-} SdifNameValuesLType;
+  SdifNameValueHTNT *HeadHTN;
+  SdifNameValueHTNT *TailHTN;
+  SdifUInt4          NbHTN;
+  SdifHashTableT    *CurrHT;
+  SdifUInt4          HashSize;
+} SdifNameValuesLT;
 
-extern SdifNameValuesLType* gSdifNameValues;
-
-extern SdifNameValuesLType*
-SdifCreateNameValuesL(SdifUInt4  HashSize);
-
-extern void
-SdifKillNameValuesL(SdifNameValuesLType *NameValuesL);
-
-extern SdifNameValuesLType*
-SdifNameValuesLNewHT(SdifNameValuesLType *NameValuesL);
-
-extern SdifHashTableType*
-SdifNameValuesLSetCurrHT(SdifNameValuesLType *NameValuesL, SdifUInt4 NumCurrHT);
-
-extern SdifNameValueType*
-SdifNameValuesLGet(SdifNameValuesLType *NameValuesL, char *Name);
-
-extern SdifNameValueType*
-SdifNameValuesLGetFromCurrHT(SdifNameValuesLType *NameValuesL, char *Name);
-
-extern SdifNameValueType*
-SdifNameValuesLPut(SdifNameValuesLType *NameValuesL, char *Name,  char *Value);
-
-
-
-
-
-extern int
-SdifFScanOneNameValue(FILE *fr, int *NbBytesRead);
-
-
-
-
+extern SdifNameValuesLT* SdifCreateNameValuesL       (SdifUInt4  HashSize);
+extern void              SdifKillNameValuesL         (SdifNameValuesLT *NameValuesL);
+extern SdifNameValuesLT* SdifNameValuesLNewHT        (SdifNameValuesLT *NameValuesL);
+extern SdifHashTableT*   SdifNameValuesLSetCurrHT    (SdifNameValuesLT *NameValuesL, SdifUInt4 NumCurrHT);
+extern SdifNameValueT*   SdifNameValuesLGet          (SdifNameValuesLT *NameValuesL, char *Name);
+extern SdifNameValueT*   SdifNameValuesLGetFromCurrHT(SdifNameValuesLT *NameValuesL, char *Name);
+extern SdifNameValueT*   SdifNameValuesLPut          (SdifNameValuesLT *NameValuesL, char *Name,  char *Value);
+extern SdifUInt2         SdifNameValuesLIsNotEmpty   (SdifNameValuesLT *NameValuesL);
 
 #endif /* _SdifNameValue_ */
-
-

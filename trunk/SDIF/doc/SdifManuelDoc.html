@@ -1,0 +1,630 @@
+<html>
+<head>
+   <title>Manuel utilisation de la librairie Sdif</title>
+   <!-- crée le 23/12/1997, Dominique Virolle -->
+
+</head>
+
+
+<body BGCOLOR="white">
+
+<p>
+<img src="logo.gif" alt="Image logo.gif" height=22 witdh=276 align=lefttop>
+</p>
+
+<p><hr width="100%"></p>
+
+<h1>SDIF</h1>
+<h1>Manuel utilisation de la librairie Sdif</h1>
+
+<em>
+<p>Analyse/Synthèse <br>
+<!--#echo var="LAST_MODIFIED"-->
+</p>
+</em>
+
+<au>Dominique Virolle</au>
+
+<p><hr width="100%"></p>
+
+<a name="Index"></a>
+
+<ul>
+
+  <li><a href="#Au départ..."><strong>Au départ...</strong></a>
+  <ul>
+    <li><a href="#Compilation">Compilation</a>
+    <li><a href="#Initialisation">Initialisation</a>
+    <li><a href="#Ouvrir et Fermer">Ouvrir et Fermer un fichier Sdif</a>
+    <li><a href="#Méthodologie des noms">Méthodologie des noms</a>
+  </ul>
+  <li><a href="#Opérations sur SdifFileT*"><strong>Opérations sur SdifFileT*</strong></a>
+  <ul>
+    <li><a href="#Ou trouver des exemples">Où trouver des exemples?</a>
+    <li><a href="#Opérations indépendantes du mode d'ouverture">
+                  Opérations indépendantes du mode d'ouverture</a>
+    <ul>
+      <li><a href="#Opérations sur la base de données de SdifFileT*">
+                    Opérations sur la base de données de SdifFileT*</a>
+      <ul>
+        <li><a href="#Opérations sur NameValues">Opérations sur NameValues</a>
+        <li><a href="#Opérations sur MatrixTypesTable">Opérations sur MatrixTypesTable</a>
+        <li><a href="#Opérations sur FrameTypesTable">Opérations sur FrameTypesTable</a>
+        <li><a href="#Opérations sur StreamIDsTable">Opérations sur StreamIDsTable</a>
+      </ul>
+      <li><a href="#Opérations sur les éléments temporaires de SdifFileT*">
+                    Opérations sur les éléments temporaires de SdifFileT*</a>
+    </ul>
+    <li><a href="#Opérations sur le fichier binaire">Opérations sur le fichier binaire</a>
+    <ul>
+      <li><a href="#Ecriture"><strong>Ecriture</strong></a>
+      <li><a href="#Lecture"><strong>Lecture</strong></a>
+    </ul>
+  </ul>
+</ul>
+  <p><hr width="100%"></p>
+
+
+
+
+
+
+  <a name="Au départ..."></a><h1>Au départ...</h1>
+
+
+
+
+    <a name="Compilation"></a><h2>Compilation</h2>
+
+<p>
+Il est nécessaire pour utiliser la librairie Sdif de connaître son
+emplacement (Actuellement dans: ~virolle/src/SDIF/libsdif/(system)).
+Les sources sont sous CVS ($CVSROOT), le projet est SDIF
+($CVSROOT/SDIF).  Aussi, il est nécessaire de connaître l'emplacement
+de <code>sdif.h</code> (Actuellement dans: ~virolle/src/SDIF/sdif). De
+plus il faudra que l'executable est accès au fichier
+<code>SdifTypes.STYP</code> qui est un fichier texte contenant la
+définition des types prédéfinis de Sdif (Actuellement dans:
+~virolle/src/SDIF/libsdif). Il se peut que l'administrateur système
+décide de n'avoir qu'une seule copie de ce fichier. Ainsi, il faut
+connaître le path associé.
+</p>
+<p>
+Lorsque tous ces accès fichiers sont résolus, inclure les paths dans
+le(s) makefile(s) pour <code>libsdif.a</code> et <code>sdif.h</code>.
+Ajouter l'option <code>-lsdif</code> au linkage du projet
+(cf. makefile du test de la librairie Chant avec Sdif dans
+$CVSROOT/libchant/test/tsdif).  Dans tous les fichiers sources
+utilisant Sdif ajouter un <code>#include Sdif.h</code>.
+</p>
+<p>
+<strong>Important</strong>: En cas de recompilation de la libraire,
+lire la première partie de la documentation du programmeur concernant
+les dépendances machines, systèmes et compilateurs (32 ou 64 bits, le
+type <code>fpos_t</code>, Little ou Big endian).
+</p>
+
+
+    <a name="Initialisation"></a><h2>Initialisation</h2>
+
+<p>
+Avant d'utiliser les fonctions Sdif, il est nécessaire d'initialiser
+la librairie, ce qui consiste à charger les types prédéfinis du fichier
+<code>SdifTypes.STYP</code>. La fonction à utiliser est
+<code>SdifGenInit(char*)</code> où l'argument est le nom du fichier
+des types prédéfinis avec le path. Il suffit d'une seule initialisation
+par execution du programme pour manipuler plusieurs fichier Sdif.
+</p>
+<p>
+A la fin de tous les traitements de fichiers Sdif, il est préférable
+d'annuler l'initialisation de Sdif avec la procédure
+<code>SdifGenKill(void)</code>. Ainsi toute la mémoire allouée par
+l'initialisation est rendue au système.
+</p>
+<p>
+Dans le cas où le fichier des types prédéfinis est introuvable, la
+librairie utilise les types qu'elle contient en hard-codé.  Cependant,
+tous les types n'y sont peut-être pas et un message d'erreur
+est écrit sur <code>stderr</code>.
+</p>
+
+
+    <a name="Ouvrir et Fermer"></a>
+         <h2>Ouvrir et Fermer un fichier Sdif</h2>
+
+<p>
+La librairie est conçu pour manipuler les fichiers Sdif avec des
+fonctions d'assez haut niveau. Il n'est normalement pas nécessaire
+d'utiliser les fonctions de stdio ou de iostream. Ainsi, la plupart
+des fonctions s'applique à un pointeur sur <code>SdifFileT</code> qui
+est une structure contenant toutes les informations d'un fichier et
+plus particulièrement le flux <code>FILE *Stream</code>. L'ouverture
+et la fermeture d'un fichier Sdif ressemble fortement aux méthodes
+classiques avec <code>FILE*</code>. On utilise <code>SdifFileT*
+SdifOpenFile(char*, int)</code> et
+<code>SdifCloseFile(SdifFileT*)</code>. Exemple:
+</p>
+<pre>
+#include "sdif.h"
+
+void main(void)
+{
+  SdifFileT *MySdifFileToWrite;
+  SdifFileT *MySdifFileToRead;
+
+  SdifGenInit("SdifTypes.STYP");
+
+  MySdifFileToWrite = SdifOpenFile("NewFile.sdif",      eWriteFile);
+  MySdifFileToRead  = SdifOpenFile("ExistingFile.sdif", eReadFile);
+  /* ... */
+  SdifCloseFile(MySdifFileToWrite);
+  SdifCloseFile(MySdifFileToRead);
+
+  SdifGenKill();
+}
+</pre>
+<p>
+On peut remarquer dans cet exemple les deux modes d'ouverture d'un
+fichier Sdif:
+<ul>
+  <li>eWriteFile pour écrire un nouveau fichier Sdif,</li>
+  <li>eReadFile pour lire un fichier Sdif existant.</li>
+</ul>
+Il existe un troisième mode mais qui est réservé à l'administrateur
+de la librairie. Si le fichier en lecture est introuvable, alors
+on a un message sur stderr et une sortie violante <code>exit(1)</code>
+</p>
+
+
+
+    <a name="Méthodologie des noms"></a>
+         <h2>Méthodologie des noms</h2>
+
+<p>
+Le code de la librairie Sdif est construit avec un formalisme au
+niveau des noms des structures, des variables et des fonctions.  Il
+est souhaitable pour les futurs maintenances de Sdif que les noms des
+fonctions utilisateurs ne commencent pas par 'Sdif'.  En particulier,
+ne pas nommer une fonction SdifFReadMatrix ou SdifFReadFrame...
+</p>
+
+
+
+  <a name="Opérations sur SdifFileT*"></a>
+          <h1>Opérations sur SdifFileT*</h1>
+
+    <a name="Ou trouver des exemples"></a>
+         <h2>Où trouver des exemples?</h2>
+
+<p>(12/1997). Il existe plusieurs utilisations de la librairie:
+<ul>
+  <li>Dans la librairie Chant se trouve un lecteur-synthètiseur
+(développement de ce module: Dominique Virolle (Ircam)),</li>
+  <li>Dans le programme Diphone (Macintosh) se trouve un importeur
+(lecteur) et un exporteur (écrivain) avec les mêmes connaissances que
+Chant (développement: Adrien Lefèvre (Ircam)),</li>
+  <li>Dans la librairie Sdif elle-même, se trouve un lecteur et un
+écrivain pour les conversions avec des fichiers pseudo-Sdif
+texte. Mais, il n'y a pas d'utilisations des données.</li>
+</ul>
+</p>
+
+
+    <a name="Opérations indépendantes du mode d'ouverture"></a>
+         <h2>Opérations indépendantes du mode d'ouverture</h2>
+
+
+
+      <a name="Opérations sur la base de données de SdifFileT*"></a>
+           <h3>Opérations sur la base de données de SdifFileT*</h3>
+
+
+        <a name="Opérations sur NameValues"></a>
+              <h4>Opérations sur NameValues</h4>
+
+<p>
+SdifNameValuesLT* SdifNameValuesLNewHT
+(SdifNameValuesLT *NameValuesL)<br>
+</p>
+<p>
+SdifNameValueT* SdifNameValuesLPut
+(SdifNameValuesLT *NameValuesL, char *Name,  char *Value)<br>
+</p>
+<p>
+SdifHashTableT* SdifNameValuesLSetCurrHT
+(SdifNameValuesLT *NameValuesL, SdifUInt4 NumCurrHT)<br>
+</p>
+<p>
+SdifNameValueT* SdifNameValuesLGet
+(SdifNameValuesLT *NameValuesL, char *Name)<br>
+</p>
+<p>
+SdifNameValueT* SdifNameValuesLGetFromCurrHT
+(SdifNameValuesLT *NameValuesL, char *Name)<br>
+</p>
+
+        <a name="Opérations sur MatrixTypesTable"></a>
+             <h4>Opérations sur MatrixTypesTable</h4>
+
+<p>
+SdifMatrixTypeT* SdifCreateMatrixType
+(SdifSignature Signature, SdifMatrixTypeT *PredefinedMatrixType)<br>
+</p>
+<p>
+SdifMatrixTypeT* SdifMatrixTypeInsertTailColumnDef
+(SdifMatrixTypeT *MatrixType, char *NameCD)<br>
+</p>
+<p>
+void SdifPutMatrixType
+(SdifHashTableT *MatrixTypesTable, SdifMatrixTypeT* MatrixType)<br>
+</p>
+<p>
+SdifUInt4 SdifMatrixTypeGetNumColumnDef
+(SdifMatrixTypeT *MatrixType, char *NameCD)<br>
+</p>
+<p>
+SdifColumnDefT* SdifMatrixTypeGetColumnDef
+(SdifMatrixTypeT *MatrixType, char *NameCD)<br>
+</p>
+<p>
+SdifColumnDefT* SdifMatrixTypeGetNthColumnDef
+(SdifMatrixTypeT *MatrixType, SdifUInt4 NumCD)<br>
+</p>
+<p>
+SdifMatrixTypeT* SdifGetMatrixType
+(SdifHashTableT *MatrixTypesTable, SdifSignature Signature)<br>
+</p>
+
+
+        <a name="Opérations sur FrameTypesTable"></a>
+             <h4>Opérations sur FrameTypesTable</h4>
+
+<p>
+SdifFrameTypeT* SdifCreateFrameType
+(SdifSignature FrameSignature, SdifFrameTypeT *PredefinedFrameType)<br>
+</p>
+<p>
+SdifFrameTypeT* SdifFrameTypeInsertTailComponent
+(SdifHashTableT *MatrixTypesTable,
+ SdifFrameTypeT *FrameType,
+ SdifSignature MatrixSignature,
+ char *NameC)<br>
+</p>
+<p>
+void SdifPutFrameType
+(SdifHashTableT *FrameTypesTable, SdifFrameTypeT *FrameType)<br>
+</p>
+<p>
+SdifUInt4 SdifFrameTypeGetNumComponent
+(SdifFrameTypeT *FrameType, char *NameCD)<br>
+</p>
+<p>
+SdifComponentT* SdifFrameTypeGetComponent
+(SdifFrameTypeT *FrameType, char *NameCD)<br>
+</p>
+<p>
+SdifComponentT* SdifFrameTypeGetNthComponent 
+(SdifFrameTypeT *FrameType, SdifUInt4 NumC)<br>
+</p>
+<p>
+SdifFrameTypeT* SdifGetFrameType
+(SdifHashTableT *FrameTypesTable, SdifSignature FrameSiganture)<br>
+</p>
+
+        <a name="Opérations sur StreamIDsTable"></a>
+                <h4>Opérations sur StreamIDsTable</h4>
+
+<p>
+SdifStreamIDT* SdifCreateStreamID
+(SdifUInt4 NumID, char *Source, char *TreeWay)<br>
+</p>
+
+
+      <a name="Opérations sur les éléments temporaires de SdifFileT*"></a>
+           <h3>Opérations sur les éléments temporaires de SdifFileT*</h3>
+
+<p>
+SdifFrameHeaderT* SdifSetCurrFrameHeader
+(SdifFileT *SdifF, SdifSignature Signature, SdifUInt4 Size,
+ SdifUInt4 NbMatrix, SdifUInt4 NumID, SdifFloat8 Time)<br>
+</p>
+<p>
+SdifMatrixHeaderT* SdifSetCurrMatrixHeader
+(SdifFileT *SdifF, SdifSignature Signature,
+ SdifDataTypeET DataType, SdifUInt4 NbRow, SdifUInt4 NbCol)<br>
+</p>
+<p>
+SdifOneRowT* SdifSetCurrOneRow
+(SdifFileT *SdifF, void *Values)<br>
+</p>
+<p>
+SdifOneRowT* SdifSetCurrOneRowCol
+(SdifFileT *SdifF, SdifUInt4 numCol, SdifFloat8 Value)<br>
+</p>
+<p>
+SdifFloat8 SdifCurrOneRowCol
+(SdifFileT *SdifF, SdifUInt4 numCol)<br>
+</p>
+<p>
+SdifFloat8 SdifCurrOneRowColName
+(SdifFileT *SdifF, SdifMatrixTypeT *MatrixType, char *NameCD)<br>
+</p>
+<p>
+SdifSignature SdifCurrSignature (SdifFileT *SdifF)<br>
+</p>
+<p>
+SdifSignature SdifCleanCurrSignature (SdifFileT *SdifF)<br>
+</p>
+<p>
+SdifSignature SdifCurrFrameSignature (SdifFileT *SdifF)<br>
+</p>
+<p>
+SdifSignature SdifCurrMatrixSignature (SdifFileT *SdifF)<br>
+</p>
+<p>
+SdifOneRowT* SdifCurrOneRow (SdifFileT *SdifF)<br>
+</p>
+<p>
+SdifUInt4 SdifCurrNbCol (SdifFileT *SdifF)<br>
+</p>
+<p>
+SdifUInt4 SdifCurrNbRow (SdifFileT *SdifF)<br>
+</p>
+<p>
+SdifUInt4 SdifCurrNbMatrix (SdifFileT *SdifF)<br>
+</p>
+<p>
+SdifUInt4 SdifCurrID (SdifFileT *SdifF)<br>
+</p>
+<p>
+SdifFloat8 SdifCurrTime (SdifFileT *SdifF)<br>
+</p>
+
+
+    <a name="Opérations sur le fichier binaire"></a>
+         <h2>Opérations sur le fichier binaire</h2>
+
+      <a name="Ecriture"></a><h3>Ecriture</h3>
+
+
+<p>
+size_t  SdifFWriteGeneralHeader (SdifFileT *SdifF)<br>
+écrit sur le fichier 'SDIF' puis 4 bytes à 0.
+</p>
+<p>
+size_t  SdifFWriteAllASCIIChunks (SdifFileT *SdifF)<br>
+écrit tous les chunks ASCII. C'est à dire: les tables de names values,
+les types créés ou complétés, et les Stream ID. Il faut donc au
+préalable avoir rempli complétement les tables avant de la
+lancer. Cette fonction de peut donc pas être executer une 2nd fois
+durant une écriture.
+</p>
+<p>
+size_t  SdifFWriteMatrixHeader (SdifFileT *SdifF)<br>
+Après avoir donner une valeur à chaque champ de SdifF->CurrMtrxH gràce
+à la fonction SdifFSetCurrMatrixHeader, SdifFWriteMatrixHeader écrit
+toute l'entête de la matrice.  Cette fonction réalise aussi une mise à
+jour de SdifF->CurrOneRow, tant au niveau de l'allocation mémoire que
+du type de données.
+</p>
+<p>
+size_t  SdifFWriteOneRow (SdifFileT *SdifF)<br>
+Après avoir donner les valeurs à chaque case de SdifF->CurrOneRow à
+l'aide de SdifFSetCurrOneRow ou de SdifFSetCurrOneRowCol (suivant que
+l'on possède déjà un tableau flottant ou respectivement une méthode
+pour retrouver une valeur de colonne), SdifFWriteOneRow écrit 1 ligne
+de matrice suivant les paramètres de SdifF->CurrMtrxH.
+</p>
+<p>
+size_t  SdifFWriteFrameHeader (SdifFileT *SdifF)<br>
+Après avoir donner une valueur à chaque champ de SdifF->CurrFramH
+gràce à la fonction SdifFSetCurrFrameHeader, SdifFWriteFrameHeader
+écrit toute l'entête de frame.  Lorsque la taille est inconnue au
+moment de l'écriture, donner la valeur _SdifUnknownSize. Ensuite,
+compter le nombre de bytes écrit dans le frame et réaliser un
+SdifUpdateChunkSize avec la taille
+calculée.
+</p>
+<p>
+size_t  SdifFWritePadding (SdifFileT *SdifF, size_t Padding)<br>
+Cette fonction permet en fin d'écriture de matrice d'ajouter le
+Padding nécessaire. Il faut cependant avoir la taille de ce
+Padding. On utilise SdifFPaddingCalculate(SdifF->Stream,
+SizeSinceAlignement) où SizeSinceAllignement est un
+<code>size_t</code> désignant le nombre de bytes qui sépare la
+position actuelle d'écriture avec une position connue où le fichier
+est aligné sur 64 bits (en général, c'est la taille de la matrice en
+cours d'écriture: NbRow*NbCol*DatWitdh).
+</p>
+<p>
+void SdifUpdateChunkSize (SdifFileT *SdifF, size_t ChunkSize)<br>
+execute un retour fichier de ChunkSize bytes et l'écrit, donc on
+écrase la taille du chunk ou du frame.  Dans le cas où le fichier est
+stderr ou stdout, l'action n'est pas réalisée.
+</p>
+
+<pre>
+/* L'exemple suivant essaye de montrer l'ordonnancement des appels
+de fonction. Biensûr ce code devrait être plus modulaire. En effet,
+il devrait y avoir une fonction par niveau structurel d'écriture:
+une(plus) fonction(s) d'écriture de matrice, une(plus fonction(s)
+d'écriture de frame...
+*/
+#include "sdif.h"
+
+void main(void)
+{
+  SdifFileT   *SdifF;
+  SdifUInt4    NbMatrix = 3;
+  SdifUInt4    NumID = 0;
+  SdifFloat8   Time = 0.0;
+  SdifFloat4   TabValue[] = {1,2,3,4,5,6,7};
+  SdifFloat4  *pTabValue;
+  size_t       SizeFrameW;
+  size_t       SizeMatrixW;
+
+  pTabValue = TabValue; /* pour permettre le cast par pointeur */
+
+  SdifGenInit("SdifTypes.STYP");
+
+  SdifF = SdifOpenFile("NewFile.sdif",      eWriteFile);
+
+
+  /* remplir les tables NameValues, MatrixTypesTable,
+   * FrameTypesTable et StreamIDsTable.
+   */
+  [ ..... ]
+
+  /* écriture de l'entête */
+  SdifFWriteGeneralHeader (SdifF);
+  /* écriture des chunks ASCII */
+  SdifFWriteAllASCIIChunks (SdifF)
+
+
+  /****FRAME HEADER*****/
+  /* Mise à jour le l'entête de frame à écrire */
+  SdifSetCurrFrameHeader (SdifF, '1FOB', _SdifUnknownSize, NbMatrix, NumID, Time);
+  /* écriture de l'entête de frame */
+  SizeFrameW = SdifFWriteFrameHeader (SdifF);
+
+
+  /****FIRST MATRIX***/
+  /* Mise à jour le l'entête de matrice à écrire : 1 ligne, 1 colonne*/
+  SdifSetCurrMatrixHeader (SdifF, '1FQ0', eFloat4, 1, 1);
+  /* écriture de l'entête de frame */
+  SizeMatrixW = SdifFWriteMatrixHeader (SdifF);
+
+  /* Mise à jour de la ligne-buffer de SdifF
+   * La largeur des données est conservée par le eFloat4 de l'entête de matrice*/
+  SdifSetCurrOneRow (SdifF, (void*) pTabValue);
+  /* écriture de la ligne */
+  SizeMatrixW += SdifFWriteOneRow (SdifF);
+  /* Si on a d'autres lignes à écrire alors
+   * on répette SdifSetCurrOneRow et SizeMatrixW += SdifFWriteOneRow...
+   */
+
+  /* écriture du Padding en fin de matrice et ajout de la taille de la matrice écrite
+   * à la taile du frame.
+   */
+  SizeMatrixW += SdifFWritePadding(SdifF,
+                       SdifFPaddingCalculate(SdifF->Stream, SizeMatrixW))  
+  SizeFrameW += SizeMatrixW;
+
+
+  /** MATRIX 2 & 3 **/
+  [. 2 matrices à écrire
+   .
+   .]
+
+   
+  /* pas de padding en fin de frame car on est déjà aligné */
+
+  /* la taille écrite ne doit pas compter la signature et la taille===> -8 */
+  SizeFrameW -= 8;
+  SdifFUpdateChunkSize(SdifF, SizeFrameW);
+
+  SdifCloseFile(SdifF);
+
+  SdifGenKill();
+}
+</pre>
+
+
+
+      <a name="Lecture"></a><h3>Lecture</h3>
+
+
+<p><strong>Remarque</strong>: En lecture, on a toujours une avance sur
+la signature des chunks ou des frames. Ceci permet d'orientée la
+lecture suivant le type de données: chunk ou frame.
+</p>
+
+<p>
+int SdifFGetSignature (SdifFileT *SdifF, size_t *NbCharRead)<br>
+lit 4 bytes, les considère comme une signature qui est placée dans
+SdifF->CurrSignature, incrémente NbCharRead du nombre de bytes lus et
+renvoie le dernier caractère lu convert en int (-1 si erreur).
+</p>
+<p>
+size_t SdifFReadGeneralHeader (SdifFileT *SdifF)<br>
+lit l'entête du fichier, c'est à dire 'SDIF' puis 4 bytes.  affiche un
+message en cas de non reconnaissance du format.
+</p>
+<p>
+size_t SdifFReadAllASCIIChunks (SdifFileT *SdifF)<br>
+Cette fonction permet de lire tous les Chunk ASCII qui se trouveraient
+en début de fichier juste après l'entête générale. Elle s'arrête
+lorsqu'elle ne reconnaît pas la signature de chunk comme un ASCII
+Chunk. Cette signature est donc normalement celle d'un frame. Elle est
+stockée dans SdifF->CurrSignature. <sttrong>Il n'est donc pas
+nécessaire de la relire</strong>.
+</p>
+<p>
+size_t SdifFReadMatrixHeader (SdifFileT *SdifF)<br>
+Cette fonction lit une entête de matrice <strong>signature
+incluse</strong>.  Elle vérifie le type de matrice, le champ
+DataType. Toute les données se trouvent stockées dans
+SdifF->CurrMtrxH. La plupart de ses champs sont directement accessible
+par les fonctions indépendantes du mode d'ouverture du fichier.
+<strong>Elle effectue une mise à jour de l'allocation mémoire de
+SdifF->CurrOneRow en fonction des paramètres de l'entête de
+matrice.</strong> Ainsi, on est normalement près pour lire chaque
+ligne de la matrice courrante.
+</p>
+<p>
+size_t SdifFReadOneRow (SdifFileT *SdifF)<br>
+Cette fonction permet de lire 1 ligne de matrice. Les données lues
+sont stockées dans SdifF->CurrOneRow (jusqu'à une prochaine lecture
+d'entête de matrice qui réinitialise ses paramètres).
+</p>
+<p>
+size_t SdifFReadFrameHeader (SdifFileT *SdifF)<br>
+Cette fonction lit l'entête d'un frame à partir de la taille et
+jusqu'au temps. Donc <strong>elle ne lit pas la signature</strong>
+mais donne à SdifF->CurrFramH->Signature la valeur de
+SdifF->CurrSignature.  La lecture doit se faire avant, avec
+SdifFGetSignature.
+</p>
+<p>
+size_t SdifSkipMatrix (SdifFileT *SdifF)<br>
+Cette fonction permet de passer une matrice toute entière entête
+incluse. Elle est utile lorsque qu'un frame contient plus de matrices
+que le programme lecteur n'en connaît. Il peut ainsi les passer pour
+retomber sur un autre frame.
+</p>
+<p>
+size_t SdifSkipMatrixData (SdifFileT *SdifF)<br>
+Cette fonction permet de passer une matrice mais après la lecture de
+l'entête. On s'en sert lorsque le type de matrice est mauvais,
+inconnu, non interprétable par le programme lecteur.
+</p>
+<p>
+size_t SdifSkipFrameData (SdifFileT *SdifF)<br>
+Cette fonction à le même sens que SdifSkipMatrixData mais pour les
+frames. Il faut donc pour l'utiliser avoir au préalable lu la
+signature et l'entête.
+</p>
+<p>
+size_t SdifFReadPadding (SdifFileT *SdifF, size_t Padding)<br>
+Cette fonction permet de lire le Padding en fin de matrice.
+l'utilisation classique de cette fonctin est:<br>
+<code> SizeR = SdifFReadPadding(SdifF,
+SdifFPaddingCalculate(SdifF->Stream, SizeR));</code><br>
+où SizeR est la taille en bytes lue depuis le début de la matrice,
+c'est à dire NbRow*NbCol*DataWith. En réalité, pour que
+SdifFPaddingCalculate fonctionne, il est seulement nécessaire que
+SizeR soit le nombre de bytes qui s'épare la position actuelle dans le
+fichier et un byte, repère d'allignement sur 64 bits.
+</p>
+
+
+<p><hr width="100%"></p>
+
+</body>
+</html>
+  <a name=""></a><h1></h1>
+    <a name=""></a><h2></h2>
+      <a name=""></a><h3></h3>
+        <a name=""></a><h4></h4>
+<p></p>
+

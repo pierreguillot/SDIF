@@ -1,6 +1,8 @@
 /* SdifError.h
  *
+ * Fatal or program error management
  *
+ * author: Dominique Virolle 1997
  * 
  */
 
@@ -8,41 +10,41 @@
 #ifndef _SdifError_
 #define _SdifError_
 
-typedef enum eOutReport
+typedef enum SdifErrorE
 {
-  eFalse = 256,
-  eTrue,
-  eFreeNull,
+  eFalse = 0,
+  eTrue = 1,
+  eFreeNull = 256,
   eAllocFail,
-  eUserdefBefore,
-  eTypeDataNotSupported,
   eArrayPosition,
-  eWordCut,
   eEof,
-  eTokenLength,
-  eNameLength,
-  eReDefined,
-  eUnDefined,
-  eSyntax,
-  eAffectationOrder,
-  eRecursiveDetect,
-  eBadType,
-  eBadHeader,
-  eBadTypesFile,
-  eInfoTableMissing,
-  eOnlyOneChunkOf,
   eFileNotFound,
-  eUnInterpreted
-} SdifOutReportType;
+  eInvalidPreType,
+  eAffectationOrder,
+  eNoModifErr,
+  eNotInDataTypeUnion,
+  eNotFound,
+  eExistYet,
+  eWordCut,
+  eTokenLength
+} SdifErrorEnum;
 
 extern char *SdifErrorFile;
 extern int SdifErrorLine;
 
-extern void
-SdifErrorWarning(SdifOutReportType Error, void *ErrorMess);
+extern void SdifErrorWarning(SdifErrorEnum Error, void *ErrorMess);
 
 #define _SdifError(error, mess) \
 (SdifErrorFile = __FILE__, SdifErrorLine = __LINE__, SdifErrorWarning((error), (mess)))
+
+
+#define _Debug(mess) \
+(SdifErrorFile = __FILE__, SdifErrorLine = __LINE__, \
+fprintf(stderr, "%s, %d:\t", SdifErrorFile, SdifErrorLine), \
+fprintf(stderr, (mess)))
+
+#define _SdifRemark(mess) \
+fprintf(stderr, "*Sdif* %s\n", mess)
 
 #endif /* _SdifError_ */
 

@@ -6,15 +6,23 @@ SDIF_SRC = \
 	SdifHash.c \
 	SdifGlobals.c \
 	SdifError.c \
+	SdifNameValue.c \
 	SdifMatrixType.c \
 	SdifFrameType.c \
 	SdifStreamID.c \
-	SdifNameValue.c \
-	SdifRWLowLevel.c \
 	SdifMatrix.c \
 	SdifFrame.c \
-	SdifRWHighLevel.c \
+	SdifPrint.c \
+	SdifTest.c \
+	SdifTimePosition.c \
+	SdifFile.c \
+	SdifRWLowLevel.c \
+	SdifFGet.c \
+	SdifFRead.c \
+	SdifFScan.c \
+	SdifFPut.c \
+	SdifFPrint.c \
+	SdifFWrite.c \
 	SdifTextConv.c \
 	SdifConvToText.c \
-	SdifPrint.c \
-	SdifUInt8.c
+	SdifPreTypes.c

@@ -1,6 +1,6 @@
-#  src test
+#  src tosdif
 
 
 
 
-SRC = main.c
+SRC = test.c

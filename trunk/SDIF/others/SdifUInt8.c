@@ -2,7 +2,9 @@
  *
  * code to emulate 64 bits long on 32 bits machine
  *
+ * author: Dominique Virolle 1997
  *
+ * remove form project Nov97
  *
  *
  */
@@ -181,7 +183,7 @@ void SdifUInt8Sub(SdifUInt8* res, SdifUInt8 a, SdifUInt8 b)
 
   if (SdifUInt8Inf(a,b))
     {
-      printf("error\n");
+      fprintf(stderr, "error in SdifUInt8Sub a<b\n");
       SdifUInt8Sub(res, b, a);
       /* error */
     }
