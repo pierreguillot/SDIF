@@ -25,4 +25,5 @@ easdif-common.i
 sdif-common.i
 Makefile
 perl5/Makefile
+python/Makefile
 )
