@@ -1,6 +1,11 @@
-/* $Id: sdif_version.h.in,v 1.3 2003-05-23 16:14:43 schwarz Exp $ -*-c-*-
+/* $Id: sdif_version.h.in,v 1.4 2003-05-23 17:15:21 schwarz Exp $ -*-c-*-
+
+   sdif_version.h.in generates sdif_version.h with the right 
+   version defines taken from configure.in
 
    $Log: not supported by cvs2svn $
+   Revision 1.3  2003/05/23 16:14:43  schwarz
+   Added definition of total VERSION string.
 */
 
 
