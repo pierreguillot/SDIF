@@ -1,4 +1,4 @@
-/* $Id: SdifFile.c,v 3.7 1999-11-17 16:22:37 schwarz Exp $
+/* $Id: SdifFile.c,v 3.8 2000-03-01 11:19:36 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -16,6 +16,12 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.7  1999/11/17  16:22:37  schwarz
+ * SdifCheckFileFormat now only reads the first 4 bytes.  This avoids a
+ * subtle bug if the file was shorter than 16 bytes, as e.g. with f0
+ * test files:  The library would bail out on EOF (not a good idea to do
+ * that anyway).
+ *
  * Revision 3.6  1999/10/13  16:05:45  schwarz
  * Changed data type codes (SdifDataTypeET) to SDIF format version 3, as
  * decided with Matt Wright June 1999, added integer data types.
@@ -93,18 +99,24 @@
 #include "SdifPreTypes.h"
 #include "SdifFScan.h"
 
+#if HOST_OS_UNIX
+#include <sys/types.h>
+#include <sys/stat.h>
+#endif
 
 
 int
-SdifCheckFileFormat (char *name)
+SdifCheckFileFormat (const char *name)
 {
-    int		ret = 0, size;
+    int		ret = 0;
+    size_t	size;
     SdifFileT	*file;
 
     SdifDisableErrorOutput ();
     if (file = SdifFOpen (name, eReadFile))
     {
-        ret  = SdifFGetSignature (file, &size) == eSDIF;
+        SdifFGetSignature (file, &size);
+        ret = file->CurrSignature == eSDIF;
 	SdifFClose (file);
     }
     SdifEnableErrorOutput ();
@@ -137,9 +149,8 @@ SdifFOpen(const char* Name, SdifFileModeET Mode)
 	  stdio = SdifStrEq(Name, "stdin")   ?  eBinaryModeStdInput   :
 		  SdifStrEq(Name, "stdout")  ?  eBinaryModeStdOutput  :
 		  SdifStrEq(Name, "stderr")  ?  eBinaryModeStdError   : 
-						 eBinaryModeUnknown;
+						eBinaryModeUnknown;
 
-      SdifF->isSeekable       = stdio == eBinaryModeUnknown;
       SdifF->Name             = SdifCreateStrNCpy(Name, SdifStrLen(Name)+1);
       SdifF->Mode             = Mode;
       SdifF->FormatVersion    = _SdifFormatVersion; /* default */
@@ -232,6 +243,15 @@ SdifFOpen(const char* Name, SdifFileModeET Mode)
 	  _SdifError(eFileNotFound, Name);
 	  SdifFClose (SdifF);
 	  SdifF = NULL;
+      }
+      else
+      {   /* check if we can perform seeks (with Sdiffsetpos) on this file */
+#if HOST_OS_UNIX
+	  SdifF->isSeekable  =  stdio == eBinaryModeUnknown
+			        && !S_ISFIFO (fileno (SdifF->Stream));
+#else
+	  SdifF->isSeekable  =  stdio == eBinaryModeUnknown;
+#endif
       }
   }
   else
@@ -622,7 +642,7 @@ SdifGenKill(void)
 void SdifPrintVersion(void)
 {
 #ifndef lint
-    static char rcsid[]= "$Revision: 3.7 $ IRCAM $Date: 1999-11-17 16:22:37 $";
+    static char rcsid[]= "$Revision: 3.8 $ IRCAM $Date: 2000-03-01 11:19:36 $";
 #endif
 
     if (SdifStdErr == NULL)
@@ -795,6 +815,12 @@ SdifUInt4
 SdifFCurrNbRow(SdifFileT *SdifF)
 {
   return SdifF->CurrMtrxH->NbRow;
+}
+
+SdifDataTypeET
+SdifFCurrDataType (SdifFileT *SdifF)
+{
+  return SdifF->CurrMtrxH->DataType;
 }
 
 SdifUInt4
