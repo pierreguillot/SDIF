@@ -32,6 +32,9 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.7  2001/05/02 09:34:46  tisseran
+ * Change License from GNU Public License to GNU Lesser Public License.
+ *
  * Revision 3.6  2000/11/15 14:53:32  lefevre
  * no message
  *
@@ -134,11 +137,15 @@ SdifPrintBlockNode(int sizealloc, char* mess, SdifBlockNodeT* BlockNode)
 }
 
 void*
-SdifMr_alloc(SdifBlockListT* L, size_t size, size_t nobj)
+SdifMr_alloc(SdifBlockListT* L, size_t size, size_t nobj, int clear)
 {
     void* ptr;
 
-    ptr = malloc(size*nobj);
+    if (clear)
+	ptr = calloc(nobj, size);
+    else
+	ptr = malloc(size * nobj);
+
     L->Alloc = SdifCreateBlockNode(L->Alloc, SdifErrorFile, SdifErrorLine, SdifMrType, ptr, size, nobj);
     L->BytesAlloc	+= size*nobj;
     L->BytesTotalAlloc	+= size*nobj;
