@@ -1,5 +1,13 @@
-2003-07-18  Axel Roebel  <Axel.Roebel@ircam.fr>
+2003-08-06  Axel Roebel  <Axel.Roebel@ircam.fr>
 Version 0.7.2
+
+	* easdif/easdif.h
+	Added SdifCheckFileFormat with std::string filename argument.
+
+	* easdif/easdifintro.h
+	demo command line follows installation prefix.
+	
+2003-07-18  Axel Roebel  <Axel.Roebel@ircam.fr>
 
 	* easdif/sdifmatrix.cpp, easdif/sdifmatrix.h
 	Improved documentation, moved constructors from .h to .cpp
@@ -425,4 +433,4 @@ Version 0.21
 	* ChangeLog: Added changelog to repository.
 
 
-$Id: ChangeLog,v 1.22 2003-07-18 21:20:18 roebel Exp $
+$Id: ChangeLog,v 1.23 2003-08-06 18:03:19 roebel Exp $
