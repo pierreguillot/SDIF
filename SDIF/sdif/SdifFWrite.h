@@ -1,4 +1,4 @@
-/* $Id: SdifFWrite.h,v 3.2 1999-08-25 18:32:35 schwarz Exp $
+/* $Id: SdifFWrite.h,v 3.3 1999-09-28 13:08:56 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -56,14 +56,14 @@ void main(void)
   SdifFWriteAllASCIIChunks (SdifF)
 
 
-  //***FRAME HEADER****
+  // ***FRAME HEADER****
   // Mise à jour le l'entête de frame à écrire 
   SdifSetCurrFrameHeader (SdifF, '1FOB', _SdifUnknownSize, NbMatrix, NumID, Time);
   // écriture de l'entête de frame 
   SizeFrameW = SdifFWriteFrameHeader (SdifF);
 
 
-  //***FIRST MATRIX**
+  // ***FIRST MATRIX**
   // Mise à jour le l'entête de matrice à écrire : 1 ligne, 1 colonne
   SdifSetCurrMatrixHeader (SdifF, '1FQ0', eFloat4, 1, 1);
   // écriture de l'entête de frame 
@@ -85,7 +85,7 @@ void main(void)
   SizeFrameW += SizeMatrixW;
 
 
-  //* MATRIX 2 & 3
+  // * MATRIX 2 & 3
   [. 2 matrices à écrire
    .
    .]
@@ -105,6 +105,9 @@ void main(void)
 
 LOG
  * $Log: not supported by cvs2svn $
+ * Revision 3.2  1999/08/25  18:32:35  schwarz
+ * Added cocoon-able comments with sentinel "DOC:" (on a single line).
+ *
  * Revision 3.1  1999/03/14  10:56:48  virolle
  * SdifStdErr add
  *

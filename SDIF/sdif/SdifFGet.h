@@ -1,4 +1,4 @@
-/* $Id: SdifFGet.h,v 3.2 1999-08-25 18:32:34 schwarz Exp $
+/* $Id: SdifFGet.h,v 3.3 1999-09-28 13:08:52 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -27,6 +27,9 @@ DESCRIPTION
 
 LOG
  * $Log: not supported by cvs2svn $
+ * Revision 3.2  1999/08/25  18:32:34  schwarz
+ * Added cocoon-able comments with sentinel "DOC:" (on a single line).
+ *
  * Revision 3.1  1999/03/14  10:56:38  virolle
  * SdifStdErr add
  *

@@ -1,4 +1,4 @@
-/* $Id: SdifRWLowLevel.c,v 3.4 1999-09-23 16:06:50 schwarz Exp $
+/* $Id: SdifRWLowLevel.c,v 3.5 1999-09-28 13:09:10 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -15,6 +15,9 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.4  1999/09/23  16:06:50  schwarz
+ * Fixed bug with size of signature (was 8 on alpha!).
+ *
  * Revision 3.3  1999/09/20  13:23:35  schwarz
  * Optimized SdifStringToSignature.
  *
@@ -35,6 +38,7 @@
  */
 
 
+#include <preincluded.h>
 #include "SdifRWLowLevel.h"
 #include "SdifHard_OS.h"
 #include "SdifError.h"

@@ -1,4 +1,4 @@
-/* $Id: SdifNameValue.c,v 3.1 1999-03-14 10:57:12 virolle Exp $
+/* $Id: SdifNameValue.c,v 3.2 1999-09-28 13:09:07 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -17,6 +17,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.1  1999/03/14  10:57:12  virolle
+ * SdifStdErr add
+ *
  * Revision 2.4  1999/02/28  12:16:54  virolle
  * memory report
  *
@@ -45,6 +48,7 @@
  */
 
 
+#include <preincluded.h>
 #include "SdifNameValue.h"
 #include <stdlib.h>
 

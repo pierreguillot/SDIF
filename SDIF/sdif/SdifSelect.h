@@ -1,4 +1,4 @@
-/* $Id: SdifSelect.h,v 3.2 1999-09-20 13:23:03 schwarz Exp $
+/* $Id: SdifSelect.h,v 3.3 1999-09-28 13:09:12 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -71,6 +71,9 @@ TODO
 
 LOG
   $Log: not supported by cvs2svn $
+  Revision 3.2  1999/09/20  13:23:03  schwarz
+  First finished version, API to be improved.
+
   Revision 3.1  1999/08/31  10:03:00  schwarz
   Added module SdifSelect which parses an access specification to a
   chosen part of SDIF data.  Can be added to a file name.  */
@@ -229,7 +232,8 @@ SdifSelectAdd_type_Range (SdifListT *list,
 
 #endif
 
-#ifdef _ANSI_C_SOURCE
+#ifdef __STDC__
+/*#if defined (_ANSI_C_SOURCE)  ||  defined (__STDC__)*/
 
 #define _addrangeproto(name, type, field) \
 void SdifSelectAdd##name##Range (SdifListT *list, \
