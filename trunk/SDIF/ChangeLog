@@ -1,11 +1,17 @@
-2002-12-17  Axel Roebel  <Axel.Roebel@ircam.fr>
+$Id: ChangeLog,v 1.12 2002-12-20 11:59:54 schwarz Exp $
+	
+Version 3.7.2	2002-12-17  Axel Roebel, Patrice Tisserand
 
 	* Bug fix and increased efficency in SdifNameValuesLSetCurrNVT.
 	For certain cases setting the current NVT has messed up 
 	the NVT indices.
-	
 
-$Id: ChangeLog,v 1.11 2002-12-17 15:59:14 roebel Exp $
+	* Fixed .exe extensions for building with cygwin.
+
+	* Fixed debug library names.
+	
+	* Conditional SdifFTruncate body, because not Posix.
+	
 	
 Version 3.7.1	2002-10-30  Diemo Schwarz, Patrice Tisserand
 

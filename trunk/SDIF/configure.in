@@ -1,6 +1,6 @@
 dnl -*-autoconf-*-  (No, it's an autoconf file!)
 dnl -*-m4-*- (He emacs, it's a m4 file)
-dnl $Id: configure.in,v 1.25 2002-11-27 17:59:19 roebel Exp $
+dnl $Id: configure.in,v 1.26 2002-12-20 11:59:54 schwarz Exp $
 dnl
 dnl configure.in		September 2000		Patrice Tisserand
 dnl
@@ -29,8 +29,12 @@ dnl Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 dnl
 dnl For any information regarding this and other IRCAM software, please
 dnl send email to:  sdif@ircam.fr
-dnl
+
+
 dnl $Log: not supported by cvs2svn $
+dnl Revision 1.25  2002/11/27 17:59:19  roebel
+dnl Added support for --enable-ftruncate option.
+dnl
 dnl Revision 1.24  2002/11/08 15:58:25  livshin
 dnl Added support for exe extensions on cygwin
 dnl
@@ -140,7 +144,7 @@ PACKAGE=SDIF
 
 SDIF_VERSION_MAJOR=3
 SDIF_VERSION_MINOR=7
-SDIF_VERSION_RELEASE=1
+SDIF_VERSION_RELEASE=2
 
 VERSION=$SDIF_VERSION_MAJOR.$SDIF_VERSION_MINOR.$SDIF_VERSION_RELEASE
 
