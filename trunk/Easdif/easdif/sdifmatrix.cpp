@@ -32,9 +32,13 @@
  * 
  * 
  * 
- * $Id: sdifmatrix.cpp,v 1.3 2003-04-29 15:18:04 schwarz Exp $ 
+ * $Id: sdifmatrix.cpp,v 1.4 2003-04-29 15:41:30 schwarz Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.3  2003/04/29 15:18:04  schwarz
+ * CreateMatrixData accepts SdifSignature or std::string,
+ * throws exception when unimplemented data type requested.
+ *
  * Revision 1.2  2003/04/06 16:31:08  roebel
  * Added license info
  *
@@ -126,7 +130,7 @@ void SDIFMatrix::CreateMatrixData_(const char *sig, SdifSignature ssig,
 	break;
 
     default:
-      cerr  << endl << "!!! matrix type " << mType << " to be implemented !!!" << endl;
+      cerr  << endl << "!!! matrix type " << mType << " not yet implemented !!!" << endl;
       throw;
     }
 }
@@ -206,10 +210,10 @@ int SDIFMatrix::Read(SdifFileT* file)
 }
 
 /* to see the matrix */
-void SDIFMatrix::View()
+void SDIFMatrix::Print()
 {
    std::cout << " Signature : " << m_Signature << std::endl;
-   mInter->view();
+   mInter->print();
 }
 
 

@@ -33,9 +33,12 @@
  * 
  * 
  * 
- * $Id: sdifmatrixdatainterface.h,v 1.2 2003-04-06 16:31:08 roebel Exp $ 
+ * $Id: sdifmatrixdatainterface.h,v 1.3 2003-04-29 15:41:30 schwarz Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  2003/04/06 16:31:08  roebel
+ * Added license info
+ *
  * Revision 1.1  2003/03/03 19:00:16  roebel
  * Moved src directory to new name easdif
  *
@@ -83,7 +86,7 @@ public:
     virtual int    GetInt(int i, int j)=0;
     virtual int    GetNbRow()=0;
     virtual int    GetNbCol()=0;
-    virtual void   view()=0;
+    virtual void   print()=0;
     virtual int    read(SdifFileT* file)=0;
     virtual void   Resize(int nrows, int ncols)=0;
     virtual int    write(SdifFileT* file)=0;

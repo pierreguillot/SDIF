@@ -32,9 +32,12 @@
  * 
  * 
  * 
- * $Id: sdifentity.h,v 1.5 2003-04-18 17:43:22 schwarz Exp $ 
+ * $Id: sdifentity.h,v 1.6 2003-04-29 15:41:30 schwarz Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.5  2003/04/18 17:43:22  schwarz
+ * eof() const method
+ *
  * Revision 1.4  2003/04/18 16:44:00  schwarz
  * Small changes to make easdif swiggable:
  * - name change for swig-generated classes
@@ -203,10 +206,10 @@ public:
 
 /** 
  * \ingroup description
- * View the SdifStringT* which have the types definitions of the frames
+ * Print the SdifStringT* which have the types definitions of the frames
  * and matrix
  */
-    int ViewTypes();
+    int PrintTypes();
 
 /** 
  * \ingroup description
@@ -298,7 +301,7 @@ public:
  * \ingroup nvt
  * to see all the Name Values Tables
  */
-    void ViewAllNVTs();
+    void PrintAllNVTs();
 
 /**
  * \ingroup nvt 

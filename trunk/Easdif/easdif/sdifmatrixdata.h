@@ -33,9 +33,12 @@
  * 
  * 
  * 
- * $Id: sdifmatrixdata.h,v 1.2 2003-04-06 16:31:08 roebel Exp $ 
+ * $Id: sdifmatrixdata.h,v 1.3 2003-04-29 15:41:30 schwarz Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  2003/04/06 16:31:08  roebel
+ * Added license info
+ *
  * Revision 1.1  2003/03/03 19:00:16  roebel
  * Moved src directory to new name easdif
  *
@@ -274,9 +277,9 @@ public:
 
 /** 
  * \ingroup otherdata
- * used for viewing the data 
+ * used for printing the data 
  */
-    void view()
+    void print()
 	{
 	    int row;
             int col;

@@ -11,14 +11,14 @@
 #define EASDIF_VERSION_MAJ 0
 
 /* Minor version number of easdif lib */
-#define EASDIF_VERSION_MIN 3
+#define EASDIF_VERSION_MIN 4
 
 /* Release number of easdif lib */
-#define EASDIF_VERSION_RELEASE 2
+#define EASDIF_VERSION_RELEASE 0
 
 /* Name of package */
 #define PACKAGE "Easdif"
 
 /* Version number of package */
-#define VERSION "0.3.2"
+#define VERSION "0.4.0"
 

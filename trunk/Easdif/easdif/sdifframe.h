@@ -34,9 +34,15 @@
  * sdifframe.h is composed of the different methods which are using to 
  * manipulate the frame.
  * 
- * $Id: sdifframe.h,v 1.3 2003-04-18 16:44:00 schwarz Exp $ 
+ * $Id: sdifframe.h,v 1.4 2003-04-29 15:41:30 schwarz Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.3  2003/04/18 16:44:00  schwarz
+ * Small changes to make easdif swiggable:
+ * - name change for swig-generated classes
+ * - eof() returns bool, not bool&
+ * - Matrix::Set takes int/float, not int&/float&
+ *
  * Revision 1.2  2003/04/06 16:31:08  roebel
  * Added license info
  *
@@ -111,12 +117,12 @@ public:
 
 /** 
  * Read : permit to read entirely a frame : the header and the data
- * ReadInfo : read the frame header (used by Read)
+ * ReadHeader : read the frame header (used by Read)
  * ReadData : read only the data of a frame (used by Read)
  * Write : write a frame
- * WriteInfo : write the frame header and the data (used by Write)
- * View : see the content of a frame
- * ViewInfo : see the frame header
+ * WriteHeader : write the frame header and the data (used by Write)
+ * Print : see the content of a frame
+ * PrintHeader : see the frame header
  * Resize : resize the vector of the frame that stock the reading
  * ClearData : clear the data of a frame to reused
  *
@@ -148,7 +154,7 @@ public:
  * read only the data of a frame (used by Read)
  * @return number of bytes read
  */
-    int  ReadInfo(SdifFileT* file);
+    int  ReadHeader(SdifFileT* file);
 
 /** 
  * \ingroup rnw
@@ -162,15 +168,15 @@ public:
  * write the frame header (used by Write)
  * @return number of bytes write
  */
-    int  WriteInfo(SdifFileT* file);
+    int  WriteHeader(SdifFileT* file);
 
     /* for SDIFEntity*/
     //int  Read(const SDIFEntity& entity);
     int  Read(SDIFEntity& entity);
     int  ReadData(const SDIFEntity& entity);
-    int  ReadInfo(const SDIFEntity& entity);
+    int  ReadHeader(const SDIFEntity& entity);
     int  Write(const SDIFEntity& entity);
-    int  WriteInfo(const SDIFEntity& entity);
+    int  WriteHeader(const SDIFEntity& entity);
 
 
 /*************************************************************************/
@@ -205,13 +211,13 @@ public:
  * \ingroup otherframe
  * @brief see the content of a frame
  */
-    void View();
+    void Print();
 
 /**
  * \ingroup otherframe 
  * @brief see the frame header
  */
-    void ViewInfo();
+    void PrintHeader();
 
 /**
  * \ingroup otherframe
@@ -340,7 +346,7 @@ public:
  * \ingroup setmframe
  * @brief Set the frame header
  */
-    void SetInfo(SdifSignature sig, SdifUInt4 streamID, float time);//, SdifUInt4 nbMatrix);
+    void SetHeader(SdifSignature sig, SdifUInt4 streamID, float time);//, SdifUInt4 nbMatrix);
 
 /**
  * \ingroup setmframe 
