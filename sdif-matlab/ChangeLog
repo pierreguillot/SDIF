@@ -1,3 +1,26 @@
+2003-10-29  schwarz  <schwarz@LeGray>
+
+	* loadsdifflat.m: fix frame/matrix correspondence bug
+
+2003-09-15  schwarz  <schwarz@LeGray>
+
+	* makefile, sdif-matlab-readme: Me too says it's version 0.3!
+
+	* ChangeLog: added changelog
+
+	* testreadwrite.m: correct name
+
+	* testsel.m: test row/column selection
+
+	* sdifexist.m: handle ::: correctly
+
+	* loadsdifflat.m, loadsdiffile.m:
+	Properly preallocate arrays and cell arrays, dynamic reallocation every 10000 frames
+	--> 100 times faster for big files (no lie!)
+
+	* loadsdif-subs.c:
+	Use matrix row/column selection, SdifFReadNextSelectedFrameHeader.
+
 2003-09-15  Diemo Schwarz  <schwarz@ligeti.ircam.fr>
 
 	* testreadwrite.m: correct name
