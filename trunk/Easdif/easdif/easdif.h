@@ -33,9 +33,12 @@
  * 
  * 
  * 
- * $Id: easdif.h,v 1.5 2003-11-18 12:43:30 roebel Exp $ 
+ * $Id: easdif.h,v 1.6 2003-11-19 11:59:20 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.5  2003/11/18 12:43:30  roebel
+ * Moved SdifCheckFileFormat into Easdif namespace.
+ *
  * Revision 1.4  2003/08/06 18:29:11  roebel
  * Added missing inline for sdif helper function
  *
@@ -73,16 +76,19 @@
  * \ingroup sdifsupport
  * \brief test file for sdif format
  * 
+ * Attention SdifCheckFileFormat being a variant of
+ * a standard sdif function is located in global namespace
+ *
+ * 
  * @param name filename to test
  * 
  * @return true if filename contains sdif data 
  */
-namespace Easdif {
   inline 
   bool SdifCheckFileFormat (const std::string &name) {
     return SdifCheckFileFormat(name.c_str());
   }
-}
+
 
 
 #include "easdif/easdif_version.h"
