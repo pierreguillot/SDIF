@@ -133,7 +133,7 @@ int main(int argc, char** argv)
 	    /*an other method to add just the frame selected in file:
 	     * frameTowrite.AddMatrixSelected(readentity.GetFile(),
 	     * tmpMatrix);*/
-	    
+
 	    /* if you want to access to the data : an example, if we want 
 	     * to multiply with 2 the last column of a matrix : */
 	    double dou;
@@ -259,6 +259,7 @@ int main(int argc, char** argv)
       readentity.PrintFrameDir();
       
       // read once again
+      std::cerr << "try to read frame after time 0.5 \n";
       ret=readentity.ReadNextSelectedFrame(ff,0.5);
       if(ret == 0) {
 	std::cerr << "frame at time 0 is not selected should not happen !!\n";
@@ -268,14 +269,9 @@ int main(int argc, char** argv)
 	std::cerr << "read frame at time "<< ff.GetTime() << " Signature "<<signature<< "\n";
       }    
       // read after end of file
+      std::cerr << "try to read after eof \n";
       ret=readentity.ReadNextSelectedFrame(ff,500);
-      if(ret == 0) {
-	std::cerr << "frame at time 0 is not selected should not happen !!\n";
-      }
-      else{
-	ff.GetSignature(signature);
-	std::cerr << "read frame at time "<< ff.GetTime() << " Signature "<<signature<< "\n";
-      }    
+      std::cerr << "frame at time 500 is not selected should not happen !!\n";
     }
     /* to catch an exception */
     catch(SDIFEof& e)
