@@ -1,4 +1,4 @@
-# $Id: Makefile,v 3.1 1999-03-14 10:54:30 virolle Exp $
+# $Id: Makefile,v 3.2 1999-04-21 14:17:42 schwarz Exp $
 #
 #               Copyright (c) 1998 by IRCAM - Centre Pompidou
 #                          All rights reserved.
@@ -27,43 +27,41 @@ PRJ_DIR := $(shell pwd)
 include Makefile.preamble
 
 
+SUBS		= libsdif tosdif sdiftotext sdifextract querysdif
+
+.PHONEY:	$(SUBS)
+
+M_all	 	= $(SUBS:%=M_%)
+clean_all 	= $(SUBS:%=clean_%)
+install_all	= $(SUBS:%=install_%)
+uninstall_all	= $(SUBS:%=uninstall_%)
+
+
 #
 # compile
 #
 
-all: M_lib M_tosdif M_sdiftotext M_sdifextract
+all: tags $(M_all)
 
 
+M_%:
+	@cd $*; $(MAKE) 
 M_lib:
-	@cd libsdif ; $(MAKE)
-
-M_tosdif:
-	@cd tosdif ; $(MAKE)
-
-M_sdiftotext:
-	@cd sdiftotext ; $(MAKE)
-
-M_sdifextract:
-	@cd sdifextract ; $(MAKE)
+	@cd libsdif; $(MAKE)
+$(SUBS) lib:
+	@cd $@; $(MAKE)
 
 
 #
 # clean
 #
 
+clean_%:
+	@cd $*; $(MAKE) clean
 clean_lib:
-	@cd libsdif ; $(MAKE)  clean
+	@cd libsdif; $(MAKE) clean
 
-clean_tosdif:
-	@cd tosdif; $(MAKE) clean
-
-clean_sdiftotext:
-	@cd sdiftotext; $(MAKE) clean
-
-clean_sdifextract:
-	@cd sdifextract; $(MAKE) clean
-
-clean: clean_lib clean_tosdif clean_sdiftotext clean_sdifextract
+clean:  $(clean_all)
 
 
 
@@ -71,19 +69,13 @@ clean: clean_lib clean_tosdif clean_sdiftotext clean_sdifextract
 # install
 #
 
+
+install_%:
+	@cd $*; $(MAKE) install
 install_lib:
 	@cd libsdif ; $(MAKE) install
 
-install_tosdif:
-	@cd tosdif; $(MAKE) install
-
-install_sdiftotext:
-	@cd sdiftotext; $(MAKE) install
-
-install_sdifextract:
-	@cd sdifextract; $(MAKE) install
-
-install: install_lib install_tosdif install_sdiftotext install_sdifextract
+install_%:  $(install_all)
 
 
 
@@ -91,17 +83,19 @@ install: install_lib install_tosdif install_sdiftotext install_sdifextract
 # uninstall
 #
 
+
+uninstall_%:
+	@cd $*; $(MAKE) uninstall
 uninstall_lib:
-	@cd libsdif ; $(MAKE) uninstall
+	@cd libsdif; $(MAKE) uninstall
 
-uninstall_tosdif:
-	@cd tosdif; $(MAKE) uninstall
+uninstall:  $(uninstall_all)
 
-uninstall_sdiftotext:
-	@cd sdiftotext; $(MAKE) uninstall
 
-uninstall_sdifextract:
-	@cd sdifextract; $(MAKE) uninstall
 
-uninstall: uninstall_lib uninstall_tosdif uninstall_sdiftotext \
-	   uninstall_sdifextract
+#
+# support
+#
+
+tags:
+	etags sdif/*.[ch]
