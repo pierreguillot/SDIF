@@ -1,10 +1,15 @@
-# $Id: makefile,v 1.3 2000-05-12 14:05:03 schwarz Exp $
+# $Id: makefile,v 1.4 2000-05-12 16:14:12 tisseran Exp $
 #
 # makefile	26. January 2000	Diemo Schwarz
 #
 # formesutils matlab library
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.3  2000/05/12  14:05:03  schwarz
+# Target install: installs INSTALL_FILES into INSTALL_DIR,
+# currently /u/formes/lib/matlab.
+# Target test: runs matlab with testl.m.
+#
 # Revision 1.2  2000/05/11  12:38:22  schwarz
 # Compiles mex on Linux!  (Paths and compiler had to be found.)
 # db target.
@@ -48,15 +53,17 @@ else
 endif
 
 # under IMPORT_ROOT, imported lib and include directories are used
-ifeq ($(USER),schwarz)
+ifeq ($(USER),tisseran)
   IMPORT_ROOT	 = $(HOME)
 else 
   IMPORT_ROOT	 = /u/formes
 endif
 
+
 GLOBAL_ROOT	 = /u/formes
 GLOBAL_INCL 	 = $(IMPORT_ROOT)/include 
 GLOBAL_LIB	 = $(IMPORT_ROOT)/lib/$(ARCH)
+
 
 SDIF_LIB_DIR     = $(GLOBAL_LIB)/$(SYS)$(VERSION)
 SDIF_LIB_BASE    = sdif$(VERS)
@@ -67,7 +74,7 @@ PM_LIB_BASE	 = Pm
 PM_LIB_PATH	 = $(PM_LIB_DIR)/lib$(PM_LIB_BASE).a
 
 pm_sdif		 = $(PM_LIB_PATH) $(SDIF_LIB_PATH)
-INCL	   	 = -I$(GLOBAL_INCL) -I/usr/include -I/usr/local/include/
+INCL	   	 = -I$(GLOBAL_INCL) -I/usr/include -I/usr/local/include/ # -I/usr/src/linux/include
 CFLAGS	   	 = -g -ansi -Wall -DTEST $(INCL)
 LFLAGS		 = 
 MEXFLAGS-alpha	 = -g
@@ -78,7 +85,7 @@ OUT_DIRS	 = $(OBJ_DIR)
 
 # install mex files and supporting m-files INSTALL_FILES into INSTALL_DIR
 INSTALL_DIR	 = /u/formes/lib/matlab
-INSTALL_FILES	 = $(mexfiles) loadsdiffile.m loadsdifflat.m
+INSTALL_FILES	 = $(mexfiles) loadsdiffile.m loadsdifflat.m writesdif.m
 
 
 #
@@ -98,10 +105,12 @@ $(OBJ_DIR)/%.o:	%.c
 # files
 #
 
-base		= loadsdif
+base		= loadsdif writesdif
 loadsdif_src	= loadsdif-subs.c
+writesdif_src	= writesdif-subs.c
 loadsdif_obj	= $(loadsdif_src:%.c=$(OBJ_DIR)/%.o)
-cfiles		= $(base:%=%.c) $(loadsdif_src)
+writesdif_obj	= $(writesdif_src:%.c=$(OBJ_DIR)/%.o)
+cfiles		= $(base:%=%.c) $(loadsdif_src) $(writesdif_src) 
 mexfiles	= $(notdir $(base:%=%.$(mexsuf)))
 allsrc		= $(cfiles)
 
@@ -112,11 +121,16 @@ allsrc		= $(cfiles)
 
 all:			$(OUT_DIRS) $(mexfiles)
 loadsdif:		loadsdif.$(mexsuf)
+writesdif:		writesdif.$(mexsuf) 
 
 # dependencies
 loadsdif.$(mexsuf):	loadsdif.c $(loadsdif_obj) $(pm_sdif)
 loadsdif.c:		loadsdif.h 
 $(loadsdif_obj):	$(loadsdif_src) loadsdif.h
+
+writesdif.$(mexsuf):	writesdif.c $(writesdif_obj) $(pm_sdif)
+writesdif.c:		writesdif.h 
+$(writesdif_obj):	$(writesdif_src) writesdif.h
 
 # external builds
 sdif:
@@ -131,7 +145,8 @@ install:	all
 		cp $(INSTALL_FILES) $(INSTALL_DIR)
 
 clean mexclean cl:
-		-rm -f $(mexfiles)
+		-rm -f $(mexfiles) $(loadsdif_obj) $(writesdif_obj) 
+		
 ls:	   
 		@echo $(mexfiles)
 ll:	   
@@ -144,6 +159,8 @@ ll:
 mis missing:	$(mexfiles)
 		@echo; echo [missing objects in loadsdif]
 		nm loadsdif.$(mexsuf) | grep '| U | 0*$$'
+		echo [missing objects in writesdif]
+		nm writesdif.$(mexsuf) | grep '| U | 0*$$'
 
 tags:		TAGS
 TAGS:		$(allsrc)
@@ -151,3 +168,8 @@ TAGS:		$(allsrc)
 
 $(OUT_DIRS):
 		mkdir -p $@
+
+
+
+
+
