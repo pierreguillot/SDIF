@@ -10,3 +10,7 @@ grep:
 
 ircam_deps:
 	@cd sdif; $(MAKE) ircam_deps
+
+.PHONY	:	test
+
+test	:	check
