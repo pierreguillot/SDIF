@@ -1,4 +1,4 @@
-/* $Id: sdifextract.c,v 1.13 2003-11-07 22:25:16 roebel Exp $
+/* $Id: sdifextract.c,v 1.14 2004-06-17 18:30:05 roebel Exp $
  
                 Copyright (c) 1998 by IRCAM - Centre Pompidou
                            All rights reserved.
@@ -13,6 +13,9 @@
    Extract data from an SDIF-file.  
    
    $Log: not supported by cvs2svn $
+   Revision 1.13  2003/11/07 22:25:16  roebel
+   Removed last remainings of XpGuiCalls from tools files.
+
    Revision 1.12  2003/11/07 21:47:19  roebel
    removed XpGuiCalls.h and replaced preinclude.h  by local files
 
@@ -210,7 +213,7 @@ void usage (char *msg, char *arg, int longhelp)
     }
     if (longhelp)
     {
-    	fprintf (SdifStdErr, "\n" PROG "version $Revision: 1.13 $\n\n");
+    	fprintf (SdifStdErr, "\n" PROG "version $Revision: 1.14 $\n\n");
     
     	if (types)
     	{
@@ -716,7 +719,7 @@ int main(int argc, char** argv)
 
     while (!eof)
     {
-	size_t	bytesread = 0;
+	size_t	bytesread = 0,dontcnt=0;
 	double  time;
 
 	/* Read frame header.  Current signature has already been read
@@ -742,7 +745,7 @@ int main(int argc, char** argv)
 	    
 	    /* a frame type we're not interested in, so we skip it */
 	    SdifFSkipFrameData (in);
-	    eof = SdifFGetSignature (in, &bytesread) == eEof;
+	    eof = SdifFGetSignature (in, &dontcnt) == eEof;
 	    continue;		/* START NEXT ITERATION of while frames loop */
 	}
 
@@ -758,7 +761,7 @@ int main(int argc, char** argv)
 	    int nbrows, nbcols, selrow;
 
 	    /* Read matrix header */
-	    SdifFReadMatrixHeader (in);
+	    bytesread = SdifFReadMatrixHeader (in);
 #if DB
   fprintf (SdifStdErr, "@matrix\t%s  rows %d  cols %d  cumulcol %d\n", 
     SdifSignatureToString (SdifFCurrMatrixSignature (in)), 
@@ -809,6 +812,7 @@ int main(int argc, char** argv)
 
 	output (EndFrame, 0);
 	eof = SdifFGetSignature (in, &bytesread) == eEof;
+
     }   /* end while frames */ 
     
 
