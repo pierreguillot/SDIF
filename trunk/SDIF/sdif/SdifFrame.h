@@ -15,21 +15,25 @@
 
 #define _SdifFrameHeaderSize 16  /* (ID=4)+(size=4)+(time=8) */
 
-typedef struct SdifFrameHeaderS
+
+
+typedef struct SdifFrameHeaderS SdifFrameHeaderT;
+struct SdifFrameHeaderS
 {
   SdifSignature Signature;
   SdifUInt4  Size;
   SdifUInt4  NbMatrix;
   SdifUInt4  NumID;
   SdifFloat8 Time;
-} SdifFrameHeaderT;
+} ;
 
 
-typedef struct SdifFrameDataS
+typedef struct SdifFrameDataS SdifFrameDataT;
+struct SdifFrameDataS
 {
   SdifFrameHeaderT *Header;
   SdifMatrixDataT* *Matrix_s;
-} SdifFrameDataT;
+} ;
 
 
 extern SdifFrameHeaderT* SdifCreateFrameHeader(SdifSignature Signature,

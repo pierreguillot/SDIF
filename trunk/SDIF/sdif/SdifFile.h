@@ -1,4 +1,4 @@
-/* $Id: SdifFile.h,v 1.4 1998-05-14 09:50:35 schwarz Exp $
+/* $Id: SdifFile.h,v 1.5 1998-07-23 17:02:49 virolle Exp $
  *
  * SdifFile.h
  *
@@ -8,6 +8,10 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.4  1998/05/14  09:50:35  schwarz
+ * Added SdifCurrOneRowData to return a pointer to the raw data.
+ * This can subsequently be used for SdifSetCurrOneRow.
+ *
  */
 
 
@@ -18,7 +22,10 @@
 #include "SdifFileStruct.h"
 #include "SdifGlobals.h"
 
+extern SdifFileT*         SdifFOpen                     (const char* Name, SdifFileModeET Mode);
 extern SdifFileT*         SdifOpenFile                  (const char* Name, SdifFileModeET Mode);
+extern SdifFileT*         SdifFOpenText                 (SdifFileT* SdifF, const char* Name, SdifFileModeET Mode);
+extern void               SdifFClose                    (SdifFileT* SdifF);
 extern void               SdifCloseFile                 (SdifFileT* SdifF);
 extern SdifFrameHeaderT*  SdifFileCreateCurrFramH       (SdifFileT* SdifF, SdifSignature Signature);
 extern SdifMatrixHeaderT* SdifFileCreateCurrMtrxH       (SdifFileT* SdifF);

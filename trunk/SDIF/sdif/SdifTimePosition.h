@@ -16,14 +16,19 @@
 
 #include <stdio.h>
 
-typedef struct SdifTimePositionS
+typedef struct SdifTimePositionS SdifTimePositionT;
+
+struct SdifTimePositionS
 {
   SdifFloat8 Time;
-  SdifFPosT     Position;
-} SdifTimePositionT;
+  SdiffPosT     Position;
+} ;
 
-extern SdifTimePositionT* SdifCreateTimePosition(SdifFloat8 Time, SdifFPosT Position);
+extern SdifTimePositionT* SdifCreateTimePosition(SdifFloat8 Time, SdiffPosT Position);
 extern void               SdifKillTimePosition(SdifTimePositionT* TimePosition);
+
+
+
 
 
 typedef struct SdifTimePositionNS SdifTimePositionNT;
@@ -39,18 +44,20 @@ extern SdifTimePositionNT* SdifKillTimePositionN  (SdifTimePositionNT* TPNode);
 
 
 
-typedef struct SdifTimePositionLS
+typedef struct SdifTimePositionLS SdifTimePositionLT;
+
+struct SdifTimePositionLS
 {
   SdifTimePositionNT* Head;
   SdifTimePositionNT* Tail;
   SdifTimePositionNT* Curr;
   SdifUInt4 NbTimePosition;
-} SdifTimePositionLT;
+} ;
 
 extern SdifTimePositionLT* SdifCreateTimePositionL(void);
 extern void                SdifKillTimePositionL  (SdifTimePositionLT *TimePositionL);
 extern SdifTimePositionLT* SdifTimePositionLPut   (SdifTimePositionLT* TimePositionL,
-						   SdifFloat8 Time, SdifFPosT Position);
+						   SdifFloat8 Time, SdiffPosT Position);
 extern SdifTimePositionT*  SdifTimePositionLGet   (SdifTimePositionLT* TimePositionL, SdifFloat8 Time);
 
 #endif /* _SdifTimePosition_ */

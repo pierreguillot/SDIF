@@ -121,7 +121,6 @@ ifeq ($(SYSTEM), IRIX)
 	CAFLAGS =  -fullwarn
 	LFLAGS =
 	RANLIB = 0
-#	INSTALL := /usr/bin/installbsd -c 
 	INSTALL := /usr/local/bin/install -c 
 	INSTALL_H_FILES := $(INSTALL)
 endif
@@ -131,7 +130,7 @@ ifeq ($(SYSTEM), ULTRIX)
 	CC = gcc
 	CAFLAGS =  -ansi -pedantic
 	RANLIB = 0
-	INSTALL :=  /usr/bin/install -c 
+	INSTALL :=  /usr/local/bin/install -c 
 	INSTALL_H_FILES := $(INSTALL)
 endif
 
@@ -155,7 +154,7 @@ ifeq ($(SYSTEM), OSF1)
 		DOFLAGS = -g3
 	endif
 
-	INSTALL := /usr/bin/installbsd -c 
+	INSTALL := /usr/local/bin/install -c 
 	INSTALL_H_FILES := cp -f
 	RANLIB = ranlib
 endif

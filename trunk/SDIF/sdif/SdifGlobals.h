@@ -1,4 +1,4 @@
-/* $Id: SdifGlobals.h,v 1.4 1998-04-24 12:40:34 schwarz Exp $
+/* $Id: SdifGlobals.h,v 1.5 1998-07-23 17:02:53 virolle Exp $
  *
  * SdifGlobals.h
  *
@@ -6,6 +6,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.4  1998/04/24  12:40:34  schwarz
+ * Made char * arguments constant for SdifNameValuesLPut and functions called by it.
+ *
  */
 
 #ifndef _SdifGlobals_
@@ -13,10 +16,10 @@
 
 #include <stdio.h>
 #include "SdifError.h"
+#include "SdifHard_OS.h"
 
 #define _SdifLibraryVersion "1.00"
 #define _SdifTypesVersion   "1.00"
-
 
 
 /* _SdifEnvVar : Environnement variable which contains the name
@@ -46,16 +49,6 @@ typedef double         SdifFloat8;
 typedef unsigned int   SdifSignature;
 
 
-/* to do fpos_t compatible on MacinTosh */
-#ifdef MACINTOSH
-#define SdifFPosT long
-#define SdifFGetPos(f,p)    ((((*(p)) = ftell(f)) == -1) ? -1 : 0)
-#define SdifFSetPos(f,p)    fseek(f, (*(p)), SEEK_SET)
-#else
-#define SdifFPosT fpos_t
-#define SdifFGetPos(f,p)    fgetpos((f),(p))
-#define SdifFSetPos(f,p)    fsetpos((f),(p))
-#endif
 
 
 
@@ -73,6 +66,8 @@ typedef enum SdifSignatureE
   eFORM = 'FORM' ,         /* FORM for IFF compatibility (obsolete ?) */
   eEmptySignature = '\0\0\0\0'
 } SdifSignatureET;
+
+
 
 
 #define _SdifFloatEps  1.0e-20
@@ -109,6 +104,7 @@ extern char gSdifErrorMess[_SdifStringLen];
 
 #define _SdifNbMaxPrintSignature 8
 extern char gSdifStringSignature[_SdifNbMaxPrintSignature][5];
+extern int  CurrStringPosSignature;
 
 extern char*     SdifSignatureToString(SdifSignature Signature);
 extern short     SdifSignatureCmpNoVersion(SdifSignature Signature1, SdifSignature Signature2);

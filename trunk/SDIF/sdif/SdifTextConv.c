@@ -267,7 +267,7 @@ SdifTextToSdif(SdifFileT *SdifF, char *TextStreamName)
       if (SdifStrCmp(TextStreamName, "stdin")==0)
 	SdifF->TextStream = stdin;
       else
-	if (! (SdifF->TextStream = fopen(SdifF->TextStreamName, "r")) )
+	if (! (SdifF->TextStream = fopen(SdifF->TextStreamName, "rb")) )
 	  {
 	    _SdifError(eFileNotFound, TextStreamName);
 	    free(SdifF->TextStreamName);

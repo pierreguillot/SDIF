@@ -54,7 +54,7 @@ SdifFPrintNameValueCurrHT(SdifFileT *SdifF)
 size_t
 SdifFPrintAllNameValueHT(SdifFileT *SdifF)
 {
-  int iHT;
+  SdifUInt4 iHT;
   size_t SizeW = 0;
 
   for (iHT = 1; iHT <= SdifF->NameValues->NbHTN; iHT++)

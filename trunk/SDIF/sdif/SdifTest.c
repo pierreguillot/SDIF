@@ -33,7 +33,7 @@ SdifInterpretationError(SdifInterpretationErrorET Error, SdifFileT* SdifF, const
   
 
   if (SdifF->Stream)
-    SdifFGetPos(SdifF->Stream, &(SdifF->Pos));
+    SdiffGetPos(SdifF->Stream, &(SdifF->Pos));
 
   /*fprintf(stderr,
    *	  "*Sdif* Interpretation Warning (%s, %d)\n  SdifFile: %s",
@@ -189,7 +189,7 @@ SdifTestMatrixType(SdifFileT *SdifF, SdifSignature Signature)
 
 
 short
-SdifTestDataType(SdifFileT* SdifF, SdifDataTypeET DataType)
+SdifTestDataType(SdifFileT* SdifF)
 {
   switch (SdifF->CurrMtrxH->DataType)
     {
@@ -230,18 +230,18 @@ short
 SdifTestMatrixHeader(SdifFileT* SdifF)
 {
   SdifMatrixTypeT *MtrxT;
-  short res;
+  int res;
 
   MtrxT = SdifTestMatrixType(SdifF, SdifF->CurrMtrxH->Signature);
 
   if (MtrxT)
     {
-      res = SdifTestDataType  (SdifF, SdifF->CurrMtrxH->DataType);
-      res = (res)?SdifTestNbColumns (SdifF, SdifF->CurrMtrxH->NbCol, MtrxT):0;
-      return res;
+      res = SdifTestDataType  (SdifF);
+      res = (res) ? SdifTestNbColumns (SdifF, SdifF->CurrMtrxH->NbCol, MtrxT) : 0;
+      return (short) res;
     }
   else
-    return eFalse;
+    return (short) eFalse;
 }
 
 

@@ -8,68 +8,16 @@
 
 
 #include "SdifRWLowLevel.h"
+#include "SdifHard_OS.h"
 #include "SdifError.h"
+
 
 #include <string.h>
 #include <ctype.h>
 
+
+
 static char gSdifLittleToBig [_SdifBSLittleE];
-
-
-SdifMachineET
-SdifGetMachineType(void)
-{
-  long
-    *LongTest;
-  char
-    CharTab[] = {0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08};
-
-  LongTest = (long*) CharTab;
-
-#ifdef _LONG64BITS_
-  switch (*LongTest)
-    {
-    case 0x0102030405060708 :
-      return eBigEndian64;
-    case 0x0807060504030201 :
-      return eLittleEndian64;
-    default :
-      return eUndefinedMachine;
-    }
-
-#else
-  switch (*LongTest)
-    {
-    case 0x01020304 :
-      return eBigEndian;
-    case 0x04030201 :
-      return eLittleEndian;
-   /*case 0x03040102 :
-    *return ePDPEndian;
-    */
-    default :
-      return eUndefinedMachine;
-    }
-#endif /* _LONG64BITS */
-}
-
-
-
-
-SdifMachineET gSdifMachineType;
-
-
-
-
-SdifMachineET
-SdifInitMachineType(void)
-{
-  gSdifMachineType = SdifGetMachineType();
-  return gSdifMachineType;
-}
-
-
-
 
 
 
@@ -183,12 +131,12 @@ SdiffreadLittleEndian4 (void *ptr, size_t nobj, FILE *stream)
       nobjread = Sdiffread(gSdifLittleToBig, 4, nobj, stream);
       Mi4Bytes = nobj << 2;         /****  (nobj << 2)  <=>  (nobj*4)  *****/
       for(i4bytes=0; i4bytes<Mi4Bytes; i4bytes+=4)
-	{
-	  ptrChar[i4bytes+3] = gSdifLittleToBig[i4bytes];
-	  ptrChar[i4bytes+2] = gSdifLittleToBig[i4bytes+1];
-	  ptrChar[i4bytes+1] = gSdifLittleToBig[i4bytes+2];
-	  ptrChar[i4bytes]   = gSdifLittleToBig[i4bytes+3];
-	}
+        {
+	      ptrChar[i4bytes+3] = gSdifLittleToBig[i4bytes];
+	      ptrChar[i4bytes+2] = gSdifLittleToBig[i4bytes+1];
+	      ptrChar[i4bytes+1] = gSdifLittleToBig[i4bytes+2];
+	      ptrChar[i4bytes]   = gSdifLittleToBig[i4bytes+3];
+        }
       
       return nobjread;
     }
@@ -383,6 +331,8 @@ SdiffReadInt2 (SdifInt2 *ptr, size_t nobj, FILE *stream)
     {
     case eLittleEndian   :
     case eLittleEndian64 :
+    case eLittleEndianLittleConst :
+    case eLittleEndianLittleConst64 :
       return SdiffreadLittleEndian2(ptr, nobj, stream);
     default :
     return Sdiffread(ptr, sizeof(SdifInt2),  nobj, stream);
@@ -401,6 +351,8 @@ SdiffReadUInt2(SdifUInt2 *ptr, size_t nobj, FILE *stream)
     {
     case eLittleEndian   :
     case eLittleEndian64 :
+    case eLittleEndianLittleConst :
+    case eLittleEndianLittleConst64 :
       return SdiffreadLittleEndian2(ptr, nobj, stream);
     default :
       return Sdiffread(ptr, sizeof(SdifUInt2),  nobj, stream);
@@ -418,6 +370,8 @@ SdiffReadInt4(SdifInt4 *ptr, size_t nobj, FILE *stream)
     {
     case eLittleEndian   :
     case eLittleEndian64 :
+    case eLittleEndianLittleConst :
+    case eLittleEndianLittleConst64 :
       return SdiffreadLittleEndian4(ptr, nobj, stream);
     default :
       return Sdiffread(ptr, sizeof(SdifInt4),  nobj, stream);
@@ -436,6 +390,8 @@ SdiffReadUInt4(SdifUInt4 *ptr, size_t nobj, FILE *stream)
     {
     case eLittleEndian   :
     case eLittleEndian64 :
+    case eLittleEndianLittleConst :
+    case eLittleEndianLittleConst64 :
       return SdiffreadLittleEndian4(ptr, nobj, stream);
     default :
       return Sdiffread(ptr, sizeof(SdifUInt4),  nobj, stream);
@@ -455,6 +411,8 @@ SdiffReadUInt4(SdifUInt4 *ptr, size_t nobj, FILE *stream)
  *   {
  *   case eLittleEndian   :
  *   case eLittleEndian64 :
+ *   case eLittleEndianLittleConst :
+ *   case eLittleEndianLittleConst64 :
  *     return SdiffreadLittleEndian8(ptr, nobj, stream);
  *   default :
  *     return Sdiffread(ptr, sizeof(SdifUInt8),  nobj, stream);
@@ -471,6 +429,8 @@ SdiffReadFloat4(SdifFloat4 *ptr, size_t nobj, FILE *stream)
     {
     case eLittleEndian   :
     case eLittleEndian64 :
+    case eLittleEndianLittleConst :
+    case eLittleEndianLittleConst64 :
       return SdiffreadLittleEndian4(ptr, nobj, stream);
     default :
       return Sdiffread(ptr, sizeof(SdifFloat4),  nobj, stream);
@@ -489,6 +449,8 @@ SdiffReadFloat8(SdifFloat8 *ptr, size_t nobj, FILE *stream)
     {
     case eLittleEndian   :
     case eLittleEndian64 :
+    case eLittleEndianLittleConst :
+    case eLittleEndianLittleConst64 :
       return SdiffreadLittleEndian8(ptr, nobj, stream);
     default :
       return Sdiffread(ptr, sizeof(SdifFloat8),  nobj, stream);
@@ -498,12 +460,13 @@ SdiffReadFloat8(SdifFloat8 *ptr, size_t nobj, FILE *stream)
 
 
 
-size_t
-SdiffReadSignature(SdifSignature *Signature, FILE *stream)
-{
-  return Sdiffread(Signature, sizeof(Signature), 1, stream);
-}
-
+/*
+ * size_t
+ * SdiffReadSignature(SdifSignature *Signature, FILE *stream)
+ * {
+ *   return Sdiffread(Signature, sizeof(Signature), 1, stream);
+ * }
+ */
 
 
 
@@ -527,6 +490,8 @@ SdiffWriteInt2 (SdifInt2 *ptr, size_t nobj, FILE *stream)
       
     case eLittleEndian   :
     case eLittleEndian64 :
+    case eLittleEndianLittleConst :
+    case eLittleEndianLittleConst64 :
       return SdiffwriteLittleEndian2(ptr, nobj, stream);
       
     default :
@@ -546,6 +511,8 @@ SdiffWriteUInt2(SdifUInt2 *ptr, size_t nobj, FILE *stream)
       
     case eLittleEndian   :
     case eLittleEndian64 :
+    case eLittleEndianLittleConst :
+    case eLittleEndianLittleConst64 :
       return SdiffwriteLittleEndian2(ptr, nobj, stream);
     default :
       return Sdiffwrite(ptr, sizeof(SdifUInt2),  nobj, stream);
@@ -566,6 +533,8 @@ SdiffWriteInt4(SdifInt4 *ptr, size_t nobj, FILE *stream)
       
     case eLittleEndian   :
     case eLittleEndian64 :
+    case eLittleEndianLittleConst :
+    case eLittleEndianLittleConst64 :
       return SdiffwriteLittleEndian4(ptr, nobj, stream);
     default :
       return Sdiffwrite(ptr, sizeof(SdifInt4),  nobj, stream);
@@ -585,6 +554,8 @@ SdiffWriteUInt4(SdifUInt4 *ptr, size_t nobj, FILE *stream)
       
     case eLittleEndian   :
     case eLittleEndian64 :
+    case eLittleEndianLittleConst :
+    case eLittleEndianLittleConst64 :
       return SdiffwriteLittleEndian4(ptr, nobj, stream);
     default :
       return Sdiffwrite(ptr, sizeof(SdifUInt4),  nobj, stream);
@@ -625,6 +596,8 @@ SdiffWriteFloat4(SdifFloat4 *ptr, size_t nobj, FILE *stream)
       
     case eLittleEndian   :
     case eLittleEndian64 :
+    case eLittleEndianLittleConst :
+    case eLittleEndianLittleConst64 :
       return SdiffwriteLittleEndian4(ptr, nobj, stream);
     default :
       return Sdiffwrite(ptr, sizeof(SdifFloat4),  nobj, stream);
@@ -643,6 +616,8 @@ SdiffWriteFloat8(SdifFloat8 *ptr, size_t nobj, FILE *stream)
       
     case eLittleEndian   :
     case eLittleEndian64 :
+    case eLittleEndianLittleConst :
+    case eLittleEndianLittleConst64 :
       return SdiffwriteLittleEndian8(ptr, nobj, stream);
     default :
       return Sdiffwrite(ptr, sizeof(SdifFloat8),  nobj, stream);
@@ -657,7 +632,19 @@ SdiffWriteFloat8(SdifFloat8 *ptr, size_t nobj, FILE *stream)
 size_t
 SdiffWriteSignature(SdifSignature *Signature, FILE *stream)
 {
-  return Sdiffwrite(Signature, sizeof(SdifSignature),  1, stream);
+    SdifSignature SignW;
+
+    SignW = *Signature ;
+    switch (gSdifMachineType)
+    {     
+    case eLittleEndianLittleConst :
+    case eLittleEndianLittleConst64 :
+      SdifLittleToBig(&SignW, sizeof(Signature));
+      break;
+    default :
+      break;
+    }
+  return Sdiffwrite(&SignW, sizeof(SdifSignature),  1, stream);
 }
 
 
@@ -710,6 +697,7 @@ SdifIsAReservedChar(char c)
 int
 SdiffGetString(FILE* fr, char* s, size_t ncMax, size_t *NbCharRead)
 {
+  int cint;
   char c;
   char *cs;
   int bool;
@@ -719,7 +707,8 @@ SdiffGetString(FILE* fr, char* s, size_t ncMax, size_t *NbCharRead)
   
   do
     {
-      c = fgetc(fr);
+      cint = fgetc(fr);
+      c = (char) cint;
       (*NbCharRead)++;
     }
   while ( isspace(c) && (!feof(fr)) );
@@ -730,7 +719,7 @@ SdiffGetString(FILE* fr, char* s, size_t ncMax, size_t *NbCharRead)
       if (SdifIsAReservedChar(c) != -1)
 	{
 	  *cs++ = '\0';
-	  return (int) c;
+	  return cint;
 	}
       else
 	if (isspace(c)) /* end of word */
@@ -745,7 +734,8 @@ SdiffGetString(FILE* fr, char* s, size_t ncMax, size_t *NbCharRead)
           else
 	    *cs++ = c;
 
-      c=fgetc(fr);
+      cint=fgetc(fr);
+      c = (char) cint ;
       (*NbCharRead)++;
     }
   
@@ -775,12 +765,14 @@ SdiffGetSignature(FILE* fr, SdifSignature *Signature, size_t *NbCharRead)
 {
   char Name[4] = "\0\0\0";
   char c;
+  int cint;
   char *pCS;
   unsigned int i;
   
   do
     {
-      c = fgetc(fr); 
+      cint = fgetc(fr); 
+      c = (char) cint ;
       (*NbCharRead)++;
     }
   while (isspace(c) && (!feof(fr)) );
@@ -794,7 +786,8 @@ SdiffGetSignature(FILE* fr, SdifSignature *Signature, size_t *NbCharRead)
 	  Name[i] = c;
 	  if (i < 4-1)
 	    {
-	      c=fgetc(fr);
+	      cint =fgetc(fr);
+          c = (char) cint;
 	      (*NbCharRead)++;
 	    }
 	}
@@ -806,6 +799,18 @@ SdiffGetSignature(FILE* fr, SdifSignature *Signature, size_t *NbCharRead)
   pCS[2] = Name[2];
   pCS[3] = Name[3];/* effet de bord sur signature */
 
+
+  switch (gSdifMachineType)
+    {     
+    case eLittleEndianLittleConst :
+    case eLittleEndianLittleConst64 :
+      SdifBigToLittle(Signature, sizeof(Signature));
+      break;
+    default :
+      break;
+    }
+  
+
   if (feof(fr))
     {
       *Signature = eEmptySignature;
@@ -813,7 +818,7 @@ SdiffGetSignature(FILE* fr, SdifSignature *Signature, size_t *NbCharRead)
       return eEof;
     }
   else
-    return (unsigned) c;
+    return cint;
 }
 
 
@@ -824,23 +829,29 @@ size_t
 SdiffReadSpace(FILE* fr)
 {
   size_t NbCharRead = 0;
+  SdiffPosT Pos = 0;
   char c;
 
-  while ( isspace(c= fgetc(fr)) )
+  while ( isspace(c= (char) fgetc(fr)) )
+  {
     NbCharRead++;
+  }
 
   if (feof(fr))
     _SdifError(eEof, "SdiffReadSpace");
   else
-    if (fseek(fr, -1, SEEK_CUR)==0)
-      /* if (c = (char) ungetc(c, fr)) */
-      return NbCharRead;
-    else
-      {
-	sprintf(gSdifErrorMess, "ungetc failed : (%d,%c) ", c, c);
-	_SdifError(eEof, gSdifErrorMess);
-      }
-     
+    {
+      SdiffGetPos(fr, &Pos);
+      Pos --;
+      if (SdiffSetPos(fr, &Pos)==0)
+        /* if (c = (char) ungetc(c, fr)) */
+        return NbCharRead;
+      else
+        {
+	      sprintf(gSdifErrorMess, "ungetc failed : (%d,%c) ", c, c);
+	      _SdifError(eEof, gSdifErrorMess);
+        }
+    }
   return NbCharRead;
 }
 
@@ -866,7 +877,7 @@ SdiffGetWordUntil(FILE* fr, char* s, size_t ncMax, size_t *NbCharRead, char *Cha
   CharsEndLen = SdifStrLen(CharsEnd);
   cs = s;
   
-  while( (c = fgetc(fr)) && (ncMax-- > 0) && (!feof(fr)))
+  while( (c = (char) fgetc(fr)) && (ncMax-- > 0) && (!feof(fr)))
     {
       (*NbCharRead)++;
       
@@ -879,7 +890,7 @@ SdiffGetWordUntil(FILE* fr, char* s, size_t ncMax, size_t *NbCharRead, char *Cha
       if (isspace(c))
 	{
 	  *NbCharRead += SdiffReadSpace(fr);
-	  c = fgetc(fr);
+	  c = (char) fgetc(fr);
 	  if (memchr(CharsEnd, c, CharsEndLen))
 	    {
 	      *cs = '\0';
@@ -944,7 +955,7 @@ SdiffGetStringWeakUntil(FILE* fr, char* s, size_t ncMax, size_t *NbCharRead, cha
   CharsEndLen = SdifStrLen(CharsEnd);
   cs = s;
   
-  while( (c = fgetc(fr)) && (ncMax-- > 0) && (!feof(fr)))
+  while( (c = (char) fgetc(fr)) && (ncMax-- > 0) && (!feof(fr)))
     {
       (*NbCharRead)++;
       

@@ -27,4 +27,5 @@ SDIF_HEADERS = \
 	SdifConvToText.h \
 	SdifPreTypes.h \
 	SdifFileStruct.h \
+	SdifHard_OS.h \
 	sdif.h

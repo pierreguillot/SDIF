@@ -1,4 +1,4 @@
-/* $Id: SdifFile.c,v 1.4 1998-05-14 09:50:34 schwarz Exp $
+/* $Id: SdifFile.c,v 1.5 1998-07-23 17:02:49 virolle Exp $
  *
  * SdifFile.c
  *
@@ -8,7 +8,14 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.4  1998/05/14  09:50:34  schwarz
+ * Added SdifCurrOneRowData to return a pointer to the raw data.
+ * This can subsequently be used for SdifSetCurrOneRow.
+ *
  */
+
+
+
 
 
 #include "SdifFile.h"
@@ -21,8 +28,13 @@
 #include "SdifPreTypes.h"
 #include "SdifFScan.h"
 
+
+
+
+
+
 SdifFileT*
-SdifOpenFile(const char* Name, SdifFileModeET Mode)
+SdifFOpen(const char* Name, SdifFileModeET Mode)
 {
   SdifFileT* SdifFile;
 
@@ -60,6 +72,7 @@ SdifOpenFile(const char* Name, SdifFileModeET Mode)
       SdifFile->TextStream       = NULL;
       SdifFile->NbOfWarning = 0;
 
+      SdifFile->Stream       = NULL;
     
       switch (Mode)
 	{
@@ -75,14 +88,14 @@ SdifOpenFile(const char* Name, SdifFileModeET Mode)
 		 || (SdifStrCmp(Name, "stderr") == 0)   )
 	      {
 		_SdifFileMess(SdifFile, eBadStdFile, Name);
-		SdifCloseFile(SdifFile);
+		SdifFClose(SdifFile);
 		return NULL;
 	      }
 	    else
-	      if (! (SdifFile->Stream = fopen (Name, "r")))
+	      if (! (SdifFile->Stream = fopen (Name, "rb")))
 		{
 		  _SdifError(eFileNotFound, Name);
-		  SdifCloseFile(SdifFile);
+		  SdifFClose(SdifFile);
 		  return NULL;
 		}
 	      else
@@ -100,14 +113,14 @@ SdifOpenFile(const char* Name, SdifFileModeET Mode)
 		 || (SdifStrCmp(Name, "stderr") == 0)   )
 	      {
 		_SdifFileMess(SdifFile, eBadStdFile, Name);
-		SdifCloseFile(SdifFile);
+		SdifFClose(SdifFile);
 		return NULL;
 	      }
 	    else
-	      if (! (SdifFile->Stream = fopen (Name, "w")))
+	      if (! (SdifFile->Stream = fopen (Name, "wb")))
 		{
 		  _SdifError(eAllocFail, Name);	  
-		  SdifCloseFile(SdifFile);
+		  SdifFClose(SdifFile);
 		  return NULL;
 		}
 	      else
@@ -119,7 +132,7 @@ SdifOpenFile(const char* Name, SdifFileModeET Mode)
 
 	default :
 	  _SdifFileMess(SdifFile, eBadMode, "this mode doesn't exist");
-	  SdifCloseFile(SdifFile);
+	  SdifFClose(SdifFile);
 	  return NULL;
 	}
     }
@@ -135,8 +148,114 @@ SdifOpenFile(const char* Name, SdifFileModeET Mode)
 
 
 
+
+
+
+
+SdifFileT*
+SdifOpenFile(const char* Name, SdifFileModeET Mode)
+{
+	return SdifFOpen(Name, Mode);
+}
+
+
+
+
+
+
+
+
+
+SdifFileT*
+SdifFOpenText(SdifFileT *SdifF, const char* Name, SdifFileModeET Mode)
+{
+  SdifF->TextStreamName = SdifCreateStrNCpy(Name, SdifStrLen(Name)+1);
+
+  switch (Mode)
+  {
+	case eReadFile :
+      if (SdifStrCmp(Name, "stdin") == 0)
+	  {
+	    SdifF->TextStream = stdin;
+	    return SdifF;
+	  }
+	  else
+	  {
+	    if (    (SdifStrCmp(Name, "stdout") == 0)
+			 || (SdifStrCmp(Name, "stderr") == 0)   )
+		{
+		  _SdifFileMess(SdifF, eBadStdFile, Name);
+		  SdifFClose(SdifF);
+		  return NULL;
+	    }
+	    else
+		{
+	      if (! (SdifF->TextStream = fopen (Name, "rb")))
+		  {
+		    _SdifError(eFileNotFound, Name);
+		    SdifFClose(SdifF);
+		    return NULL;
+		  }
+	      else
+		  {
+		    return SdifF;
+		  }
+		}
+	  }
+
+	case eWriteFile :
+	  if (SdifStrCmp(Name, "stdout") == 0)
+	  {
+	    SdifF->TextStream = stdout;
+	    return SdifF;
+	  }
+	  else
+	  {
+        if (SdifStrCmp(Name, "stderr") == 0)
+		{
+	      SdifF->TextStream = stderr;
+	      return SdifF;
+		}
+		else
+		{
+	      if (SdifStrCmp(Name, "stdin") == 0)
+		  {
+		    _SdifFileMess(SdifF, eBadStdFile, Name);
+		    SdifFClose(SdifF);
+		    return NULL;
+		  }
+	      else
+		  {
+	        if (! (SdifF->TextStream = fopen (Name, "wb")))
+			{
+		      _SdifError(eAllocFail, Name);	  
+		      SdifFClose(SdifF);
+		      return NULL;
+			}
+	        else
+			{
+		      return SdifF;
+			}
+		  }
+		}
+	  }
+	case ePredefinedTypes:
+	default :
+	  _SdifFileMess(SdifF, eBadMode, "this mode doesn't exist or isn't appropriated");
+	  SdifFClose(SdifF);
+	  return NULL;
+	}
+}
+
+
+
+
+
+
+
+
 void
-SdifCloseFile(SdifFileT* SdifF)
+SdifFClose(SdifFileT* SdifF)
 {
   if (SdifF)
     {
@@ -157,23 +276,48 @@ SdifCloseFile(SdifFileT* SdifF)
 
 
       if (SdifF->CurrFramH)
-	SdifKillFrameHeader(SdifF->CurrFramH);
+        SdifKillFrameHeader(SdifF->CurrFramH);
       if (SdifF->CurrMtrxH)
-	SdifKillMatrixHeader(SdifF->CurrMtrxH);
+        SdifKillMatrixHeader(SdifF->CurrMtrxH);
 
       if (SdifF->TextStreamName)
-	free(SdifF->TextStreamName);
+        free(SdifF->TextStreamName);
 
 
       if (SdifF->Stream)
-	fclose (SdifF->Stream);
+		if (    (SdifF->Stream != stdout)
+			 && (SdifF->Stream != stdin)
+			 && (SdifF->Stream != stderr)  )
+          fclose (SdifF->Stream);
+
+
       if (SdifF->TextStream)
-	fclose(SdifF->TextStream);
+		if (    (SdifF->TextStream != stdout)
+			 && (SdifF->TextStream != stdin)
+			 && (SdifF->TextStream != stderr)  )
+        fclose(SdifF->TextStream);
+
+
 
       free(SdifF);
     }
     
 }
+
+
+
+
+
+
+
+void
+SdifCloseFile(SdifFileT* SdifF)
+{
+	SdifFClose(SdifF);
+}
+
+
+
 
 
 
@@ -203,6 +347,10 @@ SdifFileCreateCurrMtrxH(SdifFileT* SdifF)
 
   return SdifF->CurrMtrxH;
 }
+
+
+
+
 
 
 
@@ -267,7 +415,7 @@ SdifFLoadPredefinedTypes(SdifFileT *SdifF, char *TypesFileName)
       SdifTakeCodedPredefinedTypes(SdifF);
     }
   else
-    if (! (SdifF->TextStream = fopen(TypesFileName, "r")) )
+    if (! (SdifF->TextStream = fopen(TypesFileName, "rb")) )
       {
 	_SdifRemark("Load Coded Predefinied Types, it can be incomplete (file not found)\n");
 	SdifTakeCodedPredefinedTypes(SdifF);
@@ -317,7 +465,7 @@ SdifGenInit(char *PredefinedTypesFile)
   char *PreTypesEnvVar=NULL;
   
   SdifInitMachineType();
-  gSdifPredefinedTypes = SdifOpenFile("Predefined", ePredefinedTypes);
+  gSdifPredefinedTypes = SdifFOpen("Predefined", ePredefinedTypes);
 
   if ( (!PredefinedTypesFile) || (strlen(PredefinedTypesFile)== 0) )
     {
@@ -341,7 +489,7 @@ SdifGenInit(char *PredefinedTypesFile)
 void
 SdifGenKill(void)
 {
-  SdifCloseFile(gSdifPredefinedTypes);
+  SdifFClose(gSdifPredefinedTypes);
 }
 
 
@@ -349,7 +497,7 @@ SdifGenKill(void)
 void SdifPrintVersion(void)
 {
 #ifndef lint
-  static char rcsid[]= "$Revision: 1.4 $ IRCAM $Date: 1998-05-14 09:50:34 $";
+  static char rcsid[]= "$Revision: 1.5 $ IRCAM $Date: 1998-07-23 17:02:49 $";
 #endif
 
 

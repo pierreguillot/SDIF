@@ -15,11 +15,18 @@
 
 
 
-typedef struct SdifColumnDefS
+
+
+typedef struct SdifColumnDefS SdifColumnDefT;
+
+struct SdifColumnDefS
 {
   char *Name;
   SdifUInt4 Num;
-} SdifColumnDefT;
+} ;
+
+
+
 
 typedef struct SdifColumnDefNS SdifColumnDefNT;
 
@@ -28,6 +35,9 @@ struct SdifColumnDefNS
   SdifColumnDefNT *Next;
   SdifColumnDefT *ColumnDef;
 };
+
+
+
 
 typedef struct SdifMatrixTypeS SdifMatrixTypeT;
 
@@ -44,6 +54,9 @@ struct SdifMatrixTypeS
   SdifUInt4       NbColumnDef;
   SdifModifModeET ModifMode;
 };
+
+
+
 
 extern SdifColumnDefT*  SdifCreateColumnDef (char *Name,  unsigned int Num);
 extern void             SdifKillColumnDef   (SdifColumnDefT *ColumnDef);
