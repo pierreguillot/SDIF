@@ -1,4 +1,4 @@
-/* $Id: sdif.h,v 1.25 2003-04-18 16:03:09 schwarz Exp $
+/* $Id: sdif.h,v 1.26 2003-04-18 17:42:49 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -30,6 +30,10 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.25  2003/04/18 16:03:09  schwarz
+ * Made parseable by swig (no generating macros).
+ * Removed double definitions, reordered others.
+ *
  * Revision 1.24  2002/11/28 19:56:21  roebel
  * Fixed some const arguments.
  * Make SdifFtruncte return SDIF_FTRUNCATE_NOT_AVAILABLE if
@@ -139,7 +143,7 @@
  * Revision 1.1.2.1  2000/08/21  13:07:41  tisseran
  * *** empty log message ***
  *
- * $Date: 2003-04-18 16:03:09 $
+ * $Date: 2003-04-18 17:42:49 $
  *
  */
 
@@ -154,7 +158,7 @@ extern "C" {
 #endif
 
 
-static const char _sdif_h_cvs_revision_ [] = "$Id: sdif.h,v 1.25 2003-04-18 16:03:09 schwarz Exp $";
+static const char _sdif_h_cvs_revision_ [] = "$Id: sdif.h,v 1.26 2003-04-18 17:42:49 schwarz Exp $";
 
 
 #include <stdio.h>
@@ -1660,8 +1664,8 @@ SdifUInt2       SdifExistUserFrameType (SdifHashTableT *FrameTypeHT);
 */
 
 
-/*
-  #ifdef STDC_HEADERS */  /* Is the compiler ANSI? */
+#ifndef SWIG
+/* #ifdef STDC_HEADERS */  /* Is the compiler ANSI? */
 
 /* generate template for all types */
 #define sdif__foralltypes(macro, post)	macro(Float4)post \
@@ -1689,8 +1693,8 @@ SdifUInt2       SdifExistUserFrameType (SdifHashTableT *FrameTypeHT);
 #define sdif_proto_foralltypes(macro)   \
 	sdif__foralltypes(macro,sdif_foralltypes_post_proto)
 
-/*
-  #endif */ /* STDC_HEADERS */
+/* #endif */ /* STDC_HEADERS */
+#endif /* SWIG */
 
 
 #define _SdifStringLen 1024
