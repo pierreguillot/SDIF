@@ -1,4 +1,4 @@
-/* $Id: SdifNameValue.c,v 3.15 2003-11-07 21:47:18 roebel Exp $
+/* $Id: SdifNameValue.c,v 3.16 2003-12-15 13:15:40 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -34,6 +34,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.15  2003/11/07 21:47:18  roebel
+ * removed XpGuiCalls.h and replaced preinclude.h  by local files
+ *
  * Revision 3.14  2003/08/06 15:10:47  schwarz
  * Finally removed obsolete functions (like SdifSkip...).
  *
@@ -199,7 +202,7 @@ SdifCreateNameValueTable (SdifUInt4 StreamID,
 }
 
 
-
+/* does not remove NVT from list! */
 void
 SdifKillNameValueTable  (void* NVTable)
 {
@@ -380,6 +383,11 @@ SdifNameValuesLSetCurrNVT(SdifNameValuesLT *NameValuesL, SdifUInt4 NumCurrNVT)
   return NameValuesL->CurrNVT;
 }
 
+
+void SdifNameValuesLKillCurrNVT(SdifNameValuesLT *NameValuesL)
+{
+    SdifKillListCurr(NameValuesL->NVTList);
+}
 
 
 
