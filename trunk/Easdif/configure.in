@@ -1,6 +1,6 @@
 dnl -*-autoconf-*-  (No, it's an autoconf file!)
 dnl -*-m4-*- (He emacs, it's a m4 file)
-dnl $Id: configure.in,v 1.2 2003-03-03 20:30:40 roebel Exp $
+dnl $Id: configure.in,v 1.3 2003-03-04 00:53:23 roebel Exp $
 dnl
 dnl configure.in		Feb 2003      Axel Roebel
 dnl
@@ -9,7 +9,7 @@ dnl
 
 
 dnl To check if directory is present
-AC_INIT(src/easdif.h)
+AC_INIT(easdif/easdif.h)
 
 dnl ############################################################
 dnl PACKAGE NAME AND VERSION
@@ -18,7 +18,21 @@ AC_MSG_RESULT(PACKAGE NAME)
 PACKAGE=Easdif
 AC_SUBST(PACKAGE)
 
+AC_SUBST(EASDIF_VERSION_MAJ)
+AC_SUBST(EASDIF_VERSION_MIN)
+
+
+topdir=`dirname $0`
+versmaj=`grep ^PROJECT_NUMBER  ${topdir}/Doxyfile | cut -d"=" -f2| cut -d. -f1| sed -e "s/ //g"`
+
+AC_DEFINE_UNQUOTED(EASDIF_VERSION_MAJ,$versmaj,[Major version number of easdif lib])
+versmin=`grep ^PROJECT_NUMBER  ${topdir}/Doxyfile | cut -d"=" -f2| cut -d. -f2| sed -e "s/ //g"`
+AC_DEFINE_UNQUOTED(EASDIF_VERSION_MIN,$versmin,[Minor version number of easdif lib])
+
+VERSION=${versmaj}.${versmin}
 AM_INIT_AUTOMAKE($PACKAGE,$VERSION)
+
+AM_CONFIG_HEADER(easdif/easdif_version.h)
 
 dnl ############################################################
 dnl Checks for programs.
@@ -57,14 +71,14 @@ dnl find SDIF objects that have to be included into Easdif
 AC_MSG_RESULT(FIND SDIF FILES)
 AC_SUBST(SDIFOBJECTS)
 for ss in SDIF/sdif/*.c ; do
-    SDIFOBJECTS="$SDIFOBJECTS \$(top_srcdir)/SDIF/sdif/`basename $ss .c`.lo"
+    SDIFOBJECTS="$SDIFOBJECTS ../SDIF/sdif/`basename $ss .c`.lo"
 done
 
 dnl ############################################################
 dnl CREATE OUTPUT FILES
 AC_MSG_RESULT(CREATE OUTPUT FILES)
 AC_OUTPUT(Makefile 
-src/Makefile 
+easdif/Makefile 
 test/Makefile
 Easdif.pc)
 
