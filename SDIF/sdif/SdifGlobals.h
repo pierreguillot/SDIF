@@ -1,4 +1,4 @@
-/* $Id: SdifGlobals.h,v 3.4 1999-10-13 16:05:49 schwarz Exp $
+/* $Id: SdifGlobals.h,v 3.5 1999-10-15 12:27:08 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -14,6 +14,15 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.4  1999/10/13  16:05:49  schwarz
+ * Changed data type codes (SdifDataTypeET) to SDIF format version 3, as
+ * decided with Matt Wright June 1999, added integer data types.
+ * Added writing of 1NVT with real frame header (but data is still not in
+ * matrices).
+ * The data type handling makes heavy use of code-generating macros,
+ * called for all data types with the sdif_foralltypes macro, thus
+ * adding new data types is easy.
+ *
  * Revision 3.3  1999/09/28  10:39:26  schwarz
  * Introduced SdifSignatureConst for signature constants across different
  * compilers/architectures.
@@ -97,6 +106,7 @@
 #define _SdifGranule 1024 /* for OneRow allocation in bytes */
 
 #define _SdifFloat8Error  0xffffffff
+#define _SdifNoTime	  _Sdif_MIN_DOUBLE_	/* for header ASCII frames */
 #define _SdifNoStreamID   0xfffffffe
 #define _SdifAllStreamID  0xffffffff
 #define _SdifUnknownUInt4 0xffffffff
@@ -276,12 +286,12 @@ size_t    SdifFPaddingCalculate (FILE *f, size_t NbBytes);
 short SdifFloat8Equ(SdifFloat8 f1, SdifFloat8 f2);
 
 
-#ifndef min
-#define min(a,b)	((a) < (b)  ?  (a)  :  (b))
+#ifndef MIN
+#define MIN(a,b)	((a) < (b)  ?  (a)  :  (b))
 #endif
 
-#ifndef max
-#define max(a,b)	((a) > (b)  ?  (a)  :  (b))
+#ifndef MAX
+#define MAX(a,b)	((a) > (b)  ?  (a)  :  (b))
 #endif
 
 
