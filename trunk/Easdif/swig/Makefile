@@ -1,6 +1,13 @@
-# $Id: Makefile,v 1.8 2003-04-18 15:41:18 schwarz Exp $
+# $Id: Makefile,v 1.9 2003-04-18 16:00:22 schwarz Exp $
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.8  2003/04/18 15:41:18  schwarz
+# Don't include all definitions from sdif.h, only the ones needed by
+# easdif, defined in sdifdefine.i.  -> smaller wrapper size:
+# .cxx	 880k -> 130k
+# .o	1000k -> 210k
+# .pm	 123k -> 8k
+#
 # Revision 1.7  2003/04/18 14:31:27  schwarz
 # Added typemap for string to SdifSignature conversion (input arg):
 # Setting/writing data works --> wrapper complete, but rudimentary.
@@ -27,31 +34,42 @@
 # Doesn't do much except counting frames.
 
 
-PERL5_INCLUDE = /usr/lib/perl5/5.6.1/i386-linux/CORE/
-
-INCL = -I/usr/local/include -I$(PERL5_INCLUDE) -I.. -I../SDIF/include -I../SDIF/sdif
-
-sdifincbase  = entity frame matrix namevaluetable
-sdifincfiles = $(sdifincbase:%=../easdif/sdif%.h) ../SDIF/include/sdif.h
-
-wrap = easdif_wrap.cxx
+PERL5_INCLUDE	= /usr/lib/perl5/5.6.1/i386-linux/CORE/
+INCL		= -I/usr/local/include -I$(PERL5_INCLUDE) \
+		  -I.. -I../SDIF/include -I../SDIF/sdif
+EASDIF_LIB_PATH	= ../easdif/.libs
 # dbflag = -g
 
-all:			eaSDIF.pm eaSDIF.so
 
-SDIF.pm $(wrap):	easdif.i $(sdifincfiles) sdifsignature.i
-	swig -c++ -perl5 -shadow $<
-#	swig -c++ -perl5 $<
+modules		= eaSDIF SDIF
+incfiles	= sdifdefines.i sdifsignature.i
+easdifincbase	= entity frame matrix namevaluetable
+easdifincfiles	= $(easdifincbase:%=../easdif/sdif%.h)
+sdifincfiles	= ../SDIF/include/sdif.h
 
-easdif_wrap.o:		$(wrap)
-	g++ -c $(dbflag) -fpic -Dexplicit= $(wrap) -fno-strict-aliasing $(INCL)
+define swig
+	swig -c++ -perl5 -shadow -o $@ $<
+endef
 
-eaSDIF.so:		easdif_wrap.o
-	g++ -shared ../easdif/.libs/libEasdif.so easdif_wrap.o -o eaSDIF.so
 
-test:			eaSDIF.pm eaSDIF.so 
-	LD_LIBRARY_PATH=../easdif/.libs:$(LD_LIBRARY_PATH) \
+all:	eaSDIF.so SDIF.so
+
+eaSDIF_wrap.cxx:	easdif.i $(easdifincfiles) $(incfiles)
+			$(swig)
+
+SDIF_wrap.cxx:		sdif.i   $(sdifincfiles)   $(incfiles)
+			$(swig)
+
+
+%_wrap.o: %_wrap.cxx
+	g++ -c $(dbflag) -fpic -Dexplicit= -fno-strict-aliasing $(INCL) $<
+
+%.so: 	%_wrap.o
+	g++ -shared $(EASDIF_LIB_PATH)/libEasdif.so $< -o $@
+
+test:	eaSDIF.pm
+	LD_LIBRARY_PATH=$(EASDIF_LIB_PATH):$(LD_LIBRARY_PATH) \
 	perl -I. test.pl
 
-clean: 
-	rm $(wrap)
+clean:
+	-rm -f eaSDIF_wrap.* SDIF_wrap.* eaSDIF.pm SDIF.pm eaSDIF.so SDIF.so
