@@ -1,6 +1,6 @@
 <!-- DO NOT EDIT!!!
      This file extern/by-subject-doc.html is generated from extern/linkit.lnk
-     $Id: by-subject-doc.html,v 3.3 1999-10-07 15:22:19 schwarz Exp $
+     $Id: by-subject-doc.html,v 3.4 2000-08-07 15:12:12 schwarz Exp $
      by the Makefile target eframes.
 
 
@@ -224,7 +224,7 @@ Le code de la librairie SDIF est construit avec un formalisme au
 niveau des noms des structures, des variables et des fonctions.  Il
 est souhaitable pour les futurs maintenances de SDIF que les noms des
 fonctions utilisateurs ne commencent pas par 'Sdif'.  En particulier,
-ne pas nommer une fonction SdifFReadMatrix ou SdifFReadFrame...
+ne pas nommer une fonction <b><a href="cocoon/SDIF.html#int_SdifFReadMatrix_(SdifFileT_*file)$">SdifFReadMatrix</a></b> ou SdifFReadFrame...
 </p>
 
 
@@ -518,7 +518,7 @@ SdifFrameTypeT* SdifGetFrameType
 <p>Il n'y a pas encore de fonctions de haut niveau pour remplir et
 interroger la table des StreamID (StreamIDsTable).
 <p>
-SdifStreamIDT* <b><a href="cocoon/SDIF.html#SdifStreamIDT*_SdifCreateStreamID(SdifUInt4_NumID,_char_*Source,_char_*TreeWay)$">SdifCreateStreamID</a></b>
+<b><a href="cocoon/SDIF.html#typedef_struct_SdifStreamIDS_SdifStreamIDT$">SdifStreamIDT</a></b>* <b><a href="cocoon/SDIF.html#SdifStreamIDT*_SdifCreateStreamID(SdifUInt4_NumID,_char_*Source,_char_*TreeWay)$">SdifCreateStreamID</a></b>
 (SdifUInt4 NumID, char *Source, char *TreeWay)<br>
 permet de créer un pointeur sur un objet de type StreamIDT.
 </p>
@@ -536,7 +536,7 @@ void ConsOneStreamID(SdifFileT *SdifF,
 		     float      StartTime,
 		     float      EndTime)
 {
-  SdifStreamIDT* StreamID;
+  <b><a href="cocoon/SDIF.html#typedef_struct_SdifStreamIDS_SdifStreamIDT$">SdifStreamIDT</a></b>* StreamID;
   char TreeWay[512];
 
   sprintf(TreeWay, "%s/%d/%s/%d/%d/%s/%f", PatchType, NumPatch, ObjType,
@@ -548,9 +548,9 @@ void ConsOneStreamID(SdifFileT *SdifF,
 
 /*pour recuperer un StreamID il faut utiliser la fonction SdifHashTableGet*/
 {
-  SdifStreamIDT* StreamID;
+  <b><a href="cocoon/SDIF.html#typedef_struct_SdifStreamIDS_SdifStreamIDT$">SdifStreamIDT</a></b>* StreamID;
 
-  StreamID = (SdifStreamIDT*) SdifHashTableGet (SdifF->StreamIDsTable, &NumID, 0);
+  StreamID = (<b><a href="cocoon/SDIF.html#typedef_struct_SdifStreamIDS_SdifStreamIDT$">SdifStreamIDT</a></b>*) SdifHashTableGet (SdifF->StreamIDsTable, &NumID, 0);
   /* le troisième argument n'est pas utilisé, car la table est indexée directement
      par des entiers (création de la table avec l'option eInt4). 
    */
@@ -1041,14 +1041,13 @@ tosdif -i MyFoB.sdif.txt  -o MyFoB.sdif
 
 <p><hr width="100%"></p>
 
-</body>
-</html>
+<!--
   <a name=""></a><h1></h1>
     <a name=""></a><h2></h2>
       <a name=""></a><h3></h3>
         <a name=""></a><h4></h4>
 <p></p>
+-->
 
-
-
-
+</body>
+</html>
