@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.19 2002-10-03 08:54:25 tisseran Exp $
+# $Id: Makefile.am,v 1.20 2002-10-04 13:14:04 roebel Exp $
 #
 # ./sdif/Makefile.am		September 2000			Patrice Tisserand
 #
@@ -29,6 +29,9 @@
 # send email to:  sdif@ircam.fr
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.19  2002/10/03 08:54:25  tisseran
+# Try a fix to keep formesutils header uptodate in cvs working directory
+#
 # Revision 1.18  2002/09/24 13:23:08  schwarz
 # Added forgotten host_configure.h to dist.
 #
@@ -102,7 +105,7 @@
 
 EXTRA_LIBRARIES = libsdif.a libsdif-debug.a libsdif-cpp.a
 lib_LIBRARIES = @SELLIB@
-FORMES_H=host_architecture.h host_configure.h preincluded.h UniversalEnvVar.h  XpGuiCalls.h
+FORMES_H=host_architecture.h  preincluded.h UniversalEnvVar.h  XpGuiCalls.h
 FORMES_INCLUDE=/u/formes/share/include
 
 SDIF_H = ../include/sdif_version.h $(top_srcdir)/include/sdif.h \
@@ -152,19 +155,25 @@ $(top_srcdir)/sdif/SdifVersion.h : $(Versionsrc)
 
 
 # EXTRA FOR IRCAM STUFF
+.PHONY: ircam_deps
 ircam_deps : $(FORMES_H:%=$(top_srcdir)/sdif/%)
 
-$(top_srcdir)/sdif/host_architecture.h: ${FORMES_INCLUDE}/host_architecture.h
-	cp ${FORMES_INCLUDE}/host_architecture.h $@
+FORCE:
 
-$(top_srcdir)/sdif/preincluded.h : ${FORMES_INCLUDE}/preincluded.h
-	cp ${FORMES_INCLUDE}/preincluded.h $@
+$(top_srcdir)/sdif/host_architecture.h: FORCE #${FORMES_INCLUDE}/host_architecture.h
+#	cp ${FORMES_INCLUDE}/host_architecture.h $@
+	@STEM=host_architecture;if cmp --quiet $(top_srcdir)/sdif/$$STEM.h ${FORMES_INCLUDE}/$$STEM.h;then echo $(top_srcdir)/sdif/$$STEM.h up to date;else echo  Updating $(top_srcdir)/sdif/$$STEM.h; cp ${FORMES_INCLUDE}/$$STEM.h $@;fi
 
-$(top_srcdir)/sdif/UniversalEnvVar.h : ${FORMES_INCLUDE}/UniversalEnvVar.h
-	cp ${FORMES_INCLUDE}/UniversalEnvVar.h $@
+$(top_srcdir)/sdif/preincluded.h :  FORCE # ${FORMES_INCLUDE}/preincluded.h
+	@STEM=preincluded;if cmp --quiet $(top_srcdir)/sdif/$$STEM.h ${FORMES_INCLUDE}/$$STEM.h;then echo $(top_srcdir)/sdif/$$STEM.h up to date;else echo  Updating $(top_srcdir)/sdif/$$STEM.h; cp ${FORMES_INCLUDE}/$$STEM.h $@;fi
 
-$(top_srcdir)/sdif/host_configure.h: #${FORMES_INCLUDE}/host_configure.h
-	cp ${FORMES_INCLUDE}/host_configure.h $@
 
-$(top_srcdir)/sdif/XpGuiCalls.h: ${FORMES_INCLUDE}/XpGuiCalls.h
-	cp ${FORMES_INCLUDE}/XpGuiCalls.h $@
+$(top_srcdir)/sdif/UniversalEnvVar.h :  FORCE #${FORMES_INCLUDE}/UniversalEnvVar.h
+#	cp ${FORMES_INCLUDE}/UniversalEnvVar.h $@
+	@STEM=UniversalEnvVar;if cmp --quiet $(top_srcdir)/sdif/$$STEM.h ${FORMES_INCLUDE}/$$STEM.h;then echo $(top_srcdir)/sdif/$$STEM.h up to date;else echo  Updating $(top_srcdir)/sdif/$$STEM.h; cp ${FORMES_INCLUDE}/$$STEM.h $@;fi
+
+
+
+$(top_srcdir)/sdif/XpGuiCalls.h:  FORCE #${FORMES_INCLUDE}/XpGuiCalls.h
+#	cp ${FORMES_INCLUDE}/XpGuiCalls.h $@
+	@STEM=XpGuiCalls;if cmp --quiet $(top_srcdir)/sdif/$$STEM.h ${FORMES_INCLUDE}/$$STEM.h;then echo $(top_srcdir)/sdif/$$STEM.h up to date;else echo  Updating $(top_srcdir)/sdif/$$STEM.h; cp ${FORMES_INCLUDE}/$$STEM.h $@;fi
