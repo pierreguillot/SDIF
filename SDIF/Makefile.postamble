@@ -1,12 +1,12 @@
-# postamble 
-
-
-
-
+# $Id: Makefile.postamble,v 2.1 1998-12-03 18:10:38 schwarz Exp $
+#
+# Makefile.postamble to be included after every makefile.
+#
+# $Log: not supported by cvs2svn $
 
 
 $(SDIF_OBJ_DIR)/%.o: %.c
-	@echo Compilation of $< 
+	@echo Compilation of $<
 	@$(CC) $(CFLAGS) -o $@ -c $<
 
 $(SDIF_LIB): $(SDIF_OBJS)
@@ -14,11 +14,8 @@ $(SDIF_LIB): $(SDIF_OBJS)
 	ar r $(SDIF_LIB) $(SDIF_OBJS)
 	if ( $(RANLIB) != 0 ) $(RANLIB) $@
 
-
-install_dirs: $(INSTALL_DIRS:%=%-dir)
-
-%-dir: 
-	@if ( ! -e $* ) mkdir -p $*
+ $(OUTDIRS) $(INSTALL_DIRS):
+	mkdir -p $@
 
 
 

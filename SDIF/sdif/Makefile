@@ -1,4 +1,8 @@
+# $Id: Makefile,v 2.1 1998-12-03 18:10:47 schwarz Exp $
+#
 # Makefile only for .o files of sdif library
+#
+# $Log: not supported by cvs2svn $
 
 PRJ_DIR := $(shell pwd)/..
 
@@ -6,6 +10,7 @@ PRJ_DIR := $(shell pwd)/..
 include ../Makefile.preamble
 
 CFLAGS := $(CAFLAGS) $(DOFLAGS) $(D_SDIF_FLAG) -I$(SDIF_SRC_DIR) -I$(INCLUDE_DIR)
+OUTDIRS = $(SDIF_OBJ_DIR)
 
 
 #
@@ -14,14 +19,9 @@ CFLAGS := $(CAFLAGS) $(DOFLAGS) $(D_SDIF_FLAG) -I$(SDIF_SRC_DIR) -I$(INCLUDE_DIR
 
 
 
-all: dirs objects
+all: objects
 
-dirs: $(SDIF_OBJ_DIR:%=%-dir)
-
-%-dir: 
-	@if ( ! -e $* ) mkdir -p $*
-
-objects: $(SDIF_OBJS)
+objects: $(OUTDIRS) $(SDIF_OBJS)
 	@echo objects
 
 semiclean:
