@@ -1,8 +1,11 @@
-/* $Id: sdif.h,v 1.4 2000-11-16 12:02:22 lefevre Exp $
+/* $Id: sdif.h,v 1.5 2000-11-16 12:20:17 lefevre Exp $
  *
  * This file contains type declaration of variables used in SDIF library.
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.4  2000/11/16  12:02:22  lefevre
+ * no message
+ *
  * Revision 1.3  2000/11/15  14:53:22  lefevre
  * no message
  *
@@ -18,7 +21,7 @@
  * Revision 1.1.2.1  2000/08/21  13:07:41  tisseran
  * *** empty log message ***
  *
- * $Date: 2000-11-16 12:02:22 $
+ * $Date: 2000-11-16 12:20:17 $
  *
  */
 
@@ -616,11 +619,14 @@ struct SdifStringS
 };
 
 
-/* $Id: sdif.h,v 1.4 2000-11-16 12:02:22 lefevre Exp $
+/* $Id: sdif.h,v 1.5 2000-11-16 12:20:17 lefevre Exp $
  *
  * This file contains prototype of functions used in SDIF library.
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.4  2000/11/16  12:02:22  lefevre
+ * no message
+ *
  * Revision 1.3  2000/11/15  14:53:22  lefevre
  * no message
  *
@@ -636,7 +642,7 @@ struct SdifStringS
  * Revision 1.1.2.1  2000/08/21  13:07:39  tisseran
  * *** empty log message ***
  *
- * $Date: 2000-11-16 12:02:22 $
+ * $Date: 2000-11-16 12:20:17 $
  *
  */
 
@@ -800,6 +806,7 @@ size_t SdifFSkipMatrixData       (SdifFileT *SdifF);
   frames. Il faut donc pour l'utiliser avoir au préalable lu la
   signature et l'entête.  */
 size_t SdifSkipFrameData         (SdifFileT *SdifF);
+size_t SdifFSkipFrameData        (SdifFileT *SdifF);
 
 /*DOC: 
   Cette fonction permet de lire le Padding en fin de matrice.
