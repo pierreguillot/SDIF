@@ -1,0 +1,35 @@
+Ascii chunks of file gen/t1.sdif:
+
+SDIF
+
+1NVT
+{
+NumberOfParameters	2;
+WrittenBy	MatlabSdifWriter;
+}
+
+Data in file gen/t1.sdif (200 bytes):
+    1 1ABC frames in stream 1 between time 1.000000 and 1.000000 containing
+      1 IABC matrices
+      1 1ABC matrices
+
+SDIF
+
+1NVT
+{
+NumberOfParameters	2;
+WrittenBy	MatlabSdifWriter;
+}
+
+
+SDFC
+
+1ABC	2	1	1
+  IABC	0x0004	1	1
+	1
+  1ABC	0x0004	2	2
+	1	2
+	5	6
+
+ENDC
+ENDF
