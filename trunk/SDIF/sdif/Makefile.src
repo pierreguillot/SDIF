@@ -1,4 +1,4 @@
-# $Id: Makefile.src,v 2.2 1999-01-23 15:55:35 virolle Exp $
+# $Id: Makefile.src,v 2.3 1999-02-28 12:16:35 virolle Exp $
 #
 #               Copyright (c) 1998 by IRCAM - Centre Pompidou
 #                          All rights reserved.
@@ -6,6 +6,8 @@
 #  For any information regarding this and other IRCAM software, please
 #  send email to:
 #                            manager@ircam.fr
+#
+# $Log: not supported by cvs2svn $
 #
 # src of sdif library
 
@@ -15,6 +17,7 @@ SDIF_SRC = \
 	SdifHash.c \
 	SdifGlobals.c \
 	SdifError.c \
+  SdifMemory.c \
 	SdifNameValue.c \
 	SdifMatrixType.c \
 	SdifFrameType.c \

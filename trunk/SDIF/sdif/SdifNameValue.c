@@ -1,4 +1,4 @@
-/* $Id: SdifNameValue.c,v 2.3 1999-01-23 15:55:56 virolle Exp $
+/* $Id: SdifNameValue.c,v 2.4 1999-02-28 12:16:54 virolle Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -17,6 +17,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 2.3  1999/01/23  15:55:56  virolle
+ * add querysdif.dsp, delete '\r' chars from previous commit
+ *
  * Revision 2.2  1999/01/23  13:57:41  virolle
  * General Lists, and special chunk preparation to become frames
  *
@@ -54,7 +57,7 @@ SdifCreateNameValue(const char *Name,  const char *Value)
 {
   SdifNameValueT *NewNameValue = NULL;
 
-  NewNameValue = (SdifNameValueT*) malloc (sizeof(SdifNameValueT));
+  NewNameValue = SdifMalloc(SdifNameValueT);
   if (NewNameValue)
     {
       NewNameValue->Name  = SdifCreateStrNCpy(Name, SdifStrLen(Name)+1);
@@ -81,7 +84,7 @@ SdifKillNameValue(SdifNameValueT *NameValue)
     {
       SdifKillStr(NameValue->Name);
       SdifKillStr(NameValue->Value);
-      free(NameValue);
+      SdifFree(NameValue);
     }
   else
     _SdifError(eFreeNull, "NameValue free");
@@ -106,7 +109,7 @@ SdifCreateNameValueTable (SdifUInt4 NumIDLink,
 {
     SdifNameValueTableT* NewNVTable;
 
-    NewNVTable = (SdifNameValueTableT*) malloc (sizeof(SdifNameValueTableT));
+    NewNVTable = SdifMalloc(SdifNameValueTableT);
     if (NewNVTable)
     {
         NewNVTable->NumIDLink  = NumIDLink;
@@ -130,7 +133,7 @@ SdifKillNameValueTable  (SdifNameValueTableT* NVTable)
   if (NVTable)
     {
       SdifKillHashTable(NVTable->NVHT);
-      free(NVTable);
+      SdifFree(NVTable);
     }
   else
     _SdifError(eFreeNull, "NameValueTable free");
@@ -200,7 +203,7 @@ SdifCreateNameValuesL(SdifUInt4  HashSize)
 {
   SdifNameValuesLT *NewNameValuesL = NULL;
   
-  NewNameValuesL = (SdifNameValuesLT*) malloc (sizeof(SdifNameValuesLT));
+  NewNameValuesL = SdifMalloc(SdifNameValuesLT);
 
   if (NewNameValuesL)
     {
@@ -226,7 +229,7 @@ SdifKillNameValuesL(SdifNameValuesLT *NameValuesL)
   if (NameValuesL)
     {
       SdifKillList(NameValuesL->NVTList);
-      free(NameValuesL);
+      SdifFree(NameValuesL);
     }
   else
     _SdifError(eFreeNull, "NameValues List free");

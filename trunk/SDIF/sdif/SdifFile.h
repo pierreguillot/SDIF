@@ -1,4 +1,4 @@
-/* $Id: SdifFile.h,v 2.2 1999-01-23 13:57:33 virolle Exp $
+/* $Id: SdifFile.h,v 2.3 1999-02-28 12:16:42 virolle Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -16,6 +16,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 2.2  1999/01/23  13:57:33  virolle
+ * General Lists, and special chunk preparation to become frames
+ *
  * Revision 2.1  1998/12/21  18:27:16  schwarz
  * Inserted copyright message.
  *
@@ -75,30 +78,31 @@ SdifFrameHeaderT* SdifFSetCurrFrameHeader (SdifFileT *SdifF, SdifSignature Signa
 SdifMatrixHeaderT* SdifFSetCurrMatrixHeader (SdifFileT *SdifF, SdifSignature Signature,
 						    SdifDataTypeET DataType, SdifUInt4 NbRow, SdifUInt4 NbCol);
 
-SdifOneRowT*  SdifFSetCurrOneRow       (SdifFileT *SdifF, void *Values);
-SdifOneRowT*  SdifFSetCurrOneRowCol    (SdifFileT *SdifF, SdifUInt4 numCol, SdifFloat8 Value);
-SdifFloat8    SdifFCurrOneRowCol       (SdifFileT *SdifF, SdifUInt4 numCol);
-SdifFloat8    SdifFCurrOneRowColName   (SdifFileT *SdifF, SdifMatrixTypeT *MatrixType, char *NameCD);
-SdifSignature SdifFCurrSignature       (SdifFileT *SdifF);
-SdifSignature SdifFCleanCurrSignature  (SdifFileT *SdifF);
-SdifSignature SdifFCurrFrameSignature  (SdifFileT *SdifF);
-SdifSignature SdifFCurrMatrixSignature (SdifFileT *SdifF);
-SdifOneRowT*  SdifFCurrOneRow          (SdifFileT *SdifF);
-void*	      SdifFCurrOneRowData	  (SdifFileT *SdifF);
-SdifUInt4     SdifFCurrNbCol           (SdifFileT *SdifF);
-SdifUInt4     SdifFCurrNbRow           (SdifFileT *SdifF);
-SdifUInt4     SdifFCurrNbMatrix        (SdifFileT *SdifF);
-SdifUInt4     SdifFCurrID              (SdifFileT *SdifF);
-SdifFloat8    SdifFCurrTime            (SdifFileT *SdifF);
+SdifOneRowT*	SdifFSetCurrOneRow	(SdifFileT *SdifF, void *Values);
+SdifOneRowT*	SdifFSetCurrOneRowCol	(SdifFileT *SdifF, SdifUInt4 numCol, SdifFloat8 Value);
+SdifFloat8	SdifFCurrOneRowCol	(SdifFileT *SdifF, SdifUInt4 numCol);
+SdifFloat8	SdifFCurrOneRowColName	(SdifFileT *SdifF, SdifMatrixTypeT *MatrixType, char *NameCD);
+SdifSignature	SdifFCurrSignature	(SdifFileT *SdifF);
+SdifSignature	SdifFCleanCurrSignature	(SdifFileT *SdifF);
+SdifSignature	SdifFCurrFrameSignature	(SdifFileT *SdifF);
+SdifSignature	SdifFCurrMatrixSignature(SdifFileT *SdifF);
+SdifOneRowT*	SdifFCurrOneRow		(SdifFileT *SdifF);
+void*		SdifFCurrOneRowData	(SdifFileT *SdifF);
+SdifUInt4	SdifFCurrNbCol		(SdifFileT *SdifF);
+SdifUInt4	SdifFCurrNbRow		(SdifFileT *SdifF);
+SdifUInt4	SdifFCurrNbMatrix	(SdifFileT *SdifF);
+SdifUInt4	SdifFCurrID		(SdifFileT *SdifF);
+SdifFloat8	SdifFCurrTime		(SdifFileT *SdifF);
 
 
-SdifSignatureTabT* SdifCreateSignatureTab (SdifUInt4 NbSignMax);
-SdifSignatureTabT* SdifReInitSignatureTab (SdifSignatureTabT *SignTab, SdifUInt4 NewNbSignMax);
-SdifSignatureTabT* SdifPutInSignatureTab  (SdifSignatureTabT *SignTab, SdifSignature Sign);
-SdifSignature      SdifIsInSignatureTab   (SdifSignatureTabT *SignTab, SdifSignature Sign);
-SdifFileT*    SdifFReInitMtrxUsed (SdifFileT *SdifF);
-SdifFileT*    SdifFPutInMtrxUsed  (SdifFileT *SdifF, SdifSignature Sign);
-SdifSignature SdifFIsInMtrxUsed   (SdifFileT *SdifF, SdifSignature Sign);
+SdifSignatureTabT*  SdifCreateSignatureTab  (SdifUInt4 NbSignMax);
+void		    SdifKillSignatureTab    (SdifSignatureTabT* SignTab);
+SdifSignatureTabT*  SdifReInitSignatureTab  (SdifSignatureTabT *SignTab, SdifUInt4 NewNbSignMax);
+SdifSignatureTabT*  SdifPutInSignatureTab   (SdifSignatureTabT *SignTab, SdifSignature Sign);
+SdifSignature	    SdifIsInSignatureTab    (SdifSignatureTabT *SignTab, SdifSignature Sign);
+SdifFileT*	    SdifFReInitMtrxUsed	    (SdifFileT *SdifF);
+SdifFileT*	    SdifFPutInMtrxUsed	    (SdifFileT *SdifF, SdifSignature Sign);
+SdifSignature	    SdifFIsInMtrxUsed	    (SdifFileT *SdifF, SdifSignature Sign);
 
 
 SdifErrorT*     SdifFLastError    (SdifFileT *SdifF);

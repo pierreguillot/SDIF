@@ -1,4 +1,4 @@
-/* $Id: SdifHard_OS.c,v 2.3 1999-01-23 15:55:51 virolle Exp $
+/* $Id: SdifHard_OS.c,v 2.4 1999-02-28 12:16:47 virolle Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -11,6 +11,9 @@
  *
  * author: Dominique Virolle 1998
  * $Log: not supported by cvs2svn $
+ * Revision 2.3  1999/01/23  15:55:51  virolle
+ * add querysdif.dsp, delete '\r' chars from previous commit
+ *
  * Revision 2.2  1999/01/23  13:57:36  virolle
  * General Lists, and special chunk preparation to become frames
  *
@@ -31,6 +34,7 @@
 #endif
 
 
+#include "SdifMemory.h"
 
 SdifMachineET
 SdifGetMachineType(void)
@@ -195,7 +199,7 @@ SdifCreateStrNCpy(const char* Source, size_t Size)
 {
   char *NewString;
 
-  NewString = (char*) malloc (sizeof(char) * Size);
+  NewString = SdifCalloc(char, Size);
   if (NewString)
     {
       SdifStrNCpy(NewString, Source, Size);
@@ -218,7 +222,7 @@ void
 SdifKillStr(char* String)
 {
   if (String)
-    free(String);
+    SdifFree(String);
   else
     _SdifError(eFreeNull, "String free");
 }

@@ -1,4 +1,4 @@
-/* $Id: SdifHash.c,v 2.1 1998-12-21 18:27:26 schwarz Exp $
+/* $Id: SdifHash.c,v 2.2 1999-02-28 12:16:48 virolle Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -18,6 +18,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 2.1  1998/12/21  18:27:26  schwarz
+ * Inserted copyright message.
+ *
  * Revision 2.0  1998/11/29  11:41:51  virolle
  * - New management of interpretation errors.
  * - Alignement of frames with CNMAT (execpt specials Chunk 1NVT, 1TYP, 1IDS).
@@ -39,9 +42,14 @@
 #include <stdio.h>
 #include <string.h>
 
+#include "SdifMemory.h"
+#include "SdifError.h"
 
-
-
+SdifHashTableT*
+SdifCreateHashTable(unsigned int HashSize,
+		    SdifHashIndexTypeET IndexType,
+		    void (*Killer)())
+{
 /*
  * The hash table size is better if it is a prime number like : 31, 61, 127, 251...
  * Killer is the name of the hash table data type destructor.
@@ -54,23 +62,18 @@
  *     To achieve better type-checking, there should be a full prototype for
  *     the function being called.
  */
-SdifHashTableT*
-SdifCreateHashTable(unsigned int HashSize,
-		    SdifHashIndexTypeET IndexType,
-		    void (*Killer)())
-{
   SdifHashTableT *NewTable = NULL;
   SdifHashNT **CurrTable;
   unsigned int i;
 
-  NewTable = (SdifHashTableT*) malloc (sizeof(SdifHashTableT));
+  NewTable = SdifMalloc(SdifHashTableT);
   if (NewTable)
     {
       NewTable->HashSize = HashSize;
       NewTable->NbOfData = 0;
       NewTable->IndexType = IndexType;
       NewTable->Killer = Killer;
-      NewTable->Table = (SdifHashNT**) malloc (sizeof(SdifHashNT*) * HashSize);
+      NewTable->Table = SdifCalloc(SdifHashNT*, HashSize);
       if (NewTable->Table)
 	    {
 	      CurrTable = NewTable->Table;
@@ -79,14 +82,14 @@ SdifCreateHashTable(unsigned int HashSize,
 	    }
       else
 	    {
-	     fprintf(stderr, "HashTable allocation memory error\n");
+	      _SdifError(eAllocFail, "HashTable allocation");
 	     return NULL;
         }
       return NewTable;
     }
   else
     {
-      fprintf(stderr, "HashTable allocation memory error\n");
+      _SdifError(eAllocFail, "HashTable allocation");
       return NULL;
     }
 }
@@ -108,13 +111,13 @@ SdifMakeEmptyHashTable(SdifHashTableT* HTable)
         {
           pNode = HTable->Table[i];
           if (HTable->IndexType == eHashChar)
-            free(pNode->Index.Char[0]);
+            SdifFree(pNode->Index.Char[0]);
           if (HTable->Killer)
             (*(HTable->Killer))(pNode->Data); /* this line can occasion a warning */
           else
             {
               /* if (pNode->Data)
-              *   free(pNode->Data);
+              *   SdifFree(pNode->Data);
 	          *else
 	          *   fprintf(stderr, "HashTable->Data kill memory error : \n");
 	          */
@@ -122,7 +125,7 @@ SdifMakeEmptyHashTable(SdifHashTableT* HTable)
 	           */
 	        }
 	      HTable->Table[i] = pNode->Next;
-	      free(pNode);
+	      SdifFree(pNode);
 	    }
     }
 }
@@ -138,12 +141,12 @@ SdifKillHashTable(SdifHashTableT* HTable)
   if (HTable)
     {
       SdifMakeEmptyHashTable(HTable);
-      free(HTable->Table);
-      free(HTable);
+      SdifFree(HTable->Table);
+      SdifFree(HTable);
     }
   else
     {
-      fprintf(stderr, "HashTable kill memory error\n");
+      _SdifError(eFreeNull, "HashTable free");
     }
 }
 
@@ -206,10 +209,10 @@ SdifHashTablePutChar(SdifHashTableT* HTable,
 
   if ( ! SdifHashTableSearchChar(HTable, s, nchar))
     {
-      pNode = (SdifHashNT*) malloc (sizeof(SdifHashNT));
+      pNode = SdifMalloc(SdifHashNT);
       if (pNode)
         {
-	      pNode->Index.Char[0] = (char*) malloc (nchar * sizeof(char));
+	      pNode->Index.Char[0] = SdifCalloc(char, nchar);
           if (pNode->Index.Char[0])
 	        strncpy((char*) pNode->Index.Char[0], (char*) s, nchar);
 	      else
@@ -267,7 +270,7 @@ SdifHashTablePutInt4(SdifHashTableT* HTable, const unsigned int i, void* Data)
   
   if ( ! SdifHashTableSearchInt4(HTable, i))
     {
-      pNode = (SdifHashNT*) malloc (sizeof(SdifHashNT));
+      pNode = SdifMalloc(SdifHashNT);
       if (pNode)
 	    {
 	      pNode->Index.Int4 = i;

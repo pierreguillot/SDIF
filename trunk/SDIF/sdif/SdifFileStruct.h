@@ -1,4 +1,4 @@
-/* $Id: SdifFileStruct.h,v 2.3 1999-01-23 15:55:48 virolle Exp $
+/* $Id: SdifFileStruct.h,v 2.4 1999-02-28 12:16:43 virolle Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -15,6 +15,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 2.3  1999/01/23  15:55:48  virolle
+ * add querysdif.dsp, delete '\r' chars from previous commit
+ *
  * Revision 2.2  1999/01/23  13:57:34  virolle
  * General Lists, and special chunk preparation to become frames
  *
@@ -99,7 +102,7 @@ struct SdifFileS
   SdifNameValuesLT   *NameValues;       /* DataBase of Names Values */
   SdifHashTableT     *MatrixTypesTable; /* DataBase of Matrix Types */
   SdifHashTableT     *FrameTypesTable;  /* DataBase of Frame Types */
-/*  SdifHashTableT     *StreamIDsTable;   /* DataBase of Stream IDs */
+/*  SdifHashTableT     *StreamIDsTable;    DataBase of Stream IDs */
   SdifStreamIDTableT *StreamIDsTable;   /* DataBase of Stream IDs */
   SdifTimePositionLT *TimePositions;    /* List of (Time, Position in the file) */
 

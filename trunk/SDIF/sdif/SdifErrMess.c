@@ -1,4 +1,4 @@
-/* $Id: SdifErrMess.c,v 2.4 1999-01-23 15:55:36 virolle Exp $
+/* $Id: SdifErrMess.c,v 2.5 1999-02-28 12:16:35 virolle Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -21,7 +21,6 @@
 #include "SdifFile.h"
 #include <string.h>
 #include <stdlib.h>
-#include "SdifError.h"
 
 
 
@@ -60,7 +59,7 @@ SdifCreateError(SdifErrorTagET Tag, SdifErrorLevelET Level, const char* UserMess
 {
   SdifErrorT *NewError = NULL;
 
-  NewError = (SdifErrorT*) malloc(sizeof(SdifErrorT));
+  NewError = SdifMalloc(SdifErrorT);
   if (NewError)
     {
       NewError->Tag		= Tag;
@@ -90,7 +89,7 @@ SdifKillError(SdifErrorT *Error)
 	  if (Error->UserMess)
 		SdifKillStr(Error->UserMess);
 
-      free(Error);
+      SdifFree(Error);
     }
   else
     _SdifError(eFreeNull, "Error free");
@@ -103,7 +102,7 @@ SdifCreateErrorL(SdifFileT* SdifF)
 {
   SdifErrorLT *NewErrorL = NULL;
   
-  NewErrorL = (SdifErrorLT*) malloc (sizeof(SdifErrorLT));
+  NewErrorL = SdifMalloc(SdifErrorLT);
   if (NewErrorL)
   {
 	  NewErrorL->SdifF = SdifF;
@@ -133,6 +132,7 @@ SdifKillErrorL(SdifErrorLT *ErrorL)
   if (ErrorL)
     {
         SdifKillList(ErrorL->ErrorList);
+	SdifFree(ErrorL);
     }
   else
     _SdifError(eFreeNull, "ErrorL free");

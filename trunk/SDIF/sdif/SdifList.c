@@ -18,6 +18,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 2.2  1999/01/23  15:55:52  virolle
+ * add querysdif.dsp, delete '\r' chars from previous commit
+ *
  * Revision 2.1  1999/01/23  13:57:37  virolle
  * General Lists, and special chunk preparation to become frames
  *
@@ -29,8 +32,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-
-
+#include "SdifMemory.h"
+#include "SdifError.h"
 
 
 /* stocks management */
@@ -53,7 +56,7 @@ SdifNewStock(SdifListNStockT *Stock)
 {
     SdifListNT* NewStock;
 
-    NewStock = (SdifListNT*) malloc (sizeof(SdifListNT) * Stock->SizeOfOneStock);
+    NewStock = SdifCalloc(SdifListNT, Stock->SizeOfOneStock);
     if (NewStock)
     {
         (NewStock[0]).Next              = Stock->StockList;
@@ -115,7 +118,7 @@ SdifKillListNStock(SdifListNT* OldStock)
     SdifListNT* NextStock;
 
     NextStock = (OldStock[0]).Next;
-    free (OldStock);
+    SdifFree(OldStock);
     return NextStock;
 }
 
@@ -196,7 +199,7 @@ SdifCreateList(KillerFT Killer)
 {
     SdifListT* NewList;
 
-    NewList = (SdifListT*) malloc (sizeof(SdifListT));
+    NewList = SdifMalloc(SdifListT);
     if (NewList)
     {
         NewList->Head = NULL;
@@ -208,8 +211,8 @@ SdifCreateList(KillerFT Killer)
     }
     else
     {
-        fprintf(stderr, "List allocation memory error\n");
-	    return NULL;
+      _SdifError(eAllocFail, "List allocation");
+      return NULL;
     }
 }
 
@@ -228,8 +231,8 @@ SdifKillListHead(SdifListT* List)
     }
     else
     {
-        fprintf(stderr, "KillListHead error\n");
-	    return NULL;
+      _SdifError(eFreeNull, "KillListHead");
+      return NULL;
     }
 }
 
@@ -251,11 +254,11 @@ SdifKillList (SdifListT* List)
     if (List)
     {
         SdifMakeEmptyList(List);
-        free(List);
+        SdifFree(List);
     }
     else
     {
-        fprintf(stderr, "KillList error\n");
+      _SdifError(eFreeNull, "KillList");
     }
 }
 
@@ -330,8 +333,8 @@ SdifListGetNext (SdifListT* List)
         }
         else
         {
-            fprintf(stderr, "ListGetNext error, current node is the tail\n");
-	        return NULL;
+          _SdifError(eArrayPosition, "ListGetNext error, current node is the tail");
+          return NULL;
         }
     }
 }

@@ -1,4 +1,4 @@
-/* $Id: SdifMatrix.c,v 2.3 1999-01-23 15:55:54 virolle Exp $
+/* $Id: SdifMatrix.c,v 2.4 1999-02-28 12:16:49 virolle Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -16,6 +16,9 @@
  *
  * author: Dominique Virolle 1997
  * $Log: not supported by cvs2svn $
+ * Revision 2.3  1999/01/23  15:55:54  virolle
+ * add querysdif.dsp, delete '\r' chars from previous commit
+ *
  * Revision 2.2  1999/01/23  13:57:39  virolle
  * General Lists, and special chunk preparation to become frames
  *
@@ -38,7 +41,7 @@ SdifCreateMatrixHeader(SdifSignature Signature,
 {
   SdifMatrixHeaderT *NewMatrixHeader = NULL;
   
-  NewMatrixHeader = (SdifMatrixHeaderT*) malloc (sizeof(SdifMatrixHeaderT));
+  NewMatrixHeader = SdifMalloc(SdifMatrixHeaderT);
   if (NewMatrixHeader)
     {
       NewMatrixHeader->Signature = Signature;
@@ -79,7 +82,7 @@ void
 SdifKillMatrixHeader(SdifMatrixHeaderT *MatrixHeader)
 {
   if (MatrixHeader)
-    free(MatrixHeader);
+    SdifFree(MatrixHeader);
   else
     _SdifError(eFreeNull, "MatrixHeader free");
 }
@@ -101,7 +104,7 @@ SdifCreateOneRow(SdifDataTypeET DataType, SdifUInt4  NbGranuleAlloc)
       return NULL;
     }
 
-  NewOneRow = (SdifOneRowT*) malloc (sizeof(SdifOneRowT));
+  NewOneRow = SdifMalloc(SdifOneRowT);
   if (NewOneRow)
     {
       NewOneRow->DataType = DataType;
@@ -112,22 +115,22 @@ SdifCreateOneRow(SdifDataTypeET DataType, SdifUInt4  NbGranuleAlloc)
 	{
 
 	case eFloat4 :
-	  NewOneRow->Data.F4 = (SdifFloat4*) malloc (NewOneRow->NbGranuleAlloc * _SdifGranule);
+	  NewOneRow->Data.F4 = (SdifFloat4*) SdifCalloc(char, NewOneRow->NbGranuleAlloc * _SdifGranule);
 	  if (! NewOneRow->Data.F4)
 	    {
 	      _SdifError(eAllocFail, "OneRow->Data.F4 allocation");
-	      free(NewOneRow);
+	      SdifFree(NewOneRow);
 	      return NULL;
 	    }
 	  else
 	    return NewOneRow;
 
 	case eFloat8 :
-	  NewOneRow->Data.F8 = (SdifFloat8*) malloc (NewOneRow->NbGranuleAlloc * _SdifGranule);
+	  NewOneRow->Data.F8 = (SdifFloat8*) SdifCalloc(char, NewOneRow->NbGranuleAlloc * _SdifGranule);
 	  if (! NewOneRow->Data.F8)
 	    {
 	      _SdifError(eAllocFail, "OneRow->Data.F8 allocation");
-	      free(NewOneRow);
+	      SdifFree(NewOneRow);
 	      return NULL;
 	    }
 	  else
@@ -135,7 +138,7 @@ SdifCreateOneRow(SdifDataTypeET DataType, SdifUInt4  NbGranuleAlloc)
 	default :
 	  sprintf(gSdifErrorMess, "Data of a OneRow : 0x%x", NewOneRow->DataType);
 	  _SdifError(eNotInDataTypeUnion, gSdifErrorMess);
-	  free(NewOneRow);
+	  SdifFree(NewOneRow);
 	  return NULL;
 	}
     }
@@ -166,7 +169,7 @@ SdifReInitOneRow (SdifOneRowT *OneRow, SdifDataTypeET DataType, SdifUInt4 NbData
 	{
 	  NewNbGranule = (SdifUInt4)(OneRow->NbData * sizeof(SdifFloat4)) / _SdifGranule;
 	  /* NewNbGranule = (NewNbGranule) ? NewNbGranule : 1; This case cannot appear */
-	  OneRow->Data.F4 = (SdifFloat4*) realloc (OneRow->Data.F4, NewNbGranule * _SdifGranule);
+	  OneRow->Data.F4 = (SdifFloat4*) SdifRealloc(OneRow->Data.F4, char, NewNbGranule * _SdifGranule);
 	  if (! OneRow->Data.F4)
 	    {
 	      _SdifError(eAllocFail, "OneRow->Data.F4 RE-allocation");
@@ -187,7 +190,7 @@ SdifReInitOneRow (SdifOneRowT *OneRow, SdifDataTypeET DataType, SdifUInt4 NbData
 	{
 	  NewNbGranule = (SdifUInt4)(OneRow->NbData * sizeof(SdifFloat8)) / _SdifGranule;
 	  /* NewNbGranule = (NewNbGranule) ? NewNbGranule : 1; This case cannot appear */
-	  OneRow->Data.F8 = (SdifFloat8*) realloc (OneRow->Data.F8, NewNbGranule * _SdifGranule);
+	  OneRow->Data.F8 = (SdifFloat8*) SdifRealloc(OneRow->Data.F8, char, NewNbGranule * _SdifGranule);
 	  if (! OneRow->Data.F8)
 	    {
 	      _SdifError(eAllocFail, "OneRow->Data.F8 RE-allocation");
@@ -228,7 +231,7 @@ SdifKillOneRow(SdifOneRowT *OneRow)
 	case eFloat4 :
 	  if (OneRow->Data.F4)
 	    {
-	      free(OneRow->Data.F4);
+	      SdifFree(OneRow->Data.F4);
 	    }
 	  else
 	    _SdifError(eFreeNull, "OneRow->Data.F4 free");
@@ -236,7 +239,7 @@ SdifKillOneRow(SdifOneRowT *OneRow)
 	case eFloat8 :
 	  if (OneRow->Data.F8)
 	    {
-	      free(OneRow->Data.F8);
+	      SdifFree(OneRow->Data.F8);
 	    }
 	  else
 	    _SdifError(eFreeNull, "OneRow->Data.F8 free");
@@ -246,7 +249,7 @@ SdifKillOneRow(SdifOneRowT *OneRow)
 	  _SdifError(eNotInDataTypeUnion, gSdifErrorMess);
 	  break;
 	}
-     free(OneRow);
+     SdifFree(OneRow);
     }
   else
     _SdifError(eFreeNull, "OneRow free");
@@ -348,7 +351,7 @@ SdifCreateMatrixData(SdifSignature Signature,
   SdifUInt4 NbGranule;
   SdifUInt4 MatrixSize;
   
-  NewMatrixData = (SdifMatrixDataT*) malloc (sizeof(SdifMatrixDataT));
+  NewMatrixData = SdifMalloc(SdifMatrixDataT);
   if (NewMatrixData)
     {
       NewMatrixData->Header = SdifCreateMatrixHeader(Signature,
@@ -363,7 +366,7 @@ SdifCreateMatrixData(SdifSignature Signature,
       /* Padding size added */
       NewMatrixData->Size = (MatrixSize + SdifPaddingCalculate(MatrixSize));
 
-      NewMatrixData->Rows = (SdifOneRowT**) malloc (sizeof(SdifOneRowT*) * NbRow);
+      NewMatrixData->Rows = SdifCalloc(SdifOneRowT*, NbRow);
       if (NewMatrixData->Rows)
 	{
 	  NbGranule = (NbCol*SdifSizeofDataType(DataType))/_SdifGranule;
@@ -406,12 +409,12 @@ SdifKillMatrixData(SdifMatrixDataT *MatrixData)
 	    SdifKillOneRow(MatrixData->Rows[iRow]);
 	  
 	  SdifKillMatrixHeader(MatrixData->Header);
-	  free(MatrixData->Rows);
+	  SdifFree(MatrixData->Rows);
 	}
       else
 	_SdifError(eFreeNull, "MatrixData->Rows free");
       
-      free(MatrixData);
+      SdifFree(MatrixData);
     }
   else
     _SdifError(eFreeNull, "MatrixData free");
