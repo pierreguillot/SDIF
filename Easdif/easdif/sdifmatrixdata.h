@@ -33,9 +33,13 @@
  * 
  * 
  * 
- * $Id: sdifmatrixdata.h,v 1.11 2004-07-28 14:57:34 roebel Exp $ 
+ * $Id: sdifmatrixdata.h,v 1.12 2004-07-29 10:23:36 bogaards Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.11  2004/07/28 14:57:34  roebel
+ * Added support for accessing data as unsigned char.
+ * Added SetRow and SetCol functions.
+ *
  * Revision 1.10  2004/07/27 17:37:54  roebel
  * Changed include directive to use user path and not system path for sdif.h
  * Properly cast return values in read and write method.
@@ -273,7 +277,7 @@ public:
 
     const T* start = &m_Data[icol];
     const T* end   = &m_Data[icol+m_Nrows*m_Ncols];
-    for(;start !=end;start += m_Nrows)    *out++ = static_cast<TT>(*start);
+    for(;start !=end;start += m_Ncols)    *out++ = static_cast<TT>(*start);
 
     return;
   }
