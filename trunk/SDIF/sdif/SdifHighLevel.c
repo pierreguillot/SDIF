@@ -24,11 +24,16 @@
  *                            sdif@ircam.fr
  */
 
-/* $Id: SdifHighLevel.c,v 3.11 2004-09-13 13:06:27 schwarz Exp $
+/* $Id: SdifHighLevel.c,v 3.12 2004-09-14 15:44:00 schwarz Exp $
  *
  * SdifHighLevel.c	8.12.1999	Diemo Schwarz
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.11  2004/09/13 13:06:27  schwarz
+ * SdifReadSimple even simpler, SdifReadFile for full-scale callback reading.
+ * Moving the functionality of querysdif into the library with SdifQuery,
+ * result in SdifQueryTreeT.
+ *
  * Revision 3.10  2004/09/09 17:52:16  schwarz
  * SdifReadSimple: simple callback-based reading of an entire SDIF file.
  *
@@ -159,7 +164,7 @@ size_t SdifReadFile (const char             *filename,
 {
     SdifFileT *file = NULL;
     int	       eof  = 0;
-    size_t     bytesread = 0;
+    size_t     bytesread = 0, newread;
     int        m, wantit;
 
     /* open input file (parses selection from filename into file->Selection) */
@@ -167,7 +172,10 @@ size_t SdifReadFile (const char             *filename,
     if (!file)
         return 0;
 
-    bytesread += SdifFReadGeneralHeader(file);
+    bytesread  = SdifFReadGeneralHeader(file);
+    if (!bytesread  ||  SdifFLastError(file))
+	return 0;	/* something's wrong, maybe no SDIF file */
+
     bytesread += SdifFReadAllASCIIChunks(file);
     if (SdifFLastError(file))
     {   /* error has already been printed by the library, just clean
@@ -179,12 +187,12 @@ size_t SdifReadFile (const char             *filename,
     if (openfilefunc)
 	eof = !openfilefunc(file, userdata);
 
-    /* main read loop */
-    while (!eof)
+    /* main read loop:
+       Read next selected frame header.  Current signature has
+       already been read by SdifFReadAllASCIIChunks or the last loop. */
+    while (!eof  &&  (newread = SdifFReadNextSelectedFrameHeader(file)) > 0)
     {
-	/* Read next selected frame header.  Current signature has
-	   already been read by SdifFReadAllASCIIChunks or the last loop. */
-	bytesread += SdifFReadNextSelectedFrameHeader(file);
+	bytesread += newread;
 
 	/* call frame header handler that decides if we are interested */
 	wantit = framefunc  ?  framefunc(file, userdata)  :  1;
@@ -253,8 +261,10 @@ size_t SdifReadFile (const char             *filename,
  * file querying
  */
 
+/* init SdifMinMaxT with sentinels */
+#define initminmax(m)	((m).min = DBL_MAX, (m).max = -DBL_MAX)
+
 /* update SdifMinMaxT structure */
-#define initminmax(m)	((m).min = FLT_MAX, (m).max = FLT_MIN)
 #define minmax(m, v)	{ if ((v) < (m).min)   (m).min = (v); \
 			  if ((v) > (m).max)   (m).max = (v); }
 
