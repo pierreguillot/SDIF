@@ -1,4 +1,6 @@
-/* SdifNameValue.h
+/* $Id: SdifNameValue.h,v 1.3 1998-04-24 12:40:37 schwarz Exp $
+ *
+ * SdifNameValue.h
  *
  * Name values management. For 1 SdifFileT*, we have one SdifNameValueLT*
  * which contains a list of hash tables. Each hach table contains name-values.
@@ -6,6 +8,7 @@
  *
  * author: Dominique Virolle 1997
  *
+ * $Log: not supported by cvs2svn $
  */
 
 #ifndef _SdifNameValue_
@@ -25,7 +28,7 @@ typedef struct SdifNameValueS
 } SdifNameValueT;
 
 
-extern SdifNameValueT* SdifCreateNameValue(char *Name,  char *Value);
+extern SdifNameValueT* SdifCreateNameValue(const char *Name, const char *Value);
 extern void            SdifKillNameValue  (SdifNameValueT *NameValue);
 
 
@@ -61,7 +64,7 @@ extern SdifNameValuesLT* SdifNameValuesLNewHT        (SdifNameValuesLT *NameValu
 extern SdifHashTableT*   SdifNameValuesLSetCurrHT    (SdifNameValuesLT *NameValuesL, SdifUInt4 NumCurrHT);
 extern SdifNameValueT*   SdifNameValuesLGet          (SdifNameValuesLT *NameValuesL, char *Name);
 extern SdifNameValueT*   SdifNameValuesLGetFromCurrHT(SdifNameValuesLT *NameValuesL, char *Name);
-extern SdifNameValueT*   SdifNameValuesLPut          (SdifNameValuesLT *NameValuesL, char *Name,  char *Value);
+extern SdifNameValueT*   SdifNameValuesLPut          (SdifNameValuesLT *NameValuesL, const char *Name,  const char *Value);
 extern SdifUInt2         SdifNameValuesLIsNotEmpty   (SdifNameValuesLT *NameValuesL);
 
 #endif /* _SdifNameValue_ */

@@ -1,8 +1,11 @@
-/* SdifGlobals.h
+/* $Id: SdifGlobals.h,v 1.4 1998-04-24 12:40:34 schwarz Exp $
+ *
+ * SdifGlobals.h
  *
  *
  * author: Dominique Virolle 1997
  *
+ * $Log: not supported by cvs2svn $
  */
 
 #ifndef _SdifGlobals_
@@ -113,7 +116,7 @@ extern int       SdifStrLen  (const char *s);
 extern int       SdifStrCmp  (const char *s1, const char *s2);
 extern int       SdifStrNCmp (const char *s1, const char *s2, unsigned int n);
 extern char*     SdifStrNCpy (char *s1, const char *s2, unsigned int n);
-extern char*     SdifCreateStrNCpy (char* Source, size_t Size);
+extern char*     SdifCreateStrNCpy (const char* Source, size_t Size);
 extern void      SdifKillStr (char* String);
 extern SdifUInt4 SdifSizeofDataType (SdifDataTypeET DataType);
 extern size_t    SdifPaddingCalculate  (size_t NbBytes);

@@ -1,4 +1,6 @@
-/* SdifNameValue.c
+/* $Id: SdifNameValue.c,v 1.3 1998-04-24 12:40:35 schwarz Exp $
+ *
+ * SdifNameValue.c
  *
  * Name values management. For 1 SdifFileT*, we have one SdifNameValueLT*
  * which contains a list of hash tables. Each hach table contains name-values.
@@ -6,6 +8,7 @@
  *
  * author: Dominique Virolle 1997
  *
+ * $Log: not supported by cvs2svn $
  */
 
 
@@ -18,7 +21,7 @@
 
 
 SdifNameValueT*
-SdifCreateNameValue(char *Name,  char *Value)
+SdifCreateNameValue(const char *Name,  const char *Value)
 {
   SdifNameValueT *NewNameValue;
 
@@ -263,7 +266,8 @@ SdifNameValuesLGetFromCurrHT(SdifNameValuesLT *NameValuesL, char *Name)
 
 
 SdifNameValueT*
-SdifNameValuesLPut(SdifNameValuesLT *NameValuesL, char *Name,  char *Value)
+SdifNameValuesLPut(SdifNameValuesLT *NameValuesL, 
+		   const char *Name,  const char *Value)
 {
   SdifNameValueT
     *NewNameValue;

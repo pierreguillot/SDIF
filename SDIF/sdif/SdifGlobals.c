@@ -1,8 +1,11 @@
-/* SdifGlobals.c
+/* $Id: SdifGlobals.c,v 1.3 1998-04-24 12:40:33 schwarz Exp $
+ *
+ * SdifGlobals.c
  *
  *
  * author: Dominique Virolle 1997
  *
+ * $Log: not supported by cvs2svn $
  */
 
 #include "SdifGlobals.h"
@@ -83,7 +86,7 @@ SdifStrNCpy(char *s1, const char *s2, unsigned int n)
 
 
 char*
-SdifCreateStrNCpy(char* Source, size_t Size)
+SdifCreateStrNCpy(const char* Source, size_t Size)
 {
   char *NewString;
 
