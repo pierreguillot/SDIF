@@ -1,8 +1,14 @@
-/* $Id: sdif.h,v 1.7 2000-11-21 16:34:48 roebel Exp $
+/* $Id: sdif.h,v 1.8 2000-12-07 13:01:39 roebel Exp $
  *
  * This file contains type declaration of variables used in SDIF library.
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.7  2000/11/21 16:34:48  roebel
+ * New SdifSignatureConst builds integer signature according to
+ * endianess of machine. Multicharacter constants are no longer
+ * supported by the library. Cleaned up sdif.h/SdifGlobals.h a bit.
+ * Test for Multicharacter conversion is removed from configure.in.
+ *
  * Revision 1.6  2000/11/21 14:51:34  schwarz
  * - sdif.h is now included by all sdif/Sdif*.c files.
  * - Removed all public typedefs, enums, structs, and defines from the
@@ -33,7 +39,7 @@
  * Revision 1.1.2.1  2000/08/21  13:07:41  tisseran
  * *** empty log message ***
  *
- * $Date: 2000-11-21 16:34:48 $
+ * $Date: 2000-12-07 13:01:39 $
  *
  */
 
@@ -46,7 +52,7 @@ extern "C" {
 #endif
 
 
-static const char _sdif_h_cvs_revision_ [] = "$Id: sdif.h,v 1.7 2000-11-21 16:34:48 roebel Exp $";
+static const char _sdif_h_cvs_revision_ [] = "$Id: sdif.h,v 1.8 2000-12-07 13:01:39 roebel Exp $";
 
 
 #include <stdio.h>
@@ -273,9 +279,9 @@ typedef enum SdifDataTypeE
   eUInt8    = 0x0208,
  	    
   eFloat4a  = 0x0001,	/* =  1 */    /* Backwards compatibility with old */
-  eFloat4b  = 0x0010,	/* = 32 */    /* IRCAM versions < 3 of SDIF */
+  eFloat4b  = 0x0020,	/* = 32 */    /* IRCAM versions < 3 of SDIF */
   eFloat8a  = 0x0002,	/* =  2 */    /* IN TEXT MODE ONLY! */
-  eFloat8b  = 0x0020	/* = 64 */
+  eFloat8b  = 0x0040	/* = 64 */
 } SdifDataTypeET;
 
 /* SdifList.h */
