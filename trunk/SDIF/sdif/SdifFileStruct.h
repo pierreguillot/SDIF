@@ -1,4 +1,4 @@
-/* $Id: SdifFileStruct.h,v 3.3 1999-10-07 15:12:23 schwarz Exp $
+/* $Id: SdifFileStruct.h,v 3.4 1999-10-13 16:05:46 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -15,6 +15,11 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.3  1999/10/07  15:12:23  schwarz
+ * Added isSeekable flag in SdifFileT struct.  This allows to simplify the
+ * many tests for stdio on opening the stream.
+ * Added SdifStrEq utility function.
+ *
  * Revision 3.2  1999/09/20  13:22:00  schwarz
  * Introduced user data and access functions SdifFAddUserData/GetUserData.
  *
@@ -116,9 +121,12 @@ typedef struct SdifFileS SdifFileT;
 
 struct SdifFileS
 {
-  char *Name;                           /* Name of the file, can be "stdin, stdout, stderr */
-  SdifFileModeET Mode;                  /* eWriteFile or eReadFile or ePredefinedTypes */
-  SdifUInt4 FormatVersion;
+  char		     *Name;		/* Name of the file, can be "stdin, stdout, stderr */
+  SdifFileModeET     Mode;		/* eWriteFile or eReadFile or ePredefinedTypes */
+  int		     isSeekable;	/* file is neither standard i/o nor pipe i/o */
+
+  SdifUInt4	     FormatVersion;	/* version of the SDIF format itself */
+  SdifUInt4	     TypesVersion;	/* version of the description type collection */
 
   SdifNameValuesLT   *NameValues;       /* DataBase of Names Values */
   SdifHashTableT     *MatrixTypesTable; /* DataBase of Matrix Types */
@@ -126,11 +134,10 @@ struct SdifFileS
 /*  SdifHashTableT     *StreamIDsTable;    DataBase of Stream IDs */
   SdifStreamIDTableT *StreamIDsTable;   /* DataBase of Stream IDs */
   SdifTimePositionLT *TimePositions;    /* List of (Time, Position in file) */
-  /*SdifSelectionT     *Selection;	   Selection */
+  SdifSelectionT     *Selection;	/* default selection parsed from Name */
 
   FILE *Stream;                         /* Stream to read or to write */
 
-  
   SdifSignature      CurrSignature;
   SdifFrameHeaderT   *CurrFramH;        /* Current Frame Header can be NULL */
   SdifMatrixHeaderT  *CurrMtrxH;        /* Current Matrix Header can be NULL */
@@ -164,7 +171,6 @@ struct SdifFileS
 
   int		NbUserData;		/* todo: hash table */
   void		*UserData [MaxUserData];
-  int		isSeekable;		/* file is neither standard i/o nor pipe i/o */
 };	/* end struct SdifFileS */
 
 

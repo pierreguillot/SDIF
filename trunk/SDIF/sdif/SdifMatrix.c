@@ -1,4 +1,4 @@
-/* $Id: SdifMatrix.c,v 3.2 1999-09-28 13:09:03 schwarz Exp $
+/* $Id: SdifMatrix.c,v 3.3 1999-10-13 16:05:51 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -16,6 +16,10 @@
  *
  * author: Dominique Virolle 1997
  * $Log: not supported by cvs2svn $
+ * Revision 3.2  1999/09/28  13:09:03  schwarz
+ * Included #include <preincluded.h> for cross-platform uniformisation,
+ * which in turn includes host_architecture.h and SDIF's project_preinclude.h.
+ *
  * Revision 3.1  1999/03/14  10:57:06  virolle
  * SdifStdErr add
  *
@@ -36,13 +40,14 @@
 #include "SdifMatrix.h"
 
 #include <stdlib.h>
+#include <assert.h>
 
 
 
 
 SdifMatrixHeaderT*
-SdifCreateMatrixHeader(SdifSignature Signature,
-		       SdifUInt4 DataType,
+SdifCreateMatrixHeader(SdifSignature  Signature,
+		       SdifDataTypeET DataType,
 		       SdifUInt4 NbRow,
 		       SdifUInt4 NbCol)
 {
@@ -52,7 +57,7 @@ SdifCreateMatrixHeader(SdifSignature Signature,
   if (NewMatrixHeader)
     {
       NewMatrixHeader->Signature = Signature;
-      NewMatrixHeader->DataType = (SdifDataTypeET) (int) DataType;
+      NewMatrixHeader->DataType  = DataType;
       NewMatrixHeader->NbRow = NbRow;
       NewMatrixHeader->NbCol = NbCol;
       
@@ -112,20 +117,45 @@ SdifCreateOneRow(SdifDataTypeET DataType, SdifUInt4  NbGranuleAlloc)
     }
 
   NewOneRow = SdifMalloc(SdifOneRowT);
-  if (NewOneRow)
-    {
-      NewOneRow->DataType = DataType;
-      NewOneRow->NbGranuleAlloc = NbGranuleAlloc;
-      NewOneRow->NbData = 0;
+  if (!NewOneRow)
+  {
+      _SdifError(eAllocFail, "OneRow allocation");
+      return NULL;
+  }
 
+  NewOneRow->DataType = DataType;
+  NewOneRow->NbGranuleAlloc = NbGranuleAlloc;
+  NewOneRow->NbData = 0;
+
+#if (_SdifFormatVersion >= 3)
+
+  if (!SdifDataTypeKnown (DataType))
+  {
+      sprintf(gSdifErrorMess, "Data of a OneRow : 0x%x", NewOneRow->DataType);
+      _SdifError(eNotInDataTypeUnion, gSdifErrorMess);
+      SdifFree(NewOneRow);
+      return NULL;
+  }
+
+  NewOneRow->Data.Void = 
+      (void *) SdifCalloc (char, NewOneRow->NbGranuleAlloc * _SdifGranule);
+  if (!NewOneRow->Data.Void)
+  {
+      _SdifError(eAllocFail, "OneRow->Data allocation");
+      SdifFree(NewOneRow);
+      return NULL;
+  }
+  else
+      return NewOneRow;
+      
+#else
       switch (NewOneRow->DataType)
 	{
-
 	case eFloat4 :
-	  NewOneRow->Data.F4 = (SdifFloat4*) SdifCalloc(char, NewOneRow->NbGranuleAlloc * _SdifGranule);
-	  if (! NewOneRow->Data.F4)
+	  NewOneRow->Data.Float4 = (SdifFloat4*) SdifCalloc(char, NewOneRow->NbGranuleAlloc * _SdifGranule);
+	  if (! NewOneRow->Data.Float4)
 	    {
-	      _SdifError(eAllocFail, "OneRow->Data.F4 allocation");
+	      _SdifError(eAllocFail, "OneRow->Data.Float4 allocation");
 	      SdifFree(NewOneRow);
 	      return NULL;
 	    }
@@ -133,10 +163,10 @@ SdifCreateOneRow(SdifDataTypeET DataType, SdifUInt4  NbGranuleAlloc)
 	    return NewOneRow;
 
 	case eFloat8 :
-	  NewOneRow->Data.F8 = (SdifFloat8*) SdifCalloc(char, NewOneRow->NbGranuleAlloc * _SdifGranule);
-	  if (! NewOneRow->Data.F8)
+	  NewOneRow->Data.Float8 = (SdifFloat8*) SdifCalloc(char, NewOneRow->NbGranuleAlloc * _SdifGranule);
+	  if (! NewOneRow->Data.Float8)
 	    {
-	      _SdifError(eAllocFail, "OneRow->Data.F8 allocation");
+	      _SdifError(eAllocFail, "OneRow->Data.Float8 allocation");
 	      SdifFree(NewOneRow);
 	      return NULL;
 	    }
@@ -148,12 +178,7 @@ SdifCreateOneRow(SdifDataTypeET DataType, SdifUInt4  NbGranuleAlloc)
 	  SdifFree(NewOneRow);
 	  return NULL;
 	}
-    }
-  else
-    {
-      _SdifError(eAllocFail, "OneRow allocation");
-      return NULL;
-    }
+#endif
 }
 
 
@@ -164,9 +189,33 @@ SdifReInitOneRow (SdifOneRowT *OneRow, SdifDataTypeET DataType, SdifUInt4 NbData
 {
   SdifUInt4 NewNbGranule;
 
-
   OneRow->NbData   = NbData;
   OneRow->DataType = DataType;
+
+
+#if (_SdifFormatVersion >= 3)
+
+  if (OneRow->NbGranuleAlloc * _SdifGranule < NbData * SdifSizeofDataType (DataType))
+  {
+      NewNbGranule = (NbData * SdifSizeofDataType (DataType)) / _SdifGranule;
+   /* NewNbGranule = NewNbGranule ? NewNbGranule : 1; This case cannot appear*/
+      OneRow->Data.Void = (void *) SdifRealloc (OneRow->Data.Void, char, 
+						NewNbGranule * _SdifGranule);
+      if (!OneRow->Data.Void)
+      {
+	  _SdifError(eAllocFail, "OneRow->Data RE-allocation");
+	  return NULL;
+      }
+      else
+      {
+	  OneRow->NbGranuleAlloc = NewNbGranule;
+	  return OneRow;
+      }
+  }
+  else
+      return OneRow;
+
+#else
 
   switch (OneRow->DataType)
     {
@@ -176,10 +225,10 @@ SdifReInitOneRow (SdifOneRowT *OneRow, SdifDataTypeET DataType, SdifUInt4 NbData
 	{
 	  NewNbGranule = (SdifUInt4)(OneRow->NbData * sizeof(SdifFloat4)) / _SdifGranule;
 	  /* NewNbGranule = (NewNbGranule) ? NewNbGranule : 1; This case cannot appear */
-	  OneRow->Data.F4 = (SdifFloat4*) SdifRealloc(OneRow->Data.F4, char, NewNbGranule * _SdifGranule);
-	  if (! OneRow->Data.F4)
+	  OneRow->Data.Float4 = (SdifFloat4*) SdifRealloc(OneRow->Data.Float4, char, NewNbGranule * _SdifGranule);
+	  if (! OneRow->Data.Float4)
 	    {
-	      _SdifError(eAllocFail, "OneRow->Data.F4 RE-allocation");
+	      _SdifError(eAllocFail, "OneRow->Data.Float4 RE-allocation");
 	      return NULL;
 	    }
 	  else
@@ -197,10 +246,10 @@ SdifReInitOneRow (SdifOneRowT *OneRow, SdifDataTypeET DataType, SdifUInt4 NbData
 	{
 	  NewNbGranule = (SdifUInt4)(OneRow->NbData * sizeof(SdifFloat8)) / _SdifGranule;
 	  /* NewNbGranule = (NewNbGranule) ? NewNbGranule : 1; This case cannot appear */
-	  OneRow->Data.F8 = (SdifFloat8*) SdifRealloc(OneRow->Data.F8, char, NewNbGranule * _SdifGranule);
-	  if (! OneRow->Data.F8)
+	  OneRow->Data.Float8 = (SdifFloat8*) SdifRealloc(OneRow->Data.Float8, char, NewNbGranule * _SdifGranule);
+	  if (! OneRow->Data.Float8)
 	    {
-	      _SdifError(eAllocFail, "OneRow->Data.F8 RE-allocation");
+	      _SdifError(eAllocFail, "OneRow->Data.Float8 RE-allocation");
 	      return NULL;
 	    }
 	  else
@@ -218,7 +267,7 @@ SdifReInitOneRow (SdifOneRowT *OneRow, SdifDataTypeET DataType, SdifUInt4 NbData
       return NULL;
     }
 
-  /*  return OneRow;*/
+#endif
 }
 
 
@@ -233,23 +282,43 @@ SdifKillOneRow(SdifOneRowT *OneRow)
 {
   if (OneRow)
     {
+#if (_SdifFormatVersion >= 3)
+
+#ifndef NDEBUG	
+	if (!SdifDataTypeKnown (OneRow->DataType))
+	{
+	    sprintf (gSdifErrorMess, "Data of a OneRow : 0x%x", 
+		     OneRow->DataType);
+	    _SdifError (eNotInDataTypeUnion, gSdifErrorMess);
+	}
+#endif
+
+	if (OneRow->Data.Void)
+	{
+	    SdifFree (OneRow->Data.Void);
+	}
+	else
+	    _SdifError(eFreeNull, "OneRow->Data free");
+
+#else
+
       switch (OneRow->DataType)
 	{
 	case eFloat4 :
-	  if (OneRow->Data.F4)
+	  if (OneRow->Data.Float4)
 	    {
-	      SdifFree(OneRow->Data.F4);
+	      SdifFree(OneRow->Data.Float4);
 	    }
 	  else
-	    _SdifError(eFreeNull, "OneRow->Data.F4 free");
+	    _SdifError(eFreeNull, "OneRow->Data.Float4 free");
 	  break;
 	case eFloat8 :
-	  if (OneRow->Data.F8)
+	  if (OneRow->Data.Float8)
 	    {
-	      SdifFree(OneRow->Data.F8);
+	      SdifFree(OneRow->Data.Float8);
 	    }
 	  else
-	    _SdifError(eFreeNull, "OneRow->Data.F8 free");
+	    _SdifError(eFreeNull, "OneRow->Data.Float8 free");
 	  break;
 	default :
 	  sprintf(gSdifErrorMess, "Data of a OneRow : 0x%x", OneRow->DataType);
@@ -257,6 +326,9 @@ SdifKillOneRow(SdifOneRowT *OneRow)
 	  break;
 	}
      SdifFree(OneRow);
+
+#endif
+
     }
   else
     _SdifError(eFreeNull, "OneRow free");
@@ -275,18 +347,19 @@ SdifKillOneRow(SdifOneRowT *OneRow)
 SdifOneRowT*
 SdifOneRowPutValue(SdifOneRowT *OneRow, SdifUInt4 numCol, SdifFloat8 Value)
 {
+    /* case template for type from SdifDataTypeET */
+#   define setcase(type) 						   \
+    case e##type:   OneRow->Data.type [numCol-1] = (Sdif##type) Value;  break;
+   
   /* numCol is in [1, NbData] */
   if ((numCol <= OneRow->NbData) && (numCol > 0))
     switch (OneRow->DataType)
       {
-      case eFloat4 :
-	OneRow->Data.F4[numCol-1] = (SdifFloat4) Value;
-	break;
-      case eFloat8 :
-	OneRow->Data.F8[numCol-1] = Value;
-	break;
+	  /* generate cases for all types */
+	  sdif_foralltypes (setcase)
+  
       default :
-	OneRow->Data.F4[numCol-1] = (SdifFloat4) Value;      
+	OneRow->Data.Float4[numCol-1] = (SdifFloat4) Value;      
 	break;
       }
   else
@@ -306,16 +379,19 @@ SdifOneRowPutValue(SdifOneRowT *OneRow, SdifUInt4 numCol, SdifFloat8 Value)
 SdifFloat8
 SdifOneRowGetValue(SdifOneRowT *OneRow, SdifUInt4 numCol)
 {
+    /* case template for type from SdifDataTypeET */
+#   define getcase(type) 						   \
+    case e##type:   return (Sdif##type) OneRow->Data.type [numCol-1];
+   
   /* numCol is in [1, NbData] */
   if ((numCol <= OneRow->NbData) && (numCol > 0))
     switch (OneRow->DataType)
       {
-      case eFloat4 :
-	return (SdifFloat8) OneRow->Data.F4[numCol-1];
-      case eFloat8 :
-	return OneRow->Data.F8[numCol-1];
+	  /* generate cases for all types */
+	  sdif_foralltypes (getcase)
+  
       default :
-	return (SdifFloat8) OneRow->Data.F4[numCol-1];
+	return (SdifFloat8) OneRow->Data.Float4[numCol-1];
       }
   else
     {

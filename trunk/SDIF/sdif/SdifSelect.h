@@ -1,4 +1,4 @@
-/* $Id: SdifSelect.h,v 3.4 1999-10-07 15:06:42 schwarz Exp $
+/* $Id: SdifSelect.h,v 3.5 1999-10-13 16:05:58 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -71,6 +71,9 @@ TODO
 
 LOG
   $Log: not supported by cvs2svn $
+  Revision 3.4  1999/10/07  15:06:42  schwarz
+  Added SdifSelectGetFirst<type>, SdifSelectGetNext(Int|Real).
+
   Revision 3.3  1999/09/28  13:09:12  schwarz
   Included #include <preincluded.h> for cross-platform uniformisation,
   which in turn includes host_architecture.h and SDIF's project_preinclude.h.
@@ -220,7 +223,7 @@ void SdifPrintSelection (FILE *out, SdifSelectionT *sel, int options);
   [] _type_ is one of:  <br> Int, Real,   Signature,     String, for
   [] _datatype_ of:	<br> int, double, SdifSignature, char *, respectively.
 */
-SdifSelectAdd_type_ (SdifListT *list, _datatype_ value);
+SdifSelectAdd_TYPE_ (SdifListT *list, _datatype_ value);
 
 /*DOC:
   Create and add one range to selection element list.  There are four 
@@ -229,7 +232,7 @@ SdifSelectAdd_type_ (SdifListT *list, _datatype_ value);
   [] _type_ is one of:  <br> Int, Real,   Signature,     String, for
   [] _datatype_ of:	<br> int, double, SdifSignature, char *, respectively.
 */
-SdifSelectAdd_type_Range (SdifListT *list, 
+SdifSelectAdd_TYPE_Range (SdifListT *list, 
 			  _datatype_ value, 
 			  SdifSelectTokens rt, 
 			  _datatype_type range);

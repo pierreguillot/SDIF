@@ -1,4 +1,4 @@
-/* $Id: SdifRWLowLevel.h,v 3.4 1999-09-28 13:09:11 schwarz Exp $
+/* $Id: SdifRWLowLevel.h,v 3.5 1999-10-13 16:05:57 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -17,6 +17,10 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.4  1999/09/28  13:09:11  schwarz
+ * Included #include <preincluded.h> for cross-platform uniformisation,
+ * which in turn includes host_architecture.h and SDIF's project_preinclude.h.
+ *
  * Revision 3.3  1999/09/20  13:23:35  schwarz
  * Optimized SdifStringToSignature.
  *
@@ -65,6 +69,7 @@ size_t Sdiffwrite (void *ptr, size_t size, size_t nobj, FILE *stream);
 
 /* Read, return the number of objects */
 
+size_t SdiffReadChar   (SdifChar   *ptr, size_t nobj, FILE *stream);
 size_t SdiffReadInt2   (SdifInt2   *ptr, size_t nobj, FILE *stream);
 size_t SdiffReadUInt2  (SdifUInt2  *ptr, size_t nobj, FILE *stream);
 size_t SdiffReadInt4   (SdifInt4   *ptr, size_t nobj, FILE *stream);
@@ -78,6 +83,7 @@ size_t SdiffReadFloat8 (SdifFloat8 *ptr, size_t nobj, FILE *stream);
 
 /* Write, return the number of objects */
 
+size_t SdiffWriteChar   (SdifChar   *ptr, size_t nobj, FILE *stream);
 size_t SdiffWriteInt2   (SdifInt2   *ptr, size_t nobj, FILE *stream);
 size_t SdiffWriteUInt2  (SdifUInt2  *ptr, size_t nobj, FILE *stream);
 size_t SdiffWriteInt4   (SdifInt4   *ptr, size_t nobj, FILE *stream);
@@ -106,8 +112,23 @@ int SdiffGetStringUntil (FILE* fr, char* s, size_t ncMax, size_t *NbCharRead, ch
 int SdiffGetStringWeakUntil(FILE* fr, char* s, size_t ncMax, size_t *NbCharRead, char *CharsEnd);
 int SdifSkipASCIIUntil  (FILE* fr, size_t *NbCharRead, char *CharsEnd);
 
+
+#if 0	/* for cocoon */
+/* scan nobj items of TYPE from stream, return number sucessfully read */
+size_t SdiffScan_TYPE   (FILE *stream, Sdif_TYPE  *ptr, size_t nobj);
 size_t SdiffScanFloat4  (FILE *stream, SdifFloat4 *ptr, size_t nobj);
 size_t SdiffScanFloat8  (FILE *stream, SdifFloat8 *ptr, size_t nobj);
+#endif
+
+
+#ifdef __STDC__  /* Is the compiler ANSI? */
+
+#define sdif_scanproto(type) \
+size_t SdiffScan##type (FILE *stream, Sdif##type *ptr, size_t nobj)
+
+sdif_proto_foralltypes (sdif_scanproto)
+
+#endif /* __STDC__ */
 
 
 /* Unsafe but optimized version of SdifStringToSignature:

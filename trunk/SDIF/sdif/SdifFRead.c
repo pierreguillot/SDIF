@@ -1,4 +1,4 @@
-/* $Id: SdifFRead.c,v 3.2 1999-09-28 13:08:54 schwarz Exp $
+/* $Id: SdifFRead.c,v 3.3 1999-10-13 16:05:41 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -14,6 +14,10 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.2  1999/09/28  13:08:54  schwarz
+ * Included #include <preincluded.h> for cross-platform uniformisation,
+ * which in turn includes host_architecture.h and SDIF's project_preinclude.h.
+ *
  * Revision 3.1  1999/03/14  10:56:43  virolle
  * SdifStdErr add
  *
@@ -31,7 +35,7 @@
 #include "SdifFRead.h"
 #include "SdifTest.h"
 #include "SdifFile.h"
-
+#include "SdifGlobals.h"
 #include "SdifRWLowLevel.h"
 
 #include "SdifNameValue.h"
@@ -73,18 +77,24 @@ SdifFReadGeneralHeader(SdifFileT *SdifF)
 
   SdifFGetSignature(SdifF, &SizeR);
   SizeR += SdifFReadChunkSize(SdifF);
-  SizeR += sizeof(SdifUInt4) * SdiffReadUInt4 ( &(SdifF->FormatVersion), 1, SdifF->Stream);
-  SizeR += SdifFReadPadding(SdifF, SdifFPaddingCalculate(SdifF->Stream, SizeR-8));
+  SizeR += SdiffReadUInt4 (&(SdifF->FormatVersion), 1, SdifF->Stream) * sizeof(SdifUInt4);
+  SizeR += SdiffReadUInt4 (&(SdifF->TypesVersion),  1, SdifF->Stream) * sizeof(SdifUInt4);
   
   if (SdifF->CurrSignature != eSDIF)
     {
-      sprintf(gSdifErrorMess, "%s not correctly read", SdifSignatureToString(eSDIF));
+      sprintf(gSdifErrorMess, "%s not correctly read", 
+	      SdifSignatureToString(eSDIF));
       _SdifFError(SdifF, eBadHeader, gSdifErrorMess);
     }
 
-  if (SdifF->FormatVersion > _SdifFormatVersion)
-    {
-      sprintf(gSdifErrorMess, "%d is greater than %d", SdifF->FormatVersion, _SdifFormatVersion);
+  if (SdifF->FormatVersion != _SdifFormatVersion)
+  {
+      char *mfmt = SdifF->FormatVersion > _SdifFormatVersion
+	? "file is in a newer format version (%d) than the library (%d)"
+	: "File is in an old format version (%d).  "
+	  "The library (version %d) is not backwards compatible.";
+
+      sprintf (gSdifErrorMess, mfmt, SdifF->FormatVersion, _SdifFormatVersion);
       _SdifFError(SdifF, eBadFormatVersion, gSdifErrorMess);
     }
     
@@ -99,6 +109,19 @@ SdifFReadNameValueLCurrNVT(SdifFileT *SdifF)
   /* Signature of chunck already read */
   size_t SizeR = 0;
   
+#if (_SdifFormatVersion >= 3)
+  SizeR += SdifFReadFrameHeader (SdifF);
+  SdifF->ChunkSize = SdifF->CurrFramH->Size;
+  if (SdifF->CurrSignature != e1NVT)
+  {
+      sprintf (gSdifErrorMess, "expected %s frame, not %s", 
+	       SdifSignatureToString (e1NVT), 
+	       SdifSignatureToString (SdifF->CurrSignature));
+      _SdifError (eInvalidPreType, gSdifErrorMess);
+  }
+  SizeR += SdifFGetNameValueLCurrNVT(SdifF, 's');
+  SizeR += SdifFReadPadding (SdifF, SdifFPaddingCalculate (SdifF->Stream, SizeR + sizeof(SdifSignature)));
+#else
   SdiffGetPos(SdifF->Stream, &(SdifF->StartChunkPos));
   SdifF->StartChunkPos -= sizeof(SdifSignature);
 
@@ -106,6 +129,7 @@ SdifFReadNameValueLCurrNVT(SdifFileT *SdifF)
   SizeR += SdifFGetNameValueLCurrNVT(SdifF, 's');
   SizeR += SdifFReadPadding(SdifF,
 			    SdifFPaddingCalculate(SdifF->Stream, SizeR + sizeof(SdifSignature)));
+#endif
   
   if (    (SizeR != SdifF->ChunkSize + sizeof(SdifInt4))
        && ((unsigned) SdifF->ChunkSize != (unsigned) _SdifUnknownSize))
@@ -304,22 +328,26 @@ SdifFReadMatrixHeader(SdifFileT *SdifF)
 size_t
 SdifFReadOneRow(SdifFileT *SdifF)
 {
-  switch (SdifF->CurrOneRow->DataType)
+    /* case template for type from SdifDataTypeET */
+#   define readrowcase(type) \
+    case e##type:  return (sizeof (Sdif##type) *			  \
+			   SdiffRead##type (SdifF->CurrOneRow->Data.type, \
+					    SdifF->CurrOneRow->NbData,    \
+					    SdifF->Stream));
+
+    switch (SdifF->CurrOneRow->DataType)
     {
-    case eFloat4 :
-      return sizeof(SdifFloat4) * SdiffReadFloat4(SdifF->CurrOneRow->Data.F4,
-						  SdifF->CurrOneRow->NbData,
-						  SdifF->Stream);
-    case eFloat8 :
-      return sizeof(SdifFloat8) * SdiffReadFloat8(SdifF->CurrOneRow->Data.F8,
-						  SdifF->CurrOneRow->NbData,
-						  SdifF->Stream);
-    default :
-      sprintf(gSdifErrorMess, "OneRow 0x%04x, then Float4 used", SdifF->CurrOneRow->DataType);
-      _SdifFError(SdifF, eTypeDataNotSupported, gSdifErrorMess);
-      return sizeof(SdifFloat4) * SdiffReadFloat4(SdifF->CurrOneRow->Data.F4,
-						  SdifF->CurrOneRow->NbData,
-						  SdifF->Stream);
+        /* generate cases for all types */
+	sdif_foralltypes (readrowcase)
+
+	default :
+	    sprintf(gSdifErrorMess, "OneRow 0x%04x, then Float4 used", 
+		    SdifF->CurrOneRow->DataType);
+	    _SdifFError(SdifF, eTypeDataNotSupported, gSdifErrorMess);
+	    return (sizeof(SdifFloat4) * 
+		    SdiffReadFloat4(SdifF->CurrOneRow->Data.Float4,
+				    SdifF->CurrOneRow->NbData,
+				    SdifF->Stream));
     }
 }
 

@@ -1,4 +1,4 @@
-/* $Id: SdifErrMess.c,v 3.3 1999-09-28 13:08:49 schwarz Exp $
+/* $Id: SdifErrMess.c,v 3.4 1999-10-13 16:05:39 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -15,6 +15,10 @@
  * author: Dominique Virolle 1998
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.3  1999/09/28  13:08:49  schwarz
+ * Included #include <preincluded.h> for cross-platform uniformisation,
+ * which in turn includes host_architecture.h and SDIF's project_preinclude.h.
+ *
  * Revision 3.2  1999/09/28  10:34:47  schwarz
  * Added SdifEnableErrorOutput/SdifDisableErrorOutput to temporarily
  * switch off error messages when doing things that might fail.
@@ -254,7 +258,7 @@ SdifFsPrintError(char* oErrMess,
 	{
 		if (SdifF->CurrMtrxH->Signature != eEmptySignature)
 		{
-			sprintf(MtrxErrMess, "  MtrxH :   %s   DataWidth: %d   Rows: %d   Columns: %d\n",
+			sprintf(MtrxErrMess, "  MtrxH :   %s   DataWidth: %04x   Rows: %d   Columns: %d\n",
 				SdifSignatureToString(SdifF->CurrMtrxH->Signature),
 				SdifF->CurrMtrxH->DataType,
 				SdifF->CurrMtrxH->NbRow,

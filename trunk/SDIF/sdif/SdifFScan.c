@@ -1,4 +1,4 @@
-/* $Id: SdifFScan.c,v 3.2 1999-09-28 13:08:55 schwarz Exp $
+/* $Id: SdifFScan.c,v 3.3 1999-10-13 16:05:42 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -14,6 +14,10 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.2  1999/09/28  13:08:55  schwarz
+ * Included #include <preincluded.h> for cross-platform uniformisation,
+ * which in turn includes host_architecture.h and SDIF's project_preinclude.h.
+ *
  * Revision 3.1  1999/03/14  10:56:45  virolle
  * SdifStdErr add
  *
@@ -194,16 +198,17 @@ void
 SdifFScanMatrixHeader(SdifFileT *SdifF)
 {
   size_t SizeR = 0;
-  SdifUInt4 DataType;
+  SdifInt4 DataType;
   
   SdifFCreateCurrMtrxH(SdifF); /* create only if it's necessary */
   
   SdiffGetSignature(SdifF->TextStream, &(SdifF->CurrMtrxH->Signature), &SizeR);
 
 
-  fscanf(SdifF->TextStream, "%u", &(DataType));
-  if ((SdifDataTypeET) (int) DataType == eFloat4Old) /* when DataType was 32 for Float4 at Ircam */
-    DataType = eFloat4;
+  fscanf(SdifF->TextStream, "%i", &DataType);
+  /* when DataType was 32 for Float4 at Ircam */
+  /* if ((SdifDataTypeET) (int) DataType == eFloat4Old)  
+         DataType = eFloat4; */
   SdifF->CurrMtrxH->DataType = (SdifDataTypeET) (int) DataType;
 
   fscanf(SdifF->TextStream, "%u", &(SdifF->CurrMtrxH->NbRow));
@@ -229,18 +234,23 @@ SdifFScanMatrixHeader(SdifFileT *SdifF)
 void
 SdifFScanOneRow(SdifFileT *SdifF)
 {
-  switch (SdifF->CurrOneRow->DataType)
+    /* case template for type from SdifDataTypeET */
+#   define scanrowcase(type)						  \
+    case e##type:  							  \
+        SdiffScan##type (SdifF->TextStream, SdifF->CurrOneRow->Data.type, \
+			 SdifF->CurrOneRow->NbData);			  \
+    break;
+
+    switch (SdifF->CurrOneRow->DataType)
     {
-    case eFloat4 :
-      SdiffScanFloat4(SdifF->TextStream, SdifF->CurrOneRow->Data.F4, SdifF->CurrOneRow->NbData);
-      break;
-    case eFloat8 :
-      SdiffScanFloat8(SdifF->TextStream, SdifF->CurrOneRow->Data.F8, SdifF->CurrOneRow->NbData);
-      break;
-    default :
-      sprintf(gSdifErrorMess, "OneRow 0x%04x, then Float4 used", SdifF->CurrOneRow->DataType);
-      _SdifFError(SdifF, eTypeDataNotSupported, gSdifErrorMess);
-      SdiffScanFloat4(SdifF->TextStream, SdifF->CurrOneRow->Data.F4, SdifF->CurrOneRow->NbData);
+        /* generate cases for all types */
+	sdif_foralltypes (scanrowcase)
+
+	default :
+	    sprintf (gSdifErrorMess, "in text file, OneRow 0x%04x, then Float4 used", SdifF->CurrOneRow->DataType);
+	    _SdifFError(SdifF, eTypeDataNotSupported, gSdifErrorMess);
+	    SdiffScanFloat4(SdifF->TextStream, SdifF->CurrOneRow->Data.Float4,
+			    SdifF->CurrOneRow->NbData);
     }
 }
 
