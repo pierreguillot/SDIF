@@ -13,7 +13,7 @@ EASDIF_LIB_PATH	= @EASDIF_LIB_PATH@
 
 
 modules		= eaSDIF SDIF
-incfiles	= ../easdif-defines.i sdiftypemap-python.i
+incfiles	= ../easdif-common.i ../easdif-defines.i sdiftypemap-python.i
 easdifincbase	= entity frame matrix namevaluetable
 easdifincfiles	= $(easdifincbase:%=@EASDIF_INC_DIR@/easdif/sdif%.h)
 sdifincfiles	= @SDIF_INC_DIR@/sdif.h
