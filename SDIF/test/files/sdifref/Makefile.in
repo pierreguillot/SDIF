@@ -10,7 +10,7 @@
 # even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 # PARTICULAR PURPOSE.
 
-# $Id: Makefile.in,v 1.1 2000-12-20 15:57:16 roebel Exp $
+# $Id: Makefile.in,v 1.2 2001-04-20 14:04:10 tisseran Exp $
 #
 # ./test/files/sdif/Makefile.am		September 2000			Patrice Tisserand
 #
@@ -41,6 +41,9 @@
 # send email to:  sdif@ircam.fr
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.1  2000/12/20 15:57:16  roebel
+# Changed Version to 3.2.2. Added missing test files to distribution
+#
 # Revision 1.2  2000/10/27 20:04:06  roebel
 # autoconf merged back to main trunk
 #

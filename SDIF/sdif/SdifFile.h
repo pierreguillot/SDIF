@@ -1,4 +1,4 @@
-/* $Id: SdifFile.h,v 3.13 2000-12-06 13:43:42 lefevre Exp $
+/* $Id: SdifFile.h,v 3.14 2001-04-20 14:04:07 tisseran Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -34,6 +34,9 @@ LIBRARY
 
 LOG
  * $Log: not supported by cvs2svn $
+ * Revision 3.13  2000/12/06 13:43:42  lefevre
+ * Mix HostArchiteture and AutoConfigure mechanisms
+ *
  * Revision 3.12  2000/11/21  14:51:49  schwarz
  * - sdif.h is now included by all sdif/Sdif*.c files.
  * - Removed all public typedefs, enums, structs, and defines from the
@@ -146,6 +149,7 @@ SdifFrameHeaderT*  SdifFCreateCurrFramH         (SdifFileT *SdifF, SdifSignature
 SdifMatrixHeaderT* SdifFCreateCurrMtrxH         (SdifFileT *SdifF);
 FILE*              SdifFGetFILE_SwitchVerbose   (SdifFileT *SdifF, int Verbose);
 void               SdifTakeCodedPredefinedTypes (SdifFileT *SdifF);
+void               SdifTakeCodedPredefinedTypesfromString(SdifFileT *SdifF);
 void               SdifFLoadPredefinedTypes     (SdifFileT *SdifF, char *TypesFileName);
 
 extern int	  gSdifInitialised;

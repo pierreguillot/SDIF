@@ -1,4 +1,4 @@
-/* $Id: SdifFile.c,v 3.19 2000-11-15 14:53:28 lefevre Exp $
+/* $Id: SdifFile.c,v 3.20 2001-04-20 14:04:07 tisseran Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -33,6 +33,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.19  2000/11/15 14:53:28  lefevre
+ * no message
+ *
  * Revision 3.18  2000/11/14  10:42:26  lefevre
  * no message
  *
@@ -188,13 +191,16 @@
 #include "SdifVersion.h"
 
 #ifndef AUTOCKSUM
-#define AUTOCKSUM "$Checksum: not available$ IRCAM $Date: 2000-11-15 14:53:28 $" 
+#define AUTOCKSUM "$Checksum: not available$ IRCAM $Date: 2001-04-20 14:04:07 $" 
 #endif
 
 #ifndef lint
     static char identstring[]= AUTOCKSUM;
 #endif
 
+/* Include all Frame Type */
+#include "sdiftypes.h"
+#include "SdifString.h"
 
 
 
@@ -637,6 +643,28 @@ SdifTakeCodedPredefinedTypes(SdifFileT *SdifF)
 }
 
 
+void 
+SdifTakeCodedPredefinedTypesfromString(SdifFileT *SdifF)
+{
+    size_t SizeR = 0;
+    char *typesDefinition;
+    int result;
+
+    SdifStringT *SdifString;
+    
+    SdifString = SdifStringNew();
+
+    typesDefinition = SDIFTYPES_STRING;
+    result = SdifStringAppend(SdifString, typesDefinition);
+
+    if (result == 0)
+    {
+	fprintf(stderr, "CANNOT APPEND THE TYPE DEFINITION STRING !!!! \n");
+    }
+    SizeR += SdifFGetAllTypefromSdifString(SdifF, SdifString);
+
+    SdifStringFree(SdifString);
+}
 
 
 
@@ -650,7 +678,13 @@ SdifFLoadPredefinedTypes(SdifFileT *SdifF, char *TypesFileName)
   if (SdifStrEq(TypesFileName, ""))
     {
       _SdifRemark("Load Coded Predefinied Types, it can be incomplete (file name null)\n");
-      SdifTakeCodedPredefinedTypes(SdifF);
+      /*
+	Old version (before version SDIF 3.3)
+	SdifTakeCodedPredefinedTypes(SdifF);
+      */
+      /* Call */
+      SdifTakeCodedPredefinedTypesfromString(SdifF);
+      /* */
     }
   else
     {
@@ -658,7 +692,13 @@ SdifFLoadPredefinedTypes(SdifFileT *SdifF, char *TypesFileName)
       if (! SdifF->TextStream)
         {
           _SdifRemark("Load Coded Predefinied Types, it can be incomplete (file not found)\n");
-          SdifTakeCodedPredefinedTypes(SdifF);
+          /*
+	    Old version (before version SDIF 3.3)
+	    SdifTakeCodedPredefinedTypes(SdifF);
+	  */
+	  /* Call  */
+	  SdifTakeCodedPredefinedTypesfromString(SdifF);
+	  /* */
         }
       else
         {
