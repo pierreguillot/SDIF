@@ -33,9 +33,15 @@
  * 
  * 
  * 
- * $Id: sdifmatrix.h,v 1.3 2003-04-18 16:44:00 schwarz Exp $ 
+ * $Id: sdifmatrix.h,v 1.4 2003-04-29 15:19:51 schwarz Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.3  2003/04/18 16:44:00  schwarz
+ * Small changes to make easdif swiggable:
+ * - name change for swig-generated classes
+ * - eof() returns bool, not bool&
+ * - Matrix::Set takes int/float, not int&/float&
+ *
  * Revision 1.2  2003/04/06 16:31:08  roebel
  * Added license info
  *
@@ -105,9 +111,27 @@ private:
     SdifSignature mSig;
     SdifDataTypeET mType;
 
+    void CreateMatrixData_(const char *, SdifSignature, 
+			   int, int, SdifDataTypeET);
+
+
 public:
-    SDIFMatrix(const SdifDataTypeET &_type=eFloat4);
+    SDIFMatrix(const SdifDataTypeET _type=eFloat4);
     SDIFMatrix(const SDIFMatrix& aMatrix);
+
+    // constructor with space initialisation, default singleton float matrix
+    SDIFMatrix(SdifSignature sig, int nrows = 1, int ncols = 1, 
+	       SdifDataTypeET type = eFloat4)
+    {
+      CreateMatrixData(sig, nrows, ncols, type);
+    }
+
+    // constructor with space initialisation, default singleton float matrix
+    SDIFMatrix(std::string& sig, int nrows = 1, int ncols = 1, 
+	       SdifDataTypeET type = eFloat4)
+    {
+      CreateMatrixData(sig, nrows, ncols, type);
+    }
 
     ~SDIFMatrix(){
 	if(mInter) {
@@ -157,6 +181,14 @@ public:
     void CreateMatrixData(SdifSignature sig, 
 			  int nrows, int ncols, SdifDataTypeET  type);
 //type default = eFloat4
+
+/** 
+ * \ingroup rwmat
+ * create a vector of data for a matrix
+ */
+    void CreateMatrixData(std::string &sig, 
+			  int nrows, int ncols, SdifDataTypeET  type);
+
 
 /*************************************************************************/
 /* Get the members of the matrix */
@@ -235,20 +267,28 @@ public:
    * 
    */
   template<typename Tout>
-  void SDIFMatrix::Get(int i, int j, Tout& value)
+  void Get(int i, int j, Tout& value)
   {
     value = static_cast<Tout>(mInter->GetDouble(i, j));
   }
+
   // specialization for float that does not use cast
-  void SDIFMatrix::Get(int i, int j, float& value)
+  void Get(int i, int j, float& value)
   {
     value = mInter->GetFloat(i, j);
   }
   
   // specialization for int that does not use cast
-  void SDIFMatrix::Get(int i, int j, int& value)
+  void Get(int i, int j, int& value)
   {
     value = mInter->GetInt(i, j);
+  }
+
+  // std::string Get() ??? exception when not string matrix?
+  void Get(std::string& value)
+  {
+    cerr  << endl << "!!! string matrix access to be implemented !!!" << endl;
+    throw; // to be implemented
   }
 
 
@@ -281,6 +321,14 @@ public:
   void Set(int i, int j, const int value)
   {
     mInter->Set(i, j, value);
+  }
+
+  // Set matrix type to eText, change matrix size to num. of bytes in
+  // string and set string data
+  void Set(const std::string& value)
+  {
+    cerr  << endl << "!!! string matrix access to be implemented !!!" << endl;
+    throw; // to be implemented
   }
 
 };
