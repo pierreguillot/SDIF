@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.16 2003-11-18 12:31:37 roebel Exp $
+# $Id: Makefile.am,v 1.17 2004-07-13 15:28:02 roebel Exp $
 #
 # ./Makefile.am		Feb. 2003     Axel Roebel
 #
@@ -30,6 +30,9 @@
 # 
 
 # $Log: not supported by cvs2svn $
+# Revision 1.16  2003/11/18 12:31:37  roebel
+# Moved documentation install server to maelzel replacement.
+#
 # Revision 1.15  2003/05/02 13:39:25  roebel
 # Reinvented missing ircam_install_doc target.
 #
@@ -154,7 +157,7 @@ publish-ftp:	# (experimental)
 # (to exactly reconstitute a published version)
 CVSTAG	      = $(shell echo $(PACKAGE)_lib_version_$(VERSION) | tr . _)
 cvstag:
-		cvs tag -F $(CVSTAG)
+		 cd @top_srcdir@; cvs tag -F $(CVSTAG)
 
 
 .PHONY:		grep doc ircam_install_doc test publish pubdoc publish-ftp  cvstag
