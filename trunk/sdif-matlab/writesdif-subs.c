@@ -1,4 +1,4 @@
-/* $Id: writesdif-subs.c,v 1.4 2000-08-04 14:42:33 schwarz Exp $
+/* $Id: writesdif-subs.c,v 1.5 2000-12-19 16:44:11 roebel Exp $
    writesdif-subs.c     12. May 2000           Patrice Tisserand
 
    Subroutines for writesdif, function to write an SDIF file.
@@ -33,6 +33,12 @@
                      Close the sdif file
 		     
    $Log: not supported by cvs2svn $
+   Revision 1.4  2000/08/04 14:42:33  schwarz
+   Added reset of file variable, prevents crash on double-close.
+   Version number is written in NVTs, and is used for distribution,
+   defined in makefile (major.minor.release).
+   Types file now included in distribution and documentation.
+
  * Revision 1.3  2000/07/19  16:32:28  schwarz
  * First attempt for writing text matrices doesn't work.
  *
@@ -54,9 +60,8 @@
 #include <string.h>
 #include <strings.h>	/* For alpha bzero */
 #include <limits.h>	/* For definition of PATH_MAX */
-#include <sdif/sdif.h>
-#include "matrix.h"
 #include "writesdif.h"
+#include "matrix.h"
 
 static void   exitwrite(void);
 

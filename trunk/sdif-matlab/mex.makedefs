@@ -1,8 +1,11 @@
-# -*-makefile-*- $Id: mex.makedefs,v 1.6 2000-11-09 16:23:32 schwarz Exp $
+# -*-makefile-*- $Id: mex.makedefs,v 1.7 2000-12-19 16:44:11 roebel Exp $
 #
 # Commonly used settings for compiling matlab mex extensions.
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.6  2000/11/09 16:23:32  schwarz
+# Using /u/formes/share and HOSTTYPE but still ARCH for paths.
+#
 # Revision 1.5  2000/09/28  19:17:56  schwarz
 # Use new /u/formes/share directories.
 #
@@ -32,7 +35,7 @@ ARCH 		:= $(shell arch)
 # we don't care for IRIX64
 SYSNAME		:= $(subst IRIX64,IRIX,$(shell uname -s))
 SYSVERS		:= $(shell uname -r)
-SYS		:= $(SYSNAME)_$(SYSVERS)
+# SYS		:= $(SYSNAME)_$(SYSVERS)
 USER 		:= $(shell whoami)
 
 # debug flag
@@ -50,7 +53,7 @@ endif
 #
 
 # mex path
-mexpath-alpha    = /usr/LOCAL/matlab-5.2
+mexpath-alpha    = /usr/LOCAL/matlab-5.3.1
 mexpath-sgi      = /usr/LOCAL/matlab
 mexpath-iris4d   = /usr/LOCAL/matlab
 mexpath-i386     = /usr/local/matlab
@@ -60,8 +63,8 @@ MEXPATH		 = $(mexpath-$(ARCH))
 
 # mex suffix per arch
 mex-alpha	 = mexaxp
-mex-sgi		 = mexsgi
-mex-iris4d	 = mexsgi
+mex-sgi		 = mexsg
+mex-iris4d	 = mexsg
 mex-i386	 = mexlx
 mex-i686	 = mexlx
 MEXSUF     	 = $(mex-$(ARCH))
@@ -86,24 +89,28 @@ MEXFLAGS	 = $(mexflags-$(ARCH))
 # path settings
 #
 
+ifeq ($(ARCH),i686)
+LINKFLAGS="LDFLAGS=-shared -nodefaultlibs -t"
+endif
+
 # where to find stuff (you can redefine IMPORT_ROOT!)
 IMPORT_ROOT	 = /u/formes/share
 GLOBAL_INCL 	 = $(IMPORT_ROOT)/include 
 GLOBAL_LIB_BASE	 = $(IMPORT_ROOT)/lib
-GLOBAL_LIB	 = $(GLOBAL_LIB_BASE)/$(HOSTTYPE)
+GLOBAL_LIB	 = $(GLOBAL_LIB_BASE)/$(SYS)
 
 # where to find some frequently used libraries
-SDIF_LIB_DIR     = $(GLOBAL_LIB)/$(SYS)
+SDIF_LIB_DIR     = $(GLOBAL_LIB)
 SDIF_LIB_BASE    = sdif$(VERS)
 SDIF_LIB	 = $(SDIF_LIB_DIR)/lib$(SDIF_LIB_BASE).a
 
-SDIF_TYPES_DIR   = $(GLOBAL_LIB_BASE)
+SDIF_TYPES_DIR   = $(IMPORT_ROOT)/share
 SDIF_TYPES_FILE	 = SdifTypes.STYP
 SDIF_TYPES_PATH	 = $(SDIF_TYPES_DIR)/$(SDIF_TYPES_FILE)
 
-PM_LIB_DIR	 = $(GLOBAL_LIB)
-PM_LIB_BASE	 = Pm$(VERS)
-PM_LIB   	 = $(PM_LIB_DIR)/lib$(PM_LIB_BASE).a
+#PM_LIB_DIR	 = $(GLOBAL_LIB)
+#PM_LIB_BASE	 = Pm$(VERS)
+#PM_LIB   	 = $(PM_LIB_DIR)/lib$(PM_LIB_BASE).a
 
 # include paths
 INCL	   	+= -I$(GLOBAL_INCL) -I$(MEXINCL) -I/usr/include -I/usr/local/include/ 
@@ -125,5 +132,5 @@ define MEX-COMPILE
 endef
 
 define MEX-LINK
-	$(MEX) -g $(MEXFLAGS) $(INCL) $(LFLAGS) $(mexflags-$(@F)) $^
+	$(MEX) -v -g $(MEXFLAGS) $(INCL) $(LINKFLAGS) $(LFLAGS) $(mexflags-$(@F)) $^
 endef
