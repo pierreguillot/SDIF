@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.20 2003-05-01 18:51:59 roebel Exp $
+# $Id: Makefile.am,v 1.21 2003-05-23 17:28:40 schwarz Exp $
 #
 # ./Makefile.am		September 2000			Patrice Tisserand
 #
@@ -30,6 +30,9 @@
 
 
 # $Log: not supported by cvs2svn $
+# Revision 1.20  2003/05/01 18:51:59  roebel
+# Fixed double declaration of EXTRA_DIST variable.
+#
 # Revision 1.19  2003/04/09 16:36:11  roebel
 # Fixed publish-ftp target.
 #
@@ -138,7 +141,8 @@ test:	check
 #
 
 # more files to include in dist
-EXTRA_DIST	  = sdif.vcproj  README.MacOSX
+EXTRA_DIST	  = sdif.pbxproj README.MacOSX \
+		    sdif.vcproj sdif.dsw
 
 
 # base name of distribution (override automake generated variable to make source distribution!)

@@ -1,3 +1,31 @@
+Version 3.7.4	2003-05-23  Diemo Schwarz  <schwarz@ircam.fr>
+
+	* sdif.pbxproj, macosxbuild, winbuild:
+	Added Mac OS-X Project Builder project.
+	Added win and mac build directories winbuild and maxosxbuild,
+	not yet used since you have to change the projects first.
+
+	* include/sdif_version.h.in: 
+	Added definition of total VERSION string.
+	This is necessary for non-configured builds like on Mac.
+
+	
+2003-05-01  Axel Roebel  <roebel@ligeti.ircam.fr>
+
+	* ChangeLog: Added last changes.
+
+	* Makefile.am: Fixed double declaration of EXTRA_DIST variable.
+
+	* sdif/SdifRWLowLevel.h: Removed declarations that are now in sdif.h
+
+	* sdif/SdifRWLowLevel.c:
+	SdifStringToSignature takes now const char * as argument.
+
+	* include/sdif.h:
+	SdifStringToSignature takes now const char * as argument.
+	Added missing declaration for SdifSkipASCIIUntilfromSdifString.
+
+	
 2003-05-01  Axel Röbel  <roebel@ircam.fr>
 
 	* Removed the declarations from SdifRWLowLevel.h that are in
@@ -16,8 +44,6 @@ Version 3.7.3	2003-03-07  Axel Roebel  <roebel@kempyang.ircam.fr>
         * cplusplus compilation takes place in separate directory and
         is not used for instalation.
 
-
-$Id: ChangeLog,v 1.15 2003-05-01 18:55:39 roebel Exp $
 	
 Version 3.7.2	2002-12-17  Axel Roebel, Patrice Tisserand
 
@@ -122,3 +148,6 @@ Version 3.3:
 	  mechanism, the directory divider is "/".  TODO: We will include
 	  a test at configuration to know the directory divider use on
 	  Operating System.
+
+	
+$Id: ChangeLog,v 1.16 2003-05-23 17:28:40 schwarz Exp $
