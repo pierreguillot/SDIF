@@ -32,9 +32,12 @@
  * 
  * 
  * 
- * $Id: sdifnamevaluetable.cpp,v 1.4 2003-05-19 13:59:11 roebel Exp $ 
+ * $Id: sdifnamevaluetable.cpp,v 1.5 2003-05-22 21:23:58 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.4  2003/05/19 13:59:11  roebel
+ * Include new easdif_config.h.
+ *
  * Revision 1.3  2003/04/29 15:41:30  schwarz
  * Changed all names View* to Print* and *Info to *Header for consistency
  * with SDIF library.
@@ -79,13 +82,13 @@ namespace Easdif {
 int SDIFNameValueTable::AddNameValue(const std::string& name,
 				     const std::string& value) 
 {
-    map_NameValues[name] = value;
+    NVTMap::operator[](name) = value;
     return GetNbNameValue();
 }
 
 int SDIFNameValueTable::GetNbNameValue()
 {
-    return map_NameValues.size();
+    return size();
 }
 
 SdifUInt4 SDIFNameValueTable::GetStreamID()
@@ -96,7 +99,7 @@ SdifUInt4 SDIFNameValueTable::GetStreamID()
 std::string SDIFNameValueTable::GetValue(const std::string& name) const
 {
   const_iterator it;
-  if((it= map_NameValues.find(name)) != map_NameValues.end())
+  if((it= find(name)) != end())
     return it->second;
   else {
     return std::string("UNKNOWN NAME");
@@ -125,20 +128,9 @@ void SDIFNameValueTable::PrintNameValueTable() const
     for (const_iterator p = begin(); 
 	 p != end() ; ++p)
     {
-      std::cout << GetNameFromSDIFNVTIt(p) << "\t\t" 
-		<< GetValueFromSDIFNVTIt(p) << "\n";
+      std::cout << p->first << "\t\t" 
+		<< p->second << "\n";
     }
-}
-
-
-std::string GetNameFromSDIFNVTIt(SDIFNameValueTable::const_iterator& it) 
-{
-    return it->first;
-}
-
-std::string GetValueFromSDIFNVTIt(SDIFNameValueTable::const_iterator& it)
-{
-    return it->second;
 }
 
 

@@ -33,9 +33,12 @@
  * 
  *
  * 
- * $Id: sdifnamevaluetable.h,v 1.6 2003-05-19 13:59:40 roebel Exp $ 
+ * $Id: sdifnamevaluetable.h,v 1.7 2003-05-22 21:23:58 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.6  2003/05/19 13:59:40  roebel
+ * swig rename moved to swig  interface desription.
+ *
  * Revision 1.5  2003/04/29 15:54:08  schwarz
  * Use SWIG_RENAME_EASDIF to control class renaming.
  *
@@ -96,30 +99,31 @@ namespace Easdif {
  *
  * SDIFNameValueTable is composed of different methods which permits to
  * manipulate a Name Value Table.
+ *
+ * It is derived from std::map<std::string,std::string> and provides
+ * all methods of that class
  */
 
-class SDIFNameValueTable
+class SDIFNameValueTable : public std::map<std::string,std::string>
 {
  private:
 
   SdifUInt4 mStreamID;
-  
-  /** 
-   * @brief map of string which are containing the Name Values
-   *
-   * we use our own less then comparator such that the NVT
-   * is always scanned in the same order that has been
-   * used to  add the entries.
-   */
-  std::map<std::string,std::string> map_NameValues;
-
+  typedef std::map<std::string,std::string> NVTMap;
 
 public:
 
     /* construct a NameValueTable*/
-    SDIFNameValueTable() {};
+    SDIFNameValueTable()  {};
 
-    ~SDIFNameValueTable(){};
+    ~SDIFNameValueTable() {};
+
+  /** 
+   *  \brief iterator types for iterating over the internal map
+   * 
+   */
+  typedef NVTMap::const_iterator const_iterator;
+  typedef NVTMap::iterator iterator;
 
   /** 
    *  \brief add a Name Value in the map
@@ -130,11 +134,6 @@ public:
    * @return  the number of Name Values in the map
    */
   int AddNameValue(const std::string& name, const std::string& value);
-
-  /** 
-   * \brief clear  all Name Values from the  table 
-   */
-  void clear() { map_NameValues.clear();};
 
 
   /*************************************************************************/
@@ -171,41 +170,13 @@ public:
 
   /*************************************************************************/
   /*
-    // FUNCTION GROUP:   Iterator
-  */
-
-  
-  typedef std::map<std::string,std::string>::iterator iterator;
-  typedef std::map<std::string,std::string>::const_iterator const_iterator;
-
-
-  /** 
-   * /brief iterator over name value table
-   * 
-   * 
-   * @return iterator pointing to first name value entry
-   */
-  iterator  begin() { return map_NameValues.begin();  }
-  const_iterator  begin() const { return map_NameValues.begin();  }
-
-  /** 
-   * /brief iterator over name value table
-   * 
-   * 
-   * @return iterator pointing to end of name value table
-   */
-  iterator  end() { return map_NameValues.end();  }
-  const_iterator  end() const { return map_NameValues.end();  }
-
-  /*************************************************************************/
-  /*
     // FUNCTION GROUP:	get the members
   */
   /** 
    * @brief get the number of Name Value
    */
   int GetNbNameValue();
-  
+
   /** 
    * @brief get the StreamID
    */
@@ -220,23 +191,6 @@ public:
 
 
 };
-
-
-  /** 
-   * @brief get the Value
-   * @param nvt iterator
-   * @return value string
-   */
-  std::string GetValueFromSDIFNVTIt(SDIFNameValueTable::const_iterator& it);
-
-
-  /** 
-   * @brief get the name
-   * @param nvt iterator
-   * @return name string
-   */
-  std::string GetNameFromSDIFNVTIt(SDIFNameValueTable::const_iterator& it);
-
 
 
 } // end of namespace Easdif

@@ -32,9 +32,12 @@
  * 
  * 
  * 
- * $Id: sdifentity.cpp,v 1.9 2003-05-22 17:57:53 roebel Exp $ 
+ * $Id: sdifentity.cpp,v 1.10 2003-05-22 21:23:58 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.9  2003/05/22 17:57:53  roebel
+ * Removed redundant initilization of variable
+ *
  * Revision 1.8  2003/05/21 20:36:23  roebel
  * Protect for reopening the same entity. The existing file will be properly closed
  * and the entity reinitialized.
@@ -270,13 +273,13 @@ bool SDIFEntity::WriteNVTs()
     
 	//NVlist = SdifNameValuesLNewTable( NVlist, StreamID);
 	// NVlist->CurrNVT->NumTable = mNbNVT + 1;
-
+	SDIFNameValueTable::const_iterator itend= mv_NVT[i].end();
 	for (SDIFNameValueTable::const_iterator p = mv_NVT[i].begin();
-	     p != mv_NVT[i].end() ; ++p)
+	     p != itend ; ++p)
 	{
 	    SdifNameValuesLPutCurrNVT(NVlist, 
-				      GetNameFromSDIFNVTIt(p).c_str(), 
-				      GetValueFromSDIFNVTIt(p).c_str());	
+				      p->first.c_str(), 
+				      p->second.c_str());	
 	}
     }
     /* for writing the Name Value Table in the file */
