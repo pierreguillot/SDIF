@@ -1,4 +1,4 @@
-/* $Id: SdifSelect.c,v 3.7 2000-05-12 14:38:13 schwarz Exp $
+/* $Id: SdifSelect.c,v 3.8 2000-05-12 16:55:30 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -79,6 +79,11 @@ TODO
 
 LOG
   $Log: not supported by cvs2svn $
+  Revision 3.7  2000/05/12  14:38:13  schwarz
+  Finally getting rid of basename, which always caused trouble:
+  On some unix systems, libgen was needed, on Mac it didn't exist at all.
+  We're replacing it with SdifBaseName.
+
   Revision 3.6  2000/03/01  11:18:45  schwarz
   Added SdifCreateSelection.
   Fixed Linux-only bug in SdifGetFilenameAndSelection (high addresses).
@@ -124,13 +129,18 @@ LOG
 
 static int debug = 0;
 
-char* SdifBaseName(char* inPathFileName);
-char* SdifBaseName(char* inPathFileName)
+
+char *
+SdifBaseName (const char* path)
 {
-	char* retFileName = strrchr(inPathFileName, HOST_DIRECTORY_DIVIDER);
-	if(retFileName != NULL)	return (char*)(retFileName + 1);
-	else					return inPathFileName;
+	const char* retFileName = strrchr (path, HOST_DIRECTORY_DIVIDER);
+
+	if (retFileName != NULL)
+	    return ((char *) retFileName + 1);
+	else
+	    return ((char *) path);
 }
+
 
 /*
 // DATA GROUP:		terminal symbols and character classes for parsing
@@ -193,7 +203,7 @@ SdifInitSelect (void)
 
 /* killer function for SdifKillList: free one SdifSelectElement */
 static void 
-elimselelem (SdifSelectionT *victim)
+elimselelem (/*SdifSelectionT*/ void *victim)
 {
     SdifFree (victim);
 }
@@ -268,7 +278,7 @@ SdifFreeSelection (SdifSelectionT *sel)
 
 
 static SdifSelectTokens	TOKEN;
-static char		*INPUT, *SYMBOL, *ORIG;
+static const char	*INPUT, *SYMBOL, *ORIG;
 
 
 static SdifSelectTokens 
@@ -318,7 +328,7 @@ static int
 parseint (SdifSelectValueT *valu)
 {
     SYMBOL = INPUT;
-    valu->integer = strtol (SYMBOL, &INPUT, 10);
+    valu->integer = strtol (SYMBOL, (/*not const*/ char **) &INPUT, 10);
     if (debug)  fprintf (stderr, 
     "parseint\t\tTOKEN %2d %-2s  SYMBOL '%10s'  INPUT '%10s'  ret %d  val %d\n",
     TOKEN, symbol (TOKEN), SYMBOL, INPUT, INPUT > SYMBOL, valu->integer);
@@ -330,7 +340,7 @@ static int
 parsereal (SdifSelectValueT *valu)
 {
     SYMBOL = INPUT;
-    valu->real = strtod (SYMBOL, &INPUT);
+    valu->real = strtod (SYMBOL, (/*not const*/ char **) &INPUT);
     return (INPUT > SYMBOL);	/* if pointer has advanced, we have
 				   successfully parsed something */
 }
@@ -485,7 +495,7 @@ parse (int (*parseval) (SdifSelectValueT *valu), SdifListP list,
 
 /* parse elements #stream :frame /matrix .column _row @time in any order */
 int 
-SdifParseSelection (SdifSelectionT *sel, char *str)
+SdifParseSelection (SdifSelectionT *sel, const char *str)
 {
     int ret = 2;	/* first iteration */
 
@@ -534,7 +544,7 @@ SdifSelectFindSelection (const char *filename)
     /* find last spec separator '::' in last */
     while (spec)
     {
-	if (spec  = strstr (spec, symbol(sst_specsep)))
+	if ((spec  = strstr (spec, symbol(sst_specsep))))
 	{
 	    last  = (char *) spec;
 	    spec += symlen (sst_specsep);
@@ -563,7 +573,6 @@ SdifPrintSelection (FILE *out, SdifSelectionT *sel, int options)
 {
     char *tn [] = {" ", " any\n"}, 
 	 *nc [] = {"\n", ", "};
-    SdifSignature sig;
 
 #   define printinit(elem) \
     fprintf (out, "   %-6s:%s", #elem, tn [SdifListIsEmpty(sel->elem)]);\
@@ -583,7 +592,7 @@ SdifPrintSelection (FILE *out, SdifSelectionT *sel, int options)
 
 #   define printsig(elem)    \
     {	SdifSignature sig;   printinit (elem); \
-        while (sig = SdifSelectGetNextSignature (sel->elem))   {	\
+        while ((sig = SdifSelectGetNextSignature (sel->elem)))   {	\
 	    fprintf (out, "%s%s", SdifSignatureToString (sig),		\
 				  nc [SdifListIsNext (sel->elem)]);     \
 	} \
@@ -665,7 +674,7 @@ SdifSelectGetNextIntRange  (/*in*/  SdifListP list,
 {
     int avail, delta;
 
-    if (avail = SdifListIsNext (list))
+    if ((avail = SdifListIsNext (list)))
     {
 	SdifSelectElementT *elem = SdifListGetNext (list);
 	
@@ -710,7 +719,7 @@ SdifSelectGetNextRealRange (/*in*/  SdifListP list,
     int		avail;
     double	delta;
 
-    if (avail = SdifListIsNext (list))
+    if ((avail = SdifListIsNext (list)))
     {
 	SdifSelectElementT *elem = SdifListGetNext (list);
 	
@@ -761,7 +770,7 @@ SdifSelectGetNextSignature (/*in*/  SdifListP list)
 {
      return (SdifListIsNext (list)  
 	     ?  ((SdifSelectElementT *) SdifListGetNext(list))->value.signature
-	     :  NULL);
+	     :  eEmptySignature);
 }
 
 
@@ -807,9 +816,10 @@ SdifSelectTestIntRange (SdifSelectElementT *elem, int cand)
 	        return (elem->value.integer >= cand  &&  cand >= elem->range.integer);	    
     	case sst_delta: 
 	    return (abs (elem->value.integer - cand) <= abs (elem->range.integer));
+        default:
+	    assert (!"corrupt rangetype");
+	    return (0);
     }
-    assert (!"corrupt rangetype");
-    return (0);
 }
 
 
@@ -829,9 +839,10 @@ SdifSelectTestRealRange (SdifSelectElementT *elem, double cand)
 	        return(elem->value.real >= cand  &&  cand >= elem->range.real);
     	case sst_delta: 
 	    return (fabs (elem->value.real - cand) <= fabs (elem->range.real));
+        default:
+	    assert (!"corrupt rangetype");
+	    return (0);
     }
-    assert (!"corrupt rangetype");
-    return (0);
 }
 
 
@@ -852,8 +863,6 @@ SdifSelectTestInt (SdifListT *list, int cand)
 int
 SdifSelectTestReal (SdifListT *list, double cand)
 {
-    SdifSelectElementT *first;
-
     if (SdifListIsEmpty (list))
 	return (1);	/* no select spec means: take everything */
 
