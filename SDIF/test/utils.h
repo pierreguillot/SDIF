@@ -1,8 +1,7 @@
 #ifndef _UTILS_H_
 #define _UTILS_H_ 1
 
-#include "sdiftypes.h"
-#include "sdifglobals.h"
+#include "sdif.h"
 
 int writeFileHeader(SdifFileT *fileToWrite);
 int writeFileASCIIChunks(SdifFileT *fileToWrite);
