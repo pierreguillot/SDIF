@@ -1,4 +1,4 @@
-/* $Id: SdifFWrite.h,v 3.4 2000-03-01 11:19:46 schwarz Exp $
+/* $Id: SdifFWrite.h,v 3.5 2000-04-11 14:31:57 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -105,6 +105,10 @@ void main(void)
 
 LOG
  * $Log: not supported by cvs2svn $
+ * Revision 3.4  2000/03/01  11:19:46  schwarz
+ * Added functions for matrix-wise writing:  SdifUpdateFrameHeader,
+ * SdifFWriteMatrixData, SdifFWriteMatrix, SdifFWriteFrameAndOneMatrix
+ *
  * Revision 3.3  1999/09/28  13:08:56  schwarz
  * Included #include <preincluded.h> for cross-platform uniformisation,
  * which in turn includes host_architecture.h and SDIF's project_preinclude.h.
@@ -230,14 +234,29 @@ size_t SdifFWriteMatrixData (SdifFileT *SdifF, void *Data);
 /*DOC:
   Write whole matrix: header, data, and padding.
   Data points to NbRow * NbCol * SdifSizeofDataType (DataType) bytes in
-  row-major order. 
-*/
-size_t SdifFWriteMatrix (SdifFileT     *file,
+  row-major order. */
+size_t SdifFWriteMatrix (SdifFileT     *SdifF,
 			 SdifSignature  Signature,
 			 SdifDataTypeET DataType,
 			 SdifUInt4      NbRow,
 			 SdifUInt4      NbCol,
-			 void		*Data);
+			 void	       *Data);
+
+/*DOC:
+  Write a matrix with datatype text (header, data, and padding).
+  Data points to Length bytes(!) of UTF-8 encoded text.  Length
+  includes the terminating '\0' character!!!  That is, to write a
+  C-String, use SdifFWriteTextMatrix (f, sig, strlen (str) + 1, str);
+  to include it. */
+size_t SdifFWriteTextMatrix (SdifFileT     *SdifF,
+			     SdifSignature  Signature,
+			     SdifUInt4      Length,
+			     char	   *Data);
+
+/*DOC: 
+  TBI: Convert ASCII C-String to UTF-8 encoded string, returning
+  length (including terminating null character). */
+size_t SdifAsciiToUTF8 (char *ascii_in, char *utf8_out);
 
 /*DOC: 
   Cette fonction permet en fin d'écriture de matrice d'ajouter le
