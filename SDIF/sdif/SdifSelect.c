@@ -1,4 +1,4 @@
-/* $Id: SdifSelect.c,v 3.4 1999-10-07 15:06:42 schwarz Exp $
+/* $Id: SdifSelect.c,v 3.5 1999-10-15 12:21:48 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -72,6 +72,9 @@ TODO
 
 LOG
   $Log: not supported by cvs2svn $
+  Revision 3.4  1999/10/07  15:06:42  schwarz
+  Added SdifSelectGetFirst<type>, SdifSelectGetNext(Int|Real).
+
   Revision 3.3  1999/09/28  13:09:11  schwarz
   Included #include <preincluded.h> for cross-platform uniformisation,
   which in turn includes host_architecture.h and SDIF's project_preinclude.h.
@@ -96,7 +99,7 @@ LOG
 #include "SdifFile.h"	 /* SdifFileT */
 #include "SdifRWLowLevel.h" /* SdifSignatureToString */
 #include "SdifHard_OS.h" /* SdifSignature */
-#include "SdifGlobals.h" /* eEmptySignature, min/max */
+#include "SdifGlobals.h" /* eEmptySignature, MIN/MAX */
 #include "SdifMemory.h"	 /* SdifMalloc, SdifCalloc */
 #include "SdifMatrixType.h"
 #include "SdifList.h"	 /* List structs and functions */
@@ -333,7 +336,7 @@ parsesig (SdifSelectValueT *valu)
     char sigstr [4] = "\0\0\0\0";
     int	 siglen = parsestring ();
 
-    strncpy (sigstr, SYMBOL, min (siglen, 4));
+    strncpy (sigstr, SYMBOL, MIN (siglen, 4));
     valu->signature = SdifStringToSignature (sigstr);
 
     if (debug) fprintf (stderr, 
@@ -642,8 +645,8 @@ SdifSelectGetNextIntRange  (/*in*/  SdifListP list,
 	    switch (elem->rangetype)
 	    {
 	    	case sst_range:
-		    range->value = min (elem->value.integer, elem->range.integer);
-		    range->range = max (elem->value.integer, elem->range.integer);
+		    range->value = MIN (elem->value.integer, elem->range.integer);
+		    range->range = MAX (elem->value.integer, elem->range.integer);
 	    	break;
     
 	    	case sst_delta:
@@ -687,8 +690,8 @@ SdifSelectGetNextRealRange (/*in*/  SdifListP list,
 	    switch (elem->rangetype)
 	    {
 	    	case sst_range:
-		    range->value = min (elem->value.real, elem->range.real);
-		    range->range = max (elem->value.real, elem->range.real);
+		    range->value = MIN (elem->value.real, elem->range.real);
+		    range->range = MAX (elem->value.real, elem->range.real);
 	    	break;
     
 	    	case sst_delta:
@@ -859,8 +862,9 @@ int
 SdifFCurrFrameIsSelected (SdifFileT *file, SdifSelectionT *sel)
 {
     return (
+       (SdifSelectTestInt	(sel->stream, SdifFCurrID   (file))
+        ||  SdifFCurrID (file) == _SdifAllStreamID)		     &&
         SdifSelectTestReal	(sel->time,   SdifFCurrTime (file))  &&
-	SdifSelectTestInt	(sel->stream, SdifFCurrID   (file))  &&
 	SdifSelectTestSignature (sel->frame,  SdifFCurrFrameSignature (file)));
 }
 
