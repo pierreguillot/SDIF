@@ -1,4 +1,4 @@
-/* $Id: SdifHighLevel.h,v 3.6 2001-05-02 09:34:44 tisseran Exp $
+/* $Id: SdifHighLevel.h,v 3.7 2004-09-09 17:53:07 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -31,6 +31,9 @@ LIBRARY
  *
 LOG
  * $Log: not supported by cvs2svn $
+ * Revision 3.6  2001/05/02 09:34:44  tisseran
+ * Change License from GNU Public License to GNU Lesser Public License.
+ *
  * Revision 3.5  2000/11/21 14:51:50  schwarz
  * - sdif.h is now included by all sdif/Sdif*.c files.
  * - Removed all public typedefs, enums, structs, and defines from the
@@ -66,19 +69,6 @@ LOG
 #include "SdifGlobals.h"
 
 
-/*
-//FUNCTION GROUP:  High-Level I/O Functions
-*/
-
-/*DOC: 
-  Read frame headers until a frame matching the file selection
-  has been found or the end of the file has been reached.
-
-  [] Return false if end of file was reached, true if data has been read. */
-int SdifFReadNextSelectedFrameHeader (SdifFileT *file);
-
-
-
 #if 0	/* TBI */
 
 /*
@@ -112,26 +102,6 @@ SdifFWriteTextMatrix (SdifFileT f, SdifSignature matrixsig, const char *str)
 }
 
 
-/*DOC:
-  Definition of the matrix callback function type, used for SdifReadSimple. 
-  TBI 
-*/
-typedef int (*SdifMatrixCallbackT) (SdifFileT *file, 
-				    int nummatrix, 
-				    void *userdata);
-
-/*DOC: 
-  Reads an entire SDIF file, calling matrixfunc for each matrix in the
-  SDIF selection taken from the filename.  Matrixfunc is called with
-  the SDIF file pointer, the matrix count within the current frame,
-  and the userdata unchanged. 
-  TBI 
-*/
-SdifReadSimple (char		    *filename, 
-		SdifMatrixCallbackT matrixfunc,
-		void		    *userdata);
-
-
 /* see SdifFRead */
 
 SdifFReadMatrixAs_TYPE_ ();
@@ -162,24 +132,11 @@ char *SdifFReadTextMatrix (SdifFileT *file);
 
   [Precondition:] 
   Matrix header must have been read with SdifFReadMatrixHeader.  */
-int SdifFReadMatrixData   (SdifFileT *file, void *target);
 
 /* with type conversion */
 int SdifFReadMatrixDataAs (SdifFileT *file, void *target,
 			   SdifDataTypeET as_type);
 
-
-/* --> SdifMatrix.h: add to SdifMatrixHeaderS not void *MatrixData, but:
-
-   DataTypeUT Data;
-
-   --> SdifFile.c: add void *SdifFCurrMatrixData (SdifFileT *);
-*/
-
-void *SdifFCurrMatrixData (SdifFileT *file)
-{
-  return file->CurrMtrxH->Data.Void;
-}
 
 void *SdifGetColumn ();
 
@@ -209,17 +166,6 @@ int /*bool*/ SdifFCheckStatusPrint (SdifFileT *file)
 */
 
 
-
-
-
 #endif /* TBI */
 
 #endif /* _SdifHighLevel_H_ */
-
-
-
-
-
-
-
-
