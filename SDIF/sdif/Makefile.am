@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.18 2002-09-24 13:23:08 schwarz Exp $
+# $Id: Makefile.am,v 1.19 2002-10-03 08:54:25 tisseran Exp $
 #
 # ./sdif/Makefile.am		September 2000			Patrice Tisserand
 #
@@ -29,6 +29,9 @@
 # send email to:  sdif@ircam.fr
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.18  2002/09/24 13:23:08  schwarz
+# Added forgotten host_configure.h to dist.
+#
 # Revision 1.17  2002/09/17 09:52:21  schwarz
 # Added cpp-compiled library.
 #
@@ -151,17 +154,17 @@ $(top_srcdir)/sdif/SdifVersion.h : $(Versionsrc)
 # EXTRA FOR IRCAM STUFF
 ircam_deps : $(FORMES_H:%=$(top_srcdir)/sdif/%)
 
-$(top_srcdir)/sdif/host_architecture.h:
+$(top_srcdir)/sdif/host_architecture.h: ${FORMES_INCLUDE}/host_architecture.h
 	cp ${FORMES_INCLUDE}/host_architecture.h $@
 
-$(top_srcdir)/sdif/preincluded.h :
+$(top_srcdir)/sdif/preincluded.h : ${FORMES_INCLUDE}/preincluded.h
 	cp ${FORMES_INCLUDE}/preincluded.h $@
 
-$(top_srcdir)/sdif/UniversalEnvVar.h : 
+$(top_srcdir)/sdif/UniversalEnvVar.h : ${FORMES_INCLUDE}/UniversalEnvVar.h
 	cp ${FORMES_INCLUDE}/UniversalEnvVar.h $@
 
-$(top_srcdir)/sdif/host_configure.h: 
+$(top_srcdir)/sdif/host_configure.h: #${FORMES_INCLUDE}/host_configure.h
 	cp ${FORMES_INCLUDE}/host_configure.h $@
 
-$(top_srcdir)/sdif/XpGuiCalls.h:
+$(top_srcdir)/sdif/XpGuiCalls.h: ${FORMES_INCLUDE}/XpGuiCalls.h
 	cp ${FORMES_INCLUDE}/XpGuiCalls.h $@
