@@ -1,4 +1,4 @@
-/* $Id: SdifGlobals.c,v 3.18 2004-07-28 14:56:58 roebel Exp $
+/* $Id: SdifGlobals.c,v 3.19 2004-09-09 17:38:38 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -31,6 +31,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.18  2004/07/28 14:56:58  roebel
+ * Simplified global list initialisation.
+ *
  * Revision 3.17  2004/07/27 18:58:37  roebel
  * Fixed infinite recursion in FreeGlobals.
  *
@@ -246,29 +249,10 @@ SdifSignatureCmpNoVersion(SdifSignature Signature1, SdifSignature Signature2)
 }
 
 
-SdifUInt4
-SdifSizeofDataType(SdifDataTypeET DataType)
+SdifUInt4 SdifSizeofDataType (SdifDataTypeET DataType)
 {
-#if (_SdifFormatVersion >= 3)
+    /* last byte of data type code defines element size in bytes */
     return (DataType & 0xff);
-#else
-    switch (DataType)
-    {
-    case eUnicode :
-    case eChar :
-        return 1;
-    case eInt2 :
-    case eUInt2 :
-        return 2;
-    case eFloat8 :
-        return 8;
-    case eFloat4 :
-    case eInt4 :
-    case eUInt4 :
-    default :
-        return 4;
-    }
-#endif
 }
 
 
@@ -291,7 +275,7 @@ SdifDataTypeKnown (SdifDataTypeET DataType)
 	/* defined in sdif format standard ver. 3 but not yet implemented */
         case eInt8  :
         case eUInt8 :
-	    _SdifRemark ("standard datatypes text, (u)int8 not yet handled");
+	    _SdifRemark ("standard datatypes Int8, UInt8 not yet handled");
 	/* completely unknown */
 	default:
 	    return eFalse;
@@ -300,23 +284,21 @@ SdifDataTypeKnown (SdifDataTypeET DataType)
 
 
 
-size_t
-SdifPaddingCalculate(size_t NbBytes)
+size_t SdifPaddingCalculate(size_t NbBytes)
 {
-  size_t mod;
+  size_t mod = NbBytes & _SdifPaddingBitMask;
 
-  mod = NbBytes % _SdifPadding;
   return mod ? (_SdifPadding - mod) : 0;
 }
 
 
 
 
-size_t
-SdifFPaddingCalculate(FILE *f, size_t NbBytes)
+size_t SdifFPaddingCalculate(FILE *f, size_t NbBytes)
 {
   size_t mod;
 
+#if defined(DEBUG)  &&  DEBUG
   if ((f != stdin) && (f != stdout) && (f != stderr))
   {
       /* calculating padding from ftell is redundant, but we leave it in,
@@ -333,6 +315,7 @@ SdifFPaddingCalculate(FILE *f, size_t NbBytes)
       return redundant;
   }
   else
+#endif
       return SdifPaddingCalculate(NbBytes);
 }
 
