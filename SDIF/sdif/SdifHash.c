@@ -1,4 +1,6 @@
-/* SdifHash.c
+/* $id$
+ *
+ * SdifHash.c
  *
  * SdifHash is coded like a small independant library.
  * Every HashTable have its own size and data type.
@@ -6,6 +8,8 @@
  *     void <KillerName>(<type>* ptr).
  *
  * author: Dominique Virolle 1997
+ *
+ * $Log: not supported by cvs2svn $
  */
 
 #include "SdifHash.h"
@@ -129,7 +133,7 @@ SdifKillHashTable(SdifHashTableT* HTable)
 /******************  eHashChar ****************/
 /* nchar represente le nombre de caracteres significatifs pour Hasher */
 unsigned int
-SdifHashChar(char* s, unsigned int nchar, unsigned int HashSize)
+SdifHashChar(const char* s, unsigned int nchar, unsigned int HashSize)
 {
   unsigned int valHash;
   unsigned int i;
@@ -147,7 +151,7 @@ SdifHashChar(char* s, unsigned int nchar, unsigned int HashSize)
 
 
 void*
-SdifHashTableSearchChar(SdifHashTableT* HTable, char *s, unsigned int nchar)
+SdifHashTableSearchChar(SdifHashTableT* HTable, const char *s, unsigned int nchar)
 {
   SdifHashNT *pNode;
   
@@ -170,7 +174,7 @@ SdifHashTableSearchChar(SdifHashTableT* HTable, char *s, unsigned int nchar)
 
 SdifHashTableT*
 SdifHashTablePutChar(SdifHashTableT* HTable,
-		     char *s,
+		     const char *s,
 		     unsigned int nchar,
 		     void* Data)
 {
@@ -231,7 +235,7 @@ SdifHashTableSearchInt4(SdifHashTableT* HTable, unsigned int i)
 
 
 SdifHashTableT*
-SdifHashTablePutInt4(SdifHashTableT* HTable, unsigned int i, void* Data)
+SdifHashTablePutInt4(SdifHashTableT* HTable, const unsigned int i, void* Data)
 {
   SdifHashNT *pNode;
   SdifHashNT *CurrNode;
@@ -303,14 +307,14 @@ SdifHashTableSearch(SdifHashTableT* HTable, void *ptr, unsigned int nobj)
 
 
 SdifHashTableT*
-SdifHashTablePut(SdifHashTableT* HTable, void *ptr, unsigned int nobj, void* Data)
+SdifHashTablePut(SdifHashTableT* HTable, const void *ptr, unsigned int nobj, void* Data)
 {
   switch (HTable->IndexType)
     {
     case eHashChar :
       return SdifHashTablePutChar(HTable, ptr, nobj, Data);
     case eHashInt4 :
-      return SdifHashTablePutInt4(HTable, *((unsigned int*)ptr), Data);
+      return SdifHashTablePutInt4(HTable, *((const unsigned int*)ptr), Data);
     default :
       return NULL;
     }

@@ -1,4 +1,6 @@
-/* SdifTest.h
+/* $id$
+ *
+ * SdifTest.h
  *
  * Tests with message on errors apply on a SdifFileT*
  * exit(1) is exceptional
@@ -6,7 +8,7 @@
  *
  * author: Dominique Virolle 1997
  *
- *
+ * $log$
  */
 
 #ifndef _SdifTest_
@@ -40,7 +42,7 @@ typedef enum SdifInterpretationErrorE
 
 
 extern void
-SdifInterpretationError(SdifInterpretationErrorET Error, SdifFileT* SdifF, void *ErrorMess);
+SdifInterpretationError(SdifInterpretationErrorET Error, SdifFileT* SdifF, const void *ErrorMess);
 
 #define _SdifFileMess(sdiff, error, mess) \
 (SdifErrorFile = __FILE__, SdifErrorLine = __LINE__, SdifInterpretationError((error), (sdiff),(mess)))

@@ -1,4 +1,6 @@
-/* SdifHash.h
+/* $Id: SdifHash.h,v 1.3 1998-05-04 15:44:18 schwarz Exp $
+ *
+ * SdifHash.h
  *
  * SdifHash is coded like a small independant library.
  * Every HashTable have its own size and data type.
@@ -7,6 +9,7 @@
  *
  * author: Dominique Virolle 1997
  *
+ * $Log: not supported by cvs2svn $
  */
 
 #ifndef _SdifHash_
@@ -57,10 +60,10 @@ extern void SdifKillHashTable      (SdifHashTableT* HTable);
 
 /******************  eHashChar ****************/
 
-extern unsigned int SdifHashChar(char* s, unsigned int nchar, unsigned int HashSize);
+extern unsigned int SdifHashChar(const char* s, unsigned int nchar, unsigned int HashSize);
 
-extern void*           SdifHashTableSearchChar(SdifHashTableT* HTable, char *s, unsigned int nchar);
-extern SdifHashTableT* SdifHashTablePutChar   (SdifHashTableT* HTable, char *s, unsigned int nchar, void* Data);
+extern void*           SdifHashTableSearchChar(SdifHashTableT* HTable, const char *s, unsigned int nchar);
+extern SdifHashTableT* SdifHashTablePutChar   (SdifHashTableT* HTable, const char *s, unsigned int nchar, void* Data);
 
 
 /***************** eHashInt4 **********************/
@@ -68,12 +71,12 @@ extern SdifHashTableT* SdifHashTablePutChar   (SdifHashTableT* HTable, char *s, 
 extern unsigned int SdifHashInt4(unsigned int i, unsigned int HashSize);
 
 extern void*           SdifHashTableSearchInt4(SdifHashTableT* HTable, unsigned int i);
-extern SdifHashTableT* SdifHashTablePutInt4   (SdifHashTableT* HTable, unsigned int i, void* Data);
+extern SdifHashTableT* SdifHashTablePutInt4   (SdifHashTableT* HTable, const unsigned int i, void* Data);
 
 
 /*************************** for all ***********************/
 
 extern void*           SdifHashTableSearch (SdifHashTableT* HTable, void *ptr, unsigned int nobj);
-extern SdifHashTableT* SdifHashTablePut    (SdifHashTableT* HTable, void *ptr, unsigned int nobj, void* Data);
+extern SdifHashTableT* SdifHashTablePut    (SdifHashTableT* HTable, const void *ptr, unsigned int nobj, void* Data);
 
 #endif /* _SdifHash_ */

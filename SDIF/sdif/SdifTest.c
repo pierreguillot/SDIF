@@ -1,10 +1,13 @@
-/* SdifTest.c
+/* $id$
+ *
+ * SdifTest.c
  *
  * Tests with message on errors apply on a SdifFileT*
  * exit(1) is exceptional
  *
  * author: Dominique Virolle 1997
  *
+ * $log$
  */
 
 #include <stdio.h>
@@ -20,7 +23,7 @@
 #define _NbOfWarningMax 19
 
 void
-SdifInterpretationError(SdifInterpretationErrorET Error, SdifFileT* SdifF, void *ErrorMess)
+SdifInterpretationError(SdifInterpretationErrorET Error, SdifFileT* SdifF, const void *ErrorMess)
 {
   if (SdifF->NbOfWarning >= _NbOfWarningMax)
     {
