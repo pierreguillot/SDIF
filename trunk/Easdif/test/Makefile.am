@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.6 2003-07-09 21:19:55 roebel Exp $
+# $Id: Makefile.am,v 1.7 2003-07-10 17:19:43 roebel Exp $
 #
 # ./Easdif/test/Makefile.am	Feb. 2003 Axel Roebel
 #
@@ -29,6 +29,10 @@
 # 
 
 # $Log: not supported by cvs2svn $
+# Revision 1.6  2003/07/09 21:19:55  roebel
+# Provide configure switch to add gccversion to library name to distinguish
+# gcc3.2 from gcc2.96 compiled libraries.
+#
 # Revision 1.5  2003/04/08 23:53:02  roebel
 # Dont install test programs
 #
@@ -49,19 +53,26 @@ EXTRA_PROGRAMS=
 bin_PROGRAMS = easdifRmNVT
 noinst_PROGRAMS =  tutorini tutofini
 
+if GCCSUFFIX
+GCCSUFFIX = _gcc3_2
+else
+GCCSUFFIX =
+endif 
+
 EASDIR=../easdif
 easdifRmNVT_SOURCES = easdifRmNVT.cpp
-easdifRmNVT_LDADD = -lEasdif -lm
+
+easdifRmNVT_LDADD = -lEasdif$(GCCSUFFIX) -lm
 easdifRmNVT_LDFLAGS = -L$(EASDIR)
 easdifRmNVT_DEPENDENCIES=$(EASDIR)/$(SELLIB)
 
 tutorini_SOURCES = tutorini.cpp
-tutorini_LDADD = -lEasdif -lm
+tutorini_LDADD = -lEasdif$(GCCSUFFIX) -lm
 tutorini_LDFLAGS = -L$(EASDIR)
 tutorini_DEPENDENCIES=$(EASDIR)/$(SELLIB)
 
 tutofini_SOURCES = tutofini.cpp
-tutofini_LDADD = -lEasdif -lm
+tutofini_LDADD = -lEasdif$(GCCSUFFIX) -lm
 tutofini_LDFLAGS = -L$(EASDIR)
 tutofini_DEPENDENCIES=$(EASDIR)/$(SELLIB)
 
