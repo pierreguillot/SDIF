@@ -32,9 +32,13 @@
  * 
  * 
  * 
- * $Id: sdifentity.cpp,v 1.18 2004-07-21 13:20:19 roebel Exp $ 
+ * $Id: sdifentity.cpp,v 1.19 2004-07-27 18:58:06 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.18  2004/07/21 13:20:19  roebel
+ * Added support to hold a frameDirectory in the entity and
+ * the possibility to read frames from a given time position.
+ *
  * Revision 1.17  2004/02/13 11:34:48  roebel
  * Reset eof to false after rewinding file
  *
@@ -492,7 +496,6 @@ int SDIFEntity::ReadNextFrame(SDIFFrame& frame, SdifFloat8 time)
 
     do{
       bytesread = frame.Read(*this);
-      std::cerr << "bytesread " << bytesread << " time " << GetFile()->CurrFramH->Time<< "\n";
    }while(!eof() && (time > GetFile()->CurrFramH->Time));
     
     if(time<=GetFile()->CurrFramH->Time)
