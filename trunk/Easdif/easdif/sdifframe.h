@@ -34,9 +34,12 @@
  * sdifframe.h is composed of the different methods which are using to 
  * manipulate the frame.
  * 
- * $Id: sdifframe.h,v 1.7 2003-05-19 14:00:00 roebel Exp $ 
+ * $Id: sdifframe.h,v 1.8 2003-07-18 19:32:41 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.7  2003/05/19 14:00:00  roebel
+ * swig rename moved to swig  interface desription.
+ *
  * Revision 1.6  2003/05/18 21:08:37  roebel
  * Added appropriate const methods.
  * For proper swig access GetMatrixWithSignature does no longer take
@@ -119,7 +122,17 @@ private:
 
 
 public: 
-    SDIFFrame(): mStreamID(0), mSize(0), mNbMatrix(0)//, mSelected(0)
+  /**
+   * \defgroup frconstr SDIFFrame - Read and Write 
+   */
+
+  /** 
+   * \ingroup frconstr
+   * \brief default constructor
+   *
+   *  Constructs a frame 
+   */
+  SDIFFrame(): mStreamID(0), mSize(0), mNbMatrix(0)//, mSelected(0)
 	{};
     //size_t  mFrameBytesRead;
 
@@ -167,14 +180,14 @@ public:
 /** 
  * \ingroup rnw
  * write entirely a frame
- * @return number of bytes write
+ * @return number of bytes written
  */
     int  Write(SdifFileT* file);
 
 /** 
  * \ingroup rnw
  * write the frame header (used by Write)
- * @return number of bytes write
+ * @return number of bytes written
  */
     int  WriteHeader(SdifFileT* file);
 
@@ -278,7 +291,10 @@ public:
 
 /**
  * \ingroup mat 
- * get the matrix number i which is stored in the vector of matrix 
+ * \brief get the matrix number i which is stored in the vector of matrix 
+ *
+ * \param index  index to matrix (C-notation: first matrix at index 0)
+ *
  * @return SDIFMatrix number i
  */
     SDIFMatrix& GetMatrix(unsigned int index);
@@ -353,6 +369,12 @@ public:
  * @brief Set the frame header
  */
     void SetHeader(SdifSignature sig, SdifUInt4 streamID, float time);//, SdifUInt4 nbMatrix);
+
+/** 
+ * \ingroup setmframe
+ * @brief Set the frame header
+ */
+  void SetHeader(const std::string& sig, SdifUInt4 streamID, float time);
 
 /**
  * \ingroup setmframe 
