@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.7 2003-04-08 23:22:34 roebel Exp $
+# $Id: Makefile.am,v 1.8 2003-04-09 11:55:29 roebel Exp $
 #
 # ./Makefile.am		Feb. 2003     Axel Roebel
 #
@@ -30,6 +30,9 @@
 # 
 
 # $Log: not supported by cvs2svn $
+# Revision 1.7  2003/04/08 23:22:34  roebel
+# Added determination of SDIF version
+#
 # Revision 1.6  2003/04/08 18:27:36  roebel
 # Added doc tar to published files.
 # Changed name of published tar to include SDIF with version.
@@ -97,7 +100,7 @@ EXTRA_PUBLISH     = $(DOCTAR)
 # call this as "make PUBLISH_HOST=yourwebhost publish" to publish a new version
 # this might work differently for other places
 # todo: configure PUBLISH_HOST
-PUBLISH_HOST      = wwwas@www.ircam.fr
+PUBLISH_HOST      = www.ircam.fr
 PUBLISH_DIR       = sdif/download/
 PUBLISH_FILES     = $(PUBLISH_FILE) $(PUBLISH_RPM) $(EXTRA_PUBLISH)
 PUBLISH_FILES_MAP = COPYING INSTALL README AUTHORS ChangeLog
