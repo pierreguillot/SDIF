@@ -1,6 +1,10 @@
-# $Id: Makefile,v 1.7 2003-04-18 14:31:27 schwarz Exp $
+# $Id: Makefile,v 1.8 2003-04-18 15:41:18 schwarz Exp $
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.7  2003/04/18 14:31:27  schwarz
+# Added typemap for string to SdifSignature conversion (input arg):
+# Setting/writing data works --> wrapper complete, but rudimentary.
+#
 # Revision 1.6  2003/04/17 12:20:39  schwarz
 # Output (return value) mapping for SdifSignature works!
 #
@@ -33,7 +37,7 @@ sdifincfiles = $(sdifincbase:%=../easdif/sdif%.h) ../SDIF/include/sdif.h
 wrap = easdif_wrap.cxx
 # dbflag = -g
 
-all:			SDIF.pm SDIF.so
+all:			eaSDIF.pm eaSDIF.so
 
 SDIF.pm $(wrap):	easdif.i $(sdifincfiles) sdifsignature.i
 	swig -c++ -perl5 -shadow $<
@@ -42,10 +46,10 @@ SDIF.pm $(wrap):	easdif.i $(sdifincfiles) sdifsignature.i
 easdif_wrap.o:		$(wrap)
 	g++ -c $(dbflag) -fpic -Dexplicit= $(wrap) -fno-strict-aliasing $(INCL)
 
-SDIF.so:		easdif_wrap.o
-	g++ -shared ../easdif/.libs/libEasdif.so easdif_wrap.o -o SDIF.so
+eaSDIF.so:		easdif_wrap.o
+	g++ -shared ../easdif/.libs/libEasdif.so easdif_wrap.o -o eaSDIF.so
 
-test:			SDIF.pm SDIF.so 
+test:			eaSDIF.pm eaSDIF.so 
 	LD_LIBRARY_PATH=../easdif/.libs:$(LD_LIBRARY_PATH) \
 	perl -I. test.pl
 
