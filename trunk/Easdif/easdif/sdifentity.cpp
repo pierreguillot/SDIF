@@ -32,9 +32,12 @@
  * 
  * 
  * 
- * $Id: sdifentity.cpp,v 1.19 2004-07-27 18:58:06 roebel Exp $ 
+ * $Id: sdifentity.cpp,v 1.20 2004-07-28 13:03:27 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.19  2004/07/27 18:58:06  roebel
+ * Removed remaining debug message.
+ *
  * Revision 1.18  2004/07/21 13:20:19  roebel
  * Added support to hold a frameDirectory in the entity and
  * the possibility to read frames from a given time position.
@@ -220,7 +223,7 @@ void SDIFEntity::EnableFrameDir() {
 
 void SDIFEntity::PrintFrameDir() const {
   std::cerr << " init pos "<< mFirstFramePos << "\n";
-  for (int ii=0;ii<mFrameDirectory.size() ;++ii)
+  for (unsigned int ii=0;ii<mFrameDirectory.size() ;++ii)
     std::cerr<< "Pos "<< mFrameDirectory[ii].GetPos()<< " time "<<mFrameDirectory[ii].GetTime() << "\n";
 }
 
@@ -301,7 +304,7 @@ bool SDIFEntity::Open(const char* filename, SdifFileModeET Mode)
 
 bool SDIFEntity::Rewind()
 {
-  SdifUInt4 readpos;
+  SdiffPosT readpos;
 
   if(-1 == SdiffSetPos(GetFile()->Stream,&mFirstFramePos)) return false;
   SdiffGetPos(GetFile()->Stream,&readpos);
@@ -324,7 +327,7 @@ bool SDIFEntity::Rewind()
 // rewind to position before time
 bool SDIFEntity::Rewind(SdifFloat8 time)
 {
-  SdifUInt4 readpos=0,gotopos=mFirstFramePos;
+  SdiffPosT readpos=0,gotopos=mFirstFramePos;
 
   if(mFrameDirectory.size()){
     // serach proper place to insert

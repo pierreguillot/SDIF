@@ -32,9 +32,12 @@
  * 
  * 
  * 
- * $Id: sdifentity.h,v 1.19 2004-07-27 17:40:19 roebel Exp $ 
+ * $Id: sdifentity.h,v 1.20 2004-07-28 13:03:27 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.19  2004/07/27 17:40:19  roebel
+ * Changed include directive to use user path and not system path for sdif.h
+ *
  * Revision 1.18  2004/07/21 13:20:24  roebel
  * Added support to hold a frameDirectory in the entity and
  * the possibility to read frames from a given time position.
@@ -170,7 +173,7 @@ private:
   std::string mDescription;
   
   SdifUInt4 mSize;
-  SdifUInt4 mFirstFramePos;	// file position after reading the header
+  SdiffPosT mFirstFramePos;	// file position after reading the header
   
   bool mEof;
   
