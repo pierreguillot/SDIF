@@ -1,4 +1,4 @@
-# $Id: Makefile,v 3.7 2000-08-22 16:34:16 schwarz Exp $
+# $Id: Makefile,v 3.8 2000-08-27 15:21:22 schwarz Exp $
 #
 #               Copyright (c) 1998 by IRCAM - Centre Pompidou
 #                          All rights reserved.
@@ -13,6 +13,9 @@
 # Makefile for automatic documentation.
 #
 # $Log: not supported by cvs2svn $
+# Revision 3.7  2000/08/22  16:34:16  schwarz
+# Added tutorial.
+#
 # Revision 3.6  2000/08/07  15:12:04  schwarz
 # Cocoon is installed for groups now, more docs.
 #
@@ -64,9 +67,11 @@
 INSTALLHOST	= maelzel
 INSTALLDIR	= /usr/local/www/ircam/equipes/analyse-synthese/sdif
 INSTALLURLBASE	= /equipes/analyse-synthese/sdif
-INSTALLSRC	= Makefile $(wildcard *.html) $(INSTALLDIRS)
 
-INSTALLDIRS	= pics extern intern
+# files and directories to copy to webserver
+INSTALLSRC	= Makefile $(wildcard *.html) $(INSTALLDIRS)
+INSTALLDIRS	= pics standard extern intern
+
 
 # these are all overriden when installing
 HERE		= $(subst /a/,/net/,$(PWD))
@@ -78,13 +83,22 @@ URLBASE		= $(HERE)
 COCOONDIR	= $*/cocoon
 WEBROOT		= $(WEBBASE)/$(COCOONDIR)
 URLROOT		= $(URLBASE)/$(COCOONDIR)
+#INSTALLURL	= cocoon
 INSTALLURL	= $(INSTALLURLBASE)/$(COCOONDIR)
 #		  http://www.ircam.fr/$(INSTALLURLBASE)/$(COCOONDIR)
 
 COCOON		= cocoon	# /u/formes/schwarz/bin/$(ARCH)/cocoon
 PREPROC		= gcc -E -P -ansi -x c 
-INSTALLHTML	= perl -pi -e '$$c+=s|(href="*)$(URLROOT)|$$1$(INSTALLURL)|i;'\
-			   -e 'END { print STDERR "$$c substitutions\n"; }'
+INSTALLHTML	= perl -pi -e '$$c+=s|(href="*)$(URLROOT)|$$1$(INSTALLURL)|ig;'\
+			   -e 'END { print STDERR "$$c substitutions\nof   $(URLROOT)\nwith $(INSTALLURL)\n"; }'
+
+ifneq ($(HOST), $(INSTALLHOST))
+	rsh	= rsh $(INSTALLHOST)
+	sep	= \;
+else
+	rsh	=
+	sep	= ;
+endif
 
 makedependency	= # Makefile # when changing preprocessor options
 headerdir	= $(ABS_ROOT)/sdif
@@ -100,7 +114,7 @@ VPATH		= pics intern extern
 
 .PHONY:		tutorial
 
-%.html:		%.tex Makefile
+%.html:		%.tex
 		hevea -exec xxdate.exe $< -o $@
 
 all:		cocoon eframes iframes
@@ -114,6 +128,7 @@ tutc:		tutorial.c $(HOME)/src/SDIF/autoconf/SDIF-3.2.0/include/sdif.h
 #		gcc -I/u/formes/include/sdif -L$(HOME)/lib/i686/Linux_2.2.5 \
 
 tutorial:	extern/tutorial-doc.html
+extern/tutorial-doc.html:	extern/tutorial-doc.tex
 
 #
 # cocoon
@@ -245,15 +260,13 @@ $(isec):	intern/default-sec.html
 #
 
 install:	$(INSTALLSRC) 
-		rsh $(INSTALLHOST) \
-		  	cp -prf $(INSTALLSRC:%=$(PWD)/%) $(INSTALLDIR) \; \
+		$(rsh) 	cp -rf $(INSTALLSRC:%=$(PWD)/%) $(INSTALLDIR) $(sep) \
 		  	$(MAKE) -C $(INSTALLDIR) URLBASE=$(URLBASE) \
 				postinst-intern postinst-extern \
 #				$(matlabdlarch)
 
 installdl:
-		rsh $(INSTALLHOST) \
-		  	cp -prf $(PWD)/Makefile $(INSTALLDIR) \; \
+		$(rsh)  cp -rf $(PWD)/Makefile $(INSTALLDIR) $(sep) \
 		  	$(MAKE) -C $(INSTALLDIR) URLBASE=$(URLBASE) \
 #				$(matlabdlarch)
 
