@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.11 2003-07-09 21:19:49 roebel Exp $
+# $Id: Makefile.am,v 1.12 2003-08-07 11:59:42 tisseran Exp $
 #
 # ./Easdif/src/Makefile.am	Feb. 2003 Axel Roebel
 #
@@ -31,6 +31,10 @@
 
 
 # $Log: not supported by cvs2svn $
+# Revision 1.11  2003/07/09 21:19:49  roebel
+# Provide configure switch to add gccversion to library name to distinguish
+# gcc3.2 from gcc2.96 compiled libraries.
+#
 # Revision 1.10  2003/05/22 21:22:53  roebel
 # Fixed support for configuring and compiling in directories other than the source tree.
 #
@@ -72,7 +76,7 @@ EXTRA_LTLIBRARIES = libEasdif.la  libEasdif_gcc3_2.la
 # lib_LIBRARIES = @SELLIB@
 lib_LTLIBRARIES = @SELLIB@
 
-EXTRA_DIST = easdif_version.h.in easdifintro.h easdif_config.h.in
+EXTRA_DIST = easdif_version.h.in easdifintro.h.in easdif_config.h.in
 
 EASDIF_H = easdif_version.h easdif.h  sdifentity.h \
 	sdifexception.h sdifframe.h sdifinit.h sdifmatrix.h sdifmatrixdata.h \
