@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.12 2003-08-07 11:59:42 tisseran Exp $
+# $Id: Makefile.am,v 1.13 2004-03-19 01:03:26 roebel Exp $
 #
 # ./Easdif/src/Makefile.am	Feb. 2003 Axel Roebel
 #
@@ -31,6 +31,9 @@
 
 
 # $Log: not supported by cvs2svn $
+# Revision 1.12  2003/08/07 11:59:42  tisseran
+# Fixed content of EXTRA_DIST variable.
+#
 # Revision 1.11  2003/07/09 21:19:49  roebel
 # Provide configure switch to add gccversion to library name to distinguish
 # gcc3.2 from gcc2.96 compiled libraries.
@@ -71,7 +74,7 @@
 
 # EXTRA_LIBRARIES to provide knowledge about possible substitutions
 # in lib_LTLIBRARIES
-EXTRA_LTLIBRARIES = libEasdif.la  libEasdif_gcc3_2.la
+EXTRA_LTLIBRARIES = libEasdif.la  libEasdif_gcc3_2.la libEasdif-debug.la
 
 # lib_LIBRARIES = @SELLIB@
 lib_LTLIBRARIES = @SELLIB@
@@ -90,6 +93,14 @@ libEasdif_la_SOURCES =  sdifentity.cpp sdifexception.cpp sdifframe.cpp \
 
 libEasdif_la_LIBADD  = @SDIFCPPLIB@
 libEasdif_la_LDFLAGS = -no-undefined  -release @VERSION@ -rpath $(libdir)
+
+
+libEasdif_debug_la_SOURCES =  sdifentity.cpp sdifexception.cpp sdifframe.cpp \
+			sdifinit.cpp sdifmatrix.cpp sdifnamevaluetable.cpp
+
+libEasdif_debug_la_LIBADD  = @SDIFCPPLIB@
+libEasdif_debug_la_LDFLAGS = -no-undefined  -release @VERSION@ -rpath $(libdir)
+
 
 libEasdif_gcc3_2_la_SOURCES =  sdifentity.cpp sdifexception.cpp sdifframe.cpp \
                         sdifinit.cpp sdifmatrix.cpp sdifnamevaluetable.cpp
