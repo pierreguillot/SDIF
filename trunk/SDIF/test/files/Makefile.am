@@ -1,6 +1,6 @@
-# $Id: Makefile.am,v 1.4 2001-05-02 09:34:53 tisseran Exp $
+# $Id: Makefile.am,v 1.5 2004-06-03 11:33:05 schwarz Exp $
 #
-# ./test/files/Makefile.am		September 2000			Patrice Tisserand
+# ./test/files/Makefile.am	September 2000		Patrice Tisserand
 #
 # Source file for GNU automake, generates Makefile.in.
 #
@@ -29,6 +29,9 @@
 # send email to:  sdif@ircam.fr
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.4  2001/05/02 09:34:53  tisseran
+# Change License from GNU Public License to GNU Lesser Public License.
+#
 # Revision 1.3  2000/12/20 15:57:15  roebel
 # Changed Version to 3.2.2. Added missing test files to distribution
 #
@@ -37,7 +40,6 @@
 #
 # Revision 1.1.2.2  2000/10/26  17:27:41  schwarz
 # Added header with copyright and links to all Makefile.am and configure.in.
-#
+
+
 SUBDIRS = txt sdif txtw sdifw sdifref
-
-

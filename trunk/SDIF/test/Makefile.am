@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.13 2004-06-02 14:46:27 schwarz Exp $
+# $Id: Makefile.am,v 1.14 2004-06-03 11:33:05 schwarz Exp $
 #
 # ./test/Makefile.am		September 2000		Patrice Tisserand
 #
@@ -29,6 +29,9 @@
 # send email to:  sdif@ircam.fr
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.13  2004/06/02 14:46:27  schwarz
+# Added profiling target to check runtime spent in which functions
+#
 # Revision 1.12  2002/10/10 10:39:06  roebel
 # Removed configure-variable @TESTLIB@ which can be derived from @SELLIB@.
 #
@@ -95,20 +98,60 @@ TESTS_ENVIRONMENT = SDIFTYPES=$(SDIFTYPES) $(SHELL)
 TESTS = test_conv2  test_Header test_NVT cmd_testcheck
 
 
+
 #
 # profiling targets
 #
 
-profbase	= sdifextract
-profexe		= ../tools/$(profbase)-profile
-proffile	= a01
-profdata	= /net/slentem/data2/caterpillar/sounds/bach-menuhin/$(proffile).sdif
-proftag		= $(profbase)-$(VERSION)-$(proffile)$(descr)
-prof		= gprof -b
+# settings and paths
+prof     = gprof -b
+proffile = a01
+profdata = /net/slentem/data2/caterpillar/sounds/bach-menuhin/$(proffile).sdif
+profarg  = -T $(SDIFTYPES) $(profdata)
 
-prof:
-	-$(profexe) -T $(SDIFTYPES) $(profdata) > /tmp/$(proffile).sdif
-	$(prof) -i $(profexe) gmon.out			   # info
-	$(prof)    $(profexe) gmon.out >$(proftag).gprof   # flat + call graph
-	$(prof) -l $(profexe) gmon.out >$(proftag).gprof-l # line by line
-	$(prof) -A $(profexe) gmon.out >$(proftag).gprof-A # ann. prog. listing
+# list of programs to profile (prof_<tag>) and with which args (parg_<tag>)
+
+# copy sdif through sdifextract without selection, verify file identicality
+prep_sdifextractall_a01 = -rm /tmp/$(proffile).sdif
+prof_sdifextractall_a01 = sdifextract
+parg_sdifextractall_a01 = $(profarg)		    /tmp/$(proffile).sdif
+post_sdifextractall_a01 = diff -s $(profdata) /tmp/$(proffile).sdif
+
+# copy with frame selection
+prof_sdifextractfrm_a01 = sdifextract
+parg_sdifextractfrm_a01 = $(profarg)::1FQ0@0-139.42 /tmp/$(proffile)frm.sdif
+
+# copy with matrix row selection
+prof_sdifextractmtx_a01 = sdifextract
+parg_sdifextractmtx_a01 = $(profarg)::/1TRI_2       /tmp/$(proffile)mtx.sdif
+
+# query
+prof_querysdif_a01	= querysdif
+parg_querysdif_a01	= -t $(SDIFTYPES) -d $(profdata)
+
+# to text conversion, to test text output
+prof_sdiftotext_a01	= sdiftotext
+parg_sdiftotext_a01	= -t $(SDIFTYPES) -i $(profdata) -o /tmp/$(proffile).txt
+# from text conversion, test text input
+prof_tosdif_a01		= tosdif
+parg_tosdif_a01		= -t $(SDIFTYPES) -i /tmp/$(proffile).txt -o /tmp/$(proffile).txt.sdif
+
+
+PROFEXE		  = ../tools/$(prof_$*)-profile
+PROFTAG		  = prof/$*-$(VERSION)$(descr)
+
+prof: prof_sdifextractfrm_a01 prof_sdifextractmtx_a01 prof_sdifextractall_a01 \
+      prof_querysdif_a01 prof_sdiftotext_a01 prof_tosdif_a01
+
+# copy sdif
+prof_%:
+	@echo; echo; echo "[profiling $(PROFTAG)]"
+	$(prep_$*) # preparations of $*
+	/usr/bin/time -p $(PROFEXE) $(parg_$*) | tee $(PROFTAG).log | head -30
+	$(post_$*) # postprocessing of $*
+#
+	@echo; echo "[generating reports for $(PROFTAG)]"; echo
+	@$(prof)    $(PROFEXE) gmon.out >$(PROFTAG).gprof   # flat + call graph
+	@$(prof) -l $(PROFEXE) gmon.out >$(PROFTAG).gprof-l # line by line
+	@$(prof) -A $(PROFEXE) gmon.out >$(PROFTAG).gprof-A # ann. prog listing
+	@mv gmon.out $(PROFTAG).mon.out
