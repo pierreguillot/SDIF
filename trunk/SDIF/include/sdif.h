@@ -1,8 +1,39 @@
-/* $Id: sdif.h,v 1.20 2002-08-28 14:05:31 schwarz Exp $
+/* $Id: sdif.h,v 1.21 2002-09-17 09:51:18 schwarz Exp $
  *
- * This file contains type declaration of variables used in SDIF library.
+ * IRCAM SDIF Library (http://www.ircam.fr/sdif)
+ *
+ * Copyright (C) 1998-2002 by IRCAM-Centre Georges Pompidou, Paris, France.
+ * 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ * 
+ * See file COPYING for further informations on licensing terms.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ *
+ * For any information regarding this and other IRCAM software, please
+ * send email to:
+ *                            sdif@ircam.fr
+ *
+ *
+ * This file contains types and declarations that form the 
+ * externally visible API of the IRCAM SDIF library (http://www.ircam.fr/sdif).
+ *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.20  2002/08/28 14:05:31  schwarz
+ * New function SdifFRewind.
+ * More documentation for positioning functions and truncate.
+ *
  * Revision 1.19  2002/08/27 10:51:30  schwarz
  * New file truncate function.
  * Comments for file positioning macros.
@@ -92,7 +123,7 @@
  * Revision 1.1.2.1  2000/08/21  13:07:41  tisseran
  * *** empty log message ***
  *
- * $Date: 2002-08-28 14:05:31 $
+ * $Date: 2002-09-17 09:51:18 $
  *
  */
 
@@ -108,7 +139,7 @@ extern "C" {
 #endif
 
 
-static const char _sdif_h_cvs_revision_ [] = "$Id: sdif.h,v 1.20 2002-08-28 14:05:31 schwarz Exp $";
+static const char _sdif_h_cvs_revision_ [] = "$Id: sdif.h,v 1.21 2002-09-17 09:51:18 schwarz Exp $";
 
 
 #include <stdio.h>
