@@ -1,10 +1,13 @@
-# $Id: makefile,v 1.24 2001-05-14 17:32:30 roebel Exp $
+# $Id: makefile,v 1.25 2001-05-14 17:34:00 roebel Exp $
 #
 # makefile	26. January 2000	Diemo Schwarz
 #
 # formesutils matlab library
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.24  2001/05/14 17:32:30  roebel
+# Version changed to 1.9
+#
 # Revision 1.23  2001/05/04 13:05:35  roebel
 # DIST_DIR changed to new directory layout of download dir
 #
@@ -131,7 +134,7 @@ endif
 
 V_MAJOR 	= 0
 V_MINOR 	= 1
-V_RELEASE	= 9
+V_RELEASE	= 9 
 VERSION		= $(V_MAJOR).$(V_MINOR).$(V_RELEASE)
 CVSTAG		= sdif_matlab_v$(V_MAJOR)_$(V_MINOR)_$(V_RELEASE)
 
