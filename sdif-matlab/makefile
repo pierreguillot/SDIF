@@ -1,10 +1,16 @@
-# $Id: makefile,v 1.20 2001-04-20 14:33:33 roebel Exp $
+# $Id: makefile,v 1.21 2001-04-20 14:48:41 roebel Exp $
 #
 # makefile	26. January 2000	Diemo Schwarz
 #
 # formesutils matlab library
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.20  2001/04/20 14:33:33  roebel
+# Makefile totally rewritten: Source distribution added,
+# automatic extension determination, support for matlab 5 and 6,
+# improved tests, compilation environment is changed by means of
+# 5 variables, only.
+#
 # Revision 1.19  2001/02/07 16:00:13  roebel
 # Version 0.1.7b with README.first
 #
@@ -167,7 +173,7 @@ mfiles		= loadsdif.m loadsdiffile.m loadsdifflat.m \
 allsrc		= $(cfiles) $(hfiles) testmexext.c
 srcmfiles       = $(mfiles) tt.m testl.m sdifexist.m testreadwrite.m testrw.m \
 testwrite.m
-datadir         = data/*sdif data/*.sdif.ascii 
+datadir         = data/*sdif data/*.sdif.ascii data/testl*.out
 
 allmex:		$(mexfiles)
 
