@@ -1,4 +1,4 @@
-# $Id: Makefile,v 3.4 1999-10-07 15:22:52 schwarz Exp $
+# $Id: Makefile,v 3.5 2000-05-15 16:10:27 schwarz Exp $
 #
 #               Copyright (c) 1998 by IRCAM - Centre Pompidou
 #                          All rights reserved.
@@ -11,6 +11,11 @@
 # make general	
 #
 # $Log: not supported by cvs2svn $
+# Revision 3.4  1999/10/07  15:22:52  schwarz
+# Factoring of commonly used path part $(ARCHDIR).
+# User option for me to compile into my $(HOME)/xxx.
+# Various little improvements.
+#
 # Revision 3.3  1999/04/30  13:46:53  schwarz
 # Fixed little mistake in install target.
 #
@@ -84,8 +89,10 @@ clean:  $(clean_all)
 
 install_%:
 	@cd $*; $(MAKE) install
-install_lib instlib:
+install_lib instlib insttypes instyp:
 	@cd libsdif ; $(MAKE) install
+insttypes instyp:
+	@cd libsdif ; $(MAKE) insttypes
 
 install:  $(install_all)
 
@@ -110,4 +117,7 @@ uninstall:  $(uninstall_all)
 #
 
 tags:
-	etags sdif/*.[ch]
+	etags sdif/SdifFileStruct.h sdif/*.[ch]
+
+grep:
+	grep $a sdif/*.[ch] /dev/null
