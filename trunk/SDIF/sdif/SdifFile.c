@@ -301,12 +301,35 @@ SdifFLoadPredefinedTypes(SdifFileT *SdifF, char *TypesFileName)
 
 SdifFileT *gSdifPredefinedTypes;
 
+/* _SdifTypesFileName is normaly defined
+ * in the Makefile with -D_SdifTypesFileName="<FileNameWithPath>"
+ * then default _SdifTypesFileName is not used.
+ */
+#ifndef _SdifTypesFileName
+#define _SdifTypesFileName  "SdifTypes.STYP"
+#endif
+
 void
 SdifGenInit(char *PredefinedTypesFile)
 {
+  char *PreTypesEnvVar=NULL;
+  
   SdifInitMachineType();
   gSdifPredefinedTypes = SdifOpenFile("Predefined", ePredefinedTypes);
-  SdifFLoadPredefinedTypes(gSdifPredefinedTypes, PredefinedTypesFile);
+
+  if ( (!PredefinedTypesFile) || (strlen(PredefinedTypesFile)== 0) )
+    {
+      PreTypesEnvVar = getenv(_SdifEnvVar);
+      if (PreTypesEnvVar)
+	SdifFLoadPredefinedTypes(gSdifPredefinedTypes, PreTypesEnvVar);
+      else
+	SdifFLoadPredefinedTypes(gSdifPredefinedTypes,  _SdifTypesFileName);
+    }
+  else
+    {
+      SdifFLoadPredefinedTypes(gSdifPredefinedTypes, PredefinedTypesFile);
+    }
+
 }
 
 
@@ -321,7 +344,21 @@ SdifGenKill(void)
 
 
 
+void SdifPrintVersion(void)
+{
+#ifndef lint
+  static char rcsid[]= "$Revision: 1.2 $ IRCAM $Date: 1998-01-30 14:40:26 $";
+#endif
 
+
+  fprintf(stderr, "SDIF Library\n");
+
+#ifndef lint
+  fprintf(stderr, "CVS: %s\n", rcsid);
+#endif
+
+  fprintf(stderr, "Release: %s\n", _SDIF_VERSION);
+}
 
 
 

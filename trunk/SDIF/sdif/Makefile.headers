@@ -1,0 +1,30 @@
+# headers of sdif library
+
+
+
+SDIF_HEADERS = \
+	SdifHash.h \
+	SdifGlobals.h \
+	SdifError.h \
+	SdifNameValue.h \
+	SdifMatrixType.h \
+	SdifFrameType.h \
+	SdifStreamID.h \
+	SdifMatrix.h \
+	SdifFrame.h \
+	SdifPrint.h \
+	SdifTest.h \
+	SdifTimePosition.h \
+	SdifFile.h \
+	SdifRWLowLevel.h \
+	SdifFGet.h \
+	SdifFRead.h \
+	SdifFScan.h \
+	SdifFPut.h \
+	SdifFPrint.h \
+	SdifFWrite.h \
+	SdifTextConv.h \
+	SdifConvToText.h \
+	SdifPreTypes.h \
+	SdifFileStruct.h \
+	sdif.h

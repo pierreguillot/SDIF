@@ -14,6 +14,7 @@
 #define _SdifFile_
 
 #include "SdifFileStruct.h"
+#include "SdifGlobals.h"
 
 extern SdifFileT*         SdifOpenFile                  (char* Name, SdifFileModeET Mode);
 extern void               SdifCloseFile                 (SdifFileT* SdifF);
@@ -26,6 +27,7 @@ extern void               SdifFLoadPredefinedTypes      (SdifFileT *SdifF, char 
 extern SdifFileT *gSdifPredefinedTypes;
 extern void SdifGenInit (char *PredefinedTypesFile);
 extern void SdifGenKill (void);
+extern void SdifPrintVersion(void);
 
 
 

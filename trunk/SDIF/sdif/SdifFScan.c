@@ -37,6 +37,9 @@ SdifFScanGeneralHeader(SdifFileT *SdifF)
   SdiffGetSignature(SdifF->TextStream, &(SdifF->CurrSignature), &SizeR);
   if (SdifF->CurrSignature != eSDIF)
     {
+      sprintf(gSdifErrorMess,
+	      "SDIF not correctly read\n\t'%s' is not a pseudo-SDIF text file",
+	      SdifF->TextStreamName);
       _SdifFileMess(SdifF, eBadHeader, "SDIF not correctly read");
       return 0;
     }

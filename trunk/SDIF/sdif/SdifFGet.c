@@ -45,7 +45,7 @@ SdifFGetOneNameValue(SdifFileT *SdifF, int Verbose, size_t *SizeR)
 {
   FILE         *file;
   int          CharEnd;
-  static char  CharsEnd[] = " \t\n\f\r\v{},;:[]";
+  static char  CharsEnd[] = " \t\n\f\r\v{},;:";
 
 
   file = SdifFileGetFILE_SwitchVerbose(SdifF, Verbose);

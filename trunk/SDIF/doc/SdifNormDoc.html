@@ -21,7 +21,7 @@
 
 <a name="Index"></a>
 <ul>
-  <li><a href="#Principe de Sdif"><strong>Principe de Sdif</strong></a></li>
+  <li><a href="#Principe de SDIF"><strong>Principe de SDIF</strong></a></li>
   <ul>
     <li><a href="#Des Matrices">Des Matrices</a></li>
     <li><a href="#Des Frames">Des Frames</a></li>
@@ -68,7 +68,7 @@
       <li><a href="#Exemple de Frame en texte">Exemple de Frame en texte</a></li>
     </ul>
   </ul>
-  <li><a href="#Mots Reservés Sdif"><strong>Mots Reservés Sdif</strong></a></li>
+  <li><a href="#Mots Reservés SDIF"><strong>Mots Reservés SDIF</strong></a></li>
   <ul>
     <li><a href="#Mots Information Table">Mots Information Table</a></li>
     <li><a href="#Predefined Types">Predefined Types</a></li>
@@ -76,11 +76,17 @@
       <li><a href="#Predefined Matrix Types">Predefined Matrix Types</a></li>
       <li><a href="#Predefined Frame Types">Predefined Frame Types</a></li>
     </ul>
+    <li><a href="#StreamID TreeWay pour Chant">StreamID TreeWay pour Chant</a></li>
+    <ul>
+      <li><a href="#Description de chaque élément du TreeWay">
+                    Description de chaque élément du TreeWay</a></li>
+      <li><a href="#Exemple TreeWay Chant">Exemple TreeWay Chant</a></li>
+    </ul>
   </ul>
 </ul>
 
   <p><hr width="100%"></p>
-  <a name="Principe de Sdif"></a><h1>Principe de Sdif</h1>
+  <a name="Principe de SDIF"></a><h1>Principe de SDIF</h1>
 
 <ul>
   <li><a href="#Des Matrices">Des Matrices</a></li>
@@ -90,7 +96,7 @@
   <li><a href="#BigEndian">BigEndian</a></li>
 </ul>
 
-<p> L'idée générale de Sdif est de stocker les informations liées au traitement
+<p> L'idée générale de SDIF est de stocker les informations liées au traitement
  du signal et plus particuliairement du son, dans des fichiers, suivant un format
  commun à tous les types de données. Ainsi, il est possible de stocker des résultats
  ou des paramètres d'analyses, de synthèses... 
@@ -119,7 +125,7 @@
 
   <a name="Des Frames"></a><h2>Des Frames</h2>
 
-<p> La seconde spécification de Sdif est que les matrices sont regroupées dans des
+<p> La seconde spécification de SDIF est que les matrices sont regroupées dans des
  frames. Il y a plusieurs types de frames : les bancs de filtres, les bancs de fofs...
  Un frame s'adresse à un objet contenant plusieurs sous-objets de structure(s) simple(s). 
  Ainsi, un frame BancDeFiltre permet de représenter un ensemble de Filtres. Une structure
@@ -131,7 +137,7 @@
   <a name="Notion Temporelle"></a><h2>Notion Temporelle</h2>
 
 <p> A chaque modification dans le temps d'un paramètre d'un objet est associé un bloc
- frame Sdif pour le type de l'objet. Le fichier Sdif est globalement une succession de
+ frame SDIF pour le type de l'objet. Le fichier SDIF est globalement une succession de
  frames ordonnés dans le temps.
 </p>
 
@@ -141,13 +147,13 @@
   <a name="Des Chunks"></a><h2>Des Chunks</h2>
 
 
-<p> Un fichier Sdif se compose de plusieurs chunks dans l'ordre :
+<p> Un fichier SDIF se compose de plusieurs chunks dans l'ordre :
 </p>
 <ul>
   <li>Zéro, une ou plusieurs table d'informations "Informations Table",</li>
   <li>Un Chunk optionnel de déclarations ou de complétions de types de matrices
       ou frames "Types Declarations",</li>
-  <li>Une table optionnelle d'index Sdif "Stream IDs Table",</li>
+  <li>Une table optionnelle d'index SDIF "Stream IDs Table",</li>
   <li>Une suite de chunks de type "Frame".</li>
 </ul>
  <img src="FileLevel.gif" alt="Image FileLevel.gif" height=381 witdh=261 align=lefttop>
@@ -158,8 +164,8 @@
 
   <a name="BigEndian"></a><h2>BigEndian</h2>
 
-<p> Quelque soient les données d'un fichier Sdif ou le type de matériel informatique
- qui écrit ou lit des fichiers Sdif, <strong>toutes les données sont écrites en
+<p> Quelque soient les données d'un fichier SDIF ou le type de matériel informatique
+ qui écrit ou lit des fichiers SDIF, <strong>toutes les données sont écrites en
  BigEndian IEEE </strong> et alignées sur 8 bytes.
 </p>
 
@@ -215,11 +221,11 @@
 
 
 
-<p> L'entête d'un fichier Sdif se compose de 2 champs :
+<p> L'entête d'un fichier SDIF se compose de 2 champs :
 </p>
 
 <table fontsize="small" border=1 bordercolor="black" cellpadding=5>
-<tr><td>"SDIF"</td><td>4 bytes</td><td>Signature Sdif</td></tr>
+<tr><td>"SDIF"</td><td>4 bytes</td><td>Signature SDIF</td></tr>
 <tr><td>&lt;champ vide&gt;</td><td>4 bytes</td><td>non encore défini (== 00000000 hexa)</td></tr>
 </table>
 
@@ -244,7 +250,7 @@
     <a name="Informations Table Data"></a><h3>Informations Table Data</h3>
 
 <p> La table d'informations permet d'avoir des informations générales comme l'auteur
-du fichier, la version de Sdif, le nombre de cannaux... Les données de ce chunk sont
+du fichier, la version de SDIF, le nombre de cannaux... Les données de ce chunk sont
 en ASCII.
 </p>
 <p> Les données commencent par '{' et finissent par '}'. Chaque information est sous
@@ -257,7 +263,7 @@ en ASCII.
 <pre>
 {
   numChannels   6   ;
-  SdifVersion   1.0.0.alpha;
+  SDIFVersion   1.0.0.alpha;
   MonProgrammeParametreSpecial  integer4  ;
 }
 </pre>
@@ -291,13 +297,13 @@ en ASCII.
   <a name="Types Declarations Chunk"></a><h2>Types Declarations Chunk</h2>
 
 
-<p> Il est possible dans Sdif de compléter les types de matrices ou de frames existant
+<p> Il est possible dans SDIF de compléter les types de matrices ou de frames existant
  (cf : <a href="#Predefined Types">Predefined Types</a>) ou d'en créer de nouveaux.
  Si un types existe déjà, on considère qu'une déclaration sur ce type est une
  complétion. S'il n'existe pas, alors c'est une création.
 </p>
 <p> Cependant, pour un type donné, il ne peut y avoir qu'une seule déclaration dans
- un fichier Sdif. C'est à dire que l'on ne peut pas compléter un type une deuxième
+ un fichier SDIF. C'est à dire que l'on ne peut pas compléter un type une deuxième
  fois et on ne peut pas créer un nouveau type puis le compléter.
 </p>
 <p>Comme pour les tables d'informations, les données de déclarations de types sont
@@ -359,10 +365,10 @@ EFIL est une création, 1TYP et 2TYP sont des complétions.
 </p>
 
 <p>La Complétion de Matrice :</p>
-<p>Lorsque le type de matrice est prédéfini (il existe comme format dans Sdif), une
+<p>Lorsque le type de matrice est prédéfini (il existe comme format dans SDIF), une
  déclaration sur ce type entraine le mode complétion. Celle-ci consiste seulement à
  ajouter de nouvelles colonnes (champs) aux matrices (aux structures simples). Ainsi
- si 1FIL est prédéfini dans Sdif avec "fréquence", "amplitude", et "largeur de bande",
+ si 1FIL est prédéfini dans SDIF avec "fréquence", "amplitude", et "largeur de bande",
  <code>1MTD 1FIL {saliance, correction}</code> ajoute deux nouvelles colonnes aux
  matrices (la 4 et la 5). Mais aucune modification des colonnes prédéfinies n'est
  possible.
@@ -487,7 +493,7 @@ mêmes 2 premières matrices, et que les 3 lettres significatives sont 'FIB'.
 <p> La table d'ID permet d'avoir des informations sur les objets sur lesquels les frames
  vont s'appliquer. Un ID est un entier représentant un objet particulier. Deux objets
  ont toujours deux ID différents, même s'ils se différencient déjà par leurs types.
- Ainsi un ID est une clé absolue pour un objet par rapport à un fichier Sdif.
+ Ainsi un ID est une clé absolue pour un objet par rapport à un fichier SDIF.
 </p>
 <p> Les données commencent par '{' et finissent par '}'. Chaque information est sous
  la forme <code>&lt;ID&gt; &lt;Source ou Destination&gt;: &lt;TreeWay&gt; ';' </code>.
@@ -510,7 +516,7 @@ mêmes 2 premières matrices, et que les 3 lettres significatives sont 'FIB'.
  C'est la raison pour laquelle on parle de Source ou de Destination.
  TreeWay peut donner des informations sur des liens entre objet. Une composante
  dans les TreeWay semble obligatoire : il doit y avoir le nom du type de l'objet
- dans le TreeWay (sans le numéro de version pour qu'un lecteur Sdif puisse
+ dans le TreeWay (sans le numéro de version pour qu'un lecteur SDIF puisse
  faire une tentative de lecture sur un type de frame de version inconnue).
  La table des ID est en quelque sorte le moyen de déclarer des objets qui
  seront modifiés dans le temps via les frames.
@@ -616,7 +622,7 @@ mêmes 2 premières matrices, et que les 3 lettres significatives sont 'FIB'.
  C'est à dire que la matrice contient les C premières colonnes du type de matrice.
 </p>
 <p><strong> Les 3 données "type de données (32 ou 64), L et C sont écrites dans
- un fichier Sdif en float (4 bytes).</strong>
+ un fichier SDIF en float (4 bytes).</strong>
 </p>
 
 <table border=1 bordercolor="black" cellpadding=5>
@@ -687,7 +693,7 @@ mêmes 2 premières matrices, et que les 3 lettres significatives sont 'FIB'.
 
 
   <p><hr width="100%"></p>
-  <a name="Mots Reservés Sdif"><h1><strong>Mots Reservés Sdif</strong></h1></a>
+  <a name="Mots Reservés SDIF"><h1><strong>Mots Reservés SDIF</strong></h1></a>
 
 
   <ul>
@@ -718,9 +724,9 @@ mêmes 2 premières matrices, et que les 3 lettres significatives sont 'FIB'.
   <a name="Mots Information Table"><h2>Mots Information Table</h2></a>
 
 <table border=1 bordercolor="black" cellpadding=5>
-<tr><td>SdifAuthor</td><td>auteur du fichier</td></tr>
-<tr><td>SdifLibraryVersion</td><td>version de la librairie Sdif</td></tr>
-<tr><td>SdifTypesVersion</td><td>version du format des types</td></tr>
+<tr><td>SDIFAuthor</td><td>auteur du fichier</td></tr>
+<tr><td>SDIFLibraryVersion</td><td>version de la librairie SDIF</td></tr>
+<tr><td>SDIFTypesVersion</td><td>version du format des types</td></tr>
 </table>
 
   <a name="Predefined Types"><h2>Predefined Types</h2></a>
@@ -839,30 +845,157 @@ NoiseInfo : paramètres du bruit.
 }
 
 
-  <a name="Stream ID TreeWay pour Chant"><h2>Stream ID TreeWay pour Chant</h2></a>
 
-<p>Un Stream ID Chant est composé ainsi : <br>
-Index  Chant:Patch Type/number of patch/Object type/number
- of object/number of sub objects/StartTime/EndTime;<br>
-donc<br>
-0 Chant:Patch0/1/FOB/1/5/0./5.; <br>
-signifie que l'on a un patch de type Patch0, qu'il s'agit du premier Patch0,
-qu'il contient un banc de Fofs d'index 0 (par rapport a Sdif). Ce banc de
-Fofs est le premier par rapport au patch. Il contient au plus 5 fofs, commence au temps 0.
-et fini au temps 5.
-</p>
-<p>
- On peut donc avoir plusieurs patch de type Patch0. Certains types de patch pourraient avoir
- plusieurs object de même types.
+
+
+
+
+
+    <a name="StreamID TreeWay pour Chant"><h2>StreamID TreeWay pour Chant</h2></a>
+
+
+
+<p>Rappel: Le champ TreeWay d'un StreamID n'a pas de définition
+absolue. Son interprétation dépend du champ Source qui représente le
+type de TreeWay qui le suit. La seule mise en forme prévue est que le
+TreeWay doit avoir l'allure d'une URL.
+<</p>
+
+<p>La librairie Chant sait interpréter des StreamID dont le champ
+Source est 'Chant' et où le champ TreeWay suit ce formalisme:<br>
+<code>&lt;PatchType&gt;/&lt;NumPatch&gt;/&lt;ObjType&gt;/&lt;NumObj&gt;
+/&lt;NbSubObjt&gt;/&lt;StartTime&gt;/&lt;EndTime&gt;[/"&lt;SoundFileName&gt;"]</code><br>
+
+([] signifie ici "éventuellement, Obj: Objet, Num: Numéro, Nb: Nombre").
 </p>
 
+
+
+
+      <a name="Description de chaque élément du TreeWay">
+      <h3>Description de chaque élément du TreeWay</h3></a>
+
+
 <p>
-Actuellement, ces types de patch sont disponibles :<br>
-<li> Patch0 : ne contient qu' 1 banc de Fofs.</li>
-<li> Patch1 : 1 Banc de Fofs + 1 White Noise connectés à 1 banc de filtres resonnant.</li>
-<li> Patch2 : 1 White Noise + 1 Son (trouvé par un nom de fichier)
-      connectés à 1 banc de filtres resonnant.</li>
-<li> Patch3 : Patch0 et Patch2.</li>
+<ul>
+  <li>PatchType: C'est le type de patch prédéfini dans Chant auquel
+appartient l'object indexé. Les valeurs possibles sont Patch0, Patch1,
+Patch2, Patch3 (Janvier98).</li>
+
+  <li>NumPatch: Numéro qui référence le patch parmis tous les patchs
+de même type. On peut ainsi contrôler plusieurs patch de type Patch0.
+Le premier aura NumPatch=1 et un second NumPatch=2...</li>
+
+  <li>ObjType: Un patch Chant est un assemblage d'objets de types
+différents.  ObjType représente le type de l'objet indexé. Les types
+reconnus sont: 'FOB', 'REB', 'NOI' et 'SND'. Les trois premiers sont
+aussi des signatures de types de frames prédéfinis sans version.
+Ainsi, il y a correspondance entre le type de l'objet déclaré dans le
+TreeWay et le type de frame qui permet de faire évoluer cet objet
+(reférencé dans l'index de l'entête de frame).</li>
+
+  <li>NumObj: Dans le cas où un patch contient plusieurs objets de
+même type, Il est nécessaire de pouvoir référencé chacun d'eux. Ainsi,
+NumObj détermine à quel objet de type ObjType on s'adresse. Attention,
+le numéro a une signification très précise au niveau des connections.
+Aussi, les patchs prédéfinis sont figés, on ne peut pas avoir NumObj=3
+si le patch ne contient que deux objets du type ObjType
+(cf. <a href="#Exemple TreeWay Chant">Exemple</a> ci-dessous). Actuellement
+(Janvier 1998) aucun patch prédéfini de Chant ne contient plus d'1
+objet de même type, donc NumObj est toujours 1.</li>
+
+
+  <li>NbSubObj: Nombre de sous objets maximum de l'objet indexé par
+le StreamID. Pour un banc de FOFs, c'est typiquement le nombre de
+FOFs maximum du banc (de même pour les bancs de filtres). Les objets
+typés par 'NOI' ou 'SND' sont les bruit et les fichiers sons. Ils
+ne possèdent pas de sous objets. Dans ce cas NbSubObj=0.</li>
+
+  <li>StartTime et EndTime: Ce sont les temps de début et de fin de
+l'objet.</li>
+
+  <li>SoundFileName: Cet élément du TreeWay doit être dans le TreeWay
+uniquement pour un objet typé par 'SND'. Il contient le nom du fichier
+son référencé par cet objet. La seule contrainte du contenu du nom placé
+entre '"', est qu'il ne doit pas y avoir de caractères ';'.</li>
+
+</ul>
+</p>
+
+
+      <a name="Exemple TreeWay Chant">
+      <h3>Exemple</h3></a>
+
+<p>Prenons un exemple de type de patch très général.
+<br><img src="PatchExemple.gif" alt="Image PatchExemple.gif" height=156 witdh=420>
+<br>
+Chaque type d'objet de Chant y est représenté. Ce type de patch n'est qu'un
+exemple et n'existe pas comme type de patch prédéfini.
+</p>
+
+<p>On remarque qu'il y a 2 bancs de filtres. Ceci va faire intervenir
+le numéro de l'objet (à droite des noms sur le schéma). En effet, le
+banc de filtre dont le numéro est 1 correspond au banc qui ne filtre
+que le banc de FOFs. Le banc 2 correspond à celui qui filtre tous les
+objets. On pourra avoir par exemple les Stream ID suivant pour remplir
+le patch.
+</p>
+<pre>
+1IDS
+{
+  145   Chant:PatchTypeExemple/1/FOB/1/23/0./5.;
+  7     Chant:PatchTypeExemple/1/REB/1/45/0./5.;
+  32    Chant:PatchTypeExemple/1/NOI/1/0/0./6.;
+  12    Chant:PatchTypeExemple/1/SND/1/0/0./6./"./snd/file.sf.rs";
+  122   Chant:PatchTypeExemple/1/REB/2/85/0./6.;
+}
+</pre>
+<p> Les NumID sont idépendants des TreeWay. Ils doivent seulement être
+unique. Le nombre de sous-objet, les temps de fins et de début sont
+aussi indépendant pour chaque objet. L'objet de NumID 7 est le banc de
+filtres 1 du patch. C'est donc ce lui qui ne filtre que le banc de FOFs.
+L'objet de NumID 122 est le banc de filtres 2 qui filtre le banc de FOFs,
+le bruit et le fichier son.<br>
+
+Avoir un TreamID supplémentaire :<br>
+<code>123   Chant:PatchTypeExemple/1/REB/3/85/0./6.;</code><br>
+ne permet pas d'avoir un troisième banc de filtres, car un type
+de patch est figé.<br>
+De plus, s'il manque l'un des composants du patch, alors ce patch
+n'apparaitra pas à la synthèse. <strong>Un patch doit être complet
+pour être pris en compte dans la synthèse.</strong>
+</p>
+
+
+
+
+<p>
+Actuellement, ces types de patch sont disponibles :
+</p>
+<table border=0 bordercolor="black" cellpadding=5>
+<tr>
+  <td>
+      <img src="Patch0.gif" alt="Image Patch0.gif" height=51  witdh=291>
+      <img src="Patch1.gif" alt="Image Patch1.gif" height=91  witdh=291>
+      <img src="Patch2.gif" alt="Image Patch2.gif" height=91  witdh=291>
+      <img src="Patch3.gif" alt="Image Patch3.gif" height=131 witdh=291>
+      <img src="Patch4.gif" alt="Image Patch4.gif" height=51  witdh=291>
+      <img src="Patch5.gif" alt="Image Patch5.gif" height=51  witdh=291>
+  </td>
+  <td>
+      <img src="Patch6.gif" alt="Image Patch6.gif" height=51  witdh=291>
+      <img src="Patch7.gif" alt="Image Patch7.gif" height=91  witdh=291>
+      <img src="Patch8.gif" alt="Image Patch8.gif" height=131  witdh=291>
+      <img src="Patch9.gif" alt="Image Patch9.gif" height=91  witdh=291>
+      <img src="Patch10.gif" alt="Image Patch10.gif" height=91  witdh=291>
+  </td>
+</tr>
+</table>
+<p>
+ Le Stream ID SND de Patch2 contient le nom d'un fichier son à filtrer.
+ Cependant, il n'y a ni matrice, ni frame associé à cet objet.
+</p>
+
 <p>
 <pre> Exemple de Stream ID pour un Patch1 :
   0	Chant:Patch1/1/FOB/1/4/0./1.;
@@ -881,10 +1014,6 @@ Patch2:
   8	Chant:Patch2/1/SND/1/0/0./4./"filename";
 </pre>
 
-<p>
- Le Stream ID SND de Patch2 contient le nom d'un fichier son à filtrer.
- Cependant, il n'y a ni matrice, ni frame associé à cet objet.
-</p>
 
 
 
