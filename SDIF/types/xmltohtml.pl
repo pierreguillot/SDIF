@@ -1,12 +1,17 @@
 #!/usr/bin/perl
 #
-# $Id: xmltohtml.pl,v 1.7 2000-08-17 14:34:46 schwarz Exp $
+# $Id: xmltohtml.pl,v 1.8 2000-08-17 14:44:16 schwarz Exp $
 #
 # xmltohtml.pl		6. July 2000		Diemo Schwarz
 #
 # Translate SDIF types description in XML to HTML.
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.7  2000/08/17  14:34:46  schwarz
+# HTML table of contents is generated!  Use file index.html to get
+# the generated navigation frame toc.html and sdiftypes.html.
+# More HTML tags copied through.
+#
 # Revision 1.6  2000/08/16  16:10:15  schwarz
 # Added var sub sup to XML tags to be copied to HTML.
 #
@@ -42,7 +47,14 @@ use XML::Node;
 use HTML::Stream qw(:funcs);
 
 
-my $cvsrev     = '$Id: xmltohtml.pl,v 1.7 2000-08-17 14:34:46 schwarz Exp $ ';
+# html setup
+my @copiedhtmltags = qw(br i b strong emph code var sub sup pre);
+my %tagmap = (# section => 'H2', 
+	      map { (uc $_, uc $_, lc $_, uc $_ ) } @copiedhtmltags);
+
+
+# init
+my $cvsrev     = '$Id: xmltohtml.pl,v 1.8 2000-08-17 14:44:16 schwarz Exp $ ';
 my $tdlversion = '';
 my $version    = 'unknown';
 my $revision   = '';
@@ -51,6 +63,7 @@ my $framename  = '';
 my $framestat  = '';
 my $matrixsig  = '';
 my $matrixname = '';
+my $matrixstat = '';
 my $rownum     = '';
 my $rowmin     = '';
 my $rowmax     = '';
@@ -65,13 +78,15 @@ my @components = ();
 
 my %matrixnames = ();
 #later my %matrixroles = ();
-
-
-# init
-my ($xmlin, $docout, $tocout) = @ARGV;
 my $doc;
 local $lastlevel = 1;
 
+
+# arguments
+my ($xmlin, $docout, $tocout) = @ARGV;
+
+
+# open files, create objects
 if ($docout eq '-')
 {
     $doc = *STDOUT;
@@ -87,17 +102,10 @@ $h   = new HTML::Stream $doc;
 $toc = new HTML::Stream \*TOC;
 $xml = new XML::Node;
 
-$toc->HTML->BODY(bgcolor => "#ffffff");
 
-# html setup
-my @copiedhtmltags = qw(br i b strong emph code var sub sup pre);
-my %tagmap = (# section => 'H2', 
-	      map { (uc $_, uc $_, lc $_, uc $_ ) } @copiedhtmltags);
-# register XML->HTML tag mapping handlers
-for (keys %tagmap)
-{
-    $xml->register ($_, char => \&tagmapper);
-}
+#
+# register XML handlers
+#
 
 # header handler
 $xml->register (">sdif-tdl", 		    start => \&header);
@@ -125,6 +133,7 @@ $xml->register ("column:unit", attr => \$colunit);
 # matrix handlers, free or in frame
 $xml->register ("matrix:signature", attr => \$matrixsig);
 $xml->register ("matrix:name",      attr => \$matrixname);
+$xml->register ("matrix:status",    attr => \$matrixstat);
 $xml->register ("matrix",	    start=> \&matrix_start);
 $xml->register ("matrix",	    end  => \&matrix_end);
 
@@ -154,12 +163,20 @@ $xml->register ("description", end   => \&description_end);
 $xml->register ("description:language", attr => \$lang);
 $xml->register ("section",     char  => \&section);
 
+# register XML->HTML tag mapping handlers
+for (keys %tagmap)
+{
+    $xml->register ($_, char => \&tagmapper);
+}
 
-# process all input files
+
+# process input file
 $xml->parsefile ($xmlin);
 
+# close
 close $doc;
 close TOC;
+
 # end of main
 
 
@@ -181,8 +198,10 @@ sub out_char
 
 sub header
 {
-    $h->HTML->TITLE->t("Standard SDIF Types")->_TITLE;
-    $h->BODY(bgcolor => "#ffffff")->H1->t("Standard SDIF Types")->_H1;
+    $h->HTML->TITLE->t("Standard SDIF Types")->_TITLE
+      ->BODY(bgcolor => "#ffffff")->H1->t("Standard SDIF Types")->_H1;
+    $toc->HTML->TITLE->t("Standard SDIF Types Table of Contents")->_TITLE
+	->BODY(bgcolor => "#ffffff");
 }
 
 sub footer
@@ -259,6 +278,8 @@ sub matrix_start
 {
     $h->BR->A(name => "Matrix_$matrixsig")
       ->H3->t("Matrix $matrixsig $matrixname")->_H3->_A;
+    $matrixstat  &&  $h->DL->DT->I->t("Status:")->_I->DD->t($matrixstat)->_DD->_DL;    
+    $matrixstat = '';
     toc ("Matrix_$matrixsig", "Matrix $matrixsig $matrixname", 2);
 }
 
