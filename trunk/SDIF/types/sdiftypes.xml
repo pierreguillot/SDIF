@@ -2,6 +2,14 @@
 
 <!-- 
  $Log: not supported by cvs2svn $
+ Revision 1.12  2001/06/08 18:48:11  schwarz
+ CHANGE OF DEFINITION OF A SPECTRAL ENVELOPE!
+
+ A spectral envelope in sampled representation used to be defined by
+ numenv bins with bin frequencies from fstep (= maxfreq / numenv) to
+ maxfreq.  To be more consistent with other spectral descriptions,
+ e.g. FFT results, the bin frequencies are now starting at 0 Hertz.
+
  Revision 1.11  2001/05/02 15:28:48  schwarz
  Reconstituted compatibility by reintroducing Ircam's 1RES matrix def
  and actually creating the 2RES "official" definition.  To be cleared up.
@@ -53,7 +61,7 @@
 <types-version>Ircam_1.6</types-version>
 
 <types-revision>
-  $Id: sdiftypes.xml,v 1.12 2001-06-08 18:48:11 schwarz Exp $
+  $Id: sdiftypes.xml,v 1.13 2002-08-08 15:08:52 schwarz Exp $
 </types-revision>
 
 
@@ -618,6 +626,10 @@ Some points to note about the SDIF types XML format:
 
 
 
+
+
+
+
 <section>Resonances</section>
 
 <description title="Note">There exists a little confusion about the <matrixref
@@ -745,6 +757,10 @@ signature="2RES">2RES</matrixref> matrix type.  To be cleared up.</description>
 
 
 
+
+
+
+
 <section>Fourier Transform</section>
 
 
@@ -822,6 +838,10 @@ Notes:
    Window applied on the signal prior to Fourier transform.
    </matrixref> 
 </frame>
+
+
+
+
 
 
 
@@ -916,30 +936,10 @@ Notes:
      There is also the possibility of "gaps" in the time axis,
   </description>
   <rows> Sample frames </rows>
-  <column> Amplitudes in each channel. Linear.
+  <column name="Sample"> Amplitudes in each channel. Linear.
            All but the first are optional.
   </column>
 </matrix>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
