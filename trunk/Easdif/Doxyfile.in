@@ -1,7 +1,13 @@
 # Doxyfile 1.2.12						       -*-sh-*-
-# $Id: Doxyfile.in,v 1.4 2003-04-18 16:46:54 schwarz Exp $
+# $Id: Doxyfile.in,v 1.5 2003-11-18 12:37:53 roebel Exp $
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.4  2003/04/18 16:46:54  schwarz
+# Made easdif swiggable -> update version to 0.4.0, because of
+# small API changes:
+# - eof() returns bool, not bool&
+# - Matrix::Set takes int/float, not int&/float&
+#
 # Revision 1.3  2003/04/08 23:20:43  roebel
 # Added test for program dot
 #
@@ -302,7 +308,7 @@ WARN_LOGFILE           =
 # directories like "/usr/src/myproject". Separate the files or directories 
 # with spaces.
 
-INPUT                  = @top_srcdir@/easdif
+INPUT                  = @top_srcdir@/easdif easdif/easdifintro.h easdif/easdif_version.h easdif/easdif_config.h
 
 # If the value of the INPUT tag contains directories, you can use the 
 # FILE_PATTERNS tag to specify one or more wildcard pattern (like *.cpp 
