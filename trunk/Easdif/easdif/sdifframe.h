@@ -34,9 +34,14 @@
  * sdifframe.h is composed of the different methods which are using to 
  * manipulate the frame.
  * 
- * $Id: sdifframe.h,v 1.6 2003-05-18 21:08:37 roebel Exp $ 
+ * $Id: sdifframe.h,v 1.7 2003-05-19 14:00:00 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.6  2003/05/18 21:08:37  roebel
+ * Added appropriate const methods.
+ * For proper swig access GetMatrixWithSignature does no longer take
+ * a reference as argument.
+ *
  * Revision 1.5  2003/04/29 15:54:06  schwarz
  * Use SWIG_RENAME_EASDIF to control class renaming.
  *
@@ -95,10 +100,6 @@ class SDIFEntity;
  * SDIFEntity parameter.
  */
 
-// change SWIG class names because we prefix with SDIF:: anyway
-#ifdef SWIG_RENAME_EASDIF
-%name(Frame)
-#endif
 
 class SDIFFrame
 {

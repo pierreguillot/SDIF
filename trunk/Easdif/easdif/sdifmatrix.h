@@ -33,9 +33,14 @@
  * 
  * 
  * 
- * $Id: sdifmatrix.h,v 1.8 2003-05-18 20:46:46 roebel Exp $ 
+ * $Id: sdifmatrix.h,v 1.9 2003-05-19 14:00:00 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.8  2003/05/18 20:46:46  roebel
+ * Added method to read column names of matrix. For this the current sdiffile is stored in the matrix.
+ * Improved documentation.
+ * Added support for sdif data types eChar and eInt2.
+ *
  * Revision 1.7  2003/05/01 19:02:25  roebel
  * Renamed CreateMatrixData to Init.
  * Reorganized Init functions to use only a single argument to specify the matrix signature.
@@ -116,10 +121,6 @@ namespace Easdif {
  * matrix.
  */
 
-// shorten SWIG class names because we prefix with SDIF:: anyway
-#ifdef SWIG_RENAME_EASDIF
-%name(Matrix)
-#endif
 
 class SDIFMatrix
 {
