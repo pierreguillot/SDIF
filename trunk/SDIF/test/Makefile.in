@@ -10,7 +10,7 @@
 # even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 # PARTICULAR PURPOSE.
 
-# $Id: Makefile.in,v 1.10 2000-10-31 11:22:26 roebel Exp $
+# $Id: Makefile.in,v 1.11 2000-10-31 11:46:28 roebel Exp $
 #
 # ./test/Makefile.am		September 2000			Patrice Tisserand
 #
@@ -120,9 +120,13 @@ EXTRA_DIST = test_conv test_cmpsdif cmd_testcheck xpianoRes.m5.FIL.sdif
 noinst_PROGRAMS = headerTest NVTTest testcheck testselect
 noinst_HEADERS = utils.h
 headerTest_SOURCES = test1.c utils.c
+headerTest_DEPENDENCIES = ../sdif/@SELLIB@
 NVTTest_SOURCES = test2.c utils.c
+NVTTest_DEPENDENCIES = ../sdif/@SELLIB@
 testcheck_SOURCES = testcheck.c
+testcheck_DEPENDENCIES = ../sdif/@SELLIB@
 testselect_SOURCES = testselect.c
+testselect_DEPENDENCIES = ../sdif/@SELLIB@
 
 LDADD = -l@TESTLIB@
 LDFLAGS = -L../sdif
@@ -141,19 +145,15 @@ CPPFLAGS = @CPPFLAGS@
 LIBS = @LIBS@
 headerTest_OBJECTS =  test1.o utils.o
 headerTest_LDADD = $(LDADD)
-headerTest_DEPENDENCIES = 
 headerTest_LDFLAGS = 
 NVTTest_OBJECTS =  test2.o utils.o
 NVTTest_LDADD = $(LDADD)
-NVTTest_DEPENDENCIES = 
 NVTTest_LDFLAGS = 
 testcheck_OBJECTS =  testcheck.o
 testcheck_LDADD = $(LDADD)
-testcheck_DEPENDENCIES = 
 testcheck_LDFLAGS = 
 testselect_OBJECTS =  testselect.o
 testselect_LDADD = $(LDADD)
-testselect_DEPENDENCIES = 
 testselect_LDFLAGS = 
 CFLAGS = @CFLAGS@
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)

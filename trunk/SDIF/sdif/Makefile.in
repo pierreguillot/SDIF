@@ -10,7 +10,7 @@
 # even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 # PARTICULAR PURPOSE.
 
-# $Id: Makefile.in,v 1.10 2000-10-31 11:22:25 roebel Exp $
+# $Id: Makefile.in,v 1.11 2000-10-31 11:46:27 roebel Exp $
 #
 # ./sdif/Makefile.am		September 2000			Patrice Tisserand
 #
@@ -41,6 +41,9 @@
 # send email to:  sdif@ircam.fr
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.8  2000/10/31  11:22:25  roebel
+# Added SDIF to Chksum/date identifier for improved retrieval
+#
 # Revision 1.7  2000/10/31  10:56:56  roebel
 # Adjusted make file paths such that auto cksum version generation works with VPATH
 #
