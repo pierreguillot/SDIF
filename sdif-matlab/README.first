@@ -1,16 +1,26 @@
 
 Handling of the SdifTypes.STYP File
 
-For proper operation  the sdif library needs a  types definition file.
-Which is read only ones for initializing the library.  This can either
+For proper operation  the sdif library needs  type definitions
+that supplied via the types definition file, SdifTypes.STYP.
+The definition of the known types is done
+when  initializing the library.  It can either
 be specified as a  second parameter to the writesdif/loadsdif commands
 or via setting the environment variable SDIFTYPES for example:
 
 setenv SDIFTYPES /u/formes/share/share/SdifTypes.STYP
 
+SDIF library  Versions prior and including 3.2.2 have  no meaningful 
+default types and can not be used with a proper types definition file.
+Since version 3.3 default types are the ones that 
+are defined in the file SdifTypes.STYP that comes with the library.
+For this libraries you need not specify a types file any more, if you do
+not want to deal with new frame/matrix types! 
+
 THE  LIBRARY  IS  INITIALIZED  ONLY  ONES.  So  if  during  the  first
 invocation  of  the  library   there  is  no  valid  specification  of
-SdifTypes.STYP the  library willl not be properly  initialized and can
+SdifTypes.STYP the  library will not be properly  initialized and can
 not be reinitialized without restarting matlab.  Therefore, the use of
-the environment variable is strongly recommended.
+the environment variable is strongly recommended for sdif version 3.2.2 
+or below.
 
