@@ -10,7 +10,7 @@
 # even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 # PARTICULAR PURPOSE.
 
-# $Id: Makefile.in,v 1.14 2000-12-06 15:01:15 roebel Exp $
+# $Id: Makefile.in,v 1.15 2000-12-07 12:59:59 roebel Exp $
 #
 # ./test/Makefile.am		September 2000			Patrice Tisserand
 #
@@ -136,7 +136,7 @@ LDFLAGS = -L../sdif
 INCLUDES = -I$(top_srcdir)/include
 
 TESTS_ENVIRONMENT = SDIFTYPES=$(top_srcdir)/data/SdifTypes.STYP
-TESTS = test_conv test_cmpsdif headerTest NVTTest cmd_testcheck
+TESTS = test_conv2  headerTest NVTTest cmd_testcheck
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../sdif/config.h
 CONFIG_CLEAN_FILES = 

@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.5 2000-10-31 11:46:28 roebel Exp $
+# $Id: Makefile.am,v 1.6 2000-12-07 12:59:58 roebel Exp $
 #
 # ./test/Makefile.am		September 2000			Patrice Tisserand
 #
@@ -29,6 +29,9 @@
 # send email to:  sdif@ircam.fr
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.5  2000/10/31 11:46:28  roebel
+# Added makefile dependency of all progs from generated library
+#
 # Revision 1.4  2000/10/30  19:05:49  roebel
 # Added support for relative path compilation (VPATH)
 # Added support for debugging feature in configure.in and Makefiles
@@ -63,5 +66,5 @@ LDFLAGS = -L../sdif
 INCLUDES = -I$(top_srcdir)/include
 
 TESTS_ENVIRONMENT = SDIFTYPES=$(top_srcdir)/data/SdifTypes.STYP
-TESTS = test_conv test_cmpsdif headerTest NVTTest cmd_testcheck
+TESTS = test_conv2  headerTest NVTTest cmd_testcheck
 

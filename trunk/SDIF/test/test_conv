@@ -22,9 +22,9 @@ fi
 
 
 Files_Txt_Dir=$srcdir/files/txt
-Files_Sdif_Dir=$srcdir/files/sdif
-Files_Txt_Sdif_Txt_Dir=$srcdir/files/txtw
-Files_Txt_Sdif_Txt_Sdif_Dir=$srcdir/files/sdifw
+Files_Sdif_Dir=./files/sdif
+Files_Txt_Sdif_Txt_Dir=./files/txtw
+Files_Txt_Sdif_Txt_Sdif_Dir=./files/sdifw
 
 sleep 1 # Wait one second
 echo
