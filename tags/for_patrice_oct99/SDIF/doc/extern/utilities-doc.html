@@ -1,0 +1,174 @@
+<!-- $Id: utilities-doc.html,v 3.2 1999-08-26 15:25:34 schwarz Exp $
+
+     extern/utilities-doc.html	21. Jan. 1999	Diemo Schwarz
+     
+     Documentation of SDIF utilities.
+
+     $Log: not supported by cvs2svn $
+# Revision 3.1  1999/03/14  10:55:09  virolle
+# SdifStdErr add
+#
+# Revision 1.1  1999/01/21  16:36:43  schwarz
+# Beefed up the SDIF library user manual.  It now has the sections
+# User Manual		(as before, but with navigating toc frame and
+# 			 crosslinked to the function reference)
+# Function Reference	(automatic cocoon doc with navigating toc)
+# Tutorial		(coming soon, a quick introduction to get started)
+# Utilities		(description of the utility programs coming with
+# 			 the library)
+# 
+-->
+
+<html>
+
+<head>
+  <title>Documentation of SDIF utilities</title>
+</head>
+
+<body bgcolor=white>
+
+<p><hr width="100%"></p>
+
+<h1>THE SDIF LIBRARY</h1>
+<h1>Documentation of the Utility Programs</h1>
+
+<em><p><a href=http://www.ircam.fr/departements/recherche/ana-syn.html>Équipe Analyse/Synthèse</a></em>, 
+
+<au><a href=mailto:schwarz@ircam.fr>Diemo Schwarz</a></au>
+
+<p><hr width="100%"></p>
+
+
+
+<a name=intro><h2>Introduction</h2></a>
+
+The utilities are part of the SDIF library distribution and are built and installed automatically with the library.<p>
+
+All utilities have the following two common options:
+
+<dl>
+ <dt><tt>-h</tt><dd> display the usage of the command<p>
+ <dt><tt>-t types-file</tt><dd> load a file with additional SDIF types, or type completions, as explained in the <a href="../SdifNormDoc.html#Types Declaration" target=_parent>SDIF Specification</a>
+</dl>
+
+
+
+
+<br><br><hr>
+<p><a name=reading><h2>Inspecting and reading SDIF files</h2>
+
+<br>
+<a name=querysdif><h3>querysdif</h3></a>
+
+View summary of data in an SDIF-file.  Per default, all ASCII chunks are
+printed, followed by a count of the frames and the matrices occuring in
+the file.
+
+<pre>
+Usage: querysdif [options] [sdif-file]
+
+Options:
+        -a      view ASCII chunks
+        -d      view data
+        -t  &lt;sdif types file&gt;  specify file with additional sdif types
+        -h      this help
+</pre>
+
+<br><br>
+<a name=sdifextract><h3>sdifextract</h3></a>
+
+Extract data in the given stream, frame type, matrix type, row and column 
+and write it to an ascii file.  If one of the five selections is not
+specified, all data is extracted.
+
+The different output formats are:
+<ul>
+<li>    In the default multi-bpf format, there will be one line per matrix 
+        row in the format:
+	<pre>
+                frame-time  matrix-row...
+	</pre>
+        If a column is selected, or the matrix contains only one column, 
+        the output file can be used as a break-point-function.<p>
+
+<li>    In .format file format (as used with additive), for each matrix 
+        there will be one frame in the format:
+	<pre>
+                number-of-rows  frame-time
+                matrix-row-1
+                ...
+                matrix-row-n
+	</pre>
+</ul>
+
+<pre>
+Usage: sdifextract [options] [input] [output]
+
+Options:
+        -s &lt;stream id&gt;        select stream to extract
+        -f &lt;frame signature&gt;  select frame  to extract
+        -m &lt;matrix signature&gt; select matrix to extract
+        -r &lt;row&gt;              select row    to extract
+        -c &lt;column&gt;           select column to extract
+
+        -t &lt;sdif types file&gt;  specify file with additional sdif types
+        -F                    output data as .format file (default multi-bpf)
+        -h                    this help
+</pre>
+
+<br><br>
+<a name=sdiftotext><h3>sdiftotext</h3></a>
+
+Converts an SDIF file into text format, as described in the 
+<a href="by-subject-doc.html#Ecriture d'un fichier pseudo-SDIF texte">User Manual</a>.
+
+<pre>
+Usage: sdiftotext [-t &lt;types file&gt;] [-i &lt;input&gt;] [-o &lt;output&gt;]
+</pre>
+
+
+<br><br>
+<a name=sdiftoformat><a name=sdiftofmt>
+<h3>sdiftoformat and sdiftofmt</h3></a></a>
+
+Convert an SDIF file with additive analysis data (1TRK or 1HRM frames)
+into a .format ascii or .fmt binary file.<p>
+
+This is part of the <a target=_parent
+href=http://www.ircam.fr/equipes/analyse-synthese/pm>Pm library</a>.
+
+
+
+
+
+<br><br><hr>
+<a name=writing><h2>Writing SDIF files:</h2></a>
+
+<br>
+<a name=texttosdif><h3>texttosdif</h3></a>
+
+
+Converts an SDIF file in text format (pseudo--SDIF), as described in the 
+<a href="by-subject-doc.html#Exemple de fichier pseudo-SDIF">User Manual</a>
+to true binary SDIF.
+
+<pre>
+Usage: tosdif [-<type input>] [-i <input>] [-o <output>]
+</pre>
+
+
+<br><br>
+<a name=formattosdif><a name=fmttosdif>
+<h3>formattosdif and fmttosdif</h3></a></a>
+
+Convert a .format or .fmt file with additive analysis data into an
+SDIF file with, by default, 1TRK frames.<p>
+
+This is part of the <a target=_parent
+href=http://www.ircam.fr/equipes/analyse-synthese/pm>Pm library</a>.
+
+<br><br><br><br>
+
+</body>
+
+</html>
