@@ -14,9 +14,12 @@
 %     Diemo Schwarz (schwarz@ircam.fr), 31. January 2000
 %
 % CVS REVISION
-%     $Id: loadsdiffile.m,v 1.3 2000-07-27 18:22:33 schwarz Exp $
+%     $Id: loadsdiffile.m,v 1.4 2000-08-27 14:24:11 schwarz Exp $
 
 % $Log: not supported by cvs2svn $
+% Revision 1.3  2000/07/27  18:22:33  schwarz
+% man-style comments, better makedefs.
+%
 % Revision 1.2  2000/05/11  12:37:17  schwarz
 % Init of output variables to avoid 'output argument not assigned' warning.
 % Optional types file argument.
@@ -44,7 +47,7 @@ function [ data, header, frame, matrix ] = loadsdiffile (name, types)
     while (1)				% read frame by frame
 	[ d, t, s, f, m ] = loadsdif;
 
-	if isempty (d),  break;  end
+	if isempty (t),  break;  end
     
 	data{n}		= d;
 	header(n, 1)	= t;
