@@ -2,8 +2,11 @@
 Version 3.8.1
 	
 	* sdif/SdifFile.c
-	no longer emit warning message when predefined types are used.	
-
+	 Handling of the warning for sdiftypes file changed.
+	 Warning will be given only if sdiftypes file has been specified by
+	 means of environment variable.
+	 A non existing _SdifTypesFileName will no longer be communicated to the user.
+	
 2004-01-29  Diemo Schwarz  <schwarz@ligeti.ircam.fr>
 Version 3.8.0
 	
@@ -311,4 +314,4 @@ Version 3.3:
 	  Operating System.
 
 	
-$Id: ChangeLog,v 1.31 2004-02-10 14:58:19 roebel Exp $
+$Id: ChangeLog,v 1.32 2004-02-11 15:44:04 roebel Exp $
