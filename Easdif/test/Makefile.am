@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.8 2004-03-19 01:03:26 roebel Exp $
+# $Id: Makefile.am,v 1.9 2004-07-26 10:28:16 roebel Exp $
 #
 # ./Easdif/test/Makefile.am	Feb. 2003 Axel Roebel
 #
@@ -29,6 +29,9 @@
 # 
 
 # $Log: not supported by cvs2svn $
+# Revision 1.8  2004/03/19 01:03:26  roebel
+# Finalized support for --enable-ddebug
+#
 # Revision 1.7  2003/07/10 17:19:43  roebel
 # Finished gcc3_2 suffix support for test programs
 #
@@ -84,10 +87,7 @@ tutofini_LDFLAGS = -L$(EASDIR)
 tutofini_DEPENDENCIES=$(EASDIR)/@SELLIB@
 
 
-
-
-
-CXXFLAGS = -g -I$(top_srcdir) -I..  -I../SDIF/include -I$(top_srcdir)/SDIF/include 
+CXXFLAGS = @CXXFLAGS@ -I$(top_srcdir) -I..  -I../SDIF/include -I$(top_srcdir)/SDIF/include 
 
 
 
