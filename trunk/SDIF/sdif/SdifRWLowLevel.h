@@ -1,4 +1,4 @@
-/* $Id: SdifRWLowLevel.h,v 3.10 2001-05-02 09:34:47 tisseran Exp $
+/* $Id: SdifRWLowLevel.h,v 3.11 2003-05-01 18:50:52 roebel Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -34,6 +34,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.10  2001/05/02 09:34:47  tisseran
+ * Change License from GNU Public License to GNU Lesser Public License.
+ *
  * Revision 3.9  2000/10/27 20:03:42  roebel
  * autoconf merged back to main trunk
  *
@@ -116,140 +119,8 @@
 
 #include "SdifGlobals.h"
 #include <stdio.h>
+#include "sdif.h"
 #include "SdifString.h"
-
-#define _SdifBSLittleE 4096
-
-#define _SdifPaddingChar  '\0'
-#define _SdifReservedChars  ",;{}:"
-
-
-size_t Sdiffread  (void *ptr, size_t size, size_t nobj, FILE *stream);
-size_t Sdiffwrite (void *ptr, size_t size, size_t nobj, FILE *stream);
-
-/* Read, return the number of objects */
-
-size_t SdiffReadChar   (SdifChar   *ptr, size_t nobj, FILE *stream);
-size_t SdiffReadInt2   (SdifInt2   *ptr, size_t nobj, FILE *stream);
-size_t SdiffReadUInt2  (SdifUInt2  *ptr, size_t nobj, FILE *stream);
-size_t SdiffReadInt4   (SdifInt4   *ptr, size_t nobj, FILE *stream);
-size_t SdiffReadUInt4  (SdifUInt4  *ptr, size_t nobj, FILE *stream);
-size_t SdiffReadFloat4 (SdifFloat4 *ptr, size_t nobj, FILE *stream);
-size_t SdiffReadFloat8 (SdifFloat8 *ptr, size_t nobj, FILE *stream);
-
-/*size_t SdiffReadSignature (SdifSignature *Signature, FILE *stream);*/
-
-
-
-/* Write, return the number of objects */
-
-size_t SdiffWriteChar   (SdifChar   *ptr, size_t nobj, FILE *stream);
-size_t SdiffWriteInt2   (SdifInt2   *ptr, size_t nobj, FILE *stream);
-size_t SdiffWriteUInt2  (SdifUInt2  *ptr, size_t nobj, FILE *stream);
-size_t SdiffWriteInt4   (SdifInt4   *ptr, size_t nobj, FILE *stream);
-size_t SdiffWriteUInt4  (SdifUInt4  *ptr, size_t nobj, FILE *stream);
-size_t SdiffWriteFloat4 (SdifFloat4 *ptr, size_t nobj, FILE *stream);
-size_t SdiffWriteFloat8 (SdifFloat8 *ptr, size_t nobj, FILE *stream);
-
-size_t SdiffWriteSignature (SdifSignature *Signature, FILE *stream);
-size_t SdiffWriteString (char* ptr, FILE *stream);
-
-/*
- *size_t SdiffReadUInt8  (SdifUInt8  *ptr, size_t nobj, FILE *stream);
- *size_t SdiffWriteUInt8  (SdifUInt8  *ptr, size_t nobj, FILE *stream);
- */
-
-/**Ascii**/
-/* fGet --> return the last char
- */
-size_t SdiffReadSpace   (FILE* fr);
-
-size_t SdiffReadSpacefromSdifString(SdifStringT *SdifString);
-
-/*DOC:
-  Return c if it is a reserved char, -1 otherwise.
-*/
-int SdifIsAReservedChar (char c);
-
-/*DOC: 
-  Convert str <strong>in place</strong> so that it doesn't
-  contain any reserved chars (these become '.') or spaces (these
-  become '_').
-
-  [] returns str
-*/
-char *SdifStringToNV (/*in out*/ char *str);
-
-/* SdiffGetString lit un fichier jusqu'a un caractere reserve, ne
-   rempli s que des caracteres non-espacement, renvoie le caractere
-   reserve, saute les premiers caracteres espacement lus.  Il y a
-   erreur si fin de fichier ou si un caractere non-espacement et
-   non-reseve est lu apres un caractere espacement.  ncMax est
-   typiquement strlen(s)+1.  
-*/
-int SdiffGetString      (FILE* fr, char* s, size_t ncMax, size_t *NbCharRead);
-
-/* retourne le caractere d'erreur */
-int SdiffGetSignature   (FILE* fr, SdifSignature *Signature, size_t *NbCharRead);
-/*DOC:
-  Function return the signature in a SdifStringT
-*/
-int SdiffGetSignaturefromSdifString(SdifStringT *SdifString, SdifSignature *Signature);
-
-int SdiffGetWordUntil   (FILE* fr, char* s, size_t ncMax, size_t *NbCharRead, char *CharsEnd);
-/*DOC:
-  Function return the word until in a SdifStringT
-*/
-int SdiffGetWordUntilfromSdifString(SdifStringT *SdifString, char* s, size_t ncMax,char *CharsEnd);
-
-int SdiffGetStringUntil (FILE* fr, char* s, size_t ncMax, size_t *NbCharRead, char *CharsEnd);
-/*DOC:
-  Function return the string until in a SdifStringT
- */
-int SdiffGetStringUntilfromSdifString(SdifStringT *SdifString, char *s, size_t ncMax,
-				      char *CharsEnd);
-
-int SdiffGetStringWeakUntil(FILE* fr, char* s, size_t ncMax, size_t *NbCharRead, char *CharsEnd);
-/*DOC:
-  Return the weak string until in a SdifStringT
-*/
-int SdiffGetStringWeakUntilfromSdifString(SdifStringT *SdifString, char* s,
-					  size_t ncMax, char *CharsEnd);
-
-int SdifSkipASCIIUntil  (FILE* fr, size_t *NbCharRead, char *CharsEnd);
-int SdifSkipASCIIUntilfromSdifString  (SdifStringT *SdifString, size_t *NbCharRead, char *CharsEnd);
-
-
-#if 0	/* for cocoon's eyes only */
-/* scan nobj items of TYPE from stream, return number sucessfully read */
-size_t SdiffScan_TYPE   (FILE *stream, Sdif_TYPE  *ptr, size_t nobj);
-size_t SdiffScanFloat4  (FILE *stream, SdifFloat4 *ptr, size_t nobj);
-size_t SdiffScanFloat8  (FILE *stream, SdifFloat8 *ptr, size_t nobj);
-#endif
-
-
-#ifdef STDC_HEADERS  /* Is the compiler ANSI? */
-
-#define sdif_scanproto(type) \
-size_t SdiffScan##type (FILE *stream, Sdif##type *ptr, size_t nobj)
-
-sdif_proto_foralltypes (sdif_scanproto)
-
-#endif /* STDC_HEADERS */
-
-
-/* Unsafe but optimized version of SdifStringToSignature:
-   Exactly 4 chars are considered, so make sure *str has at least that many! 
-   The str pointer MUST be word (at least 4 byte or so) aligned.
-*/
-SdifSignature _SdifStringToSignature (char *str);
-
-/*DOC:
-  Convert a string to an SDIF signature (in proper endianness).
-  str can point to any string position of any length.  
-*/
-SdifSignature SdifStringToSignature (char *str);
-
 
 
 #endif /* _SdifRWLowLevel_ */
