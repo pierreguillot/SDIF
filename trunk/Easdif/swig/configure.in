@@ -65,10 +65,10 @@ AC_SUBST(SDIF_INC_DIR)
 dnl if not given the configure generated files are found in the
 dnl standard places.
 
-AC_ARG_ENABLE(compiledir,
-[  --enable-compiledir=dir          Easdif library has been configured and compiled in dir],
-[echo FEATURE enable-compiledir... $enableval; 
-abspath=`cd $enableval && echo $PWD` 
+AC_ARG_WITH(compiledir,
+[  --with-compiledir=dir          Easdif library has been configured and compiled in dir],
+[echo FEATURE with-compiledir... $withval; 
+abspath=`cd $withval && echo $PWD` 
 EASDIF_INC_DIR="$abspath"
 EASDIF_LIB_PATH="$abspath/easdif/.libs"
 SDIF_INC_DIR="$abspath/SDIF/include"
