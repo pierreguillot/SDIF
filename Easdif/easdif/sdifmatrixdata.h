@@ -33,9 +33,15 @@
  * 
  * 
  * 
- * $Id: sdifmatrixdata.h,v 1.8 2004-07-21 13:27:12 roebel Exp $ 
+ * $Id: sdifmatrixdata.h,v 1.9 2004-07-26 14:49:16 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.8  2004/07/21 13:27:12  roebel
+ * Added new data accessing functions to read complete columns
+ * GetCol(double *,int icol), GetCol(float *,int icol), GetCol(int *,int icol)
+ * and rows
+ * GetRow(double *,int irow), GetRow(float *,int irow), GetRow(int *,int irow)
+ *
  * Revision 1.7  2004/07/20 19:32:36  roebel
  * Added support for row and column selection.
  * Matrix reading/writing reorganized to handle complete matrices whenever
@@ -439,7 +445,7 @@ public:
   {
     int _rows = SdifFCurrNbRow(file);
     int _cols = SdifFCurrNbCol(file);
-    int bytesread = 0;
+    size_t bytesread = 0;
     /*Read matrix data*/
 	    
     if(  m_Nrows == _rows && m_Ncols == _cols ) {
@@ -478,7 +484,7 @@ public:
  */
     int write(SdifFileT* file)
 	{
-	    int SizeFrameW = 0;
+	    size_t SizeFrameW = 0;
 	    /* Write matrix data */
 #if 0
 	    for (int row = 0; row < m_Nrows; row++)

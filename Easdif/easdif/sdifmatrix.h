@@ -33,9 +33,15 @@
  * 
  * 
  * 
- * $Id: sdifmatrix.h,v 1.20 2004-07-21 13:27:22 roebel Exp $ 
+ * $Id: sdifmatrix.h,v 1.21 2004-07-26 14:49:16 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.20  2004/07/21 13:27:22  roebel
+ * Added new data accessing functions to read complete columns
+ * GetCol(double *,int icol), GetCol(float *,int icol), GetCol(int *,int icol)
+ * and rows
+ * GetRow(double *,int irow), GetRow(float *,int irow), GetRow(int *,int irow)
+ *
  * Revision 1.19  2004/05/04 14:56:56  roebel
  * Reorganized documentation.
  *
@@ -577,10 +583,10 @@ public:
   {
       int i;
 
-      Init(mSig, str.length(), 1, eText);
+      Init(mSig, static_cast<int>(str.length()), 1, eText);
 
       for (i = 0; i < static_cast<int>(str.length()); i++)
-	  mInter->Set(i, 0, str[i]);
+	  mInter->Set(i, 0, static_cast<int>(str[i]));
   }
 
 };
