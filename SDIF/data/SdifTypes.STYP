@@ -3,17 +3,17 @@ SDIF
 
 1NVT
 {
-  GenerationDate	Fri_Apr_27_15_51_38_2001;
-  GenerationDir	/u/formes/tisseran/src/SDIF/types;
+  GenerationDate	Thu_May__3_11_19_36_2001;
+  GenerationDir	/u/formes/roebel/src/SDIF/types;
   GenerationHost	kethuk_ircam_fr;
-  GenerationUser	tisseran;
+  GenerationUser	roebel;
   Generator	xmltostyp_pl;
-  GeneratorFiledate	Wed_Apr_18_18_37_16_2001;
+  GeneratorFiledate	Wed_Apr_18_18_24_52_2001;
   GeneratorRevision	$Id__xmltostyp_pl_v_1_5_2001/04/18_16_24_52_schwarz_Exp_$_;
-  SdifTypesVersion	Ircam_1_5;
+  SdifTypesVersion	Ircam_1_6;
   SourceFile	sdiftypes_xml;
-  SourceFileRevision	___$Id__sdiftypes_xml_v_1_10_2001/04/20_16_58_38_schwarz_Exp_$_;
-  SourceFiledate	Mon_Apr_23_19_54_43_2001;
+  SourceFileRevision	___$Id__sdiftypes_xml_v_1_11_2001/05/02_15_28_48_schwarz_Exp_$_;
+  SourceFiledate	Wed_May__2_17_28_48_2001;
 }
 
 1TYP
@@ -58,13 +58,14 @@ SDIF
 1FTD 1ARR { 1ARR ARRCoefs;  }
 
 1MTD 1FOF { Frequency, Amplitude, BandWidth, Tex, DebAtt, Atten, Phase }
-1MTD 1RES { Frequency, Amplitude, DecayRate, Phase }
+1MTD 2RES { Frequency, Amplitude, DecayRate, Phase }
+1MTD 1RES { Frequency, Amplitude, BandWidth, Saliance, Correction }
 1MTD 1DIS { Distribution, Amplitude }
 1FTD 1NOI { 1DIS NoiseDistribution;  }
 1FTD 1FOB { 1FQ0 FundamentalFrequencyEstimate; 1FOF Formants; 1CHA Channels;  }
 1FTD 1REB { 1RES Filters; 1CHA Channels;  }
 
-1MTD ISTF { PeriodOfTheDFT, WindowDuration, FFTSize }
+1MTD ISTF { DFTPeriod, WindowDuration, FFTSize }
 1MTD 1STF { Real, Imaginary }
 1FTD ISTF { ISTF FourierTransformInfo;  }
 1FTD 1STF { ISTF FourierTransformInfo; 1STF FourierTransform; 1WIN Window;  }
