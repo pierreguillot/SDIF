@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.9 2004-07-26 10:28:16 roebel Exp $
+# $Id: Makefile.am,v 1.10 2004-07-26 11:29:58 roebel Exp $
 #
 # ./Easdif/test/Makefile.am	Feb. 2003 Axel Roebel
 #
@@ -29,6 +29,10 @@
 # 
 
 # $Log: not supported by cvs2svn $
+# Revision 1.9  2004/07/26 10:28:16  roebel
+# Fixed hardcoded CXXFLAGS to take into account the configured value of
+# CXXFLAGS.
+#
 # Revision 1.8  2004/03/19 01:03:26  roebel
 # Finalized support for --enable-ddebug
 #
@@ -55,9 +59,9 @@
 # Adapted for autoconf/automake...
 #
 
-EXTRA_PROGRAMS= easdifRmNVT easdifRmNVT-debug
+EXTRA_PROGRAMS= easdifRmNVT easdifRmNVT-debug tutorini tutofini tutorini-debug tutofini-debug
 bin_PROGRAMS = @SELPROG@
-noinst_PROGRAMS =  tutorini tutofini
+noinst_PROGRAMS = @NOINSTSELPROGS@
 
 if GCCSUFFIX
 GCCSUFFIX = _gcc3_2
@@ -85,6 +89,16 @@ tutofini_SOURCES = tutofini.cpp
 tutofini_LDADD = -lEasdif$(GCCSUFFIX) -lm
 tutofini_LDFLAGS = -L$(EASDIR)
 tutofini_DEPENDENCIES=$(EASDIR)/@SELLIB@
+
+tutorini_debug_SOURCES = tutorini.cpp
+tutorini_debug_LDADD = -lEasdif-debug -lm
+tutorini_debug_LDFLAGS = -L$(EASDIR)
+tutorini_debug_DEPENDENCIES=$(EASDIR)/@SELLIB@
+
+tutofini_debug_SOURCES = tutofini.cpp
+tutofini_debug_LDADD = -lEasdif-debug -lm
+tutofini_debug_LDFLAGS = -L$(EASDIR)
+tutofini_debug_DEPENDENCIES=$(EASDIR)/@SELLIB@
 
 
 CXXFLAGS = @CXXFLAGS@ -I$(top_srcdir) -I..  -I../SDIF/include -I$(top_srcdir)/SDIF/include 
