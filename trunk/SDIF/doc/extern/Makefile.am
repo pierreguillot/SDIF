@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.3 2001-05-02 09:34:38 tisseran Exp $
+# $Id: Makefile.am,v 1.4 2003-03-07 17:33:00 roebel Exp $
 #
 # ./doc/extern/Makefile.am		September 2000			Patrice Tisserand
 #
@@ -29,13 +29,19 @@
 # send email to:  sdif@ircam.fr
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.3  2001/05/02 09:34:38  tisseran
+# Change License from GNU Public License to GNU Lesser Public License.
+#
 # Revision 1.2  2000/10/27 20:02:51  roebel
 # autoconf merged back to main trunk
 #
 # Revision 1.1.2.2  2000/10/26  17:27:33  schwarz
 # Added header with copyright and links to all Makefile.am and configure.in.
 #
-EXTRA_DIST = *.html
+EXTRA_DIST = by-subject-doc.html  default-doc.html   default-sec.html \
+	 tutorial-doc.html  utilities-doc.html by-subject-toc.html \
+	 default-main.html  default-toc.html  tutorial-toc.html \
+	 utilities-toc.html
 
 SUBDIRS = cocoon
 
