@@ -1,4 +1,4 @@
-/* $Id: SdifNameValue.c,v 3.11 2002-05-24 19:37:52 ftissera Exp $
+/* $Id: SdifNameValue.c,v 3.12 2002-12-13 15:58:12 roebel Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -34,6 +34,10 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.11  2002/05/24 19:37:52  ftissera
+ * Change code to be compatible with C++
+ * Cast pointers to correct type.
+ *
  * Revision 3.10  2001/07/19 14:24:34  lefevre
  * Macintosh Compilation
  *
@@ -316,15 +320,38 @@ SdifNameValuesLSetCurrNVT(SdifNameValuesLT *NameValuesL, SdifUInt4 NumCurrNVT)
 {
     SdifNameValueTableT* NVT=NULL;
 
+
+    SdifUInt4 nb =  SdifListGetNbData(NameValuesL->NVTList);
+    if(nb < NumCurrNVT ){
+      _SdifError(eArrayPosition, "SdifNameValuesLSetCurrNVT: name table size exeeded");
+      NameValuesL->CurrNVT = 0;
+      return  NameValuesL->CurrNVT;
+    }
+
     NVT = (SdifNameValueTableT*) SdifListGetCurr(NameValuesL->NVTList);
     if (NVT)
     {
-        if (    (NVT->NumTable == NumCurrNVT-1)
-             && (NumCurrNVT < SdifListGetNbData(NameValuesL->NVTList))    )
+      /* If current name table is one below the one that is requested
+       * we just follow the list */
+      if (NVT->NumTable <= NumCurrNVT)
         {
-            NameValuesL->CurrNVT = (SdifNameValueTableT*)
-		SdifListGetNext(NameValuesL->NVTList);
-            return NameValuesL->CurrNVT;
+
+	  if ((NVT->NumTable == NumCurrNVT))
+	    {
+	      return NVT;
+	    }
+
+
+	  while (SdifListIsNext(NameValuesL->NVTList))
+	    {
+	      NVT = (SdifNameValueTableT*) SdifListGetNext(NameValuesL->NVTList);
+	      if ((NVT->NumTable == NumCurrNVT))
+		{
+		  NameValuesL->CurrNVT = NVT;
+		  break;
+		}
+	    }
+	  return NameValuesL->CurrNVT;
         }
     }
 
@@ -334,7 +361,7 @@ SdifNameValuesLSetCurrNVT(SdifNameValuesLT *NameValuesL, SdifUInt4 NumCurrNVT)
     while (SdifListIsNext(NameValuesL->NVTList))
     {
         NVT = (SdifNameValueTableT*) SdifListGetNext(NameValuesL->NVTList);
-        if ((NVT->NumTable = NumCurrNVT))
+        if ((NVT->NumTable == NumCurrNVT))
         {
             NameValuesL->CurrNVT = NVT;
             break;
