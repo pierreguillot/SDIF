@@ -1566,28 +1566,23 @@ EOF
 
 
 
-
 # Check whether --enable-debug or --disable-debug was given.
 if test "${enable_debug+set}" = set; then
   enableval="$enable_debug"
   echo FEATURE enable-debug... $enableval; 
 if test "$enableval" = "yes"; then
 	SELLIB=libsdif-debug.a; CFLAGS="-g2";
-	TESTLIB=sdif-debug; 
 	PROGLIST="querysdif-debug sdifextract-debug sdiftotext-debug tosdif-debug";
 else 
 	SELLIB=libsdif.a;  CFLAGS="-O3";
-	TESTLIB=sdif; 
 	PROGLIST="querysdif sdifextract sdiftotext tosdif";
 fi 
 else
   
 SELLIB=libsdif.a; CFLAGS="-O3";
-TESTLIB=sdif; 
 PROGLIST="querysdif sdifextract sdiftotext tosdif";
 
 fi
-
 
 
 
@@ -1599,7 +1594,6 @@ if test "${enable_cpp+set}" = set; then
      echo FEATURE enable-cpp... $enableval; 
   if test "$enableval" = "yes"; then
   	SELLIB=libsdif-cpp.a; CFLAGS="-g2"; CC="g++"
-	TESTLIB=sdif-cpp; 
   else
 		dummy=stupid
   fi 
@@ -1781,7 +1775,6 @@ s%@CPP@%$CPP%g
 s%@IRCAMDEPS@%$IRCAMDEPS%g
 s%@FORCE_CMP@%$FORCE_CMP%g
 s%@SELLIB@%$SELLIB%g
-s%@TESTLIB@%$TESTLIB%g
 s%@PROGLIST@%$PROGLIST%g
 
 CEOF

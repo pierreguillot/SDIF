@@ -1,6 +1,6 @@
 dnl -*-autoconf-*-  (No, it's an autoconf file!)
 dnl -*-m4-*- (He emacs, it's a m4 file)
-dnl $Id: configure.in,v 1.20 2002-10-10 10:40:57 roebel Exp $
+dnl $Id: configure.in,v 1.21 2002-10-10 14:31:28 roebel Exp $
 dnl
 dnl configure.in		September 2000		Patrice Tisserand
 dnl
@@ -31,6 +31,9 @@ dnl For any information regarding this and other IRCAM software, please
 dnl send email to:  sdif@ircam.fr
 dnl
 dnl $Log: not supported by cvs2svn $
+dnl Revision 1.20  2002/10/10 10:40:57  roebel
+dnl Removed configure-variable @TESTLIB@ which can be derived from @SELLIB@.
+dnl
 dnl Revision 1.19  2002/10/07 12:24:14  roebel
 dnl Fixed dependence with respect to include files in /u/formes/share/include for non ircam configuration
 dnl
@@ -204,11 +207,9 @@ AC_ARG_ENABLE(debug,
 [echo FEATURE enable-debug... $enableval; 
 if test "$enableval" = "yes"; then
 	SELLIB=libsdif-debug.a; CFLAGS="-g2";
-	TESTLIB=sdif-debug; 
 	PROGLIST="querysdif-debug sdifextract-debug sdiftotext-debug tosdif-debug";
 else 
 	SELLIB=libsdif.a;  CFLAGS="-O3";
-	TESTLIB=sdif; 
 	PROGLIST="querysdif sdifextract sdiftotext tosdif";
 fi ],
 [
