@@ -35,6 +35,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.7  2003/11/07 21:47:18  roebel
+ * removed XpGuiCalls.h and replaced preinclude.h  by local files
+ *
  * Revision 3.6  2001/05/02 09:34:45  tisseran
  * Change License from GNU Public License to GNU Lesser Public License.
  *
@@ -275,6 +278,37 @@ SdifKillListHead(SdifListT* List)
     else
     {
       _SdifError(eFreeNull, "KillListHead");
+      return NULL;
+    }
+}
+
+
+SdifListT*
+SdifKillListCurr(SdifListT* List)
+{
+    if (List->Curr)
+    {
+        if (List->Curr == List->Head)
+	    SdifKillListHead(List);
+	else 
+	{
+	    if (List->Curr == List->Tail)
+	    {   /* curr is tail, find elem before curr to be new tail */
+		int i;
+
+		List->Tail = List->Head;
+		for (i = 0; i < List->NbData - 1; i++)
+		    List->Tail = List->Tail->Next;
+	    }
+	    
+	    List->Curr = SdifKillListNode(List->Curr, List->Killer);
+	    List->NbData--;
+	}
+        return List;
+    }
+    else
+    {
+      _SdifError(eFreeNull, "KillListCurr");
       return NULL;
     }
 }
