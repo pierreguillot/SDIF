@@ -1,4 +1,4 @@
-/* $Id: writesdif-subs.c,v 1.2 2000-05-15 13:07:46 tisseran Exp $
+/* $Id: writesdif-subs.c,v 1.3 2000-07-19 16:32:28 schwarz Exp $
    writesdif-subs.c     12. May 2000           Patrice Tisserand
 
    Subroutines for writesdif, function to write an SDIF file.
@@ -33,6 +33,13 @@
                      Close the sdif file
 		     
    $Log: not supported by cvs2svn $
+ * Revision 1.2  2000/05/15  13:07:46  tisseran
+ * Added test for input arguments:
+ *    Is Matrix Signature a char?
+ * Removed debugging message (mexPrintf("Matrix Loop") ...)
+ * Removed unused variable
+ * Change comment style for writesdif.m
+ *
  * Revision 1.1  2000/05/12  16:14:12  tisseran
  * Mexfile to write sdif files in matlab.
  * TODO: add possibility to use several file at same time.
@@ -198,12 +205,23 @@ writeMatrix(int nrhs, const mxArray* prhs[], SdifFileT *output, int indice)
   double         currentData;      /* Current element of matrix */
   SdifDataTypeET DataType;
   
-  /* MATRIX */
-  DataType = eFloat4;
-
-  /* Set Number of col and number of row */
-  NbRow = mxGetM(prhs[indice + 1]);
-  NbCol = mxGetN(prhs[indice + 1]);
+  /* set matrix data type, number of col and number of row */
+  if (mxIsDouble (prhs[indice + 1]))
+  {
+      DataType = eFloat4;
+      NbRow = mxGetM(prhs[indice + 1]);
+      NbCol = mxGetN(prhs[indice + 1]);
+  }
+#if not_yet
+  else if (mxIsChar (prhs[indice + 1]))
+  {   /* text is written as one column */
+      DataType = eText;
+      NbRow = mxGetM(prhs[indice + 1]) * mxGetN(prhs[indice + 1]);
+      NbCol = 1;
+  }
+#endif
+  else
+      mexErrMsgTxt ("Matrix data type must be double or char");
 
   /* Get Matrix Signature */
   mxGetString(prhs[indice], signature, PATH_MAX);
