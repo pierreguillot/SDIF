@@ -1,3 +1,29 @@
+2003-08-06  Diemo Schwarz  <schwarz@ligeti.ircam.fr>
+
+	* SdifSelect.c, SdifSelect.h:
+	SdifSelectIntMask added for more efficient integer selections.
+	New functions:
+	- SdifInitIntMask, SdifGetIntMask
+	- SdifSelectTestIntMask
+	- SdifFNumStreamsSelected, SdifFNumRowsSelected, SdifFNumColumnsSelected
+	- SdifFRowIsSelected, SdifFColumnIsSelected
+	int value/range had to be changed to SdifUInt4 for this
+
+	* SdifMemory.c, SdifMemory.h: 
+	SdifCalloc now does what it appears to do: clear memory
+	removed double defs (sdif.h) from SdifMemory.h,	now remove whole file?
+
+	* sdif.h, SdifFRead.c, SdifFRead.h: 
+	New functions SdifFSkip, SdifFSkipOneRow.
+
+	* sdif.h, SdifFGet.c, SdifFGet.h, SdifFPrint.c, SdifFPrint.h, SdifFPut.c, SdifFPut.h, SdifFRead.c, SdifFRead.h, SdifFScan.c, SdifFScan.h, SdifFWrite.c, SdifFWrite.h, SdifNameValue.c, SdifFile.c:
+	Finally removed obsolete functions (like SdifSkip...).
+	
+
+2003-07-21  Axel Roebel  <roebel@ligeti.ircam.fr>
+
+	* SdifFPrint.c: Added support for intreger types to SdifFPrintOneRow
+
 2003-07-21  Patrice Tisserand  <Patrice.Tisserand@ircam.fr>
 
 	* Makefile.am, sdifcpp/Makefile.am: fixed conditionnal compilation/installation of libsdif-cpp.
@@ -213,4 +239,4 @@ Version 3.3:
 	  Operating System.
 
 	
-$Id: ChangeLog,v 1.26 2003-07-21 13:40:45 tisseran Exp $
+$Id: ChangeLog,v 1.27 2003-08-06 18:17:22 schwarz Exp $
