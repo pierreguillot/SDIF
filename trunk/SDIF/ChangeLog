@@ -7,9 +7,8 @@ Version 3.7.5
 	include files in dependend libraries that itself 
 	define a VERSION macro.
 
-	This is necessary for configured builds of dependend
-	libraries as for example Easdif!!!
-
+	The version macro used for SdifPrintVersion is now 
+	SDIF_VERSION_STRING whic will work for all platforms.	
 
 Version 3.7.4	2003-05-23  Diemo Schwarz  <schwarz@ircam.fr>
 
@@ -163,4 +162,4 @@ Version 3.3:
 	  Operating System.
 
 	
-$Id: ChangeLog,v 1.18 2003-05-24 00:30:32 roebel Exp $
+$Id: ChangeLog,v 1.19 2003-05-26 16:12:46 roebel Exp $

@@ -1,4 +1,4 @@
-/* $Id: project_preinclude.h,v 3.6 2001-07-12 14:11:48 roebel Exp $
+/* $Id: project_preinclude.h,v 3.7 2003-05-26 16:12:47 roebel Exp $
 
    SDIF/sdif/project_preinclude.h	28. Sep 1999	Diemo Schwarz
 
@@ -20,6 +20,9 @@
    use Makefiles and such declarations would therefore get lost.
   
    $Log: not supported by cvs2svn $
+   Revision 3.6  2001/07/12 14:11:48  roebel
+   Added include file holding library version defines to the distribution.
+
    Revision 3.5  2001/04/20 14:04:08  tisseran
    SDIF VERSION 3.3
    Create function: SdifTakeCodedPredefinedTypesfromString (SdifFile.[hc])
@@ -68,21 +71,6 @@ Sdif preinclude
 
 #include <sdif_version.h>
 
-/*
-#define _SdifMemoryReport
-*/
-
-#if HOST_OS_MAC
-
-#define VERSION "Macintosh Sdif " TOSTRING(SDIF_VERSION_MAJOR) "." TOSTRING(SDIF_VERSION_MINOR)
-#define PACKAGE "SDIF"
-
-#elif HOST_OS_WIN32
-
-#define VERSION "Windows Sdif " TOSTRING(SDIF_VERSION_MAJOR) "." TOSTRING(SDIF_VERSION_MINOR)
-#define PACKAGE "SDIF"
-
-#endif
 
 #endif /* __H_PROJECT_PREINCLUDE__ */
 
