@@ -1,4 +1,4 @@
-/* $Id: SdifNameValue.c,v 3.8 2001-05-04 18:09:18 schwarz Exp $
+/* $Id: SdifNameValue.c,v 3.9 2001-05-04 18:14:18 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -34,6 +34,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.8  2001/05/04 18:09:18  schwarz
+ * Added function SdifNameValuesLPutCurrNVTTranslate.
+ *
  * Revision 3.7  2001/05/02 09:34:46  tisseran
  * Change License from GNU Public License to GNU Lesser Public License.
  *
@@ -369,9 +372,12 @@ SdifNameValuesLPutCurrNVT(SdifNameValuesLT *NameValuesL,
 }
 
 
+/* Add a Name-Value pair to the current Name-Value Table, while
+   replacing reserved characters and spaces with underscores "_" (using
+   SdifStringToNV).  FYI: The strings are copied. */
 SdifNameValueT*
 SdifNameValuesLPutCurrNVTTranslate(SdifNameValuesLT *NameValuesL, 
-		   const char *Name,  const char *Value)
+				   const char *Name,  const char *Value)
 {
     SdifNameValueT* ret;
     char *tname  = strdup(Name);
