@@ -8,11 +8,14 @@
 % stream frames(i, 2) having frames(i, 4) rows (can be 0!) with frame type 
 % signatures(i, 1:4) and matrix type signatures(i, 5:8).
 
-% $Id: loadsdifflat.m,v 1.6 2003-10-29 18:12:38 schwarz Exp $
+% $Id: loadsdifflat.m,v 1.7 2003-10-31 19:37:26 schwarz Exp $
 %
 % loadsdifflat.m	31. January 2000	Diemo Schwarz
 %
 % $Log: not supported by cvs2svn $
+% Revision 1.6  2003/10/29 18:12:38  schwarz
+% fix frame/matrix correspondence bug
+%
 % Revision 1.5  2003/09/15 15:59:01  schwarz
 % Properly preallocate arrays and cell arrays, dynamic reallocation every 10000 frames
 % --> 100 times faster for big files (no lie!)
@@ -50,16 +53,15 @@ function [ data, frames, signatures ] = loadsdifflat (name, types)
 
     di = 0;	% data index
     fi = 0;	% frame index
-    rows = 1;
     
     while (1)				% read frame by frame
 	[ d, t, s, f, m ] = loadsdif;
 
 	if isempty (t),  break;  end
     
-	fi = fi + 1;
-	di = di + rows;			% advance by last matrice's row count
 	[ rows, cols ] = size(d);
+	fi = fi + 1;
+	di = di + 1;			% advance to next free index
 
 	if di > nalloc,			% make more space (blockwise)
 	    frames     = [ frames;     zeros(nblock, 4) ]; % too much here,
@@ -77,7 +79,8 @@ function [ data, frames, signatures ] = loadsdifflat (name, types)
 	frames(fi, 4)       = rows;
 	signatures(fi, 1:4) = f;
 	signatures(fi, 5:8) = m;
-	data(di-rows+1:di, 1:cols) = d;
+	data(di:di+rows-1, 1:cols) = d;
+	di = di + rows - 1;
     end
     
     % cut data to true size
