@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.3 2000-10-30 16:30:00 roebel Exp $
+# $Id: Makefile.am,v 1.4 2000-10-30 19:05:49 roebel Exp $
 #
 # ./test/Makefile.am		September 2000			Patrice Tisserand
 #
@@ -29,6 +29,11 @@
 # send email to:  sdif@ircam.fr
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.3  2000/10/30  16:30:00  roebel
+# Added INCLUDES variable:
+#    INCLUDES = -I../include
+# to find user level sdif.h
+#
 # Revision 1.2  2000/10/27  20:04:01  roebel
 # autoconf merged back to main trunk
 #
@@ -45,10 +50,10 @@ NVTTest_SOURCES = test2.c utils.c
 testcheck_SOURCES = testcheck.c
 testselect_SOURCES = testselect.c
 
-LDADD = -lsdif
+LDADD = -l@TESTLIB@
 LDFLAGS = -L../sdif
-INCLUDES = -I../include
+INCLUDES = -I$(top_srcdir)/include
 
-TESTS_ENVIRONMENT = SDIFTYPES=../data/SdifTypes.STYP
+TESTS_ENVIRONMENT = SDIFTYPES=$(top_srcdir)/data/SdifTypes.STYP
 TESTS = test_conv test_cmpsdif headerTest NVTTest cmd_testcheck
 

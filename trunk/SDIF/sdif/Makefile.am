@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.4 2000-10-30 14:28:16 roebel Exp $
+# $Id: Makefile.am,v 1.5 2000-10-30 19:05:48 roebel Exp $
 #
 # ./sdif/Makefile.am		September 2000			Patrice Tisserand
 #
@@ -29,6 +29,9 @@
 # send email to:  sdif@ircam.fr
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.4  2000/10/30  14:28:16  roebel
+# removed sdif.h from Makefile.am
+#
 # Revision 1.3  2000/10/30  13:54:22  roebel
 # Added missing includes to SDIF_H
 #
@@ -38,7 +41,8 @@
 # Revision 1.1.2.5  2000/10/26  17:27:39  schwarz
 # Added header with copyright and links to all Makefile.am and configure.in.
 #
-lib_LIBRARIES = libsdif.a
+EXTRA_LIBRARIES = libsdif.a libsdif-debug.a
+lib_LIBRARIES = @SELLIB@
 FORMES_H=host_architecture.h preincluded.h UniversalEnvVar.h host_configure.h XpGuiCalls.h
 FORMES_INCLUDE=/u/formes/share/include
 
@@ -52,7 +56,6 @@ SDIF_H = SdifCheck.h 	SdifConvToText.h 	SdifErrMess.h 	SdifError.h 	SdifFGet.h \
 	SdifVersion.h project_preinclude.h config.h
 
 noinst_HEADERS = $(SDIF_H) ${FORMES_H}
-libsdif_a_dir = $(prefix)/libsdif
 
 libsdif_a_SOURCES =  SdifString.c      SdifHash.c     SdifGlobals.c      SdifSignatureTab.c \
 		     SdifError.c       SdifMemory.c   SdifNameValue.c    SdifMatrixType.c \
@@ -62,7 +65,18 @@ libsdif_a_SOURCES =  SdifString.c      SdifHash.c     SdifGlobals.c      SdifSig
 		     SdifFPut.c        SdifFPrint.c   SdifFWrite.c       SdifTextConv.c \
 		     SdifConvToText.c  SdifHard_OS.c  SdifErrMess.c      SdifList.c \
 		     SdifPreTypes.c    SdifSelect.c   SdifHighLevel.c    SdifCheck.c 
-sdiftype = $(datadir)/SdifTypes.STYP
+
+libsdif_debug_a_SOURCES =  SdifString.c      SdifHash.c     SdifGlobals.c      SdifSignatureTab.c \
+		     SdifError.c       SdifMemory.c   SdifNameValue.c    SdifMatrixType.c \
+		     SdifFrameType.c   SdifStreamID.c SdifMatrix.c       SdifFrame.c \
+		     SdifPrint.c       SdifTest.c     SdifTimePosition.c SdifFile.c \
+		     SdifRWLowLevel.c  SdifFGet.c     SdifFRead.c        SdifFScan.c \
+		     SdifFPut.c        SdifFPrint.c   SdifFWrite.c       SdifTextConv.c \
+		     SdifConvToText.c  SdifHard_OS.c  SdifErrMess.c      SdifList.c \
+		     SdifPreTypes.c    SdifSelect.c   SdifHighLevel.c    SdifCheck.c 
+		     
+		     sdiftype = $(datadir)/SdifTypes.STYP
+
 INCLUDES = -D_SdifTypesFileName=\"$(sdiftype)\" -DUSE_CONFIGURE
 
 $(libsdif_a_SOURCES) :  @IRCAMDEPS@
@@ -73,7 +87,7 @@ Versionsrc := $(libsdif_a_SOURCES) $(subst SdifVersion.h,,$(noinst_HEADERS))
 SdifVersion.h : $(Versionsrc)
 	@echo  "Updating  Library CKSUM"
 	@echo "/* Automatically generated File do not edit */" >$@
-	@echo '#define AUTOCKSUM "$$Checksum: SRC '$(shell CMD_ENV=xpg4;export CMD_ENV;cksum $^ | cut -f1 -d' '|cksum |cut -f1 -d' ')' $$ IRCAM $$Date: 2000-10-30 14:28:16 $$"'>>$@
+	@echo '#define AUTOCKSUM "$$Checksum: SRC '$(shell CMD_ENV=xpg4;export CMD_ENV;cksum $^ | cut -f1 -d' '|cksum |cut -f1 -d' ')' $$ IRCAM $$Date: 2000-10-30 19:05:48 $$"'>>$@
 
 
 # EXTRA FOR IRCAM STUFF

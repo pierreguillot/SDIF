@@ -1,9 +1,9 @@
 #! /bin/sh 
 
-Files_Txt_Dir=./files/txt
-Files_Sdif_Dir=./files/sdif
-Files_Txt_Sdif_Txt_Dir=./files/txtw
-Files_Txt_Sdif_Txt_Sdif_Dir=./files/sdifw
+Files_Txt_Dir=$srcdir/files/txt
+Files_Sdif_Dir=$srcdir/files/sdif
+Files_Txt_Sdif_Txt_Dir=$srcdir/files/txtw
+Files_Txt_Sdif_Txt_Sdif_Dir=$srcdir/files/sdifw
 
 sleep 1 # Wait one second
 echo
@@ -13,7 +13,9 @@ echo \*************************************************************************
 for namein in  $Files_Sdif_Dir/*.sdif; do
     base=`basename $namein`
     sdifnameout=$Files_Txt_Sdif_Txt_Sdif_Dir/$base.txt.sdif
-    cmp $namein $sdifnameout
+    if  ! cmp $namein $sdifnameout; then
+      exit 1
+    fi 
 done
 
 echo
