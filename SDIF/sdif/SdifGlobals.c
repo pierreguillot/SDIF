@@ -1,4 +1,4 @@
-/* $Id: SdifGlobals.c,v 3.3 1999-09-28 13:09:00 schwarz Exp $
+/* $Id: SdifGlobals.c,v 3.4 1999-10-13 16:05:48 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -14,6 +14,10 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.3  1999/09/28  13:09:00  schwarz
+ * Included #include <preincluded.h> for cross-platform uniformisation,
+ * which in turn includes host_architecture.h and SDIF's project_preinclude.h.
+ *
  * Revision 3.2  1999/06/18  16:23:55  schwarz
  * SdifSignatureCmpNoVersion dropped LAST byte on alpha, because the mask
  * 0x00ffffff was not byteswapped.  Introduced gSdifSignatureVersionMask,
@@ -94,7 +98,6 @@ SdifSignatureToString(SdifSignature Signature)
   return Ret;
 }
 
-
 short
 SdifSignatureCmpNoVersion(SdifSignature Signature1, SdifSignature Signature2)
 {
@@ -110,6 +113,9 @@ SdifSignatureCmpNoVersion(SdifSignature Signature1, SdifSignature Signature2)
 SdifUInt4
 SdifSizeofDataType(SdifDataTypeET DataType)
 {
+#if (_SdifFormatVersion >= 3)
+    return (DataType & 0xff);
+#else
     switch (DataType)
 	{
     case eUnicode :
@@ -126,8 +132,33 @@ SdifSizeofDataType(SdifDataTypeET DataType)
 	default :
         return 4;
 	}
+#endif
 }
 
+
+int 
+SdifDataTypeKnown (SdifDataTypeET DataType)
+{
+    switch (DataType)
+    {
+        case eFloat4:
+        case eFloat8:
+        case eInt2  :
+        case eInt4  :
+        case eUInt2 :
+        case eUInt4 :
+	    return eTrue;
+
+	/* defined in sdif format standard ver. 3 but not yet implemented */
+        case eChar  :	  /* same as case eText  : */
+        case eInt8  :
+        case eUInt8 :
+	    _SdifRemark ("standard datatypes text, (u)int8 not yet handled");
+	/* completely unknown */
+	default:
+	    return eFalse;
+    }
+}
 
 
 

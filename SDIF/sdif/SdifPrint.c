@@ -1,4 +1,4 @@
-/* $Id: SdifPrint.c,v 3.2 1999-09-28 13:09:09 schwarz Exp $
+/* $Id: SdifPrint.c,v 3.3 1999-10-13 16:05:54 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -16,6 +16,10 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.2  1999/09/28  13:09:09  schwarz
+ * Included #include <preincluded.h> for cross-platform uniformisation,
+ * which in turn includes host_architecture.h and SDIF's project_preinclude.h.
+ *
  * Revision 3.1  1999/03/14  10:57:16  virolle
  * SdifStdErr add
  *
@@ -181,21 +185,36 @@ SdifPrintMatrixHeader(FILE *f, SdifMatrixHeaderT *MatrixHeader)
 }
 
 
+static const char *formatText	  = "%d  ";   /* todo */
+static const char *formatChar     = "%d  ";
+static const char *formatFloat4   = "%8g  ";
+static const char *formatFloat8   = "%8g  ";
+static const char *formatInt2     = "%hd  ";
+static const char *formatInt4     = "%d  ";
+static const char *formatUInt2    = "%hu  ";
+static const char *formatUInt4    = "%u  ";
+/* l or ll?
+static const char *formatInt8     = "%ld  ";
+static const char *formatUInt8    = "%lu  ";
+*/
+
+
 void
 SdifPrintOneRow(FILE *f, SdifOneRowT *OneRow)
 {
-  unsigned int iCol;
-  
+    int iCol;
+
+    /* case template for type from SdifDataTypeET */
+#   define printrowcase(type)						     \
+    case e##type:   for (iCol = 0; iCol < OneRow->NbData; iCol++)	     \
+			fprintf (f, format##type, OneRow->Data.type [iCol]); \
+    break;
+
   switch (OneRow->DataType)
     {
-    case eFloat4 :
-      for(iCol=0; iCol<OneRow->NbData; iCol++)
-	fprintf(f, "%8g  ", OneRow->Data.F4[iCol]);
-      break;
-    case eFloat8 :
-      for(iCol=0; iCol<OneRow->NbData; iCol++)
-	fprintf(f, "%8g  ", OneRow->Data.F8[iCol]);
-      break;
+      /* generate cases for all types */
+      sdif_foralltypes (printrowcase)
+
     default :
       fprintf(f, "data type not supported: 0x%x\n", OneRow->DataType);
       break;

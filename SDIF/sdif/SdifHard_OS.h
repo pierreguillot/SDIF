@@ -1,4 +1,4 @@
-/* $Id: SdifHard_OS.h,v 3.3 1999-10-07 15:12:25 schwarz Exp $
+/* $Id: SdifHard_OS.h,v 3.4 1999-10-13 16:05:50 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -16,6 +16,11 @@
  * author: Dominique Virolle 1998
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.3  1999/10/07  15:12:25  schwarz
+ * Added isSeekable flag in SdifFileT struct.  This allows to simplify the
+ * many tests for stdio on opening the stream.
+ * Added SdifStrEq utility function.
+ *
  * Revision 3.2  1999/06/18  16:23:58  schwarz
  * SdifSignatureCmpNoVersion dropped LAST byte on alpha, because the mask
  * 0x00ffffff was not byteswapped.  Introduced gSdifSignatureVersionMask,
@@ -85,6 +90,7 @@
 #endif
 
 
+typedef char           SdifChar;
 typedef short          SdifInt2;
 typedef unsigned short SdifUInt2;
 typedef int            SdifInt4;

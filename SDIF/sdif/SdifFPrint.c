@@ -1,4 +1,4 @@
-/* $Id: SdifFPrint.c,v 3.2 1999-09-28 13:08:52 schwarz Exp $
+/* $Id: SdifFPrint.c,v 3.3 1999-10-13 16:05:40 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -14,6 +14,10 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.2  1999/09/28  13:08:52  schwarz
+ * Included #include <preincluded.h> for cross-platform uniformisation,
+ * which in turn includes host_architecture.h and SDIF's project_preinclude.h.
+ *
  * Revision 3.1  1999/03/14  10:56:39  virolle
  * SdifStdErr add
  *
@@ -186,7 +190,7 @@ SdifFPrintMatrixHeader(SdifFileT *SdifF)
   size_t
     SizeW = 0;
 
-  SizeW += fprintf(SdifF->TextStream, "  %s\t%u\t%u\t%u\n",
+  SizeW += fprintf(SdifF->TextStream, "  %s\t0x%04x\t%u\t%u\n",
 		   SdifSignatureToString(SdifF->CurrMtrxH->Signature),
 		   SdifF->CurrMtrxH->DataType,
 		   SdifF->CurrMtrxH->NbRow,
@@ -212,18 +216,18 @@ SdifFPrintOneRow(SdifFileT *SdifF)
     {
     case eFloat8 :
       for(iCol=0; iCol<SdifF->CurrOneRow->NbData; iCol++)
-	SizeW += fprintf(SdifF->TextStream, "\t%g", SdifF->CurrOneRow->Data.F8[iCol]);
+	SizeW += fprintf(SdifF->TextStream, "\t%g", SdifF->CurrOneRow->Data.Float8[iCol]);
       break;
     case eFloat4 :
       for(iCol=0; iCol<SdifF->CurrOneRow->NbData; iCol++)
-	SizeW += fprintf(SdifF->TextStream, "\t%g", SdifF->CurrOneRow->Data.F4[iCol]);
+	SizeW += fprintf(SdifF->TextStream, "\t%g", SdifF->CurrOneRow->Data.Float4[iCol]);
       break;
     default :
       sprintf(gSdifErrorMess, "OneRow 0x%04x, then Float4 used", SdifF->CurrOneRow->DataType);
       _SdifFError(SdifF, eTypeDataNotSupported, gSdifErrorMess);
       /* then values are considered as Float4 */
       for(iCol=0; iCol<SdifF->CurrOneRow->NbData; iCol++)
-	SizeW += fprintf(SdifF->TextStream, "\t%g", SdifF->CurrOneRow->Data.F4[iCol]);
+	SizeW += fprintf(SdifF->TextStream, "\t%g", SdifF->CurrOneRow->Data.Float4[iCol]);
       break;
     }
   SizeW += fprintf(SdifF->TextStream, "\n");

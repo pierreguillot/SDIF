@@ -1,4 +1,4 @@
-/* $Id: SdifTest.c,v 3.2 1999-09-28 13:09:14 schwarz Exp $
+/* $Id: SdifTest.c,v 3.3 1999-10-13 16:05:59 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -16,6 +16,10 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.2  1999/09/28  13:09:14  schwarz
+ * Included #include <preincluded.h> for cross-platform uniformisation,
+ * which in turn includes host_architecture.h and SDIF's project_preinclude.h.
+ *
  * Revision 3.1  1999/03/14  10:57:23  virolle
  * SdifStdErr add
  *
@@ -83,6 +87,19 @@ SdifTestMatrixType(SdifFileT *SdifF, SdifSignature Signature)
 short
 SdifFTestDataType(SdifFileT* SdifF)
 {
+#if (_SdifFormatVersion >= 3)
+    if (SdifDataTypeKnown (SdifF->CurrMtrxH->DataType))
+        return (eTrue);
+    else
+    {
+        sprintf (gSdifErrorMess, " 0x%04x, then Float4 used", 
+		 SdifF->CurrMtrxH->DataType);
+	_SdifFError (SdifF, eTypeDataNotSupported, gSdifErrorMess);
+	SdifF->CurrMtrxH->DataType = eFloat4;
+	return eFalse;
+    }
+#else
+
   switch (SdifF->CurrMtrxH->DataType)
     {
     case eFloat4:
@@ -94,6 +111,8 @@ SdifFTestDataType(SdifFileT* SdifF)
       _SdifFError(SdifF, eTypeDataNotSupported, gSdifErrorMess);
       return eFalse;
     }
+
+#endif
 }
 
 

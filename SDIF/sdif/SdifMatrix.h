@@ -1,4 +1,4 @@
-/* $Id: SdifMatrix.h,v 3.1 1999-03-14 10:57:07 virolle Exp $
+/* $Id: SdifMatrix.h,v 3.2 1999-10-13 16:05:52 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -19,6 +19,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.1  1999/03/14  10:57:07  virolle
+ * SdifStdErr add
+ *
  * Revision 2.1  1998/12/21  18:27:29  schwarz
  * Inserted copyright message.
  *
@@ -65,8 +68,16 @@ typedef union DataTypeU DataTypeUT;
 
 union DataTypeU
 {
-  SdifFloat4 *F4;
-  SdifFloat8 *F8;
+  SdifFloat4 *Float4;
+  SdifFloat8 *Float8;
+  SdifInt2   *Int2  ;
+  SdifInt4   *Int4  ;
+/*SdifInt8   *Int8  ;*/
+  SdifUInt2  *UInt2 ;
+  SdifUInt4  *UInt4 ;
+/*SdifUInt8  *UInt8 ;*/
+  SdifChar   *Char  ;
+  void	     *Void  ;	/* generic pointer */
 } ;
 
 
@@ -94,8 +105,10 @@ struct SdifMatrixDataS
 
 
 
-SdifMatrixHeaderT* SdifCreateMatrixHeader    (SdifSignature Signature, SdifUInt4 DataType,
-						     SdifUInt4 NbRow, SdifUInt4 NbCol);
+SdifMatrixHeaderT* SdifCreateMatrixHeader    (SdifSignature Signature, 
+					      SdifDataTypeET DataType,
+					      SdifUInt4 NbRow, 
+					      SdifUInt4 NbCol);
 
 SdifMatrixHeaderT* SdifCreateMatrixHeaderEmpty (void);
 void               SdifKillMatrixHeader        (SdifMatrixHeaderT *MatrixHeader);

@@ -1,4 +1,4 @@
-/* $Id: SdifFWrite.c,v 3.3 1999-10-07 15:12:21 schwarz Exp $
+/* $Id: SdifFWrite.c,v 3.4 1999-10-13 16:05:43 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -14,6 +14,11 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.3  1999/10/07  15:12:21  schwarz
+ * Added isSeekable flag in SdifFileT struct.  This allows to simplify the
+ * many tests for stdio on opening the stream.
+ * Added SdifStrEq utility function.
+ *
  * Revision 3.2  1999/09/28  13:08:56  schwarz
  * Included #include <preincluded.h> for cross-platform uniformisation,
  * which in turn includes host_architecture.h and SDIF's project_preinclude.h.
@@ -113,16 +118,20 @@ size_t SdifFWriteChunkHeader (SdifFileT *SdifF, SdifSignature ChunkSignature, si
 
 
 
-size_t SdifFWriteGeneralHeader(SdifFileT *SdifF)
+size_t 
+SdifFWriteGeneralHeader(SdifFileT *SdifF)
 {
   SdiffGetPos(SdifF->Stream, &(SdifF->StartChunkPos));
 
-  SdifF->ChunkSize  = SdifFWriteChunkHeader(SdifF, eSDIF, 8);
-  SdifF->ChunkSize += sizeof(SdifUInt4) * SdiffWriteUInt4(&(SdifF->FormatVersion), 1, SdifF->Stream);
-  SdifF->ChunkSize += SdifFWritePadding(SdifF, SdifFPaddingCalculate(SdifF->Stream, SdifF->ChunkSize));
+  SdifF->ChunkSize  = SdifFWriteChunkHeader (SdifF, eSDIF, 2 * sizeof (SdifUInt4));
+  SdifF->ChunkSize += sizeof(SdifUInt4) * 
+		   SdiffWriteUInt4 (&(SdifF->FormatVersion), 1, SdifF->Stream);
+  SdifF->ChunkSize += sizeof(SdifUInt4) * 
+		   SdiffWriteUInt4 (&(SdifF->TypesVersion), 1, SdifF->Stream);
 
-  SdifUpdateChunkSize(SdifF, SdifF->ChunkSize -sizeof(SdifSignature) -sizeof(SdifInt4));
-  
+  /* We know how big the header is.  No need to update it.
+     SdifUpdateChunkSize(SdifF, SdifF->ChunkSize -sizeof(SdifSignature) -sizeof(SdifInt4)); */  
+
   return SdifF->ChunkSize;  
 }
 
@@ -143,18 +152,29 @@ SdifFWriteOneNameValue(SdifFileT *SdifF, SdifNameValueT *NameValue)
 
 
 size_t
-SdifFWriteNameValueLCurrNVT(SdifFileT *SdifF)
+SdifFWriteNameValueLCurrNVT (SdifFileT *f)
 {
-  SdiffGetPos(SdifF->Stream, &(SdifF->StartChunkPos));
+#if (_SdifFormatVersion >= 3)
+  /* write NVT as frame (for now with no matrices, but ascii data) */
+  SdifFSetCurrFrameHeader (f, e1NVT, _SdifUnknownSize, 0, 
+			   f->NameValues->CurrNVT->NumIDLink,
+			   f->NameValues->CurrNVT->Time);
+  f->ChunkSize  = SdifFWriteFrameHeader (f);
+  f->ChunkSize += SdifFPutNameValueLCurrNVT (f, 's');
+  f->ChunkSize += SdifFWritePadding (f, SdifFPaddingCalculate (f->Stream, 
+							       f->ChunkSize));
+  SdifUpdateChunkSize (f, f->ChunkSize - sizeof(SdifSignature) - sizeof(SdifInt4));
+#else
+  SdiffGetPos(f->Stream, &(f->StartChunkPos));
 
-  SdifF->ChunkSize  = SdifFWriteChunkHeader(SdifF, e1NVT, _SdifUnknownSize);
-  SdifF->ChunkSize += SdifFPutNameValueLCurrNVT(SdifF, 's');
-  SdifF->ChunkSize += SdifFWritePadding(SdifF, SdifFPaddingCalculate(SdifF->Stream, SdifF->ChunkSize));
+  f->ChunkSize  = SdifFWriteChunkHeader(f, e1NVT, _SdifUnknownSize);
+  f->ChunkSize += SdifFPutNameValueLCurrNVT(f, 's');
+  f->ChunkSize += SdifFWritePadding(f, SdifFPaddingCalculate(f->Stream, f->ChunkSize));
 
-  SdifUpdateChunkSize(SdifF, SdifF->ChunkSize -sizeof(SdifSignature) -sizeof(SdifInt4));
+  SdifUpdateChunkSize(f, f->ChunkSize -sizeof(SdifSignature) -sizeof(SdifInt4));
+#endif
 
-  
-  return SdifF->ChunkSize;  
+  return f->ChunkSize;  
 }
 
 
@@ -334,24 +354,29 @@ SdifFWriteMatrixHeader (SdifFileT *SdifF)
 
 
 
-size_t SdifFWriteOneRow (SdifFileT *SdifF)
+size_t 
+SdifFWriteOneRow (SdifFileT *SdifF)
 {
-  switch (SdifF->CurrOneRow->DataType)
+    /* case template for type from SdifDataTypeET */
+#   define writerowcase(type) \
+    case e##type:  return (sizeof (Sdif##type) *			   \
+			   SdiffWrite##type (SdifF->CurrOneRow->Data.type, \
+					     SdifF->CurrOneRow->NbData,    \
+					     SdifF->Stream));
+
+    switch (SdifF->CurrOneRow->DataType)
     {
-    case eFloat4 :
-      return sizeof(SdifFloat4) * SdiffWriteFloat4(SdifF->CurrOneRow->Data.F4,
-						   SdifF->CurrOneRow->NbData,
-						   SdifF->Stream);
-    case eFloat8 :
-      return sizeof(SdifFloat8) * SdiffWriteFloat8(SdifF->CurrOneRow->Data.F8,
-						   SdifF->CurrOneRow->NbData,
-						   SdifF->Stream);
-    default :
-      sprintf(gSdifErrorMess, "OneRow 0x%04x, then Float4 used", SdifF->CurrOneRow->DataType);
-      _SdifFError(SdifF, eTypeDataNotSupported, gSdifErrorMess);
-      return sizeof(SdifFloat4) * SdiffWriteFloat4(SdifF->CurrOneRow->Data.F4,
-						   SdifF->CurrOneRow->NbData,
-						   SdifF->Stream);
+        /* generate cases for all types */
+	sdif_foralltypes (writerowcase)
+
+	default :
+	    sprintf(gSdifErrorMess, "OneRow 0x%04x, then Float4 used", 
+		    SdifF->CurrOneRow->DataType);
+	    _SdifFError(SdifF, eTypeDataNotSupported, gSdifErrorMess);
+	    return (sizeof (SdifFloat4) * 
+		    SdiffWriteFloat4(SdifF->CurrOneRow->Data.Float4,
+				     SdifF->CurrOneRow->NbData,
+				     SdifF->Stream));
     }
 }
 

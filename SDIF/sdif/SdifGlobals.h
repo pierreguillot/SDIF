@@ -1,4 +1,4 @@
-/* $Id: SdifGlobals.h,v 3.3 1999-09-28 10:39:26 schwarz Exp $
+/* $Id: SdifGlobals.h,v 3.4 1999-10-13 16:05:49 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -14,6 +14,10 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.3  1999/09/28  10:39:26  schwarz
+ * Introduced SdifSignatureConst for signature constants across different
+ * compilers/architectures.
+ *
  * Revision 3.2  1999/09/20  13:28:05  schwarz
  * Introduced min/max macros.  (Why oh why is something so basic not part
  * of the standard? --- there is no macros.h on sgi!)
@@ -59,6 +63,7 @@
 #ifndef _SdifGlobals_
 #define _SdifGlobals_
 
+
 #include <stdio.h>
 #include <float.h>
 #include "SdifError.h"
@@ -67,7 +72,11 @@
 
 
 
-#define _SdifFormatVersion 2
+/* set default if not overridden from makefile */
+#ifndef _SdifFormatVersion
+#define	_SdifFormatVersion 3
+#endif
+
 #define _SdifTypesVersion  1
 
 
@@ -144,8 +153,65 @@ typedef enum SdifModifModeE
   eCanModif
 } SdifModifModeET;
 
+
 /* DataTypeEnum
- */
+
+   On Matt Wright's visit at IRCAM June 1999, we defined a new
+   encoding for the MatrixDataType field with the feature that the low
+   order byte encodes the number of bytes taken by each matrix
+   element.  
+
+   Low order byte encodes the number of bytes 
+   High order bytes come from this (extensible) enum:
+
+        0 : Float
+        1 : Signed integer
+        2 : Unsigned integer
+        3 : Text (UTF-8 when 1 byte)
+        4 : arbitrary/void
+*/
+
+#if (_SdifFormatVersion >= 3)
+
+typedef enum SdifDataTypeE
+{
+  eText	    = 0x0301,
+  eChar     = 0x0301,
+  eFloat4   = 0x0004,
+  eFloat8   = 0x0008,
+  eInt2     = 0x0102,
+  eInt4     = 0x0104,
+  eInt8     = 0x0108,
+  eUInt2    = 0x0202,
+  eUInt4    = 0x0204,
+  eUInt8    = 0x0208
+} SdifDataTypeET;
+
+#ifdef __STDC__  /* Is the compiler ANSI? */
+
+/* generate template for all types */
+#define sdif__foralltypes(macro, post)	macro(Float4)post \
+					macro(Float8)post \
+					macro(Int2  )post \
+					macro(Int4  )post \
+					macro(UInt2 )post \
+					macro(UInt4 )post \
+				     /* macro(Int8  )post \
+					macro(UInt8 )post \
+					macro(Char  )post \
+					macro(Text  )post \
+				      */
+
+/* generate template for all types */
+#define sdif_foralltypes(macro)		sdif__foralltypes(macro,)
+
+/* generate prototype template for all types */
+#define sdif_proto_foralltypes(macro)	sdif__foralltypes(macro,;)
+
+#endif /* __STDC__ */
+
+#else
+
 typedef enum SdifDataTypeE
 {
   eUnicode  = 0,
@@ -158,6 +224,7 @@ typedef enum SdifDataTypeE
   eUInt2    = 7,
   eFloat4Old = 32
 } SdifDataTypeET;
+#endif
 
 
 #define _SdifStringLen 1024
@@ -186,9 +253,16 @@ char*     SdifSignatureToString(SdifSignature Signature);
 */
 short     SdifSignatureCmpNoVersion(SdifSignature Signature1, SdifSignature Signature2);
 
-/*DOC:
+/*DOC: 
+  Returns size of SDIF data type in bytes
+  (which is always the low-order byte).  
 */
 SdifUInt4 SdifSizeofDataType (SdifDataTypeET DataType);
+
+/*DOC: 
+  Returns true if DataType is in the list of known data types.
+*/
+int SdifDataTypeKnown (SdifDataTypeET DataType);
 
 /*DOC:
 */

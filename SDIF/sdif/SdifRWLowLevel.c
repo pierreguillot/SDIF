@@ -1,4 +1,4 @@
-/* $Id: SdifRWLowLevel.c,v 3.6 1999-10-07 15:05:53 schwarz Exp $
+/* $Id: SdifRWLowLevel.c,v 3.7 1999-10-13 16:05:56 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -15,6 +15,9 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.6  1999/10/07  15:05:53  schwarz
+ * Removed unused SdiffGetPos.
+ *
  * Revision 3.5  1999/09/28  13:09:10  schwarz
  * Included #include <preincluded.h> for cross-platform uniformisation,
  * which in turn includes host_architecture.h and SDIF's project_preinclude.h.
@@ -231,6 +234,13 @@ SdiffwriteLittleEndian8 (void *ptr, size_t nobj, FILE *stream)
 
 
 size_t
+SdiffReadChar (SdifChar *ptr, size_t nobj, FILE *stream)
+{
+    return Sdiffread(ptr, sizeof(SdifChar),  nobj, stream);
+}
+
+
+size_t
 SdiffReadInt2 (SdifInt2 *ptr, size_t nobj, FILE *stream)
 {
   switch (gSdifMachineType)
@@ -386,6 +396,12 @@ SdiffReadFloat8(SdifFloat8 *ptr, size_t nobj, FILE *stream)
 
 
 /* Write */
+
+size_t
+SdiffWriteChar (SdifChar *ptr, size_t nobj, FILE *stream)
+{
+    return Sdiffwrite(ptr, sizeof(SdifChar),  nobj, stream);
+}
 
 
 size_t
@@ -918,33 +934,31 @@ SdiffGetStringWeakUntil(FILE* fr, char* s, size_t ncMax, size_t *NbCharRead, cha
 
 /* read ASCII */
 
-size_t
-SdiffScanFloat4(FILE *stream, SdifFloat4 *ptr, size_t nobj)
-{
-  SdifUInt4 iobj;
-  size_t NbObjR = 0;
+static const char *formatText	  = "%c";   /* todo */
+static const char *formatChar     = "%c";
+static const char *formatFloat4   = "%f";
+static const char *formatFloat8   = "%lf";
+static const char *formatInt2     = "%hi";
+static const char *formatInt4     = "%i";
+static const char *formatUInt2    = "%hu";
+static const char *formatUInt4    = "%u";
+/* l or ll?
+static const char *formatInt8     = "%li";
+static const char *formatUInt8    = "%lu";
+*/
 
-  for(iobj=0; iobj<nobj; iobj++)
-    NbObjR += fscanf(stream, "%f", &(ptr[iobj]));
-
-  return NbObjR;
+/* scan function template for type of SdifDataTypeET */
+#define scan(type)   sdif_scanproto(type)			    \
+{ 								    \
+    size_t iobj, NbObjR = 0;					    \
+								    \
+    for (iobj = 0; iobj < nobj; iobj++)				    \
+        NbObjR += fscanf (stream, format##type, &(ptr [iobj]));	    \
+    return NbObjR;						    \
 }
 
-
-
-size_t
-SdiffScanFloat8(FILE *stream, SdifFloat8 *ptr, size_t nobj)
-{
-  size_t iobj;
-  size_t NbObjR = 0;
-
-  for(iobj=0; iobj<nobj; iobj++)
-    NbObjR += fscanf(stream, "%f", &(ptr[iobj]));
-
-  return NbObjR;
-}
-
-
+/* generate scan functions */
+sdif_foralltypes (scan)
 
 
 

@@ -1,4 +1,4 @@
-/* $Id: SdifFile.c,v 3.5 1999-10-07 15:12:22 schwarz Exp $
+/* $Id: SdifFile.c,v 3.6 1999-10-13 16:05:45 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -16,6 +16,11 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.5  1999/10/07  15:12:22  schwarz
+ * Added isSeekable flag in SdifFileT struct.  This allows to simplify the
+ * many tests for stdio on opening the stream.
+ * Added SdifStrEq utility function.
+ *
  * Revision 3.4  1999/09/28  13:08:57  schwarz
  * Included #include <preincluded.h> for cross-platform uniformisation,
  * which in turn includes host_architecture.h and SDIF's project_preinclude.h.
@@ -130,6 +135,7 @@ SdifFOpen(const char* Name, SdifFileModeET Mode)
       SdifF->Name             = SdifCreateStrNCpy(Name, SdifStrLen(Name)+1);
       SdifF->Mode             = Mode;
       SdifF->FormatVersion    = _SdifFormatVersion; /* default */
+      SdifF->TypesVersion     = _SdifTypesVersion;  /* default */
       
       SdifF->NameValues       = SdifCreateNameValuesL(_SdifNameValueHashSize);
       SdifF->MatrixTypesTable = SdifCreateHashTable(_SdifGenHashSize, eHashInt4,
@@ -139,6 +145,7 @@ SdifFOpen(const char* Name, SdifFileModeET Mode)
 /*      SdifF->StreamIDsTable   = SdifCreateHashTable(1, eHashInt4, SdifKillStreamID);*/
       SdifF->StreamIDsTable   = SdifCreateStreamIDTable(1);
       SdifF->TimePositions    = SdifCreateTimePositionL();
+      SdifF->Selection        = NULL; /* todo: automaticall get selection */
 
       SdifF->CurrSignature = eEmptySignature;
       SdifF->CurrFramH     = NULL;
@@ -607,7 +614,7 @@ SdifGenKill(void)
 void SdifPrintVersion(void)
 {
 #ifndef lint
-    static char rcsid[]= "$Revision: 3.5 $ IRCAM $Date: 1999-10-07 15:12:22 $";
+    static char rcsid[]= "$Revision: 3.6 $ IRCAM $Date: 1999-10-13 16:05:45 $";
 #endif
 
     if (SdifStdErr == NULL)
@@ -673,17 +680,25 @@ SdifFSetCurrMatrixHeader(SdifFileT     *SdifF,
 SdifOneRowT*
 SdifFSetCurrOneRow(SdifFileT *SdifF, void *Values)
 {
+#if (_SdifFormatVersion > 2)
+
+    memcpy (SdifF->CurrOneRow->Data.Void, (void *) Values, 
+	    SdifSizeofDataType (SdifF->CurrOneRow->DataType) * SdifF->CurrOneRow->NbData);
+
+#else
+
   switch (SdifF->CurrOneRow->DataType)
     {
     case eFloat4:
-      memcpy(SdifF->CurrOneRow->Data.F4, (char*) Values, sizeof(SdifFloat4)* SdifF->CurrOneRow->NbData);
+      memcpy(SdifF->CurrOneRow->Data.Float4, (char*) Values, sizeof(SdifFloat4)* SdifF->CurrOneRow->NbData);
       break;
     case eFloat8:
-      memcpy(SdifF->CurrOneRow->Data.F8, (char*) Values, sizeof(SdifFloat8)* SdifF->CurrOneRow->NbData);
+      memcpy(SdifF->CurrOneRow->Data.Float8, (char*) Values, sizeof(SdifFloat8)* SdifF->CurrOneRow->NbData);
       break;
     default:
       return NULL;
     }
+#endif
 
   return SdifF->CurrOneRow;
 }
@@ -747,15 +762,19 @@ SdifFCurrOneRow(SdifFileT *SdifF)
 void*
 SdifFCurrOneRowData(SdifFileT *SdifF)
 {
+#if (_SdifFormatVersion >= 3)
+    return SdifF->CurrOneRow->Data.Void;
+#else
   switch (SdifF->CurrOneRow->DataType)
     {
     case eFloat4:
-      return SdifF->CurrOneRow->Data.F4;
+      return SdifF->CurrOneRow->Data.Float4;
     case eFloat8:
-      return SdifF->CurrOneRow->Data.F8;
+      return SdifF->CurrOneRow->Data.Float8;
     default:
       return NULL;
     }
+#endif
 }
 
 SdifUInt4
