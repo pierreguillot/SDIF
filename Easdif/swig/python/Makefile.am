@@ -32,17 +32,17 @@ SDIF_wrap.cxx:		sdif.i   $(sdifincfiles)   $(incfiles)
 			$(swig)
 
 
-_eaSDIF.so: eaSDIF.so
-	mv eaSDIF.so _eaSDIF.so
-
-_SDIF.so: SDIF.so
-	mv SDIF.so _SDIF.so
+#_eaSDIF.so: eaSDIF.so
+#	mv eaSDIF.so _eaSDIF.so
+#
+#_SDIF.so: SDIF.so
+#	mv SDIF.so _SDIF.so
 
 
 %_wrap.o: %_wrap.cxx
 	g++ -c $(dbflag) -fpic -Dexplicit= -fno-strict-aliasing $(INCL) $<
 
-%.so: 	%_wrap.o
+_%.so: 	%_wrap.o
 	g++ -shared $(EASDIF_LIB_PATH)/libEasdif.so $< -o $@
 
 test:	eaSDIF.py _eaSDIF.so _SDIF.so
