@@ -1,4 +1,4 @@
-/* $Id: SdifTimePosition.c,v 2.2 1999-01-23 13:57:49 virolle Exp $
+/* $Id: SdifTimePosition.c,v 2.3 1999-01-23 15:56:03 virolle Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -15,6 +15,9 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 2.2  1999/01/23  13:57:49  virolle
+ * General Lists, and special chunk preparation to become frames
+ *
  *
  *
  */

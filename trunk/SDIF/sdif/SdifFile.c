@@ -1,4 +1,4 @@
-/* $Id: SdifFile.c,v 2.3 1999-01-23 13:57:32 virolle Exp $
+/* $Id: SdifFile.c,v 2.4 1999-01-23 15:55:47 virolle Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -16,6 +16,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 2.3  1999/01/23  13:57:32  virolle
+ * General Lists, and special chunk preparation to become frames
+ *
  * Revision 2.2  1998/12/21  18:27:15  schwarz
  * Inserted copyright message.
  *
@@ -552,7 +555,7 @@ SdifGenKill(void)
 void SdifPrintVersion(void)
 {
 #ifndef lint
-  static char rcsid[]= "$Revision: 2.3 $ IRCAM $Date: 1999-01-23 13:57:32 $";
+  static char rcsid[]= "$Revision: 2.4 $ IRCAM $Date: 1999-01-23 15:55:47 $";
 #endif
 
 

@@ -1,4 +1,4 @@
-# $Id: Makefile.src,v 2.1 1998-12-21 18:26:58 schwarz Exp $
+# $Id: Makefile.src,v 2.2 1999-01-23 15:55:35 virolle Exp $
 #
 #               Copyright (c) 1998 by IRCAM - Centre Pompidou
 #                          All rights reserved.
@@ -36,6 +36,7 @@ SDIF_SRC = \
 	SdifConvToText.c \
 	SdifHard_OS.c \
 	SdifErrMess.c \
+	SdifList.c \
 	SdifPreTypes.c
 
 

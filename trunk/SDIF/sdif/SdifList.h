@@ -19,6 +19,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 2.1  1999/01/23  13:57:38  virolle
+ * General Lists, and special chunk preparation to become frames
+ *
  *
  */
 
