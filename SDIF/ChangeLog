@@ -1,3 +1,9 @@
+2004-02-10  Axel Roebel  <Axel.Roebel@ircam.fr>
+Version 3.8.1
+	
+	* sdif/SdifFile.c
+	no longer emit warning message when predefined types are used.	
+
 2004-01-29  Diemo Schwarz  <schwarz@ligeti.ircam.fr>
 Version 3.8.0
 	
@@ -305,4 +311,4 @@ Version 3.3:
 	  Operating System.
 
 	
-$Id: ChangeLog,v 1.30 2004-02-02 18:04:53 roebel Exp $
+$Id: ChangeLog,v 1.31 2004-02-10 14:58:19 roebel Exp $
