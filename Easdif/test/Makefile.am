@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.4 2003-04-06 16:30:53 roebel Exp $
+# $Id: Makefile.am,v 1.5 2003-04-08 23:53:02 roebel Exp $
 #
 # ./Easdif/test/Makefile.am	Feb. 2003 Axel Roebel
 #
@@ -29,6 +29,9 @@
 # 
 
 # $Log: not supported by cvs2svn $
+# Revision 1.4  2003/04/06 16:30:53  roebel
+# Added license info
+#
 # Revision 1.3  2003/03/07 17:38:41  roebel
 # Updated for correct handling of distribution and new layout of c++ compilation in SDIF.
 #
@@ -40,7 +43,8 @@
 #
 
 EXTRA_PROGRAMS=
-bin_PROGRAMS = easdifRmNVT tutorini tutofini
+bin_PROGRAMS = easdifRmNVT
+noinst_PROGRAMS =  tutorini tutofini
 
 EASDIR=../easdif
 easdifRmNVT_SOURCES = easdifRmNVT.cpp
