@@ -1,4 +1,4 @@
-/* $Id: SdifFRead.c,v 3.9 2000-07-18 15:08:32 tisseran Exp $
+/* $Id: SdifFRead.c,v 3.10 2000-08-07 15:05:45 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -14,6 +14,20 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.9  2000/07/18  15:08:32  tisseran
+ * This release implements the New SDIF Specification (june 1999):
+ * - Name Values Table are written in a 1NVT frame which contains a 1NVT matrix
+ * - Frame and matrix type declaration are written in a 1TYP frame which contains a 1TYP matrix.
+ * - Stream ID are written in a 1IDS frame which contains a 1IDS matrix.
+ *
+ * Read function accept the previous version of the specification (read a text frame without matrix) to be compatible with older SDIF files.
+ *
+ * SdifString.h and SdifString.c implements some string mangement (creation, destruction, append, test of end of string, getc, ungetc).
+ *
+ * WATCH OUT:
+ *      We don't care about the old SDIF Specification (_SdifFormatVersion < 3)
+ * To use _SdifFormatVersion < 3, get the previous release.
+ *
  * Revision 3.8  2000/05/12  14:41:46  schwarz
  * On behalf of Adrien, synchronisation with Mac sources, with some slight
  * changes because of cross-platform issues:
@@ -120,25 +134,27 @@ SdifFReadGeneralHeader(SdifFileT *SdifF)
   SizeR += SdiffReadUInt4 (&(SdifF->TypesVersion),  1, SdifF->Stream) * sizeof(SdifUInt4);
   
   if (SdifF->CurrSignature != eSDIF)
-    {
+  {
       sprintf(gSdifErrorMess, "%s not correctly read", 
 	      SdifSignatureToString(eSDIF));
       _SdifFError(SdifF, eBadHeader, gSdifErrorMess);
-    }
+  }
+  else
+  {   /* read rest of header chunk (might contain additional data) */
+      SdifFReadPadding (SdifF, SdifF->ChunkSize - (SizeR - SizeS));
 
-  /* read rest of header chunk (might contain additional data) */
-  SdifFReadPadding (SdifF, SdifF->ChunkSize - (SizeR - SizeS));
+      if (SdifF->FormatVersion != _SdifFormatVersion)
+      {
+	  char *mfmt = SdifF->FormatVersion > _SdifFormatVersion
+	  ? "file is in a newer SDIF format version (%d) than the library (%d)"
+	  : "File is in an old SDIF format version (%d).  "
+	    "The library (version %d) is not backwards compatible.";
 
-  if (SdifF->FormatVersion != _SdifFormatVersion)
-  {
-      char *mfmt = SdifF->FormatVersion > _SdifFormatVersion
-	? "file is in a newer SDIF format version (%d) than the library (%d)"
-	: "File is in an old SDIF format version (%d).  "
-	  "The library (version %d) is not backwards compatible.";
-
-      sprintf (gSdifErrorMess, mfmt, SdifF->FormatVersion, _SdifFormatVersion);
-      _SdifFError(SdifF, eBadFormatVersion, gSdifErrorMess);
-    }
+	  sprintf (gSdifErrorMess, mfmt, SdifF->FormatVersion, 
+		   _SdifFormatVersion);
+	  _SdifFError(SdifF, eBadFormatVersion, gSdifErrorMess);
+      }
+  }
     
   return SizeR;
 }

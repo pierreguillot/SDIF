@@ -1,4 +1,4 @@
-/* $Id: SdifSelect.c,v 3.10 2000-06-15 15:24:10 schwarz Exp $
+/* $Id: SdifSelect.c,v 3.11 2000-08-07 15:05:46 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -79,6 +79,9 @@ TODO
 
 LOG
   $Log: not supported by cvs2svn $
+  Revision 3.10  2000/06/15  15:24:10  schwarz
+  Better column names for AR coefs.
+
   Revision 3.9  2000/05/15  16:22:03  schwarz
   Changed prototypes of existing functions (we apologize for the inconvenience)
   SdifFCurrFrameIsSelected and SdifFCurrMatrixIsSelected.
@@ -574,7 +577,8 @@ SdifGetFilenameAndSelection (/*in*/  const char *filename,
     const char *spec = SdifSelectFindSelection (filename);
 
     SdifInitSelection  (sel, filename, spec  ?  spec - filename 
-					     :  strlen (filename));
+					     :  (filename ? strlen (filename) 
+							  : 0));
     if (spec)
 	SdifParseSelection (sel, spec + symlen (sst_specsep));
     return (sel->filename);
