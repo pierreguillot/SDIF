@@ -1,4 +1,4 @@
-/* $Id: SdifErrMess.c,v 3.5 1999-11-03 16:42:30 schwarz Exp $
+/* $Id: SdifErrMess.c,v 3.6 2000-03-01 11:17:29 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -15,6 +15,11 @@
  * author: Dominique Virolle 1998
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.5  1999/11/03  16:42:30  schwarz
+ * Use _SdifNVTStreamID for stream ID of 1NVT frames because of CNMAT
+ * restriction of only one frame type per stream.
+ * (See SdifNameValuesLNewTable)
+ *
  * Revision 3.4  1999/10/13  16:05:39  schwarz
  * Changed data type codes (SdifDataTypeET) to SDIF format version 3, as
  * decided with Matt Wright June 1999, added integer data types.
@@ -68,7 +73,7 @@ const SdifErrorT gSdifErrMessFormat[] = {
 { eUserDefInFileYet,	eWarning,	"%s has been completed in this file yet\n"},
 { eBadMode,				eError,		"Bad mode at sdif file opening (%d), %s\n"},
 { eBadStdFile,			eError,		"Bad standart file or bad mode (%d), %s\n"},
-{ eBadNbData,			eWarning,	"Matrix number of columns too big : %s\n"},
+{ eBadNbData,			eWarning,	"Number of rows or columns too big : %s\n"},
 { eReadWriteOnSameFile,	eError,		"Read file and Write file are the same file : %s"},
 { eBadFormatVersion,	eError,		"Bad Format Version : %s"},
 { eMtrxUsedYet,			eWarning,	"Matrix has been used in this frame yet : %s\n"},
@@ -245,7 +250,8 @@ SdifFsPrintError(char* oErrMess,
 	if (SdifF->Stream)
 		SdiffGetPos(SdifF->Stream, &(SdifF->Pos));
 	if (SdifF->Pos !=0)
-		sprintf(PosErrMess, " (byte:%lu)", SdifF->Pos);
+		sprintf(PosErrMess, " (byte:%6lu=0x%04lx=0%06lo)", 
+			SdifF->Pos, SdifF->Pos, SdifF->Pos);
 
 	if (SdifF->TextStream)
 		sprintf(TextErrMess, ", TextFile: %s\n", SdifF->TextStreamName);
