@@ -1,7 +1,7 @@
 2003-07-05  Axel Röbel  <roebel@ircam.fr>
 3.8.0-beta2
 	
-	* include/sdif.h, sdif/SdifRWLowLevel.c
+	* include/sdif.h, sdif/SdifRWLowLevel.c, sdif/SdifFPrint.c, sdif/SdifGlobals.c
 	Added support for types eInt1 and eUInt1.
 
 2003-06-24  Axel Roebel  <Axel.Roebel@ircam.fr>
@@ -209,4 +209,4 @@ Version 3.3:
 	  Operating System.
 
 	
-$Id: ChangeLog,v 1.24 2003-07-07 10:27:00 roebel Exp $
+$Id: ChangeLog,v 1.25 2003-07-21 11:16:18 roebel Exp $
