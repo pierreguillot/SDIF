@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.8 2001-05-02 09:34:36 tisseran Exp $
+# $Id: Makefile.am,v 1.9 2001-05-04 14:07:26 tisseran Exp $
 #
 # ./Makefile.am		September 2000			Patrice Tisserand
 #
@@ -29,6 +29,9 @@
 # send email to:  sdif@ircam.fr
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.8  2001/05/02 09:34:36  tisseran
+# Change License from GNU Public License to GNU Lesser Public License.
+#
 # Revision 1.7  2001/04/26 14:51:59  tisseran
 # ARRGGHHH how can I remove all this stupid log@!@!@@!
 #
@@ -88,6 +91,7 @@ cvstag:
 # this might work differently for other places
 DISTDIR       = /usr/local/www/ircam/equipes/analyse-synthese/sdif/download
 DISTFILE      = $(distdir).tar.gz
+DISTFILED     = $(distdir)-src.tar.gz
 publish:	cvstag dist
-		rsh $(DISTHOST) cp $(PWD)/$(DISTFILE) $(DISTDIR) \;\
-				chmod g+w $(DISTDIR)/$(DISTFILE)
+		rsh $(DISTHOST) cp $(PWD)/$(DISTFILE) $(DISTDIR)/$(DISTFILED) \;\
+				chmod g+w $(DISTDIR)/$(DISTFILED)
