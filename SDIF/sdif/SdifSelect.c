@@ -1,4 +1,4 @@
-/* $Id: SdifSelect.c,v 3.6 2000-03-01 11:18:45 schwarz Exp $
+/* $Id: SdifSelect.c,v 3.7 2000-05-12 14:38:13 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -79,6 +79,11 @@ TODO
 
 LOG
   $Log: not supported by cvs2svn $
+  Revision 3.6  2000/03/01  11:18:45  schwarz
+  Added SdifCreateSelection.
+  Fixed Linux-only bug in SdifGetFilenameAndSelection (high addresses).
+  SdifSelectTestReal first tests from current select element onwards.
+
   Revision 3.5  1999/10/15  12:21:48  schwarz
   Changed min/max to upper case.
   Test frame takes _SdifAllStreamID into account.
@@ -104,7 +109,6 @@ LOG
 #include <stdio.h>
 #include <string.h>	 /* string functions */
 #include <math.h>	 /* fabs */
-#include <libgen.h>	 /* basename */
 #include <assert.h>	 /* N.B. that assert() calls will vanish with NDEBUG */
 
 #include "SdifFile.h"	 /* SdifFileT */
@@ -120,6 +124,13 @@ LOG
 
 static int debug = 0;
 
+char* SdifBaseName(char* inPathFileName);
+char* SdifBaseName(char* inPathFileName)
+{
+	char* retFileName = strrchr(inPathFileName, HOST_DIRECTORY_DIVIDER);
+	if(retFileName != NULL)	return (char*)(retFileName + 1);
+	else					return inPathFileName;
+}
 
 /*
 // DATA GROUP:		terminal symbols and character classes for parsing
@@ -199,7 +210,7 @@ SdifInitSelection (SdifSelectionT *sel, const char *filename, int namelen)
     /* copy and null-terminate filename */
     sel->filename = SdifCreateStrNCpy (filename, namelen + 1);
     sel->filename [namelen] = 0;
-    sel->basename = basename (sel->filename);
+    sel->basename = SdifBaseName (sel->filename);
 
     sel->stream = SdifCreateList (elimselelem);
     sel->frame  = SdifCreateList (elimselelem);
