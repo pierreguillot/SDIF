@@ -1,6 +1,6 @@
 dnl -*-autoconf-*-  (No, it's an autoconf file!)
 dnl -*-m4-*- (He emacs, it's a m4 file)
-dnl $Id: configure.in,v 1.21 2002-10-10 14:31:28 roebel Exp $
+dnl $Id: configure.in,v 1.22 2002-10-11 10:20:59 tisseran Exp $
 dnl
 dnl configure.in		September 2000		Patrice Tisserand
 dnl
@@ -31,6 +31,9 @@ dnl For any information regarding this and other IRCAM software, please
 dnl send email to:  sdif@ircam.fr
 dnl
 dnl $Log: not supported by cvs2svn $
+dnl Revision 1.21  2002/10/10 14:31:28  roebel
+dnl Removed remainings of TESTLIB
+dnl
 dnl Revision 1.20  2002/10/10 10:40:57  roebel
 dnl Removed configure-variable @TESTLIB@ which can be derived from @SELLIB@.
 dnl
@@ -123,7 +126,7 @@ PACKAGE=SDIF
 
 SDIF_VERSION_MAJOR=3
 SDIF_VERSION_MINOR=7
-SDIF_VERSION_RELEASE=0
+SDIF_VERSION_RELEASE=1
 
 VERSION=$SDIF_VERSION_MAJOR.$SDIF_VERSION_MINOR.$SDIF_VERSION_RELEASE
 
@@ -259,7 +262,8 @@ test/files/sdif/Makefile
 test/files/txtw/Makefile 
 test/files/sdifw/Makefile 
 test/files/sdifref/Makefile
-sdif.pc )
+sdif.pc 
+sdif.spec)
 
 AC_MSG_RESULT(END OF CONFIGURATION)
 
