@@ -1,4 +1,4 @@
-# $Id: Makefile.preamble,v 3.3 1999-09-28 13:24:34 schwarz Exp $
+# $Id: Makefile.preamble,v 3.4 1999-10-07 15:22:53 schwarz Exp $
 #
 #               Copyright (c) 1998 by IRCAM - Centre Pompidou
 #                          All rights reserved.
@@ -11,6 +11,10 @@
 # 
 #
 # $Log: not supported by cvs2svn $
+# Revision 3.3  1999/09/28  13:24:34  schwarz
+# Use true ansi compiler, correct libraries, and include path for
+# preincluded.h, including host_architecture.h and SDIF's project_preinclude.h.
+#
 # Revision 3.2  1999/04/30  13:46:14  schwarz
 # We're installing for the team now!
 #
@@ -30,11 +34,11 @@
 #	architecture
 #
 
-SYSTEM := $(shell uname -s)
+SYSTEM 	:= $(shell uname -s)
 SYSVERS := $(shell uname -r)
-ARCH := $(shell arch)
-DATE := $(shell date)
-USER := $(shell whoami)
+ARCH 	:= $(shell arch)
+DATE 	:= $(shell date)
+USER 	:= $(shell whoami)
 ifeq ($(ARCH),sgi)
 	SHELL = /bin/tcsh
 endif
@@ -45,9 +49,11 @@ ifeq ($(ARCH), mips)
 	SHELL = /u/formes/virolle/bin/mips/tcsh
 endif
 
+SYS	= $(SYSTEM)_$(SYSVERS)
+SYSDIR	= $(SYS)$(TARGET)
+ARCHDIR	= $(ARCH)/$(SYSDIR)
 
-
-
+RM	= rm -f
 
 
 ##################################
@@ -79,8 +85,8 @@ RELEASE := 2.00.01
 # INSTALL_ROOT := $(HOME)
 INSTALL_ROOT := /u/formes
 #INSTALL_ROOT := /usr/local
-INSTALL_LIB := $(INSTALL_ROOT)/lib/$(ARCH)/$(SYSTEM)_$(SYSVERS)
-INSTALL_BIN := $(INSTALL_ROOT)/bin/$(ARCH)/$(SYSTEM)_$(SYSVERS)
+INSTALL_LIB := $(INSTALL_ROOT)/lib/$(ARCH)/$(SYS)
+INSTALL_BIN := $(INSTALL_ROOT)/bin/$(ARCH)/$(SYS)
 INSTALL_INC := $(INSTALL_ROOT)/include/$(PROJECT)
 
 
@@ -199,7 +205,7 @@ endif
 # vars dirs et listes
 #
 
-VERSION := $(PROJECT) $(SYSTEM)_$(SYSVERS) $(RELEASE) compiled by $(USER) at $(DATE)
+VERSION := $(PROJECT) $(SYS)$(TARGET) $(RELEASE) compiled by $(USER) $(DATE)
 
 INCLUDE_DIR 	= /usr/include
 INCLUDE_DIRS 	= $(INCLUDE_DIR) /usr/include /u/formes/include
@@ -207,19 +213,25 @@ INCLUDE		= $(INCLUDE_DIRS:%=-I%)
 D_SDIF_FLAG := -D_SdifTypesFileName='"$(PRE_TYPES_SDIF)"' -D_SDIF_VERSION='"$(VERSION)"' 
 
 
-SDIF_OBJ_DIR := $(PRJ_DIR)/obj/$(SYSTEM)_$(SYSVERS)$(TARGET)
-SDIF_LIB_DIR := $(PRJ_DIR)/lib$(PROJECT)/$(SYSTEM)_$(SYSVERS)$(TARGET)
-
-
-SDIF_LIB = $(SDIF_LIB_DIR)/lib$(LIBNAME).a
+SDIF_OBJ_DIR 	= $(PRJ_DIR)/obj/$(SYSDIR)
+SDIF_LIB_DIR 	= $(PRJ_DIR)/lib$(PROJECT)/$(SYSDIR)
+SDIF_LIB	= $(SDIF_LIB_DIR)/lib$(LIBNAME).a
 
 include $(SDIF_SRC_DIR)/Makefile.src
-SDIF_OBJS = $(SDIF_SRC:%.c=$(SDIF_OBJ_DIR)/%.o)
 
-include $(SDIF_SRC_DIR)/Makefile.headers
-SDIF_INC = $(SDIF_HEADERS:%.h=$(SDIF_SRC_DIR)/%.h)
-SDIF_INC_INSTALLED = $(SDIF_HEADERS:%.h=$(INSTALL_INC)/%.h)
+SDIF_OBJS		 = $(SDIF_SRC:%.c=$(SDIF_OBJ_DIR)/%.o)
+SDIF_INC		 = $(SDIF_HEADERS:%.h=$(SDIF_SRC_DIR)/%.h)
+SDIF_INC_INSTALLED 	 = $(SDIF_HEADERS:%.h=$(INSTALL_INC)/%.h)
 
+
+###############
+# user settings
+#
+
+ifeq ($(USER),schwarz)
+#	compile in path accessible by other projects in development
+	SDIF_LIB_DIR 	= $(HOME)/lib/$(ARCH)/$(SYSDIR)
+endif
 
 ####################################
 INSTALL_DIRS:= $(INSTALL_ROOT) $(INSTALL_LIB) $(INSTALL_BIN) $(INSTALL_INC)
