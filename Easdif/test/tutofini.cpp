@@ -64,7 +64,7 @@ int main(int argc, char** argv)
     /******** SELECTION ********/
     /* if you want to change the selection of the EntityRead use the same 
      * notation as for selecting when opening the file */
-    readentity.ChangeSelection(":1FOB/1FOF");
+    readentity.ChangeSelection(":1FOB,1HRM/1FOF,1HRM");
 
     /******** READ AND WRITE  ********/
     /* to show the exception : we break the loop with an exception */
