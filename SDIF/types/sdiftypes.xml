@@ -1,17 +1,21 @@
 <!-- emacs mode: -*-xml-*- -->
 
-<sdif-tdl version="0.3alpha"> 
+<sdif-tdl version="0.4beta"> 
 
 <types-version>Ircam_1.7</types-version>
 
 <types-revision>
-  $Id: sdiftypes.xml,v 1.15 2002-09-20 14:28:46 schwarz Exp $
+  $Id: sdiftypes.xml,v 1.16 2002-09-20 14:31:14 schwarz Exp $
 </types-revision>
 
 
 <!-- CVS LOG - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
  $Log: not supported by cvs2svn $
+ Revision 1.15  2002/09/20 14:28:46  schwarz
+ Changed definition of matrix data type:
+ use <datatype>...</datatype> tag around!
+
  Revision 1.14  2002/08/28 17:27:53  schwarz
  Added templates, separator lines for sections.
  New types: segmentation markers (experimental), midi.
