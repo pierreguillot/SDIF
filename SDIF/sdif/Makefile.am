@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.11 2000-12-06 15:01:14 roebel Exp $
+# $Id: Makefile.am,v 1.12 2000-12-07 13:42:21 roebel Exp $
 #
 # ./sdif/Makefile.am		September 2000			Patrice Tisserand
 #
@@ -29,6 +29,9 @@
 # send email to:  sdif@ircam.fr
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.11  2000/12/06 15:01:14  roebel
+# removed host_configure.h from makefiles
+#
 # Revision 1.10  2000/11/21 14:51:47  schwarz
 # - sdif.h is now included by all sdif/Sdif*.c files.
 # - Removed all public typedefs, enums, structs, and defines from the
@@ -73,7 +76,7 @@ lib_LIBRARIES = @SELLIB@
 FORMES_H=host_architecture.h preincluded.h UniversalEnvVar.h  XpGuiCalls.h
 FORMES_INCLUDE=/u/formes/share/include
 
-SDIF_H = $(top_srcdir)/include/sdif.h 				\
+SDIF_H = $(top_srcdir)/include/sdif.h \
 	SdifCheck.h 	SdifErrMess.h	SdifConvToText.h 	\
 	SdifError.h 	SdifFGet.h 	SdifFPrint.h 		\
 	SdifFPut.h 	SdifFRead.h	SdifFScan.h 		\
@@ -111,7 +114,7 @@ $(libsdif_a_SOURCES) :  @IRCAMDEPS@
 
 SdifFile.o : $(top_srcdir)/sdif/SdifVersion.h
 
-Versionsrc := $(libsdif_a_SOURCES) $(subst config.h,,$(subst $(top_srcdir)/sdif/SdifVersion.h,,$(noinst_HEADERS)))
+Versionsrc := $(libsdif_a_SOURCES) $(subst config.h,,$(subst $(top_srcdir)/sdif/SdifVersion.h,,$(noinst_HEADERS) )) 
 $(top_srcdir)/sdif/SdifVersion.h : $(Versionsrc)
 	@echo  "Updating  Library CKSUM"
 	@echo "/* Automatically generated File do not edit */" >$@
