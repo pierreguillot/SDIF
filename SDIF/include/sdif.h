@@ -1,4 +1,4 @@
-/* $Id: sdif.h,v 1.32 2003-07-21 15:46:47 roebel Exp $
+/* $Id: sdif.h,v 1.33 2003-08-06 15:08:11 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -30,6 +30,9 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.32  2003/07/21 15:46:47  roebel
+ * Removed C++ comment.
+ *
  * Revision 1.31  2003/07/07 10:27:01  roebel
  * Added support for eInt1 and eUInt1 data types
  *
@@ -163,7 +166,7 @@
  * Revision 1.1.2.1  2000/08/21  13:07:41  tisseran
  * *** empty log message ***
  *
- * $Date: 2003-07-21 15:46:47 $
+ * $Date: 2003-08-06 15:08:11 $
  *
  */
 
@@ -178,7 +181,7 @@ extern "C" {
 #endif
 
 
-static const char _sdif_h_cvs_revision_ [] = "$Id: sdif.h,v 1.32 2003-07-21 15:46:47 roebel Exp $";
+static const char _sdif_h_cvs_revision_ [] = "$Id: sdif.h,v 1.33 2003-08-06 15:08:11 schwarz Exp $";
 
 
 #include <stdio.h>
@@ -722,7 +725,7 @@ typedef enum { sst_specsep, sst_stream, sst_frame, sst_matrix, sst_column,
 
 typedef struct 
 {
-    int		       value, range;
+    SdifUInt4	       value, range;
     SdifSelectTokens   rangetype; /* 0 for not present, sst_range, sst_delta */
 } SdifSelectElementIntT;
 
@@ -742,7 +745,7 @@ typedef struct
 */
 typedef union SdifSelectValueS 
 {
-    int            integer;
+    SdifUInt4      integer;
     double         real;
     char	   *string;
     SdifSignature  signature;
@@ -762,6 +765,14 @@ typedef struct SdifSelectElementS
     SdifSelectTokens rangetype; /* 0 for not present, sst_range, sst_delta */
 } SdifSelectElementT, *SdifSelectElementP;
 
+typedef struct SdifSelectIntMaskS
+{
+    SdifUInt4   num;		/* number of ints selected */
+    SdifUInt4	max;		/* max given int, #elems in mask */
+    int	       *mask;		/* selection bit mask */
+    int		openend;	/* are elems > max included? */
+} SdifSelectIntMaskT, *SdifSelectIntMaskP;
+
 /*DOC: 
   Holds a selection of what data to access in an SDIF file,
   parsed from a simple regular expression.  
@@ -772,11 +783,19 @@ typedef struct
 				   SdifInitSelection / SdifFreeSelection */
 		*basename;	/* points into filename */
     SdifListP	stream, frame, matrix, column, row, time;
+
+    SdifSelectIntMaskT streammask;
+    SdifSelectIntMaskT rowmask;
+    SdifSelectIntMaskT colmask;
 } SdifSelectionT;
 
 /* TODO: array of select elements
-     struct { SdifListP list; SdifSelectElementT minmax; } elem [eSelNum];
-   indexed by
+     struct { 
+	SdifListP list; 
+	SdifSelectElementT minmax; 
+	SdifSelectIntMaskP mask;
+     } elem [eSelNum];
+     indexed by
      enum   { eTime, eStream, eFrame, eMatrix, eColumn, eRow, eSelNum }
    to use in all API functions instead of SdifListP.
 */
@@ -1113,6 +1132,11 @@ size_t SdifFReadMatrixHeader     (SdifFileT *SdifF);
   d'entête de matrice qui réinitialise ses paramètres).  */
 size_t SdifFReadOneRow           (SdifFileT *SdifF);
 
+/*DOC:
+  skip one matrix row, when reading row by row with SdifFReadOneRow */
+size_t SdifFSkipOneRow(SdifFileT *SdifF);
+
+
 /*DOC: 
   Cette fonction lit l'entête d'un frame à partir de la taille et
   jusqu'au temps. Donc <strong>elle ne lit pas la signature</strong>
@@ -1127,9 +1151,6 @@ size_t SdifFReadFrameHeader      (SdifFileT *SdifF);
   matrices que le programme lecteur n'en connaît. Il peut ainsi les
   passer pour retomber sur un autre frame.  */
 size_t SdifFSkipMatrix	         (SdifFileT *SdifF);
-/*DOC:
-  obsolete, now called SdifFSkipMatrix */
-size_t SdifSkipMatrix            (SdifFileT *SdifF);
 
 /*DOC: 
   Cette fonction permet de passer une matrice mais après la lecture de
@@ -1138,18 +1159,12 @@ size_t SdifSkipMatrix            (SdifFileT *SdifF);
 
   Note:  The matrix padding is skipped also. */
 size_t SdifFSkipMatrixData       (SdifFileT *SdifF);
-/*DOC:
-  obsolete, now called SdifFSkipMatrixData */
-size_t SdifSkipMatrixData        (SdifFileT *SdifF);
 
 /*DOC: 
   Cette fonction à le même sens que SdifSkipMatrixData mais pour les
   frames. Il faut donc pour l'utiliser avoir au préalable lu la
   signature et l'entête.  */
 size_t SdifFSkipFrameData        (SdifFileT *SdifF);
-/*DOC:
-  obsolete, now called SdifFSkipFrameData */
-size_t SdifSkipFrameData         (SdifFileT *SdifF);
 
 /*DOC: 
   Cette fonction permet de lire le Padding en fin de matrice.
@@ -1162,6 +1177,11 @@ size_t SdifSkipFrameData         (SdifFileT *SdifF);
   actuelle dans le fichier et un byte, repère d'allignement sur 64
   bits.  */
 size_t SdifFReadPadding          (SdifFileT *SdifF, size_t Padding);
+
+
+/* skip given number of bytes, either by seeking or by reading bytes */
+size_t SdifFSkip (SdifFileT *SdifF, size_t bytes);
+
 
 /*DOC:
   Read and throw away <i>num</i> bytes from the file. */
@@ -1326,13 +1346,6 @@ size_t SdifFWriteTextFrameSdifString(SdifFileT     *SdifF,
 				     SdifFloat8    Time,
 				     SdifSignature MatrixSignature,
 				     SdifStringT   *SdifString);
-
-
-/*
- * obsolete
- */
-size_t  SdifFWriteNameValueCurrHT (SdifFileT *SdifF);
-size_t  SdifFWriteAllNameValueHT  (SdifFileT *SdifF);
 
 
 /*
@@ -2224,7 +2237,7 @@ SdifFrameTypeT* SdifFGetFrameType(SdifFileT *file, SdifSignature sig);
 (SdifErrorFile = __FILE__, SdifErrorLine = __LINE__, (_type*) malloc(sizeof(_type)))
 
 #define SdifCalloc(_type, _nbobj) \
-(SdifErrorFile = __FILE__, SdifErrorLine = __LINE__, (_type*) malloc(sizeof(_type) * _nbobj))
+(SdifErrorFile = __FILE__, SdifErrorLine = __LINE__, (_type*) calloc(_nbobj, sizeof(_type)))
 
 #define SdifRealloc(_ptr, _type, _nbobj) \
 (SdifErrorFile = __FILE__, SdifErrorLine = __LINE__, (_type*) realloc(_ptr, sizeof(_type) * _nbobj))
@@ -2244,7 +2257,7 @@ char *SdifMrType;
 SdifBlockNodeT*	SdifCreateBlockNode	(SdifBlockNodeT* Next, char *file, int line, char* type, void* ptr, size_t size, size_t nobj);
 SdifBlockNodeT*	SdifKillBlockNode	(SdifBlockNodeT* BlockNode);
 void		SdifPrintBlockNode	(int sizealloc, char* mess, SdifBlockNodeT* BlockNode);
-void*		SdifMr_alloc		(SdifBlockListT* L, size_t size, size_t nobj);
+void*		SdifMr_alloc		(SdifBlockListT* L, size_t size, size_t nobj, int clear);
 size_t		SdifMr_free		(SdifBlockListT* L, void* ptr);
 void*		SdifMr_realloc		(SdifBlockListT* L, void* oldptr, size_t size, size_t nobj);
 void		SdifMrDrainBlockList	(SdifBlockListT* L);
@@ -2253,11 +2266,11 @@ extern SdifBlockListT SdifMrReport;
 
 #define SdifMalloc(_type) \
 (SdifErrorFile = __FILE__, SdifErrorLine = __LINE__, SdifMrType=_SdifTypeToStr(_type), \
-(_type*) SdifMr_alloc(&SdifMrReport, sizeof(_type), 1))
+(_type*) SdifMr_alloc(&SdifMrReport, sizeof(_type), 1, 0))
 
 #define SdifCalloc(_type, _nbobj) \
 (SdifErrorFile = __FILE__, SdifErrorLine = __LINE__, SdifMrType=_SdifTypeToStr(_type), \
-(_type*) SdifMr_alloc(&SdifMrReport, sizeof(_type), _nbobj))
+(_type*) SdifMr_alloc(&SdifMrReport, sizeof(_type), _nbobj, 1))
 
 #define SdifRealloc(_ptr, _type, _nbobj) \
 (SdifErrorFile = __FILE__, SdifErrorLine = __LINE__, SdifMrType=_SdifTypeToStr(_type), \
@@ -2349,16 +2362,6 @@ SdifNameValueT*     SdifNameValuesLPutCurrNVT   (SdifNameValuesLT *NameValuesL, 
 SdifNameValueT*     SdifNameValuesLPutCurrNVTTranslate(SdifNameValuesLT *NameValuesL, const char *Name,  const char *Value);
 
 SdifUInt2           SdifNameValuesLIsNotEmpty   (SdifNameValuesLT *NameValuesL);
-
-
-/*
- * Obsolete
- */
-SdifNameValuesLT*   SdifNameValuesLNewHT    (SdifNameValuesLT *NameValuesL);
-SdifHashTableT*     SdifNameValuesLSetCurrHT(SdifNameValuesLT *NameValuesL, SdifUInt4 NumCurrHT);
-SdifNameValueT*     SdifNameValuesLGetCurrHT(SdifNameValuesLT *NameValuesL, char *Name);
-SdifNameValueT*     SdifNameValuesLPutCurrHT(SdifNameValuesLT *NameValuesL, const char *Name,  const char *Value);
-
 
 
 
@@ -2750,10 +2753,12 @@ SdifSignature  SdifSelectGetFirstSignature (SdifListP l, SdifSignature defval);
 // FUNCTION GROUP:	Selection Testing Functions
 */
 
-int SdifSelectTestIntRange  (SdifSelectElementT *elem, int cand);
+int SdifSelectTestIntMask (SdifSelectIntMaskT *mask, SdifUInt4 cand);
+
+int SdifSelectTestIntRange  (SdifSelectElementT *elem, SdifUInt4 cand);
 int SdifSelectTestRealRange (SdifSelectElementT *elem, double cand);
 
-int SdifSelectTestInt (SdifListT *list, int cand);
+int SdifSelectTestInt (SdifListT *list, SdifUInt4 cand);
 int SdifSelectTestReal (SdifListT *list, double cand);
 int SdifSelectTestSignature (SdifListT *list, const SdifSignature cand);
 int SdifSelectTestString (SdifListT *list, const char *cand);
@@ -2763,6 +2768,23 @@ int SdifSelectTestString (SdifListT *list, const char *cand);
 /*
 // FUNCTION GROUP:	Using a Selection in File I/O.
 */
+
+
+/*DOC:
+  Get number of selected streams in file selection, 0 for all  */
+int SdifFNumStreamsSelected (SdifFileT *file);
+
+/*DOC: 
+  Get number of selected rows in file selection, or num rows in
+  current matrix when all are selected.
+  SdifFReadMatrixHeader must have been called before! */
+int SdifFNumRowsSelected (SdifFileT *file);
+
+/*DOC:
+  Get number of selected columns in file selection, or num columns in
+  current matrix when all are selected  
+  SdifFReadMatrixHeader must have been called before! */
+int SdifFNumColumnsSelected (SdifFileT *file);
 
 
 
@@ -2797,6 +2819,13 @@ int SdifFCurrFrameIsSelected (SdifFileT *file);
   Can be called after SdifFReadMatrixHeader(). */
 int SdifFCurrMatrixIsSelected (SdifFileT *file);
 
+/*DOC:
+  Test file selection if a given row (starting from 1) is selected */
+int SdifFRowIsSelected (SdifFileT *file, int row);
+
+/*DOC:
+  Test file selection if a given column (starting from 1) is selected */
+int SdifFColumnIsSelected (SdifFileT *file, int col);
 
 
 
