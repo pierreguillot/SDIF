@@ -1,8 +1,17 @@
-/* $Id: sdif.h,v 1.9 2001-04-25 11:29:10 tisseran Exp $
+/* $Id: sdif.h,v 1.10 2001-04-26 14:47:02 tisseran Exp $
  *
  * This file contains type declaration of variables used in SDIF library.
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.9  2001/04/25 11:29:10  tisseran
+ * Change sdif_foralltype macro to compile on MacOS X.
+ * Old version: sdif_foralltypes sdif__foralltypes(macro,)
+ * New version; sdif_foralltypes sdif__foralltypes(macro, empty_definition)
+ * with
+ * #define empty_definition // empty definition
+ *
+ * Change AUTHORS to reflect people working on SDIF library
+ *
  * Revision 1.8  2000/12/07 13:01:39  roebel
  * Fixed wrong enum datatype declarations for backward compatibility
  *
@@ -42,7 +51,7 @@
  * Revision 1.1.2.1  2000/08/21  13:07:41  tisseran
  * *** empty log message ***
  *
- * $Date: 2001-04-25 11:29:10 $
+ * $Date: 2001-04-26 14:47:02 $
  *
  */
 
@@ -55,7 +64,7 @@ extern "C" {
 #endif
 
 
-static const char _sdif_h_cvs_revision_ [] = "$Id: sdif.h,v 1.9 2001-04-25 11:29:10 tisseran Exp $";
+static const char _sdif_h_cvs_revision_ [] = "$Id: sdif.h,v 1.10 2001-04-26 14:47:02 tisseran Exp $";
 
 
 #include <stdio.h>
