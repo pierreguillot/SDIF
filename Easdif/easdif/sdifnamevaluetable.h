@@ -33,9 +33,15 @@
  * 
  *
  * 
- * $Id: sdifnamevaluetable.h,v 1.3 2003-04-18 16:44:00 schwarz Exp $ 
+ * $Id: sdifnamevaluetable.h,v 1.4 2003-04-29 15:41:30 schwarz Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.3  2003/04/18 16:44:00  schwarz
+ * Small changes to make easdif swiggable:
+ * - name change for swig-generated classes
+ * - eof() returns bool, not bool&
+ * - Matrix::Set takes int/float, not int&/float&
+ *
  * Revision 1.2  2003/04/06 16:31:08  roebel
  * Added license info
  *
@@ -148,17 +154,17 @@ public:
     // FUNCTION GROUP:	to see
   */
   /** 
-   * @brief view a Name Value
+   * @brief print a Name Value
    * 
    * 
    * @param name 
    */
-  void ViewNameValue(const std::string& name)const;
+  void PrintNameValue(const std::string& name)const;
 
   /** 
-   * @brief view a Name Value Table
+   * @brief print a Name Value Table
    */
-  void ViewNameValueTable() const;
+  void PrintNameValueTable() const;
 
 
   /*************************************************************************/

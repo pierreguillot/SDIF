@@ -32,9 +32,12 @@
  * 
  * 
  * 
- * $Id: sdifnamevaluetable.cpp,v 1.2 2003-04-06 16:31:08 roebel Exp $ 
+ * $Id: sdifnamevaluetable.cpp,v 1.3 2003-04-29 15:41:30 schwarz Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  2003/04/06 16:31:08  roebel
+ * Added license info
+ *
  * Revision 1.1  2003/03/03 19:00:16  roebel
  * Moved src directory to new name easdif
  *
@@ -101,7 +104,7 @@ SdifUInt4 SDIFNameValueTable::SetStreamID(const SdifUInt4& streamid)
 }
 
 
-void SDIFNameValueTable::ViewNameValue(const std::string& name) const
+void SDIFNameValueTable::PrintNameValue(const std::string& name) const
 {
   std::cout << name << "\t\t"
 	    << GetValue(name) << std::endl;
@@ -110,7 +113,7 @@ void SDIFNameValueTable::ViewNameValue(const std::string& name) const
 
 
 
-void SDIFNameValueTable::ViewNameValueTable() const
+void SDIFNameValueTable::PrintNameValueTable() const
 {
 
     for (const_iterator p = begin(); 

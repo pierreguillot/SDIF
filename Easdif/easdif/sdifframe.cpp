@@ -32,9 +32,15 @@
  * 
  * 
  * 
- * $Id: sdifframe.cpp,v 1.3 2003-04-18 16:44:00 schwarz Exp $ 
+ * $Id: sdifframe.cpp,v 1.4 2003-04-29 15:41:30 schwarz Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.3  2003/04/18 16:44:00  schwarz
+ * Small changes to make easdif swiggable:
+ * - name change for swig-generated classes
+ * - eof() returns bool, not bool&
+ * - Matrix::Set takes int/float, not int&/float&
+ *
  * Revision 1.2  2003/04/06 16:31:08  roebel
  * Added license info
  *
@@ -75,7 +81,7 @@ int SDIFFrame::Read(SdifFileT* file, bool &eof)
 {
     mFrameBytesRead = 0;
 
-    mFrameBytesRead += ReadInfo(file);
+    mFrameBytesRead += ReadHeader(file);
     /* for selection */
     if (mFrameBytesRead == 0)
     {
@@ -111,7 +117,7 @@ int SDIFFrame::Read(SDIFEntity& entity)
 
 /*
     SdifFileT* file = entity.GetFile();
-    ReadInfo(file);   
+    ReadHeader(file);   
     Resize(file);
     ReadData(file);
 */
@@ -142,7 +148,7 @@ int SDIFFrame::ReadData(const SDIFEntity& entity)
 }
 
 /* reading the informations */
-int SDIFFrame::ReadInfo(SdifFileT* file)
+int SDIFFrame::ReadHeader(SdifFileT* file)
 {
     int BytesRead = 0;  
     //size_t BytesRead = 0;
@@ -168,10 +174,10 @@ int SDIFFrame::ReadInfo(SdifFileT* file)
 
 
 /* reading the informations with SDIFEntity */
-int SDIFFrame::ReadInfo(const SDIFEntity& entity)
+int SDIFFrame::ReadHeader(const SDIFEntity& entity)
 {
     SdifFileT* file = entity.GetFile();
-    return ReadInfo(file);
+    return ReadHeader(file);
 }
 
 
@@ -180,7 +186,7 @@ int SDIFFrame::Write(SdifFileT* file)
 {        
     SdifUInt4 index;
     
-    WriteInfo(file);
+    WriteHeader(file);
     SdifUInt4 _size    = 0;
     for (index = 0; index < mNbMatrix; index++)	    
 	_size += mv_Matrix[index].Write(file);     
@@ -200,7 +206,7 @@ int SDIFFrame::Write(const SDIFEntity& entity)
 }
 
 /* writing informations */
-int SDIFFrame::WriteInfo(SdifFileT* file)
+int SDIFFrame::WriteHeader(SdifFileT* file)
 {
   int _frsize = SdifSizeOfFrameHeader();
   SdifFSetCurrFrameHeader(file, mSig, mSize+SdifSizeOfFrameHeader(),
@@ -211,13 +217,13 @@ int SDIFFrame::WriteInfo(SdifFileT* file)
 }
 
 /* writing informations with SDIFEntity*/
-int SDIFFrame::WriteInfo(const SDIFEntity& entity)
+int SDIFFrame::WriteHeader(const SDIFEntity& entity)
 {
-   return WriteInfo(entity.GetFile());
+   return WriteHeader(entity.GetFile());
 }
 
 /* to see */
-void SDIFFrame::ViewInfo()
+void SDIFFrame::PrintHeader()
 {
     std::cout << "\nFrame signature : " << SdifSignatureToString(mSig)
 	      << std::endl;
@@ -226,16 +232,16 @@ void SDIFFrame::ViewInfo()
     std::cout << " number of Matrix in current Frame : " << mNbMatrix << std::endl; 
 }
 
-void SDIFFrame::View()
+void SDIFFrame::Print()
 {
     SdifUInt4 index;
-    ViewInfo();
+    PrintHeader();
     for (index = 0; index < mNbMatrix; index++)
-	mv_Matrix[index].View();		  
+	mv_Matrix[index].Print();		  
 }
 
 /* to Set */
-void SDIFFrame::SetInfo(SdifSignature sig, SdifUInt4 streamID, float time)//, SdifUInt4 nbMatrix)
+void SDIFFrame::SetHeader(SdifSignature sig, SdifUInt4 streamID, float time)//, SdifUInt4 nbMatrix)
 {
     mSig = sig;
     mStreamID = streamID;

@@ -32,9 +32,12 @@
  * 
  * 
  * 
- * $Id: sdifentity.cpp,v 1.4 2003-04-18 17:43:22 schwarz Exp $ 
+ * $Id: sdifentity.cpp,v 1.5 2003-04-29 15:41:30 schwarz Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.4  2003/04/18 17:43:22  schwarz
+ * eof() const method
+ *
  * Revision 1.3  2003/04/18 16:44:00  schwarz
  * Small changes to make easdif swiggable:
  * - name change for swig-generated classes
@@ -354,14 +357,14 @@ int SDIFEntity::WriteFrame(SDIFFrame& frame)
     return size_frame;
 }
 
-void SDIFEntity::ViewAllNVTs()
+void SDIFEntity::PrintAllNVTs()
 {
   int nnvts = mv_NVT.size();
     for (int n = 0; n < nnvts; ++n)
     {
 	std::cout << std::endl <<"NameValueTable number : " << n+1 
 		  << std::endl;
-	mv_NVT[n].ViewNameValueTable();
+	mv_NVT[n].PrintNameValueTable();
     }
 }
 
@@ -378,7 +381,7 @@ SdifStringT* SDIFEntity::GetTypeString()
     return mDescription;
 }
 
-int SDIFEntity::ViewTypes()
+int SDIFEntity::PrintTypes()
 {
     std::cout << std::endl <<  mDescription->str << std::endl;
     return 1;

@@ -33,9 +33,15 @@
  * 
  * 
  * 
- * $Id: sdifmatrix.h,v 1.4 2003-04-29 15:19:51 schwarz Exp $ 
+ * $Id: sdifmatrix.h,v 1.5 2003-04-29 15:41:30 schwarz Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.4  2003/04/29 15:19:51  schwarz
+ * Constructor with space initialisation, default singleton float matrix.
+ * CreateMatrixData accepts SdifSignature or std::string.
+ * Sketch string matrix access functions to be implemented,
+ * throw exception when used.
+ *
  * Revision 1.3  2003/04/18 16:44:00  schwarz
  * Small changes to make easdif swiggable:
  * - name change for swig-generated classes
@@ -145,14 +151,14 @@ public:
 /*************************************************************************/
 /* To see a SDIFMatrix */
 /**
-* \defgroup viewm SDIFMatrix - View
+* \defgroup print SDIFMatrix - Print
 */
 
 /** 
- * \ingroup viewm
+ * \ingroup print
  * to see the matrix
  */
-    void View();
+    void Print();
 
 /*************************************************************************/
 /* Read and write a SDIFMatrix */
