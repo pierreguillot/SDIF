@@ -1,12 +1,17 @@
 #!/usr/bin/perl
 #
-# $Id: xmltohtml.pl,v 1.10 2000-08-22 16:21:48 schwarz Exp $
+# $Id: xmltohtml.pl,v 1.11 2001-05-02 15:21:33 schwarz Exp $
 #
 # xmltohtml.pl		6. July 2000		Diemo Schwarz
 #
 # Translate SDIF types description in XML to HTML.
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.10  2000/08/22 16:21:48  schwarz
+# Allow attributes to HTML-like tags.
+# Back/Home/etc. links at bottom.
+# Nicer toc.
+#
 # Revision 1.9  2000/08/18  17:53:28  schwarz
 # Proper handling of single HTML tags (empty tags in XML).
 #
@@ -63,7 +68,7 @@ my %tagsing = (map { (uc $_, uc $_, lc $_, uc $_ ) } @singlehtmltags);
 
 
 # init
-my $cvsrev     = '$Id: xmltohtml.pl,v 1.10 2000-08-22 16:21:48 schwarz Exp $ ';
+my $cvsrev     = '$Id: xmltohtml.pl,v 1.11 2001-05-02 15:21:33 schwarz Exp $ ';
 my $tdlversion = '';
 my $version    = 'unknown';
 my $revision   = '';
@@ -167,11 +172,19 @@ $xml->register ("frameref:signature",  attr  => \$refsig);
 $xml->register ("frameref",	       char  => \&frameref_char);
 		# no tags in ref text!
 
+# matrix, frame, column descriptions
 $xml->register ("description", start => \&description_start);
 $xml->register ("description", char  => \&out_char);
 $xml->register ("description", end   => \&description_end);
 $xml->register ("description:language", attr => \$lang);
+$xml->register ("description:title",    attr => \$desctitle);
+
+# section and section description
 $xml->register ("section",     char  => \&section);
+$xml->register (">sdif-tdl>description", 
+			       start => \&section_description_start);
+$xml->register (">sdif-tdl>description", 
+			       end   => \&section_description_end);
 
 
 # register XML->HTML tag mapping handlers
@@ -243,7 +256,7 @@ sub footer
 
     $h->BR->BR->BR->ADDRESS->tag('BASEFONT', size => 1)
       ->A(name => "Section_About This Document")
-      ->TABLE(cellpadding => 3)->TR
+      ->TABLE(cellspacing => 0, cellpadding => 3)->TR
 	  ->TD(colspan => 4, bgcolor => "gray")
 	      ->FONT(size => +4)->B->t("About This Document")->_B->_FONT
       ->TR(align => 'left', valign => 'top')
@@ -408,13 +421,28 @@ sub description_end
     $h->_DD->_DL;
 }
 
+sub section_description_start
+{
+    $h->H3->t(($desctitle ? $desctitle : "Description") 
+	    . ($lang      ? " (language = $lang)" : ""))->_H3;
+    $text = '';
+    $desctitle = '';
+    $lang = '';
+}
+
+sub section_description_end
+{
+    $h->P->HR;
+}
+
 
 sub section
 {
     chomp $_[1];
     #simple: $h->H2->t($_[1])->_H2;
     $h->BR->BR->A(name => "Section_$_[1]")
-      ->TABLE(bgcolor => 'yellow', cellpadding => 3, width => '100%')
+      ->TABLE(bgcolor => 'yellow', cellspacing => 0, cellpadding => 3, 
+	      width   => '100%')
       ->TR->TD->FONT(size => +5)->B->t($_[1])->_B->_FONT->_TD->_TR->_TABLE->_A;
     toc ("Section_$_[1]", $_[1], 1);
 }
