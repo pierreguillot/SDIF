@@ -1,42 +1,46 @@
-/* $Id: querysdif.c,v 1.5 2002-05-24 19:41:51 ftissera Exp $
+/* $Id: querysdif.c,v 1.6 2003-06-04 20:32:25 schwarz Exp $
  
                 Copyright (c) 1998 by IRCAM - Centre Pompidou
                            All rights reserved.
  
    For any information regarding this and other IRCAM software, please
    send email to:
-                             manager@ircam.fr
+                             sdif@ircam.fr
  
 
    querysdif.c		10.12.1998	Diemo Schwarz
    
    View summary of data in an SDIF-file.  
    
+
    $Log: not supported by cvs2svn $
+   Revision 1.5  2002/05/24 19:41:51  ftissera
+   Change code to be compatible with C++
+
    Revision 1.4  2000/12/06 13:43:43  lefevre
    Mix HostArchiteture and AutoConfigure mechanisms
 
- * Revision 1.3  2000/11/16  12:02:23  lefevre
- * no message
- *
- * Revision 1.2  2000/11/15  14:53:40  lefevre
- * no message
- *
- * Revision 1.1  2000/10/30  14:44:03  roebel
- * Moved all tool sources into central tools directory and added config.h to sources
- *
- * Revision 1.2  2000/10/27  20:04:18  roebel
- * autoconf merged back to main trunk
- *
- * Revision 1.1.2.3  2000/08/21  18:48:49  tisseran
- * Use SdifFSkipFrameData
- *
- * Revision 1.1.2.2  2000/08/21  16:42:12  tisseran
- * *** empty log message ***
- *
- * Revision 1.1.2.1  2000/08/21  13:42:24  tisseran
- * *** empty log message ***
- *
+   Revision 1.3  2000/11/16  12:02:23  lefevre
+   no message
+  
+   Revision 1.2  2000/11/15  14:53:40  lefevre
+   no message
+  
+   Revision 1.1  2000/10/30  14:44:03  roebel
+   Moved all tool sources into central tools directory and added config.h to sources
+  
+   Revision 1.2  2000/10/27  20:04:18  roebel
+   autoconf merged back to main trunk
+  
+   Revision 1.1.2.3  2000/08/21  18:48:49  tisseran
+   Use SdifFSkipFrameData
+  
+   Revision 1.1.2.2  2000/08/21  16:42:12  tisseran
+   *** empty log message ***
+  
+   Revision 1.1.2.1  2000/08/21  13:42:24  tisseran
+   *** empty log message ***
+  
    Revision 3.2  1999/06/18  16:20:28  schwarz
    In SigEqual: SdifSignatureCmpNoVersion (s, sigs [i].sig) dropped LAST byte
    on alpha (this is fixed now), and anyway, we want to compare the whole sig.
@@ -53,7 +57,6 @@
    Revision 1.1  1998/12/10  18:55:40  schwarz
    Added utility program querysdif to view the summary of data in
    an SDIF-file.
-
 */
 
 
@@ -91,6 +94,17 @@ void usage (void)
     XpExit(1);
 }
 
+
+typedef struct
+{ 
+    float min, max;
+} minmax;
+
+#define initminmax(m)	((m).min = FLT_MAX, (m).max = FLT_MIN)
+#define minmax(m, v)	{ if ((v) < (m).min)   (m).min = (v); \
+			  if ((v) > (m).max)   (m).max = (v); }
+
+
 /* Count occurence of signatures as frame or matrix under
    different parent frames. */
 #define	MaxSignatures	1024
@@ -98,13 +112,19 @@ int	nsig	  = 0;
 
 struct TwoLevelTree 
 {
-	SdifSignature sig;
-	int	      parent;
-	int	      stream;
-	int	      count;
-	float	      tmin, tmax;
-	/* todo: more fields for statistics */
-}	sigs [MaxSignatures];
+    /* common fields */
+    SdifSignature sig;
+    int	      count;
+    int	      parent;	/* 0 for frames, index to parent frame for matrices */
+
+    /* frame fields */
+    int	      stream;
+    minmax    time, nmatrix;
+
+    /* matrix fields */
+    minmax    ncol, nrow;
+
+}   sigs [MaxSignatures];
 
 
 int SigEqual (SdifSignature s, int parent, int stream, int i)
@@ -134,24 +154,35 @@ int GetSigIndex (SdifSignature s, int parent, int stream)
 	sigs [i].parent = parent;
 	sigs [i].stream = stream;
 	sigs [i].count  = 0;
-	sigs [i].tmin   = FLT_MAX;
-	sigs [i].tmax   = FLT_MIN;
+	initminmax(sigs [i].time);
+	initminmax(sigs [i].nmatrix);
+	initminmax(sigs [i].ncol);
+	initminmax(sigs [i].nrow);
+
 	nsig++;
     }
 
     return (i);
 }
 
-int CountSig (SdifSignature s, int parent, int stream, float time)
+int CountFrame (SdifSignature s, int stream, float time, int nmatrix)
 {
-    int i = GetSigIndex (s, parent, stream);
+    int i = GetSigIndex (s, -1, stream);
 
     sigs [i].count++;
-    if (time < sigs [i].tmin)   sigs [i].tmin = time;
-    if (time > sigs [i].tmax)   sigs [i].tmax = time;
-    /* todo: statistics */
+    minmax(sigs [i].time,    time);
+    minmax(sigs [i].nmatrix, nmatrix);
 
     return (i);
+}
+
+void CountMatrix (SdifSignature s, int parent, int nrow, float ncol)
+{
+    int i = GetSigIndex (s, parent, -1);
+
+    sigs [i].count++;
+    minmax(sigs [i].nrow, nrow);
+    minmax(sigs [i].ncol, ncol);
 }
 
 
@@ -253,7 +284,10 @@ int main(int argc, char** argv)
 
     if (vall || vdata)
     {
-	/* read, count frame loop */
+	/* 
+	 * read, count frame loop 
+	 */
+
 	while (!eof)
 	{
 	    int frameidx;
@@ -263,21 +297,20 @@ int main(int argc, char** argv)
 	    bytesread += SdifFReadFrameHeader (in);
 
 	    /* count frame */
-	    frameidx = CountSig (SdifFCurrSignature(in), -1, SdifFCurrID(in),
-				 SdifFCurrTime(in));
+	    frameidx = CountFrame (SdifFCurrSignature(in), SdifFCurrID(in),
+				   SdifFCurrTime(in), SdifFCurrNbMatrix(in));
 
 	    /* for matrices loop */
 	    for (m = 0; m < SdifFCurrNbMatrix (in); m++)
 	    {
 		int nbrows, nbcols;
 
-		/* Read matrix header and count matrix */
+		/* Read matrix header */
 		bytesread += SdifFReadMatrixHeader (in);
-		CountSig (SdifFCurrMatrixSignature (in), frameidx, -1, 0);
 
-		/* Todo: statistics about rows/columns */
-		nbrows = SdifFCurrNbRow (in);
-		nbcols = SdifFCurrNbCol (in);
+		/* count matrix and do statistics about rows/columns */
+		CountMatrix (SdifFCurrMatrixSignature (in), frameidx, 
+			     SdifFCurrNbRow (in), SdifFCurrNbCol (in));
 
 		/* We're not actually interested in the matrix data, 
 		   so we skip it.  */
@@ -289,7 +322,11 @@ int main(int argc, char** argv)
 	    eof = SdifFGetSignature (in, &bytesread) == eEof;
 	}   /* end while frames */ 
 
-	/* print results */
+
+	/* 
+	 * print results 
+	 */
+
 	printf ("Data in file %s (%d bytes):\n", infile, bytesread);
 	/* useless 
 	   printf ("Number of different signatures/streams: %d\n\n", nsig); */
@@ -298,20 +335,25 @@ int main(int argc, char** argv)
 	{
 	    if (sigs [i].parent == -1)
 	    {
+		/* frames */
 		printf ("%5d %s frames in stream %d between time %f and %f containing\n", 
 			sigs [i].count, 
 			SdifSignatureToString (sigs [i].sig),
 			sigs [i].stream,
-			sigs [i].tmin,
-			sigs [i].tmax);
+			sigs [i].time.min,
+			sigs [i].time.max);
 
+		/* search children matrices of this frame */
 		for (m = 0; m < nsig; m++)
 		{
 		    if (sigs [m].parent == i)
-			printf ("  %5d %s matrices\n",
+			printf ("   %5d %s matrices with %3g --%3g rows, %3g --%3g columns\n",
 				sigs [m].count, 
-				SdifSignatureToString (sigs [m].sig));
-		    /* todo: rows/columns statistics */
+				SdifSignatureToString (sigs [m].sig),
+				sigs [m].nrow.min,
+				sigs [m].nrow.max,
+				sigs [m].ncol.min,
+				sigs [m].ncol.max);
 		}
 	    }
 	}
