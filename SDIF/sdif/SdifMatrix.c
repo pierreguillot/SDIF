@@ -1,4 +1,4 @@
-/* $Id: SdifMatrix.c,v 3.10 2004-09-09 17:46:44 schwarz Exp $
+/* $Id: SdifMatrix.c,v 3.11 2004-09-10 13:27:40 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -33,6 +33,12 @@
  *
  * author: Dominique Virolle 1997
  * $Log: not supported by cvs2svn $
+ * Revision 3.10  2004/09/09 17:46:44  schwarz
+ * Changed SdifMatrixDataT to something sensible that allows to read and
+ * store a whole matrix's data as one block, with automatic reallocation.
+ * Copy matrix data to float array, to use in jMax/FTM.
+ * Moved SdifSizeOfMatrix* functions here.
+ *
  * Revision 3.9  2004/07/22 14:47:56  bogaards
  * removed many global variables, moved some into the thread-safe SdifGlobals structure, added HAVE_PTHREAD define, reorganized the code for selection, made some arguments const, new version 3.8.6
  *
@@ -570,6 +576,8 @@ int SdifMatrixDataRealloc (SdifMatrixDataT *data, int newsize)
 	    return 0;
 	}
     }
+    else
+	return 1;    
 }
 
 /* matrix data element access by index */
