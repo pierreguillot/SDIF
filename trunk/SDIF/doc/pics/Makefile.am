@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.2 2000-10-27 20:03:09 roebel Exp $
+# $Id: Makefile.am,v 1.3 2001-05-02 09:34:39 tisseran Exp $
 #
 # ./doc/pics/Makefile.am		September 2000			Patrice Tisserand
 #
@@ -10,7 +10,7 @@
 # Copyright (C) 1998, 1999, 2000 by IRCAM - Centre Pompidou, Paris, France.
 # 
 # This program is free software; you can redistribute it and/or
-# modify it under the terms of the GNU General Public License
+# modify it under the terms of the GNU Lesser General Public License
 # as published by the Free Software Foundation; either version 2
 # of the License, or (at your option) any later version.
 # 
@@ -19,9 +19,9 @@
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
+# GNU Lesser General Public License for more details.
 # 
-# You should have received a copy of the GNU General Public License
+# You should have received a copy of the GNU Lesser General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #
@@ -29,6 +29,9 @@
 # send email to:  sdif@ircam.fr
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.2  2000/10/27 20:03:09  roebel
+# autoconf merged back to main trunk
+#
 # Revision 1.1.2.2  2000/10/26  17:27:37  schwarz
 # Added header with copyright and links to all Makefile.am and configure.in.
 #

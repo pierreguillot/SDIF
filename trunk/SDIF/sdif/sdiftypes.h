@@ -1,4 +1,4 @@
-/* This document ../sdif/sdiftypes.h generated Wed Apr 18 18:12:35 2001 by xmltostyp.pl from sdiftypes.xml
+/* This document ../sdif/sdiftypes.h generated Fri Apr 27 15:51:38 2001 by xmltostyp.pl from sdiftypes.xml
 */
 #ifndef _SDIFTYPES_H_
 #define _SDIFTYPES_H_
@@ -47,7 +47,7 @@
 "1MTD 1FOF { Frequency, Amplitude, BandWidth, Tex, DebAtt, Atten, Phase }\n"\
 "1MTD 1RES { Frequency, Amplitude, DecayRate, Phase }\n"\
 "1MTD 1DIS { Distribution, Amplitude }\n"\
-"1FTD 1NOI { IDIS ; 1DIS NoiseDistribution;  }\n"\
+"1FTD 1NOI { 1DIS NoiseDistribution;  }\n"\
 "1FTD 1FOB { 1FQ0 FundamentalFrequencyEstimate; 1FOF Formants; 1CHA Channels;  }\n"\
 "1FTD 1REB { 1RES Filters; 1CHA Channels;  }\n"\
 "\n"\

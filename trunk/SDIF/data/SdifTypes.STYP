@@ -1,100 +1,93 @@
+
 SDIF
 
 1NVT
 {
-  SdifTypesVersion	Ircam.1.40.libsdif;
+  GenerationDate	Fri_Apr_27_15_51_38_2001;
+  GenerationDir	/u/formes/tisseran/src/SDIF/types;
+  GenerationHost	kethuk_ircam_fr;
+  GenerationUser	tisseran;
+  Generator	xmltostyp_pl;
+  GeneratorFiledate	Wed_Apr_18_18_37_16_2001;
+  GeneratorRevision	$Id__xmltostyp_pl_v_1_5_2001/04/18_16_24_52_schwarz_Exp_$_;
+  SdifTypesVersion	Ircam_1_5;
+  SourceFile	sdiftypes_xml;
+  SourceFileRevision	___$Id__sdiftypes_xml_v_1_10_2001/04/20_16_58_38_schwarz_Exp_$_;
+  SourceFiledate	Mon_Apr_23_19_54_43_2001;
 }
-
 
 1TYP
 {
-  1MTD  1NVT    { Text }
-  1MTD  1TYP    { Text }
-  1MTD  1IDS    { Text }
-  
-  1FTD  1NVT    { 1NVT NameValueTable;  }
-  1FTD  1TYP    { 1TYP TypeDefinitions; }
-  1FTD  1IDS    { 1IDS StreamIdTable;   }
+1MTD 1NVT { NVTText }
+1MTD 1TYP { TYPText }
+1MTD 1IDS { IDSText }
+1FTD 1NVT { 1NVT NameValueTable;  }
+1FTD 1TYP { 1TYP TypeDefinitions;  }
+1FTD 1IDS { 1IDS StreamInfo;  }
 
-  1MTD  1FOF    { Frequency, Amplitude, BandWidth, Tex, DebAtt, Atten, Phase }
-  1MTD  1FQ0    { Frequency, Confidence, Score, RealAmplitude }
-  1MTD  1RES    { Frequency, Amplitude, BandWidth, Saliance, Correction }
-  1MTD  1CHA    { Channel1, Channel2, Channel3, Channel4 }
-  1MTD  1DIS    { Distribution, Amplitude }
+1MTD 1GAI { Gain }
+1FTD 1GAI { 1GAI Gain;  }
+1MTD IWIN { WindowIdentifier, WindowSize }
+1MTD 1WIN { Samples }
+1FTD 1WIN { IWIN WindowInfo; 1WIN Window;  }
+1MTD 1CHA { Channel1, Channel2 }
 
-  1FTD  1FQ0    { 1FQ0 PitchEstimate; }
-  1FTD  1NOI    { 1DIS NoiseInfo; }
-		       
-  1FTD  1FOB    { 1FQ0 PitchModeHit;
-                  1FOF Formants;
-                  1CHA FormantsChannels; }
-		       
-  1FTD  1REB    { 1RES Filters;
-                  1CHA FiltersChannels; }
+1MTD 1FQ0 { Frequency, Confidence, Score, RealAmplitude }
+1FTD 1FQ0 { 1FQ0 FundamentalFrequencyEstimate;  }
 
-  1MTD  1PIC    { Frequency, Amplitude, Phase, Confidence }
-  1MTD  1TRC    { Index, Frequency, Amplitude, Phase }
-  1MTD  1HRM    { Index, Frequency, Amplitude, Phase }
- 
-  1FTD  1PIC    { 1PIC PickedPeaks;   }
-  1FTD  1TRC    { 1TRC SinusoidalTracks; }
-  1FTD  1HRM    { 1HRM HarmonicPartials; }
+1MTD 1PIC { Frequency, Amplitude, Phase, Confidence }
+1MTD 1TRC { Index, Frequency, Amplitude, Phase }
+1MTD 1HRM { Index, Frequency, Amplitude, Phase }
+1FTD 1PIC { 1PIC PickedPeaks;  }
+1FTD 1TRC { 1TRC SinusoidalTracks;  }
+1FTD 1HRM { 1HRM HarmonicPartials;  }
+1MTD 1HRE { MeanDeltaFrequency, Harmonicity, WeightedHarmonicity }
+1FTD 1HRE { 1HRE HarmonicityEstimate;  }
 
-  1MTD  1STF    { Real, Imaginary }
-  1MTD  ISTF    { HighestBinFrequency, FrameDuration, FFTSize }
-  1FTD  ISTF    { ISTF Info; }
-  1FTD  1STF    { ISTF Info;
-                  1STF FourierTransform; }
+1MTD IENV { HighestBinFrequency, ScaleType, BreakFrequency }
+1MTD 1ENV { Env }
+1FTD 1ENV { IENV SpectralEnvelopeInfo; 1ENV SpectralEnvelope; 1GAI Gain;  }
+1MTD ITFC { SamplingRate, Order }
+1MTD 1CEC { CepstralCoefficients }
+1FTD 1CEC { 1CEC CepstralCoefs;  }
+1MTD 1ARA { AutoRegressiveCoefficients }
+1MTD 1ARK { ReflectionCoefficients }
+1MTD 1ARR { AutoCorrelationCoefficients }
+1FTD 1ARA { 1GAI Gain; 1ARA ARACoefs;  }
+1FTD 1ARK { 1GAI Gain; 1ARK ARKCoefs;  }
+1FTD 1ARR { 1ARR ARRCoefs;  }
 
-  1MTD  IENV    { HighestBinFrequency, Scale, BreakFreq }
-  1MTD  1ENV    { amplitude }
-  1FTD  1ENV    { 1ENV Envelope; }
+1MTD 1FOF { Frequency, Amplitude, BandWidth, Tex, DebAtt, Atten, Phase }
+1MTD 1RES { Frequency, Amplitude, DecayRate, Phase }
+1MTD 1DIS { Distribution, Amplitude }
+1FTD 1NOI { 1DIS NoiseDistribution;  }
+1FTD 1FOB { 1FQ0 FundamentalFrequencyEstimate; 1FOF Formants; 1CHA Channels;  }
+1FTD 1REB { 1RES Filters; 1CHA Channels;  }
 
-  1MTD  1GAI    { Gain } 
-  1FTD  1GAI    { 1GAI Gain; } 
+1MTD ISTF { PeriodOfTheDFT, WindowDuration, FFTSize }
+1MTD 1STF { Real, Imaginary }
+1FTD ISTF { ISTF FourierTransformInfo;  }
+1FTD 1STF { ISTF FourierTransformInfo; 1STF FourierTransform; 1WIN Window;  }
 
-  1MTD 	1ARA 	{ AutoRegressiveCoefficients }
-  1FTD 	1ARA 	{ 1GAI Gain;
-		  1ARA ARCoefs; }
-      
-  1MTD 	1ARK 	{ ReflectionCoefficients }
-  1FTD 	1ARK 	{ 1GAI Gain;
-		  1ARK ARCoefs; }
-      
-  1MTD 	1ARR 	{ AutoCorrelationCoefficients }
-  1FTD 	1ARR 	{ 1ARR ARCoefs; }
-      
-  1MTD 	1CEC 	{ c }
-  1FTD 	1CEC 	{ 1CEC CepstralCoefs; }
+1MTD INRG { Scale, NormalisationFactor }
+1MTD 1NRG { Energy }
+1FTD 1NRG { INRG ScaleAndFactor; 1NRG Energy; IWIN WindowInfo; 1WIN Window;  }
+1MTD 1BND { LowerFrequencyLimit, UpperFrequencyLimit }
+1FTD 1BND { 1BND Bands;  }
 
-  1MTD  1NRG    { Energy }
-  1MTD  INRG    { Scale, NormalisationFactor }
-  1FTD  1NRG    { INRG ScaleAndFactor;
-		  1NRG Energy; }
+1MTD ITDS { SamplingRate }
+1MTD 1TDS {  }
 
-  1MTD  1BND    { LowerFrequencyLimit, UpperFrequencyLimit }
-  1FTD  1BND    { 1BND Bands; }
+1MTD 1PEM { Identifier, Parameter1, Parameter2, Parameter3 }
+1MTD ITMR { Index, Frequency, Amplitude, Phase }
+1MTD ITMI { Index }
 
-  1MTD  1HRE    { MeanDeltaFrequency, Harmonicity, WeightedHarmonicity }
-  1FTD  1HRE    { 1HRE harm; }
+1MTD 1VUN { VoicingCoefficient }
+1MTD 1VUF { CuttingFrequency }
+1FTD 1MRK { 1PEM PeriodMarker; ITMR TransientMarkerRepresentation; ITMI TransientMarkerIdentifier;  }
+1FTD 1VUV { 1VUN VoicedUnvoicedNorm; 1VUF VoicedUnvoicedFreq;  }
 
-  1MTD  1PEM	{ Identifier, Parameter1, Parameter2, Parameter3 }
-  1MTD  ITMR	{ Index, Frequency, Amplitude, Phase }
-  1MTD  ITMI	{ Index }
-  1MTD  1VUN	{ Index }
-  1MTD  1VUF	{ CuttingFrequency }
-
-  1FTD  1MRK	{ 1PEM PeriodMarker; 
-		  ITMR TransientMarkerRepresentation;
-		  ITMI TransientMarkerIdentifier; }
-
-  1FTD  1VUV	{ 1VUN	VoicedUnvoicedNorm;
-		  1VUF  VoicedUnvoicedFreq; }
-
-  1MTD  EMPM	{ Value, Index }
-  1MTD  EMJR    { Record }
-  1FTD  EFPM	{ EMPM Tableau;
-		  EMJR EndRecording;}
+1MTD EMPM { Value, Index }
+1MTD EMJR { Record }
+1FTD EFPM { EMPM Tableau; EMJR EndRecording;  }
 }
-
-ENDF
