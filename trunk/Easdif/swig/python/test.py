@@ -1,5 +1,6 @@
 #!/usr/bin/env python2.2
-
+import math
+import string
 import eaSDIF
 
 file = eaSDIF.Entity()
@@ -14,7 +15,11 @@ res = file.OpenRead("../../test/lic.sdif")
 print "open (mode ", eaSDIF.eReadFile , ")...",res
 
 count = {}
-
+valfsig = {}
+valmsig = {}
+valcount ={}
+valsum ={}
+valssum ={}
 while not file.eof():
     res  = file.ReadNextFrame(frame);
     fsig = frame.GetSignature();
@@ -30,47 +35,50 @@ while not file.eof():
     nrow = mat.GetNbRows();
     ncol = mat.GetNbCols();
     val  = mat.GetDouble(0, 0);
+    sig  = fsig + "/" + msig;
 
-    #     sig  = fsig + "/" + msig;
-    #     valfsig[sig]  = fsig;
-    #     valmsig[sig]  = msig;
-    #     valcount[sig] += 1
-    #     valsum[sig]  += val;
-    #     valssum[sig] += val * val;
-
+    valfsig[sig]  = fsig
+    valmsig[sig]  = msig;
+    if valcount.has_key(sig):
+         valcount[sig] += 1
+         valsum[sig]   += val
+         valssum[sig]  += val * val
+    else:
+         valcount[sig] = 1
+         valsum[sig]   = val
+         valssum[sig]  = val * val
+         
     print "frame " + fsig + " matrix " + msig + "(" + str(nrow) + ", " + str(ncol) + ") = " + str(val);
 
 
 print "\ntypes defined in file:\n";
-file.ViewTypes();
+file.PrintTypes();
 
 # close file
 file.Close();
 
-
-
 out = eaSDIF.Entity();
 ofr = eaSDIF.Frame();
 omt = eaSDIF.Matrix();	# create matrix with same type
-
+stream=0
+bytes = 0
 out.OpenWrite("mean.sdif")
 print "writing file 'mean.sdif'...\n";
 
-# while (my ($sig, $c) = each %valcount)
-# {
-#     my $mu    = $valsum{$sig} / $c;
-#     my $sigma = sqrt($valssum{$sig} / $c - $mu * $mu);
-#     printf "found %d %s matrices, mean = %g, sigma = %g\n",
-# 	   $c, $sig, $mu, $sigma;
 
-#     # write one matrix with mean at time sigma per type found
-#     $omt->CreateMatrixData($valmsig{$sig}, 1, 1, $eaSDIF::eFloat4);
-#     $omt->Set(0, 0, $mu);
+for sig in valcount.keys():
+     mu    = valsum[sig] / valcount[sig];
+     sigma = math.sqrt(valssum[sig] / valcount[sig] - mu * mu)
+     print "found %d %s matrices, mean = %g, sigma = %g\n" % (valcount[sig] , sig, mu, sigma)
 
-#     $ofr->SetInfo($valfsig{$sig}, $stream++, $sigma);
-#     $ofr->AddMatrix($omt);
-#     $bytes += $ofr->Write($out);
-# }
+     # write one matrix with mean at time sigma per type found
+     omt.Init(valmsig[sig], 1, 1, eaSDIF.eFloat4)
+     omt.Set(0, 0, mu)
+
+     ofr.SetHeader(valfsig[sig], stream, sigma)
+     ofr.AddMatrix(omt)
+     bytes += ofr.Write(out)
+     ofr.ClearData()
 
 out.Close();
 print "...wrote ", bytes," bytes\n";
