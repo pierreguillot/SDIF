@@ -3,11 +3,9 @@
 namespace Easdif {
 
 //void EasdifInit(char* PredefinedType)
-void EasdifInit(std::string PredefinedType)
+void EasdifInit(const std::string& PredefinedType)
 {
-    char* Predefined;    
-    Predefined = const_cast<char*>(PredefinedType.c_str()); 
-    SdifGenInit(Predefined);
+    SdifGenInit(PredefinedType.c_str());
     SdifSetErrorFunc(ExceptionThrower);
 }
 
