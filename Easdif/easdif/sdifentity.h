@@ -32,9 +32,15 @@
  * 
  * 
  * 
- * $Id: sdifentity.h,v 1.23 2004-09-09 19:17:38 roebel Exp $ 
+ * $Id: sdifentity.h,v 1.24 2004-09-09 19:36:52 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.23  2004/09/09 19:17:38  roebel
+ * Version 1.0.0beta:
+ * First complete version of iterator access when reading files. Frame-Iterators use the
+ * internal Frame Directory that each Entity will generate and update on the fly
+ * to minimize disk access during positioning.
+ *
  * Revision 1.22  2004/09/08 09:15:57  roebel
  * Improved efficiency of FrameDirectory by means of
  * preventing the need to  search the complete directoy for each frame read.
@@ -277,7 +283,6 @@ public:
    */
   template<int CONST>
   class FRIterator {
-  public:
     typename Base_Iterator<0>::basic_iterator mBase;
    //typename std::list<SDIFLocation>::iterator mBase;
     SDIFEntity   *mpEnt;
