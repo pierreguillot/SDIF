@@ -82,11 +82,20 @@ SDIF_INC_DIR="../../SDIF/include"
 dnl provide host_os variable
 AC_CANONICAL_HOST
 
+
+AC_ARG_ENABLE(java,
+[  --enable-java          configure java interface],
+[echo FEATURE enable-java... $enableval; 
+if test "$enableval" = "yes"; then
 dnl get java compiler
 AC_PROG_JAVAC
 
 dnl get java include directories
 AC_JNI_INCLUDE_DIR
+fi
+],
+)
+
 
 for JNI_INCLUDE_DIR in $JNI_INCLUDE_DIRS
 do
