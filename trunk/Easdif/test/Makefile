@@ -8,7 +8,7 @@ LDFLAGS = -L$(LIBDIR) -lEasdif   -lm
 
 
 
-all: tutorini tutofini #trytry #try_excep tutorial_fin #rent_sel ent_sel#typty #ent_sel #try_excep ent_sele ent_sel entttselentread try_excep #typty ttyp tetyp testyp testnvt tutname tutmat virtual classba classbis classbiw classbiww esclass new_tutorial try_excep new_try tryfile 
+all: tutorini tutofini easdifRmNVT #trytry #try_excep tutorial_fin #rent_sel ent_sel#typty #ent_sel #try_excep ent_sele ent_sel entttselentread try_excep #typty ttyp tetyp testyp testnvt tutname tutmat virtual classba classbis classbiw classbiww esclass new_tutorial try_excep new_try tryfile 
 
 ent_sele: ent_sele.cpp $(LIBDIR)/libEasdif.a 
 	$(CXX) ent_sele.cpp  -o $@ $(CXXFLAGS) $(LDFLAGS)
@@ -41,6 +41,9 @@ trytry: trytry.cpp $(LIBDIR)/libEasdif.a
 
 tutofini: tutofini.cpp $(LIBDIR)/libEasdif.a 
 	$(CXX) tutofini.cpp  -o $@ $(CXXFLAGS) $(LDFLAGS)
+
+easdifRmNVT: easdifRmNVT.cpp $(LIBDIR)/libEasdif.a 
+	$(CXX) $<  -o $@ $(CXXFLAGS) $(LDFLAGS)
 
 
 tutorini: tutorini.cpp $(LIBDIR)/libEasdif.a 
