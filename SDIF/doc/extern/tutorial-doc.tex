@@ -246,6 +246,42 @@ SdifFClose (file);
 \end{alltt}
 
 
+
+
+\Section{Goodies}
+
+Some functions to make life with SDIF even easier:
+
+\begin{alltt}
+\commentp{Check if the file exists and is a good SDIF file}
+if (SdifCheckFileFormat ("filename.sdif"))
+    /* ok */;
+
+\commentp{Check if file is good, exists, and contains certain frame types}
+SdifSignature wanted [] = \{ SdifSignatureConst('1TRC'), 
+			    SdifSignatureConst('1HRM'), 
+			    eEmptySignature \commentl{end marker} 
+			  \},
+	      firstfound;
+int           firstindex;
+
+\commentl{This returns the signature of the first wanted frame found}
+firstfound = SdifCheckFileFramesTab ("filename.sdif", wanted);
+
+printf ("First sig found is: %s\backslash{n}", 
+	firstfound  ?  SdifSignatureToString(firstfound)  
+		    :  "none of interest");
+
+\commentl{Alternatively, you can get the index of the first frame found}
+firstindex = SdifCheckFileFramesIndex ("filename.sdif", wanted);
+
+printf ("First sig found is: %s\backslash{n}", 
+	firstindex >= 0  ?  SdifSignatureToString(wanted [firstindex])  
+		         :  "none of interest");
+\end{alltt}
+
+N.B.:  All of the above functions require a real file, and do not work with standard input.
+
 \end{document}
 % --> cocoon anchor
 
