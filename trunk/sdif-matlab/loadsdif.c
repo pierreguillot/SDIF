@@ -1,4 +1,4 @@
-/* $Id: loadsdif.c,v 1.2 2000-08-04 14:42:29 schwarz Exp $
+/* $Id: loadsdif.c,v 1.3 2001-05-29 10:02:19 roebel Exp $
 
    loadsdif.c	25. January 2000	Diemo Schwarz
 
@@ -14,6 +14,12 @@
    end:							loadsdif ('close')
   
    $Log: not supported by cvs2svn $
+   Revision 1.2  2000/08/04 14:42:29  schwarz
+   Added reset of file variable, prevents crash on double-close.
+   Version number is written in NVTs, and is used for distribution,
+   defined in makefile (major.minor.release).
+   Types file now included in distribution and documentation.
+
  * Revision 1.1  2000/05/04  13:24:05  schwarz
  * Matlab mex extension and support functions to load SDIF files.
  * 
@@ -31,14 +37,22 @@
 #define Stringize(x) #x
 
 
+static void *input = NULL;
+static int  initatexit =0;
+
+void cleanup(void) {
+    if(input) 
+      SdifFClose (input);
+
+    input = 0;
+    return;
+}
+
+
 
 void 
 mexFunction (int nlhs, mxArray *plhs [], int nrhs, const mxArray *prhs [])
 {
-    /* This static variable has to be here, since if they were
-       file global (auto or static), they won't survive through the
-       next invocations of mexFunction! */
-    static void *input = NULL;
     char	 filename [PATH_MAX],
 	         types    [PATH_MAX] = "";
     int		 i; 			      
@@ -66,8 +80,10 @@ mexFunction (int nlhs, mxArray *plhs [], int nrhs, const mxArray *prhs [])
       break;
 
       case 2:
-	  mxGetString (prhs [1], types, PATH_MAX);
-	  /* FALLTHROUGH */
+	if (!mxIsChar(prhs[1]))
+	  mexErrMsgTxt("Wrong type of input argument: want char");
+	mxGetString (prhs [1], types, PATH_MAX);
+	/* FALLTHROUGH */
       case 1:
 	  if (!mxIsChar (prhs [0]))
 	      mexErrMsgTxt ("Wrong type of input argument: want char");
@@ -86,6 +102,17 @@ mexFunction (int nlhs, mxArray *plhs [], int nrhs, const mxArray *prhs [])
 	      /* check output parameters */
 	      if (nlhs > 2)
 		  mexErrMsgTxt("Wrong number of output arguments (at most 2)");
+
+	      if (!initatexit){
+		mexAtExit(cleanup);
+		initatexit =1;
+	      }
+
+
+	      if (input) {
+		printf ("Closing previous input file.\n");
+		input = endread (input);
+	      }
 
 	      if (!(input = beginread (nlhs, plhs, filename, types)))
 		  mexErrMsgTxt ("Can't open SDIF input file");

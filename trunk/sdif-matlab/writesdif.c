@@ -1,4 +1,4 @@
-/* $Id: writesdif.c,v 1.3 2000-08-04 14:42:34 schwarz Exp $
+/* $Id: writesdif.c,v 1.4 2001-05-29 10:02:26 roebel Exp $
 
    writesdif.c       12. May 2000      Patrice Tisserand
 
@@ -6,6 +6,12 @@
    No SDIF depencies here! (-->writesdif-subs.c)
    
    $Log: not supported by cvs2svn $
+   Revision 1.3  2000/08/04 14:42:34  schwarz
+   Added reset of file variable, prevents crash on double-close.
+   Version number is written in NVTs, and is used for distribution,
+   defined in makefile (major.minor.release).
+   Types file now included in distribution and documentation.
+
  * Revision 1.2  2000/05/15  13:07:47  tisseran
  * Added test for input arguments:
  *    Is Matrix Signature a char?
@@ -34,13 +40,22 @@
 
 #define Stringize(x) #x
 
+
+static void *input = NULL;
+static int  initatexit =0;
+
+void cleanup(void) {
+    if(input) 
+      SdifFClose (input);
+
+    input = 0;
+    return;
+}
+
+
 void
 mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
 {
-  /* This static variable has to be here, since if they were
-     file global (auto or static), they won't survive through the
-     next invocations of mexFunction! */
-  static void *input = NULL;
   char        filename [PATH_MAX],
               types    [PATH_MAX] = "";
   char        framesig [PATH_MAX],
@@ -57,41 +72,40 @@ mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
       
       break;
 
-    case 1:
-      if (!mxIsChar(prhs[0]))
-	mexErrMsgTxt("Wrong type of input argument: want char");
-      
-      mxGetString (prhs[0], filename, PATH_MAX);
-
-      if (strcmp (filename, "close") == 0)
-	{
-	  if (!input)
-	    mexErrMsgTxt("No file opened. Use 'writesdif (filename)'.");
-
-	  input = endwrite(input);
-	}
-      else
-	{
-	  if (!(input = beginwrite(nrhs, prhs, filename, types)))
-	    mexErrMsgTxt ("Can't open SDIF input file");
-	}
-      break;
       
     case 2:
       if ((!mxIsChar(prhs[0]))||(!mxIsChar(prhs[1])))
 	mexErrMsgTxt("Wrong type of input argument: want char");
 
-      mxGetString (prhs[0], filename, PATH_MAX);
       mxGetString (prhs[1], types, PATH_MAX);
+
+
+    case 1:
+
+      if (!mxIsChar(prhs[0]))
+	mexErrMsgTxt("Wrong type of input argument: want char");
+
+      mxGetString (prhs[0], filename, PATH_MAX);
+
       if (strcmp (filename, "close") == 0)
 	{
 	  if (!input)
 	    mexErrMsgTxt("No file opened. Use 'writesdif (filename)'.");
 	  
-	  endwrite(input);
+	  input = endwrite(input);
 	}
       else
 	{
+
+	  if (!initatexit){
+	    mexAtExit(cleanup);
+	    initatexit =1;
+	  }
+	  if (input) {
+	    printf ("Closing previous output file.\n");
+	    input = endwrite (input);
+	  }
+
 	  if (!(input = beginwrite(nrhs, prhs, filename, types)))
 	    mexErrMsgTxt ("Can't open SDIF input file");
 	}
