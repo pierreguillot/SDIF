@@ -32,9 +32,12 @@
  * 
  * 
  * 
- * $Id: sdifmatrix.cpp,v 1.8 2003-05-22 17:58:12 roebel Exp $ 
+ * $Id: sdifmatrix.cpp,v 1.9 2003-07-07 10:29:46 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.8  2003/05/22 17:58:12  roebel
+ * Improved checks in GetColName
+ *
  * Revision 1.7  2003/05/19 14:00:20  roebel
  * Include new easdif_config.h.
  *
@@ -127,39 +130,52 @@ SDIFMatrix::SDIFMatrix(const SDIFMatrix& aMatrix):mInter(0)
 void SDIFMatrix::Init(SdifSignature sig, int nrows, int ncols, SdifDataTypeET type)
 {
     if(mInter) {
+      if(mType == type) {
+	mInter->Resize(nrows,ncols);
+      }
+      else{
 	delete mInter;
 	mInter =0;
+      }
     }
 
-    switch (type){
-
-    case eChar:
+    if (!mInter) {
+      switch (type){
+      case eInt1:
+      case eChar:
 	mInter=static_cast<SDIFMatrixDataInterface*>(new SDIFMatrixData<char>(nrows,ncols));
 	break;
-    case eInt2:
+      case eUInt1:
+	mInter=static_cast<SDIFMatrixDataInterface*>(new SDIFMatrixData<unsigned char>(nrows,ncols));
+	break;
+      case eUInt2:
+	mInter=static_cast<SDIFMatrixDataInterface*>(new SDIFMatrixData<unsigned short int>(nrows,ncols));
+	break;
+      case eInt2:
 	mInter=static_cast<SDIFMatrixDataInterface*>(new SDIFMatrixData<short int>(nrows,ncols));
 	break;
-    case eInt4:
+      case eInt4:
 	mInter=static_cast<SDIFMatrixDataInterface*>(new SDIFMatrixData<int>(nrows,ncols));
 	break;
-    case eFloat4:
+      case eFloat4:
 	mInter=static_cast<SDIFMatrixDataInterface*>(new SDIFMatrixData<float>(nrows,ncols));
 	break;	
-    case eFloat8:
+      case eFloat8:
 	mInter=static_cast<SDIFMatrixDataInterface*>(new SDIFMatrixData<double>(nrows,ncols));
 	break;
-
-    default:
-      std::cerr  << std::endl << "!!! matrix type " << type << " not yet implemented !!!" << std::endl;
-      SDIFMatrixDataError exc;
-      exc.initException(eError,
-			"Error in  SDIFMatrix::Init!!! unimplemented matrix type used !!!",
-		      0,0,0,0);      
-
-      throw exc; // to be implemented
+	
+      default:
+	std::cerr  << std::endl << "!!! matrix type " << type << " not yet implemented !!!" << std::endl;
+	SDIFMatrixDataError exc;
+	exc.initException(eError,
+			  "Error in  SDIFMatrix::Init!!! unimplemented matrix type used !!!",
+			  0,0,0,0);      
+	
+	throw exc; // to be implemented
+      }
+      mType = type;
     }
     mSig  = sig;
-    mType = type;
 }
 
 
