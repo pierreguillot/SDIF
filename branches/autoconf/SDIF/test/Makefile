@@ -16,7 +16,7 @@ SHELL = /bin/sh
 
 srcdir = .
 top_srcdir = ..
-prefix = /u/formes/tisseran/tmp
+prefix = /data/roebel
 exec_prefix = ${prefix}
 
 bindir = ${exec_prefix}/bin
@@ -58,6 +58,7 @@ NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
 CC = gcc
+IRCAMDEPS = ircam_deps
 MAKEINFO = makeinfo
 PACKAGE = SDIF
 RANLIB = ranlib

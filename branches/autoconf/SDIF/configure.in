@@ -29,6 +29,12 @@ AC_HEADER_STDC
 AC_CHECK_HEADERS( sys/types.h sys/stat.h)
 AC_CHECK_HEADERS(errno.h)
 AC_CHECK_HEADERS(unistd.h)
+AC_SUBST(IRCAMDEPS)
+if test -f /u/formes/share/include/preincluded.h ; then
+ IRCAMDEPS=ircam_deps
+else
+ IRCAMDEPS=;
+fi
 
 dnl ############################################################
 dnl Particular compiler characteristics
