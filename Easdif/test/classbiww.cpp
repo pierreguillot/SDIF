@@ -278,7 +278,7 @@ int main()//int argc, char** argv)
     SdifGenInit("");
 
     /*for the reading*/
-    file = SdifFOpen ("faecrire.sdif", eReadFile);
+    file = SdifFOpen ("lic.sdif", eReadFile);
     generalHeader = SdifFReadGeneralHeader(file);
     asciiChunks = SdifFReadAllASCIIChunks(file);
     
