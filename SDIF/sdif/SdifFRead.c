@@ -74,7 +74,7 @@ SdifFReadNameValueCurrHT(SdifFileT *SdifF)
 {
   size_t SizeR = 0;
   
-  SdifFGetPos(SdifF->Stream, &(SdifF->StartChunkPos));
+  SdiffGetPos(SdifF->Stream, &(SdifF->StartChunkPos));
   SdifF->StartChunkPos -= sizeof(SdifSignature);
 
   SizeR += SdifFReadChunkSize(SdifF);
@@ -136,7 +136,7 @@ SdifFReadAllType(SdifFileT *SdifF)
 {
   size_t  SizeR = 0;
   
-  SdifFGetPos(SdifF->Stream, &(SdifF->StartChunkPos));
+  SdiffGetPos(SdifF->Stream, &(SdifF->StartChunkPos));
   SdifF->StartChunkPos -= sizeof(SdifSignature);
   
   SizeR += SdifFReadChunkSize(SdifF);
@@ -173,7 +173,7 @@ SdifFReadAllStreamID(SdifFileT *SdifF)
   size_t
     SizeR = 0;
   
-  SdifFGetPos(SdifF->Stream, &(SdifF->StartChunkPos));
+  SdiffGetPos(SdifF->Stream, &(SdifF->StartChunkPos));
   SdifF->StartChunkPos -= sizeof(SdifSignature);
   
   SizeR += SdifFReadChunkSize(SdifF);
@@ -307,7 +307,7 @@ SdifFReadFrameHeader(SdifFileT *SdifF)
   size_t SizeR = 0;
   SdifUInt4 UInt4Tab[2];
 
-  SdifFGetPos(SdifF->Stream, &(SdifF->StartChunkPos));
+  SdiffGetPos(SdifF->Stream, &(SdifF->StartChunkPos));
   SdifF->StartChunkPos -= sizeof(SdifSignature);
 
   /* Create only if it's necessary else update signature */
@@ -386,6 +386,7 @@ SdifSkipMatrixData(SdifFileT *SdifF)
   size_t
     SizeR = 0,
     NbBytesToSkip;
+  SdiffPosT Pos = 0;
 
   NbBytesToSkip =
     SdifF->CurrMtrxH->NbCol 
@@ -394,8 +395,10 @@ SdifSkipMatrixData(SdifFileT *SdifF)
 
   NbBytesToSkip += SdifPaddingCalculate(NbBytesToSkip);
 
-  if (fseek(SdifF->Stream, NbBytesToSkip, SEEK_CUR) != 0)
-    return -1;
+  SdiffGetPos(SdifF->Stream, &Pos);
+  Pos += NbBytesToSkip;
+  if (SdiffSetPos(SdifF->Stream, &Pos) != 0)
+    return (size_t) -1;
   else
     {
       SizeR += NbBytesToSkip;
@@ -415,24 +418,27 @@ SdifSkipFrameData(SdifFileT *SdifF)
     SizeR = 0,
     Boo,
     NbBytesToSkip;
-  int
+  SdifUInt4
     iMtrx;
+  SdiffPosT Pos;
   
   if (SdifF->CurrFramH->Size != _SdifUnknownSize)
     {
       NbBytesToSkip = SdifF->CurrFramH->Size - _SdifFrameHeaderSize;
-      if (fseek(SdifF->Stream, NbBytesToSkip, SEEK_CUR) != 0)
-	{
-	  sprintf(gSdifErrorMess,
-		  "Skip FrameData %s ID:%u T:%g\n",
-		  SdifSignatureToString(SdifF->CurrFramH->Signature),
-		  SdifF->CurrFramH->NumID,
-		  SdifF->CurrFramH->Time);
-	  _SdifError(eEof, gSdifErrorMess);
-	  return -1;
-	}
+      SdiffGetPos(SdifF->Stream, &Pos);
+      Pos += NbBytesToSkip;
+      if (SdiffSetPos(SdifF->Stream, &Pos) != 0)
+        {
+	        sprintf(gSdifErrorMess,
+		    "Skip FrameData %s ID:%u T:%g\n",
+		    SdifSignatureToString(SdifF->CurrFramH->Signature),
+		    SdifF->CurrFramH->NumID,
+		    SdifF->CurrFramH->Time);
+	        _SdifError(eEof, gSdifErrorMess);
+	        return (size_t) -1;
+	    }
       else
-	return (NbBytesToSkip);    
+	    return (NbBytesToSkip);    
     }
   else
     {
@@ -447,7 +453,7 @@ SdifSkipFrameData(SdifFileT *SdifF)
 		      SdifF->CurrFramH->NumID,
 		      SdifF->CurrFramH->Time);
 	      _SdifError(eEof, gSdifErrorMess);
-	      return -1;
+	      return (size_t) -1;
 	    }
 	  else
 	    SizeR += Boo;

@@ -30,7 +30,7 @@ typedef enum SdifFileModeE
   eWriteFile,
   eReadFile,
   ePredefinedTypes
-} SdifFileModeET;
+} SdifFileModeET ;
 
 
 
@@ -42,7 +42,9 @@ enum SdifPassE
 };
   
 
-typedef struct SdifFileS
+typedef struct SdifFileS SdifFileT;
+
+struct SdifFileS
 {
   char *Name;                           /* Name of the file, can be "stdin, stdout, stderr */
   SdifFileModeET Mode;                  /* eWriteFile or eReadFile or ePredefinedTypes */
@@ -69,9 +71,9 @@ typedef struct SdifFileS
   size_t  FileSize;
   size_t  ChunkSize;
 
-  SdifFPosT  CurrFramPos;
-  SdifFPosT  StartChunkPos;
-  SdifFPosT  Pos;
+  SdiffPosT  CurrFramPos;
+  SdiffPosT  StartChunkPos;
+  SdiffPosT  Pos;
   
   SdifUInt2  TypeDefPass;
   SdifUInt2  StreamIDPass;
@@ -82,7 +84,7 @@ typedef struct SdifFileS
 
   unsigned int NbOfWarning;
 
-} SdifFileT;
+};
 
 
 #endif /* _SdifFileStruct_ */

@@ -16,35 +16,51 @@
 #include "SdifGlobals.h"
 #include "SdifMatrixType.h"
 
-typedef struct SdifMatrixHeaderS
+
+
+typedef struct SdifMatrixHeaderS SdifMatrixHeaderT;
+
+struct SdifMatrixHeaderS
 {
   SdifSignature  Signature;
   SdifDataTypeET DataType; /* Low level data type */
   SdifUInt4      NbRow;
   SdifUInt4      NbCol;
-} SdifMatrixHeaderT;
+} ;
 
-typedef union DataTypeU
+
+
+
+typedef union DataTypeU DataTypeUT;
+
+union DataTypeU
 {
   SdifFloat4 *F4;
   SdifFloat8 *F8;
-} DataTypeUT;
+} ;
 
 
-typedef struct SdifOneRowS
+
+
+typedef struct SdifOneRowS SdifOneRowT;
+
+struct SdifOneRowS
 {
   SdifDataTypeET DataType;
   SdifUInt4      NbData;
   DataTypeUT     Data;
   SdifUInt4      NbGranuleAlloc;
-} SdifOneRowT;
+} ;
 
-typedef struct SdifMatrixDataS
+
+
+typedef struct SdifMatrixDataS SdifMatrixDataT;
+struct SdifMatrixDataS
 {
   SdifMatrixHeaderT *Header;
   SdifOneRowT       **Rows;
   SdifUInt4         Size;
-} SdifMatrixDataT;
+} ;
 
 
 

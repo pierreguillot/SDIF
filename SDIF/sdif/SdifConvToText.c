@@ -239,7 +239,7 @@ SdifToText(SdifFileT *SdifF, char *TextStreamName)
       if (SdifStrCmp(TextStreamName, "stdout")==0)
 	SdifF->TextStream = stdout;
       else
-	if (! (SdifF->TextStream = fopen(SdifF->TextStreamName, "w")) )
+	if (! (SdifF->TextStream = fopen(SdifF->TextStreamName, "wb")) )
 	  {
 	    _SdifError(eFileNotFound, TextStreamName);
 	    free(SdifF->TextStreamName);

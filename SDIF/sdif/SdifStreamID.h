@@ -14,12 +14,13 @@
 #include "SdifGlobals.h"
 #include "SdifHash.h"
 
-typedef struct SdifStreamIDS
+typedef struct SdifStreamIDS SdifStreamIDT;
+struct SdifStreamIDS
 {
   SdifUInt4     NumID;
   char *Source;
   char *TreeWay; /* for the moment or to be general*/
-} SdifStreamIDT;
+} ;
 
 extern SdifStreamIDT* SdifCreateStreamID(SdifUInt4 NumID, char *Source, char *TreeWay);
 extern void           SdifKillStreamID(SdifStreamIDT *StreamID);

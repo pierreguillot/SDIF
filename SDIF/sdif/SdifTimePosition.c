@@ -16,7 +16,7 @@
 
 
 SdifTimePositionT*
-SdifCreateTimePosition(SdifFloat8 Time, SdifFPosT Position)
+SdifCreateTimePosition(SdifFloat8 Time, SdiffPosT Position)
 {
   SdifTimePositionT* NewTimePosition;
   
@@ -161,7 +161,7 @@ SdifKillTimePositionL(SdifTimePositionLT *TimePositionL)
 
 
 SdifTimePositionLT*
-SdifTimePositionLPut(SdifTimePositionLT* TimePositionL, SdifFloat8 Time, SdifFPosT Position)
+SdifTimePositionLPut(SdifTimePositionLT* TimePositionL, SdifFloat8 Time, SdiffPosT Position)
 {
   SdifTimePositionNT
     *iNode,

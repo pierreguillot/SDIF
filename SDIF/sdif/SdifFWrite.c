@@ -22,24 +22,24 @@
 void
 SdifUpdateChunkSize(SdifFileT *SdifF, size_t ChunkSize)
 {
-  SdifFPosT WritePos;
+  SdiffPosT WritePos;
   SdifInt4 ChunkSizeInt4;
 
   ChunkSizeInt4 = (SdifInt4) ChunkSize;
  
   if  ( (SdifF->Stream != stdout) && (SdifF->Stream != stderr) )
     {
-      if (SdifFGetPos(SdifF->Stream, &(SdifF->Pos)) != 0)
+      if (SdiffGetPos(SdifF->Stream, &(SdifF->Pos)) != 0)
 	_SdifRemark("SdifUpdateChunkSize, SdifFGetPos erreur\n");
       else
 	{
 	  WritePos = sizeof(SdifSignature) + SdifF->StartChunkPos;
-	  SdifFSetPos(SdifF->Stream, &WritePos);
+	  SdiffSetPos(SdifF->Stream, &WritePos);
 
 	  /*  ChunkSizeInt4 = (SdifF->Pos - SdifF->StartChunkPos) -sizeof(SdifSignature) -sizeof(SdifUInt4);
 	   */
 	  SdiffWriteInt4(&ChunkSizeInt4, 1, SdifF->Stream);
-	  if (SdifFSetPos(SdifF->Stream, &(SdifF->Pos)) !=0)
+	  if (SdiffSetPos(SdifF->Stream, &(SdifF->Pos)) !=0)
 	    _SdifRemark("SdifUpdateChunkSize, SdifFSetPos erreur\n");
 	}
     }
@@ -118,7 +118,7 @@ SdifFWriteOneNameValue(SdifFileT *SdifF, SdifNameValueT *NameValue)
 size_t
 SdifFWriteNameValueCurrHT (SdifFileT *SdifF)
 {
-  SdifFGetPos(SdifF->Stream, &(SdifF->StartChunkPos));
+  SdiffGetPos(SdifF->Stream, &(SdifF->StartChunkPos));
 
   SdifF->ChunkSize  = SdifFWriteChunkHeader(SdifF, e1NVT, _SdifUnknownSize);
   SdifF->ChunkSize += SdifFPutNameValueCurrHT(SdifF, 's');
@@ -139,7 +139,7 @@ size_t
 SdifFWriteAllNameValueHT(SdifFileT *SdifF)
 {
   size_t SizeW = 0;
-  int    iHT;
+  SdifUInt4    iHT;
 
   for (iHT=1; iHT<=SdifF->NameValues->NbHTN; iHT++)
     {
@@ -207,7 +207,7 @@ SdifFWriteAllType (SdifFileT *SdifF)
 
   if ((SdifF->TypeDefPass == eNotPass) || (SdifF->TypeDefPass == eReadPass))
     {      
-      SdifFGetPos(SdifF->Stream, &(SdifF->StartChunkPos));
+      SdiffGetPos(SdifF->Stream, &(SdifF->StartChunkPos));
 
       SizeW  = SdifFWriteChunkHeader(SdifF, e1TYP, _SdifUnknownSize);
       SizeW += SdifFPutAllType(SdifF, 's');
@@ -246,7 +246,7 @@ SdifFWriteAllStreamID (SdifFileT *SdifF)
 
   if ((SdifF->StreamIDPass == eNotPass) || (SdifF->StreamIDPass == eReadPass))
     {      
-      SdifFGetPos(SdifF->Stream, &(SdifF->StartChunkPos));
+      SdiffGetPos(SdifF->Stream, &(SdifF->StartChunkPos));
       
       SizeW  = SdifFWriteChunkHeader(SdifF, e1IDS, _SdifUnknownSize);
       SizeW += SdifFPutAllStreamID(SdifF, 's');
@@ -345,7 +345,7 @@ SdifFWriteFrameHeader (SdifFileT *SdifF)
   UInt4Tab[1] =  SdifF->CurrFramH->NbMatrix;
   UInt4Tab[2] =  SdifF->CurrFramH->NumID;
 
-  SdifFGetPos(SdifF->Stream, &(SdifF->StartChunkPos));
+  SdiffGetPos(SdifF->Stream, &(SdifF->StartChunkPos));
 
   SizeW += sizeof(SdifSignature) * SdiffWriteSignature( &(SdifF->CurrFramH->Signature), SdifF->Stream);
   SizeW += sizeof(SdifUInt4)     * SdiffWriteUInt4( UInt4Tab , 3, SdifF->Stream);

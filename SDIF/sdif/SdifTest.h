@@ -51,7 +51,7 @@ SdifInterpretationError(SdifInterpretationErrorET Error, SdifFileT* SdifF, const
 
 
 extern SdifMatrixTypeT* SdifTestMatrixType(SdifFileT *SdifF, SdifSignature Signature);
-extern short            SdifTestDataType  (SdifFileT* SdifF, SdifDataTypeET DataType);
+extern short            SdifTestDataType  (SdifFileT* SdifF);
 extern short            SdifTestNbColumns (SdifFileT* SdifF, SdifUInt4 NbData, SdifMatrixTypeT *MtrxT);
 extern short            SdifTestMatrixHeader(SdifFileT* SdifF);
 

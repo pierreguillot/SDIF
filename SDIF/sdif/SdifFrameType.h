@@ -13,12 +13,13 @@
 #include "SdifGlobals.h"
 #include "SdifHash.h"
 
-typedef struct SdifComponentS
+typedef struct SdifComponentS SdifComponentT;
+struct SdifComponentS
 {
   SdifSignature MatrixSignature;
   char *Name;
   SdifUInt4  Num;
-} SdifComponentT;
+} ;
 
 
 

@@ -1,4 +1,4 @@
-/* $Id: SdifGlobals.c,v 1.3 1998-04-24 12:40:33 schwarz Exp $
+/* $Id: SdifGlobals.c,v 1.4 1998-07-23 17:02:52 virolle Exp $
  *
  * SdifGlobals.c
  *
@@ -6,6 +6,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.3  1998/04/24  12:40:33  schwarz
+ * Made char * arguments constant for SdifNameValuesLPut and functions called by it.
+ *
  */
 
 #include "SdifGlobals.h"
@@ -22,23 +25,40 @@ char gSdifStringSignature[_SdifNbMaxPrintSignature][5];
  * signatures on stream in an unique expression but not more.
  */
 
-static int  CurrSringSignature = 0;
+/*static*/ int  CurrStringPosSignature = 0;
 
+
+
+#include "SdifRWLowLevel.h"
 char *
 SdifSignatureToString(SdifSignature Signature)
 {
   char *pS, *Ret;
+  SdifSignature SignW;
 
-  pS = (char*) &Signature;
-  
-  gSdifStringSignature[CurrSringSignature][0] = pS[0];
-  gSdifStringSignature[CurrSringSignature][1] = pS[1];
-  gSdifStringSignature[CurrSringSignature][2] = pS[2];
-  gSdifStringSignature[CurrSringSignature][3] = pS[3];
-  gSdifStringSignature[CurrSringSignature][4] = 0;
+  SignW = Signature; 
+  switch (gSdifMachineType)
+    {     
+    case eLittleEndianLittleConst :
+    case eLittleEndianLittleConst64 :
+      SdifLittleToBig(&SignW, sizeof(Signature));
+      break;
+    default :
+      break;
+    }
 
-  Ret = gSdifStringSignature[CurrSringSignature];
-  CurrSringSignature = (CurrSringSignature+1) % _SdifNbMaxPrintSignature;
+  pS = (char*) &SignW;
+  sprintf(gSdifStringSignature[CurrStringPosSignature],
+			"%c%c%c%c", pS[0], pS[1], pS[2], pS[3]);
+  /*gSdifStringSignature[CurrStringPosSignature][0] = pS[0];
+  gSdifStringSignature[CurrStringPosSignature][1] = pS[1];
+  gSdifStringSignature[CurrStringPosSignature][2] = pS[2];
+  gSdifStringSignature[CurrStringPosSignature][3] = pS[3];
+  gSdifStringSignature[CurrStringPosSignature][4] = '\0';*/
+
+  Ret = gSdifStringSignature[CurrStringPosSignature];
+  /*fprintf(stderr,"%s|", Ret);*/
+  CurrStringPosSignature = (CurrStringPosSignature+1) % _SdifNbMaxPrintSignature;
   return Ret;
 }
 
@@ -51,7 +71,7 @@ SdifSignatureCmpNoVersion(SdifSignature Signature1, SdifSignature Signature2)
   S1 = Signature1 & 0x00ffffff;
   S2 = Signature2 & 0x00ffffff;
 
-  return (S1 == S2);
+  return (short)(S1 == S2);
 }
 
 int

@@ -1,4 +1,4 @@
-/* $Id: SdifHash.h,v 1.3 1998-05-04 15:44:18 schwarz Exp $
+/* $Id: SdifHash.h,v 1.4 1998-07-23 17:02:55 virolle Exp $
  *
  * SdifHash.h
  *
@@ -10,6 +10,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.3  1998/05/04  15:44:18  schwarz
+ * Replaced constant char* args by const char* (also some void*).
+ *
  */
 
 #ifndef _SdifHash_
@@ -24,11 +27,19 @@ typedef enum SdifHashIndexTypeE
 } SdifHashIndexTypeET;
 
 
-typedef union SdifHashIndexU
+
+
+
+typedef union SdifHashIndexU SdifHashIndexUT;
+
+union SdifHashIndexU
 {
   char* Char[1]; /* tab of one pointer to fixe union size at 4 or 8 bytes */
   unsigned int  Int4;
-} SdifHashIndexUT;
+} ;
+
+
+
 
 
 typedef struct SdifHashNS SdifHashNT;
@@ -41,14 +52,18 @@ struct SdifHashNS
 };
 
 
-typedef struct SdifHashTableS
+
+
+typedef struct SdifHashTableS SdifHashTableT;
+
+struct SdifHashTableS
 {
   SdifHashNT* *Table;
   unsigned int HashSize;
   SdifHashIndexTypeET IndexType;
   void (*Killer)();  /* no verification of arguments */
   unsigned int NbOfData;
-} SdifHashTableT;
+} ;
 
 
 extern SdifHashTableT* SdifCreateHashTable(unsigned int HashSize, SdifHashIndexTypeET IndexType, void (*Killer)());

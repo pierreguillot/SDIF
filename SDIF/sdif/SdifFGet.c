@@ -112,7 +112,7 @@ SdifFGetNameValueCurrHT(SdifFileT *SdifF, int Verbose)
   
   CharEnd = SdiffGetStringUntil(file, gSdifString, _SdifStringLen, &SizeR,_SdifReservedChars);
   if (SdifTestCharEnd(SdifF,     CharEnd,    '{',    gSdifString, 
-		      (SdifStrLen(gSdifString)!=0),
+		   (short)(SdifStrLen(gSdifString)!= 0),
 		      "Begin of NameValue Table declarations") == eFalse)
     {
       return SizeR;
@@ -172,7 +172,8 @@ SdifFGetOneMatrixType(SdifFileT *SdifF, int Verbose)
 
   /* ColumnDefs */
   CharEnd = SdiffGetStringUntil(file, gSdifString, _SdifStringLen, &SizeR, _SdifReservedChars);
-  if (SdifTestCharEnd(SdifF, CharEnd, '{', gSdifString, (SdifStrLen(gSdifString)!=0), "Matrix Type") == eFalse)
+  if (SdifTestCharEnd(SdifF, CharEnd, '{', gSdifString,
+              (short)(SdifStrLen(gSdifString)!=0), "Matrix Type") == eFalse)
     return SizeR;
   else
     {
@@ -304,7 +305,7 @@ SdifFGetOneFrameType(SdifFileT *SdifF, int Verbose)
   CharEnd = SdiffGetStringUntil(file, gSdifString,
 				_SdifStringLen, &SizeR, _SdifReservedChars);
   if (   SdifTestCharEnd(SdifF, CharEnd, '{',
-			 gSdifString, (SdifStrLen(gSdifString)!=0) ,
+			 gSdifString, (short)(SdifStrLen(gSdifString)!=0) ,
 			 "Frame")
 	 ==eFalse   )
     {
@@ -340,7 +341,7 @@ SdifFGetOneFrameType(SdifFileT *SdifF, int Verbose)
 size_t
 SdifFGetAllType(SdifFileT *SdifF, int Verbose)
 {
-  int            CharEnd, NbOpenBrace;
+  int            CharEnd;
   size_t         SizeR = 0;
   SdifSignature  TypeOfType = 0;
   FILE          *file;
@@ -355,7 +356,7 @@ SdifFGetAllType(SdifFileT *SdifF, int Verbose)
   
   CharEnd = SdiffGetStringUntil(file, gSdifString, _SdifStringLen, &SizeR, _SdifReservedChars);
   if (SdifTestCharEnd(SdifF,     CharEnd,    '{',    gSdifString, 
-		      (SdifStrLen(gSdifString)!=0),
+		      (short)(SdifStrLen(gSdifString)!=0),
 		      "Begin of Types declarations") == eFalse)
     {
       return SizeR;
@@ -420,7 +421,7 @@ SdifFGetOneStreamID(SdifFileT *SdifF, int Verbose, size_t *SizeR)
   
   
 
-  CharEnd = SdiffGetStringUntil(file, gSdifString, _SdifStringLen, SizeR, CharsEnd);
+  CharEnd = (char) SdiffGetStringUntil(file, gSdifString, _SdifStringLen, SizeR, CharsEnd);
 
   /* test if it's the last or not */
   if ( (CharEnd == '}') && (SdifStrLen(gSdifString) == 0) )
@@ -461,7 +462,7 @@ SdifFGetOneStreamID(SdifFileT *SdifF, int Verbose, size_t *SizeR)
 
 
   /* source */
-  CharEnd = SdiffGetStringUntil(file, gSdifString, _SdifStringLen, SizeR, CharsEnd);
+  CharEnd = (char) SdiffGetStringUntil(file, gSdifString, _SdifStringLen, SizeR, CharsEnd);
   if (SdifTestCharEnd(SdifF, CharEnd, ':', gSdifString, eFalse, "Stream ID Source") == eFalse)
     {
       if (CharEnd != (unsigned) ';')
@@ -474,7 +475,7 @@ SdifFGetOneStreamID(SdifFileT *SdifF, int Verbose, size_t *SizeR)
   
 
   /* TreeWay : simple string pour le moment */
-  CharEnd = SdiffGetStringWeakUntil(file, gSdifString2, _SdifStringLen, SizeR, ";");
+  CharEnd = (char) SdiffGetStringWeakUntil(file, gSdifString2, _SdifStringLen, SizeR, ";");
   /*CharEnd = SdiffGetStringUntil    (file, gSdifString2, _SdifStringLen, SizeR, _SdifReservedChars);*/
   if (SdifTestCharEnd(SdifF, CharEnd, ';', gSdifString2, eFalse, "end of Stream ID TreeWay") == eFalse)
     {
@@ -510,7 +511,7 @@ SdifFGetAllStreamID(SdifFileT *SdifF, int Verbose)
   
   CharEnd = SdiffGetStringUntil(file, gSdifString, _SdifStringLen, &SizeR, _SdifReservedChars);
   if (SdifTestCharEnd(SdifF,     CharEnd,    '{',    gSdifString, 
-		      (SdifStrLen(gSdifString)!=0),
+		      (short)(SdifStrLen(gSdifString)!=0),
 		      "Begin of StreamID declarations") == eFalse)
     {
       return SizeR;
