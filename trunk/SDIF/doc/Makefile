@@ -1,4 +1,4 @@
-# $Id: Makefile,v 3.5 2000-07-19 18:10:13 schwarz Exp $
+# $Id: Makefile,v 3.6 2000-08-07 15:12:04 schwarz Exp $
 #
 #               Copyright (c) 1998 by IRCAM - Centre Pompidou
 #                          All rights reserved.
@@ -13,6 +13,9 @@
 # Makefile for automatic documentation.
 #
 # $Log: not supported by cvs2svn $
+# Revision 3.5  2000/07/19  18:10:13  schwarz
+# Added todo section to internal doc.
+#
 # Revision 3.4  1999/10/07  15:22:10  schwarz
 # Added trademark notice in index.
 #
@@ -75,7 +78,7 @@ URLROOT		= $(URLBASE)/$(COCOONDIR)
 INSTALLURL	= $(INSTALLURLBASE)/$(COCOONDIR)
 #		  http://www.ircam.fr/$(INSTALLURLBASE)/$(COCOONDIR)
 
-COCOON		= /u/formes/schwarz/bin/$(ARCH)/cocoon
+COCOON		= cocoon	# /u/formes/schwarz/bin/$(ARCH)/cocoon
 PREPROC		= gcc -E -P -ansi -x c 
 INSTALLHTML	= perl -pi -e '$$c+=s|(href="*)$(URLROOT)|$$1$(INSTALLURL)|i;'\
 			   -e 'END { print STDERR "$$c substitutions\n"; }'
