@@ -2,6 +2,10 @@
 
 <!-- 
  $Log: not supported by cvs2svn $
+ Revision 1.10  2001/04/20 16:58:38  schwarz
+ Temporarily removed IDIS matrix reference, because no-one remembers
+ how it is defined and its not used anyway.
+
  Revision 1.9  2001/04/18 16:24:52  schwarz
  Generate ../sdif/sdiftypes.h with xmltostyp.pl to include standard types
  into the code as #define'd string SDIFTYPES_STRING
@@ -40,10 +44,10 @@
 -->
 
 
-<types-version>Ircam_1.5</types-version>
+<types-version>Ircam_1.6</types-version>
 
 <types-revision>
-  $Id: sdiftypes.xml,v 1.10 2001-04-20 16:58:38 schwarz Exp $
+  $Id: sdiftypes.xml,v 1.11 2001-05-02 15:28:48 schwarz Exp $
 </types-revision>
 
 
@@ -56,7 +60,10 @@ Some points to note about the SDIF types XML format:
 - Francophoniephiles: use <description language="fr">...</description>
   to add french text.
 
-- Find the right section to put your type in, or create a new, meaningful one.
+- Find the right section to put your type in, or create a new,
+  meaningful one.  You can add section-level description text and give
+  it a custom title using, e.g. 
+  <description title="Note">blablabla</description>
 
 - Use these HTML-like tags for description text: 
 	<emph>emphasized (italics)</emph>, 
@@ -595,6 +602,9 @@ Some points to note about the SDIF types XML format:
 
 <section>Resonances</section>
 
+<description title="Note">There exists a little confusion about the <matrixref
+signature="1RES">1RES</matrixref> and <matrixref
+signature="2RES">2RES</matrixref> matrix type.  To be cleared up.</description>
 
 <matrix signature="1FOF" name="Formants">
   <description>
@@ -615,32 +625,50 @@ Some points to note about the SDIF types XML format:
   <column name="Phase"></column>
 </matrix>
 
-<matrix signature="1RES" name="Filters">
+<matrix signature="2RES" name="Filters" status="unclear">
   <description>
-     Resonances/Exponentially Decaying Sinusoids.
-     Resonances data can describe the characteristics of a
-     resonant system like a 
-     bank of second order section-filters,
-     or can specify parameters for a model
-     of sinusoids with fixed frequencies and
-     exponentially decaying amplitudes. (If you put an impulse 
-     into such a group of filter
-     banks, the output should be a sum of sinusoids with 
-     fixed frequencies and exponentially
-     decaying amplitudes, so these two situations are 
-     in a certain sense the same.)
+     Resonances/Exponentially Decaying Sinusoids.  Resonances data can
+     describe the characteristics of a resonant system like a bank of
+     second order section-filters, or can specify parameters for a
+     model of sinusoids with fixed frequencies and exponentially
+     decaying amplitudes. (If you put an impulse into such a group of
+     filter banks, the output should be a sum of sinusoids with fixed
+     frequencies and exponentially decaying amplitudes, so these two
+     situations are in a certain sense the same.)
 
-     The decay curve of a resonance should be the same as that of 
-     a two-pole filter with
-     bandwidth equal to decay rate divided by pi.
-     This formula gives the amplitude of each
-     sinusoid over time: 
+     The decay curve of a resonance should be the same as that of a
+     two-pole filter with bandwidth equal to decay rate divided by pi.
+     This formula gives the amplitude of each sinusoid over time:
      <pre>
         amp(t) = initial_amp * e ^ (- decay_rate * t)
      </pre>
      The phase of a resonance specifies the initial phase 
      of each decaying sinusoid. 
-     Ircam's programs still in the previous definition,
+
+     Ircam's programs still use the <matrixref signature="1RES">previous 
+     definition 1RES</matrixref>, i.e. columns 3 to 5 being:
+     <br/>
+     3. BandWidth 
+     <br/>
+     4. Saliance 
+     <br/>
+     5. Normalisation of amplitude
+     <p/>
+  </description>
+  <float/><double/>
+  <rows>resonances </rows>
+  <column name="Frequency"></column>
+  <column name="Amplitude"></column>
+  <column name="DecayRate"></column>
+  <column name="Phase"></column>
+</matrix>
+
+<matrix signature="1RES" name="Filters" status="IRCAM only?">
+  <description>
+     See the <matrixref signature="2RES">new 2RES canonical resonance
+     definition</matrixref> for description.<P/>
+
+     Ircam's programs still use this previous definition,
      i.e. columns 3 to 5 being:
      <br/>
      3. BandWidth 
@@ -649,14 +677,14 @@ Some points to note about the SDIF types XML format:
      <br/>
      5. Normalisation of amplitude
      <p/>
-     Therefore the following columns should be that of 2RES:
   </description>
   <float/><double/>
   <rows>resonances </rows>
   <column name="Frequency"></column>
   <column name="Amplitude"></column>
-  <column name="DecayRate"></column>
-  <column name="Phase"></column>
+  <column name="BandWidth"></column>
+  <column name="Saliance"></column>
+  <column name="Correction">Normalisation of amplitude</column>
 </matrix>
 
 <matrix signature="1DIS" name="NoiseDistribution">
@@ -709,7 +737,7 @@ Some points to note about the SDIF types XML format:
   </description>
   <float/><double/>
   <rows></rows>
-  <column name="PeriodOfTheDFT">i.e., Sampling Rate in Hertz</column>
+  <column name="DFTPeriod">i.e., Sampling Rate in Hertz</column>
   <column name="WindowDuration"> in seconds.</column>
   <column name="FFTSize"></column>
 </matrix>
