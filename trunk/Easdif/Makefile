@@ -7,8 +7,8 @@ DOCSERVER = maelzel
 
 all: lib test
 
-VERSMAJOR=$(shell grep ^PROJECT_NUMBER  Doxyfile | cut -d"=" -f2| cut -d. -f1)
-VERSMINOR=$(shell grep ^PROJECT_NUMBER  Doxyfile | cut -d"=" -f2| cut -d. -f2)
+VERSMAJOR=$(strip $(shell grep ^PROJECT_NUMBER  Doxyfile | cut -d"=" -f2| cut -d. -f1))
+VERSMINOR=$(strip $(shell grep ^PROJECT_NUMBER  Doxyfile | cut -d"=" -f2| cut -d. -f2))
 
 LINK:
 	if [ ! -L easdif ];then ln -s src easdif;fi
