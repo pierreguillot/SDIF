@@ -1,10 +1,13 @@
-/* $Id: testselect.c,v 1.3 1999-10-07 15:13:01 schwarz Exp $
+/* $Id: testselect.c,v 1.4 2002-10-29 11:07:51 schwarz Exp $
  *
  * testselect		30. August 1999		Diemo Schwarz
  *
  * Test functions from SdifSelect.c
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.3  1999/10/07 15:13:01  schwarz
+ * Added SdifSelectGetFirst<type>, SdifSelectGetNext(Int|Real).
+ *
  * Revision 1.2  1999/09/20  13:23:09  schwarz
  * First finished version, API to be improved.
  *
@@ -15,10 +18,9 @@
  */
 
 #include <stdio.h>
-#include <SdifFile.h>
-#include <SdifSelect.h>
+#include <sdif.h>
 
-main (int argc, char *argv [])
+int main (int argc, char *argv [])
 {
     SdifSelectionT		sel;
     SdifSelectElementIntT	intrange;
@@ -38,11 +40,11 @@ main (int argc, char *argv [])
 	printf ("\n  stream\t%d - %d ", intrange.value, intrange.range);
 
     SdifListInitLoop (sel.frame);
-    while (sig = SdifSelectGetNextSignature (sel.frame))
+    while ((sig = SdifSelectGetNextSignature (sel.frame)))
 	printf ("\n  frame\t'%s' ", SdifSignatureToString (sig));
 
     SdifListInitLoop (sel.matrix);
-    while (sig = SdifSelectGetNextSignature (sel.matrix))
+    while ((sig = SdifSelectGetNextSignature (sel.matrix)))
 	printf ("\n  matrix\t'%s' ", SdifSignatureToString (sig));
 
     SdifListInitLoop (sel.column);
@@ -62,4 +64,6 @@ main (int argc, char *argv [])
     SdifPrintSelection (stdout, &sel, 0);
 	
     SdifGenKill ();
+
+    return 0;
 }

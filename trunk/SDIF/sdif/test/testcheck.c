@@ -1,16 +1,20 @@
-/* $Id: testcheck.c,v 1.1 2000-05-04 14:57:29 schwarz Exp $
+/* $Id: testcheck.c,v 1.2 2002-10-29 11:07:51 schwarz Exp $
  *
  * testcheck		2. May 2000		Diemo Schwarz
  *
  * Test functions from SdifCheck.
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.1  2000/05/04 14:57:29  schwarz
+ * test check for SdifCheckFrames funcs.
+ *
  */
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <sdif.h>
 
-void main (int argc, char *argv [])
+int main (int argc, char *argv [])
 {
     SdifSignature	result, sigi [100];
     SdifSignatureTabT   *sigs;
@@ -42,4 +46,6 @@ void main (int argc, char *argv [])
 
     SdifKillSignatureTab (sigs);
     SdifGenKill ();
+
+    return 0;
 }
