@@ -1,6 +1,9 @@
+# $Id: Makefile,v 1.3 1998-11-10 15:36:15 schwarz Exp $
 #
 # make general	
 #
+# $Log: not supported by cvs2svn $
+
 
 PRJ_DIR := $(shell pwd)
 
@@ -11,7 +14,7 @@ include Makefile.preamble
 # compile
 #
 
-all: M_lib M_tosdif M_sdiftotext
+all: M_lib M_tosdif M_sdiftotext M_sdifextract
 
 
 M_lib:
@@ -22,6 +25,9 @@ M_tosdif:
 
 M_sdiftotext:
 	@cd sdiftotext ; $(MAKE)
+
+M_sdifextract:
+	@cd sdifextract ; $(MAKE)
 
 
 #
@@ -37,7 +43,10 @@ clean_tosdif:
 clean_sdiftotext:
 	@cd sdiftotext; $(MAKE) clean
 
-clean: clean_lib clean_tosdif clean_sdiftotext
+clean_sdifextract:
+	@cd sdifextract; $(MAKE) clean
+
+clean: clean_lib clean_tosdif clean_sdiftotext clean_sdifextract
 
 
 
@@ -54,7 +63,10 @@ install_tosdif:
 install_sdiftotext:
 	@cd sdiftotext; $(MAKE) install
 
-install: install_lib install_tosdif install_sdiftotext
+install_sdifextract:
+	@cd sdifextract; $(MAKE) install
+
+install: install_lib install_tosdif install_sdiftotext install_sdifextract
 
 
 
@@ -71,4 +83,8 @@ uninstall_tosdif:
 uninstall_sdiftotext:
 	@cd sdiftotext; $(MAKE) uninstall
 
-uninstall: uninstall_lib uninstall_tosdif uninstall_sdiftotext
+uninstall_sdifextract:
+	@cd sdifextract; $(MAKE) uninstall
+
+uninstall: uninstall_lib uninstall_tosdif uninstall_sdiftotext \
+	   uninstall_sdifextract
