@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.2 2000-10-27 20:03:23 roebel Exp $
+# $Id: Makefile.am,v 1.3 2000-10-30 13:54:22 roebel Exp $
 #
 # ./sdif/Makefile.am		September 2000			Patrice Tisserand
 #
@@ -29,6 +29,9 @@
 # send email to:  sdif@ircam.fr
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.2  2000/10/27  20:03:23  roebel
+# autoconf merged back to main trunk
+#
 # Revision 1.1.2.5  2000/10/26  17:27:39  schwarz
 # Added header with copyright and links to all Makefile.am and configure.in.
 #
@@ -43,7 +46,7 @@ SDIF_H = SdifCheck.h 	SdifConvToText.h 	SdifErrMess.h 	SdifError.h 	SdifFGet.h \
 	SdifMatrixType.h SdifMemory.h 		SdifNameValue.h	SdifPreTypes.h 	SdifPrint.h \
 	SdifRWLowLevel.h SdifSelect.h		SdifSignatureTab.h 		SdifStreamID.h \
 	SdifString.h 	SdifTest.h 		SdifTextConv.h 	SdifTimePosition.h \
-	SdifVersion.h 
+	SdifVersion.h sdif.h project_preinclude.h config.h
 
 noinst_HEADERS = $(SDIF_H) ${FORMES_H}
 libsdif_a_dir = $(prefix)/libsdif
@@ -66,8 +69,8 @@ SdifFile.o : SdifVersion.h
 Versionsrc := $(libsdif_a_SOURCES) $(subst SdifVersion.h,,$(noinst_HEADERS))
 SdifVersion.h : $(Versionsrc)
 	@echo  "Updating  Library CKSUM"
-	@echo "/* Automatically generated File do not edit */" >SdifVersion.h
-	@echo '#define AUTOCKSUM "$$Checksum: SRC '$(shell CMD_ENV=xpg4;export CMD_ENV;cksum $^ | cut -f1 -d' '|cksum |cut -f1 -d' ')' $$ IRCAM $$Date: 2000-10-27 20:03:23 $$"'>>SdifVersion.h
+	@echo "/* Automatically generated File do not edit */" >$@
+	@echo '#define AUTOCKSUM "$$Checksum: SRC '$(shell CMD_ENV=xpg4;export CMD_ENV;cksum $^ | cut -f1 -d' '|cksum |cut -f1 -d' ')' $$ IRCAM $$Date: 2000-10-30 13:54:22 $$"'>>$@
 
 
 # EXTRA FOR IRCAM STUFF
