@@ -1,4 +1,4 @@
-/* $Id: writesdif-subs.c,v 1.1 2000-05-12 16:14:12 tisseran Exp $
+/* $Id: writesdif-subs.c,v 1.2 2000-05-15 13:07:46 tisseran Exp $
    writesdif-subs.c     12. May 2000           Patrice Tisserand
 
    Subroutines for writesdif, function to write an SDIF file.
@@ -33,18 +33,20 @@
                      Close the sdif file
 		     
    $Log: not supported by cvs2svn $
+ * Revision 1.1  2000/05/12  16:14:12  tisseran
+ * Mexfile to write sdif files in matlab.
+ * TODO: add possibility to use several file at same time.
+ *       add test on arguments
+ *
 
-   TODO:
-   1/ Assurer l'utilisation de plusieurs matrices passees en arguments de la fonction
-   => Boucle sur le nombre de matrices passe en argument.
-   */
+ */
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <strings.h>
+#include <strings.h> /* For alpha bzero */
 
-#if defined(__i386)
+#if defined(__i386) /* For definition of PATH_MAX */
 #include <linux/limits.h>
 #else
 #include <limits.h>
@@ -56,18 +58,10 @@
 
 static void   exitwrite(void);
 
-static int    matricesread    = 0, /* counters for reporting */
-              matricesskipped = 0; /* reset by beginwrite */
-
-static int    eof = 1;             /* reset by beginwrite */
-
-
 SdifFileT *
 beginwrite (int nrhs, const mxArray *prhs [], char *filename, char *types)
 {
   SdifFileT      *output = NULL;
-  char           *fileonly;
-  int            index;
   int            nbParam = 2;
   char           nbParamString[3];
   
@@ -114,12 +108,8 @@ int
 writeframe (int nrhs, const mxArray *prhs[], SdifFileT *output)
 {
   size_t         SizeFrameW = 0;
-  size_t         SizeMatrixW = 0;
-  mxArray        *mxarray[MaxNumOut];
-  int            m;
   int            i; /* Loop indice for various number of matrix */
   int            indice; /* Matrix position in argument */
-  int            ArgNumber; /* Number of arguments */
   SdifUInt4      NbMatrix;
   int            nbMatrix;
   SdifFloat8     SdifTime;
@@ -127,17 +117,11 @@ writeframe (int nrhs, const mxArray *prhs[], SdifFileT *output)
   SdifUInt4      SdifStreamId;
   double         streamId;
   SdifSignature  FrameSignature;
-  SdifSignature  MatrixSignature;  
   char           signature [PATH_MAX] = "";
   SdifUInt4      fsz;
   int            NbRow;
   int            NbCol;
   SdifDataTypeET DataType;
-  double         *real_data_ptr;
-  double         CurrentData;
-  int            c, total_num_of_elements;
-  
-  ArgNumber = nrhs; /* We affect number of function arguments */
   
   /* Get frame time */
   if (!mxIsDouble(prhs[0]))
@@ -158,26 +142,15 @@ writeframe (int nrhs, const mxArray *prhs[], SdifFileT *output)
     mexErrMsgTxt(" Frame signature must be a string");
   
   mxGetString(prhs[2], signature, PATH_MAX);
-  fprintf(stderr,"Frame signature:%s\n",signature);
   FrameSignature = SdifStringToSignature(signature);
 
   /* Size of frame header to use with SdifFSetCurrFrameHeader */
   fsz = SdifSizeOfFrameHeader();
 
-  nbMatrix = (int) ((ArgNumber - 3 )/2); /* arguments are time, streamid, signature,
+  nbMatrix = (int) ((nrhs - 3 )/2); /* arguments are time, streamid, signature,
 					    matrix(i), signature(i) */
 
 
-  /* Set Matrix signature */
-  /*
-  if (!mxIsChar(prhs[3]))
-    mexErrMsgTxt("Matrix signature must be a string");
-  mxGetString(prhs[3], signature, PATH_MAX);
-  mexPrintf("Matrix Signature:%s\n",signature);
-  MatrixSignature = SdifStringToSignature(signature);
-  */
-  mexPrintf("NbMatrix = %d \n",nbMatrix);
-  
   /* Matrix are in argument position: 4+2k with k from 0 to nbMatrix */
   for (i = 0; i < nbMatrix ;i++)
     {
@@ -191,7 +164,6 @@ writeframe (int nrhs, const mxArray *prhs[], SdifFileT *output)
       DataType = eFloat4;
       
     fsz += SdifSizeOfMatrix (DataType, NbRow, NbCol);
-    mexPrintf("Frame Size=%d\n",fsz);
     }
 
   /* Now we set frame header */
@@ -206,7 +178,6 @@ writeframe (int nrhs, const mxArray *prhs[], SdifFileT *output)
   for (i = 0; i < nbMatrix; i++)
     {
       indice = 3 + (2 * i);
-      mexPrintf("Matrix Write Loop\n");
       writeMatrix(nrhs, prhs, output, indice);
     }
 
@@ -218,53 +189,47 @@ writeMatrix(int nrhs, const mxArray* prhs[], SdifFileT *output, int indice)
 {
   /* This function set Matrix Header, and write Matrix Data */
   int            i, m; /* Loop indice */
-  int            NbRow, NbCol;
-  SdifSignature  MatrixSignature;
+  int            NbRow, NbCol; /* Number of row and number of col */
+  SdifSignature  MatrixSignature; 
   char           signature [PATH_MAX] = "";
-  size_t         SizeMatrixW          = 0;
+  size_t         SizeMatrixW          = 0; /* Size of Matrix use for padding */
   size_t         SizeFrameW           = 0;
-  double         *matlabMatrixPtr;
-  double         currentData;
+  double         *matlabMatrixPtr; /* Pointer on matrix first element */
+  double         currentData;      /* Current element of matrix */
   SdifDataTypeET DataType;
   
   /* MATRIX */
   DataType = eFloat4;
 
-  mexPrintf("Argument indice:%d\n",indice);
-  
   /* Set Number of col and number of row */
   NbRow = mxGetM(prhs[indice + 1]);
   NbCol = mxGetN(prhs[indice + 1]);
-  mexPrintf("NbRow:%d, NbCol:%d\n",NbRow,NbCol);
 
   /* Get Matrix Signature */
   mxGetString(prhs[indice], signature, PATH_MAX);
-  mexPrintf("Signature :%s\n",signature);
   MatrixSignature = SdifStringToSignature(signature);
   
   /* Set Matrix header */
   SdifFSetCurrMatrixHeader(output, MatrixSignature, DataType, NbRow, NbCol);
   SizeMatrixW += SdifFWriteMatrixHeader(output);
-  mexPrintf("Matrix Header Set\n");
+
   /* Write each row */
   matlabMatrixPtr = (double *)mxGetPr(prhs[indice + 1]);
-  mexPrintf("Current Value :%g\n",*matlabMatrixPtr);
   
   for(i = 0; i < NbRow; i++)
-    /* ROW */
+    /* ROW LOOP */
     {
-      /* COL */
+      /* COL LOOP */
       for( m = 0; m < NbCol; m++)
 	{
 	  currentData = matlabMatrixPtr[(m*NbRow)+i];
 	  SdifFSetCurrOneRowCol(output, (m + 1), (SdifFloat8) currentData);
 	}
       SizeMatrixW += SdifFWriteOneRow(output);
-
-
       SizeFrameW += SizeMatrixW;
     }
-      SizeMatrixW += SdifFWritePadding(output, SdifFPaddingCalculate(output->Stream,
+  /* We have wrote all data of matrix */
+  SizeMatrixW += SdifFWritePadding(output, SdifFPaddingCalculate(output->Stream,
 								     SizeMatrixW));
 }
 
@@ -273,3 +238,7 @@ exitwrite (void)
 {
   mexErrMsgTxt ("SDIF error: exiting writesdif!");
 }
+
+
+
+

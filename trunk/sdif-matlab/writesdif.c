@@ -1,16 +1,26 @@
-/* $Id: writesdif.c,v 1.1 2000-05-12 16:14:13 tisseran Exp $
+/* $Id: writesdif.c,v 1.2 2000-05-15 13:07:47 tisseran Exp $
 
+   writesdif.c       12. May 2000      Patrice Tisserand
+
+   Function to write data in a SDIF file.
+   No SDIF depencies here! (-->writesdif-subs.c)
+   
    $Log: not supported by cvs2svn $
+ * Revision 1.1  2000/05/12  16:14:13  tisseran
+ * Mexfile to write sdif files in matlab.
+ * TODO: add possibility to use several file at same time.
+ *       add test on arguments
+ *
 
-   */
+ */
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <strings.h> /* For alpha bzero */
+#include <strings.h> /* For alpha bzero defintion */
 
-#if defined(__i386)
-#include <linux/limits.h>
+#if defined(__i386)  /* For PATH_MAX definition */
+#include <linux/limits.h> /* File is located in /usr/src/linux/include/linux/limits.h */
 #else
 #include <limits.h>
 #endif
@@ -20,10 +30,8 @@
 #include "writesdif.h"
 #include "matrix.h"
 
-/* I don't know waht the following line do !!!! */
 #define Stringize(x) #x
 
-/* Modulo en C : % */
 void
 mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
 {
@@ -35,7 +43,7 @@ mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
               types    [PATH_MAX] = "";
   char        framesig [PATH_MAX],
               matrixsig[PATH_MAX];
-  int nbMatrixData;
+  int         i, nbMatrixData, nbMatrixSignature;
 
   /* Switch to appropriate subroutine according to number of input
      parameters */
@@ -102,14 +110,6 @@ mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
 
       break;
       
-    case 5:
-      if ((!mxIsChar(prhs[2]))||(!mxIsChar(prhs[3])))
-	mexErrMsgTxt("Wrong argument type: float, float, string, string, matrix");
-      
-      writeframe(nrhs, prhs, input);
-      
-      break;
-
     default:
       if (nrhs > 3)
 	{
@@ -117,10 +117,19 @@ mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
 	  if (!((nbMatrixData % 2) == 0))
 	    /* Not as many matrix signature as matrix data */
 	    mexErrMsgTxt("Not as many matrix data as matrix signatures");
+
+	  /* We affect nbMatrixSignature */
+	  nbMatrixSignature = nbMatrixData % 2;
 	  
-	  if ((!mxIsChar(prhs[2]))||(!mxIsChar(prhs[3])))
-	    mexErrMsgTxt("Wrong argument type: float, float, string, string, matrix");
+	  /* Test on frame signature */
+	  if (!mxIsChar(prhs[2]))
+	    mexErrMsgTxt("Wrong argument type: want char for frame signature");
 	  
+	  for (i=0; i < nbMatrixSignature; i = i+2)
+	    if (!mxIsChar(prhs[nrhs+3+i]))
+	      mexErrMsgTxt("Wrong argument type: want char for matrix signature number"Stringize(i)" ");
+
+	  /* We must test each pairs of matrix signature and data */
 	  writeframe(nrhs, prhs, input);
 
 	}
@@ -129,4 +138,9 @@ mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
     }
   
 }
+
+
+
+
+
 
