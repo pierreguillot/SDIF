@@ -1,6 +1,6 @@
 <!-- DO NOT EDIT!!!
      This file extern/by-subject-doc.html is generated from extern/linkit.lnk
-     $Id: by-subject-doc.html,v 3.1 1999-03-14 10:55:01 virolle Exp $
+     $Id: by-subject-doc.html,v 3.2 1999-08-26 15:29:35 schwarz Exp $
      by the Makefile target eframes.
 
 
@@ -9,7 +9,10 @@
      SDIF Library User Manual
      
      $Log: not supported by cvs2svn $
-# Revision 1.1  1999/01/21  16:36:40  schwarz
+# Revision 3.1  1999/03/14  10:54:45  virolle
+# SdifStdErr add
+#
+# Revision 2.1  1999/01/21  16:36:26  schwarz
 # Beefed up the SDIF library user manual.  It now has the sections
 # User Manual		(as before, but with navigating toc frame and
 # 			 crosslinked to the function reference)
@@ -30,7 +33,7 @@
 <body BGCOLOR="white">
 
 <p>
-<img src="../pics/logo.gif" alt="Image logo.gif" height=22 witdh=276 align=lefttop>
+<a href=http://www.ircam.fr><img src="../pics/logo.gif" alt="IRCAM - Centre Georges Pompidou" height=22 witdh=276 align=lefttop border=0></a>
 </p>
 
 <p><hr width="100%"></p>
@@ -39,7 +42,7 @@
 <h1>Manuel d'utilisation des fonctions en C</h1>
 
 <em>
-<p>Analyse/Synthèse <br>
+<p><a href=http://www.ircam.fr/departements/recherche/ana-syn.html>Analyse/Synthèse</a>
 <!--#echo var="LAST_MODIFIED"-->
 </p>
 </em>
@@ -293,11 +296,11 @@ SdifF = SdifOpenFile("Name", OpenOption);
               <h4>Opérations sur NameValues</h4>
 
 <p>
-SdifNameValuesLT* <b><a href="cocoon/SDIF.html#SdifNameValuesLT*_SdifNameValuesLNewHT_(SdifNameValuesLT_*NameValuesL)$">SdifNameValuesLNewHT</a></b>
+SdifNameValuesLT* SdifNameValuesLNewHT
 (SdifNameValuesLT *NameValuesL)<br>
 Cette fonction permet d'ajouter une nouvelle NVT dans la liste de
 tables passée par argument:
-<code><b><a href="cocoon/SDIF.html#SdifNameValuesLT*_SdifNameValuesLNewHT_(SdifNameValuesLT_*NameValuesL)$">SdifNameValuesLNewHT</a></b>(SdifF->NamefValues);</code><br>
+<code>SdifNameValuesLNewHT(SdifF->NamefValues);</code><br>
 Attention, à l'ouverture de SdifF, il n'y a aucune table dans
 SdifF->NamefValues. Il faudra donc au moins en ajouter une
 pour pouvoir y mettre des NameValue.
@@ -311,7 +314,7 @@ courante. Name et Value doivent être des chaines caractères
 ASCII sans espacements.
 </p>
 <p>
-SdifHashTableT* <b><a href="cocoon/SDIF.html#SdifHashTableT*_SdifNameValuesLSetCurrHT_(SdifNameValuesLT_*NameValuesL,_SdifUInt4_NumCurrHT)$">SdifNameValuesLSetCurrHT</a></b>
+SdifHashTableT* SdifNameValuesLSetCurrHT
 (SdifNameValuesLT *NameValuesL, SdifUInt4 NumCurrHT)<br>
 Cette fonction permet de définir la nième NVT de la liste
 des tables comme NVT courante.
@@ -327,7 +330,7 @@ Le pointeur retourné est de type SdifNameValueT qui contient
 deux champs: Name et Value.
 </p>
 <p>
-SdifNameValueT* <b><a href="cocoon/SDIF.html#SdifNameValueT*_SdifNameValuesLGetCurrHT_(SdifNameValuesLT_*NameValuesL,_char_*Name)$">SdifNameValuesLGetCurrHT</a></b>
+SdifNameValueT* SdifNameValuesLGetCurrHT
 (SdifNameValuesLT *NameValuesL, char *Name)<br>
 Cette fonction réalise aussi une requête en fonction de Name
 mais uniquement dans la NVT courante.
@@ -341,15 +344,15 @@ mais uniquement dans la NVT courante.
   /* adition de NVTs et de Name-Values dans chaque NVT */
 
   /* first table */
-  <b><a href="cocoon/SDIF.html#SdifNameValuesLT*_SdifNameValuesLNewHT_(SdifNameValuesLT_*NameValuesL)$">SdifNameValuesLNewHT</a></b>(SdifF->NameValues);
+  SdifNameValuesLNewHT(SdifF->NameValues);
   SdifNameValuesLPut(SdifF->NameValues, "NameTable", "General");
   /* second table */
-  <b><a href="cocoon/SDIF.html#SdifNameValuesLT*_SdifNameValuesLNewHT_(SdifNameValuesLT_*NameValuesL)$">SdifNameValuesLNewHT</a></b>(SdifF->NameValues);
+  SdifNameValuesLNewHT(SdifF->NameValues);
   SdifNameValuesLPut(SdifF->NameValues, "NameTable", "analyse");
   SdifNameValuesLPut(SdifF->NameValues, "WindowSize", "512");
   SdifNameValuesLPut(SdifF->NameValues, "SamplingRate", "32000.0");
   /* third table */
-  <b><a href="cocoon/SDIF.html#SdifNameValuesLT*_SdifNameValuesLNewHT_(SdifNameValuesLT_*NameValuesL)$">SdifNameValuesLNewHT</a></b>(SdifF->NameValues);
+  SdifNameValuesLNewHT(SdifF->NameValues);
   SdifNameValuesLPut(SdifF->NameValues, "NameTable", "synthesis");
   SdifNameValuesLPut(SdifF->NameValues, "NumberOfChannels", "2");
   SdifNameValuesLPut(SdifF->NameValues, "EndTime", "1.0");
@@ -362,7 +365,7 @@ mais uniquement dans la NVT courante.
   /* alors NV est ("NameTable", "General") */
   NV = SdifNameValuesLGetFromCurrHT(SdifF->NameValues, "NameTable");
   /* alors NV est ("NameTable", "synthesis") */
-  <b><a href="cocoon/SDIF.html#SdifHashTableT*_SdifNameValuesLSetCurrHT_(SdifNameValuesLT_*NameValuesL,_SdifUInt4_NumCurrHT)$">SdifNameValuesLSetCurrHT</a></b>(SdifF->NameValues, 2);
+  SdifNameValuesLSetCurrHT(SdifF->NameValues, 2);
   NV = SdifNameValuesLGetFromCurrHT(SdifF->NameValues, "NameTable");
   /* alors NV est ("NameTable", "analyse") */
   NV = <b><a href="cocoon/SDIF.html#SdifNameValueT*_SdifNameValuesLGet_(SdifNameValuesLT_*NameValuesL,_char_*Name)$">SdifNameValuesLGet</a></b>(SdifF->NameValues, "EndTime");

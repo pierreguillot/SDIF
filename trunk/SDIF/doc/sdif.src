@@ -1,4 +1,4 @@
-/* $Id: sdif.src,v 3.1 1999-03-14 10:54:58 virolle Exp $
+/* $Id: sdif.src,v 3.2 1999-08-26 15:29:24 schwarz Exp $
 
    sdif.src	23. Dec 1998	Diemo Schwarz
 
@@ -13,6 +13,9 @@
 			"-DLIBRARY=SDIF $(ABS_ROOT)/sdif ."
 
    $Log: not supported by cvs2svn $
+# Revision 3.1  1999/03/14  10:54:58  virolle
+# SdifStdErr add
+#
 # Revision 2.2  1999/01/21  16:36:31  schwarz
 # Beefed up the SDIF library user manual.  It now has the sections
 # User Manual		(as before, but with navigating toc frame and
@@ -35,7 +38,7 @@
 #define CUSTOMIZE
 #endif
 
-#define HEAD		# DO NOT EDIT!!!  This file is generated from $Id: sdif.src,v 3.1 1999-03-14 10:54:58 virolle Exp $
+#define HEAD		# DO NOT EDIT!!!  This file is generated from $Id: sdif.src,v 3.2 1999-08-26 15:29:24 schwarz Exp $
 
 HEAD
 
@@ -49,7 +52,7 @@ customize
 	MEMBERSENTINEL
 	autokeywords 
 	nowebserver
-	# Cocoon ver 3.1 only
+	# Cocoon ver 3.1 only (works only for C++)
 	# accessimplementation 
 
 	# page layout
