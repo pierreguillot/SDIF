@@ -1,4 +1,4 @@
-/* $Id: SdifFGet.c,v 3.6 2000-08-21 10:02:47 tisseran Exp $
+/* $Id: SdifFGet.c,v 3.7 2000-08-22 13:37:55 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -15,6 +15,11 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.6  2000/08/21  10:02:47  tisseran
+ * Add information about compilation when use SdifPrintVersion:
+ * - Which SdifTypes.STYP is used.
+ * - Who made the compilation.
+ *
  * Revision 3.5  2000/07/18  15:08:28  tisseran
  * This release implements the New SDIF Specification (june 1999):
  * - Name Values Table are written in a 1NVT frame which contains a 1NVT matrix
@@ -184,7 +189,7 @@ SdifFGetNameValueLCurrNVT(SdifFileT *SdifF, int Verbose)
       CharEnd = SdiffGetStringUntil (file, gSdifString, _SdifStringLen, 
 				     &SizeR, _SdifReservedChars);
       if (SdifTestCharEnd (SdifF, CharEnd, '{', gSdifString, 
-			   (short) (SdifStrLen (gSdifString) != 0),
+			   SdifStrLen (gSdifString) != 0,
 			   "Begin of NameValue Table declarations") != eFalse)
 	{
 	  while (SdifFGetOneNameValue(SdifF, Verbose, &SizeR) != (int) '}')
@@ -273,7 +278,7 @@ SdifFGetOneMatrixType(SdifFileT *SdifF, int Verbose)
   /* ColumnDefs */
   CharEnd = SdiffGetStringUntil(file, gSdifString, _SdifStringLen, &SizeR, _SdifReservedChars);
   if (SdifTestCharEnd(SdifF, CharEnd, '{', gSdifString,
-              (short)(SdifStrLen(gSdifString)!=0), "Matrix Type") == eFalse)
+              SdifStrLen(gSdifString) != 0, "Matrix Type") == eFalse)
     return SizeR;
   else
     {
@@ -349,7 +354,7 @@ SdifFGetOneMatrixTypefromSdifString(SdifFileT *SdifF, SdifStringT *SdifString)
   CharEnd = SdiffGetStringUntilfromSdifString(SdifString, gSdifString, _SdifStringLen,
 					      _SdifReservedChars);
   if (SdifTestCharEnd(SdifF, CharEnd, '{', gSdifString,
-              (short)(SdifStrLen(gSdifString)!=0), "Matrix Type") == eFalse)
+              SdifStrLen(gSdifString) != 0, "Matrix Type") == eFalse)
     return SizeR;
   else
     {
@@ -523,7 +528,7 @@ SdifFGetOneFrameType(SdifFileT *SdifF, int Verbose)
   CharEnd = SdiffGetStringUntil(file, gSdifString,
 				_SdifStringLen, &SizeR, _SdifReservedChars);
   if (   SdifTestCharEnd(SdifF, CharEnd, '{',
-			 gSdifString, (short)(SdifStrLen(gSdifString)!=0) ,
+			 gSdifString, SdifStrLen(gSdifString) != 0,
 			 "Frame")
 	 ==eFalse   )
     {
@@ -607,7 +612,7 @@ SdifFGetOneFrameTypefromSdifString(SdifFileT *SdifF, SdifStringT *SdifString)
   CharEnd = SdiffGetStringUntilfromSdifString(SdifString, gSdifString,
 				_SdifStringLen, _SdifReservedChars);
   if (   SdifTestCharEnd(SdifF, CharEnd, '{',
-			 gSdifString, (short)(SdifStrLen(gSdifString)!=0) ,
+			 gSdifString, SdifStrLen(gSdifString) != 0,
 			 "Frame")
 	 ==eFalse   )
     {
@@ -664,7 +669,7 @@ SdifFGetAllType(SdifFileT *SdifF, int Verbose)
   
   CharEnd = SdiffGetStringUntil(file, gSdifString, _SdifStringLen, &SizeR, _SdifReservedChars);
   if (SdifTestCharEnd(SdifF,     CharEnd,    '{',    gSdifString, 
-		      (short)(SdifStrLen(gSdifString)!=0),
+		      SdifStrLen(gSdifString) != 0,
 		      "Begin of Types declarations") == eFalse)
     {
       return SizeR;
@@ -948,7 +953,7 @@ SdifFGetAllStreamID(SdifFileT *SdifF, int Verbose)
   
   CharEnd = SdiffGetStringUntil(file, gSdifString, _SdifStringLen, &SizeR, _SdifReservedChars);
   if (SdifTestCharEnd(SdifF,     CharEnd,    '{',    gSdifString, 
-		      (short)(SdifStrLen(gSdifString)!=0),
+		      SdifStrLen(gSdifString) != 0,
 		      "Begin of StreamID declarations") == eFalse)
     {
       return SizeR;
