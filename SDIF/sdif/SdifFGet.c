@@ -1,4 +1,4 @@
-/* $Id: SdifFGet.c,v 3.16 2004-09-09 17:29:00 schwarz Exp $
+/* $Id: SdifFGet.c,v 3.17 2004-10-07 14:52:24 roebel Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -32,6 +32,12 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.16  2004/09/09 17:29:00  schwarz
+ * better syntax error messages and code reformatted to help finding
+ * parsing bug that the type definition string has to end with whitespace.
+ * At the next bug with the type language parser, it should be rewritten using
+ * flex/bison!
+ *
  * Revision 3.15  2004/07/22 14:47:56  bogaards
  * removed many global variables, moved some into the thread-safe SdifGlobals structure, added HAVE_PTHREAD define, reorganized the code for selection, made some arguments const, new version 3.8.6
  *
@@ -157,19 +163,56 @@ int SdifFGetSignature (SdifFileT *SdifF, size_t *nread)
 int
 SdifFGetOneNameValue(SdifFileT *SdifF, int Verbose, size_t *SizeR)
 {
+
   FILE         *file;
+
+#if 1
+  char str[_SdifStringLen];
+  char *cs;
+  int ncMax=_SdifStringLen;
+  int c;
+  file = SdifFGetFILE_SwitchVerbose(SdifF, Verbose);
+
+  cs = str;
+  
+  while( (c = (char) fgetc(file)) && (ncMax-- > 0) && (!feof(file)))
+    {
+      SizeR++;
+      *cs++ = c;
+      if ('\n'== c)
+          break;
+    }
+  *cs = '\0';        
+
+  /* NVT is finished if name starts with } */
+  if(str[0] == '}') {
+    return str[0];
+  }
+  else {
+    /* remove final semicolon that represents end of value in text file */
+    if(Verbose =='t') {
+      --cs;
+      while(cs>=str && isspace(*cs)) *cs-- = '\0';
+      if(*cs!=';')
+        ++cs;
+      *cs++ = '\n'; 
+      *cs = '\0';              
+    }
+    SdifFNameValueLCurrNVTfromString (SdifF, str);
+  }
+  return '\n';
+
+#else
+  char errorMess[_SdifStringLen];
   int          CharEnd;
   static const char  CharsEnd[] = " \t\n\f\r\v{},;:";
   char sdifString[_SdifStringLen];
   char sdifString2[_SdifStringLen];
-  char errorMess[_SdifStringLen];
-  
-
 
   file = SdifFGetFILE_SwitchVerbose(SdifF, Verbose);
 
   /* Name */
- 
+
   CharEnd = SdiffGetStringUntil(file, sdifString, _SdifStringLen, SizeR, CharsEnd);
 
   if ( (CharEnd == '}') && (SdifStrLen(sdifString) == 0) ) /* no more NameValue */
@@ -210,6 +253,8 @@ SdifFGetOneNameValue(SdifFileT *SdifF, int Verbose, size_t *SizeR)
   
   SdifNameValuesLPutCurrNVT(SdifF->NameValues, sdifString, sdifString2);
   return  CharEnd;
+
+#endif
 }
 
 
@@ -289,7 +334,7 @@ SdifFNameValueLCurrNVTfromString (SdifFileT *SdifF, char *str)
       str   = strchr (value, '\n');
       if (!str)  return (0);
       *str++  = (char) 0;
-
+      
       /* check if name already used */
       if (SdifNameValuesLGetCurrNVT (SdifF->NameValues, name))
       {
