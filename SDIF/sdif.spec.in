@@ -8,7 +8,7 @@ Source: http://www.ircam.fr/anasyn/sdif/download/SDIF-%{version}-src.tar.gz
 BuildRoot: /var/tmp/sdif-%{version}-root
 %description
 The SDIF Sound Description Interchange Format IRCAM Library
-
+see http://www.ircam.fr/sdif
 %prep
 
 %setup -n SDIF-%{version}
