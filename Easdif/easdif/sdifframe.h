@@ -34,9 +34,16 @@
  * sdifframe.h is composed of the different methods which are using to 
  * manipulate the frame.
  * 
- * $Id: sdifframe.h,v 1.14 2004-08-25 18:23:56 roebel Exp $ 
+ * $Id: sdifframe.h,v 1.15 2004-08-26 09:33:12 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.14  2004/08/25 18:23:56  roebel
+ * Version 0.11.0
+ * removed SetNbMatrix which was confusing because people used it
+ * to resize a Frame. Added a real resize function.
+ * Added size(), resize() and clear() functions to
+ * have more consistent interface compared to stl containers.
+ *
  * Revision 1.13  2004/07/27 17:40:19  roebel
  * Changed include directive to use user path and not system path for sdif.h
  *
@@ -143,6 +150,8 @@ private:
 
 
 public: 
+
+  
   /**
    * \defgroup frconstr SDIFFrame - Constructor
    */
@@ -164,7 +173,7 @@ public:
  * Print : see the content of a frame
  * PrintHeader : see the frame header
  * Resize : resize the vector of the frame that stock the reading
- * ClearData : clear the data of a frame to reused
+ * ClearData : reinitialize the frame, will erase all matrices and all header infos
  *
  * @param file 
  */
@@ -264,25 +273,29 @@ public:
 
 /**
  * \ingroup otherframe
- * @brief empty the matrix vector
+ * @brief reinitialize the frame: remove all matrices and set all headers to initial default values
+ *
+ *  use Resize(0) to clear only the matrices.
  */
     void ClearData();
 
 /**
  * \ingroup otherframe
- * @brief empty the matrix vector
+ * @brief reinitialize the frame: remove all matrices and set all headers to initial default values
  */
     void clear(){ClearData();};
 
 /**
  * \ingroup otherframe
- * @brief resize the vector to hold  SDIFMatrices 
+ * @brief resize the vector to hold _size SDIFMatrices 
+ * \param _size number of matrices that should be in the frame
  */
   void Resize(int _size);
 
 /**
  * \ingroup otherframe
- * @brief resize the vector to hold  SDIFMatrices 
+ * @brief resize the vector to hold _size SDIFMatrices 
+ * \param _size number of matrices that should be in the frame
  */
   void resize(int _size){Resize(_size);}
 
@@ -353,6 +366,35 @@ public:
   SDIFMatrix& GetMatrix(const std::string& signature) throw(SDIFMatrixNotAvailable);
   const SDIFMatrix& GetMatrix(const std::string& signature) const throw(SDIFMatrixNotAvailable);
 
+
+  /** 
+   *  \ingroup mat 
+   *   SDIFFrame iterators iterate over the matrices conatined in the
+   *   frame. These are STL compliant random access iterators and they  
+   *   exist as iterator and const_iterator
+   */
+  typedef std::vector<SDIFMatrix>::iterator iterator;
+  typedef std::vector<SDIFMatrix>::const_iterator const_iterator;
+
+/**
+ * \ingroup mat 
+ * get an the iterator pointing to the first matrix in the frame
+ * 
+ * @return SDIFFRame::iterator
+ * const Frames return const_iterators
+ */
+  iterator begin(){return mv_Matrix.begin();}
+  const_iterator begin() const {return mv_Matrix.begin();}
+
+/**
+ * \ingroup mat 
+ * get an the iterator pointing after the last matrix in the frame
+ * 
+ * @return SDIFFRame::iterator
+ * const Frames return const_iterators
+ */
+  iterator end(){return mv_Matrix.end();}
+  const_iterator end() const {return mv_Matrix.end();}
 
 
   /*************************************************************************/

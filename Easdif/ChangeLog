@@ -6,6 +6,8 @@ Version 0.11.0
 	to resize a Frame. Added a real resize function.
 	Added size(), resize() and clear() functions to 
 	have more consistent interface compared to stl containers.
+
+	added iterators that iterate over the matrices in a frame.
 	
 2004-08-25  Axel Roebel  <roebel@localdomain>
 Version 0.10.2
@@ -564,4 +566,4 @@ Version 0.21
 	* ChangeLog: Added changelog to repository.
 
 
-$Id: ChangeLog,v 1.39 2004-08-25 18:23:57 roebel Exp $
+$Id: ChangeLog,v 1.40 2004-08-26 09:33:12 roebel Exp $
