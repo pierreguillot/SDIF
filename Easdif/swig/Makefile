@@ -1,6 +1,9 @@
-# $Id: Makefile,v 1.5 2003-04-17 11:15:01 schwarz Exp $
+# $Id: Makefile,v 1.6 2003-04-17 12:20:39 schwarz Exp $
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.5  2003/04/17 11:15:01  schwarz
+# Swigging sdif.h works (with some warnings), but that's not yet it...
+#
 # Revision 1.4  2003/04/17 11:03:52  schwarz
 # Swigged all easdif classes!
 # Now going on to map sdif basic types.
@@ -28,7 +31,7 @@ wrap = easdif_wrap.cxx
 
 all:			SDIF.pm SDIF.so
 
-SDIF.pm $(wrap):	easdif.i $(sdifincfiles) Makefile
+SDIF.pm $(wrap):	easdif.i $(sdifincfiles) sdifsignature.i
 	swig -c++ -perl5 -shadow $<
 #	swig -c++ -perl5 $<
 
