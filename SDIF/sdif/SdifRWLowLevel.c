@@ -1,4 +1,4 @@
-/* $Id: SdifRWLowLevel.c,v 3.7 1999-10-13 16:05:56 schwarz Exp $
+/* $Id: SdifRWLowLevel.c,v 3.8 1999-10-15 12:23:46 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -15,6 +15,15 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.7  1999/10/13  16:05:56  schwarz
+ * Changed data type codes (SdifDataTypeET) to SDIF format version 3, as
+ * decided with Matt Wright June 1999, added integer data types.
+ * Added writing of 1NVT with real frame header (but data is still not in
+ * matrices).
+ * The data type handling makes heavy use of code-generating macros,
+ * called for all data types with the sdif_foralltypes macro, thus
+ * adding new data types is easy.
+ *
  * Revision 3.6  1999/10/07  15:05:53  schwarz
  * Removed unused SdiffGetPos.
  *
@@ -46,14 +55,12 @@
 
 
 #include <preincluded.h>
-#include "SdifRWLowLevel.h"
-#include "SdifHard_OS.h"
-#include "SdifError.h"
-
-
 #include <string.h>
 #include <ctype.h>
 #include <assert.h>
+#include "SdifRWLowLevel.h"
+#include "SdifHard_OS.h"
+#include "SdifError.h"
 
 
 extern int        gSdifInitialised;	/* can't include SdifFile.h */
@@ -591,6 +598,7 @@ SdiffWriteString(char* ptr, FILE *stream)
 
 
 
+/* Return c if it is a reserved char, -1 otherwise. */
 int
 SdifIsAReservedChar(char c)
 {
@@ -602,7 +610,25 @@ SdifIsAReservedChar(char c)
 
 
 
+/* Convert str <strong>in place</strong> so that it doesn't contain
+  any reserved chars (these become '.') or spaces (these become '_').  
+*/
+char *
+SdifStringToNV (/*in out*/ char *str)
+{
+    char *s = str;
 
+    while (*s)
+    {
+        if (isspace (*s)  ||  iscntrl (*s))
+	    *s = '_';
+	else if (SdifIsAReservedChar (*s) != -1)
+	    *s = '.';
+	s++;
+    }
+
+    return (str);
+}
 
 
 
