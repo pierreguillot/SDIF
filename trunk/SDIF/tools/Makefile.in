@@ -10,7 +10,7 @@
 # even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 # PARTICULAR PURPOSE.
 
-# $Id: Makefile.in,v 1.5 2000-10-30 19:05:54 roebel Exp $
+# $Id: Makefile.in,v 1.6 2000-10-30 19:15:34 roebel Exp $
 #
 # ./tools/Makefile.am		September 2000			Patrice Tisserand
 #
@@ -41,6 +41,10 @@
 # send email to:  sdif@ircam.fr
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.4  2000/10/30  19:05:54  roebel
+# Added support for relative path compilation (VPATH)
+# Added support for debugging feature in configure.in and Makefiles
+#
 # Revision 1.3  2000/10/30  14:44:02  roebel
 # Moved all tool sources into central tools directory and added config.h to sources
 #

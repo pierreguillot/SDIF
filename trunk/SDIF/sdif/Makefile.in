@@ -10,7 +10,7 @@
 # even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 # PARTICULAR PURPOSE.
 
-# $Id: Makefile.in,v 1.4 2000-10-30 19:05:49 roebel Exp $
+# $Id: Makefile.in,v 1.5 2000-10-30 19:15:31 roebel Exp $
 #
 # ./sdif/Makefile.am		September 2000			Patrice Tisserand
 #
@@ -41,6 +41,10 @@
 # send email to:  sdif@ircam.fr
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.5  2000/10/30  19:05:48  roebel
+# Added support for relative path compilation (VPATH)
+# Added support for debugging feature in configure.in and Makefiles
+#
 # Revision 1.4  2000/10/30  14:28:16  roebel
 # removed sdif.h from Makefile.am
 #
@@ -452,7 +456,7 @@ SdifFile.o : SdifVersion.h
 SdifVersion.h : $(Versionsrc)
 	@echo  "Updating  Library CKSUM"
 	@echo "/* Automatically generated File do not edit */" >$@
-	@echo '#define AUTOCKSUM "$$Checksum: SRC '$(shell CMD_ENV=xpg4;export CMD_ENV;cksum $^ | cut -f1 -d' '|cksum |cut -f1 -d' ')' $$ IRCAM $$Date: 2000-10-30 19:05:49 $$"'>>$@
+	@echo '#define AUTOCKSUM "$$Checksum: SRC '$(shell CMD_ENV=xpg4;export CMD_ENV;cksum $^ | cut -f1 -d' '|cksum |cut -f1 -d' ')' $$ IRCAM $$Date: 2000-10-30 19:15:31 $$"'>>$@
 
 # EXTRA FOR IRCAM STUFF
 ircam_deps : ${FORMES_H}

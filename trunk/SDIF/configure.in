@@ -1,5 +1,5 @@
 dnl -*-m4-*- (He emacs, it's a m4 file)
-dnl $Id: configure.in,v 1.4 2000-10-30 19:05:43 roebel Exp $
+dnl $Id: configure.in,v 1.5 2000-10-30 19:13:59 roebel Exp $
 dnl
 dnl configure.in		September 2000		Patrice Tisserand
 dnl
@@ -30,6 +30,10 @@ dnl For any information regarding this and other IRCAM software, please
 dnl send email to:  sdif@ircam.fr
 dnl
 dnl $Log: not supported by cvs2svn $
+dnl Revision 1.4  2000/10/30  19:05:43  roebel
+dnl Added support for relative path compilation (VPATH)
+dnl Added support for debugging feature in configure.in and Makefiles
+dnl
 dnl Revision 1.3  2000/10/30  16:58:15  roebel
 dnl removing sdif/sdif.h
 dnl
@@ -124,11 +128,11 @@ SELLIB=libsdif-debug.a; CFLAGS="-g2";
 TESTLIB=sdif-debug; 
 PROGLIST="querysdif-debug sdifextract-debug sdiftotext-debug tosdif-debug";
 else 
-SELLIB=libsdif.a; 
+SELLIB=libsdif.a;  CFLAGS="-O3";
 TESTLIB=sdif; 
 PROGLIST="querysdif sdifextract sdiftotext tosdif";
 fi ],[
-SELLIB=libsdif.a; 
+SELLIB=libsdif.a; CFLAGS="-O3";
 TESTLIB=sdif; 
 PROGLIST="querysdif sdifextract sdiftotext tosdif";
 ])
