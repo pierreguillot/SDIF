@@ -1,10 +1,13 @@
-/* $Id: testselect.c,v 1.2 1999-09-20 13:23:09 schwarz Exp $
+/* $Id: testselect.c,v 1.3 1999-10-07 15:13:01 schwarz Exp $
  *
  * testselect		30. August 1999		Diemo Schwarz
  *
  * Test functions from SdifSelect.c
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  1999/09/20  13:23:09  schwarz
+ * First finished version, API to be improved.
+ *
  * Revision 1.1  1999/08/31  10:03:38  schwarz
  * Added test code for module SdifSelect which parses an access specification to a
  * chosen part of SDIF data.  Can be added to a file name.
@@ -31,7 +34,7 @@ main (int argc, char *argv [])
     printf ("selection: file %s  basename %s", sel.filename, sel.basename);
     
     SdifListInitLoop (sel.stream);
-    while (SdifSelectGetNextInt (sel.stream, &intrange, 1))
+    while (SdifSelectGetNextIntRange (sel.stream, &intrange, 1))
 	printf ("\n  stream\t%d - %d ", intrange.value, intrange.range);
 
     SdifListInitLoop (sel.frame);
@@ -43,15 +46,15 @@ main (int argc, char *argv [])
 	printf ("\n  matrix\t'%s' ", SdifSignatureToString (sig));
 
     SdifListInitLoop (sel.column);
-    while (SdifSelectGetNextInt (sel.column, &intrange, 1))
+    while (SdifSelectGetNextIntRange (sel.column, &intrange, 1))
 	printf ("\n  column\t%d - %d ", intrange.value, intrange.range);
 
     SdifListInitLoop (sel.row);
-    while (SdifSelectGetNextInt (sel.row, &intrange, 1))
+    while (SdifSelectGetNextIntRange (sel.row, &intrange, 1))
 	printf ("\n  row\t%d - %d ", intrange.value, intrange.range);
 
     SdifListInitLoop (sel.time);
-    while (SdifSelectGetNextReal (sel.time, &realrange, 1))
+    while (SdifSelectGetNextRealRange (sel.time, &realrange, 1))
 	printf ("\n  time\t%f - %f ", realrange.value, realrange.range);
 
     printf ("\n\n");
