@@ -1,10 +1,14 @@
-// $Id: easdif.i,v 1.3 2003-04-17 11:03:52 schwarz Exp $ -*-c-*-
+// $Id: easdif.i,v 1.4 2003-04-17 11:15:01 schwarz Exp $ -*-c-*-
 //
 // easdif.i		16.04.2003		Diemo Schwarz
 //
 // Interface file for swig, defining the callable easdif functions
 //
 // $Log: not supported by cvs2svn $
+// Revision 1.3  2003/04/17 11:03:52  schwarz
+// Swigged all easdif classes!
+// Now going on to map sdif basic types.
+//
 // Revision 1.2  2003/04/17 10:19:51  schwarz
 // Nice class and method names using renaming.
 //
@@ -32,6 +36,9 @@ using namespace Easdif;
     EasdifInit();
 %}
 
+
+// read all basic SDIF definitions (too much?)
+%include "../SDIF/include/sdif.h"
 
 // read all class definitions
 %include "../easdif/sdifmatrix.h"
