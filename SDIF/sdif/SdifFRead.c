@@ -1,4 +1,4 @@
-/* $Id: SdifFRead.c,v 3.6 2000-03-01 11:19:57 schwarz Exp $
+/* $Id: SdifFRead.c,v 3.7 2000-04-11 14:31:41 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -14,6 +14,10 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.6  2000/03/01  11:19:57  schwarz
+ * Assert Padding, added SdifFReadAndIgnore.
+ * SdiffSetPos checks for pipe and then uses SdifFReadAndIgnore to seek forward.
+ *
  * Revision 3.5  1999/11/03  16:42:32  schwarz
  * Use _SdifNVTStreamID for stream ID of 1NVT frames because of CNMAT
  * restriction of only one frame type per stream.
@@ -94,11 +98,12 @@ size_t
 SdifFReadGeneralHeader(SdifFileT *SdifF)
 {
   size_t SizeR = 0;
-  
+  size_t SizeS = 0;
+
   SdiffGetPos(SdifF->Stream, &(SdifF->StartChunkPos));
 
   SdifFGetSignature(SdifF, &SizeR);
-  SizeR += SdifFReadChunkSize(SdifF);
+  SizeS = SizeR += SdifFReadChunkSize(SdifF);
   SizeR += SdiffReadUInt4 (&(SdifF->FormatVersion), 1, SdifF->Stream) * sizeof(SdifUInt4);
   SizeR += SdiffReadUInt4 (&(SdifF->TypesVersion),  1, SdifF->Stream) * sizeof(SdifUInt4);
   
@@ -109,11 +114,14 @@ SdifFReadGeneralHeader(SdifFileT *SdifF)
       _SdifFError(SdifF, eBadHeader, gSdifErrorMess);
     }
 
+  /* read rest of header chunk (might contain additional data) */
+  SdifFReadPadding (SdifF, SdifF->ChunkSize - (SizeR - SizeS));
+
   if (SdifF->FormatVersion != _SdifFormatVersion)
   {
       char *mfmt = SdifF->FormatVersion > _SdifFormatVersion
-	? "file is in a newer format version (%d) than the library (%d)"
-	: "File is in an old format version (%d).  "
+	? "file is in a newer SDIF format version (%d) than the library (%d)"
+	: "File is in an old SDIF format version (%d).  "
 	  "The library (version %d) is not backwards compatible.";
 
       sprintf (gSdifErrorMess, mfmt, SdifF->FormatVersion, _SdifFormatVersion);
@@ -134,7 +142,8 @@ SdifFReadNameValueLCurrNVT(SdifFileT *SdifF)
   SdiffGetPos(SdifF->Stream, &(SdifF->StartChunkPos));
   SdifF->StartChunkPos -= sizeof(SdifSignature);
 
-#if (_SdifFormatVersion >= 3)	/* read frame header (with no matrices) */
+#if (_SdifFormatVersion >= 3)	
+  /* read frame header */
   SizeR += SdifFReadFrameHeader (SdifF);
   SdifF->ChunkSize = SdifF->CurrFramH->Size;
 #else
