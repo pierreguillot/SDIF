@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.17 2002-09-17 09:52:21 schwarz Exp $
+# $Id: Makefile.am,v 1.18 2002-09-24 13:23:08 schwarz Exp $
 #
 # ./sdif/Makefile.am		September 2000			Patrice Tisserand
 #
@@ -29,6 +29,9 @@
 # send email to:  sdif@ircam.fr
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.17  2002/09/17 09:52:21  schwarz
+# Added cpp-compiled library.
+#
 # Revision 1.16  2002/06/18 16:31:27  tisseran
 # Change cp -p to cp for copying ircam header, because cp -p preserves file attributes and so keep owner of the file.
 #
@@ -96,7 +99,7 @@
 
 EXTRA_LIBRARIES = libsdif.a libsdif-debug.a libsdif-cpp.a
 lib_LIBRARIES = @SELLIB@
-FORMES_H=host_architecture.h preincluded.h UniversalEnvVar.h  XpGuiCalls.h
+FORMES_H=host_architecture.h host_configure.h preincluded.h UniversalEnvVar.h  XpGuiCalls.h
 FORMES_INCLUDE=/u/formes/share/include
 
 SDIF_H = ../include/sdif_version.h $(top_srcdir)/include/sdif.h \
