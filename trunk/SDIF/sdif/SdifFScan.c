@@ -1,4 +1,4 @@
-/* $Id: SdifFScan.c,v 2.1 1998-12-21 18:27:11 schwarz Exp $
+/* $Id: SdifFScan.c,v 2.2 1999-01-23 13:57:28 virolle Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -13,6 +13,7 @@
  *
  * author: Dominique Virolle 1997
  *
+ * $Log: not supported by cvs2svn $
  *
  *
  */
@@ -64,13 +65,11 @@ SdifFScanGeneralHeader(SdifFileT *SdifF)
 
 
 
-
 size_t
-SdifFScanNameValueCurrHT(SdifFileT *SdifF)
+SdifFScanNameValueLCurrNVT(SdifFileT *SdifF)
 {
-  return SdifFGetNameValueCurrHT(SdifF, 't');
+    return SdifFGetNameValueLCurrNVT(SdifF, 't');
 }
-
 
 
 
@@ -144,8 +143,8 @@ SdifFScanAllASCIIChunks(SdifFileT *SdifF)
 	{
 
 	case e1NVT :
-	  SdifNameValuesLNewHT(SdifF->NameValues);
-	  SizeR += SdifFScanNameValueCurrHT(SdifF);
+	  SdifNameValuesLNewTable(SdifF->NameValues, _SdifNoStreamID, _Sdif_MIN_DOUBLE_);
+	  SizeR += SdifFScanNameValueLCurrNVT(SdifF);
 	  break;
 
 	case e1TYP :
@@ -258,3 +257,18 @@ SdifFScanFrameHeader(SdifFileT *SdifF)
   if (SdifF->CurrFramT)
     SdifFReInitMtrxUsed(SdifF);
 }
+
+/*
+ * obsolete
+ */
+
+
+size_t
+SdifFScanNameValueCurrHT(SdifFileT *SdifF)
+{
+    /* obsolete */
+    _Debug("SdifFScanNameValueCurrHT is obsolete, use SdifFScantNameValueLCurrNVT");
+    return SdifFScanNameValueLCurrNVT(SdifF);
+}
+
+

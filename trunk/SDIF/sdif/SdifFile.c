@@ -1,4 +1,4 @@
-/* $Id: SdifFile.c,v 2.2 1998-12-21 18:27:15 schwarz Exp $
+/* $Id: SdifFile.c,v 2.3 1999-01-23 13:57:32 virolle Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -16,6 +16,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 2.2  1998/12/21  18:27:15  schwarz
+ * Inserted copyright message.
+ *
  * Revision 2.1  1998/12/09  15:05:25  virolle
  * no segmentation fault when opening failed.
  *
@@ -74,7 +77,8 @@ SdifFOpen(const char* Name, SdifFileModeET Mode)
 						                            SdifKillMatrixType);
       SdifF->FrameTypesTable  = SdifCreateHashTable(_SdifGenHashSize, eHashInt4,
 						                            SdifKillFrameType);
-      SdifF->StreamIDsTable   = SdifCreateHashTable(1, eHashInt4, SdifKillStreamID);
+/*      SdifF->StreamIDsTable   = SdifCreateHashTable(1, eHashInt4, SdifKillStreamID);*/
+      SdifF->StreamIDsTable   = SdifCreateStreamIDTable(1);
       SdifF->TimePositions    = SdifCreateTimePositionL();
 
 
@@ -190,10 +194,11 @@ SdifFOpen(const char* Name, SdifFileModeET Mode)
 
 
 
-/* Obsolete version */
 SdifFileT*
 SdifOpenFile(const char* Name, SdifFileModeET Mode)
 {
+    /* obsolete */
+    _Debug("SdifOpenFile is obsolete, use SdifFOpen(SdifFileT* SdifF)");
 	return SdifFOpen(Name, Mode);
 }
 
@@ -330,7 +335,9 @@ SdifFClose(SdifFileT* SdifF)
         else                         _SdifError (eFreeNull, "SdifFile->MatrixTypesTable");
       if (SdifF->FrameTypesTable)    SdifKillHashTable (SdifF->FrameTypesTable);
         else                         _SdifError (eFreeNull, "SdifFile->FrameTypesTable");
-      if (SdifF->StreamIDsTable)     SdifKillHashTable (SdifF->StreamIDsTable);
+/*      if (SdifF->StreamIDsTable)     SdifKillHashTable (SdifF->StreamIDsTable);
+        else                         _SdifError (eFreeNull, "SdifFile->StreamIDsTable");*/
+      if (SdifF->StreamIDsTable)     SdifKillStreamIDTable (SdifF->StreamIDsTable);
         else                         _SdifError (eFreeNull, "SdifFile->StreamIDsTable");
       if (SdifF->TimePositions)      SdifKillTimePositionL (SdifF->TimePositions);
         else                         _SdifError (eFreeNull, "SdifFile->TimePositions");
@@ -375,10 +382,11 @@ SdifFClose(SdifFileT* SdifF)
 
 
 
-/* Obsolete version */
 void
 SdifCloseFile(SdifFileT* SdifF)
 {
+    /* obsolete */
+    _Debug("SdifCloseFile is obsolete, use SdifFClose(SdifFileT* SdifF)");
 	SdifFClose(SdifF);
 }
 
@@ -509,6 +517,7 @@ SdifGenInit(char *PredefinedTypesFile)
   
   SdifInitMachineType();
   SdifSetStdIOBinary (); /* only WIN32 */
+  SdifInitListNodeStock(_SdifListNodeStockSize);
 
   gSdifPredefinedTypes = SdifFOpen("Predefined", ePredefinedTypes);
 
@@ -535,6 +544,7 @@ void
 SdifGenKill(void)
 {
   SdifFClose(gSdifPredefinedTypes);
+  SdifDrainListNodeStock();
 }
 
 
@@ -542,7 +552,7 @@ SdifGenKill(void)
 void SdifPrintVersion(void)
 {
 #ifndef lint
-  static char rcsid[]= "$Revision: 2.2 $ IRCAM $Date: 1998-12-21 18:27:15 $";
+  static char rcsid[]= "$Revision: 2.3 $ IRCAM $Date: 1999-01-23 13:57:32 $";
 #endif
 
 

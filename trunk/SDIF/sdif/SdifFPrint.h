@@ -1,4 +1,4 @@
-/* $Id: SdifFPrint.h,v 2.1 1998-12-21 18:27:07 schwarz Exp $
+/* $Id: SdifFPrint.h,v 2.2 1999-01-23 13:57:24 virolle Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -15,6 +15,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 2.1  1998/12/21  18:27:07  schwarz
+ * Inserted copyright message.
+ *
  * Revision 2.0  1998/11/29  11:41:30  virolle
  * - New management of interpretation errors.
  * - Alignement of frames with CNMAT (execpt specials Chunk 1NVT, 1TYP, 1IDS).
@@ -45,17 +48,24 @@
 #include "SdifFrame.h"
 
 
-size_t SdifFPrintGeneralHeader   (SdifFileT *SdifF);
+size_t SdifFPrintGeneralHeader      (SdifFileT *SdifF);
+size_t SdifFPrintNameValueLCurrNVT  (SdifFileT *SdifF);
+size_t SdifFPrintAllNameValueNVT    (SdifFileT *SdifF);
+size_t SdifFPrintAllType            (SdifFileT *SdifF);
+size_t SdifFPrintAllStreamID        (SdifFileT *SdifF);
+size_t SdifFPrintAllASCIIChunks     (SdifFileT *SdifF);
+size_t SdifFPrintMatrixHeader       (SdifFileT *SdifF);
+size_t SdifFPrintFrameHeader        (SdifFileT *SdifF);
+size_t SdifFPrintOneRow             (SdifFileT *SdifF);
+
+size_t SdifFPrintMatrixType         (SdifFileT *SdifF, SdifMatrixTypeT *MatrixType);
+size_t SdifFPrintFrameType          (SdifFileT *SdifF, SdifFrameTypeT  *FrameType);
+
+
+/*
+ * obsolete
+ */
 size_t SdifFPrintNameValueCurrHT (SdifFileT *SdifF);
 size_t SdifFPrintAllNameValueHT  (SdifFileT *SdifF);
-size_t SdifFPrintAllType         (SdifFileT *SdifF);
-size_t SdifFPrintAllStreamID     (SdifFileT *SdifF);
-size_t SdifFPrintAllASCIIChunks  (SdifFileT *SdifF);
-size_t SdifFPrintMatrixHeader    (SdifFileT *SdifF);
-size_t SdifFPrintFrameHeader     (SdifFileT *SdifF);
-size_t SdifFPrintOneRow          (SdifFileT *SdifF);
-
-size_t SdifFPrintMatrixType      (SdifFileT *SdifF, SdifMatrixTypeT *MatrixType);
-size_t SdifFPrintFrameType       (SdifFileT *SdifF, SdifFrameTypeT  *FrameType);
 
 #endif /* _SdifFPrint_ */

@@ -1,4 +1,4 @@
-/* $Id: SdifMatrix.c,v 2.1 1998-12-21 18:27:28 schwarz Exp $
+/* $Id: SdifMatrix.c,v 2.2 1999-01-23 13:57:39 virolle Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -15,6 +15,7 @@
  * then SdifReInitOneRow makes a realloc. Then think to use it before write.
  *
  * author: Dominique Virolle 1997
+ * $Log: not supported by cvs2svn $
  *
  */
 

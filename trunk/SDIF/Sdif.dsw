@@ -15,6 +15,21 @@ Package=<4>
 
 ###############################################################################
 
+Project: "querysdif"=.\querysdif\querysdif.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name Sdif
+    End Project Dependency
+}}}
+
+###############################################################################
+
 Project: "sdifextract"=.\sdifextract\sdifextract.dsp - Package Owner=<4>
 
 Package=<5>

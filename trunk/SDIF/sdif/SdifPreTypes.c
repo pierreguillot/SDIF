@@ -1,4 +1,4 @@
-/* $Id: SdifPreTypes.c,v 2.1 1998-12-21 18:27:33 schwarz Exp $
+/* $Id: SdifPreTypes.c,v 2.2 1999-01-23 13:57:43 virolle Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -12,6 +12,10 @@
  * then this types are used. But in this case, some types can miss.
  *
  * author: Dominique Virolle 1997
+ *
+ *
+ *
+ * $Log: not supported by cvs2svn $
  *
  *
  */
@@ -37,20 +41,19 @@
 /* 1FQ0 matrix
  *  Mtrx  1FQ0    {Frequency, Mode, Hit}
  */
-SdifColumnDefT   M_1FQ0_Frequency     = {"Frequency", 1};
-SdifColumnDefT   M_1FQ0_Mode          = {"Mode", 2};
-SdifColumnDefT   M_1FQ0_Hit           = {"Hit", 3};
+SdifMatrixTypeT*
+CreateM_1FQ0(void)
+{
+  SdifMatrixTypeT*  M_1FQ0;
 
-SdifColumnDefNT  M_1FQ0_HitNode       = { NULL,             &M_1FQ0_Hit};
-SdifColumnDefNT  M_1FQ0_ModeNode      = { &M_1FQ0_HitNode,  &M_1FQ0_Mode};
-SdifColumnDefNT  M_1FQ0_FrequencyNode = { &M_1FQ0_ModeNode, &M_1FQ0_Frequency};
 
-SdifMatrixTypeT  M_1FQ0 = { '1FQ0' ,
-			    NULL,
-			    &M_1FQ0_FrequencyNode,
-			    &M_1FQ0_HitNode,
-			    3, 3,
-			    eNoModif};
+  M_1FQ0 = SdifCreateMatrixType('1FQ0', NULL);
+  SdifMatrixTypeInsertTailColumnDef(M_1FQ0, M_1FQ0_Frequency);
+  SdifMatrixTypeInsertTailColumnDef(M_1FQ0, M_1FQ0_Mode);
+  SdifMatrixTypeInsertTailColumnDef(M_1FQ0, M_1FQ0_Hit);
+  M_1FQ0->ModifMode = eNoModif;
+  return M_1FQ0;
+}
 
 
 
@@ -60,32 +63,23 @@ SdifMatrixTypeT  M_1FQ0 = { '1FQ0' ,
 /* 1FOF matrix
  *  Mtrx  1FOF  {Frequency, Amplitude, BandWidth, Tex, DebAtt, Atten, Phase}
  */
-SdifColumnDefT   M_1FOF_Frequency     = {"Frequency", 1};
-SdifColumnDefT   M_1FOF_Amplitude     = {"Amplitude", 2};
-SdifColumnDefT   M_1FOF_BandWidth     = {"BandWidth", 3};
-SdifColumnDefT   M_1FOF_Tex           = {"Tex",       4};
-SdifColumnDefT   M_1FOF_DebAtt        = {"DebAtt",    5};
-SdifColumnDefT   M_1FOF_Atten         = {"Atten",     6};
-SdifColumnDefT   M_1FOF_Phase         = {"Phase",     7};
-
-SdifColumnDefNT  M_1FOF_PhaseNode     = { NULL,                  &M_1FOF_Phase};
-SdifColumnDefNT  M_1FOF_AttenNode     = { &M_1FOF_PhaseNode,     &M_1FOF_Atten};
-SdifColumnDefNT  M_1FOF_DebAttNode    = { &M_1FOF_AttenNode,     &M_1FOF_DebAtt};
-SdifColumnDefNT  M_1FOF_TexNode       = { &M_1FOF_DebAttNode,    &M_1FOF_Tex};
-SdifColumnDefNT  M_1FOF_BandWidthNode = { &M_1FOF_TexNode,       &M_1FOF_BandWidth};
-SdifColumnDefNT  M_1FOF_AmplitudeNode = { &M_1FOF_BandWidthNode, &M_1FOF_Amplitude};
-SdifColumnDefNT  M_1FOF_FrequencyNode = { &M_1FOF_AmplitudeNode, &M_1FOF_Frequency};
+SdifMatrixTypeT*
+CreateM_1FOF(void)
+{
+  SdifMatrixTypeT*  M_1FOF;
 
 
-SdifMatrixTypeT  M_1FOF = { '1FOF' ,
-			    NULL,
-			    &M_1FOF_FrequencyNode,
-			    &M_1FOF_PhaseNode,
-			    7, 7,
-			    eNoModif};
-
-
-
+  M_1FOF = SdifCreateMatrixType('1FOF', NULL);
+  SdifMatrixTypeInsertTailColumnDef(M_1FOF, M_1FOF_Frequency);
+  SdifMatrixTypeInsertTailColumnDef(M_1FOF, M_1FOF_Amplitude);
+  SdifMatrixTypeInsertTailColumnDef(M_1FOF, M_1FOF_BandWidth);
+  SdifMatrixTypeInsertTailColumnDef(M_1FOF, M_1FOF_Tex);
+  SdifMatrixTypeInsertTailColumnDef(M_1FOF, M_1FOF_DebAtt);
+  SdifMatrixTypeInsertTailColumnDef(M_1FOF, M_1FOF_Atten);
+  SdifMatrixTypeInsertTailColumnDef(M_1FOF, M_1FOF_Phase);
+  M_1FOF->ModifMode = eNoModif;
+  return M_1FOF;
+}
 
 
 
@@ -94,73 +88,59 @@ SdifMatrixTypeT  M_1FOF = { '1FOF' ,
 /* 1CHA matrix
  *  Mtrx  1CHA	{Channel1, Channel2, Channel3, Channel4}
  */
-SdifColumnDefT   M_1CHA_Channel1     = {"Channel1", 1};
-SdifColumnDefT   M_1CHA_Channel2     = {"Channel2", 2};
-SdifColumnDefT   M_1CHA_Channel3     = {"Channel3", 3};
-SdifColumnDefT   M_1CHA_Channel4     = {"Channel4", 4};
-
-SdifColumnDefNT  M_1CHA_Channel4Node = { NULL,                 &M_1CHA_Channel4};
-SdifColumnDefNT  M_1CHA_Channel3Node = { &M_1CHA_Channel4Node, &M_1CHA_Channel3};
-SdifColumnDefNT  M_1CHA_Channel2Node = { &M_1CHA_Channel3Node, &M_1CHA_Channel2};
-SdifColumnDefNT  M_1CHA_Channel1Node = { &M_1CHA_Channel2Node, &M_1CHA_Channel1};
-
-SdifMatrixTypeT  M_1CHA = { '1CHA',
-			    NULL,
-			    &M_1CHA_Channel1Node,
-			    &M_1CHA_Channel4Node,
-			    4, 4,
-			    eNoModif};
+SdifMatrixTypeT*
+CreateM_1CHA(void)
+{
+  SdifMatrixTypeT*  M_1CHA;
 
 
+  M_1CHA = SdifCreateMatrixType('1CHA', NULL);
+  SdifMatrixTypeInsertTailColumnDef(M_1CHA, M_1CHA_Channel1);
+  SdifMatrixTypeInsertTailColumnDef(M_1CHA, M_1CHA_Channel2);
+  SdifMatrixTypeInsertTailColumnDef(M_1CHA, M_1CHA_Channel3);
+  SdifMatrixTypeInsertTailColumnDef(M_1CHA, M_1CHA_Channel4);
+  M_1CHA->ModifMode = eNoModif;
+  return M_1CHA;
+}
 
 
 
 /* 1RES matrix
  *  Mtrx  1RES	{Frequency, Amplitude, BandWidth, Saliance, Correction}
  */
-
-SdifColumnDefT   M_1RES_Frequency      = {"Frequency",  1};
-SdifColumnDefT   M_1RES_Amplitude      = {"Amplitude",  2};
-SdifColumnDefT   M_1RES_BandWidth      = {"BandWidth",  3};
-SdifColumnDefT   M_1RES_Saliance       = {"Saliance",   4};
-SdifColumnDefT   M_1RES_Correction     = {"Correction", 5};
-
-SdifColumnDefNT  M_1RES_CorrectionNode = { NULL,                   &M_1RES_Correction};
-SdifColumnDefNT  M_1RES_SalianceNode   = { &M_1RES_CorrectionNode, &M_1RES_Saliance};
-SdifColumnDefNT  M_1RES_BandWidthNode  = { &M_1RES_SalianceNode,   &M_1RES_BandWidth};
-SdifColumnDefNT  M_1RES_AmplitudeNode  = { &M_1RES_BandWidthNode,  &M_1RES_Amplitude};
-SdifColumnDefNT  M_1RES_FrequencyNode  = { &M_1RES_AmplitudeNode,  &M_1RES_Frequency};
-
-SdifMatrixTypeT  M_1RES = { '1RES',
-			    NULL,
-			    &M_1RES_FrequencyNode,
-			    &M_1RES_CorrectionNode,
-			    5, 5, eNoModif};
+SdifMatrixTypeT*
+CreateM_1RES(void)
+{
+  SdifMatrixTypeT*  M_1RES;
 
 
-
-
+  M_1RES = SdifCreateMatrixType('1RES', NULL);
+  SdifMatrixTypeInsertTailColumnDef(M_1RES, M_1RES_Frequency);
+  SdifMatrixTypeInsertTailColumnDef(M_1RES, M_1RES_Amplitude);
+  SdifMatrixTypeInsertTailColumnDef(M_1RES, M_1RES_BandWidth);
+  SdifMatrixTypeInsertTailColumnDef(M_1RES, M_1RES_Saliance);
+  SdifMatrixTypeInsertTailColumnDef(M_1RES, M_1RES_Correction);
+  M_1RES->ModifMode = eNoModif;
+  return M_1RES;
+}
 
 
 
 /* 1DIS matrix
  *  Mtrx  1DIS	{Distribution, Amplitude}
  */
-
-SdifColumnDefT   M_1DIS_Distribution      = {"Distribution",  1};
-SdifColumnDefT   M_1DIS_Amplitude         = {"Amplitude",     2};
-
-SdifColumnDefNT  M_1DIS_AmplitudeNode     = { NULL,                  &M_1DIS_Amplitude};
-SdifColumnDefNT  M_1DIS_DistributionNode  = { &M_1DIS_AmplitudeNode, &M_1DIS_Distribution};
-
-SdifMatrixTypeT  M_1DIS = { '1DIS' ,
-			    NULL,
-			    &M_1DIS_DistributionNode,
-			    &M_1DIS_AmplitudeNode,
-			    2, 2, eNoModif};
+SdifMatrixTypeT*
+CreateM_1DIS(void)
+{
+  SdifMatrixTypeT*  M_1DIS;
 
 
-
+  M_1DIS = SdifCreateMatrixType('1DIS', NULL);
+  SdifMatrixTypeInsertTailColumnDef(M_1DIS, M_1DIS_Distribution);
+  SdifMatrixTypeInsertTailColumnDef(M_1DIS, M_1DIS_Amplitude);
+  M_1DIS->ModifMode = eNoModif;
+  return M_1DIS;
+}
 
 
 
@@ -239,12 +219,11 @@ CreateF_1NOI(void)
 void
 SdifCreatePredefinedTypes(SdifHashTableT *MatrixTypesHT, SdifHashTableT *FrameTypesHT)
 {
-  SdifPutMatrixType(MatrixTypesHT,   &M_1FQ0);
-  SdifPutMatrixType(MatrixTypesHT,   &M_1FOF);
-  SdifPutMatrixType(MatrixTypesHT,   &M_1CHA);
-  SdifPutMatrixType(MatrixTypesHT,   &M_1RES);
-  SdifPutMatrixType(MatrixTypesHT,   &M_1DIS);
-  MatrixTypesHT->Killer = NULL;
+  SdifPutMatrixType(MatrixTypesHT,   CreateM_1FQ0());
+  SdifPutMatrixType(MatrixTypesHT,   CreateM_1FOF());
+  SdifPutMatrixType(MatrixTypesHT,   CreateM_1CHA());
+  SdifPutMatrixType(MatrixTypesHT,   CreateM_1RES());
+  SdifPutMatrixType(MatrixTypesHT,   CreateM_1DIS());
 
   SdifPutFrameType(FrameTypesHT,   CreateF_1FOB() );
   SdifPutFrameType(FrameTypesHT,   CreateF_1REB() );

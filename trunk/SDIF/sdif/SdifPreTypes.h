@@ -1,4 +1,4 @@
-/* $Id: SdifPreTypes.h,v 2.1 1998-12-21 18:27:34 schwarz Exp $
+/* $Id: SdifPreTypes.h,v 2.2 1999-01-23 13:57:44 virolle Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -17,6 +17,9 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 2.1  1998/12/21  18:27:34  schwarz
+ * Inserted copyright message.
+ *
  * Revision 2.0  1998/11/29  11:42:01  virolle
  * - New management of interpretation errors.
  * - Alignement of frames with CNMAT (execpt specials Chunk 1NVT, 1TYP, 1IDS).
@@ -45,57 +48,31 @@
 #include "SdifFileStruct.h"
 
 
-extern SdifColumnDefT   M_1FQ0_Frequency;
-extern SdifColumnDefT   M_1FQ0_Mode;
-extern SdifColumnDefT   M_1FQ0_Hit;
-extern SdifColumnDefNT  M_1FQ0_HitNode;
-extern SdifColumnDefNT  M_1FQ0_ModeNode;
-extern SdifColumnDefNT  M_1FQ0_FrequencyNode;
-extern SdifMatrixTypeT  M_1FQ0;
+#define   M_1FQ0_Frequency  "Frequency"
+#define   M_1FQ0_Mode       "Mode"
+#define   M_1FQ0_Hit        "Hit"
 
-extern SdifColumnDefT   M_1FOF_Frequency;
-extern SdifColumnDefT   M_1FOF_Amplitude;
-extern SdifColumnDefT   M_1FOF_BandWidth;
-extern SdifColumnDefT   M_1FOF_Tex;
-extern SdifColumnDefT   M_1FOF_DebAtt;
-extern SdifColumnDefT   M_1FOF_AtteNode;
-extern SdifColumnDefT   M_1FOF_Phase;
-extern SdifColumnDefNT  M_1FOF_PhaseNode;
-extern SdifColumnDefNT  M_1FOF_AttenNode;
-extern SdifColumnDefNT  M_1FOF_DebAttNNode;
-extern SdifColumnDefNT  M_1FOF_TexNode;
-extern SdifColumnDefNT  M_1FOF_BandWidthNode;
-extern SdifColumnDefNT  M_1FOF_AmplitudeNode;
-extern SdifColumnDefNT  M_1FOF_FrequencyNode;
-extern SdifMatrixTypeT  M_1FOF;
+#define   M_1FOF_Frequency  "Frequency"
+#define   M_1FOF_Amplitude  "Amplitude"
+#define   M_1FOF_BandWidth  "BandWidth"
+#define   M_1FOF_Tex        "Tex"
+#define   M_1FOF_DebAtt     "DebAtt"
+#define   M_1FOF_Atten      "Atten"
+#define   M_1FOF_Phase      "Phase"
 
-extern SdifColumnDefT   M_1CHA_Channel;
-extern SdifColumnDefT   M_1CHA_Channel2;
-extern SdifColumnDefT   M_1CHA_Channel3;
-extern SdifColumnDefT   M_1CHA_Channel4;
-extern SdifColumnDefNT  M_1CHA_Channel4Node;
-extern SdifColumnDefNT  M_1CHA_Channel3Node;
-extern SdifColumnDefNT  M_1CHA_Channel2Node;
-extern SdifColumnDefNT  M_1CHA_ChannelNode;
-extern SdifMatrixTypeT  M_1CHA;
+#define   M_1CHA_Channel1   "Channel1"
+#define   M_1CHA_Channel2   "Channel2"
+#define   M_1CHA_Channel3   "Channel3"
+#define   M_1CHA_Channel4   "Channel4"
 
-extern SdifColumnDefT   M_1RES_Frequency;
-extern SdifColumnDefT   M_1RES_Amplitude;
-extern SdifColumnDefT   M_1RES_BandWidth;
-extern SdifColumnDefT   M_1RES_Saliance;
-extern SdifColumnDefT   M_1RES_CorrectioNode;
-extern SdifColumnDefNT  M_1RES_CorrectionNode;
-extern SdifColumnDefNT  M_1RES_SalianceNode;
-extern SdifColumnDefNT  M_1RES_BandWidthNode;
-extern SdifColumnDefNT  M_1RES_AmplitudeNode;
-extern SdifColumnDefNT  M_1RES_FrequencyNode;
-extern SdifMatrixTypeT  M_1RES;
+#define   M_1RES_Frequency  "Frequency"
+#define   M_1RES_Amplitude  "Amplitude"
+#define   M_1RES_BandWidth  "BandWidth"
+#define   M_1RES_Saliance   "Saliance"
+#define   M_1RES_Correction "Correction"
 
-extern SdifColumnDefT   M_1DIS_DistributioNode;
-extern SdifColumnDefT   M_1DIS_Amplitude;
-extern SdifColumnDefNT  M_1DIS_AmplitudeNode;
-extern SdifColumnDefNT  M_1DIS_DistributionNode;
-extern SdifMatrixTypeT  M_1DIS;
+#define   M_1DIS_Distribution    "Distribution"
+#define   M_1DIS_Amplitude  "Amplitude"
 
 SdifFrameTypeT* CreateF_1FOB(void);
 SdifFrameTypeT* CreateF_1REB(void);

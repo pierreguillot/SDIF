@@ -1,4 +1,4 @@
-/* $Id: SdifFPut.h,v 2.1 1998-12-21 18:27:09 schwarz Exp $
+/* $Id: SdifFPut.h,v 2.2 1999-01-23 13:57:26 virolle Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -19,6 +19,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 2.1  1998/12/21  18:27:09  schwarz
+ * Inserted copyright message.
+ *
  * Revision 2.0  1998/11/29  11:41:32  virolle
  * - New management of interpretation errors.
  * - Alignement of frames with CNMAT (execpt specials Chunk 1NVT, 1TYP, 1IDS).
@@ -49,16 +52,20 @@
 #include "SdifFrameType.h"
 #include "SdifStreamID.h"
 
-size_t SdifFPutOneNameValue    (SdifFileT* SdifF, int Verbose, SdifNameValueT *NameValue);
-size_t SdifFPutNameValueCurrHT (SdifFileT *SdifF, int Verbose);
-size_t SdifFPutOneMatrixType   (SdifFileT* SdifF, int Verbose, SdifMatrixTypeT *MatrixType);
-size_t SdifFPutAllMatrixType   (SdifFileT* SdifF, int Verbose);
-size_t SdifFPutOneComponent    (SdifFileT *SdifF, int Verbose, SdifComponentT *Component);
-size_t SdifFPutOneFrameType    (SdifFileT *SdifF, int Verbose, SdifFrameTypeT *FrameType);
-size_t SdifFPutAllFrameType    (SdifFileT *SdifF, int Verbose);
-size_t SdifFPutAllType         (SdifFileT *SdifF, int Verbose);
-size_t SdifFPutOneStreamID     (SdifFileT *SdifF, int Verbose, SdifStreamIDT *StreamID);
-size_t SdifFPutAllStreamID     (SdifFileT *SdifF, int Verbose);
+size_t SdifFPutOneNameValue         (SdifFileT *SdifF, int Verbose, SdifNameValueT *NameValue);
+size_t SdifFPutNameValueLCurrNVT    (SdifFileT *SdifF, int Verbose);
+size_t SdifFPutOneMatrixType        (SdifFileT *SdifF, int Verbose, SdifMatrixTypeT *MatrixType);
+size_t SdifFPutAllMatrixType        (SdifFileT *SdifF, int Verbose);
+size_t SdifFPutOneComponent         (SdifFileT *SdifF, int Verbose, SdifComponentT *Component);
+size_t SdifFPutOneFrameType         (SdifFileT *SdifF, int Verbose, SdifFrameTypeT *FrameType);
+size_t SdifFPutAllFrameType         (SdifFileT *SdifF, int Verbose);
+size_t SdifFPutAllType              (SdifFileT *SdifF, int Verbose);
+size_t SdifFPutOneStreamID          (SdifFileT *SdifF, int Verbose, SdifStreamIDT *StreamID);
+size_t SdifFPutAllStreamID          (SdifFileT *SdifF, int Verbose);
 
+/*
+ * obsolete
+ */
+size_t SdifFPutNameValueCurrHT      (SdifFileT *SdifF, int Verbose);
 
 #endif /* _SdifFPut_ */

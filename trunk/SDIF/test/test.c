@@ -1,4 +1,4 @@
-/* $Id: test.c,v 2.1 1998-12-21 18:28:04 schwarz Exp $
+/* $Id: test.c,v 2.2 1999-01-23 13:58:00 virolle Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -93,7 +93,7 @@ main(int argc, char **argv)
 
   
   SdifPrintAllType(stderr, gSdifPredefinedTypes);
-
+  
 
   SdifGenKill();
 

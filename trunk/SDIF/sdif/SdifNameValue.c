@@ -1,4 +1,4 @@
-/* $Id: SdifNameValue.c,v 2.1 1998-12-21 18:27:32 schwarz Exp $
+/* $Id: SdifNameValue.c,v 2.2 1999-01-23 13:57:41 virolle Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -17,6 +17,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 2.1  1998/12/21  18:27:32  schwarz
+ * Inserted copyright message.
+ *
  * Revision 2.0  1998/11/29  11:41:58  virolle
  * - New management of interpretation errors.
  * - Alignement of frames with CNMAT (execpt specials Chunk 1NVT, 1TYP, 1IDS).
@@ -39,7 +42,9 @@
 
 
 
-
+/*
+ * NameValue
+ */
 
 SdifNameValueT*
 SdifCreateNameValue(const char *Name,  const char *Value)
@@ -83,53 +88,106 @@ SdifKillNameValue(SdifNameValueT *NameValue)
 
 
 
-SdifNameValueHTNT*
-SdifCreateNameValueHTN(SdifNameValueHTNT *Next,
-		       SdifHashTableT *NameValueHT,
-		       SdifUInt4 NumHT)
+
+/*
+ * NameValueTable
+ */
+
+
+
+SdifNameValueTableT*
+SdifCreateNameValueTable (SdifUInt4 NumIDLink,
+                          SdifFloat8 Time,
+                          SdifUInt4 HashSize,
+                          SdifUInt4 NumTable)
 {
-  SdifNameValueHTNT *NewNVHTN = NULL;
-  
-  NewNVHTN = (SdifNameValueHTNT*) malloc (sizeof(SdifNameValueHTNT));
-  if (NewNVHTN)
+    SdifNameValueTableT* NewNVTable;
+
+    NewNVTable = (SdifNameValueTableT*) malloc (sizeof(SdifNameValueTableT));
+    if (NewNVTable)
     {
-      NewNVHTN->Next = Next;
-      NewNVHTN->NameValueHT = NameValueHT;
-      NewNVHTN->NumHT = NumHT;
-      
-      return NewNVHTN;
+        NewNVTable->NumIDLink  = NumIDLink;
+        NewNVTable->Time       = Time;
+        NewNVTable->NVHT       = SdifCreateHashTable(HashSize, eHashChar, SdifKillNameValue);
+        NewNVTable->NumTable   = NumTable;
+        return NewNVTable;
     }
-  else
+    else
     {
-      _SdifError(eAllocFail, "NameValueHTN allocation");
+      _SdifError(eAllocFail, "NameValueTable allocation");
       return NULL;
     }
 }
 
 
 
-
-SdifNameValueHTNT*
-SdifKillNameValueHTN(SdifNameValueHTNT *NVHTN)
+void
+SdifKillNameValueTable  (SdifNameValueTableT* NVTable)
 {
-  SdifNameValueHTNT *Next;
-  
-  if (NVHTN)
+  if (NVTable)
     {
-      Next = NVHTN->Next;
-      SdifKillHashTable(NVHTN->NameValueHT);
-      free(NVHTN);
-      
-      return Next;
+      SdifKillHashTable(NVTable->NVHT);
+      free(NVTable);
     }
   else
-    {
-      _SdifError(eFreeNull, "NameValueHTN free");
-      return NULL;
-    }
+    _SdifError(eFreeNull, "NameValueTable free");
 }
 
 
+
+
+
+SdifNameValueT*
+SdifNameValueTableGetNV(SdifNameValueTableT* NVTable, const char *Name)
+{
+    return (SdifNameValueT*) SdifHashTableSearch(NVTable->NVHT, (char*) Name, SdifStrLen(Name)+1);
+}
+
+
+
+SdifNameValueT*
+SdifNameValueTablePutNV(SdifNameValueTableT* NVTable, const char *Name,  const char *Value)
+{
+  SdifNameValueT *NewNameValue = NULL;
+  
+  NewNameValue = SdifCreateNameValue(Name, Value);
+
+  if (NewNameValue)
+    SdifHashTablePut(NVTable->NVHT, Name, SdifStrLen(Name)+1, NewNameValue);
+
+  return NewNameValue;
+}
+
+
+SdifFloat8
+SdifNameValueTableGetTime(SdifNameValueTableT* NVTable)
+{
+    return NVTable->Time;
+}
+
+
+
+SdifUInt4
+SdifNameValueTableGetNumTable(SdifNameValueTableT* NVTable)
+{
+    return NVTable->NumTable;
+}
+
+
+SdifUInt4
+SdifNameValueTableGetNumIDLink(SdifNameValueTableT* NVTable)
+{
+    return NVTable->NumIDLink;
+}
+
+
+
+
+
+
+/*
+ * NameValueTableList
+ */
 
 
 
@@ -140,13 +198,12 @@ SdifCreateNameValuesL(SdifUInt4  HashSize)
   SdifNameValuesLT *NewNameValuesL = NULL;
   
   NewNameValuesL = (SdifNameValuesLT*) malloc (sizeof(SdifNameValuesLT));
+
   if (NewNameValuesL)
     {
-      NewNameValuesL->HeadHTN = NULL;
-      NewNameValuesL->TailHTN = NULL;
-      NewNameValuesL->NbHTN = 0;
-      NewNameValuesL->CurrHT = NULL;
-      NewNameValuesL->HashSize = HashSize;
+      NewNameValuesL->NVTList   = SdifCreateList(SdifKillNameValueTable);
+      NewNameValuesL->CurrNVT   = NULL;
+      NewNameValuesL->HashSize  = HashSize;
       
       return NewNameValuesL;
     }
@@ -160,21 +217,12 @@ SdifCreateNameValuesL(SdifUInt4  HashSize)
 
 
 
-
-
-
-
-
-
-
 void
 SdifKillNameValuesL(SdifNameValuesLT *NameValuesL)
 {
   if (NameValuesL)
     {
-      while (NameValuesL->HeadHTN)
-	NameValuesL->HeadHTN = SdifKillNameValueHTN(NameValuesL->HeadHTN);
-      
+      SdifKillList(NameValuesL->NVTList);
       free(NameValuesL);
     }
   else
@@ -185,67 +233,58 @@ SdifKillNameValuesL(SdifNameValuesLT *NameValuesL)
 
 
 
-
-
-
-
-
-
-
-
-
 SdifNameValuesLT*
-SdifNameValuesLNewHT(SdifNameValuesLT *NameValuesL)
+SdifNameValuesLNewTable(SdifNameValuesLT *NameValuesL, SdifUInt4 NumIDLink, SdifFloat8 Time)
 {
-  SdifNameValueHTNT *NewNode = NULL;
+    SdifNameValueTableT* NewNVT;
 
-  NewNode = SdifCreateNameValueHTN(NULL,
-				   SdifCreateHashTable(NameValuesL->HashSize,
-						       eHashChar,
-						       SdifKillNameValue),
-				   ++NameValuesL->NbHTN);
+    NewNVT = SdifCreateNameValueTable(  NumIDLink,
+                                        Time,
+                                        NameValuesL->HashSize,
+                                        SdifListGetNbData(NameValuesL->NVTList) + 1);
 
-  if (! NameValuesL->HeadHTN)
-    NameValuesL->HeadHTN = NewNode;
-  else
-    NameValuesL->TailHTN->Next = NewNode;
-  
-  NameValuesL->TailHTN = NewNode;
-  NameValuesL->CurrHT = NewNode->NameValueHT;
+    SdifListPutTail(NameValuesL->NVTList, NewNVT);
 
-  return NameValuesL;
+    NameValuesL->CurrNVT = NewNVT;
+    
+    return NameValuesL;
 }
 
 
 
 
-
-
-
-
-
-
-
-
-SdifHashTableT*
-SdifNameValuesLSetCurrHT(SdifNameValuesLT *NameValuesL, SdifUInt4 NumCurrHT)
+SdifNameValueTableT*
+SdifNameValuesLSetCurrNVT(SdifNameValuesLT *NameValuesL, SdifUInt4 NumCurrNVT)
+/* condition of succes : NumCurrNVT < SdifListGetNbData(NameValuesL->NVTList)
+ */
 {
-  SdifNameValueHTNT 
-    *pNode;
-  
-  for(pNode = NameValuesL->HeadHTN; pNode; pNode = pNode->Next)
-    if (pNode->NumHT == NumCurrHT)
-      NameValuesL->CurrHT = pNode->NameValueHT;
+    SdifNameValueTableT* NVT=NULL;
 
-  return NameValuesL->CurrHT;
+    NVT = SdifListGetCurr(NameValuesL->NVTList);
+    if (NVT)
+    {
+        if (    (NVT->NumTable == NumCurrNVT-1)
+             && (NumCurrNVT < SdifListGetNbData(NameValuesL->NVTList))    )
+        {
+            NameValuesL->CurrNVT = SdifListGetNext(NameValuesL->NVTList);
+            return NameValuesL->CurrNVT;
+        }
+    }
+
+
+    NVT=NULL;
+    SdifListInitLoop(NameValuesL->NVTList);
+    while (SdifListIsNext(NameValuesL->NVTList))
+    {
+        NVT = SdifListGetNext(NameValuesL->NVTList);
+        if (NVT->NumTable = NumCurrNVT)
+        {
+            NameValuesL->CurrNVT = NVT;
+            break;
+        }
+    }
+  return NameValuesL->CurrNVT;
 }
-
-
-
-
-
-
-
 
 
 
@@ -254,55 +293,34 @@ SdifNameValueT*
 SdifNameValuesLGet(SdifNameValuesLT *NameValuesL, char *Name)
 {
   SdifNameValueT
-    *NameValue;
-  SdifNameValueHTNT
-    *pNode;
+    *NameValue = NULL;
+  SdifNameValueTableT * CurrTable;
 
-  for(pNode = NameValuesL->HeadHTN; pNode; pNode = pNode->Next)
-    {
-      NameValue = SdifHashTableSearch(pNode->NameValueHT, Name, SdifStrLen(Name)+1);
-      if (NameValue)
-        return NameValue;
-    }
+  SdifListInitLoop(NameValuesL->NVTList);
+  while (   (!NameValue)  && (SdifListIsNext(NameValuesL->NVTList)) )
+  {
+      CurrTable = SdifListGetNext(NameValuesL->NVTList);
+      NameValue = SdifNameValueTableGetNV(CurrTable, Name);
+  }
 
-  return NULL;
+  return NameValue;
 }
 
 
 
-
-
-
-
-
-
 SdifNameValueT*
-SdifNameValuesLGetCurrHT(SdifNameValuesLT *NameValuesL, char *Name)
+SdifNameValuesLGetCurrNVT(SdifNameValuesLT *NameValuesL, const char *Name)
 {
-  return SdifHashTableSearch(NameValuesL->CurrHT, Name, SdifStrLen(Name)+1);
+  return SdifNameValueTableGetNV(NameValuesL->CurrNVT, Name);
 }
 
 
 
-
-
-
-
-
-
-
 SdifNameValueT*
-SdifNameValuesLPutCurrHT(SdifNameValuesLT *NameValuesL, 
+SdifNameValuesLPutCurrNVT(SdifNameValuesLT *NameValuesL, 
 		   const char *Name,  const char *Value)
 {
-  SdifNameValueT *NewNameValue = NULL;
-  
-  NewNameValue = SdifCreateNameValue(Name, Value);
-
-  if (NewNameValue)
-    SdifHashTablePut(NameValuesL->CurrHT, Name, SdifStrLen(Name)+1, NewNameValue);
-
-  return NewNameValue;
+    return SdifNameValueTablePutNV(NameValuesL->CurrNVT, Name, Value);
 }
 
 
@@ -310,12 +328,72 @@ SdifNameValuesLPutCurrHT(SdifNameValuesLT *NameValuesL,
 SdifUInt2
 SdifNameValuesLIsNotEmpty(SdifNameValuesLT *NameValuesL)
 {
-  SdifNameValueHTNT
-    *pNode;
-  
-  for(pNode = NameValuesL->HeadHTN; pNode; pNode = pNode->Next)
-    if (pNode->NameValueHT->NbOfData > 0)
-      return 1;
+    SdifNameValueTableT* NVT;
 
+    if (SdifListIsEmpty(NameValuesL->NVTList))
+        return 0;
+    else
+    {
+        SdifListInitLoop(NameValuesL->NVTList);
+        while (SdifListIsNext(NameValuesL->NVTList))
+        {
+            NVT = SdifListGetNext(NameValuesL->NVTList);
+            if (NVT->NVHT->NbOfData > 0)
+                return 1;
+        }
+    }
   return 0;
 }
+
+
+
+
+/*
+ * Obsolete
+ */
+
+
+
+SdifNameValuesLT*
+SdifNameValuesLNewHT(SdifNameValuesLT *NameValuesL)
+{
+    /* obsolete */
+    _Debug("SdifNameValuesLNewHT is obsolete, use SdifNameValuesLNewTable(<args have changed!!>) ");
+    return SdifNameValuesLNewTable(NameValuesL, _SdifNoStreamID, _Sdif_MIN_DOUBLE_);
+}
+
+
+
+SdifHashTableT*
+SdifNameValuesLSetCurrHT(SdifNameValuesLT *NameValuesL, SdifUInt4 NumCurrHT)
+{
+    /* obsolete */
+    SdifNameValueTableT* NVT=NULL;
+
+    _Debug("SdifNameValuesLSetCurrHT is obsolete, use SdifNameValuesLSetCurrNVT(<same args>) : result has changed ");
+
+    NVT = SdifNameValuesLSetCurrNVT(NameValuesL, NumCurrHT);
+    return NVT->NVHT;
+}
+
+
+
+SdifNameValueT*
+SdifNameValuesLGetCurrHT(SdifNameValuesLT *NameValuesL, char *Name)
+{
+    /* obsolete */
+    _Debug("SdifNameValuesLGetCurrHT is obsolete, use SdifNameValuesLGetCurrNVT");
+    return SdifNameValuesLGetCurrNVT(NameValuesL, Name);
+}
+
+
+SdifNameValueT*
+SdifNameValuesLPutCurrHT(SdifNameValuesLT *NameValuesL, 
+		   const char *Name,  const char *Value)
+{
+    /* obsolete */
+    _Debug("SdifNameValuesLPutCurrHT is obsolete, use SdifNameValuesLPutCurrNVT");
+    return SdifNameValuesLPutCurrNVT(NameValuesL, Name, Value);
+}
+
+

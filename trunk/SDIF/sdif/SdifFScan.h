@@ -1,4 +1,4 @@
-/* $Id: SdifFScan.h,v 2.1 1998-12-21 18:27:12 schwarz Exp $
+/* $Id: SdifFScan.h,v 2.2 1999-01-23 13:57:29 virolle Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -16,6 +16,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 2.1  1998/12/21  18:27:12  schwarz
+ * Inserted copyright message.
+ *
  * Revision 2.0  1998/11/29  11:41:36  virolle
  * - New management of interpretation errors.
  * - Alignement of frames with CNMAT (execpt specials Chunk 1NVT, 1TYP, 1IDS).
@@ -44,16 +47,22 @@
 #include "SdifMatrix.h"
 #include "SdifFrame.h"
 
-size_t  SdifFScanGeneralHeader   (SdifFileT *SdifF);
-size_t  SdifFScanNameValueCurrHT (SdifFileT *SdifF);
-size_t  SdifFScanAllType         (SdifFileT *SdifF);
-size_t  SdifFScanAllStreamID     (SdifFileT *SdifF);
-size_t  SdifFScanAllASCIIChunks  (SdifFileT *SdifF);
-void    SdifFScanMatrixHeader    (SdifFileT *SdifF);
-void    SdifFScanFrameHeader     (SdifFileT *SdifF);
-void    SdifFScanOneRow          (SdifFileT *SdifF);
+size_t  SdifFScanGeneralHeader      (SdifFileT *SdifF);
+size_t  SdifFScanNameValueLCurrNVT  (SdifFileT *SdifF);
+size_t  SdifFScanAllType            (SdifFileT *SdifF);
+size_t  SdifFScanAllStreamID        (SdifFileT *SdifF);
+size_t  SdifFScanAllASCIIChunks     (SdifFileT *SdifF);
+void    SdifFScanMatrixHeader       (SdifFileT *SdifF);
+void    SdifFScanFrameHeader        (SdifFileT *SdifF);
+void    SdifFScanOneRow             (SdifFileT *SdifF);
 
-size_t  SdifFScanMatrixType      (SdifFileT *SdifF);
-size_t  SdifFScanFrameType       (SdifFileT *SdifF);
+size_t  SdifFScanMatrixType         (SdifFileT *SdifF);
+size_t  SdifFScanFrameType          (SdifFileT *SdifF);
+
+
+/*
+ * obsolete
+ */
+size_t  SdifFScanNameValueCurrHT    (SdifFileT *SdifF);
 
 #endif /* _SdifFScan_ */

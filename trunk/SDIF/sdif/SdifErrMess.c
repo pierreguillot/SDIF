@@ -1,4 +1,4 @@
-/* $Id: SdifErrMess.c,v 2.2 1998-12-21 18:27:01 schwarz Exp $
+/* $Id: SdifErrMess.c,v 2.3 1999-01-23 13:57:19 virolle Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -98,64 +98,6 @@ SdifKillError(SdifErrorT *Error)
 
 
 
-
-
-
-
-
-SdifErrorNT*
-SdifCreateErrorN(SdifErrorNT *Next, SdifErrorT *Error)
-{
-  SdifErrorNT *NewErrorNode = NULL;
-
-  NewErrorNode = (SdifErrorNT*) malloc (sizeof(SdifErrorNT));
-  if (NewErrorNode)
-    {
-      NewErrorNode->Next = Next;
-      NewErrorNode->Error = Error;
-
-      return NewErrorNode;
-    }
-  else
-    {
-      _SdifError(eAllocFail, "ErrorNode allocation");
-      return NULL;
-    }
-}
-
-
-
-
-
-
-
-SdifErrorNT*
-SdifKillErrorN(SdifErrorNT *ErrorNode)
-{
-  SdifErrorNT *Next;
-
-  if (ErrorNode)
-    {
-      Next = ErrorNode->Next;
-      SdifKillError(ErrorNode->Error);
-      free(ErrorNode);
-      
-      return Next;
-    }
-  else
-    {
-      _SdifError(eFreeNull, "ErrorNode free");
-      return NULL;
-    }
-}
-
-
-
-
-
-
-
-
 SdifErrorLT*
 SdifCreateErrorL(SdifFileT* SdifF)
 {
@@ -165,9 +107,7 @@ SdifCreateErrorL(SdifFileT* SdifF)
   if (NewErrorL)
   {
 	  NewErrorL->SdifF = SdifF;
-      NewErrorL->Head = NULL;
-      NewErrorL->Tail = NULL;
-      NewErrorL->NbError   = 0;
+      NewErrorL->ErrorList = SdifCreateList(SdifKillError);
       return NewErrorL;
 	}
   else
@@ -192,10 +132,7 @@ SdifKillErrorL(SdifErrorLT *ErrorL)
  */
   if (ErrorL)
     {
-      while (ErrorL->Head)
-        ErrorL->Head = SdifKillErrorN(ErrorL->Head);
-
-      free(ErrorL);
+        SdifKillList(ErrorL->ErrorList);
     }
   else
     _SdifError(eFreeNull, "ErrorL free");
@@ -208,17 +145,10 @@ SdifErrorLT*
 SdifInsertTailError(SdifErrorLT* ErrorL, SdifErrorTagET Tag, const char* UserMess)
 {
 	SdifErrorT* NewError = NULL;
-	SdifErrorNT *NewErrorN = NULL;
 
 	NewError = SdifCreateError(Tag, gSdifErrMessFormat[Tag].Level, UserMess);
-	NewErrorN = SdifCreateErrorN(NULL, NewError);
 
-	if (! ErrorL->Head)
-		ErrorL->Head = NewErrorN;
-	else
-		ErrorL->Tail->Next =NewErrorN;
-
-	ErrorL->Tail = NewErrorN;
+    SdifListPutTail(ErrorL->ErrorList, NewError);
 
 	return ErrorL;
 }
@@ -228,10 +158,10 @@ SdifInsertTailError(SdifErrorLT* ErrorL, SdifErrorTagET Tag, const char* UserMes
 SdifErrorT*
 SdifLastError(SdifErrorLT *ErrorL)
 {
-	if (! ErrorL->Head)
+	if (SdifListIsEmpty(ErrorL->ErrorList))
 		return NULL;
 	else
-		return ErrorL->Tail->Error;
+        return (SdifErrorT*) SdifListGetTail(ErrorL->ErrorList);
 }
 
 
@@ -239,10 +169,10 @@ SdifLastError(SdifErrorLT *ErrorL)
 SdifErrorTagET
 SdifLastErrorTag(SdifErrorLT *ErrorL)
 {
-	if (! ErrorL->Head)
+	if (SdifListIsEmpty(ErrorL->ErrorList))
 		return eNoError;
-	else
-		return ErrorL->Tail->Error->Tag;
+    else
+        return ((SdifErrorT*) SdifListGetTail(ErrorL->ErrorList))->Tag;
 }
 
 

@@ -300,6 +300,14 @@ SOURCE=.\sdif\SdifHash.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\sdif\SdifList.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\sdif\SdifList.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\sdif\SdifMatrix.c
 # End Source File
 # Begin Source File

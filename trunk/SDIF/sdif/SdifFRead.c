@@ -1,4 +1,4 @@
-/* $Id: SdifFRead.c,v 2.1 1998-12-21 18:27:10 schwarz Exp $
+/* $Id: SdifFRead.c,v 2.2 1999-01-23 13:57:27 virolle Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -13,6 +13,7 @@
  *
  * author: Dominique Virolle 1997
  *
+ * $Log: not supported by cvs2svn $
  *
  */
 
@@ -82,17 +83,17 @@ SdifFReadGeneralHeader(SdifFileT *SdifF)
 
 
 
-/* Signature of chunck already read */
 size_t
-SdifFReadNameValueCurrHT(SdifFileT *SdifF)
+SdifFReadNameValueLCurrNVT(SdifFileT *SdifF)
 {
+  /* Signature of chunck already read */
   size_t SizeR = 0;
   
   SdiffGetPos(SdifF->Stream, &(SdifF->StartChunkPos));
   SdifF->StartChunkPos -= sizeof(SdifSignature);
 
   SizeR += SdifFReadChunkSize(SdifF);
-  SizeR += SdifFGetNameValueCurrHT(SdifF, 's');
+  SizeR += SdifFGetNameValueLCurrNVT(SdifF, 's');
   SizeR += SdifFReadPadding(SdifF,
 			    SdifFPaddingCalculate(SdifF->Stream, SizeR + sizeof(SdifSignature)));
   
@@ -108,7 +109,6 @@ SdifFReadNameValueCurrHT(SdifFileT *SdifF)
 
   return SizeR;
 }
-
 
 
 
@@ -226,8 +226,8 @@ SdifFReadAllASCIIChunks(SdifFileT *SdifF)
       switch (SdifF->CurrSignature)
 	{
 	case e1NVT :
-	  SdifNameValuesLNewHT(SdifF->NameValues);
-	  SizeR += SdifFReadNameValueCurrHT(SdifF);
+	  SdifNameValuesLNewTable(SdifF->NameValues, _SdifNoStreamID, _Sdif_MIN_DOUBLE_);
+	  SizeR += SdifFReadNameValueLCurrNVT(SdifF);
 	  break;
 	  
 	case e1TYP :
@@ -485,3 +485,19 @@ SdifSkipFrameData(SdifFileT *SdifF)
       return SizeR;
     }
 }
+
+
+
+/*
+ * obsolete
+ */
+
+size_t
+SdifFReadNameValueCurrHT(SdifFileT *SdifF)
+{
+    /* obsolete */
+    _Debug("SdifFReadNameValueCurrHT is obsolete, use SdifFReadNameValueLCurrNVT");
+    return SdifFReadNameValueLCurrNVT(SdifF);
+}
+
+

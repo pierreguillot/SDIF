@@ -1,4 +1,4 @@
-/* $Id: SdifErrMess.h,v 2.2 1998-12-21 18:27:02 schwarz Exp $
+/* $Id: SdifErrMess.h,v 2.3 1999-01-23 13:57:20 virolle Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -22,6 +22,7 @@
 #define _SdifErrMess_
 
 #include "SdifGlobals.h"
+#include "SdifList.h"
 #include <stdio.h>
 
 
@@ -82,22 +83,10 @@ struct SdifErrorS
 extern const SdifErrorT gSdifErrMessFormat[];
 
 
-typedef struct SdifErrorNS SdifErrorNT;
-struct SdifErrorNS
-{
-  SdifErrorNT *Next;
-  SdifErrorT  *Error;
-};
-
-
-
 typedef struct SdifErrorLS SdifErrorLT;
 struct SdifErrorLS
 {
-  SdifErrorNT*	Head;
-  SdifErrorNT*	Tail;
-  SdifErrorNT*	CurrPrint;
-  SdifUInt4		NbError;
+  SdifListT*    ErrorList;
   SdifFileT*	SdifF; /* only a link */
 };
 
@@ -105,8 +94,6 @@ struct SdifErrorLS
 SdifErrorT*		SdifCreateError		(SdifErrorTagET Tag,
 											SdifErrorLevelET Level, const char* UserMess);
 void			SdifKillError		(SdifErrorT *Error);
-SdifErrorNT*	SdifCreateErrorN	(SdifErrorNT *Next, SdifErrorT *Error);
-SdifErrorNT*	SdifKillErrorN		(SdifErrorNT *ErrorNode);
 SdifErrorLT*	SdifCreateErrorL	(SdifFileT* SdifF);
 void			SdifKillErrorL		(SdifErrorLT *ErrorL);
 SdifErrorLT*	SdifInsertTailError	(SdifErrorLT* ErrorL,
