@@ -1,4 +1,4 @@
-/* $Id: test.c,v 3.1 1999-03-14 10:58:04 virolle Exp $
+/* $Id: test.c,v 3.1.2.1 2000-08-21 12:43:09 tisseran Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -18,8 +18,8 @@
 
 #include <stdlib.h>
 #include <stdio.h>
-#include <fcntl.h>
-#include <io.h>
+/* #include <fcntl.h> */
+/* #include <io.h> */
 #include <string.h>
 
 
