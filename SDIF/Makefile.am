@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.12 2002-10-30 16:09:20 schwarz Exp $
+# $Id: Makefile.am,v 1.13 2002-10-30 17:25:33 schwarz Exp $
 #
 # ./Makefile.am		September 2000			Patrice Tisserand
 #
@@ -30,6 +30,10 @@
 
 
 # $Log: not supported by cvs2svn $
+# Revision 1.12  2002/10/30 16:09:20  schwarz
+# Better src dependency.
+# No doc included in dist (wants to make old cocoon doc...)
+#
 # Revision 1.11  2002/10/30 15:54:01  schwarz
 # Added necessary files to dist.
 # Added src distribution target.
@@ -95,7 +99,56 @@ doc:
 ircam_deps:
 	@cd sdif; $(MAKE) ircam_deps
 
-test	:	check
+test:	check
+
+
+
+#
+# DISTRIBUTION / PUBLISH (on server)
+#
+
+# use this to check if the distribution works, tag the cvs project, 
+# make a source distribution and rpm, and copy it to the web server
+publish:	distcheck cvstag dist rpm publish-ftp
+
+# this makes a source distribution! (override automake generated variable)
+distdir		  = $(PACKAGE)-$(VERSION)-src
+PUBLISH_FILE      = $(distdir).tar.gz
+PUBLISH_RPM	  = $(PACKAGE)-$(VERSION)-1.i386.rpm
+
+# more files to publish (on server)
+EXTRA_PUBLISH     = README COPYING AUTHORS INSTALL ChangeLog #  doc
+
+
+# make a binary rpm (experimental)
+rpm:		$(rpmdir) sdif.spec dist
+		cp $(PUBLISH_FILE) $(rpmdir)/SOURCES
+		cp sdif.spec       $(rpmdir)/SPECS
+		cd $(rpmdir)/SPECS; rpm -ba sdif.spec
+		cp $(rpmdir)/RPMS/i386/$(PUBLISH_RPM) $(top_builddir)
+
+# this must be in your .rpmmacros file: %_topdir /tmp/<your username>-rpm
+rpmdir = /tmp/$(USER)-rpm
+$(rpmdir):
+		cp -rf /usr/src/redhat/ $@
+
+
+# call this as "make PUBLISH_HOST=yourwebhost publish" to publish a new version
+# this might work differently for other places
+# todo: configure PUBLISH_HOST
+PUBLISH_DIR       = sdif/download
+PUBLISH_FILES     = $(PUBLISH_FILE) $(PUBLISH_RPM) $(EXTRA_PUBLISH)
+
+publish-ftp:	# (experimental)
+		cat <<END_OF_FTP_COMMANDS \
+$$< \
+$$< \
+cd $(PUBLISH_DIR) \
+mput $(PUBLISH_FILES) \
+END_OF_FTP_COMMANDS \
+		| ftp $(PUBLISH_HOST)
+
+
 
 # tag the cvsrepository with the current version 
 # (to exactly reconstitute a published version)
@@ -103,30 +156,5 @@ CVSTAG	      = $(shell echo $(PACKAGE)_lib_version_$(VERSION) | tr . _)
 cvstag:
 		cvs tag -F $(CVSTAG)
 
-# call this as "make DISTHOST=yourwebhost publish" to publish a new version
-# this might work differently for other places
-# todo: configure DISTHOST
-DISTDIR       = sdif/download
-DISTFILE      = $(distdir)-src.tar.gz
-EXTRA_DIST    = README COPYING AUTHORS INSTALL ChangeLog #  doc
-DISTFILES     = $(DISTFILE) $(EXTRA_DIST)
 
-# use this to tag the cvs project, make a source distribution, and
-# copy it to the web server
-publish:	cvstag srcdist
-		cat <<END_OF_FTP_COMMANDS \
-$$< \
-$$< \
-cd $(DISTDIR) \
-mput $(DISTFILES) \
-END_OF_FTP_COMMANDS \
-		| ftp $(DISTHOST)
-
-# use this to make a source distribution!
-srcdist:	$(DISTFILE)
-
-$(DISTFILE):    dist
-		mv $(distdir).tar.gz $(DISTFILE)
-
-
-.PHONY:		grep doc ircam_deps test publish srcdist cvstag
+.PHONY:		grep doc ircam_deps test publish publish-ftp rpm cvstag
