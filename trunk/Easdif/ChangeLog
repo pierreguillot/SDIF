@@ -1,3 +1,84 @@
+
+2003-04-29  Diemo Schwarz  <schwarz@ligeti.ircam.fr>
+
+	* Changed all names View* to Print* and *Info to *Header for
+	  consistency with SDIF library.
+
+	* easdif/sdifmatrix.h:
+	Constructor with space initialisation, default singleton float matrix.
+	CreateMatrixData accepts SdifSignature or std::string.
+	Sketch string matrix access functions to be implemented,
+	throw exception when used.
+
+	* easdif/sdifmatrix.cpp:
+	CreateMatrixData accepts SdifSignature or std::string,
+	throws exception when unimplemented data type requested.
+
+	* Small changes to make easdif swiggable:
+	- name change for swig-generated classes
+	- eof() returns bool, not bool&
+	- Matrix::Set takes int/float, not int&/float&
+
+	
+2003-04-10  Axel Roebel  <roebel@ligeti.ircam.fr>
+
+	* Makefile.am:
+	Change name of doc directory in doc distribution to Easdif-VERSION.doc.
+
+	
+2003-04-09  Axel Roebel  <roebel@ligeti.ircam.fr>
+
+	* Makefile.am:
+	Because Easdif has its own subdir in the download directory
+	no need to map filenames.
+
+	* SDIF/Makefile.am: Fixed publish-ftp target.
+
+	* Makefile.am:
+	Changed publish directory to be special sub directory for Easdif.
+
+	* Makefile.am: Directory was still wrong.
+
+	* ChangeLog: Last change for distribution.
+
+	* ChangeLog: Version 0.3.2.
+
+	* configure.in: Version 0.3.2 (first public release).
+
+	* Makefile.am: Put final publish directory into place.
+
+	* README: Updated info.
+
+	* README: Registered README in CVS.
+
+	* README.doc:
+	Integrated README.doc into README and removed README.doc from CVS
+
+	* README.MacOSX, configure.in, Makefile.am:
+	Changed default configuration back to enable-shared but added
+	README.MacOSX to announce problems with shared libraries to users.
+
+	* README.shared, SDIF/README.shared: Removed README from CVS
+
+	* SDIF/configure.in, SDIF/README.MacOSX, SDIF/Makefile.am:
+	Changed default configuration back to enable-shared but added
+	README.MacOSX to announce problems with shared libraries to users.
+
+	* Makefile.am: fixed PUBLISH_HOST
+
+	* easdif/Makefile.am: Added missing easdifintro.h to dsitributed files.
+
+2003-04-08  Axel Roebel  <roebel@ligeti.ircam.fr>
+
+	* test/Makefile.am: Dont install test programs
+
+	* Makefile.am: Added determination of SDIF version
+
+	* configure.in:
+	Added test for program dot, Moved determination of SDIF version in Makefile because SDIF may be configured only at the end of configure
+
+	* Doxyfile.in: Added test for program dot
+
 2003-04-09  Axel Roebel  <Axel.Roebel@ircam.fr>
 Version 0.32
 
@@ -210,4 +291,4 @@ Version 0.21
 	* ChangeLog: Added changelog to repository.
 
 
-$Id: ChangeLog,v 1.6 2003-04-09 16:12:41 roebel Exp $
+$Id: ChangeLog,v 1.7 2003-04-29 15:44:47 schwarz Exp $
