@@ -32,9 +32,12 @@
  * 
  * 
  * 
- * $Id: sdifentity.h,v 1.15 2004-02-11 19:28:17 roebel Exp $ 
+ * $Id: sdifentity.h,v 1.16 2004-05-04 12:53:35 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.15  2004/02/11 19:28:17  roebel
+ * Added inline function to test state of entity. Added function to access NVTs that indicates existance of name.
+ *
  * Revision 1.14  2004/01/19 15:49:55  bogaards
  * Added Rewind and ReadNextSelectedFrame methods to Entity
  *
@@ -358,7 +361,7 @@ public:
   }
 
 /**
- * \ingroup rnwentity
+ * \ingroup file
  * true if file is at eof
  */
   bool eof() const {return mEof;}
