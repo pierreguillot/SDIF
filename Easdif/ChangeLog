@@ -9,9 +9,6 @@ Version 0.7.3
 	Fixed documentation creation if configuring in directory which is
 	not top_srcdir.
 	
-	* easdif/easdif.h
-	Moved SdifCheckFileFormat to Easdif namespace.
-
 	* easdif/sdifexception.h easdif/sdifexception.cpp
 	Sdif exceptions are now properly derived from
 	standard exception. Included  documentation for all exceptions.
@@ -456,4 +453,4 @@ Version 0.21
 	* ChangeLog: Added changelog to repository.
 
 
-$Id: ChangeLog,v 1.24 2003-11-18 18:23:33 roebel Exp $
+$Id: ChangeLog,v 1.25 2003-11-19 11:58:39 roebel Exp $
