@@ -1,2 +1,2 @@
-SUBDIRS=perl5 python
+SUBDIRS=java perl5 python
 
