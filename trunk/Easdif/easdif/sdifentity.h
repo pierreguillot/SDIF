@@ -32,9 +32,12 @@
  * 
  * 
  * 
- * $Id: sdifentity.h,v 1.11 2003-07-18 20:39:35 roebel Exp $ 
+ * $Id: sdifentity.h,v 1.12 2003-07-18 21:19:36 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.11  2003/07/18 20:39:35  roebel
+ * Improved documentation
+ *
  * Revision 1.10  2003/05/24 00:27:38  roebel
  * Internal representation of types now using std::string.
  * Parameters for type handling routines completely moved
@@ -364,12 +367,14 @@ public:
 
 /** 
  * \ingroup nvt
- * write the vector of Name Value Table in the file in the opening in 
- * writing mode
+ * write the vector of Name Value Table in the file when opening a file 
+ * for writing (for internal use only)
  *
  * \return true if ok/false if error.
  */
+private:
     bool WriteNVTs();
+public:
 
 /**
  * \ingroup nvt 
