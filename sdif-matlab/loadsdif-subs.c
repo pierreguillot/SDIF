@@ -1,4 +1,4 @@
-/* $Id: loadsdif-subs.c,v 1.1 2000-05-04 13:24:04 schwarz Exp $
+/* $Id: loadsdif-subs.c,v 1.2 2000-05-11 12:39:24 schwarz Exp $
 
    loadsdif_subs.c	25. January 2000	Diemo Schwarz
 
@@ -12,7 +12,10 @@
    [matrix, time, stream, frametype, matrixtype] = readframe
 	Returns an empty matrix on end-of-file.
    endread ('close')
-   $Log: not supported by cvs2svn $ 
+   $Log: not supported by cvs2svn $
+ * Revision 1.1  2000/05/04  13:24:04  schwarz
+ * Matlab mex extension and support functions to load SDIF files.
+ * 
 */
 
 #include <stdio.h>
@@ -35,7 +38,6 @@ SdifFileT *
 beginread (int nlhs, mxArray *plhs [], char *filename, char *types)
 {
     SdifFileT	   *input = NULL;
-    SdifSelectionT *sel;
     char	   *fileonly;
     
     if (!gSdifInitialised)
@@ -44,14 +46,10 @@ beginread (int nlhs, mxArray *plhs [], char *filename, char *types)
 	SdifSetExitFunc (exitread);
     }
 
-    if ((sel	  = SdifCreateSelection ())  &&
-	(fileonly = SdifGetFilenameAndSelection (filename, sel))  &&
-	(input    = SdifFOpen (fileonly, eReadFile))
-       )
+    if (input    = SdifFOpen (fileonly, eReadFile))
     {
-	input->Selection = sel;
-
-	if (!(SdifListIsEmpty(sel->row)  &&  SdifListIsEmpty(sel->column)))
+	if (!(SdifListIsEmpty(input->Selection->row)  &&  
+	      SdifListIsEmpty(input->Selection->column)))
 	    mexErrMsgTxt ("Can't handle row or column selection yet.");
     
 	SdifFReadGeneralHeader  (input);
@@ -77,8 +75,6 @@ endread (SdifFileT *input)
 {
     if (!matricesread  &&  matricesskipped)
         mexWarnMsgTxt ("No Matrices selected!");
-
-    SdifFreeSelection (input->Selection);
     SdifFClose (input);
 }
 
