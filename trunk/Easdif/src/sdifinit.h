@@ -2,7 +2,7 @@
 #define SDIFINIT_H_ 1
 
 #include <sdif.h>
-#include "easdif/err_excep.hpp"
+#include "easdif/sdifexception.h"
 
 /*
   Initialise the SDIF library, providing a name for an optional additional
