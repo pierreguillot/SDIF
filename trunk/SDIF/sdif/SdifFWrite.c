@@ -1,4 +1,4 @@
-/* $Id: SdifFWrite.c,v 3.15 2001-05-02 09:34:42 tisseran Exp $
+/* $Id: SdifFWrite.c,v 3.16 2002-05-24 19:37:52 ftissera Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -31,6 +31,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.15  2001/05/02 09:34:42  tisseran
+ * Change License from GNU Public License to GNU Lesser Public License.
+ *
  * Revision 3.14  2000/11/15 14:53:28  lefevre
  * no message
  *
@@ -307,7 +310,8 @@ SdifFWriteAllNameValueNVT(SdifFileT *SdifF)
     SdifListInitLoop(SdifF->NameValues->NVTList);
     while (SdifListIsNext(SdifF->NameValues->NVTList))
     {
-        SdifF->NameValues->CurrNVT = SdifListGetNext(SdifF->NameValues->NVTList);
+        SdifF->NameValues->CurrNVT = (SdifNameValueTableT *)
+	    SdifListGetNext(SdifF->NameValues->NVTList);
         SizeW += SdifFWriteNameValueLCurrNVT (SdifF);
     }
     return SizeW;
@@ -534,7 +538,7 @@ SdifFWriteMatrixData (SdifFileT *SdifF, void *data)
 {
     /* case template for type from SdifDataTypeET */
 #   define writemdatacase(type) \
-    case e##type:  return (sizeof (Sdif##type) * SdiffWrite##type (data, \
+    case e##type:  return (sizeof (Sdif##type) * SdiffWrite##type ((Sdif##type *)  data, \
         SdifF->CurrMtrxH->NbRow * SdifF->CurrMtrxH->NbCol, SdifF->Stream));
 
     switch (SdifF->CurrMtrxH->DataType)

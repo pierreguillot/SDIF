@@ -1,4 +1,4 @@
-/* $Id: SdifFile.c,v 3.21 2001-05-02 09:34:42 tisseran Exp $
+/* $Id: SdifFile.c,v 3.22 2002-05-24 19:37:52 ftissera Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -33,6 +33,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.21  2001/05/02 09:34:42  tisseran
+ * Change License from GNU Public License to GNU Lesser Public License.
+ *
  * Revision 3.20  2001/04/20 14:04:07  tisseran
  * SDIF VERSION 3.3
  * Create function: SdifTakeCodedPredefinedTypesfromString (SdifFile.[hc])
@@ -201,7 +204,7 @@
 #include "SdifVersion.h"
 
 #ifndef AUTOCKSUM
-#define AUTOCKSUM "$Checksum: not available$ IRCAM $Date: 2001-05-02 09:34:42 $" 
+#define AUTOCKSUM "$Checksum: not available$ IRCAM $Date: 2002-05-24 19:37:52 $" 
 #endif
 
 #ifndef lint
@@ -253,10 +256,10 @@ SdifFOpen(const char* Name, SdifFileModeET Mode)
       SdifF->NameValues       = SdifCreateNameValuesL (_SdifNameValueHashSize);
       SdifF->MatrixTypesTable = SdifCreateHashTable   (_SdifGenHashSize, 
 						       eHashInt4, 
-						       SdifKillMatrixType);
+						       (void (*)(void *))SdifKillMatrixType);
       SdifF->FrameTypesTable  = SdifCreateHashTable   (_SdifGenHashSize, 
 						       eHashInt4,
-						       SdifKillFrameType);
+						       (void (*)(void *))SdifKillFrameType);
 /*      SdifF->StreamIDsTable   = SdifCreateHashTable(1, eHashInt4, SdifKillStreamID);*/
       SdifF->StreamIDsTable   = SdifCreateStreamIDTable(1);
       SdifF->TimePositions    = SdifCreateTimePositionL();

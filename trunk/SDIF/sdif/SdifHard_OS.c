@@ -1,4 +1,4 @@
-/* $Id: SdifHard_OS.c,v 3.9 2001-05-02 09:34:44 tisseran Exp $
+/* $Id: SdifHard_OS.c,v 3.10 2002-05-24 19:37:52 ftissera Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -28,6 +28,9 @@
  *
  * author: Dominique Virolle 1998
  * $Log: not supported by cvs2svn $
+ * Revision 3.9  2001/05/02 09:34:44  tisseran
+ * Change License from GNU Public License to GNU Lesser Public License.
+ *
  * Revision 3.8  2000/11/21 16:34:49  roebel
  * New SdifSignatureConst builds integer signature according to
  * endianess of machine. Multicharacter constants are no longer
@@ -170,7 +173,7 @@ SdifGetMachineType(void)
 /*              MachineType = eLittleEndianLittleConst64; */
 /*          } */
 /*      } */
-  return MachineType;
+  return (SdifMachineET) MachineType;
 }
 
 
@@ -211,8 +214,8 @@ SdifLittleToBig(void *BigPtr, void *LittlePtr, size_t size)
 {
     unsigned int i;
     size_t sizediv2;
-    unsigned char * BigS = BigPtr;
-    unsigned char * LittleS = LittlePtr;
+    unsigned char * BigS = (unsigned char * ) BigPtr;
+    unsigned char * LittleS = (unsigned char * ) LittlePtr;
     unsigned char ctemp; /* if BigPtr == LittlePtr */
 
     sizediv2 = size / 2;
@@ -232,7 +235,7 @@ SdifBigToLittle(void *InOutPtr, size_t size)
 {
     unsigned int i;
     size_t sizediv2;
-    unsigned char * s = InOutPtr;
+    unsigned char * s = (unsigned char * ) InOutPtr;
     unsigned char ctemp;
 
     sizediv2 = size / 2;

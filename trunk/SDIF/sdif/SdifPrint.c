@@ -1,4 +1,4 @@
-/* $Id: SdifPrint.c,v 3.7 2001-05-02 09:34:46 tisseran Exp $
+/* $Id: SdifPrint.c,v 3.8 2002-05-24 19:37:52 ftissera Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -33,6 +33,9 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.7  2001/05/02 09:34:46  tisseran
+ * Change License from GNU Public License to GNU Lesser Public License.
+ *
  * Revision 3.6  2000/11/15 14:53:33  lefevre
  * no message
  *
@@ -94,11 +97,11 @@ SdifPrintMatrixType(FILE *fw, SdifMatrixTypeT *MatrixType)
     {
         if (!SdifListIsEmpty(MatrixType->MatrixTypePre->ColumnUserList))
         {
-            ColumnDef = SdifListGetHead(MatrixType->MatrixTypePre->ColumnUserList); /* Reinit GetNext*/
+            ColumnDef = (SdifColumnDefT *) SdifListGetHead(MatrixType->MatrixTypePre->ColumnUserList); /* Reinit GetNext*/
             fprintf(fw, "\n    Pred {%s(%d)", ColumnDef->Name, ColumnDef->Num);
             while (SdifListIsNext(MatrixType->MatrixTypePre->ColumnUserList))
             {
-                ColumnDef = SdifListGetNext(MatrixType->MatrixTypePre->ColumnUserList);
+                ColumnDef = (SdifColumnDefT *)SdifListGetNext(MatrixType->MatrixTypePre->ColumnUserList);
                 fprintf(fw, ", %s(%d)",ColumnDef->Name, ColumnDef->Num);
             }
     	    fprintf(fw, "}");  
@@ -107,11 +110,11 @@ SdifPrintMatrixType(FILE *fw, SdifMatrixTypeT *MatrixType)
 
     if (!SdifListIsEmpty(MatrixType->ColumnUserList))
     {
-        ColumnDef = SdifListGetHead(MatrixType->ColumnUserList); /* Reinit GetNext*/
+        ColumnDef = (SdifColumnDefT *) SdifListGetHead(MatrixType->ColumnUserList); /* Reinit GetNext*/
         fprintf(fw, "\n    User {%s(%d)", ColumnDef->Name, ColumnDef->Num);
         while (SdifListIsNext(MatrixType->ColumnUserList))
         {
-            ColumnDef = SdifListGetNext(MatrixType->ColumnUserList);
+            ColumnDef = (SdifColumnDefT *) SdifListGetNext(MatrixType->ColumnUserList);
             fprintf(fw, ", %s(%d)",ColumnDef->Name, ColumnDef->Num);
         }
  	    fprintf(fw, "}");  
@@ -133,7 +136,7 @@ SdifPrintAllMatrixType(FILE *fw, SdifFileT* SdifF)
   
   for(iName=0; iName<SdifF->MatrixTypesTable->HashSize; iName++)
     for (pName = SdifF->MatrixTypesTable->Table[iName]; pName;  pName=pName->Next)
-      SdifPrintMatrixType(fw, pName->Data);
+      SdifPrintMatrixType(fw, (SdifMatrixTypeT *)pName->Data);
   
 }
 
@@ -205,7 +208,7 @@ SdifPrintAllFrameType(FILE *fw, SdifFileT* SdifF)
   
   for(iNode=0; iNode<SdifF->FrameTypesTable->HashSize; iNode++)
     for(pNode = SdifF->FrameTypesTable->Table[iNode]; pNode; pNode = pNode->Next)
-      SdifPrintFrameType(fw, pNode->Data);
+      SdifPrintFrameType(fw, (SdifFrameTypeT *)pNode->Data);
   
 }
 

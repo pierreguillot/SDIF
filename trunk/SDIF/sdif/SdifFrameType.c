@@ -1,4 +1,4 @@
-/* $Id: SdifFrameType.c,v 3.5 2001-05-02 09:34:43 tisseran Exp $
+/* $Id: SdifFrameType.c,v 3.6 2002-05-24 19:37:52 ftissera Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -37,6 +37,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.5  2001/05/02 09:34:43  tisseran
+ * Change License from GNU Public License to GNU Lesser Public License.
+ *
  * Revision 3.4  2000/11/15 14:53:29  lefevre
  * no message
  *
@@ -123,7 +126,7 @@ SdifCreateFrameType(SdifSignature FramS, SdifFrameTypeT *PredefinedFrameType)
     {
       NewFrameType->Signature = FramS;
 
-      NewFrameType->ComponentUseHT = SdifCreateHashTable(13, eHashInt4, SdifKillComponent);
+      NewFrameType->ComponentUseHT = SdifCreateHashTable(13, eHashInt4, (void (*) (void *))SdifKillComponent);
       NewFrameType->NbComponentUse   = 0;
       NewFrameType->ModifMode = eCanModif;
 
@@ -311,7 +314,7 @@ SdifFrameTypePutComponent(SdifFrameTypeT *FrameType,
 SdifFrameTypeT*
 SdifGetFrameType(SdifHashTableT *FrameTypeHT, SdifSignature FramS)
 {
-  return SdifHashTableSearch(FrameTypeHT, &FramS, 1);
+  return (SdifFrameTypeT*) SdifHashTableSearch(FrameTypeHT, &FramS, 1);
 }
 
 

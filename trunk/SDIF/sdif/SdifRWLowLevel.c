@@ -1,4 +1,4 @@
-/* $Id: SdifRWLowLevel.c,v 3.14 2001-05-02 09:34:47 tisseran Exp $
+/* $Id: SdifRWLowLevel.c,v 3.15 2002-05-24 19:37:52 ftissera Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -32,6 +32,9 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.14  2001/05/02 09:34:47  tisseran
+ * Change License from GNU Public License to GNU Lesser Public License.
+ *
  * Revision 3.13  2000/11/21 16:34:50  roebel
  * New SdifSignatureConst builds integer signature according to
  * endianess of machine. Multicharacter constants are no longer
@@ -681,10 +684,10 @@ SdiffGetString(FILE* fr, char* s, size_t ncMax, size_t *NbCharRead)
   int cint;
   char c;
   char *cs;
-  int bool;
+  int lbool;
 
   cs = s;
-  bool = 1;
+  lbool = 1;
   
   do
     {
@@ -704,9 +707,9 @@ SdiffGetString(FILE* fr, char* s, size_t ncMax, size_t *NbCharRead)
 	}
       else
 	if (isspace(c)) /* end of word */
-	  bool = 0;
+	  lbool = 0;
 	else
-	  if (bool == 0) /* word finished and another word : word cut */
+	  if (lbool == 0) /* word finished and another word : word cut */
 	    {
 	      *cs++ = '\0';
 	      _SdifError(eWordCut, s);
@@ -918,7 +921,7 @@ SdiffReadSpacefromSdifString(SdifStringT *SdifString)
     }
 
   if (SdifStringIsEOS(SdifString))
-    return -1;
+    return 0;
   
   else
     {

@@ -1,4 +1,4 @@
-/* $Id: SdifFRead.c,v 3.14 2001-05-02 09:34:42 tisseran Exp $
+/* $Id: SdifFRead.c,v 3.15 2002-05-24 19:37:52 ftissera Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -31,6 +31,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.14  2001/05/02 09:34:42  tisseran
+ * Change License from GNU Public License to GNU Lesser Public License.
+ *
  * Revision 3.13  2000/11/15 14:53:27  lefevre
  * no message
  *
@@ -183,7 +186,7 @@ SdifFReadGeneralHeader(SdifFileT *SdifF)
 
   if (SdifF->FormatVersion != _SdifFormatVersion)
   {
-      char *mfmt = SdifF->FormatVersion > _SdifFormatVersion
+      const char *mfmt = SdifF->FormatVersion > _SdifFormatVersion
 	? "file is in a newer SDIF format version (%d) than the library (%d)"
 	: "File is in an old SDIF format version (%d).  "
 	  "The library (version %d) is not backwards compatible.";

@@ -1,4 +1,4 @@
-/* $Id: SdifHash.h,v 3.4 2001-05-02 09:34:44 tisseran Exp $
+/* $Id: SdifHash.h,v 3.5 2002-05-24 19:37:52 ftissera Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -35,6 +35,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.4  2001/05/02 09:34:44  tisseran
+ * Change License from GNU Public License to GNU Lesser Public License.
+ *
  * Revision 3.3  2000/11/21 14:51:49  schwarz
  * - sdif.h is now included by all sdif/Sdif*.c files.
  * - Removed all public typedefs, enums, structs, and defines from the
@@ -86,7 +89,6 @@
 
 #include <sdif.h>
 
-SdifHashTableT* SdifCreateHashTable(unsigned int HashSize, SdifHashIndexTypeET IndexType, void (*Killer)());
 
 void SdifMakeEmptyHashTable (SdifHashTableT* HTable);
 void SdifKillHashTable      (SdifHashTableT* HTable);
