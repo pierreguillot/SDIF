@@ -15,9 +15,12 @@
 %     Diemo Schwarz (schwarz@ircam.fr), 31. January 2000
 %
 % CVS REVISION
-%     $Id: loadsdiffile.m,v 1.5 2001-04-19 19:06:52 roebel Exp $
+%     $Id: loadsdiffile.m,v 1.6 2003-09-15 15:58:54 schwarz Exp $
 
 % $Log: not supported by cvs2svn $
+% Revision 1.5  2001/04/19 19:06:52  roebel
+% help comment changed, added function parameter types.
+%
 % Revision 1.4  2000/08/27 14:24:11  schwarz
 % Clarified empty matrix issue:  The doc was wrong!
 % Updated doc and loadsdiffile and loadsdifflat now use eof flag right
@@ -33,12 +36,15 @@
 % Revision 1.1  2000/05/04  13:24:06  schwarz
 % Matlab mex extension and support functions to load SDIF files.
 
-function [ data, header, frame, matrix ] = loadsdiffile (name, types)
+function [ data, header, frame, matrix ] = loadsdiffile (name, types) %  todo: nmatrix)
 
-    data   = [];			% init to avoid 'non assigned' warning
+    % start with empty buffer, reallocated immediately to something reasonable
+    data   = {};
     header = [];
     frame  = [];
     matrix = [];
+    nalloc = 0;	
+    nblock = 10000;			% reallocation block size
 
     sdifexist (name);			% quit with error if file's not there
 
@@ -48,21 +54,40 @@ function [ data, header, frame, matrix ] = loadsdiffile (name, types)
 	NVTinfo = loadsdif (name, types);
     end
 	
-    n = 1;
+    n = 0;
 
     while (1)				% read frame by frame
 	[ d, t, s, f, m ] = loadsdif;
 
 	if isempty (t),  break;  end
     
+	n = n + 1;
+
+	if n > nalloc,			% make more space (blockwise)
+	    % prealloc with (1, 1) matrix inside --> most common case needs
+            % no memory allocation --> 60% runtime reduction
+	    data   = [ data; num2cell(zeros(nblock, 1)) ];
+	    header = [ header; zeros(nblock, 2) ];
+	    frame  = [ frame;  zeros(nblock, 4) ];
+	    matrix = [ matrix; zeros(nblock, 4) ];
+	    nalloc = nalloc + nblock;
+	    if nalloc > nblock,
+		disp([ 'loadsdiffile realloc ' num2str(nalloc) ])
+	    end
+	end
+	
 	data{n}		= d;
 	header(n, 1)	= t;
 	header(n, 2)	= s;
 	frame (n, 1:4)  = f;
 	matrix(n, 1:4)  = m;
-
-	n = n + 1;
     end
+
+    % cut data to true size
+    data   = data  (1:n, :);
+    header = header(1:n, :);
+    frame  = frame (1:n, :);
+    matrix = matrix(1:n, :);
     
     loadsdif ('close');			% close files
 return
