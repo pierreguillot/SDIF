@@ -1,4 +1,4 @@
-/* $Id: SdifStreamID.h,v 3.1 1999-03-14 10:57:22 virolle Exp $
+/* $Id: SdifStreamID.h,v 3.2 1999-08-25 18:32:37 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -16,6 +16,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.1  1999/03/14  10:57:22  virolle
+ * SdifStdErr add
+ *
  * Revision 2.3  1999/01/23  15:56:01  virolle
  * add querysdif.dsp, delete '\r' chars from previous commit
  *
@@ -58,6 +61,45 @@ struct SdifStreamIDS
   char *TreeWay; /* for the moment or to be general*/
 } ;
 
+
+/*DOC: 
+  Permet de créer un pointeur sur un objet de type StreamIDT.  
+
+<p>Exemple:
+
+<pre>
+// dans le cas d'un TreeWay pour champ (non fichier)
+void ConsOneStreamID(SdifFileT *SdifF,
+		     int        NumID,
+		     char      *PatchType,
+		     int        NumPatch,
+		     char      *ObjType,
+		     int        NumObj,
+		     int        NbSubObj,
+		     float      StartTime,
+		     float      EndTime)
+{
+  SdifStreamIDT* StreamID;
+  char TreeWay[512];
+
+  sprintf(TreeWay, "%s/%d/%s/%d/%d/%s/%f", PatchType, NumPatch, ObjType,
+		    NumObj, NbSubObj, StartTime, EndTime);
+  StreamID = SdifCreateStreamID(NumID, "Chant", TreeWay);
+
+  SdifHashTablePut(SdifF->StreamIDsTable, &(StreamID->NumID), 1, StreamID);
+}
+
+// pour recuperer un StreamID il faut utiliser la fonction SdifHashTableGet
+{
+  SdifStreamIDT* StreamID;
+
+  StreamID = (SdifStreamIDT*) SdifHashTableGet (SdifF->StreamIDsTable, &NumID, 0);
+  // le troisième argument n'est pas utilisé, car la table est indexée directement
+  // par des entiers (création de la table avec l'option eInt4). 
+   
+}</pre>
+
+*/
 SdifStreamIDT* SdifCreateStreamID(SdifUInt4 NumID, char *Source, char *TreeWay);
 void           SdifKillStreamID(SdifStreamIDT *StreamID);
 

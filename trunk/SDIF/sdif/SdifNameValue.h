@@ -1,4 +1,4 @@
-/* $Id: SdifNameValue.h,v 3.1 1999-03-14 10:57:13 virolle Exp $
+/* $Id: SdifNameValue.h,v 3.2 1999-08-25 18:32:36 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -17,6 +17,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.1  1999/03/14  10:57:13  virolle
+ * SdifStdErr add
+ *
  * Revision 2.3  1999/01/23  15:55:57  virolle
  * add querysdif.dsp, delete '\r' chars from previous commit
  *
@@ -119,16 +122,43 @@ struct SdifNameValuesLS
 };
 
 
-
 SdifNameValuesLT*   SdifCreateNameValuesL       (SdifUInt4  HashSize);
 void                SdifKillNameValuesL         (SdifNameValuesLT *NameValuesL);
+
+/*DOC: 
+  Cette fonction permet d'ajouter une nouvelle NVT dans la liste
+  de tables passée par argument:
+  <code>SdifNameValuesLNewHT(SdifF->NamefValues);</code><br>
+  Attention, à l'ouverture de SdifF, il n'y a aucune table dans
+  SdifF->NamefValues. Il faudra donc au moins en ajouter une pour
+  pouvoir y mettre des NameValue.  */
 SdifNameValuesLT*   SdifNameValuesLNewTable     (SdifNameValuesLT *NameValuesL, SdifUInt4 NumIDLink, SdifFloat8 Time);
+
+/*DOC: 
+  Cette fonction permet de définir la nième NVT de la liste des
+  tables comme NVT courante.  */
 SdifNameValueTableT*SdifNameValuesLSetCurrNVT   (SdifNameValuesLT *NameValuesL, SdifUInt4 NumCurrNVT);
+
+/*DOC: 
+  Cette fonction permet de récupérer une Name-Value de la liste
+  des NVTs en passant le Name en argument.  Dans le cas ou Name est
+  référencé dans plusieurs NVT, alors c'est la première NVT le
+  contenant qui sera prise en compte.  Le pointeur retourné est de
+  type SdifNameValueT qui contient deux champs: Name et Value.  */
 SdifNameValueT*     SdifNameValuesLGet          (SdifNameValuesLT *NameValuesL, char *Name);
+
+/*DOC: 
+  Cette fonction réalise aussi une requête en fonction de Name
+  mais uniquement dans la NVT courante.  */
 SdifNameValueT*     SdifNameValuesLGetCurrNVT   (SdifNameValuesLT *NameValuesL, const char *Name);
+
+/*DOC: 
+  Cette fonction permet d'ajouter une NameValue à table courante
+  qui est la dernière table créée ou celle définie en tant que table
+  courante. Name et Value doivent être des chaines caractères ASCII
+  sans espacements.  */
 SdifNameValueT*     SdifNameValuesLPutCurrNVT   (SdifNameValuesLT *NameValuesL, const char *Name,  const char *Value);
 SdifUInt2           SdifNameValuesLIsNotEmpty   (SdifNameValuesLT *NameValuesL);
-
 
 
 /*
