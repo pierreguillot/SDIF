@@ -32,9 +32,15 @@
  * 
  * 
  * 
- * $Id: sdifentity.cpp,v 1.22 2004-09-09 19:17:37 roebel Exp $ 
+ * $Id: sdifentity.cpp,v 1.23 2004-09-10 09:20:52 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.22  2004/09/09 19:17:37  roebel
+ * Version 1.0.0beta:
+ * First complete version of iterator access when reading files. Frame-Iterators use the
+ * internal Frame Directory that each Entity will generate and update on the fly
+ * to minimize disk access during positioning.
+ *
  * Revision 1.21  2004/09/08 09:14:46  roebel
  * Improved efficiency of FrameDirectory by means of
  * preventing the need to  search the complete directoy for each frame read.
@@ -253,30 +259,36 @@ void SDIFEntity::PrintFrameDir() const {
   std::list<SDIFLocation>::const_iterator  start=mFrameDirectory.begin();
   std::list<SDIFLocation>::const_iterator  end=mFrameDirectory.end();
   while(start != end){
-    std::cerr<< "Pos "<< start->GetPos()<< " sig " << SdifSignatureToString(start->GetSignature()) <<" time "<< start->GetTime() << "\n";
+    std::cerr<< "Pos "<< start->LocPos()<< " sig " << SdifSignatureToString(start->LocSignature()) <<" time "<< start->LocTime() << "\n";
     ++start;
   }
 }
 
 // Add a new location into the directory
-void SDIFEntity::AddFramePos(SdifUInt4 id, SdifSignature sig, 
-                             SdifFloat8 time,SdiffPosT pos) {
-  
+SDIFLocation*
+SDIFEntity::AddFramePos(SdifUInt4 id, SdifSignature sig, 
+                        SdifFloat8 time,SdifUInt4 nbmat,
+                        SdiffPosT pos) {
+
   if(mCurrDirPos == mFrameDirectory.end()){    
-    mFrameDirectory.push_back(SDIFLocation(pos,id,time,sig));
+    mFrameDirectory.push_back(SDIFLocation(pos,id,time,sig,nbmat));
+    return &(mFrameDirectory.back());
   }
   else{
     std::list<SDIFLocation>::iterator  start=mCurrDirPos;
     std::list<SDIFLocation>::iterator  end  =mFrameDirectory.end();
 
-    while(start!=end && start->GetPos() < pos) ++start;
+    while(start!=end && start->LocPos() < pos) ++start;
     // don't add duplicate entries
-    if(start==end || start->GetPos() > pos){
-      mFrameDirectory.insert(start,SDIFLocation(pos,id,time,sig));
+    if(start==end || start->LocPos() > pos){
+      end = mFrameDirectory.insert(start,SDIFLocation(pos,id,time,sig,nbmat));
+      mCurrDirPos=start;
+      return &(*end);
     }
 
     mCurrDirPos=start;
   }
+  return 0;
 
 }
 
@@ -526,8 +538,8 @@ int SDIFEntity::ReadNextSelectedFrame(SDIFFrame& frame, SdifFloat8 time)
     // attention creation of iterator changes current position
     if(mCurrDirPos == mFrameDirectory.begin() 
        ||(mCurrDirPos == mFrameDirectory.end() 
-          && mFrameDirectory.size() &&mFrameDirectory.back().GetTime() < time )
-       ||(mCurrDirPos->GetTime() < time )){
+          && mFrameDirectory.size() &&mFrameDirectory.back().LocTime() < time )
+       ||(mCurrDirPos->LocTime() < time )){
       up =true;
     }
 
@@ -541,14 +553,14 @@ int SDIFEntity::ReadNextSelectedFrame(SDIFFrame& frame, SdifFloat8 time)
     // end works in both directions !!
     iterator it(this), ite(this,true);
     if(up) {      
-      while((it!=ite) && it.mBase->GetTime() < time)       {
+      while((it!=ite) && it.mBase->LocTime() < time)       {
         ++it;      
       }
     }
     else {
       if(it==ite) --it;
 
-      while (it!= ite && it->GetTime() > time) {
+      while (it!= ite && it.mBase->LocTime() > time) {
         --it;
       }
       ++it;        

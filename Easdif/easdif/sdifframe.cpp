@@ -32,9 +32,15 @@
  * 
  * 
  * 
- * $Id: sdifframe.cpp,v 1.14 2004-09-09 19:17:38 roebel Exp $ 
+ * $Id: sdifframe.cpp,v 1.15 2004-09-10 09:20:52 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.14  2004/09/09 19:17:38  roebel
+ * Version 1.0.0beta:
+ * First complete version of iterator access when reading files. Frame-Iterators use the
+ * internal Frame Directory that each Entity will generate and update on the fly
+ * to minimize disk access during positioning.
+ *
  * Revision 1.13  2004/08/25 18:23:56  roebel
  * Version 0.11.0
  * removed SetNbMatrix which was confusing because people used it
@@ -149,6 +155,7 @@ int SDIFFrame::Read(SdifFileT* file, bool &eof)
     return mFrameBytesRead;    
 }
 
+
 /* for reading with SDIFEntity */
 //void SDIFFrame::Read(const SDIFEntity& entity)
 //int SDIFFrame::Read(const SDIFEntity& entity)
@@ -163,16 +170,61 @@ int SDIFFrame::Read(SDIFEntity& entity)
     }
     
     if(entity.IsFrameDir()){
-      mFrameBytesRead = Read(file, entity.mEof);
-      // minimal frame info is correct even if frame has been skipped
-      entity.AddFramePos(SdifFCurrID(file),SdifFCurrFrameSignature(file),
-                         SdifFCurrTime(file),file->StartChunkPos);
-      if(entity.mEof)
-        entity.mEofSeen = true;
+
+      ClearData();
+      mFrameBytesRead += ReadHeader(file);
+      SDIFLocation *loc=
+        entity.AddFramePos(SdifFCurrID(file),SdifFCurrFrameSignature(file),
+                           SdifFCurrTime(file),SdifFCurrNbMatrix(file),
+                           file->StartChunkPos);
+
+      /* for selection */
+      if (mFrameBytesRead == 0 && !loc)
+        {
+          SdifFSkipFrameData (file);
+          //to have exception
+          entity.mEof = (SdifFGetSignature (file, &mFrameBytesRead) == eEof);
+          if(entity.mEof)
+            entity.mEofSeen = true;
+          return 0;
+        }
+      else
+        if(mFrameBytesRead ==0 && loc) {
+          SDIFMatrix tmp;
+          SdifUInt4 nb = loc->LocNbMatrix();
+          for(SdifUInt4 i=0 ; i< nb;++i){
+            tmp.Read(file);
+            loc->SetMSignature(i,file->CurrMtrxH->Signature);
+          }
+          entity.mEof = (SdifFGetSignature (file, &mFrameBytesRead) == eEof);
+          if(entity.mEof)
+            entity.mEofSeen = true;
+          return 0;
+        }
+        else {
+          Resize(mNbMatrix);
+          if(!loc)
+            ReadData(file);
+          else{
+            SdifUInt4 nb = loc->LocNbMatrix();
+            int ir = 0;
+            for(SdifUInt4 i=0 ; i< nb;++i){
+              int ret =0;
+              if((ret=mv_Matrix[ir].Read(file)))
+                ++ir;
+              mFrameBytesRead +=ret;
+              loc->SetMSignature(i,file->CurrMtrxH->Signature);
+            }
+            Resize(ir);
+          }
+          /* to have exception */
+          entity.mEof = (SdifFGetSignature (file, &mFrameBytesRead) == eEof);
+          if(entity.mEof)
+            entity.mEofSeen = true;
+        }
     }
     else
       mFrameBytesRead = Read(file, entity.mEof);
-
 
     return mFrameBytesRead;
 }
