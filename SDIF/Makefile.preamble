@@ -1,4 +1,4 @@
-# $Id: Makefile.preamble,v 3.6 2000-07-06 18:59:01 tisseran Exp $
+# $Id: Makefile.preamble,v 3.7 2000-08-07 12:33:16 schwarz Exp $ -*-makefile-*-
 #
 #               Copyright (c) 1998 by IRCAM - Centre Pompidou
 #                          All rights reserved.
@@ -11,6 +11,9 @@
 # 
 #
 # $Log: not supported by cvs2svn $
+# Revision 3.6  2000/07/06  18:59:01  tisseran
+# *** empty log message ***
+#
 # Revision 3.5  2000/02/22  15:45:18  schwarz
 # Added settings for Linux port by Patrice Tisserand.
 #
@@ -31,10 +34,6 @@
 #
 # Revision 2.2  1999/02/28  12:16:26  virolle
 # memory report
-#
-#
-#
-#
 
 
 
@@ -42,26 +41,12 @@
 #	architecture
 #
 
+ARCH	:= $(subst Linux,i686,$(shell arch))
+# Linux special: correct wrong /usr/local/bin/arch
 SYSTEM 	:= $(shell uname -s)
 SYSVERS := $(shell uname -r)
-ARCH 	:= $(shell arch)
 DATE 	:= $(shell date)
 USER 	:= $(shell whoami)
-ifeq ($(ARCH),sgi)
-	SHELL = /bin/tcsh
-endif
-ifeq ($(ARCH),alpha)
-	SHELL = /usr/local/bin/tcsh
-endif
-
-# AMD K6 = 586
-ifeq ($(ARCH),Linux)	
-	SHELL=/bin/tcsh
-endif
-
-ifeq ($(ARCH), mips)
-	SHELL = /u/formes/virolle/bin/mips/tcsh
-endif
 
 SYS	= $(SYSTEM)_$(SYSVERS)
 SYSDIR	= $(SYS)$(TARGET)
@@ -74,7 +59,6 @@ RM	= rm -f
 #  elements de base
 #
 
-#
 # Le repertoire racine du projet PRJ_DIR 
 # est assigne dans chaque sous makefile avant
 # d'inclure ce preambule. Ainsi
@@ -83,25 +67,30 @@ RM	= rm -f
 # independament.
 # pour le makefile principale  PRJ_DIR est $(shell pwd),
 # pour les autres (objetcs, library, tosdif, sdiftotext) c'est $(shell pwd)/..
-#
 
-PROJECT := sdif
-SDIF_SRC_DIR := $(PRJ_DIR)/$(PROJECT)
-RELEASE := 2.00.01
-# RELEASE 1.00 est la version alpha (maquette de SDIF) installee dans Diphone
-# pour le forum Novembre 1997.
-# Cette RELEASE 2.00 n'est pas encore compatible avec le CNMAT
-# la RELEASE qui sera compatible avec le CNMAT (au moins pour l'entête, les frames et
-# les matrices) devra être 3.00
-# pour la compatibilite des frames ASCII, il faudra sans doute avoir une RELEASE 4.00
+PROJECT 	= sdif
+
+# same as _SdifFormatVersion in SdifGlobals.h
+SDIF_FORMAT 	= 3
+
+# - RELEASE 1.00 est la version alpha (maquette de SDIF) installee
+#   dans Diphone pour le forum Novembre 1997.
+# - RELEASE 2.00 n'est pas encore compatible avec le CNMAT
+# - RELEASE 3 est celle qui est compatible avec le CNMAT (au moins pour
+#   l'entête, les frames et les matrices) 
+# - pour la compatibilite des frames ASCII, il faudra sans doute avoir
+#   une RELEASE 4.00
+RELEASE 	= $(SDIF_FORMAT).3.0
+
+SDIF_SRC_DIR 	= $(PRJ_DIR)/$(PROJECT)
 
 # INSTALL_ROOT doit etre changer par l'installateur
-INSTALL_ROOT := $(HOME)
-#INSTALL_ROOT := /u/formes
+INSTALL_ROOT := /u/formes
 #INSTALL_ROOT := /usr/local
 INSTALL_LIB := $(INSTALL_ROOT)/lib/$(ARCH)/$(SYS)
 INSTALL_BIN := $(INSTALL_ROOT)/bin/$(ARCH)/$(SYS)
 INSTALL_INC := $(INSTALL_ROOT)/include/$(PROJECT)
+INSTALL_TYP := $(INSTALL_ROOT)/lib
 
 
 
@@ -115,7 +104,7 @@ INSTALL_INC := $(INSTALL_ROOT)/include/$(PROJECT)
 # Pour la maintenance de la librairie:
 #
 
-# PRE_TYPES_SDIF := $(SDIF_SRC_DIR)/SdifTypes.STYP
+SRC_TYPES_SDIF := $(SDIF_SRC_DIR)/SdifTypes.STYP
 
 # mais il est mieux d'utiliser la variable d'environnement SDIFTYPES
 # prevue pour detourner le fichier officiel des types predefinis
@@ -131,7 +120,7 @@ INSTALL_INC := $(INSTALL_ROOT)/include/$(PROJECT)
 #  Pour l'installation officielle:
 #
 
-PRE_TYPES_SDIF := $(INSTALL_INC)/SdifTypes.STYP
+PRE_TYPES_SDIF := $(INSTALL_TYP)/SdifTypes.STYP
 
 # recompliation complete necessaire sur modification de cette variable
 # de makefile car elle est passee a la complilation
@@ -149,6 +138,7 @@ DOFLAGS = -O2
 TARGET  = -release
 LIBNAME = sdif
 ifeq ($(DEBUG),1) 
+	CAFLAGS =-DDEBUG
 	DOFLAGS = -g
 	TARGET  = -debug
 	LIBNAME = sdif$(TARGET)
@@ -161,32 +151,32 @@ LIBS 	  = -l$(LIBNAME)
 # vars machine
 #
 ifeq ($(SYSTEM), IRIX)
-	CC = cc
-	CAFLAGS =  -fullwarn -n32 -r10000 -mips4
-	LFLAGS = -n32 -mips4
+	CC	 = cc
+	CAFLAGS	+=  -fullwarn
+	LFLAGS	 =
 	LIBS	+= -lgen
-	RANLIB = echo no ranlib
+	RANLIB   = echo no ranlib
 	INSTALL := /usr/local/bin/install -c 
 	INSTALL_H_FILES := $(INSTALL)
 endif
 
 
 ifeq ($(SYSTEM), ULTRIX) 
-	CC = gcc
-	CAFLAGS =  -ansi -pedantic
+	CC	 = gcc
+	CAFLAGS	+=  -ansi -pedantic
 	LIBS	+= -lgen
-	RANLIB = echo no ranlib
+	RANLIB   = echo no ranlib
 	INSTALL :=  /usr/local/bin/install -c 
 	INSTALL_H_FILES := $(INSTALL)
 endif
 
 
 ifeq ($(SYSTEM), IRIX64) 
-	CC = cc
-	CAFLAGS =  -64 -mips4 -D__mips64 
-	LFLAGS = -64 -mips4
+	CC	 = cc
+	CAFLAGS	+=  -64 -mips4 -D__mips64 
+	LFLAGS	 = -64 -mips4
 	LIBS	+= -lgen
-	RANLIB = echo no ranlib
+	RANLIB   = echo no ranlib
 	INSTALL :=  /usr/local/bin/install -c 
 	INSTALL_H_FILES := $(INSTALL)
 endif
@@ -194,15 +184,15 @@ endif
 
 ifeq ($(SYSTEM), OSF1) 
     ifeq ($(DEBUG),1) 
-	CC = gcc
-	CAFLAGS = -Wall -ansi
+	CC	 = gcc
+	CAFLAGS	+= -Wall -ansi
     else
-	CC = cc
-	CAFLAGS = -std -Dmips -fullwarn 
+	CC	 = cc
+	CAFLAGS	+= -std -Dmips -fullwarn 
     endif	
 
 	LIBS	+= -lm
-	LFLAGS =
+	LFLAGS	 =
 
 	ifeq ($(DEBUG),1) 
 		DOFLAGS = -g3
@@ -215,10 +205,10 @@ endif
 
 
 ifeq ($(SYSTEM),Linux)
-	CC=gcc
-	CAFLAGS= -Wall -ansi
-	RANLIB=/usr/bin/ranlib
-	INSTALL:=/usr/bin/install -c
+	CC	 =gcc
+	CAFLAGS += -Wall #-Wno-multichar	# -ansi inhibits decl of fileno()
+	RANLIB   =/usr/bin/ranlib
+	INSTALL :=/usr/bin/install -c
 	INSTALL_H_FILES:=$(INSTALL)
 endif
 
@@ -233,7 +223,7 @@ VERSION := $(PROJECT) $(SYS)$(TARGET) $(RELEASE) compiled by $(USER) $(DATE)
 INCLUDE_DIR 	= /usr/include
 INCLUDE_DIRS 	= $(INCLUDE_DIR) /usr/include /u/formes/tisseran/src/formesutils/include
 INCLUDE		= $(INCLUDE_DIRS:%=-I%)
-D_SDIF_FLAG := -D_SdifTypesFileName='"$(PRE_TYPES_SDIF)"' -D_SDIF_VERSION='"$(VERSION)"' 
+D_SDIF_FLAG := -D_SdifTypesFileName='"$(PRE_TYPES_SDIF)"' -D_SDIF_VERSION='"$(VERSION)"'
 
 
 SDIF_OBJ_DIR 	= $(PRJ_DIR)/obj/$(SYSDIR)
@@ -257,4 +247,5 @@ ifeq ($(USER),schwarz)
 endif
 
 ####################################
-INSTALL_DIRS:= $(INSTALL_ROOT) $(INSTALL_LIB) $(INSTALL_BIN) $(INSTALL_INC)
+INSTALL_DIRS:= $(INSTALL_ROOT) $(INSTALL_LIB) $(INSTALL_BIN) $(INSTALL_INC) $(INSTALL_TYP)
+

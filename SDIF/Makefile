@@ -1,4 +1,4 @@
-# $Id: Makefile,v 3.5 2000-05-15 16:10:27 schwarz Exp $
+# $Id: Makefile,v 3.6 2000-08-07 12:33:15 schwarz Exp $
 #
 #               Copyright (c) 1998 by IRCAM - Centre Pompidou
 #                          All rights reserved.
@@ -11,6 +11,10 @@
 # make general	
 #
 # $Log: not supported by cvs2svn $
+# Revision 3.5  2000/05/15  16:10:27  schwarz
+# New install types and grep targets.
+# etags gets right definition for SdifFileT.
+#
 # Revision 3.4  1999/10/07  15:22:52  schwarz
 # Factoring of commonly used path part $(ARCHDIR).
 # User option for me to compile into my $(HOME)/xxx.
@@ -34,7 +38,7 @@
 #
 
 
-PRJ_DIR := $(shell pwd)
+PRJ_DIR := $(subst /a/,/net/,$(shell pwd))
 
 include Makefile.preamble
 
