@@ -2,10 +2,11 @@
 %     loadsdiffile  -  Load a complete SDIF file
 %
 % USAGE 
-%     [ data, header, frame, matrix ] = loadsdiffile (name)
+%     [ data, header, frame, matrix ] = loadsdiffile (name,types)
 %
 %     where data{i} is the matrix at time header(i, 1) in stream header(i, 2) 
 %     with signatures char(frame(i)), char(matrix(i)).
+%     types is an optional sdiftypes definition file
 %
 % SEE ALSO
 %     loadsdifflat, loadsdif, sdifexist
@@ -14,9 +15,14 @@
 %     Diemo Schwarz (schwarz@ircam.fr), 31. January 2000
 %
 % CVS REVISION
-%     $Id: loadsdiffile.m,v 1.4 2000-08-27 14:24:11 schwarz Exp $
+%     $Id: loadsdiffile.m,v 1.5 2001-04-19 19:06:52 roebel Exp $
 
 % $Log: not supported by cvs2svn $
+% Revision 1.4  2000/08/27 14:24:11  schwarz
+% Clarified empty matrix issue:  The doc was wrong!
+% Updated doc and loadsdiffile and loadsdifflat now use eof flag right
+% and don't stop on empty matrices.
+%
 % Revision 1.3  2000/07/27  18:22:33  schwarz
 % man-style comments, better makedefs.
 %
