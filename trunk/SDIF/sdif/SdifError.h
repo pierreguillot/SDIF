@@ -1,9 +1,12 @@
-/* SdifError.h
+/* $Id: SdifError.h,v 1.3 1998-04-24 12:40:32 schwarz Exp $
+ * 
+ * SdifError.h
  *
  * Fatal or program error management
  *
  * author: Dominique Virolle 1997
  * 
+ * $Log: not supported by cvs2svn $
  */
 
 
@@ -32,7 +35,7 @@ typedef enum SdifErrorE
 extern char *SdifErrorFile;
 extern int SdifErrorLine;
 
-extern void SdifErrorWarning(SdifErrorEnum Error, void *ErrorMess);
+extern void SdifErrorWarning(SdifErrorEnum Error, const void *ErrorMess);
 
 #define _SdifError(error, mess) \
 (SdifErrorFile = __FILE__, SdifErrorLine = __LINE__, SdifErrorWarning((error), (mess)))

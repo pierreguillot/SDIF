@@ -1,9 +1,11 @@
-/* sdifError.c
+/* $Id: SdifError.c,v 1.3 1998-04-24 12:40:31 schwarz Exp $
+ * sdifError.c
  *
  * Fatal or program error management
  *
  * author: Dominique Virolle 1997
  *
+ * $Log: not supported by cvs2svn $
  */
 
 
@@ -17,7 +19,7 @@ int SdifErrorLine;
 
 
 void
-SdifErrorWarning(SdifErrorEnum Error, void *ErrorMess)
+SdifErrorWarning(SdifErrorEnum Error, const void *ErrorMess)
 {
   fprintf(stderr, "*Sdif* Error (%s, %d)\n  ", SdifErrorFile, SdifErrorLine);
 
