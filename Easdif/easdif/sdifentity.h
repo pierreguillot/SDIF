@@ -32,9 +32,15 @@
  * 
  * 
  * 
- * $Id: sdifentity.h,v 1.4 2003-04-18 16:44:00 schwarz Exp $ 
+ * $Id: sdifentity.h,v 1.5 2003-04-18 17:43:22 schwarz Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.4  2003/04/18 16:44:00  schwarz
+ * Small changes to make easdif swiggable:
+ * - name change for swig-generated classes
+ * - eof() returns bool, not bool&
+ * - Matrix::Set takes int/float, not int&/float&
+ *
  * Revision 1.3  2003/04/08 17:26:04  roebel
  * Updated doc.
  *
@@ -361,7 +367,7 @@ public:
  * \ingroup rnwentity
  * true if file is at eof
  */
-    bool eof();
+    bool eof() const;
 
 /** 
  * \ingroup rnwentity
