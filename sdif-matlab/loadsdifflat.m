@@ -8,11 +8,16 @@
 % stream frames(i, 2) having frames(i, 4) rows (can be 0!) with frame type 
 % signatures(i, 1:4) and matrix type signatures(i, 5:8).
 
-% $Id: loadsdifflat.m,v 1.4 2000-08-27 14:24:11 schwarz Exp $
+% $Id: loadsdifflat.m,v 1.5 2003-09-15 15:59:01 schwarz Exp $
 %
 % loadsdifflat.m	31. January 2000	Diemo Schwarz
 %
 % $Log: not supported by cvs2svn $
+% Revision 1.4  2000/08/27  14:24:11  schwarz
+% Clarified empty matrix issue:  The doc was wrong!
+% Updated doc and loadsdiffile and loadsdifflat now use eof flag right
+% and don't stop on empty matrices.
+%
 % Revision 1.3  2000/05/12  14:03:54  schwarz
 % Oops-style errors.
 %
@@ -28,6 +33,8 @@ function [ data, frames, signatures ] = loadsdifflat (name, types)
     data       = [];			% init to avoid 'non assigned' warning
     frames     = [];
     signatures = [];
+    nalloc     = 0;
+    nblock     = 10000;			% reallocation block size
 
     sdifexist (name);			% quit with error if file's not there
 
@@ -45,18 +52,33 @@ function [ data, frames, signatures ] = loadsdifflat (name, types)
 
 	if isempty (t),  break;  end
     
-	[ rows, cols ]	    = size(d);
+	[ rows, cols ] = size(d);
 	fi = fi + 1;
 	di = di + rows;
 
+	if di > nalloc,			% make more space (blockwise)
+	    frames     = [ frames;     zeros(nblock, 4) ]; % too much here,
+	    signatures = [ signatures; zeros(nblock, 8) ]; % but who cares
+	    data       = [ data;       zeros(nblock, cols) ];
+	    nalloc     = nalloc + nblock;
+	    if nalloc > nblock,
+		disp([ 'loadsdifflat realloc ' num2str(nalloc) ])
+	    end
+	end
+	
 	frames(fi, 1)       = t;
 	frames(fi, 2)       = s;
 	frames(fi, 3)       = di;
 	frames(fi, 4)       = rows;
 	signatures(fi, 1:4) = f;
 	signatures(fi, 5:8) = m;
-	data(di, 1:cols)    = d;
+	data(di-rows+1:di, 1:cols) = d;
     end
+    
+    % cut data to true size
+    frames     = frames    (1:fi, :);
+    signatures = signatures(1:fi, :);
+    data       = data      (1:di, :);
     
     loadsdif ('close');			% close files
 return
