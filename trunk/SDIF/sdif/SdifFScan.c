@@ -1,4 +1,4 @@
-/* $Id: SdifFScan.c,v 3.12 2001-05-02 09:34:42 tisseran Exp $
+/* $Id: SdifFScan.c,v 3.13 2002-05-24 19:37:07 ftissera Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -31,6 +31,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.12  2001/05/02 09:34:42  tisseran
+ * Change License from GNU Public License to GNU Lesser Public License.
+ *
  * Revision 3.11  2000/11/15 14:53:27  lefevre
  * no message
  *
@@ -90,6 +93,8 @@
 
 
 #include <preincluded.h>
+
+#include "sdif.h"
 
 #include "SdifFScan.h"
 #include "SdifTest.h"
