@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.1 2003-03-03 10:03:24 roebel Exp $
+# $Id: Makefile.am,v 1.2 2003-03-04 00:50:01 roebel Exp $
 #
 # ./Makefile.am		Feb. 2003     Axel Roebel
 #
@@ -7,15 +7,18 @@
 
 
 # $Log: not supported by cvs2svn $
+# Revision 1.1  2003/03/03 10:03:24  roebel
+# Adapted for autoconf/automake...
+#
 
-SUBDIRS = SDIF src  test
+SUBDIRS = SDIF easdif  test
+DIST_SUBDIRS = easdif  test
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = Easdif.pc
 
 grep:
-	grep $a src/*.cpp src/*.h /dev/null
-
+	grep $a easdif/*.cpp easdif/*.h /dev/null
 
 #
 # DISTRIBUTION
@@ -60,4 +63,4 @@ cvstag:
 		cvs tag -F $(CVSTAG)
 
 
-.PHONY:		grep doc ircam_deps test publish publish-ftp rpm cvstag
+.PHONY:		grep doc ircam_deps test publish publish-ftp  cvstag
