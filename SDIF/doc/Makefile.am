@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.5 2001-10-26 15:04:18 schwarz Exp $
+# $Id: Makefile.am,v 1.6 2003-03-07 17:33:00 roebel Exp $
 #
 # ./doc/Makefile.am             September 2000          Patrice Tisserand
 #
@@ -36,6 +36,18 @@
 
 
 # $Log: not supported by cvs2svn $
+# Revision 1.5  2001/10/26 15:04:18  schwarz
+# Made Makefile.am output the old, carefully hand-crafted Makefile, plus
+# the automake blabber.  Had to change some variable names (no '-'),
+# remove ifs, fix gcc -E who suddenly doesn't like unbalanced comments
+# in strings any more, and take care of CVS and Makefiles when cleaning.
+#
+# This is the first step to a true autoconf'ed doc generation, where the
+# install host and directory are user-configurable, and the doc
+# generation program's version and existence is checked for by
+# configure.  (Maybe that will no longer be cocoon then --- it refuses
+# to run and is awkward anyway.)
+#
 # Revision 1.4  2001/05/02 09:34:38  tisseran
 # Change License from GNU Public License to GNU Lesser Public License.
 #
@@ -105,7 +117,12 @@
 
 
 # this is for automake
-EXTRA_DIST = *.html
+EXTRA_DIST = Patch.html          SdifNormBar.html    SdifProgBar.html \
+	 download.html     indexNorm.html SdifManuelBar.html \
+	 SdifNormDoc.html    SdifProgDoc.html  index.html  \
+	 indexProg.html SdifManuelDoc.html  SdifNormDocFr.html  Todo.html   \
+         indexManuel.html
+
 SUBDIRS = pics extern
 
 

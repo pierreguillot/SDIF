@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.3 2001-05-02 09:34:39 tisseran Exp $
+# $Id: Makefile.am,v 1.4 2003-03-07 17:33:00 roebel Exp $
 #
 # ./doc/pics/Makefile.am		September 2000			Patrice Tisserand
 #
@@ -29,12 +29,16 @@
 # send email to:  sdif@ircam.fr
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.3  2001/05/02 09:34:39  tisseran
+# Change License from GNU Public License to GNU Lesser Public License.
+#
 # Revision 1.2  2000/10/27 20:03:09  roebel
 # autoconf merged back to main trunk
 #
 # Revision 1.1.2.2  2000/10/26  17:27:37  schwarz
 # Added header with copyright and links to all Makefile.am and configure.in.
 #
-EXTRA_DIST = *.gif
-
-
+EXTRA_DIST = DataChunk.gif  Matrix.gif  Patch10.gif  Patch4.gif \
+  Patch7.gif  PatchExemple.gif  topPlan.gif FileLevel.gif  Patch0.gif \
+  Patch2.gif   Patch5.gif  Patch8.gif  logo.gif Frame.gif  Patch1.gif  \
+  Patch3.gif   Patch6.gif  Patch9.gif  top.gif
