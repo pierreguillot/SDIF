@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.1 2004-01-14 11:34:32 schwarz Exp $
+# $Id: Makefile.am,v 1.2 2004-01-29 13:36:28 schwarz Exp $
 #
 # SDIF/macosxbuild/SDIF.xcode/Makefile.am	
 #
@@ -6,8 +6,14 @@
 # distribution
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.1  2004/01/14 11:34:32  schwarz
+# Added Riccardo's xcode project.
 
-distdir		= $(PACKAGE)-$(VERSION)-src
+
+# distdir		= ../../$(PACKAGE)-$(VERSION)-src
 
 # more files to include in dist
 EXTRA_DIST 	= project.pbxproj
+
+all:
+		echo "Use Apple Xcode to build for Mac OS X"
