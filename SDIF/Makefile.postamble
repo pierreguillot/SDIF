@@ -3,13 +3,22 @@
 
 
 
-CFLAGS = $(CAFLAGS) $(DOFLAGS) -D_SDIF_VERS ="$(VERSION)" -I$(SDIF_SRC_DIR) -I$(INCLUDE_DIR)
 
 
 $(SDIF_OBJ_DIR)/%.o: %.c
-	$(CC) $(CFLAGS) -o $@ -c $<
+	@echo Compilation of $< 
+	@$(CC) $(CFLAGS) -o $@ -c $<
 
 $(SDIF_LIB): $(SDIF_OBJS)
 	@rm -f $(SDIF_LIB)
 	ar r $(SDIF_LIB) $(SDIF_OBJS)
 	if ( $(RANLIB) != 0 ) $(RANLIB) $@
+
+
+install_dirs: $(INSTALL_DIRS:%=%-dir)
+
+%-dir: 
+	@if ( ! -e $* ) mkdir -p $*
+
+
+
