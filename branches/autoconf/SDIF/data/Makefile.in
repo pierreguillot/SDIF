@@ -10,14 +10,14 @@
 # even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 # PARTICULAR PURPOSE.
 
-# $Id: Makefile.in,v 1.1.2.1 2000-08-21 17:00:14 tisseran Exp $
+# $Id: Makefile.in,v 1.1.2.2 2000-08-21 17:08:37 tisseran Exp $
 
 # $Log: not supported by cvs2svn $
 # Revision 1.1.2.1  2000/08/21  13:07:31  tisseran
 # *** empty log message ***
 #
 
-# $Date: 2000-08-21 17:00:14 $
+# $Date: 2000-08-21 17:08:37 $
 
 
 SHELL = @SHELL@
