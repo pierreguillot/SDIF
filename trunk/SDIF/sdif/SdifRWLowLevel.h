@@ -1,4 +1,4 @@
-/* $Id: SdifRWLowLevel.h,v 3.5 1999-10-13 16:05:57 schwarz Exp $
+/* $Id: SdifRWLowLevel.h,v 3.6 1999-10-15 12:23:48 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -17,6 +17,15 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.5  1999/10/13  16:05:57  schwarz
+ * Changed data type codes (SdifDataTypeET) to SDIF format version 3, as
+ * decided with Matt Wright June 1999, added integer data types.
+ * Added writing of 1NVT with real frame header (but data is still not in
+ * matrices).
+ * The data type handling makes heavy use of code-generating macros,
+ * called for all data types with the sdif_foralltypes macro, thus
+ * adding new data types is easy.
+ *
  * Revision 3.4  1999/09/28  13:09:11  schwarz
  * Included #include <preincluded.h> for cross-platform uniformisation,
  * which in turn includes host_architecture.h and SDIF's project_preinclude.h.
@@ -104,8 +113,30 @@ size_t SdiffWriteString (char* ptr, FILE *stream);
  */
 size_t SdiffReadSpace   (FILE* fr);
 
+/*DOC:
+  Return c if it is a reserved char, -1 otherwise.
+*/
 int SdifIsAReservedChar (char c);
+
+/*DOC: 
+  Convert str <strong>in place</strong> so that it doesn't
+  contain any reserved chars (these become '.') or spaces (these
+  become '_').
+
+  [] returns str
+*/
+char *SdifStringToNV (/*in out*/ char *str);
+
+/* SdiffGetString lit un fichier jusqu'a un caractere reserve, ne
+   rempli s que des caracteres non-espacement, renvoie le caractere
+   reserve, saute les premiers caracteres espacement lus.  Il y a
+   erreur si fin de fichier ou si un caractere non-espacement et
+   non-reseve est lu apres un caractere espacement.  ncMax est
+   typiquement strlen(s)+1.  
+*/
 int SdiffGetString      (FILE* fr, char* s, size_t ncMax, size_t *NbCharRead);
+
+/* retourne le caractere d'erreur */
 int SdiffGetSignature   (FILE* fr, SdifSignature *Signature, size_t *NbCharRead);
 int SdiffGetWordUntil   (FILE* fr, char* s, size_t ncMax, size_t *NbCharRead, char *CharsEnd);
 int SdiffGetStringUntil (FILE* fr, char* s, size_t ncMax, size_t *NbCharRead, char *CharsEnd);
