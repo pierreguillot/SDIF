@@ -4,6 +4,8 @@ Version 3.8.5
 	* Fixed SdiffReadSignature. Number of bytes read need to be added not stored
 	in the bytesread container.
 
+	* properly initilize byte counters ind SdifCheck.c
+
 2004-06-17  Axel Roebel  <Axel.Roebel@ircam.fr>
 Version 3.8.4
 
@@ -373,4 +375,4 @@ Version 3.3:
 	  Operating System.
 
 	
-$Id: ChangeLog,v 1.36 2004-07-13 15:10:44 roebel Exp $
+$Id: ChangeLog,v 1.37 2004-07-13 18:02:36 roebel Exp $
