@@ -32,9 +32,13 @@
  * 
  * 
  * 
- * $Id: sdifentity.cpp,v 1.8 2003-05-21 20:36:23 roebel Exp $ 
+ * $Id: sdifentity.cpp,v 1.9 2003-05-22 17:57:53 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.8  2003/05/21 20:36:23  roebel
+ * Protect for reopening the same entity. The existing file will be properly closed
+ * and the entity reinitialized.
+ *
  * Revision 1.7  2003/05/19 13:58:03  roebel
  * Include new easdif_config.h.
  *
@@ -328,7 +332,6 @@ bool SDIFEntity::Close()
 	generalHeader = 0; 
 	asciiChunks =0;
 	bytesread =0;
-	efile = 0;
 	return true;
     }
     return false;
