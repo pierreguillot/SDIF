@@ -1,7 +1,7 @@
-<?xml version="1.0" encoding = "Windows-1252"?>
+<?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="7.00"
+	Version="7.10"
 	Name="sdif"
 	ProjectGUID="{BA352925-3428-47E4-A9A0-9A791841725B}"
 	Keyword="Win32Proj">
@@ -12,18 +12,19 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="$(SolutionDir)/../lib"
+			OutputDirectory="$(SolutionDir)\lib"
 			IntermediateDirectory="Debug"
 			ConfigurationType="4"
 			CharacterSet="2">
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(ProjectDir)/include&quot;;&quot;$(ProjectDir)/sdif&quot;"
-				PreprocessorDefinitions="WIN32;_DEBUG;_LIB"
+				AdditionalIncludeDirectories=".\include;.\sdif"
+				PreprocessorDefinitions="WIN32;_DEBUG;_LIB, SDIF_EXPORTS"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
+				StructMemberAlignment="2"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="TRUE"
@@ -32,7 +33,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="$(OutDir)/sdif.lib"/>
+				OutputFile="$(OutDir)/$(ProjectName)d.lib"/>
 			<Tool
 				Name="VCMIDLTool"/>
 			<Tool
@@ -45,10 +46,16 @@
 				Name="VCResourceCompilerTool"/>
 			<Tool
 				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="$(SolutionDir)/../lib"
+			OutputDirectory="$(SolutionDir)\lib"
 			IntermediateDirectory="Release"
 			ConfigurationType="4"
 			CharacterSet="2">
@@ -57,8 +64,8 @@
 				Optimization="2"
 				InlineFunctionExpansion="1"
 				OmitFramePointers="TRUE"
-				AdditionalIncludeDirectories="&quot;$(ProjectDir)/include&quot;;&quot;$(ProjectDir)/sdif&quot;"
-				PreprocessorDefinitions="WIN32;NDEBUG;_LIB"
+				AdditionalIncludeDirectories=".\include;.\sdif"
+				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;  SDIF_EXPORTS"
 				StringPooling="TRUE"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="TRUE"
@@ -69,8 +76,7 @@
 			<Tool
 				Name="VCCustomBuildTool"/>
 			<Tool
-				Name="VCLibrarianTool"
-				OutputFile="$(OutDir)/sdif.lib"/>
+				Name="VCLibrarianTool"/>
 			<Tool
 				Name="VCMIDLTool"/>
 			<Tool
@@ -83,12 +89,115 @@
 				Name="VCResourceCompilerTool"/>
 			<Tool
 				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+		</Configuration>
+		<Configuration
+			Name="Dll Debug|Win32"
+			OutputDirectory="$(SolutionDir)\lib"
+			IntermediateDirectory="$(ConfigurationName)"
+			ConfigurationType="2"
+			CharacterSet="2">
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				AdditionalIncludeDirectories=".\include;.\sdif"
+				PreprocessorDefinitions="WIN32;_DEBUG; SDIF_EXPORTS"
+				MinimalRebuild="TRUE"
+				BasicRuntimeChecks="3"
+				RuntimeLibrary="3"
+				UsePrecompiledHeader="0"
+				WarningLevel="3"
+				Detect64BitPortabilityProblems="TRUE"
+				DebugInformationFormat="4"/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCLinkerTool"
+				OutputFile="$(OutDir)/$(ProjectName)d.dll"/>
+			<Tool
+				Name="VCMIDLTool"/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+		</Configuration>
+		<Configuration
+			Name="Dll Release|Win32"
+			OutputDirectory="$(SolutionDir)\lib"
+			IntermediateDirectory="$(ConfigurationName)"
+			ConfigurationType="2"
+			CharacterSet="2">
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="2"
+				InlineFunctionExpansion="1"
+				OmitFramePointers="TRUE"
+				AdditionalIncludeDirectories=".\include;.\sdif"
+				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;  SDIF_EXPORTS"
+				StringPooling="TRUE"
+				RuntimeLibrary="2"
+				EnableFunctionLevelLinking="TRUE"
+				UsePrecompiledHeader="0"
+				WarningLevel="3"
+				Detect64BitPortabilityProblems="TRUE"
+				DebugInformationFormat="3"/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCLinkerTool"/>
+			<Tool
+				Name="VCMIDLTool"/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 	</Configurations>
+	<References>
+	</References>
 	<Files>
 		<Filter
 			Name="Source Files"
 			Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm">
+			<File
+				RelativePath="sdif\config.h">
+			</File>
+			<File
+				RelativePath="sdif\host_architecture.h">
+			</File>
 			<File
 				RelativePath="sdif\SdifCheck.c">
 			</File>
@@ -120,6 +229,12 @@
 				RelativePath="sdif\SdifFGet.h">
 			</File>
 			<File
+				RelativePath="sdif\SdifFile.c">
+			</File>
+			<File
+				RelativePath="sdif\SdifFile.h">
+			</File>
+			<File
 				RelativePath="sdif\SdifFPrint.c">
 			</File>
 			<File
@@ -130,6 +245,18 @@
 			</File>
 			<File
 				RelativePath="sdif\SdifFPut.h">
+			</File>
+			<File
+				RelativePath="sdif\SdifFrame.c">
+			</File>
+			<File
+				RelativePath="sdif\SdifFrame.h">
+			</File>
+			<File
+				RelativePath="sdif\SdifFrameType.c">
+			</File>
+			<File
+				RelativePath="sdif\SdifFrameType.h">
 			</File>
 			<File
 				RelativePath="sdif\SdifFRead.c">
@@ -148,24 +275,6 @@
 			</File>
 			<File
 				RelativePath="sdif\SdifFWrite.h">
-			</File>
-			<File
-				RelativePath="sdif\SdifFile.c">
-			</File>
-			<File
-				RelativePath="sdif\SdifFile.h">
-			</File>
-			<File
-				RelativePath="sdif\SdifFrame.c">
-			</File>
-			<File
-				RelativePath="sdif\SdifFrame.h">
-			</File>
-			<File
-				RelativePath="sdif\SdifFrameType.c">
-			</File>
-			<File
-				RelativePath="sdif\SdifFrameType.h">
 			</File>
 			<File
 				RelativePath="sdif\SdifGlobals.c">
@@ -282,36 +391,12 @@
 				RelativePath="sdif\SdifTimePosition.h">
 			</File>
 			<File
-				RelativePath="sdif\SdifVersion.h">
-			</File>
-			<File
-				RelativePath="sdif\UniversalEnvVar.h">
-			</File>
-			<File
-				RelativePath="sdif\XpGuiCalls.h">
-			</File>
-			<File
-				RelativePath="sdif\config.h">
-			</File>
-			<File
-				RelativePath="sdif\host_architecture.h">
-			</File>
-			<File
-				RelativePath="sdif\preincluded.h">
-			</File>
-			<File
-				RelativePath="sdif\project_preinclude.h">
-			</File>
-			<File
 				RelativePath="sdif\sdiftypes.h">
 			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
 			Filter="h;hpp;hxx;hm;inl;inc">
-			<File
-				RelativePath="sdif\host_configure.h">
-			</File>
 			<File
 				RelativePath="include\sdif.h">
 			</File>
@@ -323,9 +408,6 @@
 			Name="Resource Files"
 			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe">
 		</Filter>
-		<File
-			RelativePath="ReadMe.txt">
-		</File>
 	</Files>
 	<Globals>
 	</Globals>
