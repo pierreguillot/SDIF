@@ -4,6 +4,9 @@ if [ ! -d $SYS ]; then
 mkdir $SYS
 fi
 
+INSTALL="`pwd`/install-sh -c"
+export INSTALL 
+
 cd $SYS
 rm -rf *
 ../configure --prefix=/u/formes/share --bindir=/u/formes/share/bin/$SYS --libdir=/u/formes/share/lib/$SYS  --cache-file=config.cache.$SYS 
