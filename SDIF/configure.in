@@ -1,6 +1,6 @@
 dnl -*-autoconf-*-  (No, it's an autoconf file!)
 dnl -*-m4-*- (He emacs, it's a m4 file)
-dnl $Id: configure.in,v 1.49 2004-06-03 11:39:03 schwarz Exp $
+dnl $Id: configure.in,v 1.50 2004-06-17 18:35:53 roebel Exp $
 dnl
 dnl configure.in		September 2000		Patrice Tisserand
 dnl
@@ -32,6 +32,11 @@ dnl send email to:  sdif@ircam.fr
 
 
 dnl $Log: not supported by cvs2svn $
+dnl Revision 1.49  2004/06/03 11:39:03  schwarz
+dnl Enable profiling compilation with --enable-profile.
+dnl 40% faster library is version 3.8.3
+dnl (array swapping and binary signature reading).
+dnl
 dnl Revision 1.48  2004/05/03 18:10:04  schwarz
 dnl version 3.8.2 bugfix version:
 dnl Fixed bugs in padding calculation for ascii chunks:
@@ -226,7 +231,7 @@ PACKAGE=SDIF
 
 SDIF_VERSION_MAJOR=3
 SDIF_VERSION_MINOR=8
-SDIF_VERSION_RELEASE=3
+SDIF_VERSION_RELEASE=4
 
 VERSION=$SDIF_VERSION_MAJOR.$SDIF_VERSION_MINOR.$SDIF_VERSION_RELEASE
 
