@@ -19,6 +19,10 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.2  1999/09/28  13:09:03  schwarz
+ * Included #include <preincluded.h> for cross-platform uniformisation,
+ * which in turn includes host_architecture.h and SDIF's project_preinclude.h.
+ *
  * Revision 3.1  1999/03/14  10:57:05  virolle
  * SdifStdErr add
  *
@@ -117,13 +121,29 @@ SdifListT*  SdifCreateList      (KillerFT Killer);
 SdifListT*  SdifKillListHead    (SdifListT* List);
 SdifListT*  SdifMakeEmptyList   (SdifListT* List);
 void        SdifKillList        (SdifListT* List);
-void*       SdifListGetHead     (SdifListT* List); /* Init the function GetNext */
+
+/*DOC:
+  Init the function SdifListGetNext. 
+  [Return] head of List. */
+void*       SdifListGetHead     (SdifListT* List); 
+
 void*       SdifListGetTail     (SdifListT* List);
 int         SdifListIsNext      (SdifListT* List);
 int         SdifListIsEmpty     (SdifListT* List);
-void        SdifListInitLoop    (SdifListT* List); /* Init the function GetNext */
-void*       SdifListGetNext     (SdifListT* List); /* set Curr to Curr->Next and after return Curr->Data */
-void*       SdifListGetCurr     (SdifListT* List); /* only return Curr->Data */
+
+/*DOC:
+  Init for function SdifListGetNext.
+  [Returns] true if List has elements. */
+int         SdifListInitLoop    (SdifListT* List);
+
+/*DOC:
+  Set Curr to Curr->Next and after return Curr->Data */
+void*       SdifListGetNext     (SdifListT* List);
+
+/*DOC:
+  Only return Curr->Data. */
+void*       SdifListGetCurr     (SdifListT* List);
+
 SdifListT*  SdifListPutTail     (SdifListT* List, void *pData);
 SdifListT*  SdifListPutHead     (SdifListT* List, void *pData);
 unsigned int SdifListGetNbData  (SdifListT* List);
