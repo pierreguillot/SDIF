@@ -1,4 +1,4 @@
-/* $Id: SdifMatrix.h,v 3.5 2001-05-02 09:34:46 tisseran Exp $
+/* $Id: SdifMatrix.h,v 3.6 2004-09-10 09:15:56 roebel Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -36,6 +36,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.5  2001/05/02 09:34:46  tisseran
+ * Change License from GNU Public License to GNU Lesser Public License.
+ *
  * Revision 3.4  2000/11/21 14:51:50  schwarz
  * - sdif.h is now included by all sdif/Sdif*.c files.
  * - Removed all public typedefs, enums, structs, and defines from the
@@ -116,5 +119,5 @@ SdifMatrixDataT*   SdifMatrixDataPutValue    (SdifMatrixDataT *MatrixData,
 
 SdifFloat8         SdifMatrixDataGetValue    (SdifMatrixDataT *MatrixData,
 						     SdifUInt4  numRow, SdifUInt4  numCol);
-
+int SdifMatrixDataUpdateHeader (SdifMatrixDataT *Data, SdifMatrixHeaderT *NewH);
 #endif /* _SdifMatrix_ */
