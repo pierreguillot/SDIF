@@ -1,4 +1,4 @@
-/* $Id: SdifRWLowLevel.h,v 3.2 1999-08-31 10:05:48 schwarz Exp $
+/* $Id: SdifRWLowLevel.h,v 3.3 1999-09-20 13:23:35 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -17,6 +17,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.2  1999/08/31  10:05:48  schwarz
+ * Extracted function SdifStringToSignature from SdiffGetSignature.
+ *
  * Revision 3.1  1999/03/14  10:57:19  virolle
  * SdifStdErr add
  *
@@ -103,9 +106,17 @@ int SdifSkipASCIIUntil  (FILE* fr, size_t *NbCharRead, char *CharsEnd);
 size_t SdiffScanFloat4  (FILE *stream, SdifFloat4 *ptr, size_t nobj);
 size_t SdiffScanFloat8  (FILE *stream, SdifFloat8 *ptr, size_t nobj);
 
+
+/* Unsafe but optimized version of SdifStringToSignature:
+   Exactly 4 chars are considered, so make sure *str has at least that many! 
+   The str pointer MUST be word (at least 4 byte or so) aligned.
+*/
+SdifSignature _SdifStringToSignature (char *str);
+
 /*DOC:
-  Convert a string to an SDIF signature (in proper endianness)
- */
+  Convert a string to an SDIF signature (in proper endianness).
+  str can point to any string position of any length.  
+*/
 SdifSignature SdifStringToSignature (char *str);
 
 #endif /* _SdifRWLowLevel_ */

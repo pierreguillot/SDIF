@@ -1,4 +1,4 @@
-/* $Id: SdifRWLowLevel.c,v 3.2 1999-08-31 10:05:46 schwarz Exp $
+/* $Id: SdifRWLowLevel.c,v 3.3 1999-09-20 13:23:35 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -15,6 +15,9 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.2  1999/08/31  10:05:46  schwarz
+ * Extracted function SdifStringToSignature from SdiffGetSignature.
+ *
  * Revision 3.1  1999/03/14  10:57:18  virolle
  * SdifStdErr add
  *
@@ -36,9 +39,10 @@
 
 #include <string.h>
 #include <ctype.h>
+#include <assert.h>
 
 
-
+extern int        gSdifInitialised;	/* can't include SdifFile.h */
 static char gSdifLittleToBig [_SdifBSLittleE];
 
 
@@ -643,21 +647,47 @@ SdiffGetString(FILE* fr, char* s, size_t ncMax, size_t *NbCharRead)
 
 
 
-/* exactly 4 chars are considered, so make sure *str has at least that many! */
+/* Unsafe but optimized version of SdifStringToSignature:
+   Exactly 4 chars are considered, so make sure *str has at least that many! 
+   The str pointer MUST be word (at least 4 byte or so) aligned.
+*/
 SdifSignature
-SdifStringToSignature (char *str)
+_SdifStringToSignature (char *str)
 {
-  SdifSignature Signature = *((SdifUInt4 *) str);
+  assert (gSdifInitialised  &&  "SDIF library not initialised!");
 
   switch (gSdifMachineType)
   {     
     case eLittleEndianLittleConst :
     case eLittleEndianLittleConst64 :
-      SdifBigToLittle((void *) Signature, sizeof(Signature));
-    break;
+      {
+	SdifSignature Signature = *((SdifUInt4 *) str);
+	SdifBigToLittle((void *) &Signature, sizeof(Signature));
+	return (Signature);
+      }
+	
+    default:
+      return (*((SdifUInt4 *) str));
   }
+}  
 
-  return (Signature);
+
+
+/* Safe version of SdifStringToSignature: str can point to any string
+   position of any length.  
+*/
+SdifSignature
+SdifStringToSignature (char *str)
+{
+  SdifSignature sigarr = eEmptySignature;  /* force 4 byte alignment */
+  char		*sig   = (char *) &sigarr;
+
+  if (*sig++ = *str++)
+    if (*sig++ = *str++)
+      if (*sig++ = *str++)
+	if (*sig++ = *str++)
+	  /* do nothing */;
+  return _SdifStringToSignature ((char *) &sigarr);
 }  
 
 
@@ -666,7 +696,8 @@ SdifStringToSignature (char *str)
 int
 SdiffGetSignature(FILE* fr, SdifSignature *Signature, size_t *NbCharRead)
 {
-  char Name[4] = "\0\0\0\0";
+  SdifSignature sig   = eEmptySignature;  /* force 4 byte alignment */
+  char		*Name = (char *) &sig;
   char c = 0;
   int cint = 0;
   unsigned int i;
@@ -703,7 +734,7 @@ SdiffGetSignature(FILE* fr, SdifSignature *Signature, size_t *NbCharRead)
     }
   else
     {
-      *Signature = SdifStringToSignature (Name);
+      *Signature = _SdifStringToSignature (Name);
       return cint;
     }
 }
