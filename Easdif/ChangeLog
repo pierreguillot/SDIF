@@ -1,5 +1,19 @@
-2003-07-17  Axel Roebel  <Axel.Roebel@ircam.fr>
+2003-07-18  Axel Roebel  <Axel.Roebel@ircam.fr>
 Version 0.7.2
+
+	* easdif/sdifmatrix.cpp, easdif/sdifmatrix.h
+	Improved documentation, moved constructors from .h to .cpp
+	fixed segfault in constructor with allocation.
+	Changed constructor to use  const std::string as argument.
+	Fixed warning due to comparison between int and unsigned int.
+
+	* easdif/sdifentity.h, easdif/sdifinit.h
+	Improved documentation.
+	
+	* easdif/sdifframe.h, easdif/sdifframe.cpp
+	Added SetHeader with Signature as std::string
+
+2003-07-17  Axel Roebel  <Axel.Roebel@ircam.fr>
 
 	* easdif/sdifmatrix.cpp, easdif/sdifmatrix.h, easdif/sdifmatrixdata.h,easdif/sdifmatrixdatainterface.h
 	Updated Resize method to properly
@@ -411,4 +425,4 @@ Version 0.21
 	* ChangeLog: Added changelog to repository.
 
 
-$Id: ChangeLog,v 1.20 2003-07-17 18:09:35 roebel Exp $
+$Id: ChangeLog,v 1.21 2003-07-18 20:50:22 roebel Exp $
