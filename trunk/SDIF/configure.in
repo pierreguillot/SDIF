@@ -1,6 +1,6 @@
 dnl -*-autoconf-*-  (No, it's an autoconf file!)
 dnl -*-m4-*- (He emacs, it's a m4 file)
-dnl $Id: configure.in,v 1.46 2004-01-29 13:35:26 schwarz Exp $
+dnl $Id: configure.in,v 1.47 2004-02-10 14:58:19 roebel Exp $
 dnl
 dnl configure.in		September 2000		Patrice Tisserand
 dnl
@@ -32,6 +32,10 @@ dnl send email to:  sdif@ircam.fr
 
 
 dnl $Log: not supported by cvs2svn $
+dnl Revision 1.46  2004/01/29 13:35:26  schwarz
+dnl passing to release,
+dnl add xcode to dist
+dnl
 dnl Revision 1.45  2003/12/15 13:17:28  schwarz
 dnl let's call this version beta4
 dnl
@@ -211,7 +215,7 @@ PACKAGE=SDIF
 
 SDIF_VERSION_MAJOR=3
 SDIF_VERSION_MINOR=8
-SDIF_VERSION_RELEASE=0
+SDIF_VERSION_RELEASE=1
 
 VERSION=$SDIF_VERSION_MAJOR.$SDIF_VERSION_MINOR.$SDIF_VERSION_RELEASE
 
