@@ -32,9 +32,12 @@
  * 
  * 
  * 
- * $Id: sdifmatrix.cpp,v 1.13 2003-07-18 20:42:22 roebel Exp $ 
+ * $Id: sdifmatrix.cpp,v 1.14 2003-07-18 20:44:15 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.13  2003/07/18 20:42:22  roebel
+ * Moved constructor implementations to .cpp, fixed bug in constructor with allocation
+ *
  * Revision 1.12  2003/07/17 20:00:49  roebel
  * Added missing Clear after having changed Resize to not clear the data
  *
@@ -138,14 +141,14 @@ SDIFMatrix::SDIFMatrix(const SDIFMatrix& aMatrix):mInter(0)
     mInter =   aMatrix.mInter->clone(); 
 }
 
-SDIFMatrix::SDIFMatrix(const std::string& sig, int nrows = 1, int ncols = 1, 
-		       SdifDataTypeET type = eFloat4):mInter(0)
+SDIFMatrix::SDIFMatrix(const std::string& sig, int nrows, int ncols, 
+		       SdifDataTypeET type):mInter(0)
 {
   Init(sig, nrows, ncols, type);
 }
 
-SDIFMatrix::SDIFMatrix(SdifSignature sig, int nrows = 1, int ncols = 1, 
-		       SdifDataTypeET type = eFloat4):mInter(0)
+SDIFMatrix::SDIFMatrix(SdifSignature sig, int nrows, int ncols, 
+		       SdifDataTypeET type):mInter(0)
 {
   Init(sig, nrows, ncols, type);
 }
