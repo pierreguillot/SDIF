@@ -1,4 +1,4 @@
-/* $Id: SdifFile.h,v 3.2 1999-08-25 18:32:35 schwarz Exp $
+/* $Id: SdifFile.h,v 3.3 1999-09-20 13:21:58 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -17,6 +17,9 @@ LIBRARY
 
 LOG
  * $Log: not supported by cvs2svn $
+ * Revision 3.2  1999/08/25  18:32:35  schwarz
+ * Added cocoon-able comments with sentinel "DOC:" (on a single line).
+ *
  * Revision 3.1  1999/03/14  10:56:51  virolle
  * SdifStdErr add
  *
@@ -60,6 +63,14 @@ LOG
 #include "SdifGlobals.h"
 
 
+/*DOC: 
+  todo: Test if file is an SDIF file (only when opening for read or
+  append) and open it.
+
+  [Return] NULL if not an SDIF file (the first 4 chars are not "SDIF"),
+  or file can not be opened.  */
+SdifFileT*	   SdifFTryOpen			(const char *Name, SdifFileModeET Mode);
+
 SdifFileT*         SdifFOpen                    (const char *Name, SdifFileModeET Mode);
 SdifFileT*         SdifOpenFile                 (const char *Name, SdifFileModeET Mode);
 SdifFileT*         SdifFOpenText                (SdifFileT *SdifF, const char* Name, SdifFileModeET Mode);
@@ -71,6 +82,7 @@ FILE*              SdifFGetFILE_SwitchVerbose   (SdifFileT *SdifF, int Verbose);
 void               SdifTakeCodedPredefinedTypes (SdifFileT *SdifF);
 void               SdifFLoadPredefinedTypes     (SdifFileT *SdifF, char *TypesFileName);
 
+extern int	  gSdifInitialised;
 extern SdifFileT *gSdifPredefinedTypes;
 
 /*DOC: 
@@ -211,6 +223,16 @@ SdifUInt4     SdifFCurrID              (SdifFileT *SdifF);
 /*DOC: 
   Renvoie SdifF->CurrFramH->Time.  */
 SdifFloat8    SdifFCurrTime            (SdifFileT *SdifF);
+
+/*DOC:
+  Add user data, return index added 
+*/
+int SdifFAddUserData (SdifFileT *file, void *data);
+
+/*DOC:
+  Get user data by index 
+*/
+void *SdifFGetUserData (SdifFileT *file, int index);
 
 
 SdifSignatureTabT* SdifCreateSignatureTab (SdifUInt4 NbSignMax);

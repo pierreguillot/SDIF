@@ -1,4 +1,4 @@
-/* $Id: SdifFileStruct.h,v 3.1 1999-03-14 10:56:51 virolle Exp $
+/* $Id: SdifFileStruct.h,v 3.2 1999-09-20 13:22:00 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -15,6 +15,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.1  1999/03/14  10:56:51  virolle
+ * SdifStdErr add
+ *
  * Revision 2.4  1999/02/28  12:16:43  virolle
  * memory report
  *
@@ -51,6 +54,7 @@
 #include "SdifGlobals.h"
 
 #include "SdifList.h"
+#include "SdifSelect.h"
 #include "SdifNameValue.h"
 #include "SdifHash.h"
 #include "SdifMatrixType.h"
@@ -63,12 +67,23 @@
 #include <stdio.h>
 
 
+#define	MaxUserData	10
+
+
+/*DOC:
+  File mode argument for SdifFOpen.
+*/
 typedef enum SdifFileModeE
 {
-  eUnknownFileMode,
+  eUnknownFileMode,	/* 0 */
   eWriteFile,
   eReadFile,
-  ePredefinedTypes
+  ePredefinedTypes,	/* 3 */
+
+  eModeMask = 7,	/* get rid of flags */
+
+  /* from here on we have flags that can be or'ed with the previous modes */
+  eParseSelection = 8
 } SdifFileModeET ;
 
 
@@ -107,7 +122,8 @@ struct SdifFileS
   SdifHashTableT     *FrameTypesTable;  /* DataBase of Frame Types */
 /*  SdifHashTableT     *StreamIDsTable;    DataBase of Stream IDs */
   SdifStreamIDTableT *StreamIDsTable;   /* DataBase of Stream IDs */
-  SdifTimePositionLT *TimePositions;    /* List of (Time, Position in the file) */
+  SdifTimePositionLT *TimePositions;    /* List of (Time, Position in file) */
+  /*SdifSelectionT     *Selection;	   Selection */
 
   FILE *Stream;                         /* Stream to read or to write */
 
@@ -143,6 +159,9 @@ struct SdifFileS
 
   unsigned int NbOfWarning;
   SdifErrorLT *Errors;
+
+  int		NbUserData;		/* todo: hash table */
+  void		*UserData [MaxUserData];
 };
 
 

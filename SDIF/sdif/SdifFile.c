@@ -1,4 +1,4 @@
-/* $Id: SdifFile.c,v 3.1 1999-03-14 10:56:49 virolle Exp $
+/* $Id: SdifFile.c,v 3.2 1999-09-20 13:21:57 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -16,6 +16,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.1  1999/03/14  10:56:49  virolle
+ * SdifStdErr add
+ *
  * Revision 2.5  1999/02/28  12:16:39  virolle
  * memory report
  *
@@ -53,16 +56,16 @@
 
 #include "SdifFile.h"
 #include "SdifTest.h"
+#include "SdifSelect.h"
 #include "SdifErrMess.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <assert.h>
 #include "SdifError.h"
 #include "SdifRWLowLevel.h" /* for SdifInitMachineType()  into SdifFLoadPredinedTypes */
 #include "SdifPreTypes.h"
 #include "SdifFScan.h"
-
-
 
 
 
@@ -72,6 +75,7 @@ SdifFOpen(const char* Name, SdifFileModeET Mode)
   SdifFileT* SdifF;
 
 
+  assert (gSdifInitialised  &&  "SDIF library not initialised!");
 
   SdifF = SdifMalloc(SdifFileT);
   if (SdifF)
@@ -510,7 +514,7 @@ SdifFLoadPredefinedTypes(SdifFileT *SdifF, char *TypesFileName)
 
 
 
-
+int        gSdifInitialised = 0;
 SdifFileT *gSdifPredefinedTypes;
 
 /* _SdifTypesFileName is normaly defined
@@ -526,14 +530,16 @@ SdifGenInit(char *PredefinedTypesFile)
 {
     char *PreTypesEnvVar=NULL;
 
+    assert (!gSdifInitialised  &&  "SDIF library already initialised");
+    gSdifInitialised = 1;
 
     if (SdifStdErr == NULL)
 	SdifStdErr = stderr;
 
-
     SdifInitMachineType();
     SdifSetStdIOBinary (); /* only WIN32 */
     SdifInitListNodeStock(_SdifListNodeStockSize);
+    SdifInitSelect ();
 
     gSdifPredefinedTypes = SdifFOpen("Predefined", ePredefinedTypes);
 
@@ -572,7 +578,7 @@ SdifGenKill(void)
 void SdifPrintVersion(void)
 {
 #ifndef lint
-    static char rcsid[]= "$Revision: 3.1 $ IRCAM $Date: 1999-03-14 10:56:49 $";
+    static char rcsid[]= "$Revision: 3.2 $ IRCAM $Date: 1999-09-20 13:21:57 $";
 #endif
 
     if (SdifStdErr == NULL)
@@ -907,4 +913,25 @@ SdifErrorTagET
 SdifFLastErrorTag (SdifFileT *SdifF)
 {
   return SdifLastErrorTag(SdifF->Errors);
+}
+
+
+
+
+
+/* Add user data, return index added */
+int
+SdifFAddUserData (SdifFileT *file, void *data)
+{
+    assert (file->NbUserData < MaxUserData);
+    file->UserData [file->NbUserData] = data;
+    return (file->NbUserData++);
+}
+
+/* Get user data by index */
+void *
+SdifFGetUserData (SdifFileT *file, int index)
+{
+    assert (index >= 0  &&  index < file->NbUserData);
+    return (file->UserData [index]);
 }
