@@ -1,6 +1,6 @@
 dnl -*-autoconf-*-  (No, it's an autoconf file!)
 dnl -*-m4-*- (He emacs, it's a m4 file)
-dnl $Id: configure.in,v 1.17 2002-08-30 17:28:34 schwarz Exp $
+dnl $Id: configure.in,v 1.18 2002-09-20 14:37:47 schwarz Exp $
 dnl
 dnl configure.in		September 2000		Patrice Tisserand
 dnl
@@ -31,6 +31,9 @@ dnl For any information regarding this and other IRCAM software, please
 dnl send email to:  sdif@ircam.fr
 dnl
 dnl $Log: not supported by cvs2svn $
+dnl Revision 1.17  2002/08/30 17:28:34  schwarz
+dnl Added enable-option to compile with g++ to use the lib with easdif.
+dnl
 dnl Revision 1.16  2002/08/29 16:07:09  tisseran
 dnl Add support of pkg-config for SDIF library.
 dnl After installation, now you can use:
@@ -105,11 +108,15 @@ AC_INIT(sdif/SdifGlobals.h)
 dnl ############################################################
 dnl PACKAGE NAME AND VERSION
 AC_MSG_RESULT(PACKAGE NAME AND VERSION)
-PACKAGE=SDIF
-SDIF_VERSION_MAJOR=3
-SDIF_VERSION_MINOR=6
 
-VERSION=$SDIF_VERSION_MAJOR.$SDIF_VERSION_MINOR
+PACKAGE=SDIF
+
+SDIF_VERSION_MAJOR=3
+SDIF_VERSION_MINOR=7
+SDIF_VERSION_RELEASE=0
+
+VERSION=$SDIF_VERSION_MAJOR.$SDIF_VERSION_MINOR.$SDIF_VERSION_RELEASE
+
 AC_SUBST(PACKAGE)
 AC_SUBST(VERSION)
 AC_SUBST(SDIF_VERSION_MINOR)
