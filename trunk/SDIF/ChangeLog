@@ -1,3 +1,12 @@
+2003-06-06  Diemo Schwarz  <schwarz@ligeti.ircam.fr>
+
+	* sdif/SdifFile.c, sdif/SdifHard_OS.c, include/sdif.h:
+	Added eReadWriteFile that eventually opens a file in read-write mode.
+
+2003-06-04  Diemo Schwarz  <schwarz@ligeti.ircam.fr>
+
+	* tools/querysdif.c: Finally: do statistics about matrix sizes.
+
 2003-05-30  Diemo Schwarz  <schwarz@ligeti.ircam.fr>
 
 	* configure.in:
@@ -177,4 +186,4 @@ Version 3.3:
 	  Operating System.
 
 	
-$Id: ChangeLog,v 1.20 2003-05-30 17:48:47 schwarz Exp $
+$Id: ChangeLog,v 1.21 2003-06-06 10:29:16 schwarz Exp $
