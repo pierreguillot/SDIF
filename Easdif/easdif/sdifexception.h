@@ -34,9 +34,15 @@
  * 
  * 
  * 
- * $Id: sdifexception.h,v 1.4 2003-11-18 18:18:40 roebel Exp $ 
+ * $Id: sdifexception.h,v 1.5 2003-11-25 10:57:05 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.4  2003/11/18 18:18:40  roebel
+ * Reorganized exception handling and interface such that
+ * sdifexcpetions are now derived from standard exception and
+ * sdif error tags and error numbers are treated equivalently.
+ * Improved documentation.
+ *
  * Revision 1.3  2003/05/21 20:40:30  roebel
  * Added documentation. Removed unused member "error".
  * Added member functions to access message and errortag.
@@ -74,7 +80,7 @@ namespace Easdif {
    * classes are derived from here.
    *
    */
-  class SDIFException : public exception
+  class SDIFException : public std::exception
   {
   public:    
 
@@ -107,7 +113,7 @@ namespace Easdif {
       mError = error;
     };
 
-    ~SDIFException()  {	};
+    ~SDIFException() throw() {	};
 
     /** 
      * \ingroup exception 
