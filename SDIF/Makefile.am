@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.10 2002-08-29 16:07:09 tisseran Exp $
+# $Id: Makefile.am,v 1.11 2002-10-30 15:54:01 schwarz Exp $
 #
 # ./Makefile.am		September 2000			Patrice Tisserand
 #
@@ -27,8 +27,15 @@
 #
 # For any information regarding this and other IRCAM software, please
 # send email to:  sdif@ircam.fr
-#
+
+
 # $Log: not supported by cvs2svn $
+# Revision 1.10  2002/08/29 16:07:09  tisseran
+# Add support of pkg-config for SDIF library.
+# After installation, now you can use:
+# pkg-config --cflags --libs sdif
+# to have correct compilation flags
+#
 # Revision 1.9  2001/05/04 14:07:26  tisseran
 # Liitle fix:
 # - Change a c++ commentary in a c one (sdif.h line:1532)
@@ -65,11 +72,9 @@
 #
 # Revision 1.1.2.4  2000/10/26  17:27:16  schwarz
 # Added header with copyright and links to all Makefile.am and configure.in.
-#
-SUBDIRS = sdif include tools data test
 
-EXTRA_DIST = \
-	README COPYING AUTHORS INSTALL doc
+
+SUBDIRS = sdif include tools data test
 
 sdifincdir = @top_srcdir@/include
 
@@ -85,8 +90,6 @@ doc:
 ircam_deps:
 	@cd sdif; $(MAKE) ircam_deps
 
-.PHONY	:	test
-
 test	:	check
 
 # tag the cvsrepository with the current version 
@@ -96,11 +99,27 @@ cvstag:
 		cvs tag -F $(CVSTAG)
 
 # call this as "make DISTHOST=yourwebhost publish" to publish a new version
-# we publish by copying to DISTDIR, logged on DISTHOST
 # this might work differently for other places
-DISTDIR       = /usr/local/www/ircam/equipes/analyse-synthese/sdif/download
-DISTFILE      = $(distdir).tar.gz
-DISTFILED     = $(distdir)-src.tar.gz
-publish:	cvstag dist
-		rsh $(DISTHOST) cp $(PWD)/$(DISTFILE) $(DISTDIR)/$(DISTFILED) \;\
-				chmod g+w $(DISTDIR)/$(DISTFILED)
+# todo: configure DISTHOST
+DISTDIR       = sdif/download
+DISTFILE      = $(distdir)-src.tar.gz
+EXTRA_DIST    = README COPYING AUTHORS INSTALL ChangeLog doc
+DISTFILES     = $(DISTFILE) $(EXTRA_DIST)
+
+# use this to tag the cvs project, make a source distribution, and
+# copy it to the web server
+publish:	cvstag srcdist
+		cat <<END_OF_FTP_COMMANDS \
+$$< \
+$$< \
+cd $(DISTDIR) \
+mput $(DISTFILES) \
+END_OF_FTP_COMMANDS \
+		| ftp $(DISTHOST)
+
+# use this to make a source distribution!
+srcdist:	dist
+		mv $(distdir).tar.gz $(DISTFILE)
+
+
+.PHONY:		grep doc ircam_deps test publish srcdist cvstag
