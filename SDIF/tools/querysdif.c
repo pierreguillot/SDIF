@@ -1,4 +1,4 @@
-/* $Id: querysdif.c,v 1.7 2003-11-07 21:47:19 roebel Exp $
+/* $Id: querysdif.c,v 1.8 2003-11-07 22:12:45 roebel Exp $
  
                 Copyright (c) 1998 by IRCAM - Centre Pompidou
                            All rights reserved.
@@ -14,6 +14,9 @@
    
 
    $Log: not supported by cvs2svn $
+   Revision 1.7  2003/11/07 21:47:19  roebel
+   removed XpGuiCalls.h and replaced preinclude.h  by local files
+
    Revision 1.6  2003/06/04 20:32:25  schwarz
    Finally: do statistics about matrix sizes.
 
@@ -64,7 +67,6 @@
 
 
 #include "sdif_portability.h"
-#include "XpGuiCalls.h"
 
 #include "sdif.h"
 #include <stdlib.h>
@@ -94,7 +96,9 @@ void usage (void)
 "printed, followed by a count of the frames and the matrices occuring in\n"
 "the file.\n"
 "\n");
-    XpExit(1);
+
+    exit(1);
+
 }
 
 
@@ -150,7 +154,7 @@ int GetSigIndex (SdifSignature s, int parent, int stream)
 	{
 	    fprintf (SdifStdErr, "Too many different signatures, "
 		     "can't handle more than %d!\n", MaxSignatures);
-	    XpExit (1);
+	    exit (1);
 	}
 
 	sigs [i].sig    = s;
@@ -270,7 +274,7 @@ int main(int argc, char** argv)
     {
 	fprintf (SdifStdErr, "Can't open input file %s.\n", infile);
         SdifGenKill ();
-        XpExit (1);
+        exit (1);
     }
     in->TextStream = stdout;	/* SdifFPrint* functions need this */
 
