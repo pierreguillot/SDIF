@@ -7,19 +7,35 @@
  * 
  * 
  * 
- * $Id: sdifentity.cpp,v 1.2 2002-07-12 10:34:08 ftissera Exp $ 
+ * $Id: sdifentity.cpp,v 1.3 2002-08-28 16:46:53 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  2002/07/12 10:34:08  ftissera
+ * *** empty log message ***
+ *
  * Revision 1.1  2002/06/18 18:43:08  ftissera
  * Project for new SDIF API
  * 
  * 
  */
 
-#include "sdifentity.h"
+#include "easdif/sdifentity.h"
+
+#include "SdifFPut.h"
 
 
-SDIFEntity::SDIFEntity(): mSize(0), mNbNVT(0), 
+//inline int EasdifInit(std::string PredefinedType)
+//inline int EasdifInit(char* PredefinedType)
+//{
+/*
+  char* Predefined;    
+  Predefined = const_cast<char*>(PredefinedType.c_str());
+*/
+//  SdifGenInit(PredefinedType);
+//  SdifSetErrorFunc(ExceptionThrower);
+//}
+
+SDIFEntity::SDIFEntity(): mSize(0), mEof(0), mNbNVT(0), 
     mOpen(0), generalHeader(0), asciiChunks(0), bytesread(0)
 {
     mDescription = SdifStringNew();
@@ -36,11 +52,6 @@ int SDIFEntity::OpenRead(const char* filename)
     /* to put matrix and frame's types in the SdifString : mDescription */
     SdifFAllMatrixTypeToSdifString(efile, mDescription);
     SdifFAllFrameTypeToSdifString(efile, mDescription);
-
-    // SdifFReadTextMatrixData(efile, mDescription);
-    // SdifFReadTextMatrix(efile, mDescription);
-    //  string =  SdifFReadTextMatrix (efile);
-
     n = SdifFNameValueNum(efile);
     if( n != 0)
     {
@@ -60,7 +71,6 @@ int SDIFEntity::OpenRead(const char* filename)
 
 	    NVT = TakeNVT();
 	    AddNVT(NVT, _SdifNVTStreamID);
-	    //  AddNVT(TakeNVT(), _SdifNVTStreamID);
 	}
     }  
     return  mOpen = 2;
@@ -78,7 +88,7 @@ int SDIFEntity::OpenWrite(const char* filename)
 	    WriteNVTs();
 
     /* to add Descriptions types to sdif file  */
-    AddDescriptionType();
+    WriteTypes();
 	
     asciiChunks = SdifFWriteAllASCIIChunks(efile);
     return  mOpen = 1;
@@ -92,39 +102,12 @@ int SDIFEntity::Open(const char* filename, SdifFileModeET Mode)
     {
     case eReadFile:
     {
-	int n;
-	generalHeader = SdifFReadGeneralHeader(efile);  
-	asciiChunks = SdifFReadAllASCIIChunks(efile);
-
-	n = SdifFNameValueNum(efile);
-	if( n != 0)
-	{
-	    /* initialisation of the vector */
-	    mv_NVT.clear();
-	    /* used in the loop for getting the next NVT  */	
-	    SdifNameValuesLT* NVlist;
-	    NVlist = efile->NameValues;
-
-	    for (int i = 1 ; i <= n ; i++)
-	    {	 
-		if(i == n)
-		    NVlist->CurrNVT = (SdifNameValueTableT*)
-			SdifListGetNext(NVlist->NVTList);
-		else
-		    SdifNameValuesLSetCurrNVT(NVlist, i);
-		NVT = TakeNVT();
-		AddNVT(NVT, _SdifNVTStreamID);
-	    }
-	}  
+	OpenRead(filename);
     }
     break;
     case eWriteFile:
     {	
-	generalHeader = SdifFWriteGeneralHeader(efile);
-	if (mNbNVT != 0)
-	    WriteNVTs();
-	AddDescriptionType();
-	asciiChunks = SdifFWriteAllASCIIChunks(efile);
+	OpenWrite(filename);
     }
     break;
 
@@ -242,36 +225,38 @@ SdifErrorT* SDIFEntity::LastError()
     return SdifFLastError (efile);
 }
 
-bool SDIFEntity::ReadNextFrame(SDIFFrame& frame)
-{
-    int eof = 0;
-    bool test = false;
-    
 
-    // eof = SdifFGetSignature(efile, &frame.mFrameBytesRead);
-
-    if (!eof  &&  SdifFLastError(efile) == NULL)
-    {
-	frame.Read(efile);
-	//eof = SdifFGetSignature(efile, &frame.mFrameBytesRead) == eEof;
-	test = true;
-    }
-    return test;
-    // bytesread++;
+int& SDIFEntity::eof() {
+    return mEof;
 }
 
-bool SDIFEntity::WriteNextFrame(SDIFFrame& frame)
+int SDIFEntity::ReadNextFrame(SDIFFrame& frame)
 {
-    //int eof = 0;
-    bool test = false;
+    int bytesread = 0;
+    if(eof()) return -1;
+    //bytesread = frame.Read(efile, eof());
+    bytesread = frame.Read(efile, mEof);
+    return bytesread;    
+/*
+  int eof = 0;
+  size_t bytesread = 0;
+  if (!eof  &&  SdifFLastError(efile) == NULL)
+  {
+  bytesread = frame.Read(efile);
+  eof = SdifFGetSignature(efile, &bytesread) == eEof;
+  return bytesread;
+  }
+  else
+  return -1;
+*/
+}
+
+int SDIFEntity::WriteFrame(SDIFFrame& frame)
+{
+    int size_frame = 0;
     
-    //  eof = SdifFGetSignature(efile, &bytesread);
-    //  if (!eof  &&  SdifFLastError(efile) == NULL)
-    //   {
-	frame.Write(efile);
-	test = true;
-	//   }
-    return test;
+    frame.Write(efile);
+    return size_frame;
 }
 
 void SDIFEntity::ViewAllNVTs()
@@ -286,20 +271,18 @@ void SDIFEntity::ViewAllNVTs()
 
 /*******************************/
 
-//SdifStringT* SDIFEntity::SetString(char* String)
-int SDIFEntity::SetSdifString(SdifStringT* String)
+int SDIFEntity::SetTypeString(SdifStringT* String)
 {
-    //   mDescription = String;
     SdifStringAppend(mDescription , String->str);
     return 1;
 }
 
-SdifStringT* SDIFEntity::GetSdifString()
+SdifStringT* SDIFEntity::GetTypeString()
 {
     return mDescription;
 }
 
-int SDIFEntity::ViewString()
+int SDIFEntity::ViewTypes()
 {
     std::cout << std::endl <<  mDescription->str << std::endl;
     return 1;
@@ -330,7 +313,7 @@ int SDIFEntity::AddMatrixType(const std::string& matrixtype,
 }
 
 /* for adding the description types when opening in mode "eWriteFile" */
-int SDIFEntity::AddDescriptionType()
+int SDIFEntity::WriteTypes()
 {
   if (mDescription->TotalSize > 0)
   {
@@ -342,43 +325,12 @@ int SDIFEntity::AddDescriptionType()
 }
 
 
+int SDIFEntity::ChangeSelection(const std::string& selection)
+{
+    const char* sel = const_cast<const char*>(selection.c_str());
+    SdifReplaceSelection(sel, efile->Selection);
+    return 1;
+}
+
 /*****************************************************/
 
-int SDIFEntity::GetColumnIndex(SdifSignature matrixsig, std::string columnname)
-{
-    /* looking for a matrix */
-    char* signature = "1MTD";
-    char* test;
-    int a=0;
-    int e=0;
-    // if (strcmp(signature, mDescription->str) == 0 )
-    test = strpbrk(signature, mDescription->str);
-    std::cout << "variable test = " << test << std::endl;
-    if ("1MTD" == test)
-    {	/*temporaly*/
-	std::cout << "une matrice trouvee" << std::endl;
-
-	/* to have the signature for searching the good matrix type*/
-	signature = SdifSignatureToString(matrixsig);
-	//char* strstr(signature, mDescription->str);
-	//char* strbrk(signature, mDescription->str);
-	//if (strcmp(signature, mDescription->str) == 0)
-	a = mDescription->NbCharRead;
-	std::cout << "a = " << a  << std::endl;
-	test = strpbrk(signature, mDescription->str);
-	//free(test);
-	e = mDescription->NbCharRead;
-	std::cout << "e = " << e << std::endl;
-	//if (signature == strpbrk(signature, mDescription->str))
-	if(signature == test)
-	{
-	    std::cout << "signature trouvee : " << test  <<  std::endl;
-	    //  free(test);
-	    test = strpbrk(const_cast<char*>(columnname.c_str()), mDescription->str);
-	    std::cout << "colonne trouvee : " << test  <<  std::endl;
-	    return 1;
-	}
-    }
-    else
-	return 0;
-}

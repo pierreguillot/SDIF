@@ -7,13 +7,16 @@
  * 
  * 
  * 
- * $Id: sdifnamevaluetable.cpp,v 1.1 2002-06-18 17:56:40 ftissera Exp $ 
+ * $Id: sdifnamevaluetable.cpp,v 1.2 2002-08-28 16:46:53 roebel Exp $ 
  * 
- * $Log: not supported by cvs2svn $ 
+ * $Log: not supported by cvs2svn $
+ * Revision 1.1  2002/06/18 17:56:40  ftissera
+ * Project for new SDIF API
+ * 
  * 
  */
 
-#include "sdifnamevaluetable.h"
+#include "easdif/sdifnamevaluetable.h"
 
 
 int SDIFNameValueTable::AddNameValue(std::string name,std::string value)
@@ -32,7 +35,7 @@ SdifUInt4 SDIFNameValueTable::GetStreamID()
     return mStreamID;
 }
 
-std::string SDIFNameValueTable::GetNameValue(std::string name)
+std::string SDIFNameValueTable::GetValue(std::string name)
 {
     return map_NameValues[name];
 }

@@ -9,9 +9,12 @@
  * sdifframe.h is composed of the different methods which are using to 
  * manipulate the frame.
  * 
- * $Id: sdifframe.h,v 1.3 2002-07-12 10:19:03 ftissera Exp $ 
+ * $Id: sdifframe.h,v 1.4 2002-08-28 16:46:53 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.3  2002/07/12 10:19:03  ftissera
+ * *** empty log message ***
+ *
  * Revision 1.2  2002/06/18 14:51:13  ftissera
  * add methods with SDIFEntity for reading and writing
  *
@@ -26,98 +29,304 @@
 
 #include <string>
 #include <sdif.h>
-#include "sdifmatrix.h"
+#include "easdif/sdifmatrix.h"
 
 class SDIFEntity;
 
+
+
+/** 
+ * @brief class which can be associated with a frame
+ *
+ * SDIFFrame is composed of different methods which permits to manipulate a
+ * frame. All the methods with a SdifFileT* parameter are surcharged with
+ * SDIFEntity parameter.
+ */
 class SDIFFrame
 {
 private:
-    //SDIFMatrix matrix;
     std::vector<SDIFMatrix> mv_Matrix;
-/*for SDIFStream file's operations, it become public.
-size_t  mBytesRead;
-*/
+    //SDIFMatrix matrix;
+
+    size_t  mFrameBytesRead;
     //int mSelected;// if is selected = 1 else = 0
 
     SdifFloat8      mTime;
     SdifSignature   mSig;
     SdifUInt4       mStreamID;
-    SdifUInt4 mSize;// keep the size of the frame
-    SdifUInt4 mNbMatrix;
-    SdifUInt4 mSelected;
-    //  SdifUInt4 mIndex;
+    SdifUInt4       mSize;// keep the size of the frame
+    SdifUInt4       mNbMatrix;
+    //SdifUInt4       mSelected;
+
 
 public: 
-    SDIFFrame(): mStreamID(0), mSize(0), mNbMatrix(0), mSelected(0)
+    SDIFFrame(): mStreamID(0), mSize(0), mNbMatrix(0)//, mSelected(0)
 	{};
-    size_t  mFrameBytesRead;
+    //size_t  mFrameBytesRead;
 
 /** 
- * Read : permit to read completly a frame : the header and the data
- * ReadInfo : permit to read the frame header (used by Read)
- * ReadData : permit to read only the data of a frame (used by Read)
- * Write : permit to write a frame
- * WriteInfo : permit to write the frame heder and the data (used by Write)
- * View : permit to see the content of a frame
- * ViewInfo : permit to see the frame header
- * Resize : permit to resize the vector of the frame that stock the reading
- * ClearData : permit to clear the data of a frame to reused
+ * Read : permit to read entirely a frame : the header and the data
+ * ReadInfo : read the frame header (used by Read)
+ * ReadData : read only the data of a frame (used by Read)
+ * Write : write a frame
+ * WriteInfo : write the frame header and the data (used by Write)
+ * View : see the content of a frame
+ * ViewInfo : see the frame header
+ * Resize : resize the vector of the frame that stock the reading
+ * ClearData : clear the data of a frame to reused
  *
  * @param file 
  */
-    
-    int Read(SdifFileT* file);
-    int ReadData(SdifFileT* file);
-    int ReadInfo(SdifFileT* file);
-    int Write(SdifFileT* file);
-    int WriteInfo(SdifFileT* file);
-    void View();
-    void ViewInfo();
+   
+/*************************************************************************/
+/* Read and Write file */
+/**
+* \defgroup rnw SDIFFrame - Read and Write 
+*/
+
+/** 
+ * \ingroup rnw
+ * read entirely a frame : the header and the data
+ * @return number of bytes read
+ */
+    int  Read(SdifFileT* file, int &eof);
+
+/**
+ * \ingroup rnw 
+ * read the frame header (used by Read)
+ * @return number of bytes read
+ */
+    int  ReadData(SdifFileT* file);
+
+/** 
+ * \ingroup rnw
+ * read only the data of a frame (used by Read)
+ * @return number of bytes read
+ */
+    int  ReadInfo(SdifFileT* file);
+
+/** 
+ * \ingroup rnw
+ * write entirely a frame
+ * @return number of bytes write
+ */
+    int  Write(SdifFileT* file);
+
+/** 
+ * \ingroup rnw
+ * write the frame header (used by Write)
+ * @return number of bytes write
+ */
+    int  WriteInfo(SdifFileT* file);
 
     /* for SDIFEntity*/
-    //  void Read(const SDIFEntity& entity);
-    int Read(const SDIFEntity& entity);
-    void ReadData(const SDIFEntity& entity);
-    void ReadInfo(const SDIFEntity& entity);
-    void Write(const SDIFEntity& entity);
-    void WriteInfo(const SDIFEntity& entity);
-    void Resize(const SDIFEntity& entity);
+    //int  Read(const SDIFEntity& entity);
+    int  Read(SDIFEntity& entity);
+    int  ReadData(const SDIFEntity& entity);
+    int  ReadInfo(const SDIFEntity& entity);
+    int  Write(const SDIFEntity& entity);
+    int  WriteInfo(const SDIFEntity& entity);
 
 
-    void AddMatrix(const SDIFMatrix& aMatrix);    
+/*************************************************************************/
+/* Add a SDIFMatrix in the frame */
+/**
+* \defgroup addframe SDIFFrame - Add SDIFMatrix 
+*/
+
+/**
+ * \ingroup addframe 
+ * add a SDIFMatrix in the matrix vector of the frame
+ * @return the number of SDIFMatrix contained in the vector
+ */
+    int  AddMatrix(const SDIFMatrix& aMatrix);
+
+/** 
+ * \ingroup addframe
+ * add a matrix in the matrix vector of the frame if this matrix is
+ * selected
+ * @return the number of SDIFMatrix contained in the vector
+ */
+    int  AddMatrixSelected(SdifFileT* file, const SDIFMatrix& aMatrix);
+
+
+/*************************************************************************/
+/* Other */
+/**
+* \defgroup otherframe SDIFFrame - Other 
+*/
+
+/** 
+ * \ingroup otherframe
+ * @brief see the content of a frame
+ */
+    void View();
+
+/**
+ * \ingroup otherframe 
+ * @brief see the frame header
+ */
+    void ViewInfo();
+
+/**
+ * \ingroup otherframe
+ * @brief empty the matrix vector
+ */
     void ClearData();
-    void Resize(SdifFileT* file);
 
-    /* for the selection */
-    int Select();
-    int DeSelect();
-    int IsSelected();
+/**
+ * \ingroup otherframe
+ * @brief resize the vector of SDIFMatrix (for internal used)
+ */
+private:
+    void Resize();
 
-    /* to get a matrix */
-    SDIFMatrix& GetMatrix(unsigned int index);
-    /*ambiguity between signature and int  -> other name : GetMatrixwithSig()*/
-    SDIFMatrix& GetMatrixWithSig(const SdifSignature& sig); 
-    SDIFMatrix& GetMatrix(const std::string& signature);
+public:
+/*************************************************************************/
+/* Get Informations */
+/**
+* \defgroup infoframe SDIFFrame - Get Informations 
+*/
 
-    /* check if a matrix type exist in the frame  */
+    /* get the matrix signature selected */
+/** 
+ * \ingroup infoframe
+ * get the matrix signature selected which is stored in file
+ * @return SdifSignature of SDIFMatrix selection
+ */
+    SdifSignature GetMatrixSelection(SdifFileT* file);
+    SdifSignature GetMatrixSelection(const SDIFEntity& entity);
+
+/**
+ * \ingroup infoframe 
+ * @brief check if a matrix type exist in the frame with a SdifSignature
+ */
     bool MatrixExists(const SdifSignature& sig);
+
+/** 
+ * \ingroup infoframe
+ * @brief check if a matrix type exist in the frame with a string signature
+ */
     bool MatrixExists(const std::string& signature);
 
-    /* to get the informations of the frame */
-    SdifUInt4 GetNbMatrix();
-    SdifSignature GetSignature();
-    SdifUInt4 GetStreamID();
-    SdifFloat8 GetTime();
-    SdifUInt4 GetSize();
 
-    /* to set the informations of the frames  */
+/*************************************************************************/
+/* Get SDIFMatrix */
+/**
+* \defgroup mat SDIFFrame - Get a SDIFMatrix 
+*/
+
+/**
+ * \ingroup mat 
+ * get the matrix number i which is stored in the vector of matrix 
+ * @return SDIFMatrix number i
+ */
+    SDIFMatrix& GetMatrix(unsigned int index);
+
+/** 
+ * \ingroup mat
+ * get the matrix number i which is stored in the vector of matrix 
+ * if she's selected 
+ * @return SDIFMatrix number i if she's selected
+ */
+    SDIFMatrix& GetMatrixIfSelected(SdifFileT* file, unsigned int index);
+
+/** 
+ * \ingroup mat
+ * get the matrix of SdifSignature : sig in the vector of matrix
+ * @return SDIFMatrix
+ */
+    SDIFMatrix& GetMatrixWithSig(const SdifSignature& sig);/*ambiguity 
+					   between signature and int
+					   -> other name : GetMatrixwithSig()*/
+/**
+ * \ingroup mat 
+ * get the matrix with the signature in the vector of matrix
+ * @param signature string
+ * @return SDIFMatrix
+ */
+    SDIFMatrix& GetMatrix(const std::string& signature);
+
+
+
+/*************************************************************************/
+/* Get members of the frame */
+/**
+* \defgroup  getmframe SDIFFrame - Get members
+*/
+
+/**
+ * \ingroup getmframe 
+ * @brief get the number of matrix in the frame
+ */
+    SdifUInt4     GetNbMatrix();
+
+/** 
+ * \ingroup getmframe
+ * @brief get the signature of the frame
+ */
+    SdifSignature GetSignature();
+
+/** 
+ * \ingroup getmframe
+ * @brief get the streamID of the frame
+ */
+    SdifUInt4     GetStreamID();
+
+/** 
+ * \ingroup getmframe
+ * @brief get the time of the frame
+ */
+    SdifFloat8    GetTime();
+
+/** 
+ * \ingroup getmframe
+ * @brief get the size of the frame
+ */
+    SdifUInt4     GetSize();
+
+/*************************************************************************/
+/* Set the informations of the frames */
+ /**
+* \defgroup  setmframe SDIFFrame - Set members
+*/
+  
+/** 
+ * \ingroup setmframe
+ * @brief Set the frame header
+ */
     void SetInfo(SdifSignature sig, SdifUInt4 streamID, float time);//, SdifUInt4 nbMatrix);
+
+/**
+ * \ingroup setmframe 
+ * @brief Set one element of the frame header : the number of matrix
+ */
     void SetNbMatrix(SdifUInt4 nbMatrix);
+
+/** 
+ * \ingroup setmframe
+ * @brief Set one element of the frame header : the signature
+ */
     void SetSignature(SdifSignature sig);
+
+/** 
+ * \ingroup setmframe
+ * @brief Set one element of the frame header : the signature with a string
+ */
+    void SetSignature(const std::string& signature);
+
+/** 
+ * \ingroup setmframe
+ * @brief Set one element of the frame header : the streamID
+ */
     void SetStreamID(SdifUInt4 streamID);
-    void SetStringSignature(const std::string& signature);
+
+/** 
+ * \ingroup setmframe
+ * @brief Set one element of the frame header : the time
+ */
     void SetTime(float time);
+
 };
 
 #endif

@@ -7,9 +7,12 @@
  * 
  * 
  * 
- * $Id: sdifmatrix.cpp,v 1.4 2002-07-12 10:20:04 ftissera Exp $ 
+ * $Id: sdifmatrix.cpp,v 1.5 2002-08-28 16:46:53 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.4  2002/07/12 10:20:04  ftissera
+ * Read has changed for selection
+ *
  * Revision 1.3  2002/06/18 14:48:53  ftissera
  * add GetSignature(), GetStringSignature() and GetType()
  *
@@ -19,14 +22,17 @@
  * 
  */
 
-#include "sdifmatrix.h"
+#include "easdif/sdifmatrix.h"
+
 SDIFMatrix::SDIFMatrix():mInter(0)
 {
     //m_Signature =...;
     /* default type */
     mType = eFloat4;
     /* default signature */
-    mSig = SdifSignatureConst('1','T','R','C');
+    //mSig = SdifSignatureConst('1','T','R','C');
+    // signifies uninitialized matrix
+    mSig = 0;
     CreateMatrixData(mSig, 1, 1, mType);
 }
 
@@ -73,7 +79,7 @@ SDIFMatrix::SDIFMatrix(const SDIFMatrix& aMatrix):mInter(0)
     }		
 }
 
-void SDIFMatrix::CreateMatrixData(SdifSignature sig, int nrows, int ncols, SdifDataTypeET type=eFloat4)
+void SDIFMatrix::CreateMatrixData(SdifSignature sig, int nrows, int ncols, SdifDataTypeET type)//=eFloat4)
 {
     if(mInter) {
 	delete mInter;
@@ -87,13 +93,13 @@ void SDIFMatrix::CreateMatrixData(SdifSignature sig, int nrows, int ncols, SdifD
 
     switch (mType){
     case eInt4:
-	mInter=static_cast<SdifMatrixDataInterface*>(new SDIFMatrixData<int>(nrows,ncols));
+	mInter=static_cast<SDIFMatrixDataInterface*>(new SDIFMatrixData<int>(nrows,ncols));
 	break;
     case eFloat4:
-	mInter=static_cast<SdifMatrixDataInterface*>(new SDIFMatrixData<float>(nrows,ncols));
+	mInter=static_cast<SDIFMatrixDataInterface*>(new SDIFMatrixData<float>(nrows,ncols));
 	break;	
     case eFloat8:
-	mInter=static_cast<SdifMatrixDataInterface*>(new SDIFMatrixData<double>(nrows,ncols));
+	mInter=static_cast<SDIFMatrixDataInterface*>(new SDIFMatrixData<double>(nrows,ncols));
 	break;
     }
 }
@@ -210,12 +216,12 @@ double SDIFMatrix::GetDouble(int i, int j)
 }
 
 /* to get number of rows and columns*/
-int SDIFMatrix::GetNbCols()
+int SDIFMatrix::GetNbCols() const
 {
     return mInter->GetNbCol();
 }
 
-int SDIFMatrix::GetNbRows()
+int SDIFMatrix::GetNbRows() const
 {
     return mInter->GetNbRow();
 }
@@ -227,19 +233,19 @@ int SDIFMatrix::GetSize() const
 }
 
 /* to get the SdifDataType of the matrix */
-SdifDataTypeET SDIFMatrix::GetType()
+SdifDataTypeET SDIFMatrix::GetType() const
 {
     return mType;
 }
 
 /* to get the SdifSignature of the matrix */
-SdifSignature SDIFMatrix::GetSignature()
+SdifSignature SDIFMatrix::GetSignature() const
 {
     return mSig;
 }
 
 /* to get the string signature of the matrix*/
-std::string SDIFMatrix::GetStringSignature()
+std::string SDIFMatrix::GetStringSignature() const
 {
     return m_Signature;
 }
