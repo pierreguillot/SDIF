@@ -1,4 +1,4 @@
-/* $Id: SdifTextConv.c,v 3.7 2001-05-02 09:34:48 tisseran Exp $
+/* $Id: SdifTextConv.c,v 3.8 2002-08-05 14:21:38 roebel Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -32,6 +32,9 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.7  2001/05/02 09:34:48  tisseran
+ * Change License from GNU Public License to GNU Lesser Public License.
+ *
  * Revision 3.6  2000/11/15 14:53:37  lefevre
  * no message
  *
@@ -271,9 +274,7 @@ SdifFTextConvFramesChunk(SdifFileT *SdifF)
 size_t
 SdifFTextConv(SdifFileT *SdifF)
 {
-  size_t
-    SizeW = 0,
-    SizeR = 0; /* only here to assume the third argument of SdiffGetName */
+  size_t  SizeW = 0;
     
   SdifFScanGeneralHeader(SdifF);  
   
