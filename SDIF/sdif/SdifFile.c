@@ -1,4 +1,4 @@
-/* $Id: SdifFile.c,v 3.48 2004-09-14 15:44:18 schwarz Exp $
+/* $Id: SdifFile.c,v 3.49 2005-04-06 16:21:18 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -33,6 +33,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.48  2004/09/14 15:44:18  schwarz
+ * protect from wrong file or no file errors
+ *
  * Revision 3.47  2004/09/09 17:41:41  schwarz
  * Whole matrix data can be read into field CurrMtrxData and accessed
  * with access functions SdifFCurrMatrixData, SdifFCurrMatrixDataPointer.
@@ -592,6 +595,12 @@ SdifFOpenText(SdifFileT *SdifF, const char* Name, SdifFileModeET Mode)
 void
 SdifFClose(SdifFileT* SdifF)
 {
+	/*****DB****/
+	int offs1 = (int) &SdifF->CurrMtrxH - (int) SdifF;
+	int offs2 = (int) &SdifF->CurrFramT  - (int) SdifF;
+	int offs3 = (int) &SdifF->CurrMtrxT  - (int) SdifF;
+	size_t size = sizeof(SdifFileT);	  
+
   if (SdifF)
     {
 	/* name is now part of the selection and freed with it.
