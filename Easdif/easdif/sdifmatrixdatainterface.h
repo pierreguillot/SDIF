@@ -33,9 +33,12 @@
  * 
  * 
  * 
- * $Id: sdifmatrixdatainterface.h,v 1.4 2003-07-17 18:09:35 roebel Exp $ 
+ * $Id: sdifmatrixdatainterface.h,v 1.5 2004-07-21 13:27:17 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.4  2003/07/17 18:09:35  roebel
+ * Improved Resize method, added Clear method and proper assigment operator
+ *
  * Revision 1.3  2003/04/29 15:41:30  schwarz
  * Changed all names View* to Print* and *Info to *Header for consistency
  * with SDIF library.
@@ -85,21 +88,29 @@ class SDIFMatrixDataInterface
 { 
 public:
 //  virtual <class T> Get(int i, int j)=0;
-    virtual double GetDouble(int i, int j)=0;
-    virtual float  GetFloat(int i, int j)=0;
-    virtual int    GetInt(int i, int j)=0;
-    virtual int    GetNbRow()=0;
-    virtual int    GetNbCol()=0;
-    virtual void   print()=0;
-    virtual int    read(SdifFileT* file)=0;
-    virtual void   Resize(int nrows, int ncols)=0;
-    virtual void   Clear()=0;
-    virtual int    write(SdifFileT* file)=0;
+  virtual double GetDouble(int i, int j) const=0;
+  virtual float  GetFloat(int i, int j)const=0;
+  virtual int    GetInt(int i, int j)const=0;
 
-    virtual void   Set(int row, int col, const int& value)=0;
-    virtual void   Set(int row, int col, const float& value)=0;
-    virtual void   Set(int row, int col, const double& value)=0;
-    
+  virtual void   GetRow(double *,int i)const=0;
+  virtual void   GetRow(float *,int i)const=0;
+  virtual void   GetRow(int *,int i)const=0;
+  virtual void   GetCol(double *,int i)const=0;
+  virtual void   GetCol(float *,int i)const=0;
+  virtual void   GetCol(int *,int i)const=0;
+
+  virtual int    GetNbRows()const=0;
+  virtual int    GetNbCols()const=0;
+  virtual void   print()const=0;
+  virtual int    read(SdifFileT* file)=0;
+  virtual void   Resize(int nrows, int ncols)=0;
+  virtual void   Clear()=0;
+  virtual int    write(SdifFileT* file)=0;
+  
+  virtual void   Set(int row, int col, const int& value)=0;
+  virtual void   Set(int row, int col, const float& value)=0;
+  virtual void   Set(int row, int col, const double& value)=0;
+  
   virtual SDIFMatrixDataInterface * clone()=0;
 
     virtual ~SDIFMatrixDataInterface() {};
