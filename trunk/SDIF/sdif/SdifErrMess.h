@@ -1,4 +1,4 @@
-/* $Id: SdifErrMess.h,v 3.9 2001-05-02 09:34:40 tisseran Exp $
+/* $Id: SdifErrMess.h,v 3.10 2001-07-12 14:15:31 roebel Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -32,6 +32,9 @@
  * author: Dominique Virolle 1998
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 3.9  2001/05/02 09:34:40  tisseran
+ * Change License from GNU Public License to GNU Lesser Public License.
+ *
  * Revision 3.8  2000/11/21 14:51:48  schwarz
  * - sdif.h is now included by all sdif/Sdif*.c files.
  * - Removed all public typedefs, enums, structs, and defines from the
@@ -95,7 +98,8 @@ void		SdifKillErrorL		(SdifErrorLT *ErrorL);
 SdifUInt4       SdifInsertTailError     (SdifErrorLT* ErrorL, 
 					 unsigned int ErrorCount [], 
 					 SdifErrorTagET Tag, 
-					 const char* UserMess);
+					 const char* UserMess,
+					 SdifErrorT** Error);
 SdifErrorT*	SdifLastError		(SdifErrorLT *ErrorL);
 SdifErrorTagET	SdifLastErrorTag	(SdifErrorLT *ErrorL);
 
