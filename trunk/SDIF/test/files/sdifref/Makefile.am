@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.2 2001-05-02 09:34:53 tisseran Exp $
+# $Id: Makefile.am,v 1.3 2003-03-07 17:34:27 roebel Exp $
 #
 # ./test/files/sdif/Makefile.am		September 2000			Patrice Tisserand
 #
@@ -29,6 +29,9 @@
 # send email to:  sdif@ircam.fr
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.2  2001/05/02 09:34:53  tisseran
+# Change License from GNU Public License to GNU Lesser Public License.
+#
 # Revision 1.1  2000/12/20 15:57:16  roebel
 # Changed Version to 3.2.2. Added missing test files to distribution
 #
@@ -38,6 +41,7 @@
 # Revision 1.1.2.2  2000/10/26  17:27:43  schwarz
 # Added header with copyright and links to all Makefile.am and configure.in.
 #
-EXTRA_DIST = README *.sdif
-
-
+EXTRA_DIST = README \
+ 1fof.sdif  P0M.sdif   P2.sdif        Patch1.sdif      bat.sdif    t.sdif  \
+ t4.sdif AO.sdif   P0M1.sdif  Patch0.sdif    Patch1Mode.sdif  orgue.sdif  \
+ t2.sdif  t5.sdif  P0.sdif      P0M2.sdif  Patch0_2.sdif  perc.sdif  t3.sdif
