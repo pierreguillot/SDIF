@@ -1,6 +1,6 @@
 dnl -*-autoconf-*-  (No, it's an autoconf file!)
 dnl -*-m4-*- (He emacs, it's a m4 file)
-dnl $Id: configure.in,v 1.12 2003-04-09 12:30:42 roebel Exp $
+dnl $Id: configure.in,v 1.13 2003-04-09 16:10:56 roebel Exp $
 dnl
 dnl configure.in		Feb 2003      Axel Roebel
 dnl
@@ -33,6 +33,10 @@ dnl
 dnl
 
 dnl $Log: not supported by cvs2svn $
+dnl Revision 1.12  2003/04/09 12:30:42  roebel
+dnl Changed default configuration back to enable-shared but added
+dnl README.MacOSX to announce problems with shared libraries to users.
+dnl
 dnl Revision 1.11  2003/04/08 23:21:54  roebel
 dnl Added test for program dot, Moved determination of SDIF version in Makefile because SDIF may be configured only at the end of configure
 dnl
@@ -65,7 +69,7 @@ PACKAGE=Easdif
 
 versmaj=0
 versmin=3
-versrel=1
+versrel=2
 VERSION=${versmaj}.${versmin}.${versrel}
 
 AC_SUBST(PACKAGE)
