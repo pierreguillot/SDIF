@@ -1,4 +1,4 @@
-# $Id: Makefile,v 3.3 1999-08-26 15:29:23 schwarz Exp $
+# $Id: Makefile,v 3.4 1999-10-07 15:22:10 schwarz Exp $
 #
 #               Copyright (c) 1998 by IRCAM - Centre Pompidou
 #                          All rights reserved.
@@ -13,6 +13,12 @@
 # Makefile for automatic documentation.
 #
 # $Log: not supported by cvs2svn $
+# Revision 3.3  1999/08/26  15:29:23  schwarz
+# Cocoon (3.2) works only on fresh dir.
+# Simplified installation: Don't rely on make on install host (and
+# that all the generating programs work there), but generate locally,
+# then copy on install host and postprocess cocoon, replacing local links.
+#
 # Revision 3.2  1999/04/30  13:45:53  schwarz
 # Don't blurp horrible perl code, rather lightly put decent
 # "Gendoc from to" message.
@@ -120,8 +126,10 @@ sdif.%.cocoon:	sdif.src $(headerfiles) $(makedependency)
 
 # alphabetical list of all declarations
 
-ahead-extern	= <a href="$(URLROOT)/SDIF.html\#functions" target=doc><strong>Function Prototypes</strong></a><br><br>
-ahead-intern	= <a href="$(URLROOT)/SDIF.html\#data" target=doc><strong>Data Structures</strong></a><br>$(ahead-extern)
+ahead-extern	= <a href="$(URLROOT)/SDIF.html\#data" target=doc><strong>Data Structures</strong></a><br>\
+		  <a href="$(URLROOT)/SDIF.html\#functions" target=doc><strong>Function Prototypes</strong></a><br><br>
+		  
+ahead-intern	= $(ahead-extern)
 
 %/alpha-toc.html:	%/cocoon/SDIF.lnk Makefile
 		@echo Gendoc $< $@

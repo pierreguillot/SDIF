@@ -1,6 +1,6 @@
 <!-- DO NOT EDIT!!!
      This file extern/by-subject-doc.html is generated from extern/linkit.lnk
-     $Id: by-subject-doc.html,v 3.2 1999-08-26 15:29:35 schwarz Exp $
+     $Id: by-subject-doc.html,v 3.3 1999-10-07 15:22:19 schwarz Exp $
      by the Makefile target eframes.
 
 
@@ -713,7 +713,7 @@ calculée.
 size_t  <b><a href="cocoon/SDIF.html#size_t_SdifFWritePadding_(SdifFileT_*SdifF,_size_t_Padding)$">SdifFWritePadding</a></b> (SdifFileT *SdifF, size_t Padding)<br>
 Cette fonction permet en fin d'écriture de matrice d'ajouter le
 Padding nécessaire. Il faut cependant avoir la taille de ce
-Padding. On utilise SdifFPaddingCalculate(SdifF->Stream,
+Padding. On utilise <b><a href="cocoon/SDIF.html#size_t_SdifFPaddingCalculate_(FILE_*f,_size_t_NbBytes)$">SdifFPaddingCalculate</a></b>(SdifF->Stream,
 SizeSinceAlignement) où SizeSinceAllignement est un
 <code>size_t</code> désignant le nombre de bytes qui sépare la
 position actuelle d'écriture avec une position connue où le fichier
@@ -791,7 +791,7 @@ void main(void)
    * à la taile du frame.
    */
   SizeMatrixW += <b><a href="cocoon/SDIF.html#size_t_SdifFWritePadding_(SdifFileT_*SdifF,_size_t_Padding)$">SdifFWritePadding</a></b>(SdifF,
-                       SdifFPaddingCalculate(SdifF->Stream, SizeMatrixW))  
+                       <b><a href="cocoon/SDIF.html#size_t_SdifFPaddingCalculate_(FILE_*f,_size_t_NbBytes)$">SdifFPaddingCalculate</a></b>(SdifF->Stream, SizeMatrixW))  
   SizeFrameW += SizeMatrixW;
 
 
@@ -893,10 +893,10 @@ size_t <b><a href="cocoon/SDIF.html#size_t_SdifFReadPadding_(SdifFileT_*SdifF,_s
 Cette fonction permet de lire le Padding en fin de matrice.
 l'utilisation classique de cette fonctin est:<br>
 <code> SizeR = <b><a href="cocoon/SDIF.html#size_t_SdifFReadPadding_(SdifFileT_*SdifF,_size_t_Padding)$">SdifFReadPadding</a></b>(SdifF,
-SdifFPaddingCalculate(SdifF->Stream, SizeR));</code><br>
+<b><a href="cocoon/SDIF.html#size_t_SdifFPaddingCalculate_(FILE_*f,_size_t_NbBytes)$">SdifFPaddingCalculate</a></b>(SdifF->Stream, SizeR));</code><br>
 où SizeR est la taille en bytes lue depuis le début de la matrice,
 c'est à dire NbRow*NbCol*DataWith. En réalité, pour que
-SdifFPaddingCalculate fonctionne, il est seulement nécessaire que
+<b><a href="cocoon/SDIF.html#size_t_SdifFPaddingCalculate_(FILE_*f,_size_t_NbBytes)$">SdifFPaddingCalculate</a></b> fonctionne, il est seulement nécessaire que
 SizeR soit le nombre de bytes qui s'épare la position actuelle dans le
 fichier et un byte, repère d'allignement sur 64 bits.
 </p>
