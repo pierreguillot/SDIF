@@ -8,9 +8,14 @@
  * 
  * 
  * 
- * $Id: sdifmatrix.h,v 1.6 2002-11-07 21:07:24 roebel Exp $ 
+ * $Id: sdifmatrix.h,v 1.7 2003-02-10 14:15:03 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.6  2002/11/07 21:07:24  roebel
+ * Allow value type to be specified during Matrix construction.
+ * Moved Get/Set methods to header to have the possibility to use
+ * real templates.
+ *
  * Revision 1.5  2002/10/10 10:49:09  roebel
  * Now using namespace Easdif.
  * Fixed handling of zero pointer arguments in initException.
@@ -72,6 +77,7 @@ public:
     };
 
 
+
 /*************************************************************************/
 /* To see a SDIFMatrix */
 /**
@@ -120,7 +126,7 @@ public:
 
 /** 
  * \ingroup membmat
- * get the size of matrix
+ * get the size of matrix occupied in SdifFile (including padding)!!
  */
     int GetSize() const;
 
