@@ -1,11 +1,13 @@
-/* SdifFile.h
+/* $id$
+ *
+ * SdifFile.h
  *
  * Sdif Files management
  * High Level.
  *
  * author: Dominique Virolle 1997
  *
- *
+ * $log$
  */
 
 
@@ -16,7 +18,7 @@
 #include "SdifFileStruct.h"
 #include "SdifGlobals.h"
 
-extern SdifFileT*         SdifOpenFile                  (char* Name, SdifFileModeET Mode);
+extern SdifFileT*         SdifOpenFile                  (const char* Name, SdifFileModeET Mode);
 extern void               SdifCloseFile                 (SdifFileT* SdifF);
 extern SdifFrameHeaderT*  SdifFileCreateCurrFramH       (SdifFileT* SdifF, SdifSignature Signature);
 extern SdifMatrixHeaderT* SdifFileCreateCurrMtrxH       (SdifFileT* SdifF);

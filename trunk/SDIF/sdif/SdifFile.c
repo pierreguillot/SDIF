@@ -1,11 +1,13 @@
-/* SdifFile.c
+/* $id$
+ *
+ * SdifFile.c
  *
  * Sdif File Management
  * High Level.
  *
  * author: Dominique Virolle 1997
- * 
  *
+ * $log$
  */
 
 
@@ -20,7 +22,7 @@
 #include "SdifFScan.h"
 
 SdifFileT*
-SdifOpenFile(char* Name, SdifFileModeET Mode)
+SdifOpenFile(const char* Name, SdifFileModeET Mode)
 {
   SdifFileT* SdifFile;
 
@@ -347,7 +349,7 @@ SdifGenKill(void)
 void SdifPrintVersion(void)
 {
 #ifndef lint
-  static char rcsid[]= "$Revision: 1.2 $ IRCAM $Date: 1998-01-30 14:40:26 $";
+  static char rcsid[]= "$Revision: 1.3 $ IRCAM $Date: 1998-05-04 15:44:15 $";
 #endif
 
 
