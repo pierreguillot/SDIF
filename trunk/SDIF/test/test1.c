@@ -32,7 +32,15 @@ main(void)
   fprintf(stderr,"**********************************************************\n");
   
   fprintf(stderr,"\nLibrary Initialisation (SdifGenInit)\n");
-  SdifGenInit(types ? types : "");
+  if (!types)
+  {
+      char types2[2] = "";
+      SdifGenInit (types2);
+  }
+  else
+  {
+      SdifGenInit (types);
+  }
   
   fprintf(stderr,"\nWRITE SEQUENCE\n");
   fprintf(stderr,"Open file %s in write mode (SdifFOpen) \n",FILE_NAME);
