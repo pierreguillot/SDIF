@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.5 2001-04-20 17:55:07 schwarz Exp $
+# $Id: Makefile.am,v 1.6 2001-04-26 14:47:01 tisseran Exp $
 #
 # ./Makefile.am		September 2000			Patrice Tisserand
 #
@@ -29,6 +29,11 @@
 # send email to:  sdif@ircam.fr
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.5  2001/04/20 17:55:07  schwarz
+# Added publish target that sets the cvs tag, generates the distribution
+# and copies it to the download directory on the web host.
+# Call as "make DISTHOST=yourwebhost publish"
+#
 # Revision 1.4  2001/04/20 17:35:45  schwarz
 # Oops, make doesn't like a rule and a variable of the same name.
 #
@@ -66,7 +71,7 @@ test	:	check
 # (to exactly reconstitute a published version)
 CVSTAG	      = $(shell echo $(PACKAGE)_lib_version_$(VERSION) | tr . _)
 cvstag:
-		cvs tag $(CVSTAG)
+		cvs -F tag $(CVSTAG)
 
 # call this as "make DISTHOST=yourwebhost publish" to publish a new version
 # we publish by copying to DISTDIR, logged on DISTHOST
