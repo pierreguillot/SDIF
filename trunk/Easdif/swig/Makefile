@@ -1,6 +1,11 @@
-# $Id: Makefile,v 1.1 2003-04-17 09:51:10 schwarz Exp $
+# $Id: Makefile,v 1.2 2003-04-17 09:54:12 schwarz Exp $
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.1  2003/04/17 09:51:10  schwarz
+# First working swig generated perl extension!
+# Classes re-declared in easdif.i, simple method without shadow classes.
+# Doesn't do much except counting frames.
+
 
 PERL5_INCLUDE = /usr/lib/perl5/5.6.1/i386-linux/CORE/
 
@@ -10,7 +15,7 @@ wrap = easdif_wrap.cxx
 
 all:	SDIF.so
 
-$(wrap):	easdif.i makefile
+$(wrap):	easdif.i Makefile
 	swig -c++ -perl5 $<
 #	swig -c++ -perl5 -shadow $<
 
@@ -22,7 +27,7 @@ SDIF.so:	easdif_wrap.o
 	g++ -shared ../easdif/.libs/libEasdif.so easdif_wrap.o -o SDIF.so
 
 test:
-	perl -I. ./test.pl
+	LD_LIBRARY_PATH=../easdif/.libs:$(LD_LIBRARY_PATH) perl -I. ./test.pl
 
 clean: 
 	rm $(wrap)
