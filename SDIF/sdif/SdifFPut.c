@@ -1,4 +1,4 @@
-/* $Id: SdifFPut.c,v 3.2 1999-09-28 13:08:53 schwarz Exp $
+/* $Id: SdifFPut.c,v 3.3 2000-04-11 14:31:21 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -16,6 +16,10 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.2  1999/09/28  13:08:53  schwarz
+ * Included #include <preincluded.h> for cross-platform uniformisation,
+ * which in turn includes host_architecture.h and SDIF's project_preinclude.h.
+ *
  * Revision 3.1  1999/03/14  10:56:41  virolle
  * SdifStdErr add
  *
@@ -58,9 +62,6 @@ SdifFPutOneNameValue(SdifFileT* SdifF, int Verbose, SdifNameValueT *NameValue)
 
 
 
-
-
-
 size_t
 SdifFPutNameValueLCurrNVT (SdifFileT *SdifF, int Verbose)
 /* SdifFPutNameValueLCurrNVT doesn't write frame header and padding */
@@ -85,6 +86,41 @@ SdifFPutNameValueLCurrNVT (SdifFileT *SdifF, int Verbose)
 
   return SizeW;
 }
+
+
+
+
+
+size_t
+SdifFNameValueLCurrNVTtoString (SdifFileT *SdifF, char *str, int maxlen)
+{
+  size_t          SizeW = 0;
+  SdifUInt4       iNV;
+  SdifHashNT     *pNV;
+  SdifHashTableT *HTable;
+
+  HTable = SdifF->NameValues->CurrNVT->NVHT;
+  
+  for(iNV=0; iNV<HTable->HashSize; iNV++)
+    for (pNV = HTable->Table[iNV]; pNV; pNV = pNV->Next)
+      {
+	SdifNameValueT *NameValue = pNV->Data;
+	
+	/* TODO: realloc according to size */
+	if (SizeW + strlen (NameValue->Name) + strlen (NameValue->Value) + 3 < maxlen)
+	  {
+	    SizeW += sprintf (str + SizeW, "%s\t", NameValue->Name);
+	    SizeW += sprintf (str + SizeW, "%s\n", NameValue->Value);
+	  }
+	else
+	  /*SdifErrMess*/ 
+	  _SdifRemark ("SdifFNameValueLCurrNVTtoString: NVT string too large, "
+		       "dropping some values.");
+      }
+
+  return SizeW;
+}
+
 
 
 
@@ -224,6 +260,21 @@ SdifFPutAllType(SdifFileT *SdifF, int Verbose)
   return SizeW;
 }
 
+
+#if 0
+size_t
+SdifFAllTypeToString (SdifFileT *SdifF, char *str, int maxlen)
+{
+  size_t  SizeW = 0;
+ 
+  SizeW += fprintf(file, "{\n");  
+  SizeW += SdifFPutAllMatrixType(SdifF, Verbose);
+  SizeW += SdifFPutAllFrameType(SdifF, Verbose);  
+  SizeW += fprintf(file, "}");
+
+  return SizeW;
+}
+#endif
 
 
 

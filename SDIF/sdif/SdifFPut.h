@@ -1,4 +1,4 @@
-/* $Id: SdifFPut.h,v 3.1 1999-03-14 10:56:42 virolle Exp $
+/* $Id: SdifFPut.h,v 3.2 2000-04-11 14:31:22 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -19,6 +19,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.1  1999/03/14  10:56:42  virolle
+ * SdifStdErr add
+ *
  * Revision 2.3  1999/01/23  15:55:42  virolle
  * add querysdif.dsp, delete '\r' chars from previous commit
  *
@@ -60,6 +63,7 @@
 
 size_t SdifFPutOneNameValue         (SdifFileT *SdifF, int Verbose, SdifNameValueT *NameValue);
 size_t SdifFPutNameValueLCurrNVT    (SdifFileT *SdifF, int Verbose);
+size_t SdifFNameValueLCurrNVTtoString(SdifFileT *SdifF, char *str, int maxlen);
 size_t SdifFPutOneMatrixType        (SdifFileT *SdifF, int Verbose, SdifMatrixTypeT *MatrixType);
 size_t SdifFPutAllMatrixType        (SdifFileT *SdifF, int Verbose);
 size_t SdifFPutOneComponent         (SdifFileT *SdifF, int Verbose, SdifComponentT *Component);
