@@ -1,4 +1,4 @@
-/* $Id: SdifRWLowLevel.c,v 3.23 2004-06-14 15:52:04 schwarz Exp $
+/* $Id: SdifRWLowLevel.c,v 3.24 2004-07-13 15:10:24 roebel Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -32,6 +32,11 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.23  2004/06/14 15:52:04  schwarz
+ * Fix sdif__foralltypes double-defined error for stricter compilers,
+ * such as Codewarrior: Nicolas Ellis redefined that macro locally,
+ * without undefining the global definition first.
+ *
  * Revision 3.22  2004/06/09 10:54:43  schwarz
  * Fixed compilation problems on Windows (thanks Jean Bresson):
  * - void pointer arithmetic not allowed
@@ -448,25 +453,28 @@ SdiffReadFloat8(SdifFloat8 *ptr, size_t nobj, FILE *stream)
 
 int SdiffReadSignature (SdifSignature *Signature, FILE *stream, size_t *nread)
 {
-    *nread = fread(Signature, sizeof(Signature), 1, stream) * sizeof(Signature);
-
-    if (*nread  &&  !feof(stream))
+  int localread =  fread(Signature, sizeof(Signature), 1, stream);
+  
+  if (localread  &&  !feof(stream))
     {
-    	switch (gSdifMachineType)
+      switch (gSdifMachineType)
     	{
-    	  case eLittleEndian   :
-    	  case eLittleEndian64 :
-	      SdifSwap4(Signature, 1);
+	case eLittleEndian   :
+	case eLittleEndian64 :
+	  SdifSwap4(Signature, 1);
 	  break;
     	}
-
-	/* return last char, as SdiffGetSignature did */
-	return *((char *) Signature + *nread - 1);
+      
+      *nread += localread * sizeof(Signature);
+      
+      /* return last char, as SdiffGetSignature did */
+      return *((char *) Signature + *nread - 1);
     }
-    else
+  else
     {
-	*Signature = eEmptySignature;
-	return eEof;
+ 
+      *Signature = eEmptySignature;
+      return eEof;
     }
 }
 
