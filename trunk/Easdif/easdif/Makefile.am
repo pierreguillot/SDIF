@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.2 2003-03-04 00:55:02 roebel Exp $
+# $Id: Makefile.am,v 1.3 2003-03-05 15:33:13 roebel Exp $
 #
 # ./Easdif/src/Makefile.am	Feb. 2003 Axel Roebel
 #
@@ -6,6 +6,9 @@
 #
 
 # $Log: not supported by cvs2svn $
+# Revision 1.2  2003/03/04 00:55:02  roebel
+# Removed version determination
+#
 # Revision 1.1  2003/03/03 19:00:16  roebel
 # Moved src directory to new name easdif
 #
@@ -20,13 +23,14 @@ EXTRA_LTLIBRARIES = libEasdif.la
 # lib_LIBRARIES = @SELLIB@
 lib_LTLIBRARIES = @SELLIB@
 
+EXTRA_DIST = easdif_version.h.in
 
 EASDIF_H = easdif_version.h easdif.h  sdifentity.h \
 	sdifexception.h sdifframe.h sdifinit.h sdifmatrix.h sdifmatrixdata.h \
 	sdifmatrixdatainterface.h sdifnamevaluetable.h
 
-
-noinst_HEADERS = easdifintro.h
+easdifincdir = $(prefix)/include/easdif
+easdifinc_HEADERS = $(EASDIF_H)
 
 libEasdif_la_SOURCES =  sdifentity.cpp sdifexception.cpp sdifframe.cpp \
 			sdifinit.cpp sdifmatrix.cpp sdifnamevaluetable.cpp
