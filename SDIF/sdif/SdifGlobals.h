@@ -1,4 +1,4 @@
-/* $Id: SdifGlobals.h,v 3.2 1999-09-20 13:28:05 schwarz Exp $
+/* $Id: SdifGlobals.h,v 3.3 1999-09-28 10:39:26 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -14,6 +14,10 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.2  1999/09/20  13:28:05  schwarz
+ * Introduced min/max macros.  (Why oh why is something so basic not part
+ * of the standard? --- there is no macros.h on sgi!)
+ *
  * Revision 3.1  1999/03/14  10:56:58  virolle
  * SdifStdErr add
  *
@@ -84,30 +88,49 @@
 #define _SdifGranule 1024 /* for OneRow allocation in bytes */
 
 #define _SdifFloat8Error  0xffffffff
-#define _SdifNoStreamID   0xffffffff
+#define _SdifNoStreamID   0xfffffffe
+#define _SdifAllStreamID  0xffffffff
 #define _SdifUnknownUInt4 0xffffffff
 
 
-
-
-
-
+/* This seems to be no longer needed with gcc version 2.8.1 */
+#if 0 && defined (__GNUC__)  &&  defined (__alpha__)
+/* Swap multibyte char constant s with gcc on alpha,
+   because gcc builds multi-character constants in inverse oder, as can
+   be seen in cexp.y (variable c is the next character parsed):
+ 
+   // Merge character into result; ignore excess chars. 
+   if (num_chars <= max_chars)
+   {
+     if (width < HOST_BITS_PER_WIDE_INT)
+       result = (result << width) | c;
+     else
+       result = c;
+     token_buffer[num_chars - 1] = c;
+   } */
+#   define isolate(s, n)    ((s) & (0xff << ((n) * 8)))   /* s is char const */
+#   define shiftto0(s, n)   (s >> ((n) * 8))
+#   define pick(s, n)	    (shiftto0 (isolate (s, n), n) << ((3 - (n)) * 8))
+#   define SdifSignatureConst(s) (pick(s,0)|pick(s,1)|pick(s,2)|pick(s,3))
+#else
+#   define SdifSignatureConst(s) (s)
+#endif
 
 
 
 typedef enum SdifSignatureE
 {
-  eSDIF = 'SDIF' ,         /* SDIF header */
-  e1NVT = '1NVT' ,         /* Name Value Table */
-  e1TYP = '1TYP' ,         /* TYPe declarations */
-  e1MTD = '1MTD' ,         /* Matrix Type Declaration */
-  e1FTD = '1FTD' ,         /* Frame Type Declaration */
-  e1IDS = '1IDS' ,         /* ID Stream Table */
-  eSDFC = 'SDFC' ,         /* Start Data Frame Chunk (text files) */
-  eENDC = 'ENDC' ,         /* END Chunk (text files) */
-  eENDF = 'ENDF' ,         /* END File (text files) */
-  eFORM = 'FORM' ,         /* FORM for IFF compatibility (obsolete ?) */
-  eEmptySignature = '\0\0\0\0'
+  eSDIF = SdifSignatureConst('SDIF'), /* SDIF header */
+  e1NVT = SdifSignatureConst('1NVT'), /* Name Value Table */
+  e1TYP = SdifSignatureConst('1TYP'), /* TYPe declarations */
+  e1MTD = SdifSignatureConst('1MTD'), /* Matrix Type Declaration */
+  e1FTD = SdifSignatureConst('1FTD'), /* Frame Type Declaration */
+  e1IDS = SdifSignatureConst('1IDS'), /* ID Stream Table */
+  eSDFC = SdifSignatureConst('SDFC'), /* Start Data Frame Chunk (text files) */
+  eENDC = SdifSignatureConst('ENDC'), /* END Chunk (text files) */
+  eENDF = SdifSignatureConst('ENDF'), /* END File (text files) */
+  eFORM = SdifSignatureConst('FORM'), /* FORM for IFF compatibility (obsolete ?) */
+  eEmptySignature = SdifSignatureConst('\0\0\0\0')
 } SdifSignatureET;
 
 
