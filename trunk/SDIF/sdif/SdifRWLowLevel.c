@@ -1,4 +1,4 @@
-/* $Id: SdifRWLowLevel.c,v 3.3 1999-09-20 13:23:35 schwarz Exp $
+/* $Id: SdifRWLowLevel.c,v 3.4 1999-09-23 16:06:50 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -15,6 +15,9 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.3  1999/09/20  13:23:35  schwarz
+ * Optimized SdifStringToSignature.
+ *
  * Revision 3.2  1999/08/31  10:05:46  schwarz
  * Extracted function SdifStringToSignature from SdiffGetSignature.
  *
@@ -533,7 +536,7 @@ SdiffWriteSignature(SdifSignature *Signature, FILE *stream)
     {     
     case eLittleEndianLittleConst :
     case eLittleEndianLittleConst64 :
-      SdifLittleToBig(&SignW, Signature, sizeof(Signature));
+      SdifLittleToBig(&SignW, Signature, sizeof(SdifSignature));
       break;
     default :
       SignW = *Signature ;
@@ -649,7 +652,7 @@ SdiffGetString(FILE* fr, char* s, size_t ncMax, size_t *NbCharRead)
 
 /* Unsafe but optimized version of SdifStringToSignature:
    Exactly 4 chars are considered, so make sure *str has at least that many! 
-   The str pointer MUST be word (at least 4 byte or so) aligned.
+   The str pointer MUST be longword aligned (to the nearest 4 byte boundary).
 */
 SdifSignature
 _SdifStringToSignature (char *str)
@@ -661,13 +664,13 @@ _SdifStringToSignature (char *str)
     case eLittleEndianLittleConst :
     case eLittleEndianLittleConst64 :
       {
-	SdifSignature Signature = *((SdifUInt4 *) str);
-	SdifBigToLittle((void *) &Signature, sizeof(Signature));
+	SdifSignature Signature = *((SdifSignature *) str);
+	SdifBigToLittle((void *) &Signature, sizeof(SdifSignature));
 	return (Signature);
       }
 	
     default:
-      return (*((SdifUInt4 *) str));
+      return (*((SdifSignature *) str));
   }
 }  
 
