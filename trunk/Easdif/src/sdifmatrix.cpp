@@ -1,3 +1,18 @@
+/**
+ * @file   sdifmatrix.cpp
+ * @author Fabien Tisserand
+ * @date   Thu Apr 11 18:36:39 2002
+ * 
+ * @brief  
+ * 
+ * 
+ * 
+ * $Id: sdifmatrix.cpp,v 1.2 2002-04-11 16:41:55 ftissera Exp $ 
+ * 
+ * $Log: not supported by cvs2svn $ 
+ * 
+ */
+
 #include "sdifmatrix.h"
 SDIFMatrix::SDIFMatrix():mInter(0)
 {
