@@ -34,9 +34,12 @@
  * sdifframe.h is composed of the different methods which are using to 
  * manipulate the frame.
  * 
- * $Id: sdifframe.h,v 1.13 2004-07-27 17:40:19 roebel Exp $ 
+ * $Id: sdifframe.h,v 1.14 2004-08-25 18:23:56 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.13  2004/07/27 17:40:19  roebel
+ * Changed include directive to use user path and not system path for sdif.h
+ *
  * Revision 1.12  2004/07/21 13:20:38  roebel
  * Added support to hold a frameDirectory in the entity and
  * the possibility to read frames from a given time position.
@@ -267,12 +270,23 @@ public:
 
 /**
  * \ingroup otherframe
- * @brief resize the vector of SDIFMatrix (for internal used)
+ * @brief empty the matrix vector
  */
-private:
-    void Resize();
+    void clear(){ClearData();};
 
-public:
+/**
+ * \ingroup otherframe
+ * @brief resize the vector to hold  SDIFMatrices 
+ */
+  void Resize(int _size);
+
+/**
+ * \ingroup otherframe
+ * @brief resize the vector to hold  SDIFMatrices 
+ */
+  void resize(int _size){Resize(_size);}
+
+
 /*************************************************************************/
 /* Get Informations */
 /**
@@ -351,7 +365,17 @@ public:
    * \ingroup getmframe 
    * @brief get the number of matrix in the frame
    */
-  SdifUInt4 GetNbMatrix() const  {    return mNbMatrix;}
+  SdifUInt4 GetNbMatrix() const  {    return mv_Matrix.size();}
+
+  /**
+   * \defgroup  getmframe SDIFFrame - Get members
+   */
+  
+  /**
+   * \ingroup getmframe 
+   * @brief get the number of matrix in the frame
+   */
+  SdifUInt4 size() const  {    return mv_Matrix.size();}
   
   /** 
    * \ingroup getmframe
@@ -406,13 +430,7 @@ public:
    * @brief Set the frame header
    */
   void SetHeader(const std::string& sig, SdifUInt4 streamID, float time);
-  
-  /**
-   * \ingroup setmframe 
-   * @brief Set one element of the frame header : the number of matrix
-   */
-  void SetNbMatrix(SdifUInt4 nbMatrix);
-  
+    
   /** 
    * \ingroup setmframe
    * @brief Set one element of the frame header : the signature

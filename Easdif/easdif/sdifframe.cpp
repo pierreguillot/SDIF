@@ -32,9 +32,12 @@
  * 
  * 
  * 
- * $Id: sdifframe.cpp,v 1.12 2004-07-29 13:43:39 roebel Exp $ 
+ * $Id: sdifframe.cpp,v 1.13 2004-08-25 18:23:56 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.12  2004/07/29 13:43:39  roebel
+ * Use eEmptySignature to initialize signature of empty frame.
+ *
  * Revision 1.11  2004/07/21 13:20:33  roebel
  * Added support to hold a frameDirectory in the entity and
  * the possibility to read frames from a given time position.
@@ -129,7 +132,7 @@ int SDIFFrame::Read(SdifFileT* file, bool &eof)
 	eof = (SdifFGetSignature (file, &mFrameBytesRead) == eEof);
 	return 0;
     }
-    Resize();
+    Resize(mNbMatrix);
     mFrameBytesRead += ReadData(file);
 
     /* to have exception */
@@ -174,7 +177,7 @@ int SDIFFrame::ReadData(SdifFileT* file)
 	else
 	    index++;
     }
-    Resize();
+    Resize(mNbMatrix);
     return BytesRead;
 }
 
@@ -293,10 +296,10 @@ void SDIFFrame::SetHeader(const std::string& sig, SdifUInt4 streamID, float time
     mTime = time; //and  mNbMatrix = nbMatrix;
 }
 
-void SDIFFrame::SetNbMatrix(SdifUInt4 nbMatrix)
-{
-    mNbMatrix = nbMatrix;
-}
+//void SDIFFrame::SetNbMatrix(SdifUInt4 nbMatrix)
+//{
+//    mNbMatrix = nbMatrix;
+//}
 
 void SDIFFrame::SetSignature(SdifSignature sig)
 {
@@ -419,9 +422,10 @@ int SDIFFrame::AddMatrixSelected(SdifFileT* file, const SDIFMatrix& aMatrix)
 }
 
 /* resize */
-void SDIFFrame::Resize()
+void SDIFFrame::Resize(int nbMatrix)
 {
-    mv_Matrix.resize(mNbMatrix);    
+  mNbMatrix = nbMatrix;
+  mv_Matrix.resize(mNbMatrix);    
 }
 
 
