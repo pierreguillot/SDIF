@@ -1,4 +1,4 @@
-/* $Id: SdifStreamID.h,v 2.1 1998-12-21 18:27:40 schwarz Exp $
+/* $Id: SdifStreamID.h,v 2.2 1999-01-23 13:57:47 virolle Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -16,6 +16,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 2.1  1998/12/21  18:27:40  schwarz
+ * Inserted copyright message.
+ *
  * Revision 2.0  1998/11/29  11:42:07  virolle
  * - New management of interpretation errors.
  * - Alignement of frames with CNMAT (execpt specials Chunk 1NVT, 1TYP, 1IDS).
@@ -51,5 +54,23 @@ struct SdifStreamIDS
 
 SdifStreamIDT* SdifCreateStreamID(SdifUInt4 NumID, char *Source, char *TreeWay);
 void           SdifKillStreamID(SdifStreamIDT *StreamID);
+
+
+
+typedef struct SdifStreamIDTableS SdifStreamIDTableT;
+struct SdifStreamIDTableS
+{
+    SdifHashTableT* SIDHT;
+    SdifUInt4       NumIDLink;
+    SdifFloat8      Time;
+} ;
+
+
+SdifStreamIDTableT* SdifCreateStreamIDTable     (SdifUInt4 HashSize);
+void                SdifKillStreamIDTable       (SdifStreamIDTableT* SIDTable);
+SdifStreamIDT*      SdifStreamIDTablePutSID     (SdifStreamIDTableT* SIDTable, SdifUInt4 NumID, char *Source, char *TreeWay);
+SdifStreamIDT*      SdifStreamIDTableGetSID     (SdifStreamIDTableT* SIDTable, SdifUInt4 NumID);
+SdifUInt4           SdifStreamIDTableGetNbData  (SdifStreamIDTableT* SIDTable);
+
 
 #endif /* _SdifStreamID_ */

@@ -1,4 +1,4 @@
-/* $Id: SdifTimePosition.h,v 2.1 1998-12-21 18:27:45 schwarz Exp $
+/* $Id: SdifTimePosition.h,v 2.2 1999-01-23 13:57:50 virolle Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -14,6 +14,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 2.1  1998/12/21  18:27:45  schwarz
+ * Inserted copyright message.
+ *
  * Revision 2.0  1998/11/29  11:42:12  virolle
  * - New management of interpretation errors.
  * - Alignement of frames with CNMAT (execpt specials Chunk 1NVT, 1TYP, 1IDS).
@@ -39,6 +42,7 @@
 
 
 #include "SdifGlobals.h"
+#include "SdifList.h"
 
 #include <stdio.h>
 
@@ -46,7 +50,7 @@ typedef struct SdifTimePositionS SdifTimePositionT;
 
 struct SdifTimePositionS
 {
-  SdifFloat8 Time;
+  SdifFloat8    Time;
   SdiffPosT     Position;
 } ;
 
@@ -55,35 +59,19 @@ void               SdifKillTimePosition(SdifTimePositionT* TimePosition);
 
 
 
-
-
-typedef struct SdifTimePositionNS SdifTimePositionNT;
-
-struct SdifTimePositionNS
-{
-  SdifTimePositionNT *Next;
-  SdifTimePositionT  *TP;
-};
-
-SdifTimePositionNT* SdifCreateTimePositionN(SdifTimePositionNT* Next, SdifTimePositionT* TimePosition);
-SdifTimePositionNT* SdifKillTimePositionN  (SdifTimePositionNT* TPNode);
-
-
-
 typedef struct SdifTimePositionLS SdifTimePositionLT;
 
 struct SdifTimePositionLS
 {
-  SdifTimePositionNT* Head;
-  SdifTimePositionNT* Tail;
-  SdifTimePositionNT* Curr;
-  SdifUInt4 NbTimePosition;
+    SdifListT*          TimePosList;
 } ;
+
 
 SdifTimePositionLT* SdifCreateTimePositionL(void);
 void                SdifKillTimePositionL  (SdifTimePositionLT *TimePositionL);
-SdifTimePositionLT* SdifTimePositionLPut   (SdifTimePositionLT* TimePositionL,
-						   SdifFloat8 Time, SdiffPosT Position);
-SdifTimePositionT*  SdifTimePositionLGet   (SdifTimePositionLT* TimePositionL, SdifFloat8 Time);
+
+SdifTimePositionLT* SdifTimePositionLPutTail(SdifTimePositionLT* TimePositionL,
+                                             SdifFloat8 Time, SdiffPosT Position);
+SdifTimePositionT*  SdifTimePositionLGetTail(SdifTimePositionLT* TimePositionL);
 
 #endif /* _SdifTimePosition_ */

@@ -1,4 +1,4 @@
-/* $Id: SdifError.c,v 2.2 1998-12-21 18:27:03 schwarz Exp $
+/* $Id: SdifError.c,v 2.3 1999-01-23 13:57:20 virolle Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -14,6 +14,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 2.2  1998/12/21  18:27:03  schwarz
+ * Inserted copyright message.
+ *
  * Revision 2.1  1998/12/09  15:05:24  virolle
  * no segmentation fault when opening failed.
  *

@@ -1,4 +1,4 @@
-/* $Id: SdifFWrite.c,v 2.1 1998-12-21 18:27:13 schwarz Exp $
+/* $Id: SdifFWrite.c,v 2.2 1999-01-23 13:57:30 virolle Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -13,6 +13,7 @@
  *
  * author: Dominique Virolle 1997
  *
+ * $Log: not supported by cvs2svn $
  *
  */
 
@@ -126,12 +127,12 @@ SdifFWriteOneNameValue(SdifFileT *SdifF, SdifNameValueT *NameValue)
 
 
 size_t
-SdifFWriteNameValueCurrHT (SdifFileT *SdifF)
+SdifFWriteNameValueLCurrNVT(SdifFileT *SdifF)
 {
   SdiffGetPos(SdifF->Stream, &(SdifF->StartChunkPos));
 
   SdifF->ChunkSize  = SdifFWriteChunkHeader(SdifF, e1NVT, _SdifUnknownSize);
-  SdifF->ChunkSize += SdifFPutNameValueCurrHT(SdifF, 's');
+  SdifF->ChunkSize += SdifFPutNameValueLCurrNVT(SdifF, 's');
   SdifF->ChunkSize += SdifFWritePadding(SdifF, SdifFPaddingCalculate(SdifF->Stream, SdifF->ChunkSize));
 
   SdifUpdateChunkSize(SdifF, SdifF->ChunkSize -sizeof(SdifSignature) -sizeof(SdifInt4));
@@ -146,21 +147,18 @@ SdifFWriteNameValueCurrHT (SdifFileT *SdifF)
 
 
 size_t
-SdifFWriteAllNameValueHT(SdifFileT *SdifF)
+SdifFWriteAllNameValueNVT(SdifFileT *SdifF)
 {
-  size_t SizeW = 0;
-  SdifUInt4    iHT;
+    size_t SizeW = 0;
 
-  for (iHT=1; iHT<=SdifF->NameValues->NbHTN; iHT++)
+    SdifListInitLoop(SdifF->NameValues->NVTList);
+    while (SdifListIsNext(SdifF->NameValues->NVTList))
     {
-      SdifNameValuesLSetCurrHT(SdifF->NameValues, iHT);
-      SizeW += SdifFWriteNameValueCurrHT (SdifF);
+        SdifF->NameValues->CurrNVT = SdifListGetNext(SdifF->NameValues->NVTList);
+        SizeW += SdifFWriteNameValueLCurrNVT (SdifF);
     }
-
-  return SizeW;
+    return SizeW;
 }
-
-
 
 
 size_t
@@ -283,13 +281,13 @@ SdifFWriteAllASCIIChunks(SdifFileT *SdifF)
   size_t SizeW = 0;
 
   if (SdifNameValuesLIsNotEmpty(SdifF->NameValues))
-    SizeW += SdifFWriteAllNameValueHT(SdifF);
+    SizeW += SdifFWriteAllNameValueNVT(SdifF);
 
   if (   (SdifExistUserMatrixType(SdifF->MatrixTypesTable))
       || (SdifExistUserFrameType(SdifF->MatrixTypesTable)) )
     SizeW += SdifFWriteAllType(SdifF);
   
-  if (SdifF->StreamIDsTable->NbOfData > 0)
+  if (SdifStreamIDTableGetNbData  (SdifF->StreamIDsTable) > 0)
     SizeW += SdifFWriteAllStreamID(SdifF);
   
   return SizeW;
@@ -360,3 +358,27 @@ SdifFWriteFrameHeader (SdifFileT *SdifF)
 
   return SizeW;
 }
+
+
+/*
+ * obsolete
+ */
+
+size_t
+SdifFWriteNameValueCurrHT (SdifFileT *SdifF)
+{
+    /* obsolete */
+    _Debug("SdifFWriteNameValueCurrHT is obsolete, use SdifFWriteValueLCurrNVT");
+    return SdifFWriteNameValueLCurrNVT(SdifF);
+}
+
+
+size_t
+SdifFWriteAllNameValueHT(SdifFileT *SdifF)
+{
+    /* obsolete */
+    _Debug("SdifFWriteAllNameValueHT is obsolete, use SdifFWriteAllNameValueNVT");
+    return SdifFWriteAllNameValueNVT(SdifF);
+}
+
+

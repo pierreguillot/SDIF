@@ -1,4 +1,4 @@
-/* $Id: SdifFRead.h,v 2.1 1998-12-21 18:27:11 schwarz Exp $
+/* $Id: SdifFRead.h,v 2.2 1999-01-23 13:57:28 virolle Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -15,6 +15,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 2.1  1998/12/21  18:27:11  schwarz
+ * Inserted copyright message.
+ *
  * Revision 2.0  1998/11/29  11:41:34  virolle
  * - New management of interpretation errors.
  * - Alignement of frames with CNMAT (execpt specials Chunk 1NVT, 1TYP, 1IDS).
@@ -46,7 +49,7 @@
 
 size_t SdifFReadGeneralHeader    (SdifFileT *SdifF);
 size_t SdifFReadChunkSize        (SdifFileT *SdifF);
-size_t SdifFReadNameValueCurrHT  (SdifFileT *SdifF);
+size_t SdifFReadNameValueLCurrNVT(SdifFileT *SdifF);
 size_t SdifFReadAllType          (SdifFileT *SdifF);
 size_t SdifFReadAllStreamID      (SdifFileT *SdifF);
 size_t SdifFReadAllASCIIChunks   (SdifFileT *SdifF);
@@ -62,5 +65,9 @@ size_t SdifFReadUndeterminatedPadding (SdifFileT *SdifF);
 size_t SdifFReadOneMatrixType    (SdifFileT *SdifF);
 size_t SdifFReadOneFrameType     (SdifFileT *SdifF);
 
+/*
+ * obsolete
+ */
+size_t SdifFReadNameValueCurrHT  (SdifFileT *SdifF);
 
 #endif /* _SdifFRead_ */

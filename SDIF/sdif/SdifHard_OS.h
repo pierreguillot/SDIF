@@ -1,4 +1,4 @@
-/* $Id: SdifHard_OS.h,v 2.1 1998-12-21 18:27:25 schwarz Exp $
+/* $Id: SdifHard_OS.h,v 2.2 1999-01-23 13:57:37 virolle Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -16,6 +16,9 @@
  * author: Dominique Virolle 1998
  *
  * $Log: not supported by cvs2svn $
+ * Revision 2.1  1998/12/21  18:27:25  schwarz
+ * Inserted copyright message.
+ *
  * Revision 2.0  1998/11/29  11:41:50  virolle
  * - New management of interpretation errors.
  * - Alignement of frames with CNMAT (execpt specials Chunk 1NVT, 1TYP, 1IDS).
@@ -41,6 +44,10 @@
 #include <stdio.h>
 #include <float.h>
 
+/* _Sdif_MIN_DOUBLE_ tested on SGI, DEC alpha, PCWin95 as 0xffefffffffffffff
+ * include may be limits.h (float.h is sure with VisualC++5 Win 95 or NT)
+ */
+#define _Sdif_MIN_DOUBLE_ (- DBL_MAX)
 
 
 
@@ -61,7 +68,6 @@
 #define SdiffSetPos(f,p)    fsetpos((f),(p))
 #endif
 
-#define _Sdif_MIN_DOUBLE_ (- DBL_MAX)
 
 typedef short          SdifInt2;
 typedef unsigned short SdifUInt2;

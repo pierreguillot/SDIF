@@ -1,4 +1,4 @@
-/* $Id: SdifPrint.c,v 2.1 1998-12-21 18:27:35 schwarz Exp $
+/* $Id: SdifPrint.c,v 2.2 1999-01-23 13:57:45 virolle Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -14,6 +14,11 @@
  *
  * author: Dominique Virolle 1997
  *
+ *
+ * $Log: not supported by cvs2svn $
+ *
+ *
+ *
  */
 
 
@@ -27,31 +32,38 @@
 void
 SdifPrintMatrixType(FILE *fw, SdifMatrixTypeT *MatrixType)
 {
-  SdifColumnDefNT *Node;
+    SdifColumnDefT *ColumnDef;
+    fprintf(fw, "  %s  %s",
+        SdifSignatureToString(e1MTD),
+        SdifSignatureToString(MatrixType->Signature));
 
-  fprintf(fw, "  %s  %s",
-	  SdifSignatureToString(e1MTD),
-	  SdifSignatureToString(MatrixType->Signature));
-
-  if (MatrixType->MatrixTypePre)
+    if (MatrixType->MatrixTypePre)
     {
-      if (MatrixType->MatrixTypePre->HeadUse)
-	{
-	  fprintf(fw, "\n    Pre {");
-	  for(Node = MatrixType->MatrixTypePre->HeadUse; Node->Next;  Node = Node->Next)
-	    fprintf(fw, "%s(%d), ",Node->ColumnDef->Name, Node->ColumnDef->Num);
-	  fprintf(fw, "%s(%d)}",Node->ColumnDef->Name, Node->ColumnDef->Num);  
-	}
+        if (!SdifListIsEmpty(MatrixType->MatrixTypePre->ColumnUserList))
+        {
+            ColumnDef = SdifListGetHead(MatrixType->MatrixTypePre->ColumnUserList); /* Reinit GetNext*/
+            fprintf(fw, "\n    Pred {%s(%d)", ColumnDef->Name, ColumnDef->Num);
+            while (SdifListIsNext(MatrixType->MatrixTypePre->ColumnUserList))
+            {
+                ColumnDef = SdifListGetNext(MatrixType->MatrixTypePre->ColumnUserList);
+                fprintf(fw, ", %s(%d)",ColumnDef->Name, ColumnDef->Num);
+            }
+    	    fprintf(fw, "}");  
+        }
     }
 
-  if (MatrixType->HeadUse)
+    if (!SdifListIsEmpty(MatrixType->ColumnUserList))
     {
-      fprintf(fw, "\n    Use {");
-      for(Node = MatrixType->HeadUse; Node->Next;  Node = Node->Next)
-	fprintf(fw, "%s(%d), ",Node->ColumnDef->Name, Node->ColumnDef->Num);
-      fprintf(fw, "%s(%d)}",Node->ColumnDef->Name, Node->ColumnDef->Num);
+        ColumnDef = SdifListGetHead(MatrixType->ColumnUserList); /* Reinit GetNext*/
+        fprintf(fw, "\n    User {%s(%d)", ColumnDef->Name, ColumnDef->Num);
+        while (SdifListIsNext(MatrixType->ColumnUserList))
+        {
+            ColumnDef = SdifListGetNext(MatrixType->ColumnUserList);
+            fprintf(fw, ", %s(%d)",ColumnDef->Name, ColumnDef->Num);
+        }
+ 	    fprintf(fw, "}");  
     }
-  fprintf(fw, "\n\n");
+    fprintf(fw, "\n\n");
 }
 
 

@@ -1,4 +1,4 @@
-/* $Id: SdifHard_OS.c,v 2.1 1998-12-21 18:27:24 schwarz Exp $
+/* $Id: SdifHard_OS.c,v 2.2 1999-01-23 13:57:36 virolle Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -10,6 +10,7 @@
  *
  *
  * author: Dominique Virolle 1998
+ * $Log: not supported by cvs2svn $
  *
  */
 

@@ -1,4 +1,4 @@
-/* $Id: SdifGlobals.c,v 2.1 1998-12-21 18:27:22 schwarz Exp $
+/* $Id: SdifGlobals.c,v 2.2 1999-01-23 13:57:34 virolle Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -14,6 +14,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 2.1  1998/12/21  18:27:22  schwarz
+ * Inserted copyright message.
+ *
  * Revision 2.0  1998/11/29  11:41:47  virolle
  * - New management of interpretation errors.
  * - Alignement of frames with CNMAT (execpt specials Chunk 1NVT, 1TYP, 1IDS).
@@ -94,6 +97,9 @@ SdifSizeofDataType(SdifDataTypeET DataType)
 {
     switch (DataType)
 	{
+    case eUnicode :
+    case eChar :
+        return 1;
     case eInt2 :
     case eUInt2 :
         return 2;
@@ -102,7 +108,6 @@ SdifSizeofDataType(SdifDataTypeET DataType)
     case eFloat4 :
     case eInt4 :
     case eUInt4 :
-    case eChar4 :
 	default :
         return 4;
 	}

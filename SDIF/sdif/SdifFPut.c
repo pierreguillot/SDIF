@@ -1,4 +1,4 @@
-/* $Id: SdifFPut.c,v 2.1 1998-12-21 18:27:08 schwarz Exp $
+/* $Id: SdifFPut.c,v 2.2 1999-01-23 13:57:25 virolle Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -26,6 +26,7 @@
 
 #include "SdifRWLowLevel.h"
 
+#include "SdifList.h"
 #include "SdifHash.h"
 
 
@@ -51,9 +52,13 @@ SdifFPutOneNameValue(SdifFileT* SdifF, int Verbose, SdifNameValueT *NameValue)
 
 
 
-/* SdifFPutNameValueCurrHT doesn't write '1NVT', chunk size and padding */
+
+
+
+
 size_t
-SdifFPutNameValueCurrHT (SdifFileT *SdifF, int Verbose)
+SdifFPutNameValueLCurrNVT (SdifFileT *SdifF, int Verbose)
+/* SdifFPutNameValueLCurrNVT doesn't write frame header and padding */
 {
   size_t          SizeW = 0;
   SdifUInt4       iNV;
@@ -64,8 +69,7 @@ SdifFPutNameValueCurrHT (SdifFileT *SdifF, int Verbose)
 
   file = SdifFGetFILE_SwitchVerbose(SdifF, Verbose);
 
-
-  HTable = SdifF->NameValues->CurrHT;
+  HTable = SdifF->NameValues->CurrNVT->NVHT;
   
   SizeW += fprintf(file, "{\n");
   for(iNV=0; iNV<HTable->HashSize; iNV++)
@@ -79,30 +83,31 @@ SdifFPutNameValueCurrHT (SdifFileT *SdifF, int Verbose)
 
 
 
-
-
-
-
 size_t
 SdifFPutOneMatrixType(SdifFileT* SdifF, int Verbose, SdifMatrixTypeT *MatrixType)
 {
-  SdifColumnDefNT *Node;
-  size_t           SizeW = 0;
-  FILE            *file;
+  SdifColumnDefT    *ColumnDef;
+  size_t            SizeW = 0;
+  FILE              *file;
   
   
   file = SdifFGetFILE_SwitchVerbose(SdifF, Verbose);
 
-  if (MatrixType->HeadUse)
+  if (! SdifListIsEmpty(MatrixType->ColumnUserList))
     {
       SizeW += fprintf(file, "  %s\t", SdifSignatureToString(e1MTD));
       SizeW += sizeof(SdifSignature) * SdiffWriteSignature(&(MatrixType->Signature), file);
       SizeW += fprintf(file, "\t{");
-      for(Node = MatrixType->HeadUse; Node->Next;  Node = Node->Next)
-	{
-	  SizeW += fprintf(file, "%s, ",Node->ColumnDef->Name);
-	}
-      SizeW += fprintf(file, "%s}\n",Node->ColumnDef->Name);  
+
+      ColumnDef = SdifListGetHead(MatrixType->ColumnUserList); /* Reinit GetNext */
+	  SizeW += fprintf(file, "%s",ColumnDef->Name);
+
+      while (SdifListIsNext(MatrixType->ColumnUserList))
+      {
+          ColumnDef = SdifListGetNext(MatrixType->ColumnUserList);
+	      SizeW += fprintf(file, ", %s",ColumnDef->Name);
+      }
+      SizeW += fprintf(file, "}\n");  
     }
 
   return SizeW;
@@ -257,11 +262,25 @@ SdifFPutAllStreamID(SdifFileT *SdifF, int Verbose)
 
   SizeW += fprintf(file, "{\n");
   
-  for(iID=0; iID<SdifF->StreamIDsTable->HashSize; iID++)
-    for (pID = SdifF->StreamIDsTable->Table[iID]; pID; pID = pID->Next)
+  for(iID=0; iID<SdifF->StreamIDsTable->SIDHT->HashSize; iID++)
+    for (pID = SdifF->StreamIDsTable->SIDHT->Table[iID]; pID; pID = pID->Next)
       SizeW += SdifFPutOneStreamID(SdifF, Verbose, pID->Data);
   
   SizeW += fprintf(file, "}");
 
   return SizeW;
 }
+
+
+/*
+ * obsolete
+ */
+
+size_t
+SdifFPutNameValueCurrHT (SdifFileT *SdifF, int Verbose)
+{
+    /* obsolete */
+    _Debug("SdifFPutNameValueCurrHT is obsolete, use SdifFPutNameValueLCurrNVT");
+    return SdifFPutNameValueLCurrNVT(SdifF, Verbose);
+}
+

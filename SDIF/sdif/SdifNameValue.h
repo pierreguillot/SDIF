@@ -1,4 +1,4 @@
-/* $Id: SdifNameValue.h,v 2.1 1998-12-21 18:27:32 schwarz Exp $
+/* $Id: SdifNameValue.h,v 2.2 1999-01-23 13:57:42 virolle Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -17,6 +17,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 2.1  1998/12/21  18:27:32  schwarz
+ * Inserted copyright message.
+ *
  * Revision 2.0  1998/11/29  11:41:58  virolle
  * - New management of interpretation errors.
  * - Alignement of frames with CNMAT (execpt specials Chunk 1NVT, 1TYP, 1IDS).
@@ -47,8 +50,14 @@
 
 #include "SdifGlobals.h"
 #include "SdifHash.h"
+#include "SdifList.h"
 
 #define _SdifNameValueHashSize 31
+
+
+/*
+ * NameValue
+ */
 
 
 typedef struct SdifNameValueS SdifNameValueT;
@@ -59,45 +68,70 @@ struct SdifNameValueS
 } ;
 
 
-SdifNameValueT* SdifCreateNameValue(const char *Name, const char *Value);
-void            SdifKillNameValue  (SdifNameValueT *NameValue);
+
+SdifNameValueT* SdifCreateNameValue(const char *Name,  const char *Value);
+void            SdifKillNameValue(SdifNameValueT *NameValue);
 
 
 
-typedef struct SdifNameValueHTNS SdifNameValueHTNT;
 
-struct SdifNameValueHTNS
+/*
+ * NameValueTable
+ */
+
+typedef struct SdifNameValueTableS SdifNameValueTableT;
+struct SdifNameValueTableS
 {
-  SdifNameValueHTNT *Next;
-  SdifHashTableT *NameValueHT;
-  SdifUInt4 NumHT;
-};
+    SdifHashTableT* NVHT;
+    SdifUInt4       NumTable;
+    SdifUInt4       NumIDLink;
+    SdifFloat8      Time;
+} ;
 
 
-SdifNameValueHTNT* SdifCreateNameValueHTN(SdifNameValueHTNT *Next,
-						 SdifHashTableT *NameValueHT,
-						 SdifUInt4 NumHT);
-SdifNameValueHTNT* SdifKillNameValueHTN  (SdifNameValueHTNT *NVHTN);
+SdifNameValueTableT* SdifCreateNameValueTable(  SdifUInt4 NumIDLink, SdifFloat8 Time,
+                                                SdifUInt4 HashSize, SdifUInt4 NumTable);
+void            SdifKillNameValueTable          (SdifNameValueTableT* NVTable);
+SdifNameValueT* SdifNameValueTableGetNV         (SdifNameValueTableT* NVTable, const char *Name);
+SdifNameValueT* SdifNameValueTablePutNV         (SdifNameValueTableT* NVTable, const char *Name,  const char *Value);
+SdifFloat8      SdifNameValueTableGetTime       (SdifNameValueTableT* NVTable);
+SdifUInt4       SdifNameValueTableGetNumTable   (SdifNameValueTableT* NVTable);
+SdifUInt4       SdifNameValueTableGetNumIDLink  (SdifNameValueTableT* NVTable);
 
 
+
+/*
+ * NameValueTableList
+ */
 
 typedef struct SdifNameValuesLS SdifNameValuesLT;
 struct SdifNameValuesLS
 {
-  SdifNameValueHTNT *HeadHTN;
-  SdifNameValueHTNT *TailHTN;
-  SdifUInt4          NbHTN;
-  SdifHashTableT    *CurrHT;
-  SdifUInt4          HashSize;
-} ;
+    SdifListT*              NVTList;
+    SdifNameValueTableT*    CurrNVT;
+    SdifUInt4               HashSize;
+};
 
-SdifNameValuesLT* SdifCreateNameValuesL     (SdifUInt4  HashSize);
-void              SdifKillNameValuesL       (SdifNameValuesLT *NameValuesL);
-SdifNameValuesLT* SdifNameValuesLNewHT      (SdifNameValuesLT *NameValuesL);
-SdifHashTableT*   SdifNameValuesLSetCurrHT  (SdifNameValuesLT *NameValuesL, SdifUInt4 NumCurrHT);
-SdifNameValueT*   SdifNameValuesLGet        (SdifNameValuesLT *NameValuesL, char *Name);
-SdifNameValueT*   SdifNameValuesLGetCurrHT  (SdifNameValuesLT *NameValuesL, char *Name);
-SdifNameValueT*   SdifNameValuesLPutCurrHT  (SdifNameValuesLT *NameValuesL, const char *Name,  const char *Value);
-SdifUInt2         SdifNameValuesLIsNotEmpty (SdifNameValuesLT *NameValuesL);
+
+
+SdifNameValuesLT*   SdifCreateNameValuesL       (SdifUInt4  HashSize);
+void                SdifKillNameValuesL         (SdifNameValuesLT *NameValuesL);
+SdifNameValuesLT*   SdifNameValuesLNewTable     (SdifNameValuesLT *NameValuesL, SdifUInt4 NumIDLink, SdifFloat8 Time);
+SdifNameValueTableT*SdifNameValuesLSetCurrNVT   (SdifNameValuesLT *NameValuesL, SdifUInt4 NumCurrNVT);
+SdifNameValueT*     SdifNameValuesLGet          (SdifNameValuesLT *NameValuesL, char *Name);
+SdifNameValueT*     SdifNameValuesLGetCurrNVT   (SdifNameValuesLT *NameValuesL, const char *Name);
+SdifNameValueT*     SdifNameValuesLPutCurrNVT   (SdifNameValuesLT *NameValuesL, const char *Name,  const char *Value);
+SdifUInt2           SdifNameValuesLIsNotEmpty   (SdifNameValuesLT *NameValuesL);
+
+
+
+/*
+ * Obsolete
+ */
+SdifNameValuesLT*   SdifNameValuesLNewHT    (SdifNameValuesLT *NameValuesL);
+SdifHashTableT*     SdifNameValuesLSetCurrHT(SdifNameValuesLT *NameValuesL, SdifUInt4 NumCurrHT);
+SdifNameValueT*     SdifNameValuesLGetCurrHT(SdifNameValuesLT *NameValuesL, char *Name);
+SdifNameValueT*     SdifNameValuesLPutCurrHT(SdifNameValuesLT *NameValuesL, const char *Name,  const char *Value);
+
 
 #endif /* _SdifNameValue_ */

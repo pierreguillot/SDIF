@@ -1,4 +1,4 @@
-/* $Id: SdifFPrint.c,v 2.1 1998-12-21 18:27:06 schwarz Exp $
+/* $Id: SdifFPrint.c,v 2.2 1999-01-23 13:57:23 virolle Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -48,33 +48,35 @@ SdifFPrintGeneralHeader(SdifFileT *SdifF)
 }
 
 
+
+
 size_t
-SdifFPrintNameValueCurrHT(SdifFileT *SdifF)
+SdifFPrintNameValueLCurrNVT(SdifFileT *SdifF)
 {
   size_t SizeW = 0;
 
   SizeW += fprintf(SdifF->TextStream, "%s\n", SdifSignatureToString(e1NVT));
-  SizeW += SdifFPutNameValueCurrHT (SdifF, 't');
+  SizeW += SdifFPutNameValueLCurrNVT (SdifF, 't');
   SizeW += fprintf(SdifF->TextStream, "\n");
   return SizeW;
 }
 
 
+
+
 size_t
-SdifFPrintAllNameValueHT(SdifFileT *SdifF)
+SdifFPrintAllNameValueNVT(SdifFileT *SdifF)
 {
-  SdifUInt4 iHT;
-  size_t SizeW = 0;
+    size_t SizeW = 0;
 
-  for (iHT = 1; iHT <= SdifF->NameValues->NbHTN; iHT++)
+    SdifListInitLoop(SdifF->NameValues->NVTList);
+    while (SdifListIsNext(SdifF->NameValues->NVTList))
     {
-      SdifNameValuesLSetCurrHT(SdifF->NameValues, iHT);
-      SizeW += SdifFPrintNameValueCurrHT (SdifF);
+        SdifF->NameValues->CurrNVT = SdifListGetNext(SdifF->NameValues->NVTList);
+        SizeW += SdifFPrintNameValueLCurrNVT (SdifF);
     }
-
-  return SizeW;
+    return SizeW;
 }
-
 
 
 
@@ -149,7 +151,7 @@ SdifFPrintAllASCIIChunks(SdifFileT *SdifF)
 
   if (SdifNameValuesLIsNotEmpty(SdifF->NameValues))
     {
-      SizeW += SdifFPrintAllNameValueHT (SdifF);
+      SizeW += SdifFPrintAllNameValueNVT(SdifF);
       SizeW += fprintf(SdifF->TextStream, "\n");
     }
 
@@ -160,7 +162,7 @@ SdifFPrintAllASCIIChunks(SdifFileT *SdifF)
       SizeW += fprintf(SdifF->TextStream, "\n");
     }
 
-  if (SdifF->StreamIDsTable->NbOfData > 0)
+  if (SdifStreamIDTableGetNbData  (SdifF->StreamIDsTable) > 0)
     {
       SizeW += SdifFPrintAllStreamID (SdifF);
       SizeW += fprintf(SdifF->TextStream, "\n");
@@ -244,3 +246,30 @@ SdifFPrintFrameHeader(SdifFileT *SdifF)
 
   return SizeW;
 }
+
+
+
+/*
+ * obsolete
+ */
+
+
+size_t
+SdifFPrintNameValueCurrHT(SdifFileT *SdifF)
+{
+    /* obsolete */
+    _Debug("SdifFPrintNameValueCurrHT is obsolete, use SdifFPrintNameValueLCurrNVT");
+    return SdifFPrintNameValueLCurrNVT(SdifF);
+}
+
+
+
+size_t
+SdifFPrintAllNameValueHT(SdifFileT *SdifF)
+{
+    /* obsolete */
+    _Debug("SdifFPrintAllNameValueHT is obsolete, use SdifFPrintAllNameValueNVT");
+    return SdifFPrintAllNameValueNVT(SdifF);
+}
+
+

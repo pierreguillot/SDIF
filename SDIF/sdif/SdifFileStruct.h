@@ -1,4 +1,4 @@
-/* $Id: SdifFileStruct.h,v 2.1 1998-12-21 18:27:17 schwarz Exp $
+/* $Id: SdifFileStruct.h,v 2.2 1999-01-23 13:57:34 virolle Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -15,6 +15,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 2.1  1998/12/21  18:27:17  schwarz
+ * Inserted copyright message.
+ *
  * Revision 2.0  1998/11/29  11:41:42  virolle
  * - New management of interpretation errors.
  * - Alignement of frames with CNMAT (execpt specials Chunk 1NVT, 1TYP, 1IDS).
@@ -38,6 +41,7 @@
 
 #include "SdifGlobals.h"
 
+#include "SdifList.h"
 #include "SdifNameValue.h"
 #include "SdifHash.h"
 #include "SdifMatrixType.h"
@@ -92,7 +96,8 @@ struct SdifFileS
   SdifNameValuesLT   *NameValues;       /* DataBase of Names Values */
   SdifHashTableT     *MatrixTypesTable; /* DataBase of Matrix Types */
   SdifHashTableT     *FrameTypesTable;  /* DataBase of Frame Types */
-  SdifHashTableT     *StreamIDsTable;   /* DataBase of Stream IDs */
+/*  SdifHashTableT     *StreamIDsTable;   /* DataBase of Stream IDs */
+  SdifStreamIDTableT *StreamIDsTable;   /* DataBase of Stream IDs */
   SdifTimePositionLT *TimePositions;    /* List of (Time, Position in the file) */
 
   FILE *Stream;                         /* Stream to read or to write */

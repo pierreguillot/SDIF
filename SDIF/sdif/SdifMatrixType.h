@@ -1,4 +1,4 @@
-/* $Id: SdifMatrixType.h,v 2.1 1998-12-21 18:27:31 schwarz Exp $
+/* $Id: SdifMatrixType.h,v 2.2 1999-01-23 13:57:41 virolle Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -15,6 +15,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 2.1  1998/12/21  18:27:31  schwarz
+ * Inserted copyright message.
+ *
  * Revision 2.0  1998/11/29  11:41:57  virolle
  * - New management of interpretation errors.
  * - Alignement of frames with CNMAT (execpt specials Chunk 1NVT, 1TYP, 1IDS).
@@ -38,8 +41,8 @@
 #define _SdifMatrixType_
 
 #include "SdifGlobals.h"
+#include "SdifList.h"
 #include "SdifHash.h"
-
 
 
 
@@ -55,28 +58,16 @@ struct SdifColumnDefS
 
 
 
-typedef struct SdifColumnDefNS SdifColumnDefNT;
-
-struct SdifColumnDefNS
-{
-  SdifColumnDefNT *Next;
-  SdifColumnDefT *ColumnDef;
-};
-
-
-
 
 typedef struct SdifMatrixTypeS SdifMatrixTypeT;
 
 struct SdifMatrixTypeS
 {
-  SdifSignature      Signature;
+  SdifSignature     Signature;
 
-  SdifMatrixTypeT    *MatrixTypePre;
+  SdifMatrixTypeT*  MatrixTypePre;
 
-  SdifColumnDefNT *HeadUse;
-  SdifColumnDefNT *TailUse;
-  SdifUInt4       NbColumnDefUse;
+  SdifListT*        ColumnUserList;
 
   SdifUInt4       NbColumnDef;
   SdifModifModeET ModifMode;
@@ -88,11 +79,8 @@ struct SdifMatrixTypeS
 SdifColumnDefT*  SdifCreateColumnDef (char *Name,  unsigned int Num);
 void             SdifKillColumnDef   (SdifColumnDefT *ColumnDef);
 
-SdifColumnDefNT* SdifCreateColumnDefN (SdifColumnDefNT *Next, SdifColumnDefT *ColumnDef);
-SdifColumnDefNT* SdifKillColumnDefN   (SdifColumnDefNT *ColDefNode);
-
 SdifMatrixTypeT* SdifCreateMatrixType              (SdifSignature Signature,
-							   SdifMatrixTypeT *PredefinedMatrixType);
+                    							   SdifMatrixTypeT *PredefinedMatrixType);
 void             SdifKillMatrixType                (SdifMatrixTypeT *MatrixType);
 SdifMatrixTypeT* SdifMatrixTypeInsertTailColumnDef (SdifMatrixTypeT *MatrixType, char *NameCD);
 SdifUInt4        SdifMatrixTypeGetNumColumnDef     (SdifMatrixTypeT *MatrixType, char *NameCD);

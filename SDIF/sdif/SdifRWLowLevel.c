@@ -1,4 +1,4 @@
-/* $Id: SdifRWLowLevel.c,v 2.1 1998-12-21 18:27:37 schwarz Exp $
+/* $Id: SdifRWLowLevel.c,v 2.2 1999-01-23 13:57:45 virolle Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -11,6 +11,11 @@
  * Read Write Low Level. Machine sex, little-big endian control
  *
  * author: Dominique Virolle 1997
+ *
+ *
+ *
+ * $Log: not supported by cvs2svn $
+ *
  *
  */
 
@@ -720,8 +725,8 @@ SdiffReadSpace(FILE* fr)
     {
       SdiffGetPos(fr, &Pos);
       Pos --;
-      if (SdiffSetPos(fr, &Pos)==0)
-        /* if (c = (char) ungetc(c, fr)) */
+      /* if (SdiffSetPos(fr, &Pos)==0) ::: it is a bad solution with stdin, virolle 99/01 */
+      if (c = (char) ungetc(c, fr))
         return NbCharRead;
       else
         {

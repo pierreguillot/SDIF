@@ -1,4 +1,4 @@
-/* $Id: SdifFGet.c,v 2.1 1998-12-21 18:27:04 schwarz Exp $
+/* $Id: SdifFGet.c,v 2.2 1999-01-23 13:57:22 virolle Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -75,7 +75,7 @@ SdifFGetOneNameValue(SdifFileT *SdifF, int Verbose, size_t *SizeR)
       return  CharEnd;
     }
   
-  if (SdifNameValuesLGetCurrHT(SdifF->NameValues, gSdifString))
+  if (SdifNameValuesLGetCurrNVT(SdifF->NameValues, gSdifString))
     {
       sprintf(gSdifErrorMess, "NameValue : %s ", gSdifString);
       _SdifFError(SdifF, eReDefined, gSdifErrorMess);
@@ -98,7 +98,7 @@ SdifFGetOneNameValue(SdifFileT *SdifF, int Verbose, size_t *SizeR)
       return  CharEnd;
     }
   
-  SdifNameValuesLPutCurrHT(SdifF->NameValues, gSdifString, gSdifString2);
+  SdifNameValuesLPutCurrNVT(SdifF->NameValues, gSdifString, gSdifString2);
   return  CharEnd;
 }
 
@@ -106,13 +106,12 @@ SdifFGetOneNameValue(SdifFileT *SdifF, int Verbose, size_t *SizeR)
 
 
 
-
-/* SdifFGetNameValueCurrHT ne lit pas "SITC" puisque l'on sera aiguillie sur cette fonction 
+size_t
+SdifFGetNameValueLCurrNVT(SdifFileT *SdifF, int Verbose)
+{
+/* SdifFGetNameValueLCurrNVT ne lit pas "SITC" puisque l'on sera aiguillie sur cette fonction 
  * apres lecture de "SITC"
  */
-size_t
-SdifFGetNameValueCurrHT(SdifFileT *SdifF, int Verbose)
-{
   size_t    SizeR = 0;
   int       CharEnd;
   FILE      *file;
@@ -425,7 +424,6 @@ SdifFGetAllType(SdifFileT *SdifF, int Verbose)
 int
 SdifFGetOneStreamID(SdifFileT *SdifF, int Verbose, size_t *SizeR)
 {
-  SdifStreamIDT   *StreamID;
   SdifUInt4        NumID;
   char             CharEnd;
   static char      CharsEnd[] = " \t\n\f\r\v{},;:";
@@ -462,7 +460,7 @@ SdifFGetOneStreamID(SdifFileT *SdifF, int Verbose, size_t *SizeR)
 
   /* ID */
   NumID = atoi(gSdifString);
-  if (SdifHashTableSearch(SdifF->StreamIDsTable, &(NumID), 1))
+  if (SdifStreamIDTableGetSID(SdifF->StreamIDsTable, NumID))
     {
       sprintf(gSdifErrorMess, "StreamID : %u ", NumID);
       _SdifFError(SdifF, eReDefined, gSdifErrorMess);
@@ -498,14 +496,8 @@ SdifFGetOneStreamID(SdifFileT *SdifF, int Verbose, size_t *SizeR)
     }
   
 
-  StreamID = SdifCreateStreamID(NumID, gSdifString, gSdifString2);
-  if (StreamID)
-    {
-      SdifHashTablePut(SdifF->StreamIDsTable, &(StreamID->NumID), 1, StreamID);
-      return  CharEnd;
-    }
-
-  return  CharEnd;  
+  SdifStreamIDTablePutSID(SdifF->StreamIDsTable, NumID, gSdifString, gSdifString2);
+  return  CharEnd;
 }
 
 
@@ -542,3 +534,20 @@ SdifFGetAllStreamID(SdifFileT *SdifF, int Verbose)
 
   return SizeR;
 }
+
+
+
+
+
+
+
+size_t
+SdifFGetNameValueCurrHT(SdifFileT *SdifF, int Verbose)
+{
+    /* obsolete */
+    _Debug("SdifFGetNameValueCurrHT is obsolete, use SdifFGetNameValueLCurrNVT");
+    return SdifFGetNameValueLCurrNVT(SdifF, Verbose);
+
+}
+
+

@@ -1,4 +1,4 @@
-/* $Id: SdifGlobals.h,v 2.1 1998-12-21 18:27:23 schwarz Exp $
+/* $Id: SdifGlobals.h,v 2.2 1999-01-23 13:57:35 virolle Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -14,6 +14,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 2.1  1998/12/21  18:27:23  schwarz
+ * Inserted copyright message.
+ *
  * Revision 2.0  1998/11/29  11:41:48  virolle
  * - New management of interpretation errors.
  * - Alignement of frames with CNMAT (execpt specials Chunk 1NVT, 1TYP, 1IDS).
@@ -45,6 +48,8 @@
 #include "SdifError.h"
 #include "SdifHard_OS.h"
 
+
+
 #define _SdifFormatVersion 2
 #define _SdifTypesVersion  1
 
@@ -59,7 +64,7 @@
 /* Default predefined types : _SdifTypesFileName see SdifFile.c
  */
 
-
+#define _SdifListNodeStockSize 0x400 /*1024*/
 #define _SdifGenHashSize 127
 #define _SdifUnknownSize 0xffffffff
 #define _SdifPadding 8
@@ -68,6 +73,14 @@
 #define _SdifFloat8Error  0xffffffff
 #define _SdifNoStreamID   0xffffffff
 #define _SdifUnknownUInt4 0xffffffff
+
+
+
+
+
+
+
+
 
 typedef enum SdifSignatureE
 {
@@ -99,13 +112,14 @@ typedef enum SdifModifModeE
  */
 typedef enum SdifDataTypeE
 {
-  eFloat4 = 1,
-  eFloat8 = 2,
-  eInt4   = 3,
-  eUInt4  = 4,
-  eChar4  = 5,
-  eInt2   = 6,
-  eUInt2  = 7,
+  eUnicode  = 0,
+  eFloat4   = 1,
+  eFloat8   = 2,
+  eInt4     = 3,
+  eUInt4    = 4,
+  eChar     = 5,
+  eInt2     = 6,
+  eUInt2    = 7,
   eFloat4Old = 32
 } SdifDataTypeET;
 
