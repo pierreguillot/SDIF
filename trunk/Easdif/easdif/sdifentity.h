@@ -32,9 +32,12 @@
  * 
  * 
  * 
- * $Id: sdifentity.h,v 1.21 2004-08-25 09:22:11 roebel Exp $ 
+ * $Id: sdifentity.h,v 1.22 2004-09-08 09:15:57 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.21  2004/08/25 09:22:11  roebel
+ * SDIFEntity::Rewind(time) no longer private.
+ *
  * Revision 1.20  2004/07/28 13:03:27  roebel
  * Fixed position type to be SdiffPosT
  *
@@ -140,7 +143,7 @@
 #define SDIFENTITY_H_ 1
 
 #include <string>
-#include <vector>
+#include <list>
 #include "sdif.h"
 
 
@@ -193,7 +196,8 @@ private:
     SdifUInt4   GetPos()  const { return loc.second;}
   };
 
-  std::vector<SDIFLocation> mFrameDirectory;
+  std::list<SDIFLocation> mFrameDirectory;
+  std::list<SDIFLocation>::iterator mCurrDirPos;
   bool isFrameDirEnabled;
 
 public: 
