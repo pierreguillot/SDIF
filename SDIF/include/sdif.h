@@ -1,8 +1,14 @@
-/* $Id: sdif.h,v 1.11 2001-05-04 14:07:28 tisseran Exp $
+/* $Id: sdif.h,v 1.12 2001-05-04 18:09:53 schwarz Exp $
  *
  * This file contains type declaration of variables used in SDIF library.
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.11  2001/05/04 14:07:28  tisseran
+ * Liitle fix:
+ * - Change a c++ commentary in a c one (sdif.h line:1532)
+ * - Change publihs rules of main Makefile, now name of asrc archive on www.ircam.fr/sdif/download
+ * is SDIF-(version)-src.tar.gz
+ *
  * Revision 1.10  2001/04/26 14:47:02  tisseran
  * Correct a stupid error in previous log (arrggghh DON'T USE C COMMENTARY in cvs log).
  * Correct Makefile.am, change cvstag rules:
@@ -58,7 +64,7 @@
  * Revision 1.1.2.1  2000/08/21  13:07:41  tisseran
  * *** empty log message ***
  *
- * $Date: 2001-05-04 14:07:28 $
+ * $Date: 2001-05-04 18:09:53 $
  *
  */
 
@@ -71,7 +77,7 @@ extern "C" {
 #endif
 
 
-static const char _sdif_h_cvs_revision_ [] = "$Id: sdif.h,v 1.11 2001-05-04 14:07:28 tisseran Exp $";
+static const char _sdif_h_cvs_revision_ [] = "$Id: sdif.h,v 1.12 2001-05-04 18:09:53 schwarz Exp $";
 
 
 #include <stdio.h>
@@ -1529,11 +1535,14 @@ SdifUInt2       SdifExistUserFrameType (SdifHashTableT *FrameTypeHT);
 
 
 /* generate template for all types */
+#define sdif_foralltypes(macro)		\
+	sdif__foralltypes(macro,sdif_foralltypes_post_body)
 /* old: #define sdif_foralltypes(macro)          sdif__foralltypes(macro,) */
-#define sdif_foralltypes(macro)         sdif__foralltypes(macro,sdif_foralltypes_post_body)
+
 
 /* generate prototype template for all types */
-#define sdif_proto_foralltypes(macro)   sdif__foralltypes(macro,sdif_foralltypes_post_proto)
+#define sdif_proto_foralltypes(macro)   \
+	sdif__foralltypes(macro,sdif_foralltypes_post_proto)
 
 #endif /* STDC_HEADERS */
 
@@ -2078,6 +2087,13 @@ SdifNameValueT*     SdifNameValuesLGetCurrNVT   (SdifNameValuesLT *NameValuesL, 
   courante. Name et Value doivent être des chaines caractères ASCII
   sans espacements.  */
 SdifNameValueT*     SdifNameValuesLPutCurrNVT   (SdifNameValuesLT *NameValuesL, const char *Name,  const char *Value);
+
+/*DOC: 
+  Add a Name-Value pair to the current Name-Value Table, while
+  replacing reserved characters and spaces with underscores "_" 
+  (using SdifStringToNV).  FYI: The strings are copied. */
+SdifNameValueT*     SdifNameValuesLPutCurrNVTTranslate(SdifNameValuesLT *NameValuesL, const char *Name,  const char *Value);
+
 SdifUInt2           SdifNameValuesLIsNotEmpty   (SdifNameValuesLT *NameValuesL);
 
 
