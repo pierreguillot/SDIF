@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.27 2004-08-26 17:12:54 schwarz Exp $
+# $Id: Makefile.am,v 1.28 2004-08-26 17:13:19 schwarz Exp $
 #
 # ./Makefile.am		September 2000			Patrice Tisserand
 #
@@ -30,6 +30,10 @@
 
 
 # $Log: not supported by cvs2svn $
+# Revision 1.27  2004/08/26 17:12:54  schwarz
+# ReleaseNotes
+# some echo's don't know -e, is it needed?
+#
 # Revision 1.26  2004/07/13 15:28:16  roebel
 # Fixed cvstag target to be able to use it from working directories that are not the top
 # source directory.
@@ -207,7 +211,7 @@ $(rpmdir):
 publish:	distcheck cvstag dist rpm publish-ftp
 
 # more files to publish (on server)
-EXTRA_PUBLISH     = README COPYING AUTHORS INSTALL ChangeLog #  doc
+EXTRA_PUBLISH     = README COPYING AUTHORS INSTALL ChangeLog ReleaseNotes # doc
 
 # call this as "make PW=<yourpassword> PUBLISH_HOST=<yourwebhost> publish" 
 # to publish a new version on an ftp server
