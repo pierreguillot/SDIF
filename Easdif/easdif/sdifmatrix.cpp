@@ -32,9 +32,12 @@
  * 
  * 
  * 
- * $Id: sdifmatrix.cpp,v 1.16 2003-11-18 18:22:17 roebel Exp $ 
+ * $Id: sdifmatrix.cpp,v 1.17 2003-11-25 10:55:42 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.16  2003/11/18 18:22:17  roebel
+ * Declared exceptions that are used.
+ *
  * Revision 1.15  2003/11/18 01:38:22  roebel
  * Fixed internal matrix handling bug that would occure when matrix
  * would have different data types within a Frame.
@@ -176,7 +179,7 @@ SDIFMatrix & SDIFMatrix::operator=(const SDIFMatrix& aMatrix) {
 
 
 void SDIFMatrix::Init(SdifSignature sig, int nrows, int ncols, SdifDataTypeET type)
-  throw(SDIFMatrixDataError,bad_alloc)
+  throw(SDIFMatrixDataError,std::bad_alloc)
 {
     if(mInter) {
       if(mType == type) {
@@ -229,7 +232,7 @@ void SDIFMatrix::Init(SdifSignature sig, int nrows, int ncols, SdifDataTypeET ty
 
 
 void SDIFMatrix::Init(const std::string &sig, int nrows, int ncols, SdifDataTypeET type)
-  throw(SDIFMatrixDataError,bad_alloc){
+  throw(SDIFMatrixDataError,std::bad_alloc){
     Init(SdifStringToSignature(sig.c_str()), nrows, ncols, type);
 }
 
