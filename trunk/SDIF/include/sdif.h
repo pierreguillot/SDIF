@@ -1,4 +1,4 @@
-/* $Id: sdif.h,v 1.30 2003-06-06 10:25:40 schwarz Exp $
+/* $Id: sdif.h,v 1.31 2003-07-07 10:27:01 roebel Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -30,6 +30,9 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.30  2003/06/06 10:25:40  schwarz
+ * Added eReadWriteFile that eventually opens a file in read-write mode.
+ *
  * Revision 1.29  2003/05/30 17:42:04  schwarz
  * Added SdifFGetMatrixType and SdifFGetFrameType.
  *
@@ -157,7 +160,7 @@
  * Revision 1.1.2.1  2000/08/21  13:07:41  tisseran
  * *** empty log message ***
  *
- * $Date: 2003-06-06 10:25:40 $
+ * $Date: 2003-07-07 10:27:01 $
  *
  */
 
@@ -172,7 +175,7 @@ extern "C" {
 #endif
 
 
-static const char _sdif_h_cvs_revision_ [] = "$Id: sdif.h,v 1.30 2003-06-06 10:25:40 schwarz Exp $";
+static const char _sdif_h_cvs_revision_ [] = "$Id: sdif.h,v 1.31 2003-07-07 10:27:01 roebel Exp $";
 
 
 #include <stdio.h>
@@ -328,7 +331,9 @@ int SdiffSetPos(SdifFileT *file, SdiffPosT *pos);
 /* SdifHard_OS.h */
 
 typedef char           SdifChar;
+typedef char           SdifInt1;
 typedef short          SdifInt2;
+typedef unsigned char  SdifUInt1;
 typedef unsigned short SdifUInt2;
 typedef int            SdifInt4;
 typedef unsigned int   SdifUInt4;
@@ -418,9 +423,11 @@ typedef enum SdifDataTypeE
   eChar     = 0x0301,
   eFloat4   = 0x0004,
   eFloat8   = 0x0008,
+  eInt1     = 0x0101,
   eInt2     = 0x0102,
   eInt4     = 0x0104,
   eInt8     = 0x0108,
+  eUInt1    = 0x0201,
   eUInt2    = 0x0202,
   eUInt4    = 0x0204,
   eUInt8    = 0x0208,
@@ -596,9 +603,11 @@ union DataTypeU
 {
   SdifFloat4 *Float4;
   SdifFloat8 *Float8;
+  SdifInt1   *Int1  ;
   SdifInt2   *Int2  ;
   SdifInt4   *Int4  ;
 /*SdifInt8   *Int8  ;*/
+  SdifUInt1  *UInt1 ;
   SdifUInt2  *UInt2 ;
   SdifUInt4  *UInt4 ;
 /*SdifUInt8  *UInt8 ;*/
@@ -1708,8 +1717,10 @@ SdifUInt2       SdifExistUserFrameType (SdifHashTableT *FrameTypeHT);
 /* generate template for all types */
 #define sdif__foralltypes(macro, post)	macro(Float4)post \
 					macro(Float8)post \
+					macro(Int1  )post \
 					macro(Int2  )post \
 					macro(Int4  )post \
+					macro(UInt1 )post \
 					macro(UInt2 )post \
 					macro(UInt4 )post \
 					macro(Char  )post \
@@ -2422,7 +2433,9 @@ size_t Sdiffwrite (void *ptr, size_t size, size_t nobj, FILE *stream);
 /* Read, return the number of objects */
 
 size_t SdiffReadChar   (SdifChar   *ptr, size_t nobj, FILE *stream);
+size_t SdiffReadInt1   (SdifInt1   *ptr, size_t nobj, FILE *stream);
 size_t SdiffReadInt2   (SdifInt2   *ptr, size_t nobj, FILE *stream);
+size_t SdiffReadUInt1  (SdifUInt1  *ptr, size_t nobj, FILE *stream);
 size_t SdiffReadUInt2  (SdifUInt2  *ptr, size_t nobj, FILE *stream);
 size_t SdiffReadInt4   (SdifInt4   *ptr, size_t nobj, FILE *stream);
 size_t SdiffReadUInt4  (SdifUInt4  *ptr, size_t nobj, FILE *stream);
@@ -2436,7 +2449,9 @@ size_t SdiffReadFloat8 (SdifFloat8 *ptr, size_t nobj, FILE *stream);
 /* Write, return the number of objects */
 
 size_t SdiffWriteChar   (SdifChar   *ptr, size_t nobj, FILE *stream);
+size_t SdiffWriteInt1   (SdifInt1   *ptr, size_t nobj, FILE *stream);
 size_t SdiffWriteInt2   (SdifInt2   *ptr, size_t nobj, FILE *stream);
+size_t SdiffWriteUInt1  (SdifUInt1  *ptr, size_t nobj, FILE *stream);
 size_t SdiffWriteUInt2  (SdifUInt2  *ptr, size_t nobj, FILE *stream);
 size_t SdiffWriteInt4   (SdifInt4   *ptr, size_t nobj, FILE *stream);
 size_t SdiffWriteUInt4  (SdifUInt4  *ptr, size_t nobj, FILE *stream);

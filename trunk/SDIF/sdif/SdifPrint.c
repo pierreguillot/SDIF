@@ -1,4 +1,4 @@
-/* $Id: SdifPrint.c,v 3.8 2002-05-24 19:37:52 ftissera Exp $
+/* $Id: SdifPrint.c,v 3.9 2003-07-07 10:27:01 roebel Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -33,6 +33,10 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.8  2002/05/24 19:37:52  ftissera
+ * Change code to be compatible with C++
+ * Cast pointers to correct type.
+ *
  * Revision 3.7  2001/05/02 09:34:46  tisseran
  * Change License from GNU Public License to GNU Lesser Public License.
  *
@@ -231,8 +235,10 @@ SdifPrintMatrixHeader(FILE *f, SdifMatrixHeaderT *MatrixHeader)
 static const char *formatChar     = "%d  ";
 static const char *formatFloat4   = "%8g  ";
 static const char *formatFloat8   = "%8g  ";
+static const char *formatInt1     = "%hhd  ";
 static const char *formatInt2     = "%hd  ";
 static const char *formatInt4     = "%d  ";
+static const char *formatUInt1    = "%hhu  ";
 static const char *formatUInt2    = "%hu  ";
 static const char *formatUInt4    = "%u  ";
 /* l or ll?
