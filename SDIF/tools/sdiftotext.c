@@ -1,4 +1,4 @@
-/* $Id: sdiftotext.c,v 1.3 2000-12-06 13:43:44 lefevre Exp $
+/* $Id: sdiftotext.c,v 1.4 2003-11-07 12:09:09 ellis Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -11,6 +11,9 @@
  * sdiftotext.c
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.3  2000/12/06 13:43:44  lefevre
+ * Mix HostArchiteture and AutoConfigure mechanisms
+ *
  * Revision 1.2  2000/11/16  12:02:23  lefevre
  * no message
  *
@@ -49,6 +52,7 @@
  * Increased version to 1.01.01.
  *
  */
+
 
 #include <preincluded.h>
 #include "XpGuiCalls.h"

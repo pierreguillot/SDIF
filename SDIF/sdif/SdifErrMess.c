@@ -1,4 +1,4 @@
-/* $Id: SdifErrMess.c,v 3.15 2002-05-24 20:08:31 ftissera Exp $
+/* $Id: SdifErrMess.c,v 3.16 2003-11-07 12:09:08 ellis Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -31,6 +31,9 @@
  * author: Dominique Virolle 1998
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.15  2002/05/24 20:08:31  ftissera
+ * Comment alternative to print error/warning message
+ *
  * Revision 3.14  2002/05/24 19:36:38  ftissera
  * Change SdifFError to use new error and warning handlers.
  *
@@ -108,11 +111,7 @@
 
 
 
-//char gSdifBufferError[4096];
-//int  gSdifErrorOutputEnabled = 1;
-
-
-const char *gSdifErrorLevel [eNumLevels] = {
+const char * gSdifErrorLevel [ eNumLevels ] = {
     "Fatal Error",
     "Error",
     "Warning",
@@ -243,7 +242,7 @@ SdifUInt4 SdifInsertTailError(SdifErrorLT* ErrorL, unsigned int ErrorCount [],
     SdifUInt4		Count    = ++ErrorCount [Level];
 
     SdifErrorT*         NewError = SdifCreateError(Tag, Level, UserMess);
-     //*NewError = SdifCreateError(Tag, Level, UserMess);
+     /*NewError = SdifCreateError(Tag, Level, UserMess);*/
 
     /*    if(Level <= eError) {      */
       SdifListPutTail(ErrorL->ErrorList, NewError);
