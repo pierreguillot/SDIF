@@ -10,5 +10,5 @@ autoconf
 automake --foreign --add-missing --copy
  (
      cd SDIF
-     autogen.sh
+     ./autogen.sh
  )
