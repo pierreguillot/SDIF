@@ -1,4 +1,4 @@
-/* $Id: SdifTextConv.c,v 3.9 2003-06-24 15:25:01 roebel Exp $
+/* $Id: SdifTextConv.c,v 3.10 2003-06-24 16:01:32 roebel Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -32,6 +32,9 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.9  2003/06/24 15:25:01  roebel
+ * Removed UniversalEnvVar.h which in fact has never been used in SDIF.
+ *
  * Revision 3.8  2002/08/05 14:21:38  roebel
  * Removed unused variable.
  *
@@ -81,9 +84,6 @@
 
 #include <preincluded.h>
 #include "XpGuiCalls.h"
-#if 0 
-#include "UniversalEnvVar.h"
-#endif
 
 #include "SdifTextConv.h"
 #include "SdifFile.h"
