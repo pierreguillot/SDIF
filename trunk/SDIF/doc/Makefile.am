@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.6 2003-03-07 17:33:00 roebel Exp $
+# $Id: Makefile.am,v 1.7 2003-03-18 14:22:52 roebel Exp $
 #
 # ./doc/Makefile.am             September 2000          Patrice Tisserand
 #
@@ -36,6 +36,10 @@
 
 
 # $Log: not supported by cvs2svn $
+# Revision 1.6  2003/03/07 17:33:00  roebel
+# Removed wildcard by explicite list of files. Automake does not handle
+# wildcards correctly.
+#
 # Revision 1.5  2001/10/26 15:04:18  schwarz
 # Made Makefile.am output the old, carefully hand-crafted Makefile, plus
 # the automake blabber.  Had to change some variable names (no '-'),
@@ -191,7 +195,7 @@ tutc:		extern/tutorial.c $(HOME)/src/SDIF/autoconf/SDIF-3.2.0/include/sdif.h
 		gcc -I$(HOME)/src/SDIF/autoconf/SDIF-3.2.0/include \
 		    -L$(HOME)/src/SDIF/autoconf/SDIF-3.2.0/sdif \
 		    $< -lsdif
-#		gcc -I/u/formes/include/sdif -L$(HOME)/lib/i686/Linux_2.2.5 \
+#		gcc -I/u/formes/include/sdif -L$(HOME)/lib/i686/Linux_2.2.5 
 
 tutorial:	extern/tutorial-doc.html
 extern/tutorial-doc.html:	extern/tutorial-doc.tex
