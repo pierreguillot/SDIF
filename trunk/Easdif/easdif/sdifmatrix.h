@@ -33,9 +33,13 @@
  * 
  * 
  * 
- * $Id: sdifmatrix.h,v 1.16 2003-11-18 18:21:21 roebel Exp $ 
+ * $Id: sdifmatrix.h,v 1.17 2003-11-25 10:55:42 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.16  2003/11/18 18:21:21  roebel
+ * Impemented Get(std::string) for text matrices.
+ * declared exceptions for Init and Get methods.
+ *
  * Revision 1.15  2003/07/18 20:42:22  roebel
  * Moved constructor implementations to .cpp, fixed bug in constructor with allocation
  *
@@ -301,7 +305,7 @@ public:
  */
   void Init(SdifSignature sig, 
 	      int nrows, int ncols, SdifDataTypeET  type)   
-    throw(SDIFMatrixDataError,bad_alloc);
+    throw(SDIFMatrixDataError,std::bad_alloc);
 
 /** 
  * \ingroup rwmat
@@ -314,7 +318,7 @@ public:
  */
   void Init(const std::string &sig, 
 	      int nrows, int ncols, SdifDataTypeET  type)
-    throw(SDIFMatrixDataError,bad_alloc);
+    throw(SDIFMatrixDataError,std::bad_alloc);
 
 
 /** 
