@@ -1,4 +1,4 @@
-/* $Id: SdifFile.c,v 3.39 2003-12-15 13:14:50 schwarz Exp $
+/* $Id: SdifFile.c,v 3.40 2004-02-08 14:26:58 ellis Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -33,6 +33,10 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.39  2003/12/15 13:14:50  schwarz
+ * Added SdifFileT based functions SdifFSetPos, SdifFGetPos around the
+ * Sdiff* Macros, to be callable from OpenMusic.
+ *
  * Revision 3.38  2003/11/07 21:47:18  roebel
  * removed XpGuiCalls.h and replaced preinclude.h  by local files
  *
@@ -390,13 +394,6 @@ SdifFOpen(const char* Name, SdifFileModeET Mode)
 		      _SdifFError(SdifF, eBadStdFile, SdifF->Name);
 		  break;
               }
-            /* Mac file attribute (for icon) */  
-#ifdef USE_XPGUI
-	      if(SdifF->Stream != NULL)
-		{	
-		  XpSetFileAttribute(SdifF->Name, FileType_Sdif, 0);
-		}
-#endif
 	  break;
 
           case eReadWriteFile:
@@ -514,10 +511,6 @@ SdifFOpenText(SdifFileT *SdifF, const char* Name, SdifFileModeET Mode)
 		      }
 		    else
 		      {
-			/* Mac file attribute (for icon) */  
-#ifdef USE_XPGUI
-			XpSetFileAttribute(Name, FileType_Text, 0);
-#endif
 			return SdifF;
 		      }
 		  }
@@ -806,6 +799,7 @@ void
 SdifGenInit(const char *PredefinedTypesFile)
 {
     char *PreTypesEnvVar=NULL;
+    char *local_types = NULL;
 
     assert (!gSdifInitialised  &&  "SDIF library already initialised");
     gSdifInitialised = 1;
@@ -822,23 +816,44 @@ SdifGenInit(const char *PredefinedTypesFile)
 
     if ( (!PredefinedTypesFile) || (strlen(PredefinedTypesFile)== 0) )
     {
-#ifdef USE_XPGUI
-      PreTypesEnvVar = XpGetenv(_SdifEnvVar);
-#else
 #ifdef HAVE_GETENV
-      PreTypesEnvVar = getenv(_SdifEnvVar);
+       PreTypesEnvVar = getenv(_SdifEnvVar);
 #endif
+       if (! PreTypesEnvVar)
+       {
+         PreTypesEnvVar = _SdifTypesFileName;
+       }
+
+    /* Give priority to any local type file */
+
+#if HAVE_SYS_STAT_H
+       { 
+         int rs;
+         struct stat sb;
+         char * copy;
+
+         copy = strdup(PreTypesEnvVar);
+         local_types = strdup(SdifBaseName(copy));
+         rs = stat(local_types,&sb);
+
+         if( rs == 0 )
+         {
+           PreTypesEnvVar = local_types; 
+         }
+         free(copy);
+       }
 #endif
-	if (PreTypesEnvVar)
-	    SdifFLoadPredefinedTypes(gSdifPredefinedTypes, PreTypesEnvVar);
-	else
-	    SdifFLoadPredefinedTypes(gSdifPredefinedTypes,  _SdifTypesFileName);
+      SdifFLoadPredefinedTypes(gSdifPredefinedTypes,  PreTypesEnvVar);
     }
     else
     {
         SdifFLoadPredefinedTypes(gSdifPredefinedTypes, PredefinedTypesFile);
     }
 
+  if( local_types )
+  {
+    free(local_types);
+  }
 }
 
 

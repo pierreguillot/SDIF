@@ -1,4 +1,4 @@
-/* $Id: SdifRWLowLevel.c,v 3.18 2003-11-07 21:47:18 roebel Exp $
+/* $Id: SdifRWLowLevel.c,v 3.19 2004-02-08 14:26:58 ellis Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -32,6 +32,9 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.18  2003/11/07 21:47:18  roebel
+ * removed XpGuiCalls.h and replaced preinclude.h  by local files
+ *
  * Revision 3.17  2003/07/07 10:27:01  roebel
  * Added support for eInt1 and eUInt1 data types
  *
@@ -1201,9 +1204,33 @@ static const char *formatUInt8    = "%lu";
 }
 
 /* generate scan functions */
+
+/* Not for all types, char is special */
+
+/* generate template for all types */
+#define sdif__foralltypes(macro, post)  macro(Float4)post \
+                                        macro(Float8)post \
+                                        macro(Int1  )post \
+                                        macro(Int2  )post \
+                                        macro(Int4  )post \
+                                        macro(UInt1 )post \
+                                        macro(UInt2 )post \
+                                        macro(UInt4 )post 
+
 sdif_foralltypes (scan);
 
-
+size_t SdiffScanChar (FILE *stream, SdifChar *ptr, size_t nobj)
+{
+    size_t iobj, NbObjR = 0;					    
+    char buffer[8];
+								   
+    for (iobj = 0; iobj < nobj; iobj ++ ) {
+        NbObjR += fscanf (stream, "%s",buffer);
+        /* to skip the leading ' */
+        ptr[iobj] = buffer[1];
+    }
+    return NbObjR;						    
+}
 
 
 
