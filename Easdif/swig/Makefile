@@ -1,6 +1,9 @@
-# $Id: Makefile,v 1.6 2003-04-17 12:20:39 schwarz Exp $
+# $Id: Makefile,v 1.7 2003-04-18 14:31:27 schwarz Exp $
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.6  2003/04/17 12:20:39  schwarz
+# Output (return value) mapping for SdifSignature works!
+#
 # Revision 1.5  2003/04/17 11:15:01  schwarz
 # Swigging sdif.h works (with some warnings), but that's not yet it...
 #
@@ -28,6 +31,7 @@ sdifincbase  = entity frame matrix namevaluetable
 sdifincfiles = $(sdifincbase:%=../easdif/sdif%.h) ../SDIF/include/sdif.h
 
 wrap = easdif_wrap.cxx
+# dbflag = -g
 
 all:			SDIF.pm SDIF.so
 
@@ -36,8 +40,7 @@ SDIF.pm $(wrap):	easdif.i $(sdifincfiles) sdifsignature.i
 #	swig -c++ -perl5 $<
 
 easdif_wrap.o:		$(wrap)
-	g++ -c -fpic -Dexplicit=  $(wrap)  -fno-strict-aliasing $(INCL)
-#	g++ $(INCL) -DHAVE_CONFIG_H -DUSE_CONFIGURE -g2 $< -o $@
+	g++ -c $(dbflag) -fpic -Dexplicit= $(wrap) -fno-strict-aliasing $(INCL)
 
 SDIF.so:		easdif_wrap.o
 	g++ -shared ../easdif/.libs/libEasdif.so easdif_wrap.o -o SDIF.so
