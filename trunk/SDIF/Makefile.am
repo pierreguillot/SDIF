@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.3 2001-04-20 17:33:35 schwarz Exp $
+# $Id: Makefile.am,v 1.4 2001-04-20 17:35:45 schwarz Exp $
 #
 # ./Makefile.am		September 2000			Patrice Tisserand
 #
@@ -29,6 +29,10 @@
 # send email to:  sdif@ircam.fr
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.3  2001/04/20 17:33:35  schwarz
+# Added cvstag target and publish target to publish a new version.
+# Removed all Makefile.in from CVS.
+#
 # Revision 1.2  2000/10/27 20:02:42  roebel
 # autoconf merged back to main trunk
 #
@@ -56,9 +60,9 @@ ircam_deps:
 test	:	check
 
 # cvs tag
-cvstag	= $(shell echo $(PACKAGE)_lib_version_$(VERSION) | tr . _)
+CVSTAG	= $(shell echo $(PACKAGE)_lib_version_$(VERSION) | tr . _)
 cvstag:
-	cvs tag $(cvstag)
+	cvs tag $(CVSTAG)
 
 # call this to publish a new version
 publish:	cvstag dist
