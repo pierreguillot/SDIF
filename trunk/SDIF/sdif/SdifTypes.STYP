@@ -17,7 +17,7 @@ SDIF
   1FTD  1IDS    { 1IDS StreamIdTable;   }
 
   1MTD  1FOF    { Frequency, Amplitude, BandWidth, Tex, DebAtt, Atten, Phase }
-  1MTD  1FQ0    { Frequency, Mode, Hit }
+  1MTD  1FQ0    { Frequency, Confidence, Score, RealAmplitude }
   1MTD  1RES    { Frequency, Amplitude, BandWidth, Saliance, Correction }
   1MTD  1CHA    { Channel1, Channel2, Channel3, Channel4 }
   1MTD  1DIS    { Distribution, Amplitude }
