@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.25 2004-02-02 19:09:28 schwarz Exp $
+# $Id: Makefile.am,v 1.26 2004-07-13 15:28:16 roebel Exp $
 #
 # ./Makefile.am		September 2000			Patrice Tisserand
 #
@@ -30,6 +30,10 @@
 
 
 # $Log: not supported by cvs2svn $
+# Revision 1.25  2004/02/02 19:09:28  schwarz
+# Fix rpm build target, thanks to Patrice.
+# Build ALL archs.
+#
 # Revision 1.24  2004/01/29 14:20:16  schwarz
 # update ChangeLog
 # use rpmbuild -ba for rpm -ba on RH 9, should be configured
@@ -221,7 +225,7 @@ publish-ftp:	# (experimental)
 # (to exactly reconstitute a published version)
 CVSTAG	      = $(shell echo $(PACKAGE)_lib_version_$(VERSION) | tr . _)
 cvstag:
-		cvs tag -F $(CVSTAG)
+		cd  @top_srcdir@;cvs tag -F $(CVSTAG)
 
 
 .PHONY:		grep doc ircam_deps test publish publish-ftp rpm cvstag
