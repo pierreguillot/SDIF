@@ -1,4 +1,4 @@
-/* $Id: sdif.h,v 1.36 2003-11-18 18:14:01 roebel Exp $
+/* $Id: sdif.h,v 1.37 2003-12-15 13:13:44 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -30,6 +30,9 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.36  2003/11/18 18:14:01  roebel
+ * Added alias for typo in SdifErrorTagE.
+ *
  * Revision 1.35  2003/11/07 12:09:07  ellis
  * Added the declaration of of two functions in the header file
  * SdifFAllFrameTypeToSdifString and SdifFAllMatrixTypeToSdifString
@@ -183,7 +186,7 @@
  * Revision 1.1.2.1  2000/08/21  13:07:41  tisseran
  * *** empty log message ***
  *
- * $Date: 2003-11-18 18:14:01 $
+ * $Date: 2003-12-15 13:13:44 $
  *
  */
 
@@ -198,7 +201,7 @@ extern "C" {
 #endif
 
 
-static const char _sdif_h_cvs_revision_ [] = "$Id: sdif.h,v 1.36 2003-11-18 18:14:01 roebel Exp $";
+static const char _sdif_h_cvs_revision_ [] = "$Id: sdif.h,v 1.37 2003-12-15 13:13:44 schwarz Exp $";
 
 
 #include <stdio.h>
@@ -347,6 +350,26 @@ int SdiffSetPos(SdifFileT *file, SdiffPosT *pos);
 #   define SdiffGetPos(f,p)	((*(p) = ftell(f)) == -1  ?  -1  :  0)
 #   define SdiffSetPos(f,p)	(fseek(f, (long)(*(p)), SEEK_SET))
 #endif
+
+
+
+/*DOC:
+  Get position in file.
+  [return] file offset or -1 for error.
+  SdiffPosT is actually long.
+ */
+int SdifFGetPos(SdifFileT *file, SdiffPosT *pos);
+
+/*DOC:
+  Set absolute position in file.
+  SdiffPosT is actually long.
+  [Return] 0 on success, 
+	  -1 on error (errno is set, see fseek(3) for details)
+
+  On Mac or Windows, seeking on a stream is always considered
+  successful (return 0), even if no seek was done!
+ */
+int SdifFSetPos(SdifFileT *file, SdiffPosT *pos);
 
 
 

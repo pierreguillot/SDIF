@@ -1,4 +1,4 @@
-/* $Id: SdifFile.c,v 3.38 2003-11-07 21:47:18 roebel Exp $
+/* $Id: SdifFile.c,v 3.39 2003-12-15 13:14:50 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -33,6 +33,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.38  2003/11/07 21:47:18  roebel
+ * removed XpGuiCalls.h and replaced preinclude.h  by local files
+ *
  * Revision 3.37  2003/11/07 15:29:28  tisseran
  * Removed inclusion of SdifFile.h
  * Used SDIF_VERSION now.
@@ -1176,3 +1179,30 @@ int SdifFTruncate(SdifFileT *file)
 #endif
 
 }
+
+
+
+/* Get position in file.
+   [return] file offset or -1 for error.
+   SdiffPosT is actually long.
+ */
+int SdifFGetPos(SdifFileT *file, SdiffPosT *pos)
+{
+    return SdiffGetPos(file->Stream, pos);
+}
+
+
+
+/* Set absolute position in file.
+   SdiffPosT is actually long.
+   [Return] 0 on success, 
+	   -1 on error (errno is set, see fseek(3) for details)
+
+	   On Mac or Windows, seeking on a stream is always considered
+	   successful (return 0), even if no seek was done!
+ */
+int SdifFSetPos(SdifFileT *file, SdiffPosT *pos)
+{
+    return SdiffSetPos(file->Stream, pos);
+}
+
