@@ -10,7 +10,7 @@
 # even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 # PARTICULAR PURPOSE.
 
-# $Id: Makefile.in,v 1.15 2000-12-06 15:01:14 roebel Exp $
+# $Id: Makefile.in,v 1.16 2000-12-07 13:03:52 roebel Exp $
 #
 # ./sdif/Makefile.am		September 2000			Patrice Tisserand
 #
@@ -41,6 +41,9 @@
 # send email to:  sdif@ircam.fr
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.11  2000/12/06 15:01:14  roebel
+# removed host_configure.h from makefiles
+#
 # Revision 1.10  2000/11/21 14:51:47  schwarz
 # - sdif.h is now included by all sdif/Sdif*.c files.
 # - Removed all public typedefs, enums, structs, and defines from the
