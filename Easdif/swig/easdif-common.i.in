@@ -1,10 +1,16 @@
-// $Id: easdif-common.i.in,v 1.2 2003-05-19 14:04:20 roebel Exp $ -*-c-*-
+// $Id: easdif-common.i.in,v 1.3 2003-05-21 20:33:59 roebel Exp $ -*-c-*-
 //
 // easdif.i		16.04.2003		Diemo Schwarz
 //
 // Interface file for swig, defining the callable easdif functions
 //
 // $Log: not supported by cvs2svn $
+// Revision 1.2  2003/05/19 14:04:20  roebel
+// To resolve problems with inconsistent nameing in interface files
+// and header files, swig rename declarations have been changed to use
+// %rename instead of %name and have been moved to swig interface description.
+// Due to bug in swig const version of GetMatrixWithSig had to be ignored.
+//
 // Revision 1.1  2003/04/30 11:34:31  tisseran
 // Removee file no conform with Diemo's file hierarchy
 // Started autoconfiscation of swig directory
@@ -87,4 +93,18 @@ using namespace Easdif;
 %include "@EASDIF_INC_DIR@/easdif/sdifmatrix.h"
 %include "@EASDIF_INC_DIR@/easdif/sdifnamevaluetable.h"
 %include "@EASDIF_INC_DIR@/easdif/sdifframe.h"
+%include "@EASDIF_INC_DIR@/easdif/sdifexception.h"
+
+// exceptions to be used for entity only
+%exception {
+        try {
+                $action
+        } catch(SDIFException e) {
+                SWIG_exception(SWIG_IOError,e.getmessage().c_str());
+        } catch(...) {
+                SWIG_exception(SWIG_UnknownError,"Unknown exception");
+        }
+}
+
+
 %include "@EASDIF_INC_DIR@/easdif/sdifentity.h"
