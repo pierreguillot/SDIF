@@ -1,4 +1,4 @@
-/* $Id: SdifFile.c,v 2.0 1998-11-29 11:41:40 virolle Exp $
+/* $Id: SdifFile.c,v 2.1 1998-12-09 15:05:25 virolle Exp $
  *
  * SdifFile.c
  *
@@ -8,6 +8,16 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 2.0  1998/11/29  11:41:40  virolle
+ * - New management of interpretation errors.
+ * - Alignement of frames with CNMAT (execpt specials Chunk 1NVT, 1TYP, 1IDS).
+ * _ Sdif Header File has a Sdif format version.
+ * - Matrices order in frames is not important now. (only one occurence of
+ *   a Matrix Type in a Frame Type declaration )
+ * - Hard coded predefined types more dynamic management.
+ * - Standart streams (stdin, stdout, stderr) set as binary for Windows32 to
+ *   have exactly the same result on each plateforme.
+ *
  * Revision 1.4  1998/05/14  09:50:34  schwarz
  * Added SdifCurrOneRowData to return a pointer to the raw data.
  * This can subsequently be used for SdifSetCurrOneRow.
@@ -98,7 +108,7 @@ SdifFOpen(const char* Name, SdifFileModeET Mode)
 			     || (SdifStrCmp(Name, "stderr") == 0)   )
               {
                 _SdifFError(SdifF, eBadStdFile, Name);
-                SdifFClose(SdifF);
+                SdifFClose (SdifF);
 				return NULL;
 			  }
             else
@@ -107,7 +117,7 @@ SdifFOpen(const char* Name, SdifFileModeET Mode)
                 if (! SdifF->Stream)
                   {
                     _SdifError(eFileNotFound, Name);
-                    SdifFClose(SdifF);
+                    SdifFClose (SdifF);
                     return NULL;
                   }
                 else
@@ -128,7 +138,7 @@ SdifFOpen(const char* Name, SdifFileModeET Mode)
 			     || (SdifStrCmp(Name, "stderr") == 0)   )
               {
                 _SdifFError(SdifF, eBadStdFile, Name);
-                SdifFClose(SdifF);
+                SdifFClose (SdifF);
                 return NULL;
               }
             else
@@ -137,7 +147,7 @@ SdifFOpen(const char* Name, SdifFileModeET Mode)
                 if (! SdifF->Stream)
                  {
                     _SdifError(eFileNotFound, Name);
-                    SdifFClose(SdifF);
+                    SdifFClose (SdifF);
                     return NULL;
                   }
                 else
@@ -150,7 +160,7 @@ SdifFOpen(const char* Name, SdifFileModeET Mode)
 
       default :
         _SdifFError(SdifF, eBadMode, "this mode doesn't exist");
-        SdifFClose(SdifF);
+        SdifFClose (SdifF);
         return NULL;
       }
   }
@@ -203,7 +213,6 @@ SdifFOpenText(SdifFileT *SdifF, const char* Name, SdifFileModeET Mode)
 			 || (SdifStrCmp(Name, "stderr") == 0)   )
 		{
 		  _SdifFError(SdifF, eBadStdFile, Name);
-		  SdifFClose(SdifF);
 		  return NULL;
 	    }
 	    else
@@ -212,7 +221,6 @@ SdifFOpenText(SdifFileT *SdifF, const char* Name, SdifFileModeET Mode)
 	      if (! SdifF->TextStream)
 		  {
 		    _SdifError(eFileNotFound, Name);
-		    SdifFClose(SdifF);
 		    return NULL;
 		  }
 	      else
@@ -240,7 +248,6 @@ SdifFOpenText(SdifFileT *SdifF, const char* Name, SdifFileModeET Mode)
 	      if (SdifStrCmp(Name, "stdin") == 0)
 		  {
 		    _SdifFError(SdifF, eBadStdFile, Name);
-		    SdifFClose(SdifF);
 		    return NULL;
 		  }
 	      else
@@ -249,7 +256,6 @@ SdifFOpenText(SdifFileT *SdifF, const char* Name, SdifFileModeET Mode)
 	        if (! SdifF->TextStream)
 			{
 		      _SdifError(eAllocFail, Name);	  
-		      SdifFClose(SdifF);
 		      return NULL;
 			}
 	        else
@@ -271,7 +277,6 @@ SdifFOpenText(SdifFileT *SdifF, const char* Name, SdifFileModeET Mode)
 			 || (SdifStrCmp(Name, "stderr") == 0)   )
 		{
 		  _SdifFError(SdifF, eBadStdFile, Name);
-		  SdifFClose(SdifF);
 		  return NULL;
 	    }
 	    else
@@ -290,7 +295,6 @@ SdifFOpenText(SdifFileT *SdifF, const char* Name, SdifFileModeET Mode)
 	  }
 	default :
 	  _SdifFError(SdifF, eBadMode, "this mode doesn't exist or isn't appropriated");
-	  SdifFClose(SdifF);
 	  return NULL;
 	}
 }
@@ -527,7 +531,7 @@ SdifGenKill(void)
 void SdifPrintVersion(void)
 {
 #ifndef lint
-  static char rcsid[]= "$Revision: 2.0 $ IRCAM $Date: 1998-11-29 11:41:40 $";
+  static char rcsid[]= "$Revision: 2.1 $ IRCAM $Date: 1998-12-09 15:05:25 $";
 #endif
 
 
