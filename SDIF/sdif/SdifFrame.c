@@ -1,4 +1,4 @@
-/* $Id: SdifFrame.c,v 3.7 2004-07-22 14:47:56 bogaards Exp $
+/* $Id: SdifFrame.c,v 3.8 2004-09-09 17:42:13 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -30,6 +30,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.7  2004/07/22 14:47:56  bogaards
+ * removed many global variables, moved some into the thread-safe SdifGlobals structure, added HAVE_PTHREAD define, reorganized the code for selection, made some arguments const, new version 3.8.6
+ *
  * Revision 3.6  2003/11/07 21:47:18  roebel
  * removed XpGuiCalls.h and replaced preinclude.h  by local files
  *
@@ -61,6 +64,16 @@
 #include "SdifFrameType.h"
 #include <stdlib.h>
 
+
+size_t
+SdifSizeOfFrameHeader (void)
+{
+    return (sizeof(SdifFloat8) + 2 * sizeof(SdifUInt4));
+}
+
+
+
+
 SdifFrameHeaderT*
 SdifCreateFrameHeader(SdifSignature Signature,
 		      SdifUInt4 Size,
@@ -88,20 +101,11 @@ SdifCreateFrameHeader(SdifSignature Signature,
 }
 
 
-
-
-
-
 SdifFrameHeaderT*
 SdifCreateFrameHeaderEmpty(SdifSignature Signature)
 {
   return SdifCreateFrameHeader(Signature, _SdifFrameHeaderSize, 0, 0, 0.);
 }
-
-
-
-
-
 
 
 void
@@ -112,15 +116,6 @@ SdifKillFrameHeader(SdifFrameHeaderT *FrameHeader)
   else
     _SdifError(eFreeNull, "FrameHeader free");
 }
-
-
-
-
-
-
-
-
-
 
 
 SdifFrameDataT*
