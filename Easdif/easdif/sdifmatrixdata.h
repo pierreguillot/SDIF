@@ -33,9 +33,13 @@
  * 
  * 
  * 
- * $Id: sdifmatrixdata.h,v 1.3 2003-04-29 15:41:30 schwarz Exp $ 
+ * $Id: sdifmatrixdata.h,v 1.4 2003-05-18 23:14:10 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.3  2003/04/29 15:41:30  schwarz
+ * Changed all names View* to Print* and *Info to *Header for consistency
+ * with SDIF library.
+ *
  * Revision 1.2  2003/04/06 16:31:08  roebel
  * Added license info
  *
@@ -130,8 +134,8 @@ public:
   {
     if (i<0 || i >= m_Nrows || j >= m_Ncols || j<0)
       {
-	std::cerr<<"Error in Get : out of matrix range"<<std::endl;
-	return 1;
+	std::cerr<<"Error in Get(" <<i << "," <<j <<") out of matrix range ("<<m_Nrows<<","<<m_Ncols<<")" <<std::endl;
+	return -1;
       }
     return static_cast<TT>(m_Data[i*m_Ncols+j]);
   }
