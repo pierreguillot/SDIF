@@ -1,4 +1,4 @@
-/* $Id: sdif.h,v 1.38 2004-01-09 11:29:24 schwarz Exp $
+/* $Id: sdif.h,v 1.39 2004-06-03 11:39:57 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -30,6 +30,11 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.38  2004/01/09 11:29:24  schwarz
+ * Removed declaration of SdifFGetFrameType and SdifFGetMatrixType from
+ * public API because they are misleading.
+ * Use the correct SdifTestFrameType and SdifTestMatrixType instead.
+ *
  * Revision 1.37  2003/12/15 13:13:44  schwarz
  * Added SdifFileT based functions SdifFSetPos, SdifFGetPos around the
  * Sdiff* Macros, to be callable from OpenMusic.
@@ -190,7 +195,7 @@
  * Revision 1.1.2.1  2000/08/21  13:07:41  tisseran
  * *** empty log message ***
  *
- * $Date: 2004-01-09 11:29:24 $
+ * $Date: 2004-06-03 11:39:57 $
  *
  */
 
@@ -205,7 +210,7 @@ extern "C" {
 #endif
 
 
-static const char _sdif_h_cvs_revision_ [] = "$Id: sdif.h,v 1.38 2004-01-09 11:29:24 schwarz Exp $";
+static const char _sdif_h_cvs_revision_ [] = "$Id: sdif.h,v 1.39 2004-06-03 11:39:57 schwarz Exp $";
 
 
 #include <stdio.h>
@@ -2471,6 +2476,29 @@ void SdifPrintAllType(FILE *fw, SdifFileT *SdifF);
 
 #define _SdifBSLittleE 4096
 
+
+/* SdifHard_OS.h */
+
+/** 2 byte array swapping in place. */
+void SdifSwap2 (void *ptr, size_t num);
+
+/** 2 byte array swapping with copy. */
+void SdifSwap2Copy (void *src, void *dest, size_t num);
+
+/** 4 byte array swapping in place. */
+void SdifSwap4 (void *ptr, size_t num);
+
+/** 4 byte array swapping with copy */
+void SdifSwap4Copy (void *src, void *dest, size_t num);
+
+/** 8 byte array swapping in place. */
+void SdifSwap8 (void *ptr, size_t num);
+
+/** 8 byte array swapping with copy. */
+void SdifSwap8Copy (void *src, void *dest, size_t num);
+
+
+
 #define _SdifPaddingChar  '\0'
 #define _SdifReservedChars  ",;{}:"
 
@@ -2489,8 +2517,7 @@ size_t SdiffReadInt4   (SdifInt4   *ptr, size_t nobj, FILE *stream);
 size_t SdiffReadUInt4  (SdifUInt4  *ptr, size_t nobj, FILE *stream);
 size_t SdiffReadFloat4 (SdifFloat4 *ptr, size_t nobj, FILE *stream);
 size_t SdiffReadFloat8 (SdifFloat8 *ptr, size_t nobj, FILE *stream);
-
-/*size_t SdiffReadSignature (SdifSignature *Signature, FILE *stream);*/
+int    SdiffReadSignature (SdifSignature *Signature,  FILE *stream, size_t *n);
 
 
 
