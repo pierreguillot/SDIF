@@ -1,0 +1,75 @@
+dnl -*-autoconf-*-  (No, it's an autoconf file!)
+dnl -*-m4-*- (He emacs, it's a m4 file)
+dnl $Id: configure.in,v 1.1 2003-03-03 10:05:29 roebel Exp $
+dnl
+dnl configure.in		Feb 2003      Axel Roebel
+dnl
+dnl Source file for GNU autoconf, generates configure script.
+dnl
+
+
+dnl To check if directory is present
+AC_INIT(src/easdif.h)
+
+dnl ############################################################
+dnl PACKAGE NAME AND VERSION
+AC_MSG_RESULT(PACKAGE NAME)
+
+PACKAGE=Easdif
+AC_SUBST(PACKAGE)
+
+AM_INIT_AUTOMAKE($PACKAGE,$VERSION)
+
+AM_CONFIG_HEADER(src/config.h)
+
+dnl ############################################################
+dnl Checks for programs.
+AC_PROG_CXX
+AC_PROG_INSTALL
+AC_PROG_RANLIB
+
+dnl Check for libtool
+AC_PROG_LIBTOOL
+
+dnl Configure SDIF
+export enable_cpp=yes
+AC_CONFIG_SUBDIRS(SDIF)
+
+dnl Check for headers
+AC_MSG_RESULT(CHECK FOR HEADERS)
+AC_HEADER_STDC
+dnl AC_CHECK_HEADERS(SDIF/include/sdif.h)
+
+AC_SUBST(IRCAMDEPS)
+if test -f /u/formes/share/include/preincluded.h ; then
+ IRCAMDEPS=ircam_deps
+else
+ IRCAMDEPS=;
+fi
+
+
+dnl ############################################################
+dnl DEBUG feature
+
+AC_SUBST(SELLIB)
+SELLIB=libEasdif.la
+
+dnl ############################################################
+dnl find SDIF objects that have to be included into Easdif
+AC_MSG_RESULT(FIND SDIF FILES)
+AC_SUBST(SDIFOBJECTS)
+for ss in SDIF/sdif/*.c ; do
+    SDIFOBJECTS="$SDIFOBJECTS \$(top_srcdir)/SDIF/sdif/`basename $ss .c`.lo"
+done
+
+dnl ############################################################
+dnl CREATE OUTPUT FILES
+AC_MSG_RESULT(CREATE OUTPUT FILES)
+AC_OUTPUT(Makefile 
+src/Makefile 
+test/Makefile
+Easdif.pc)
+
+AC_MSG_RESULT(END OF CONFIGURATION)
+
+
