@@ -1,6 +1,6 @@
 dnl -*-autoconf-*-  (No, it's an autoconf file!)
 dnl -*-m4-*- (He emacs, it's a m4 file)
-dnl $Id: configure.in,v 1.37 2004-07-29 13:45:27 roebel Exp $
+dnl $Id: configure.in,v 1.38 2004-08-25 09:22:12 roebel Exp $
 dnl
 dnl configure.in		Feb 2003      Axel Roebel
 dnl
@@ -33,6 +33,9 @@ dnl
 dnl
 
 dnl $Log: not supported by cvs2svn $
+dnl Revision 1.37  2004/07/29 13:45:27  roebel
+dnl Version 0.10.1
+dnl
 dnl Revision 1.36  2004/07/28 14:59:25  roebel
 dnl Version 0.10.0:
 dnl Matrix::SetCol/SetRow and unsigned char element access.
@@ -158,7 +161,7 @@ PACKAGE=Easdif
 
 EASDIF_VERSION_MAJ=0
 EASDIF_VERSION_MIN=10
-EASDIF_VERSION_RELEASE=1
+EASDIF_VERSION_RELEASE=2
 
 VERSION="${EASDIF_VERSION_MAJ}.${EASDIF_VERSION_MIN}.${EASDIF_VERSION_RELEASE}"
 

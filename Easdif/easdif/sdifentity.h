@@ -32,9 +32,12 @@
  * 
  * 
  * 
- * $Id: sdifentity.h,v 1.20 2004-07-28 13:03:27 roebel Exp $ 
+ * $Id: sdifentity.h,v 1.21 2004-08-25 09:22:11 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.20  2004/07/28 13:03:27  roebel
+ * Fixed position type to be SdiffPosT
+ *
  * Revision 1.19  2004/07/27 17:40:19  roebel
  * Changed include directive to use user path and not system path for sdif.h
  *
@@ -362,17 +365,13 @@ public:
     
     bool Rewind();
 
-private:
 
   /** 
    * \ingroup  file
    * rewind a file to a frame that has a time position
-   * that is guaarantted to be before the time specified in timePos
+   * that is guaranteed to be before the time specified in timePos
    * if the directory information is incomplete (due to selection)
-   * the frame may be well before the time required, because 
-   * the performance is only vague this function is private and 
-   * intended as a helper function for ReadNextFrame(SDIFFrame& frame,SdifFloat8 time)
-   *
+   * the frame may be well before the time required.
    *
    * Postion will be on end of file if there  exists
    * no Frame after timePos
@@ -382,8 +381,6 @@ private:
    */
     
     bool Rewind(SdifFloat8 timePos);
-
-public:
 
   /** 
    * \ingroup file

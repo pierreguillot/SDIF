@@ -1,3 +1,9 @@
+2004-08-25  Axel Roebel  <roebel@localdomain>
+Version 0.10.2
+
+	* easdif/sdifentity.h, 
+	Rewind(time) made public.
+	
 2004-07-29  Axel Roebel  <roebel@localdomain>
 Version 0.10.1
 
@@ -549,4 +555,4 @@ Version 0.21
 	* ChangeLog: Added changelog to repository.
 
 
-$Id: ChangeLog,v 1.37 2004-07-29 13:45:27 roebel Exp $
+$Id: ChangeLog,v 1.38 2004-08-25 09:22:12 roebel Exp $
