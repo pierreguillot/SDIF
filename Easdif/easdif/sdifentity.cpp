@@ -32,9 +32,13 @@
  * 
  * 
  * 
- * $Id: sdifentity.cpp,v 1.13 2003-12-05 13:53:14 ellis Exp $ 
+ * $Id: sdifentity.cpp,v 1.14 2004-01-19 15:49:55 bogaards Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.13  2003/12/05 13:53:14  ellis
+ *
+ * including <iostream> for the use of std::cout, cerr...
+ *
  * Revision 1.12  2003/11/18 18:28:00  roebel
  * removed coments, changed exceptions to use new exception interface.
  *
@@ -126,8 +130,9 @@
 namespace Easdif {
 
 SDIFEntity::SDIFEntity(): efile(0), mSize(0), mEof(true), 
-    mOpen(0), generalHeader(0), asciiChunks(0), bytesread(0)
+    mOpen(0), generalHeader(0), asciiChunks(0)/*, bytesread(0)*/
 {
+	mFirstFramePos = 0;
 };
 
 /* to open a file in mode Read  */
@@ -181,6 +186,9 @@ bool SDIFEntity::OpenRead(const char* filename)
       mEof = false;
 
     mOpen = 2;
+
+    SdiffGetPos(GetFile()->Stream,&mFirstFramePos);
+    mFirstFramePos -= 4;	// substract the first 4 read chars of the already read signature
     return true;
 }
 
@@ -209,6 +217,9 @@ bool SDIFEntity::OpenWrite(const char* filename)
 	
     asciiChunks = SdifFWriteAllASCIIChunks(efile);
     mOpen = 1; 
+ 
+    SdiffGetPos(GetFile()->Stream,&mFirstFramePos);
+    mFirstFramePos -= 4;	// substract the first 4 read chars of the already read signature
     return true; 
 }
 
@@ -238,7 +249,13 @@ bool SDIFEntity::Open(const char* filename, SdifFileModeET Mode)
     }
     return false;
 }
-
+bool SDIFEntity::Rewind()
+{
+	SdiffSetPos(GetFile()->Stream,&mFirstFramePos);
+	size_t SizeR = 0;
+	SdifFGetSignature(GetFile(), &SizeR);
+	return (SizeR > 0);
+}
 SdifFileT* SDIFEntity::GetFile() const
 {
     return efile;
@@ -337,7 +354,7 @@ bool SDIFEntity::Close()
 	mOpen = 0; 
 	generalHeader = 0; 
 	asciiChunks =0;
-	bytesread =0;
+	//bytesread =0;
 	return true;
     }
     return false;
@@ -381,6 +398,22 @@ int SDIFEntity::ReadNextFrame(SDIFFrame& frame)
   else
   return -1;
 */
+}
+
+int SDIFEntity::ReadNextSelectedFrame(SDIFFrame& frame)
+{
+    int bytesread = 0;
+
+    if(eof()) {
+      // return -1;
+      throw SDIFEof(eError,"Error in SDIFEntity::ReadNextFrame -- Eof reached",
+		    efile,eEof,0,0); 
+    }
+
+    while(bytesread == 0 && !eof()){
+	    bytesread = frame.Read(efile, mEof);
+	}
+    return bytesread;    
 }
 
 int SDIFEntity::WriteFrame(SDIFFrame& frame)

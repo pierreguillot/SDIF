@@ -32,9 +32,12 @@
  * 
  * 
  * 
- * $Id: sdifentity.h,v 1.13 2003-08-06 18:00:33 roebel Exp $ 
+ * $Id: sdifentity.h,v 1.14 2004-01-19 15:49:55 bogaards Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.13  2003/08/06 18:00:33  roebel
+ * Fixed documentation
+ *
  * Revision 1.12  2003/07/18 21:19:36  roebel
  * Made WriteNVTs private. It is for internal use only.
  *
@@ -152,13 +155,14 @@ private:
 
     SdifUInt4 mNbFrame;
     SdifUInt4 mSize;
-
+	SdifUInt4 mFirstFramePos;	// file position after reading the header
+	 
     bool mEof;
 
     int mOpen;
     size_t generalHeader;
     size_t asciiChunks;
-    size_t bytesread;
+  //  size_t bytesread;
 
     //  char* string;
     //  char* filename;
@@ -324,7 +328,13 @@ public:
  * @return true if closed / false if file was not opened
  */
     bool Close();
+/** 
+ * \ingroup  file
+ * rewind a file to first non-ascii frame after the file header
+ * @return true if a signature was read
+ */
     
+    bool Rewind();
 /** 
  * \ingroup file
  * get the SdifFileT* file
@@ -411,8 +421,13 @@ public:
  * return the number of bytes read
  */
     int ReadNextFrame(SDIFFrame& frame);
+/**
+ * \ingroup rnwentity
+ * read the next selected frame of the file
+ * return the number of bytes read
+ */
 
-
+	int ReadNextSelectedFrame(SDIFFrame& frame);
 /**
  * \ingroup rnwentity
  * true if file is at eof
