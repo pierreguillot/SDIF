@@ -1,6 +1,9 @@
-# $Id: Makefile,v 1.2 2003-04-17 09:54:12 schwarz Exp $
+# $Id: Makefile,v 1.3 2003-04-17 10:05:48 schwarz Exp $
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.2  2003/04/17 09:54:12  schwarz
+# Test target works when path to easdif shared lib is given.
+#
 # Revision 1.1  2003/04/17 09:51:10  schwarz
 # First working swig generated perl extension!
 # Classes re-declared in easdif.i, simple method without shadow classes.
@@ -13,21 +16,22 @@ INCL = -I/usr/local/include -I$(PERL5_INCLUDE) -I.. -I../SDIF/include -I../SDIF/
 
 wrap = easdif_wrap.cxx
 
-all:	SDIF.so
+all:			SDIF.pm SDIF.so
 
-$(wrap):	easdif.i Makefile
-	swig -c++ -perl5 $<
-#	swig -c++ -perl5 -shadow $<
+SDIF.pm $(wrap):	easdif.i Makefile
+	swig -c++ -perl5 -shadow $<
+#	swig -c++ -perl5 $<
 
-easdif_wrap.o:	$(wrap)
+easdif_wrap.o:		$(wrap)
 	g++ -c -fpic -Dexplicit=  $(wrap)  -fno-strict-aliasing $(INCL)
 #	g++ $(INCL) -DHAVE_CONFIG_H -DUSE_CONFIGURE -g2 $< -o $@
 
-SDIF.so:	easdif_wrap.o
+SDIF.so:		easdif_wrap.o
 	g++ -shared ../easdif/.libs/libEasdif.so easdif_wrap.o -o SDIF.so
 
-test:
-	LD_LIBRARY_PATH=../easdif/.libs:$(LD_LIBRARY_PATH) perl -I. ./test.pl
+test:			SDIF.pm SDIF.so 
+	LD_LIBRARY_PATH=../easdif/.libs:$(LD_LIBRARY_PATH) \
+	perl -I. test.pl
 
 clean: 
 	rm $(wrap)
