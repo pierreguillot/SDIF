@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.5 2003-04-06 16:47:51 roebel Exp $
+# $Id: Makefile.am,v 1.6 2003-04-08 18:27:36 roebel Exp $
 #
 # ./Makefile.am		Feb. 2003     Axel Roebel
 #
@@ -30,6 +30,9 @@
 # 
 
 # $Log: not supported by cvs2svn $
+# Revision 1.5  2003/04/06 16:47:51  roebel
+# Added copyright notice.
+#
 # Revision 1.4  2003/04/03 13:15:40  schwarz
 # Added doc and test targets.
 #
@@ -44,7 +47,7 @@
 #
 
 SUBDIRS =  SDIF easdif  test 
-EXTRA_DIST = Doxyfile.in README.shared
+EXTRA_DIST = Doxyfile.in README.shared README.doc
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = Easdif.pc
@@ -57,12 +60,18 @@ test:	check
 grep:
 	grep $a easdif/*.cpp easdif/*.h /dev/null
 
+
+DOCTAR = $(PACKAGE)-$(VERSION).doc.tgz
+
+pubdoc: doc
+	tar -cvzf $(DOCTAR) doc 
+
 #
 # DISTRIBUTION
 #
 
 # base name of distribution (override automake generated variable to make source distribution!)
-distdir		  = $(PACKAGE)-$(VERSION)-src
+distdir		  = $(PACKAGE)-$(VERSION)-SDIF-@SDIFVERSION@-src
 PUBLISH_FILE      = $(distdir).tar.gz
 
 #
@@ -71,23 +80,26 @@ PUBLISH_FILE      = $(distdir).tar.gz
 
 # use this to check if the distribution works, tag the cvs project, 
 # make a source distribution and rpm, and copy it to the web server
-publish:	distcheck cvstag dist rpm publish-ftp
+publish:	distcheck cvstag dist pubdoc publish-ftp 
 
 # more files to publish (on server)
-EXTRA_PUBLISH     = README COPYING AUTHORS INSTALL ChangeLog #  doc
+EXTRA_PUBLISH     = $(DOCTAR)
 
 # call this as "make PUBLISH_HOST=yourwebhost publish" to publish a new version
 # this might work differently for other places
 # todo: configure PUBLISH_HOST
-PUBLISH_DIR       = sdif/download
+PUBLISH_HOST      = wwwas@www.ircam.fr
+PUBLISH_DIR       = sdif/download/
 PUBLISH_FILES     = $(PUBLISH_FILE) $(PUBLISH_RPM) $(EXTRA_PUBLISH)
-
+PUBLISH_FILES_MAP = COPYING INSTALL README AUTHORS ChangeLog
 publish-ftp:	# (experimental)
 		cat <<END_OF_FTP_COMMANDS \
 $$< \
 $$< \
 cd $(PUBLISH_DIR) \
 mput $(PUBLISH_FILES) \
+nmap $1 $1-Easdif \
+mput $(PUBLISH_FILES_MAP) \
 END_OF_FTP_COMMANDS \
 		| ftp $(PUBLISH_HOST)
 
@@ -100,5 +112,5 @@ cvstag:
 		cvs tag -F $(CVSTAG)
 
 
-.PHONY:		grep doc ircam_deps test publish publish-ftp  cvstag
+.PHONY:		grep doc ircam_deps test publish pubdoc publish-ftp  cvstag
 
