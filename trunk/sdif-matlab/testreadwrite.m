@@ -1,5 +1,9 @@
+% $Id: testreadwrite.m,v 1.2 2003-09-15 17:09:23 schwarz Exp $
+%
+% $Log: not supported by cvs2svn $
 
-function testl(name)
+
+function testreadwrite(name)
     format short g
     format loose  
     %format compact
