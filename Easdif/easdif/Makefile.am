@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.10 2003-05-22 21:22:53 roebel Exp $
+# $Id: Makefile.am,v 1.11 2003-07-09 21:19:49 roebel Exp $
 #
 # ./Easdif/src/Makefile.am	Feb. 2003 Axel Roebel
 #
@@ -31,6 +31,9 @@
 
 
 # $Log: not supported by cvs2svn $
+# Revision 1.10  2003/05/22 21:22:53  roebel
+# Fixed support for configuring and compiling in directories other than the source tree.
+#
 # Revision 1.9  2003/05/19 13:55:47  roebel
 # Added new header easdif_config.h.in .
 #
@@ -64,7 +67,7 @@
 
 # EXTRA_LIBRARIES to provide knowledge about possible substitutions
 # in lib_LTLIBRARIES
-EXTRA_LTLIBRARIES = libEasdif.la 
+EXTRA_LTLIBRARIES = libEasdif.la  libEasdif_gcc3_2.la
 
 # lib_LIBRARIES = @SELLIB@
 lib_LTLIBRARIES = @SELLIB@
@@ -83,6 +86,12 @@ libEasdif_la_SOURCES =  sdifentity.cpp sdifexception.cpp sdifframe.cpp \
 
 libEasdif_la_LIBADD  = @SDIFCPPLIB@
 libEasdif_la_LDFLAGS = -no-undefined  -release @VERSION@ -rpath $(libdir)
+
+libEasdif_gcc3_2_la_SOURCES =  sdifentity.cpp sdifexception.cpp sdifframe.cpp \
+                        sdifinit.cpp sdifmatrix.cpp sdifnamevaluetable.cpp
+
+libEasdif_gcc3_2_la_LIBADD  = @SDIFCPPLIB@
+libEasdif_gcc3_2_la_LDFLAGS = -no-undefined  -release @VERSION@ -rpath $(libdir)
 
 
 INCLUDES = -I.. -I$(top_srcdir) -I../SDIF/include -I$(top_srcdir)/SDIF/include -I../SDIF/sdif -I$(top_srcdir)/SDIF/sdif   -DUSE_CONFIGURE
