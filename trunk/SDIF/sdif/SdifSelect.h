@@ -1,4 +1,4 @@
-/* $Id: SdifSelect.h,v 3.15 2002-09-20 14:43:03 schwarz Exp $
+/* $Id: SdifSelect.h,v 3.16 2003-08-06 15:18:54 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -88,6 +88,10 @@ TODO
 
 LOG
   $Log: not supported by cvs2svn $
+  Revision 3.15  2002/09/20 14:43:03  schwarz
+  - SdifParseSignatureList Parse comma-separated list of signatures
+  - SdifKillSelectElement  now public
+
   Revision 3.14  2002/05/24 19:37:28  ftissera
   Change macro to be compatible with C++
 
@@ -270,51 +274,5 @@ int	       SdifSelectGetFirstInt       (SdifListP l, int defval);
 double	       SdifSelectGetFirstReal      (SdifListP l, double defval);
 char	      *SdifSelectGetFirstString    (SdifListP l, char *defval);
 SdifSignature  SdifSelectGetFirstSignature (SdifListP l, SdifSignature defval);
-
-
-
-
-
-/*
-// FUNCTION GROUP:	Selection Testing Functions
-*/
-
-int SdifSelectTestIntRange  (SdifSelectElementT *elem, int cand);
-int SdifSelectTestRealRange (SdifSelectElementT *elem, double cand);
-
-int SdifSelectTestInt (SdifListT *list, int cand);
-int SdifSelectTestReal (SdifListT *list, double cand);
-int SdifSelectTestSignature (SdifListT *list, const SdifSignature cand);
-int SdifSelectTestString (SdifListT *list, const char *cand);
-
-
-
-/*
-// FUNCTION GROUP:	Using a Selection in File I/O.
-*/
-
-/*DOC: 
-  Test the selection elements from sel applicable to frame FramH:
-  time, stream, frame type. */
-int SdifFrameIsSelected (SdifFrameHeaderT *FramH, SdifSelectionT *sel);
-
-/*DOC:
-  Test the selection elements from sel applicable to matrix MtrxH: 
-  the matrix signature. */
-int SdifMatrixIsSelected (SdifMatrixHeaderT *MtrxH, SdifSelectionT *sel);
-
-
-/*DOC: 
-  Test if the current frame header is in the file selection
-  (automatically parsed from the filename).  
-  Can be called after SdifFReadFrameHeader(). */
-int SdifFCurrFrameIsSelected (SdifFileT *file);
-
-/*DOC:
-  Test if the current matrix header is in the file selection
-  (automatically parsed from the filename).  
-  Can be called after SdifFReadMatrixHeader(). */
-int SdifFCurrMatrixIsSelected (SdifFileT *file);
-
 
 #endif /* _SdifSelect_ */
