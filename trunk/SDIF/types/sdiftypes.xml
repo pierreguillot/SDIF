@@ -2,6 +2,13 @@
 
 <!-- 
  $Log: not supported by cvs2svn $
+ Revision 1.9  2001/04/18 16:24:52  schwarz
+ Generate ../sdif/sdiftypes.h with xmltostyp.pl to include standard types
+ into the code as #define'd string SDIFTYPES_STRING
+ (--> no need to install SdifTypes.STYP)
+ Generate ../sdif/SdifTypes.STYP directly.
+ Changed usage of xmltostyp.pl, added help.
+
  Revision 1.8  2000/09/27 10:12:47  schwarz
  Ideas for datatype, datarange.
 
@@ -36,7 +43,7 @@
 <types-version>Ircam_1.5</types-version>
 
 <types-revision>
-  $Id: sdiftypes.xml,v 1.9 2001-04-18 16:24:52 schwarz Exp $
+  $Id: sdiftypes.xml,v 1.10 2001-04-20 16:58:38 schwarz Exp $
 </types-revision>
 
 
@@ -668,7 +675,9 @@ Some points to note about the SDIF types XML format:
 
 <frame signature="1NOI" name="">
   <description></description>
+<!-- temporarily removed IDIS, because noone remembers how it is defined and its not used anyway
   <matrixref signature="IDIS" occurrence="required">NoiseInfo</matrixref> 
+-->
   <matrixref signature="1DIS" occurrence="required">NoiseDistribution</matrixref> 
 </frame>
 
