@@ -1,4 +1,4 @@
-/* $Id: SdifFRead.h,v 3.10 2001-05-02 09:34:42 tisseran Exp $
+/* $Id: SdifFRead.h,v 3.11 2003-08-06 15:13:14 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -33,6 +33,9 @@ LIBRARY
 
 LOG
  * $Log: not supported by cvs2svn $
+ * Revision 3.10  2001/05/02 09:34:42  tisseran
+ * Change License from GNU Public License to GNU Lesser Public License.
+ *
  * Revision 3.9  2000/11/21 14:51:48  schwarz
  * - sdif.h is now included by all sdif/Sdif*.c files.
  * - Removed all public typedefs, enums, structs, and defines from the
@@ -181,8 +184,6 @@ size_t SdifFReadFrameHeader      (SdifFileT *SdifF);
   passer pour retomber sur un autre frame.  */
 size_t SdifFSkipMatrix            (SdifFileT *SdifF);
 
-/* obsolete */
-size_t SdifSkipMatrix            (SdifFileT *SdifF);
 
 /*DOC: 
   Cette fonction permet de passer une matrice mais après la lecture de
@@ -192,8 +193,6 @@ size_t SdifSkipMatrix            (SdifFileT *SdifF);
   Note:  The matrix padding is skipped also. */
 size_t SdifFSkipMatrixData        (SdifFileT *SdifF);
 
-/* obsolete */
-size_t SdifSkipMatrixData        (SdifFileT *SdifF);
 
 /*DOC: 
   Cette fonction à le même sens que SdifSkipMatrixData mais pour les
@@ -201,8 +200,6 @@ size_t SdifSkipMatrixData        (SdifFileT *SdifF);
   signature et l'entête.  */
 size_t SdifFSkipFrameData         (SdifFileT *SdifF);
 
-/* obsolete */
-size_t SdifSkipFrameData         (SdifFileT *SdifF);
 
 /*DOC: 
   Cette fonction permet de lire le Padding en fin de matrice.
@@ -239,10 +236,5 @@ size_t SdifFReadTextMatrix(SdifFileT *SdifF, SdifStringT *SdifString);
   Read padding.
 */
 size_t SdifFReadTextMatrixData(SdifFileT *SdifF, SdifStringT *SdifString);
-
-/*
- * obsolete
- */
-size_t SdifFReadNameValueCurrHT  (SdifFileT *SdifF);
 
 #endif /* _SdifFRead_ */

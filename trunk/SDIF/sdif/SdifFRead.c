@@ -1,4 +1,4 @@
-/* $Id: SdifFRead.c,v 3.15 2002-05-24 19:37:52 ftissera Exp $
+/* $Id: SdifFRead.c,v 3.16 2003-08-06 15:13:14 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -31,6 +31,10 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.15  2002/05/24 19:37:52  ftissera
+ * Change code to be compatible with C++
+ * Cast pointers to correct type.
+ *
  * Revision 3.14  2001/05/02 09:34:42  tisseran
  * Change License from GNU Public License to GNU Lesser Public License.
  *
@@ -450,6 +454,13 @@ SdifFReadOneRow(SdifFileT *SdifF)
 }
 
 
+/* skip one matrix row, when reading row by row with SdifFReadOneRow */
+size_t SdifFSkipOneRow(SdifFileT *SdifF)
+{
+    return (SdifFSkip(SdifF, SdifSizeofDataType(SdifF->CurrMtrxH->DataType) 
+		             * SdifF->CurrMtrxH->NbCol));
+}
+
 
 /* Frame Signature read yet, then update CurrFramH->FrameSignature.
  * If it'is the first ReadFrameHeader then Create CurrFramH
@@ -512,6 +523,33 @@ SdifFReadUndeterminatedPadding(SdifFileT *SdifF)
 }
 
 
+/* skip given number of bytes, either by seeking or by reading bytes */
+size_t SdifFSkip (SdifFileT *SdifF, size_t nbytes)
+{
+    SdiffPosT Pos = 0;
+
+    SdiffGetPos(SdifF->Stream, &Pos);
+    Pos += nbytes;
+    if (SdiffSetPos(SdifF->Stream, &Pos) != 0)
+    {
+#if HAVE_ERRNO_H
+	if (errno == ESPIPE)
+	{  /* second chance: SdiffSetPos didn't work because we're
+	      reading from a pipe.  Instead of making the whole thing
+	      explode, we do the little extra work to read and throw away
+	      the data. */
+	    return (SdifFReadAndIgnore (SdifF, nbytes));
+	}
+	else
+#endif
+	    return (size_t) -1;
+    }
+    else
+    {
+	return nbytes;
+    }
+}
+
 
 /* read and throw away bytes data. */
 size_t
@@ -541,21 +579,11 @@ size_t SdifFSkipMatrix(SdifFileT *SdifF)
   return SizeR;
 }
 
-/* obsolete */
-size_t SdifSkipMatrix(SdifFileT *SdifF)
-{
-    _Debug("SdifSkipMatrix is obsolete, use SdifFSkipMatrix");
-    return SdifFSkipMatrix(SdifF);
-}
-
 
 /* SdifFSkipMatrixData don't read matrix header. */
 size_t SdifFSkipMatrixData(SdifFileT *SdifF)
 {
-  size_t
-    SizeR = 0,
-    NbBytesToSkip;
-  SdiffPosT Pos = 0;
+  size_t    NbBytesToSkip;
 
   NbBytesToSkip =
     SdifF->CurrMtrxH->NbCol 
@@ -564,33 +592,7 @@ size_t SdifFSkipMatrixData(SdifFileT *SdifF)
 
   NbBytesToSkip += SdifPaddingCalculate(NbBytesToSkip);
 
-  SdiffGetPos(SdifF->Stream, &Pos);
-  Pos += NbBytesToSkip;
-  if (SdiffSetPos(SdifF->Stream, &Pos) != 0)
-  {
-#if HAVE_ERRNO_H
-      if (errno == ESPIPE)
-      {	  /* second chance: SdiffSetPos didn't work because we're
-	  reading from a pipe.  Instead of making the whole thing
-	  explode, we do the little extra work to read and throw away
-	  the data. */
-	  return (SdifFReadAndIgnore (SdifF, NbBytesToSkip));
-      }
-      else
-#endif
-	  return (size_t) -1;
-  }
-  else
-  {
-      SizeR += NbBytesToSkip;
-      return SizeR;
-  }
-}
-/* obsolete */
-size_t SdifSkipMatrixData(SdifFileT *SdifF)
-{
-    _Debug("SdifSkipMatrixData is obsolete, use SdifFSkipMatrixData");
-    return SdifFSkipMatrixData(SdifF);
+  return (SdifFSkip(SdifF, NbBytesToSkip));
 }
 
 
@@ -640,12 +642,7 @@ size_t SdifFSkipFrameData(SdifFileT *SdifF)
     }
 }
 
-/* obsolete */
-size_t SdifSkipFrameData(SdifFileT *SdifF)
-{
-    _Debug("SdifSkipFrameData is obsolete, use SdifFSkipFrameData");
-    return SdifFSkipFrameData(SdifF);
-}
+
 
 /*DOC:
   Function to read text matrix.
@@ -696,19 +693,3 @@ size_t SdifFReadTextMatrixData(SdifFileT *SdifF, SdifStringT *SdifString)
   SdifFree(str);
   return SizeR;
 }
-
-
-
-/*
- * obsolete
- */
-
-size_t
-SdifFReadNameValueCurrHT(SdifFileT *SdifF)
-{
-    /* obsolete */
-    _Debug("SdifFReadNameValueCurrHT is obsolete, use SdifFReadNameValueLCurrNVT");
-    return SdifFReadNameValueLCurrNVT(SdifF);
-}
-
-
