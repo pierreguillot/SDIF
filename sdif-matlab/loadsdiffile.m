@@ -5,24 +5,31 @@
 % where data{i} is the matrix at time header(i, 1) in stream header(i, 2) 
 % with signatures frame(i), matrix(i).
 
-% $Id: loadsdiffile.m,v 1.1 2000-05-04 13:24:06 schwarz Exp $
+% $Id: loadsdiffile.m,v 1.2 2000-05-11 12:37:17 schwarz Exp $
 %
 % loadsdiffile.m	31. January 2000	Diemo Schwarz
 %
 % $Log: not supported by cvs2svn $
+% Revision 1.1  2000/05/04  13:24:06  schwarz
+% Matlab mex extension and support functions to load SDIF files.
 
 function [ data, header, frame, matrix ] = loadsdiffile (name, types)
 
-    n = 1;
+    data   = [];			% init to avoid 'non assigned' warning
+    header = [];
+    frame  = [];
+    matrix = [];
 
-    sdifexist (name);
+    sdifexist (name);			% quit with error if file's not there
 
-    if nargin == 1,
+    if nargin == 1,			% open file with/without types
 	NVTinfo = loadsdif (name);
     else
 	NVTinfo = loadsdif (name, types);
     end
 	
+    n = 1;
+
     while (1)				% read frame by frame
 	[ d, t, s, f, m ] = loadsdif;
 
@@ -37,7 +44,7 @@ function [ data, header, frame, matrix ] = loadsdiffile (name, types)
 	n = n + 1;
     end
     
-    loadsdif ('close');		% close files
+    loadsdif ('close');			% close files
 return
 
 % Usage:   [ data, time, stream, frame, matrix ] = loadsdiffile (name)
