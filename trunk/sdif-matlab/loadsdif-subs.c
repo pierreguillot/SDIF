@@ -1,4 +1,4 @@
-/* $Id: loadsdif-subs.c,v 1.14 2004-07-20 11:18:51 roebel Exp $
+/* $Id: loadsdif-subs.c,v 1.15 2004-07-20 17:10:20 roebel Exp $
 
    loadsdif_subs.c	25. January 2000	Diemo Schwarz
 
@@ -14,6 +14,9 @@
    endread ('close')
 
   $Log: not supported by cvs2svn $
+  Revision 1.14  2004/07/20 11:18:51  roebel
+  Test filename to be an sdif file prior to try to open it.
+
   Revision 1.13  2003/09/15 15:57:08  schwarz
   Use matrix row/column selection, SdifFReadNextSelectedFrameHeader.
 
@@ -286,6 +289,9 @@ static size_t readmatrix (SdifFileT *f, mxArray *mxarray [MaxNumOut])
     }
     break;
 
+    case eInt8:
+    case eInt4:
+    case eInt2:
     case eFloat4:
     case eFloat8:
       /* alloc output array and scalars */
@@ -306,18 +312,18 @@ static size_t readmatrix (SdifFileT *f, mxArray *mxarray [MaxNumOut])
       {
 	  if (SdifFRowIsSelected(f, row + 1))
 	  {
-	      bytesread += SdifFReadOneRow(f);	
+	    bytesread += SdifFReadOneRow(f);	
+	    
+	    for (col = 0, outcol = 0; col < ncol; col++)
+	      if (SdifFColumnIsSelected(f, col + 1))
+		{
+		  /* transpose to matlab column-major order */
+		  prmtx [outrow + outcol * nselrow] 
+		    = (double) SdifFCurrOneRowCol(f, col + 1);
+		  outcol++;
+		}
 
-	      for (col = 0, outcol = 0; col < ncol; col++)
-		  if (SdifFColumnIsSelected(f, col + 1))
-		  {
-		      /* transpose to matlab column-major order */
-		      prmtx [outrow + outcol * nselrow] 
-			  = SdifFCurrOneRowCol(f, col + 1);
-		      outcol++;
-		  }
-
-	      outrow++;
+	    outrow++;
 	  }
 	  else
 	      SdifFSkipOneRow(f);
