@@ -7,9 +7,13 @@
  * 
  * 
  * 
- * $Id: easdif.h,v 1.1 2002-08-28 16:45:41 roebel Exp $ 
+ * $Id: easdif.h,v 1.2 2002-10-10 16:32:39 roebel Exp $ 
  * 
- * $Log: not supported by cvs2svn $ 
+ * $Log: not supported by cvs2svn $
+ * Revision 1.1  2002/08/28 16:45:41  roebel
+ * Initial Sdif Version based on the work Fabien Tisseran
+ * with some name changes.
+ * 
  * 
  */
 
@@ -20,6 +24,7 @@
 #include <vector>
 #include <sdif.h>
 
+#include "easdif/easdif_version.h"
 #include "easdif/sdifentity.h"
 
 
