@@ -34,9 +34,13 @@
  * sdifframe.h is composed of the different methods which are using to 
  * manipulate the frame.
  * 
- * $Id: sdifframe.h,v 1.8 2003-07-18 19:32:41 roebel Exp $ 
+ * $Id: sdifframe.h,v 1.9 2003-07-21 09:59:43 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.8  2003/07/18 19:32:41  roebel
+ * Improved documentation.
+ * Added SetHeader with const std::string instead of SdifSignature.
+ *
  * Revision 1.7  2003/05/19 14:00:00  roebel
  * swig rename moved to swig  interface desription.
  *
@@ -123,7 +127,7 @@ private:
 
 public: 
   /**
-   * \defgroup frconstr SDIFFrame - Read and Write 
+   * \defgroup frconstr SDIFFrame - Constructor
    */
 
   /** 
