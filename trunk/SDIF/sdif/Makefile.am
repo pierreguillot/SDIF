@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.7 2000-10-31 10:56:56 roebel Exp $
+# $Id: Makefile.am,v 1.8 2000-10-31 11:22:25 roebel Exp $
 #
 # ./sdif/Makefile.am		September 2000			Patrice Tisserand
 #
@@ -29,6 +29,9 @@
 # send email to:  sdif@ircam.fr
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.7  2000/10/31  10:56:56  roebel
+# Adjusted make file paths such that auto cksum version generation works with VPATH
+#
 # Revision 1.6  2000/10/30  20:28:33  roebel
 # removed config.h from version cksum
 #
@@ -94,7 +97,7 @@ Versionsrc := $(libsdif_a_SOURCES) $(subst config.h,,$(subst $(top_srcdir)/sdif/
 $(top_srcdir)/sdif/SdifVersion.h : $(Versionsrc)
 	@echo  "Updating  Library CKSUM"
 	@echo "/* Automatically generated File do not edit */" >$@
-	@echo '#define AUTOCKSUM "$$Checksum: '$(shell CMD_ENV=xpg4;export CMD_ENV;cksum $^ | cut -f1 -d' '|cksum |cut -f1 -d' ')' $$ IRCAM $$date: "__DATE__" $$"'>>$@
+	@echo '#define AUTOCKSUM "$$SDIFChecksum: '$(shell CMD_ENV=xpg4;export CMD_ENV;cksum $^ | cut -f1 -d' '|cksum |cut -f1 -d' ')' $$ IRCAM $$SDIFdate: "__DATE__" $$"'>>$@
 
 
 # EXTRA FOR IRCAM STUFF

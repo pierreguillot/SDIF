@@ -10,7 +10,7 @@
 # even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 # PARTICULAR PURPOSE.
 
-# $Id: Makefile.in,v 1.9 2000-10-31 10:58:42 roebel Exp $
+# $Id: Makefile.in,v 1.10 2000-10-31 11:22:25 roebel Exp $
 #
 # ./sdif/Makefile.am		September 2000			Patrice Tisserand
 #
@@ -462,7 +462,7 @@ SdifFile.o : $(top_srcdir)/sdif/SdifVersion.h
 $(top_srcdir)/sdif/SdifVersion.h : $(Versionsrc)
 	@echo  "Updating  Library CKSUM"
 	@echo "/* Automatically generated File do not edit */" >$@
-	@echo '#define AUTOCKSUM "$$Checksum: '$(shell CMD_ENV=xpg4;export CMD_ENV;cksum $^ | cut -f1 -d' '|cksum |cut -f1 -d' ')' $$ IRCAM $$date: "__DATE__" $$"'>>$@
+	@echo '#define AUTOCKSUM "$$SDIFChecksum: '$(shell CMD_ENV=xpg4;export CMD_ENV;cksum $^ | cut -f1 -d' '|cksum |cut -f1 -d' ')' $$ IRCAM $$SDIFdate: "__DATE__" $$"'>>$@
 
 # EXTRA FOR IRCAM STUFF
 ircam_deps : ${FORMES_H}
