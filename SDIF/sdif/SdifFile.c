@@ -1,4 +1,4 @@
-/* $Id: SdifFile.c,v 3.16 2000-10-27 18:55:49 roebel Exp $
+/* $Id: SdifFile.c,v 3.17 2000-11-09 15:59:15 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -33,6 +33,10 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.16  2000/10/27 18:55:49  roebel
+ * moved identstring to SdifFile again
+ * otherwise no identification of linked programs
+ *
  * Revision 3.15  2000/10/27  15:04:53  roebel
  * Moved version to automatically generated SDifVersion.h
  *
@@ -174,7 +178,7 @@
 #include "SdifVersion.h"
 
 #ifndef AUTOCKSUM
-#define AUTOCKSUM "$Checksum: not available$ IRCAM $Date: 2000-10-27 18:55:49 $" 
+#define AUTOCKSUM "$Checksum: not available$ IRCAM $Date: 2000-11-09 15:59:15 $" 
 #endif
 
 #ifndef lint
@@ -947,10 +951,10 @@ int SdifFNumErrors (SdifFileT *f, SdifErrorLevelET upto)
     int ret = 0;
     switch (upto)	/* switch is much faster than loop */
     {	/* sum no. of errors of level upto or more severe */
-    	case eNoLevel:	ret += f->ErrorCount [eNoLevel];
-    	case eRemark:	ret += f->ErrorCount [eRemark];
-    	case eWarning:	ret += f->ErrorCount [eWarning];
-    	case eError:	ret += f->ErrorCount [eError];
+    	case eNoLevel:	ret += f->ErrorCount [eNoLevel]; /* fallthrough! */
+    	case eRemark:	ret += f->ErrorCount [eRemark];  /* fallthrough! */
+    	case eWarning:	ret += f->ErrorCount [eWarning]; /* fallthrough! */
+    	case eError:	ret += f->ErrorCount [eError];   /* fallthrough! */
     	case eFatal:	ret += f->ErrorCount [eFatal];
     	break;
     
@@ -989,6 +993,12 @@ SdifFNameValueList (SdifFileT *file)
 int SdifFNameValueNum (SdifFileT *file)
 {
     return (SdifListGetNbData (file->NameValues->NVTList));
+}
+
+
+SdifStreamIDTableT *SdifFStreamIDTable (SdifFileT *file)
+{
+    return (file->StreamIDsTable);
 }
 
 
