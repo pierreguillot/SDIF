@@ -32,9 +32,13 @@
  * 
  * 
  * 
- * $Id: sdifentity.cpp,v 1.5 2003-04-29 15:41:30 schwarz Exp $ 
+ * $Id: sdifentity.cpp,v 1.6 2003-05-01 18:58:43 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.5  2003/04/29 15:41:30  schwarz
+ * Changed all names View* to Print* and *Info to *Header for consistency
+ * with SDIF library.
+ *
  * Revision 1.4  2003/04/18 17:43:22  schwarz
  * eof() const method
  *
@@ -101,7 +105,7 @@
 
 namespace Easdif {
 
-SDIFEntity::SDIFEntity(): efile(0), mSize(0), mEof(0), 
+SDIFEntity::SDIFEntity(): efile(0), mSize(0), mEof(true), 
     mOpen(0), generalHeader(0), asciiChunks(0), bytesread(0)
 {
     mDescription = SdifStringNew();
@@ -148,6 +152,8 @@ bool SDIFEntity::OpenRead(const char* filename)
     // empty sdif file
     if(feof(efile->Stream))
       mEof = true;
+    else
+      mEof = false;
 
     mOpen = 2;
     return true;
