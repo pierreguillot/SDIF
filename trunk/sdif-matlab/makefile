@@ -1,10 +1,13 @@
-# $Id: makefile,v 1.10 2000-08-08 17:47:48 schwarz Exp $
+# $Id: makefile,v 1.11 2000-08-08 18:07:30 schwarz Exp $
 #
 # makefile	26. January 2000	Diemo Schwarz
 #
 # formesutils matlab library
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.10  2000/08/08  17:47:48  schwarz
+# Make distribution with all mex binaries.
+#
 # Revision 1.9  2000/08/08  17:26:59  schwarz
 # Fixed 'last matrix not returned' bug.
 # More test cases t0, t1.
@@ -103,8 +106,9 @@ INSTALL_FILES	= $(mexfiles) $(mfiles) mex.makedefs
 INSTALLED_FILES = $(INSTALL_FILES:%=$(INSTALL_DIR)/%)
 
 DIST_DIR	= /usr/local/www/ircam/equipes/analyse-synthese/sdif/download
-DIST_FILES	= $(foreach s, $(ALLMEXSUF), $(mexbase:%=%.$s)) $(mfiles) \
-		  -C $(SDIF_TYPES_DIR)                    $(SDIF_TYPES_FILE) \
+DIST_FILES	= $(foreach s, $(ALLMEXSUF), $(mexbase:%=%.$s)) \
+		  README $(mfiles) \
+		  -C $(SDIF_TYPES_DIR) $(SDIF_TYPES_FILE) \
 		  -C $(subst /lib/,/bin/,$(SDIF_LIB_DIR)) querysdif
 DIST_HOST	= maelzel
 DIST_BASE	= sdif-matlab-$(VERSION)
