@@ -2,7 +2,7 @@ SDIF
 
 1NVT
 {
-  SdifTypesVersion	Ircam.1.30.libsdif;
+  SdifTypesVersion	Ircam.1.40.libsdif;
 }
 
 
@@ -41,12 +41,27 @@ SDIF
   1FTD  1HRM    { 1HRM HarmonicPartials; }
 
   1MTD  1STF    { Real, Imaginary }
-  1MTD  1STI    { FrequencySmaplingInterval, FrameSize }
-  1FTD  1STF    { 1STI Info;
+  1MTD  ISTF    { HighestBinFrequency, FrameDuration, FFTSize }
+  1FTD  ISTF    { ISTF Info; }
+  1FTD  1STF    { ISTF Info;
                   1STF FourierTransform; }
+
+  1MTD  IENV    { SamplingRate, Scale, BreakFreq }
   1MTD  1ENV    { amplitude }
   1FTD  1ENV    { 1ENV envelope; }
 
+  1MTD 	1ARA 	{ a }
+  1FTD 	1ARA 	{ 1ARA ARCoefs; }
+      
+  1MTD 	1ARK 	{ k }
+  1FTD 	1ARK 	{ 1ARK ARCoefs; }
+      
+  1MTD 	1ARR 	{ k }
+  1FTD 	1ARR 	{ 1ARR ARCoefs; }
+      
+  1MTD 	1CEC 	{ c }
+  1FTD 	1CEC 	{ 1CEC CepstralCoefs; }
+ 
   1MTD  1NRG    { energy }
   1FTD  1NRG    { 1NRG energy; }
 
