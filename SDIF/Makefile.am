@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.16 2003-03-07 17:55:01 roebel Exp $
+# $Id: Makefile.am,v 1.17 2003-04-06 16:28:57 roebel Exp $
 #
 # ./Makefile.am		September 2000			Patrice Tisserand
 #
@@ -30,6 +30,9 @@
 
 
 # $Log: not supported by cvs2svn $
+# Revision 1.16  2003/03/07 17:55:01  roebel
+# Added switch for doc compilation.
+#
 # Revision 1.15  2003/03/07 17:31:37  roebel
 # cplusplus compilation is moved in its own directory.
 #
@@ -101,6 +104,7 @@ DOC_SRC_DIR =
 endif 
 
 SUBDIRS = sdif include tools data test sdifcpp $(DOC_SRC_DIR)
+EXTRA_DIST = README.shared
 
 sdifincdir = @top_srcdir@/include
 
