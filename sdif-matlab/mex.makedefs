@@ -1,8 +1,11 @@
-# -*-makefile-*- $Id: mex.makedefs,v 1.5 2000-09-28 19:17:56 schwarz Exp $
+# -*-makefile-*- $Id: mex.makedefs,v 1.6 2000-11-09 16:23:32 schwarz Exp $
 #
 # Commonly used settings for compiling matlab mex extensions.
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.5  2000/09/28  19:17:56  schwarz
+# Use new /u/formes/share directories.
+#
 # Revision 1.4  2000/08/08  17:47:49  schwarz
 # Make distribution with all mex binaries.
 #
@@ -46,26 +49,36 @@ endif
 # mex settings
 #
 
+# mex path
+mexpath-alpha    = /usr/LOCAL/matlab-5.2
+mexpath-sgi      = /usr/LOCAL/matlab
+mexpath-iris4d   = /usr/LOCAL/matlab
+mexpath-i386     = /usr/local/matlab
+mexpath-i686     = /usr/local/matlab
+mexpath-	 = WARNING UNKNOWN ARCH
+MEXPATH		 = $(mexpath-$(ARCH))
+
 # mex suffix per arch
 mex-alpha	 = mexaxp
+mex-sgi		 = mexsgi
+mex-iris4d	 = mexsgi
+mex-i386	 = mexlx
 mex-i686	 = mexlx
-mex-i386-linux	 = mexlx
 MEXSUF     	 = $(mex-$(ARCH))
-ALLMEXSUF	 = $(mex-alpha) $(mex-i686)
+ALLMEXSUF	 = $(mex-alpha) $(mex-sgi) $(mex-i686)
 
 # mex compiler
-MEX	   	 = mex
+MEX	   	 = $(MEXPATH)/bin/mex
 
 # mex includes
-mexincl-alpha    = /usr/LOCAL/matlab-5.2/extern/include
-mexincl-i686     = /usr/local/matlab/extern/include
-mexincl-i386-linux     = /usr/local/matlab/extern/include
-MEXINCL		 = $(mexincl-$(ARCH))
+MEXINCL		 = $(MEXPATH)/extern/include
 
 # flags for C compiler
 mexflags-alpha	 = 
+mexflags-sgi	 = 
+mexflags-iris4d	 = 
+mexflags-i386	 = CC=gcc LD=gcc
 mexflags-i686	 = CC=gcc LD=gcc
-mexflags-i386-linux	 = CC=gcc LD=gcc
 MEXFLAGS	 = $(mexflags-$(ARCH))
 
 
@@ -74,10 +87,10 @@ MEXFLAGS	 = $(mexflags-$(ARCH))
 #
 
 # where to find stuff (you can redefine IMPORT_ROOT!)
-IMPORT_ROOT	 = /u/formes
+IMPORT_ROOT	 = /u/formes/share
 GLOBAL_INCL 	 = $(IMPORT_ROOT)/include 
 GLOBAL_LIB_BASE	 = $(IMPORT_ROOT)/lib
-GLOBAL_LIB	 = $(GLOBAL_LIB_BASE)/$(ARCH)
+GLOBAL_LIB	 = $(GLOBAL_LIB_BASE)/$(HOSTTYPE)
 
 # where to find some frequently used libraries
 SDIF_LIB_DIR     = $(GLOBAL_LIB)/$(SYS)
@@ -89,7 +102,7 @@ SDIF_TYPES_FILE	 = SdifTypes.STYP
 SDIF_TYPES_PATH	 = $(SDIF_TYPES_DIR)/$(SDIF_TYPES_FILE)
 
 PM_LIB_DIR	 = $(GLOBAL_LIB)
-PM_LIB_BASE	 = Pm
+PM_LIB_BASE	 = Pm$(VERS)
 PM_LIB   	 = $(PM_LIB_DIR)/lib$(PM_LIB_BASE).a
 
 # include paths
