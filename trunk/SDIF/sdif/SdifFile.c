@@ -1,4 +1,4 @@
-/* $Id: SdifFile.c,v 3.41 2004-02-10 14:55:41 roebel Exp $
+/* $Id: SdifFile.c,v 3.42 2004-02-11 15:44:05 roebel Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -33,6 +33,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.41  2004/02/10 14:55:41  roebel
+ * Removed remark (warning) for the case where types file name is "".
+ *
  * Revision 3.40  2004/02/08 14:26:58  ellis
  *
  * now the textual scanner parses correctly character datas
@@ -803,6 +806,11 @@ SdifFileT *gSdifPredefinedTypes;
 #define _SdifTypesFileName  "SdifTypes.STYP"
 #endif
 
+/* Attention: Handling of the warning for sdiftypes file changed.
+ * Warning will be given only if sdiftypes file has been specified by
+ * means of environment variable.
+ * A non existing _SdifTypesFileName will no longer be communicated to the user.
+ */
 void
 SdifGenInit(const char *PredefinedTypesFile)
 {
@@ -832,26 +840,62 @@ SdifGenInit(const char *PredefinedTypesFile)
          PreTypesEnvVar = _SdifTypesFileName;
        }
 
-    /* Give priority to any local type file */
+       {
+	 int rs;
+	 char * copy;
+	 copy = strdup(PreTypesEnvVar);
+	 local_types = strdup(SdifBaseName(copy));
 
 #if HAVE_SYS_STAT_H
-       { 
-         int rs;
-         struct stat sb;
-         char * copy;
+	 {
+	   struct stat sb;
+	   	   
+	   /* Give priority to any local type file */
+	   rs = stat(local_types,&sb);	   
+	   if( rs == 0 )  {
+	     PreTypesEnvVar = local_types; 
+	   }
+	   else { 
+	     /* 
+	      * check existance of global types file. Warning will be given only if it is 
+	      * specified by means of environment variable SDIFTYPES.
+	      * In this case, if not available do not request to load it to prevent 
+	      * warnings.
+	      * */
+	     if(PreTypesEnvVar == _SdifTypesFileName) {
+	       rs = stat(PreTypesEnvVar,&sb);
+	       if(rs!=0)
+		 PreTypesEnvVar = "";
+	     }
+	   }
+	 }
+#else
 
-         copy = strdup(PreTypesEnvVar);
-         local_types = strdup(SdifBaseName(copy));
-         rs = stat(local_types,&sb);
-
-         if( rs == 0 )
-         {
-           PreTypesEnvVar = local_types; 
-         }
-         free(copy);
-       }
+	 if(-1!=(rs=open(local_types,O_RDONLY))) {
+	   PreTypesEnvVar = local_types; 
+	   close(rs);
+	 }
+	 else {
+	   /* 
+	    * check existance of global types file. Warning will be given only if it is 
+	    * specified by means of environment variable SDIFTYPES.
+	    * if not available do not request to load it to prevent 
+	    * warnings.
+	    * */
+	   if(PreTypesEnvVar == _SdifTypesFileName) {
+	     rs = open(PreTypesEnvVar,O_RDONLY);
+	     if(rs==-1)
+	       PreTypesEnvVar = "";
+	     else
+	       close(rs);
+	   }
+	 }
 #endif
-      SdifFLoadPredefinedTypes(gSdifPredefinedTypes,  PreTypesEnvVar);
+
+	 free(copy);
+       }
+
+       SdifFLoadPredefinedTypes(gSdifPredefinedTypes,  PreTypesEnvVar);
     }
     else
     {
