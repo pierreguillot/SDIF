@@ -1,4 +1,4 @@
-/* $Id: SdifErrMess.h,v 3.10 2001-07-12 14:15:31 roebel Exp $
+/* $Id: SdifErrMess.h,v 3.11 2002-05-24 19:36:38 ftissera Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -32,6 +32,11 @@
  * author: Dominique Virolle 1998
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 3.10  2001/07/12 14:15:31  roebel
+ * Removed warning due to more columns then expected from the list
+ * possible warnings. In fact this is allowed by the standard and should
+ * not generate a warning.
+ *
  * Revision 3.9  2001/05/02 09:34:40  tisseran
  * Change License from GNU Public License to GNU Lesser Public License.
  *
@@ -98,8 +103,8 @@ void		SdifKillErrorL		(SdifErrorLT *ErrorL);
 SdifUInt4       SdifInsertTailError     (SdifErrorLT* ErrorL, 
 					 unsigned int ErrorCount [], 
 					 SdifErrorTagET Tag, 
-					 const char* UserMess,
-					 SdifErrorT** Error);
+					 const char* UserMess);
+/* SdifErrorT** Error); */
 SdifErrorT*	SdifLastError		(SdifErrorLT *ErrorL);
 SdifErrorTagET	SdifLastErrorTag	(SdifErrorLT *ErrorL);
 

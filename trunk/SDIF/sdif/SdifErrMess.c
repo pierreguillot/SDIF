@@ -1,4 +1,4 @@
-/* $Id: SdifErrMess.c,v 3.13 2001-07-12 14:15:31 roebel Exp $
+/* $Id: SdifErrMess.c,v 3.14 2002-05-24 19:36:38 ftissera Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -31,6 +31,11 @@
  * author: Dominique Virolle 1998
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.13  2001/07/12 14:15:31  roebel
+ * Removed warning due to more columns then expected from the list
+ * possible warnings. In fact this is allowed by the standard and should
+ * not generate a warning.
+ *
  * Revision 3.12  2001/05/02 09:34:40  tisseran
  * Change License from GNU Public License to GNU Lesser Public License.
  *
@@ -100,8 +105,8 @@
 
 
 
-char gSdifBufferError[4096];
-int  gSdifErrorOutputEnabled = 1;
+//char gSdifBufferError[4096];
+//int  gSdifErrorOutputEnabled = 1;
 
 
 const char *gSdifErrorLevel [eNumLevels] = {
@@ -228,16 +233,17 @@ SdifKillErrorL(SdifErrorLT *ErrorL)
 
 
 SdifUInt4 SdifInsertTailError(SdifErrorLT* ErrorL, unsigned int ErrorCount [], 
-			      SdifErrorTagET Tag, const char* UserMess, 
-			      SdifErrorT**  NewError)
+			      SdifErrorTagET Tag, const char* UserMess)
+/*, SdifErrorT**  NewError)*/
 {
     SdifErrorLevelET	Level    = gSdifErrMessFormat[Tag].Level;
     SdifUInt4		Count    = ++ErrorCount [Level];
 
-    *NewError = SdifCreateError(Tag, Level, UserMess);
+    SdifErrorT*         NewError = SdifCreateError(Tag, Level, UserMess);
+     //*NewError = SdifCreateError(Tag, Level, UserMess);
 
     /*    if(Level <= eError) {      */
-      SdifListPutTail(ErrorL->ErrorList, *NewError);
+      SdifListPutTail(ErrorL->ErrorList, NewError);
       /*    } */
     return Count;
 }
@@ -266,19 +272,49 @@ SdifLastErrorTag(SdifErrorLT *ErrorL)
 
 
 
+/* called by macro _SdifFError */
 SdifUInt4 SdifFError (SdifFileT* SdifF, SdifErrorTagET ErrorTag, 
 		      const char *UserMess, const char *file, const int line)
 {
     /* add to list and count error */
 
+/*
   SdifErrorT*  Error;
   SdifUInt4 count = SdifInsertTailError (SdifF->Errors, SdifF->ErrorCount, 
 					 ErrorTag, UserMess, &Error);
+  SdifFsPrintError (gSdifBufferError, SdifF, Error, 
+    __FILE__, __LINE__);
+*/
 
-    SdifFsPrintError (gSdifBufferError, SdifF, Error, 
-		      __FILE__, __LINE__);
-    if (gSdifErrorOutputEnabled)
-	fprintf (SdifStdErr, "%s", gSdifBufferError);
+    SdifUInt4 count = SdifInsertTailError (SdifF->Errors, SdifF->ErrorCount,  
+					   ErrorTag, UserMess);
+    SdifErrorT* Error = SdifLastError(SdifF->Errors);
+
+//essai
+    SdifFsPrintError (gSdifBufferError, SdifF, Error, __FILE__, __LINE__);
+
+    /* call error/warning callback that handles printing */
+    switch (Error->Level)
+    {
+        case eFatal:
+        case eError:
+	    (*gSdifErrorFunc)   (ErrorTag, eError, gSdifBufferError, 
+				 SdifF, Error, (char *)file, line);
+	    /* no exit, because it was always like that */
+	break;
+
+        case eWarning:
+	    (*gSdifWarningFunc) (ErrorTag, eWarning, gSdifBufferError, 
+				 SdifF, Error, (char *)file, line);
+	break;
+
+        default:
+	    if (gSdifErrorOutputEnabled)
+		fprintf (SdifStdErr, "%s", gSdifBufferError);
+
+	break;
+    }
+
     return count;    
 }
 
@@ -362,18 +398,18 @@ SdifFsPrintError(char* oErrMess,
 	{
 	case eNoError :
 	case eUnknow :
-		sprintf(ErrErrMess, gSdifErrMessFormat[Error->Tag].UserMess);
-		break;
-    case eBadMode :
-    case eBadStdFile :
-		sprintf(ErrErrMess, gSdifErrMessFormat[Error->Tag].UserMess,
-			SdifF->Mode, Error->UserMess);
-		break;
-    default :
-		sprintf(ErrErrMess, gSdifErrMessFormat[Error->Tag].UserMess,
-			Error->UserMess);
-		break;
-    }
+	    sprintf(ErrErrMess, gSdifErrMessFormat[Error->Tag].UserMess);
+	    break;
+	case eBadMode :
+	case eBadStdFile :
+	    sprintf(ErrErrMess, gSdifErrMessFormat[Error->Tag].UserMess,
+		    SdifF->Mode, Error->UserMess);
+	    break;
+	default :
+	    sprintf(ErrErrMess, gSdifErrMessFormat[Error->Tag].UserMess,
+		    Error->UserMess);
+	    break;
+	}
 
 	return sprintf(oErrMess,"%s%s%s%s%s--> %s\n",
 				HeadErrMess,
@@ -385,14 +421,18 @@ SdifFsPrintError(char* oErrMess,
 }
 
 
+/*
 void	
 SdifEnableErrorOutput  (void)
 {
-    gSdifErrorOutputEnabled = 1;
+  gSdifErrorOutputEnabled = 1;
 }
+*/
 
+/*
 void
 SdifDisableErrorOutput (void)
 {
-    gSdifErrorOutputEnabled = 0;
+  gSdifErrorOutputEnabled = 0;
 }
+*/
