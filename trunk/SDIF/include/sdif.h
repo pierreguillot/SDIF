@@ -1,8 +1,11 @@
-/* $Id: sdif.h,v 1.13 2001-07-12 14:11:48 roebel Exp $
+/* $Id: sdif.h,v 1.14 2001-07-19 14:24:33 lefevre Exp $
  *
  * This file contains type declaration of variables used in SDIF library.
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.13  2001/07/12  14:11:48  roebel
+ * Added include file holding library version defines to the distribution.
+ *
  * Revision 1.12  2001/05/04 18:09:53  schwarz
  * Added function SdifNameValuesLPutCurrNVTTranslate.
  *
@@ -67,7 +70,7 @@
  * Revision 1.1.2.1  2000/08/21  13:07:41  tisseran
  * *** empty log message ***
  *
- * $Date: 2001-07-12 14:11:48 $
+ * $Date: 2001-07-19 14:24:33 $
  *
  */
 
@@ -76,14 +79,14 @@
 #define _SDIF_H 1
 
 
-#include <sdif_version.h>
+#include "sdif_version.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 
-static const char _sdif_h_cvs_revision_ [] = "$Id: sdif.h,v 1.13 2001-07-12 14:11:48 roebel Exp $";
+static const char _sdif_h_cvs_revision_ [] = "$Id: sdif.h,v 1.14 2001-07-19 14:24:33 lefevre Exp $";
 
 
 #include <stdio.h>
