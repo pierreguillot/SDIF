@@ -1,8 +1,11 @@
 <html>
-<!-- $Id: Todo.html,v 3.5 2000-08-07 15:12:05 schwarz Exp $-->
+<!-- $Id: Todo.html,v 3.6 2000-08-22 16:33:53 schwarz Exp $-->
 <!--
 
 $Log: not supported by cvs2svn $
+Revision 3.5  2000/08/07  15:12:05  schwarz
+Cocoon is installed for groups now, more docs.
+
 Revision 3.4  2000/07/19  18:13:18  schwarz
 Matlab (writesdif): writing of text, int, float matrices according to type of matlab matrices
 
@@ -42,7 +45,7 @@ is already done.
 
 <tr align=left valign=top>
   <th>Revision
-  <td>$Id: Todo.html,v 3.5 2000-08-07 15:12:05 schwarz Exp $
+  <td>$Id: Todo.html,v 3.6 2000-08-22 16:33:53 schwarz Exp $
 </tr>
 
 <tr align=left valign=top>
@@ -53,6 +56,9 @@ is already done.
 <tr valign=top align=left>
   <th>Change log
   <td><pre>$Log: not supported by cvs2svn $
+Revision 3.5  2000/08/07  15:12:05  schwarz
+Cocoon is installed for groups now, more docs.
+
 Revision 3.4  2000/07/19  18:13:18  schwarz
 Matlab (writesdif): writing of text, int, float matrices according to type of matlab matrices
 
@@ -154,6 +160,7 @@ is already done.
 	<ul>
 	<li> Text matrices for sdiftotext/tosdif
 	<li> stream IDs for ASCII chunks
+	<li> less restrictive nvt values (allow spaces, etc.)
 	</ul>
 
 <li> Redefine Chant description type
@@ -166,7 +173,12 @@ is already done.
 
 <li> SdifFReadNextSelectedFrame
 
-<li> put used types in 1TYP frame -&gt; files independent from sdiftypes.styp
+<li> Types:
+     <ul>
+     <li> put used types in 1TYP frame -&gt; files independent from
+          sdiftypes.styp
+     <li> ability to merge/replace types to default types (-T option)
+     </ul>
 
 <li> Matlab (writesdif): writing of text, int, float matrices according to type of matlab matrices
 
