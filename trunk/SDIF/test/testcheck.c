@@ -1,10 +1,13 @@
-/* $Id: testcheck.c,v 1.2 2000-10-27 20:04:03 roebel Exp $
+/* $Id: testcheck.c,v 1.3 2001-05-04 11:37:20 lambert Exp $
  *
  * testcheck		2. May 2000		Diemo Schwarz
  *
  * Test functions from SdifCheck.
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  2000/10/27 20:04:03  roebel
+ * autoconf merged back to main trunk
+ *
  * Revision 1.1.2.2  2000/08/21  17:00:53  tisseran
  * *** empty log message ***
  *
@@ -18,6 +21,7 @@
 
 #include <stdio.h>
 #include <sdif.h>
+#include <stdlib.h>
 
 int main (int argc, char *argv [])
 {
