@@ -1,4 +1,4 @@
-/* $Id: SdifFrame.c,v 2.1 1998-12-21 18:27:18 schwarz Exp $
+/* $Id: SdifFrame.c,v 2.2 1999-02-28 12:16:44 virolle Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -29,7 +29,7 @@ SdifCreateFrameHeader(SdifSignature Signature,
 {
   SdifFrameHeaderT *NewFrameHeader = NULL;
   
-  NewFrameHeader = (SdifFrameHeaderT*) malloc (sizeof(SdifFrameHeaderT));
+  NewFrameHeader = SdifMalloc(SdifFrameHeaderT);
   if (NewFrameHeader)
     {
       NewFrameHeader->Signature = Signature;
@@ -67,7 +67,7 @@ void
 SdifKillFrameHeader(SdifFrameHeaderT *FrameHeader)
 {
   if (FrameHeader)
-    free(FrameHeader);
+    SdifFree(FrameHeader);
   else
     _SdifError(eFreeNull, "FrameHeader free");
 }
@@ -101,7 +101,7 @@ SdifCreateFrameData(SdifHashTableT *FrameTypesTable,
       return NULL;
     }
   
-  NewFrameData = (SdifFrameDataT*) malloc (sizeof(SdifFrameDataT));
+  NewFrameData = SdifMalloc(SdifFrameDataT);
   if (NewFrameData)
     {
       NewFrameData->Header = SdifCreateFrameHeader(FrameSignature,
@@ -109,8 +109,7 @@ SdifCreateFrameData(SdifHashTableT *FrameTypesTable,
 						   0,
 						   NumID,
 						   Time);
-      NewFrameData->Matrix_s = (SdifMatrixDataT**) malloc (sizeof(SdifMatrixDataT*) 
-							       * FrameType->NbComponent);
+      NewFrameData->Matrix_s = SdifCalloc(SdifMatrixDataT*, FrameType->NbComponent);
       for (iMtrxD=0; iMtrxD<FrameType->NbComponent; iMtrxD++)
 	NewFrameData->Matrix_s[iMtrxD] = NULL;
       return NewFrameData;
@@ -143,13 +142,13 @@ SdifKillFrameData(SdifHashTableT *FrameTypesTable, SdifFrameDataT *FrameData)
 	    if (FrameData->Matrix_s[iMtrx] != NULL)
 	      SdifKillMatrixData(FrameData->Matrix_s[iMtrx]);
 	  
-	  free(FrameData->Matrix_s);
+	  SdifFree(FrameData->Matrix_s);
 	}
       else
 	_SdifError(eFreeNull, "FrameData->Matrix_s free");
  
       SdifKillFrameHeader(FrameData->Header);
-      free(FrameData);
+      SdifFree(FrameData);
     }
   else
     _SdifError(eFreeNull, "FrameData free");

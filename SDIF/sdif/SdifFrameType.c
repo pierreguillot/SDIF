@@ -1,4 +1,4 @@
-/* $Id: SdifFrameType.c,v 2.1 1998-12-21 18:27:20 schwarz Exp $
+/* $Id: SdifFrameType.c,v 2.2 1999-02-28 12:16:45 virolle Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -37,7 +37,7 @@ SdifCreateComponent(SdifSignature MtrxS, char *Name, SdifUInt4 Num)
 {
   SdifComponentT *NewComponent = NULL;
 
-  NewComponent = (SdifComponentT*) malloc (sizeof(SdifComponentT));
+  NewComponent = SdifMalloc(SdifComponentT);
   if (NewComponent)
     {
       NewComponent->MtrxS = MtrxS;
@@ -65,7 +65,7 @@ SdifKillComponent(SdifComponentT *Component)
   if (Component)
     {
       SdifKillStr(Component->Name);
-      free(Component);
+      SdifFree(Component);
     }
   else
     _SdifError(eFreeNull, "Component free");
@@ -82,7 +82,7 @@ SdifCreateFrameType(SdifSignature FramS, SdifFrameTypeT *PredefinedFrameType)
 {
   SdifFrameTypeT *NewFrameType = NULL;
   
-  NewFrameType = (SdifFrameTypeT*) malloc (sizeof(SdifFrameTypeT));
+  NewFrameType = SdifMalloc(SdifFrameTypeT);
   if (NewFrameType)
     {
       NewFrameType->Signature = FramS;
@@ -134,7 +134,7 @@ SdifKillFrameType(SdifFrameTypeT *FrameType)
   if (FrameType)
     {
       SdifKillHashTable(FrameType->ComponentUseHT);
-      free(FrameType);
+      SdifFree(FrameType);
     }
   else
     _SdifError(eFreeNull, "FrameType free");

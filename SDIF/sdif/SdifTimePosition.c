@@ -1,4 +1,4 @@
-/* $Id: SdifTimePosition.c,v 2.3 1999-01-23 15:56:03 virolle Exp $
+/* $Id: SdifTimePosition.c,v 2.4 1999-02-28 12:16:57 virolle Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -15,6 +15,9 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 2.3  1999/01/23  15:56:03  virolle
+ * add querysdif.dsp, delete '\r' chars from previous commit
+ *
  * Revision 2.2  1999/01/23  13:57:49  virolle
  * General Lists, and special chunk preparation to become frames
  *
@@ -36,7 +39,7 @@ SdifCreateTimePosition(SdifFloat8 Time, SdiffPosT Position)
 {
   SdifTimePositionT* NewTimePosition = NULL;
   
-  NewTimePosition = (SdifTimePositionT*) malloc (sizeof(SdifTimePositionT));
+  NewTimePosition = SdifMalloc(SdifTimePositionT);
   if (NewTimePosition)
     {
       NewTimePosition->Time = Time;
@@ -65,7 +68,7 @@ void
 SdifKillTimePosition(SdifTimePositionT* TimePosition)
 {
   if (TimePosition)
-    free (TimePosition);
+    SdifFree (TimePosition);
   else
     _SdifError(eFreeNull, "Kill TimePosition");
 }
@@ -81,7 +84,7 @@ SdifCreateTimePositionL(void)
 {
   SdifTimePositionLT *NewTimePositionL = NULL;
   
-  NewTimePositionL = (SdifTimePositionLT*) malloc (sizeof(SdifTimePositionLT));
+  NewTimePositionL = SdifMalloc(SdifTimePositionLT);
   if (NewTimePositionL)
     {
       NewTimePositionL->TimePosList = SdifCreateList(SdifKillTimePosition);
@@ -105,7 +108,7 @@ SdifKillTimePositionL(SdifTimePositionLT *TimePositionL)
   if (TimePositionL)
     {
       SdifKillList(TimePositionL->TimePosList);
-      free(TimePositionL);
+      SdifFree(TimePositionL);
     }
   else
     _SdifError(eFreeNull, "TimePositionL free");

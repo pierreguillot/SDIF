@@ -1,4 +1,4 @@
-/* $Id: SdifGlobals.h,v 2.3 1999-01-23 15:55:50 virolle Exp $
+/* $Id: SdifGlobals.h,v 2.4 1999-02-28 12:16:46 virolle Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -14,6 +14,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 2.3  1999/01/23  15:55:50  virolle
+ * add querysdif.dsp, delete '\r' chars from previous commit
+ *
  * Revision 2.2  1999/01/23  13:57:35  virolle
  * General Lists, and special chunk preparation to become frames
  *
@@ -49,6 +52,7 @@
 #include <stdio.h>
 #include <float.h>
 #include "SdifError.h"
+#include "SdifMemory.h"
 #include "SdifHard_OS.h"
 
 

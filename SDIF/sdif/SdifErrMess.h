@@ -1,4 +1,4 @@
-/* $Id: SdifErrMess.h,v 2.4 1999-01-23 15:55:37 virolle Exp $
+/* $Id: SdifErrMess.h,v 2.5 1999-02-28 12:16:36 virolle Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -24,6 +24,7 @@
 #include "SdifGlobals.h"
 #include "SdifList.h"
 #include <stdio.h>
+#include "SdifError.h"
 
 
 /*#include "SdifFile.h"
@@ -109,6 +110,6 @@ extern char	gSdifBufferError[4096];
 #define _SdifFError(SdifF, ErrorTag, UserMess) \
 (SdifInsertTailError(SdifF->Errors, ErrorTag, UserMess), \
  SdifFsPrintError(gSdifBufferError, SdifF, SdifLastError(SdifF->Errors), __FILE__, __LINE__), \
- fprintf(stderr,"%s", gSdifBufferError))
+ fprintf(SdifStdErr,"%s", gSdifBufferError))
 
 #endif  /* _SdifErrMess_ */

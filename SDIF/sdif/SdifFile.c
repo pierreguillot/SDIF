@@ -1,4 +1,4 @@
-/* $Id: SdifFile.c,v 2.4 1999-01-23 15:55:47 virolle Exp $
+/* $Id: SdifFile.c,v 2.5 1999-02-28 12:16:39 virolle Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -16,6 +16,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 2.4  1999/01/23  15:55:47  virolle
+ * add querysdif.dsp, delete '\r' chars from previous commit
+ *
  * Revision 2.3  1999/01/23  13:57:32  virolle
  * General Lists, and special chunk preparation to become frames
  *
@@ -60,7 +63,6 @@
 
 
 
-
 SdifFileT*
 SdifFOpen(const char* Name, SdifFileModeET Mode)
 {
@@ -68,7 +70,7 @@ SdifFOpen(const char* Name, SdifFileModeET Mode)
 
 
 
-  SdifF = (SdifFileT*) malloc (sizeof(SdifFileT));
+  SdifF = SdifMalloc(SdifFileT);
   if (SdifF)
     {
       SdifF->Name             = SdifCreateStrNCpy(Name, SdifStrLen(Name)+1);
@@ -330,7 +332,7 @@ SdifFClose(SdifFileT* SdifF)
 {
   if (SdifF)
     {
-      if (SdifF->Name)               free (SdifF->Name);
+      if (SdifF->Name)               SdifFree (SdifF->Name);
         else                         _SdifError (eFreeNull, "SdifFile->Name");
       if (SdifF->NameValues)         SdifKillNameValuesL (SdifF->NameValues);
         else                         _SdifError (eFreeNull, "SdifFile->NameValues");
@@ -354,9 +356,11 @@ SdifFClose(SdifFileT* SdifF)
         SdifKillFrameHeader(SdifF->CurrFramH);
       if (SdifF->CurrMtrxH)
         SdifKillMatrixHeader(SdifF->CurrMtrxH);
+      if (SdifF->MtrxUsed)
+	SdifKillSignatureTab(SdifF->MtrxUsed);
 
       if (SdifF->TextStreamName)
-        free(SdifF->TextStreamName);
+        SdifFree(SdifF->TextStreamName);
 
 
       if (SdifF->Stream)
@@ -374,7 +378,7 @@ SdifFClose(SdifFileT* SdifF)
 
 
 
-      free(SdifF);
+      SdifFree(SdifF);
     }
     
 }
@@ -444,7 +448,8 @@ SdifFGetFILE_SwitchVerbose(SdifFileT* SdifF, int Verbose)
     case 's' :
       return SdifF->Stream;
     default :
-      fprintf(stderr, "*Sdif* %c not a verbose ('t': text; 's':SdifFile)\n", Verbose);
+     sprintf(gSdifErrorMess, "*Sdif* %c not a verbose ('t': text; 's':SdifFile)\n", Verbose);
+      _Debug(gSdifErrorMess);
       return NULL;
     }
 }
@@ -548,6 +553,10 @@ SdifGenKill(void)
 {
   SdifFClose(gSdifPredefinedTypes);
   SdifDrainListNodeStock();
+
+#ifdef _SdifMemoryReport
+  SdifMrDrainBlockList(&SdifMrReport);
+#endif
 }
 
 
@@ -555,18 +564,18 @@ SdifGenKill(void)
 void SdifPrintVersion(void)
 {
 #ifndef lint
-  static char rcsid[]= "$Revision: 2.4 $ IRCAM $Date: 1999-01-23 15:55:47 $";
+  static char rcsid[]= "$Revision: 2.5 $ IRCAM $Date: 1999-02-28 12:16:39 $";
 #endif
 
 
-  fprintf(stderr, "SDIF Library\n");
-  fprintf(stderr, "Format version : %d\n", _SdifFormatVersion);
+  fprintf(SdifStdErr, "SDIF Library\n");
+  fprintf(SdifStdErr, "Format version : %d\n", _SdifFormatVersion);
 
 #ifndef lint
-  fprintf(stderr, "CVS: %s\n", rcsid);
+  fprintf(SdifStdErr, "CVS: %s\n", rcsid);
 #endif
 
-  fprintf(stderr, "Release: %s, %s\n", _SDIF_VERSION, __DATE__);
+  fprintf(SdifStdErr, "Release: %s, %s\n", _SDIF_VERSION, __DATE__);
 }
 
 
@@ -754,10 +763,10 @@ SdifCreateSignatureTab (SdifUInt4 NbSignMax)
   SdifSignatureTabT* NewSignTab = NULL;
   SdifUInt4 iSign;
 
-  NewSignTab = (SdifSignatureTabT*) malloc (sizeof(SdifSignatureTabT));
+  NewSignTab = SdifMalloc(SdifSignatureTabT);
   if (NewSignTab)
     {
-      NewSignTab->Tab = (SdifSignature*) malloc (NbSignMax * sizeof(SdifSignature));
+      NewSignTab->Tab = SdifCalloc(SdifSignature, NbSignMax);
       if (NewSignTab->Tab)
         {
           NewSignTab->NbSignMax = NbSignMax;
@@ -782,31 +791,50 @@ SdifCreateSignatureTab (SdifUInt4 NbSignMax)
 
 
 
+void
+SdifKillSignatureTab (SdifSignatureTabT* SignTab)
+{
+  if (SignTab)
+    {
+      if (SignTab->Tab)
+      {
+	  SdifFree(SignTab->Tab);
+      }
+      SdifFree(SignTab);
+    }
+  else
+    {
+      _SdifError(eAllocFail, "NewSignTab");
+    }
+}
+
+
 
 SdifSignatureTabT*
 SdifReInitSignatureTab (SdifSignatureTabT* SignTab, SdifUInt4 NewNbSignMax)
 {
-  SdifUInt4 iSign;
+    SdifUInt4 iSign;
 
-  if (SignTab->NbSignMax  < NewNbSignMax)
+    if (SignTab->NbSignMax  < NewNbSignMax)
+    {
+	SignTab->Tab = SdifRealloc(SignTab->Tab, SdifSignature, NewNbSignMax);
+	if (SignTab->Tab )
 	{
-	  SignTab->Tab = (SdifSignature*) realloc (SignTab->Tab, NewNbSignMax);
-	  if (SignTab->Tab )
-	    {
-	      SignTab->NbSignMax = NewNbSignMax;
-	    }
-	  else
-	    {
-	      _SdifError(eAllocFail, "SignTab->Tab RE-allocation");
-	      return NULL;
-	    }
-  }
+	    SignTab->NbSignMax = NewNbSignMax;
+	}
+	else
+	{
+	    _SdifError(eAllocFail, "SignTab->Tab RE-allocation");
+	    return NULL;
+	}
+    }
 
-  for (iSign=0; iSign<NewNbSignMax; iSign++)
-    SignTab->Tab[iSign] = 0;
-  SignTab->NbSign  = 0;
+    for (iSign=0; iSign<NewNbSignMax; iSign++)
+        SignTab->Tab[iSign] = 0;
 
-  return SignTab;
+    SignTab->NbSign  = 0;
+
+    return SignTab;
 }
 
 

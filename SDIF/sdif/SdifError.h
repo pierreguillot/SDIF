@@ -1,4 +1,4 @@
-/* $Id: SdifError.h,v 2.2 1999-01-23 13:57:21 virolle Exp $
+/* $Id: SdifError.h,v 2.3 1999-02-28 12:16:38 virolle Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -15,6 +15,9 @@
  * author: Dominique Virolle 1997
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 2.2  1999/01/23  13:57:21  virolle
+ * General Lists, and special chunk preparation to become frames
+ *
  * Revision 2.1  1998/12/21  18:27:03  schwarz
  * Inserted copyright message.
  *
@@ -43,6 +46,8 @@
 #ifndef _SdifError_
 #define _SdifError_
 
+#include <stdio.h>
+
 typedef enum SdifErrorE
 {
   eFalse = 0,
@@ -64,6 +69,7 @@ typedef enum SdifErrorE
 
 extern char *SdifErrorFile;
 extern int SdifErrorLine;
+extern FILE* SdifStdErr;
 
 void SdifErrorWarning(SdifErrorEnum Error, const void *ErrorMess);
 
@@ -73,11 +79,11 @@ void SdifErrorWarning(SdifErrorEnum Error, const void *ErrorMess);
 
 #define _Debug(mess) \
 (SdifErrorFile = __FILE__, SdifErrorLine = __LINE__, \
-fprintf(stderr, "*Sdif Debug* %s, %d:\n", SdifErrorFile, SdifErrorLine), \
-fprintf(stderr, "%s\n",(mess)))
+fprintf(SdifStdErr, "*Sdif Debug* %s, %d:\n", SdifErrorFile, SdifErrorLine), \
+fprintf(SdifStdErr, "%s\n",(mess)))
 
 #define _SdifRemark(mess) \
-fprintf(stderr, "*Sdif* %s\n", mess)
+fprintf(SdifStdErr, "*Sdif* %s\n", mess)
 
 #endif /* _SdifError_ */
 

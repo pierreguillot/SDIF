@@ -1,4 +1,4 @@
-/* $Id: SdifStreamID.c,v 2.3 1999-01-23 15:56:00 virolle Exp $
+/* $Id: SdifStreamID.c,v 2.4 1999-02-28 12:16:55 virolle Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -15,6 +15,9 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 2.3  1999/01/23  15:56:00  virolle
+ * add querysdif.dsp, delete '\r' chars from previous commit
+ *
  * Revision 2.2  1999/01/23  13:57:47  virolle
  * General Lists, and special chunk preparation to become frames
  *
@@ -36,7 +39,7 @@ SdifCreateStreamID(SdifUInt4 NumID, char *Source, char *TreeWay)
 {
   SdifStreamIDT *NewID = NULL;
   
-  NewID =  (SdifStreamIDT*) malloc (sizeof(SdifStreamIDT));
+  NewID =  SdifMalloc(SdifStreamIDT);
   if (NewID)
     {
       NewID->NumID = NumID;
@@ -64,7 +67,7 @@ SdifKillStreamID(SdifStreamIDT *StreamID)
     {
       SdifKillStr(StreamID->TreeWay);
       SdifKillStr(StreamID->Source);
-      free(StreamID);
+      SdifFree(StreamID);
     }
   else
     _SdifError(eFreeNull, "StreamID free");
@@ -82,7 +85,7 @@ SdifCreateStreamIDTable(SdifUInt4 HashSize)
 {
     SdifStreamIDTableT* NewSIDTable;
 
-    NewSIDTable = (SdifStreamIDTableT*) malloc (sizeof(SdifStreamIDTableT));
+    NewSIDTable = SdifMalloc(SdifStreamIDTableT);
     if (NewSIDTable)
     {
         NewSIDTable->NumIDLink  = _SdifNoStreamID;
@@ -107,7 +110,7 @@ SdifKillStreamIDTable (SdifStreamIDTableT* SIDTable)
     if (SIDTable)
     {
       SdifKillHashTable(SIDTable->SIDHT);
-      free(SIDTable);
+      SdifFree(SIDTable);
     }
     else
         _SdifError(eFreeNull, "StreamIDTable free");
