@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.2 2000-10-27 20:04:05 roebel Exp $
+# $Id: Makefile.am,v 1.3 2000-12-20 15:57:15 roebel Exp $
 #
 # ./test/files/Makefile.am		September 2000			Patrice Tisserand
 #
@@ -29,9 +29,12 @@
 # send email to:  sdif@ircam.fr
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.2  2000/10/27 20:04:05  roebel
+# autoconf merged back to main trunk
+#
 # Revision 1.1.2.2  2000/10/26  17:27:41  schwarz
 # Added header with copyright and links to all Makefile.am and configure.in.
 #
-SUBDIRS = txt sdif txtw sdifw
+SUBDIRS = txt sdif txtw sdifw sdifref
 
 

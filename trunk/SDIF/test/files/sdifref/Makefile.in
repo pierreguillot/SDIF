@@ -10,9 +10,9 @@
 # even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 # PARTICULAR PURPOSE.
 
-# $Id: Makefile.in,v 1.18 2000-12-20 15:57:13 roebel Exp $
+# $Id: Makefile.in,v 1.1 2000-12-20 15:57:16 roebel Exp $
 #
-# ./doc/extern/cocoon/Makefile.am	September 2000	Patrice Tisserand
+# ./test/files/sdif/Makefile.am		September 2000			Patrice Tisserand
 #
 # Source file for GNU automake, generates Makefile.in.
 #
@@ -41,10 +41,10 @@
 # send email to:  sdif@ircam.fr
 #
 # $Log: not supported by cvs2svn $
-# Revision 1.2  2000/10/27 20:02:53  roebel
+# Revision 1.2  2000/10/27 20:04:06  roebel
 # autoconf merged back to main trunk
 #
-# Revision 1.1.2.2  2000/10/26  17:27:35  schwarz
+# Revision 1.1.2.2  2000/10/26  17:27:43  schwarz
 # Added header with copyright and links to all Makefile.am and configure.in.
 #
 
@@ -105,11 +105,11 @@ SELLIB = @SELLIB@
 TESTLIB = @TESTLIB@
 VERSION = @VERSION@
 
-EXTRA_DIST = *.html *.h
+EXTRA_DIST = README *.sdif
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../../../sdif/config.h
 CONFIG_CLEAN_FILES = 
-DIST_COMMON =  Makefile.am Makefile.in
+DIST_COMMON =  README Makefile.am Makefile.in
 
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
@@ -119,7 +119,7 @@ GZIP_ENV = --best
 all: all-redirect
 .SUFFIXES:
 $(srcdir)/Makefile.in: Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 
-	cd $(top_srcdir) && $(AUTOMAKE) --gnu doc/extern/cocoon/Makefile
+	cd $(top_srcdir) && $(AUTOMAKE) --gnu test/files/sdifref/Makefile
 
 Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status $(BUILT_SOURCES)
 	cd $(top_builddir) \
@@ -131,14 +131,14 @@ TAGS:
 
 distdir = $(top_builddir)/$(PACKAGE)-$(VERSION)/$(subdir)
 
-subdir = doc/extern/cocoon
+subdir = test/files/sdifref
 
 distdir: $(DISTFILES)
 	here=`cd $(top_builddir) && pwd`; \
 	top_distdir=`cd $(top_distdir) && pwd`; \
 	distdir=`cd $(distdir) && pwd`; \
 	cd $(top_srcdir) \
-	  && $(AUTOMAKE) --include-deps --build-dir=$$here --srcdir-name=$(top_srcdir) --output-dir=$$top_distdir --gnu doc/extern/cocoon/Makefile
+	  && $(AUTOMAKE) --include-deps --build-dir=$$here --srcdir-name=$(top_srcdir) --output-dir=$$top_distdir --gnu test/files/sdifref/Makefile
 	@for file in $(DISTFILES); do \
 	  d=$(srcdir); \
 	  if test -d $$d/$$file; then \
