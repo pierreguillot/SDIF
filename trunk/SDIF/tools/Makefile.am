@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.8 2001-07-12 14:11:47 roebel Exp $
+# $Id: Makefile.am,v 1.9 2002-09-24 13:36:25 schwarz Exp $
 #
 # ./tools/Makefile.am		September 2000			Patrice Tisserand
 #
@@ -29,6 +29,9 @@
 # send email to:  sdif@ircam.fr
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.8  2001/07/12 14:11:47  roebel
+# Added include file holding library version defines to the distribution.
+#
 # Revision 1.7  2001/05/02 09:34:54  tisseran
 # Change License from GNU Public License to GNU Lesser Public License.
 #
@@ -88,5 +91,5 @@ tosdif_LDADD = -lsdif
 tosdif_LDFLAGS = -L../sdif
 tosdif_DEPENDENCIES=../sdif/libsdif.a
 
-INCLUDES = -I../include -I$(top_srcdir)/include -I$(top_srcdir)/sdif
-
+INCLUDES  = -I../include -I$(top_srcdir)/include -I$(top_srcdir)/sdif
+CFLAGS   += '-DVERSION="$(VERSION)"'
