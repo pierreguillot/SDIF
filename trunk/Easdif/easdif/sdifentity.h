@@ -32,9 +32,12 @@
  * 
  * 
  * 
- * $Id: sdifentity.h,v 1.24 2004-09-09 19:36:52 roebel Exp $ 
+ * $Id: sdifentity.h,v 1.25 2004-09-10 09:20:52 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.24  2004/09/09 19:36:52  roebel
+ * Made some members of the iterator private.
+ *
  * Revision 1.23  2004/09/09 19:17:38  roebel
  * Version 1.0.0beta:
  * First complete version of iterator access when reading files. Frame-Iterators use the
@@ -170,27 +173,63 @@ namespace Easdif {
   struct SDIFLocation {
 
     SdiffPosT        mPos;
-
-    SdifUInt4        mId;
-    SdifFloat8       mTime;
-    SdifSignature        mSig;
+    SdifFrameHeaderS mFrameHdr;
+    SdifSignature    mMatrixSig0;
+    SdifSignature    mMatrixSig1;
+    SdifSignature    mMatrixSig2;
+    std::vector<SdifSignature> mMatrixN;
 
     SDIFLocation():mPos(-1){      
-      mSig  = eEmptySignature;
-      mId   = 0;
-      mTime = -1.;      
+      mMatrixSig0 = mMatrixSig1 = mMatrixSig2 =
+        mFrameHdr.Signature = eEmptySignature;
+      mFrameHdr.Size      = 0;
+      mFrameHdr.NbMatrix  = 0;
+      mFrameHdr.NumID     = 0;
+      mFrameHdr.Time      = -1.;
     }
 
     SDIFLocation(SdifUInt4 _pos,SdifUInt4 _id, SdifFloat8 _time, 
-                 SdifSignature _sig )
-      :mPos(_pos),mId(_id),mTime(_time),mSig(_sig)  {
-
+                 SdifSignature _sig,  SdifUInt4  _nmatrix   )
+      :mPos(_pos)  {
+      mMatrixSig0 = mMatrixSig1 = mMatrixSig2 = eEmptySignature;
+      mFrameHdr.Signature =   _sig;
+      mFrameHdr.Size      = 0;
+      mFrameHdr.NbMatrix  = _nmatrix;
+      mFrameHdr.NumID     = _id;
+      mFrameHdr.Time      = _time;
+      if(_nmatrix >3)
+        mMatrixN.resize(_nmatrix-3);
     }
 
-    SdifUInt4      GetStreamID()  const { return mId;}
-    SdifFloat8     GetTime()      const { return mTime;}
-    SdifSignature  GetSignature() const { return mSig;}
-    SdiffPosT      GetPos()       const { return mPos;}
+    SdifUInt4      LocStreamID()  const { return mFrameHdr.NumID;}
+    SdifUInt4      LocNbMatrix()  const { return mFrameHdr.NbMatrix;}
+    SdifFloat8     LocTime()      const { return mFrameHdr.Time; }
+    SdifSignature  LocSignature() const { return mFrameHdr.Signature;}
+    SdiffPosT      LocPos()       const { return mPos;}
+    SdifSignature  LocMSignature(int ind)     const { 
+      if(ind<0 || ind >= mFrameHdr.NbMatrix)
+        return eEmptySignature;
+      switch(ind) {
+      case 0 : return mMatrixSig0; break;
+      case 1 : return mMatrixSig1; break;
+      case 2 : return mMatrixSig2; break;
+      default: break;
+      }
+      return mMatrixN[ind-3];
+    }
+    void SetMSignature(SdifUInt4 ind,SdifSignature _sig ){
+      if(ind<0 || ind >= mFrameHdr.NbMatrix){
+        std::cerr << " SDIFLocation:: SetMSignature ind out of bounds "<< ind << "\n";
+        return ;
+      }
+      switch(ind) {
+      case 0 : mMatrixSig0 =_sig; break;
+      case 1 : mMatrixSig1 =_sig; break;
+      case 2 : mMatrixSig2 =_sig; break;
+      default : mMatrixN[ind-3] =_sig; break;
+      }
+    }
+
 
   };
 
@@ -299,7 +338,8 @@ public:
     //typedef std::list<SDIFLocation>::iterator basic_iterator;
     
     void initIterator(bool up) {
-      bool matrixSelection = !SdifListIsEmpty (mpEnt->GetFile()->Selection->matrix);
+      SdifSelectionT *sel   = mpEnt->GetFile()->Selection;
+      bool matrixSelection = !SdifListIsEmpty (sel->matrix);
       //position to next selected frame
 
       if(mBase!=
@@ -318,20 +358,13 @@ public:
         while(mBase!=
               mpEnt->mFrameDirectory.end()){
 
-          SdifFrameHeaderS tt;
-          SDIFLocation &ll=*mBase;
-          tt.Signature =  ll.GetSignature();
-          tt.Size      =  SdifSizeOfFrameHeader();
-          tt.NbMatrix  = 0;
-          tt.NumID     = ll.GetStreamID();
-          tt.Time      = ll.GetTime();
-
-          if(SdifFrameIsSelected(&tt,mpEnt->GetFile()->Selection)) {
-            if(matrixSelection) {
-              GotoPos();
-              if(mpEnt->ReadNextFrame(mFrame) ) {              
-                mlFrameIsLoaded = true;
-                return;
+          if(SdifFrameIsSelected(&(mBase->mFrameHdr),sel)) {
+            if(matrixSelection) {              
+              SdifUInt4 nb = mBase->LocNbMatrix();
+              for(SdifUInt4 i  = 0; i< nb;++i){
+                if(SdifSelectTestSignature (sel->matrix,mBase->LocMSignature(i) )){
+                  return;
+                }
               }
             }
             else {
@@ -349,7 +382,7 @@ public:
         }
       }
 
-      if(up && !mpEnt->mEofSeen) {        
+      if(up && !mpEnt->mEofSeen) {      
         if(mpEnt->ReadNextSelectedFrame(mFrame)){
           mBase = --mpEnt->mFrameDirectory.end();
           mlFrameIsLoaded = true;
@@ -385,7 +418,7 @@ public:
     }
 
     bool GotoPos()  {
-      SdiffPosT pos = mBase->GetPos();
+      SdiffPosT pos = mBase->LocPos();
       mpEnt->mCurrDirPos   = mBase;
       mpEnt->mEof   = false;
       if(-1==SdiffSetPos(mpEnt->GetFile()->Stream,&pos)) {
@@ -826,9 +859,12 @@ private:
    * add a new time/position point to the directory
    * used only internally to maintain directory from 
    * the frame read interface.
-   *
+   * \return pointer to location that needs to be completed 
+   *     with matrix signatures.
    */
-  void AddFramePos(SdifUInt4 id, SdifSignature sig, SdifFloat8 time,SdiffPosT pos);
+  SDIFLocation* 
+  AddFramePos(SdifUInt4 id, SdifSignature sig, SdifFloat8 time,
+              SdifUInt4 nbMatrix, SdiffPosT pos);
 private:
   // this appears to be a remaining of the initial development 
   // will be removed in the future
