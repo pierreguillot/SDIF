@@ -1,4 +1,4 @@
-/* $Id: SdifRWLowLevel.h,v 3.8.2.1 2000-08-21 14:04:21 tisseran Exp $
+/* $Id: SdifRWLowLevel.h,v 3.8.2.2 2000-08-21 18:34:13 tisseran Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -17,6 +17,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.8.2.1  2000/08/21  14:04:21  tisseran
+ * *** empty log message ***
+ *
  * Revision 3.8  2000/07/18  15:08:39  tisseran
  * This release implements the New SDIF Specification (june 1999):
  * - Name Values Table are written in a 1NVT frame which contains a 1NVT matrix
@@ -187,6 +190,7 @@ int SdiffGetStringWeakUntilfromSdifString(SdifStringT *SdifString, char* s,
 					  size_t ncMax, char *CharsEnd);
 
 int SdifSkipASCIIUntil  (FILE* fr, size_t *NbCharRead, char *CharsEnd);
+int SdifSkipASCIIUntilfromSdifString  (SdifStringT *SdifString, size_t *NbCharRead, char *CharsEnd);
 
 
 #if 0	/* for cocoon's eyes only */

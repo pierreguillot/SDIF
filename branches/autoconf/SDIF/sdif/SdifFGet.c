@@ -1,4 +1,4 @@
-/* $Id: SdifFGet.c,v 3.6.2.1 2000-08-21 14:04:06 tisseran Exp $
+/* $Id: SdifFGet.c,v 3.6.2.2 2000-08-21 18:34:08 tisseran Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -15,6 +15,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.6.2.1  2000/08/21  14:04:06  tisseran
+ * *** empty log message ***
+ *
  * Revision 3.5  2000/07/18  15:08:28  tisseran
  * This release implements the New SDIF Specification (june 1999):
  * - Name Values Table are written in a 1NVT frame which contains a 1NVT matrix
@@ -313,7 +316,6 @@ SdifFGetOneMatrixTypefromSdifString(SdifFileT *SdifF, SdifStringT *SdifString)
   SdifMatrixTypeT  *MatrixType;
   int              CharEnd;
   SdifSignature    Signature = 0;
-  FILE *file;
   size_t SizeR = 0;
   
   
@@ -337,7 +339,7 @@ SdifFGetOneMatrixTypefromSdifString(SdifFileT *SdifF, SdifStringT *SdifString)
 	{
 	  /* Skip matrix type def, search '}' */
 	  SdifTestCharEnd(SdifF,
-			  SdifSkipASCIIUntil(file, &SizeR, "}:[];"),
+			  SdifSkipASCIIUntilfromSdifString(SdifString, &SizeR, "}:[];"),
 			  '}', "", eFalse,
 			  "end of matrix type skiped missing");
 	  return SizeR;
@@ -571,7 +573,6 @@ SdifFGetOneFrameTypefromSdifString(SdifFileT *SdifF, SdifStringT *SdifString)
   SdifFrameTypeT  *FramT;
   SdifSignature   FramSignature = 0;
   SdifSignature   MtrxSignature = 0;  
-  FILE            *file;
 
 
   /* FramSignature */
@@ -595,7 +596,7 @@ SdifFGetOneFrameTypefromSdifString(SdifFileT *SdifF, SdifStringT *SdifString)
       {
 	/* Skip frame type def, search '}' */
 	SdifTestCharEnd(SdifF,
-			SdifSkipASCIIUntil(file, &SizeR, "}:[]"),
+			SdifSkipASCIIUntilfromSdifString(SdifString, &SizeR, "}:[]"),
 			'}', "", eFalse,
 			"end of frame type skiped missing");
 	return SizeR;
@@ -847,7 +848,6 @@ SdifFGetOneStreamIDfromSdifString(SdifFileT *SdifF, SdifStringT *SdifString)
   SdifUInt4        NumID;
   char             CharEnd;
   int              ReturnChar;
-  FILE            *file;
   static char      CharsEnd[] =  " \t\n\f\r\v{},;:";
   size_t SizeR = 0;
 
@@ -862,7 +862,8 @@ SdifFGetOneStreamIDfromSdifString(SdifFileT *SdifF, SdifStringT *SdifString)
   if ((ReturnChar == eEof))
     {
       /* no more IDStream */
-      return  CharEnd;
+	CharEnd = (char) eEof;
+	return  CharEnd;
     }
   
   CharEnd = (char) ReturnChar;
@@ -874,7 +875,7 @@ SdifFGetOneStreamIDfromSdifString(SdifFileT *SdifF, SdifStringT *SdifString)
       _SdifFError(SdifF, eSyntax, gSdifErrorMess);
       if (CharEnd != (unsigned)';')
 	SdifTestCharEnd(SdifF,
-			SdifSkipASCIIUntil(file, &SizeR, ";"),
+			SdifSkipASCIIUntilfromSdifString(SdifString, &SizeR, ";"),
 			';',
 			"", eFalse, "end of Stream ID skiped missing");
       return  CharEnd;
@@ -888,7 +889,7 @@ SdifFGetOneStreamIDfromSdifString(SdifFileT *SdifF, SdifStringT *SdifString)
       _SdifFError(SdifF, eReDefined, gSdifErrorMess);
       if (CharEnd != (unsigned)';')
 	SdifTestCharEnd(SdifF,
-			SdifSkipASCIIUntil(file, &SizeR, ";"),
+			SdifSkipASCIIUntilfromSdifString(SdifString, &SizeR, ";"),
 			';',
 			"", eFalse, "end of Stream ID skiped missing");
       return  CharEnd;
@@ -903,7 +904,7 @@ SdifFGetOneStreamIDfromSdifString(SdifFileT *SdifF, SdifStringT *SdifString)
     {
       if (CharEnd != (unsigned) ';')
 	SdifTestCharEnd(SdifF,
-			SdifSkipASCIIUntil(file, &SizeR, ";"),
+			SdifSkipASCIIUntilfromSdifString(SdifString, &SizeR, ";"),
 			';',
 			"", eFalse, "end of Stream ID skiped missing");
       return  CharEnd;

@@ -1,4 +1,4 @@
-/* $Id: SdifFRead.c,v 3.10.2.1 2000-08-21 14:04:11 tisseran Exp $
+/* $Id: SdifFRead.c,v 3.10.2.2 2000-08-21 18:34:09 tisseran Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -14,6 +14,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.10.2.1  2000/08/21  14:04:11  tisseran
+ * *** empty log message ***
+ *
  * Revision 3.9  2000/07/18  15:08:32  tisseran
  * This release implements the New SDIF Specification (june 1999):
  * - Name Values Table are written in a 1NVT frame which contains a 1NVT matrix
@@ -489,23 +492,29 @@ SdifFReadAndIgnore (SdifFileT *SdifF, size_t bytes)
 
 
 
-/* SdifSkipMatrix read entire matrix header. */
+/* SdifFSkipMatrix read entire matrix header. */
 size_t
-SdifSkipMatrix(SdifFileT *SdifF)
+SdifFSkipMatrix(SdifFileT *SdifF)
 {
   size_t
     SizeR = 0;
   
   SizeR =  SdifFReadMatrixHeader(SdifF);
-  SizeR += SdifSkipMatrixData(SdifF);
+  SizeR += SdifFSkipMatrixData(SdifF);
   return SizeR;
 }
 
+/* obsolete */
+size_t SdifSkipMatrix(SdifFileT *SdifF)
+{
+    _Debug("SdifSkipMatrix is obsolete, use SdifFSkipMatrix");
+    return SdifFSkipMatrix(SdifF);
+}
 
 
-/* SdifSkipMatrixData don't read matrix header. */
+/* SdifFSkipMatrixData don't read matrix header. */
 size_t
-SdifSkipMatrixData(SdifFileT *SdifF)
+SdifFSkipMatrixData(SdifFileT *SdifF)
 {
   size_t
     SizeR = 0,
@@ -542,60 +551,66 @@ SdifSkipMatrixData(SdifFileT *SdifF)
   }
 }
 
-
-
-size_t
-SdifSkipFrameData(SdifFileT *SdifF)
+/* obsolete */
+size_t SdifSkipMatrixData(SdifFileT *SdifF)
 {
-  size_t
-    SizeR = 0,
-    Boo,
-    NbBytesToSkip;
-  SdifUInt4
-    iMtrx;
-  SdiffPosT Pos;
-  
-  if (SdifF->CurrFramH->Size != _SdifUnknownSize)
+    _Debug("SdifSkipMatrixData is obsolete, use SdifFSkipMatrixData");
+    return SdifFSkipMatrixData(SdifF);
+}
+
+
+/* Cette fonction à le même sens que SdifSkipMatrixData mais pour les
+   frames. Il faut donc pour l'utiliser avoir au préalable lu la
+   signature et l'entête.  */
+size_t SdifFSkipFrameData(SdifFileT *SdifF)
+{
+    size_t    SizeR = 0, Boo, NbBytesToSkip;
+    SdifUInt4 iMtrx;
+    SdiffPosT Pos;
+    
+    if (SdifF->CurrFramH->Size != _SdifUnknownSize)
     {
-      NbBytesToSkip = SdifF->CurrFramH->Size - _SdifFrameHeaderSize;
-      SdiffGetPos(SdifF->Stream, &Pos);
-      Pos += NbBytesToSkip;
-      if (SdiffSetPos(SdifF->Stream, &Pos) != 0)
-        {
-	        sprintf(gSdifErrorMess,
-		    "Skip FrameData %s ID:%u T:%g\n",
+	NbBytesToSkip = SdifF->CurrFramH->Size - _SdifFrameHeaderSize;
+	SdiffGetPos(SdifF->Stream, &Pos);
+	Pos += NbBytesToSkip;
+	if (SdiffSetPos(SdifF->Stream, &Pos) != 0)
+	{
+	    sprintf(gSdifErrorMess, "Skip FrameData %s ID:%u T:%g\n",
 		    SdifSignatureToString(SdifF->CurrFramH->Signature),
-		    SdifF->CurrFramH->NumID,
-		    SdifF->CurrFramH->Time);
-	        _SdifError(eEof, gSdifErrorMess);
-	        return (size_t) -1;
-	    }
-      else
+		    SdifF->CurrFramH->NumID, SdifF->CurrFramH->Time);
+	    _SdifError(eEof, gSdifErrorMess);
+	    return ((size_t) -1);
+	}
+	else
 	    return (NbBytesToSkip);    
     }
-  else
+    else
     {
-      for (iMtrx = 0; iMtrx<SdifF->CurrFramH->NbMatrix; iMtrx++)
+	for (iMtrx = 0; iMtrx<SdifF->CurrFramH->NbMatrix; iMtrx++)
 	{
-	  Boo = SdifSkipMatrix(SdifF);
-	  if (Boo == -1)
+	    Boo = SdifFSkipMatrix(SdifF);
+	    if (Boo == -1)
 	    {
-	      sprintf(gSdifErrorMess,
-		      "Skip Matrix %d in FrameData %s ID:%u T:%g\n",
-		      iMtrx,
-		      SdifSignatureToString(SdifF->CurrFramH->Signature),
-		      SdifF->CurrFramH->NumID,
-		      SdifF->CurrFramH->Time);
-	      _SdifError(eEof, gSdifErrorMess);
-	      return (size_t) -1;
+		sprintf(gSdifErrorMess,
+			"Skip Matrix %d in FrameData %s ID:%u T:%g\n", iMtrx, 
+			SdifSignatureToString(SdifF->CurrFramH->Signature),
+			SdifF->CurrFramH->NumID, SdifF->CurrFramH->Time);
+		_SdifError(eEof, gSdifErrorMess);
+		return ((size_t) -1);
 	    }
-	  else
-	    SizeR += Boo;
+	    else
+		SizeR += Boo;
 	}
-      return SizeR;
+	return SizeR;
     }
 }
 
+/* obsolete */
+size_t SdifSkipFrameData(SdifFileT *SdifF)
+{
+    _Debug("SdifSkipFrameData is obsolete, use SdifFSkipFrameData");
+    return SdifFSkipFrameData(SdifF);
+}
 
 
 /*DOC:
