@@ -1,10 +1,13 @@
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.1.2.1  2000/08/21  13:55:43  tisseran
+ * *** empty log message ***
+ *
  *
  * This program test the matrix and frame type declaration in SDIF file.
  * 
  *
- * $Id: test2.c,v 1.1.2.1 2000-08-21 13:55:43 tisseran Exp $
+ * $Id: test2.c,v 1.1.2.2 2000-08-21 17:00:52 tisseran Exp $
  *
  */
 #include <stdlib.h>
@@ -12,8 +15,7 @@
 #include <string.h>
 #include <time.h> /* To use time (Date in 1NVT) */
 
-#include "sdiftypes.h"
-#include "sdifglobals.h"
+#include <sdif.h>
 #include "utils.h"
 
 #if HAVE_UNISTD_H

@@ -1,8 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include "sdiftypes.h"
-#include "sdifglobals.h"
+#include <sdif.h>
 #include "utils.h"
 
 int writeFileHeader(SdifFileT *fileToWrite)

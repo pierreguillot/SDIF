@@ -1,18 +1,20 @@
-/* $Id: testcheck.c,v 1.1.2.1 2000-08-21 13:55:47 tisseran Exp $
+/* $Id: testcheck.c,v 1.1.2.2 2000-08-21 17:00:53 tisseran Exp $
  *
  * testcheck		2. May 2000		Diemo Schwarz
  *
  * Test functions from SdifCheck.
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.1.2.1  2000/08/21  13:55:47  tisseran
+ * *** empty log message ***
+ *
  * Revision 1.1  2000/05/04  14:57:29  schwarz
  * test check for SdifCheckFrames funcs.
  *
  */
 
 #include <stdio.h>
-#include "sdiftypes.h"
-#include "sdifglobals.h"
+#include <sdif.h>
 
 int main (int argc, char *argv [])
 {
