@@ -32,9 +32,12 @@
  * 
  * 
  * 
- * $Id: sdifentity.cpp,v 1.20 2004-07-28 13:03:27 roebel Exp $ 
+ * $Id: sdifentity.cpp,v 1.21 2004-09-08 09:14:46 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.20  2004/07/28 13:03:27  roebel
+ * Fixed position type to be SdiffPosT
+ *
  * Revision 1.19  2004/07/27 18:58:06  roebel
  * Removed remaining debug message.
  *
@@ -218,31 +221,52 @@ bool SDIFEntity::OpenRead(const char* filename)
 void SDIFEntity::EnableFrameDir() {
   if(!isFrameDirEnabled){
     isFrameDirEnabled = true;    
+    mCurrDirPos       = mFrameDirectory.end();
   }
 }
 
 void SDIFEntity::PrintFrameDir() const {
   std::cerr << " init pos "<< mFirstFramePos << "\n";
-  for (unsigned int ii=0;ii<mFrameDirectory.size() ;++ii)
-    std::cerr<< "Pos "<< mFrameDirectory[ii].GetPos()<< " time "<<mFrameDirectory[ii].GetTime() << "\n";
+  std::list<SDIFLocation>::const_iterator  start=mFrameDirectory.begin();
+  std::list<SDIFLocation>::const_iterator  end=mFrameDirectory.end();
+  while(start != end){
+    std::cerr<< "Pos "<< start->GetPos()<< " time "<< start->GetTime() << "\n";
+    ++start;
+  }
 }
 
 // Add a new location into the directory
 void SDIFEntity::AddFramePos(SdifFloat8 time,SdifUInt4 pos) {
-
+#if OLD
   if(mFrameDirectory.size()==0 || 
      mFrameDirectory.back().GetPos()<pos  )
     mFrameDirectory.push_back(SDIFEntity::SDIFLocation(time,pos));
   else{
-    // serach proper place to insert
-    std::vector<SDIFLocation>::iterator  start=mFrameDirectory.begin();
-    std::vector<SDIFLocation>::const_iterator  end=mFrameDirectory.end();
+    // search proper place to insert
+    std::list<SDIFLocation>::iterator  start=mFrameDirectory.begin();
+    std::list<SDIFLocation>::const_iterator  end=mFrameDirectory.end();
 
     while(start!=end && start->GetPos() < pos) ++start;
-    // dont add dulicate entries
+    // don't add duplicate entries
     if(start->GetPos() > pos)
       mFrameDirectory.insert(start,SDIFEntity::SDIFLocation(time,pos));
   }
+#else
+  if(mCurrDirPos == mFrameDirectory.end()){    
+    mFrameDirectory.push_back(SDIFEntity::SDIFLocation(time,pos));
+    ++mCurrDirPos;
+  }
+  else{
+    std::list<SDIFLocation>::iterator        start=mCurrDirPos;
+    std::list<SDIFLocation>::const_iterator  end  =mFrameDirectory.end();
+
+    while(start!=end && start->GetPos() < pos) ++start;
+    // don't add duplicate entries
+    if(start==end || start->GetPos() > pos)
+      mCurrDirPos=mFrameDirectory.insert(start,SDIFEntity::SDIFLocation(time,pos));
+
+  }
+#endif
 }
 
 /* to open a file in mode Write  */
@@ -312,6 +336,10 @@ bool SDIFEntity::Rewind()
   if(readpos != mFirstFramePos)
     return false;
 
+  if(isFrameDirEnabled){
+    mCurrDirPos = mFrameDirectory.begin();    
+  }
+
   mEof = false;
 
   if(mOpen & 2) {
@@ -324,22 +352,23 @@ bool SDIFEntity::Rewind()
   return true;
 }
 
-// rewind to position before time
+// rewind to frame before or at given time
 bool SDIFEntity::Rewind(SdifFloat8 time)
 {
   SdiffPosT readpos=0,gotopos=mFirstFramePos;
 
   if(mFrameDirectory.size()){
     // serach proper place to insert
-    std::vector<SDIFLocation>::iterator  start=mFrameDirectory.begin();
-    std::vector<SDIFLocation>::const_iterator  end=mFrameDirectory.end();
+    std::list<SDIFLocation>::iterator        start=mFrameDirectory.begin();
+    std::list<SDIFLocation>::const_iterator  end  =mFrameDirectory.end();
 
-    while(start!=end && start->GetTime() < time) ++start;
-    if(start!=end)
-      gotopos = start->GetPos();
-    else
-      gotopos = mFrameDirectory.back().GetPos();
+    while(start!=end && start->GetTime() < time) mCurrDirPos=start++;
+    if(start!=end && start->GetTime() == time)
+      mCurrDirPos=start;
+    gotopos     = mCurrDirPos->GetPos();
   }
+  else
+    mCurrDirPos = mFrameDirectory.begin();  
 
   if(-1 ==SdiffSetPos(GetFile()->Stream,&gotopos)) return false;
   SdiffGetPos(GetFile()->Stream,&readpos);
