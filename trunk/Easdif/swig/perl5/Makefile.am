@@ -1,6 +1,10 @@
-# $Id: Makefile.am,v 1.1 2003-04-30 11:31:35 tisseran Exp $
+# $Id: Makefile.am,v 1.2 2003-08-07 16:19:29 roebel Exp $
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.1  2003/04/30 11:31:35  tisseran
+# Updated file hierarchy to be conform with Diemo README.
+# Start autoconfiscation for perl module
+#
 # Revision 1.11  2003/04/29 16:27:47  schwarz
 # debug on
 #
@@ -46,9 +50,9 @@
 # Doesn't do much except counting frames.
 
 
-PERL5_INCLUDE	= /usr/lib/perl5/5.6.1/i386-linux/CORE/
+PERL5_INCLUDE	= /usr/lib/perl5/$(shell perl -MConfig -e 'print $$Config{version}')/$(shell perl -MConfig -e 'print $$Config{archname}')/CORE/
 INCL		= -I/usr/local/include -I$(PERL5_INCLUDE) \
-		  -I.. -I@SDIF_INC_DIR@ -I../SDIF/sdif -I@EASDIF_INC_DIR@
+		  -I@SDIF_INC_DIR@ -I@SDIF_DEFINC_DIR@  -I@EASDIF_INC_DIR@ -I@EASDIF_DEFINC_DIR@
 EASDIF_LIB_PATH	= @EASDIF_LIB_PATH@
 dbflag = -g
 
@@ -56,8 +60,8 @@ dbflag = -g
 modules		= eaSDIF SDIF
 incfiles	= ../easdif-defines.i sdiftypemap-perl5.i
 easdifincbase	= entity frame matrix namevaluetable
-easdifincfiles	= $(easdifincbase:%=@EASDIF_INC_DIR@/easdif/sdif%.h)
-sdifincfiles	= @SDIF_INC_DIR@/sdif.h
+easdifincfiles	= $(easdifincbase:%=@EASDIF_DEFINC_DIR@/easdif/sdif%.h)
+sdifincfiles	= @SDIF_DEFINC_DIR@/sdif.h
 
 define swig
 	swig -c++ -perl5 -shadow -o $@ $<

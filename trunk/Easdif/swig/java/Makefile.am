@@ -4,10 +4,10 @@ TOP_SRCDIR=../..
 TOP_BUILDDIR=$(TOP_SRCDIR)
 
 PYTHON_INCLUDE=`$(PYTHON) -c 'import distutils.sysconfig; print distutils.sysconfig.get_python_inc()'`
-JAVA_INCLUDE=/opt/IBMJava2-14/include/
+JAVA_INCLUDE=@JAVA_INCLUDE@
 
-INCL		= -I/usr/local/include -I$(JAVA_INCLUDE) \
-		  -I@SDIF_INC_DIR@ -I../SDIF/sdif -I@EASDIF_INC_DIR@
+INCL		= -I/usr/local/include $(JAVA_INCLUDE) \
+		  -I@SDIF_INC_DIR@ -I@SDIF_DEFINC_DIR@  -I@EASDIF_INC_DIR@ -I@EASDIF_DEFINC_DIR@
 EASDIF_LIB_PATH	= @EASDIF_LIB_PATH@
 # dbflag = -g
 
@@ -15,8 +15,8 @@ EASDIF_LIB_PATH	= @EASDIF_LIB_PATH@
 modules		= eaSDIF SDIF
 incfiles	= ../easdif-defines.i sdiftypemap-java.i
 easdifincbase	= entity frame matrix namevaluetable
-easdifincfiles	= $(easdifincbase:%=@EASDIF_INC_DIR@/easdif/sdif%.h)
-sdifincfiles	= @SDIF_INC_DIR@/sdif.h
+easdifincfiles	= $(easdifincbase:%=@EASDIF_DEFINC_DIR@/easdif/sdif%.h)
+sdifincfiles	= @SDIF_DEFINC_DIR@/sdif.h
 
 define swig
 	swig -c++ -java -o $@ $<
