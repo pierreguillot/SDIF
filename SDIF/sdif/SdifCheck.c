@@ -1,4 +1,4 @@
-/* $Id: SdifCheck.c,v 3.6 2003-11-07 21:47:18 roebel Exp $
+/* $Id: SdifCheck.c,v 3.7 2004-07-13 18:03:30 roebel Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -30,6 +30,9 @@
  * File test functions.
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.6  2003/11/07 21:47:18  roebel
+ * removed XpGuiCalls.h and replaced preinclude.h  by local files
+ *
  * Revision 3.5  2001/05/02 09:34:40  tisseran
  * Change License from GNU Public License to GNU Lesser Public License.
  *
@@ -73,7 +76,7 @@ int
 SdifCheckFileFormat (const char *name)
 {
     int		ret = 0;
-    size_t	size;
+    size_t	size= 0;
     SdifFileT	*file;
 
     SdifDisableErrorOutput ();
@@ -92,7 +95,7 @@ SdifSignature
 SdifCheckFileFramesTab (const char *name, const SdifSignatureTabT *frames)
 {
     SdifSignature  ret = eEmptySignature;
-    size_t	   bytesread;
+    size_t	   bytesread = 0;
     SdifFileT	   *in;
 
     if ((in = SdifFOpen (name, eReadFile)))
@@ -112,7 +115,7 @@ int
 SdifCheckFileFramesIndex (const char *name, const SdifSignature *frames)
 {
     int			ret = -1;
-    size_t		bytesread;
+    size_t		bytesread = 0;
     SdifFileT	       *in;
     SdifSignatureTabT  *sigs = SdifCreateSignatureTab (1);
 
@@ -137,7 +140,7 @@ SdifSignature
 SdifCheckNextFrame (/*in*/  SdifFileT *in, const SdifSignatureTabT *frames,
 		    /*out*/ int *index)
 {
-    size_t	bytesread;
+    size_t	bytesread=0;
     int		ret = -1;
 
     /* Loop while not end-of-file (signature is 0) and nothing found yet */
