@@ -1,12 +1,15 @@
 #!/usr/bin/perl
 #
-# $Id: xmltohtml.pl,v 1.6 2000-08-16 16:10:15 schwarz Exp $
+# $Id: xmltohtml.pl,v 1.7 2000-08-17 14:34:46 schwarz Exp $
 #
 # xmltohtml.pl		6. July 2000		Diemo Schwarz
 #
 # Translate SDIF types description in XML to HTML.
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.6  2000/08/16  16:10:15  schwarz
+# Added var sub sup to XML tags to be copied to HTML.
+#
 # Revision 1.5  2000/08/09  14:55:35  schwarz
 # Bloody comment header.
 #
@@ -39,7 +42,7 @@ use XML::Node;
 use HTML::Stream qw(:funcs);
 
 
-my $cvsrev     = '$Id: xmltohtml.pl,v 1.6 2000-08-16 16:10:15 schwarz Exp $ ';
+my $cvsrev     = '$Id: xmltohtml.pl,v 1.7 2000-08-17 14:34:46 schwarz Exp $ ';
 my $tdlversion = '';
 my $version    = 'unknown';
 my $revision   = '';
@@ -65,12 +68,29 @@ my %matrixnames = ();
 
 
 # init
-$h   = new HTML::Stream \*STDOUT;
+my ($xmlin, $docout, $tocout) = @ARGV;
+my $doc;
+local $lastlevel = 1;
+
+if ($docout eq '-')
+{
+    $doc = *STDOUT;
+}
+else
+{
+    open (DOC, ">$docout")  ||  die;
+    $doc = *DOC;
+}
+open (TOC, ">$tocout")  ||  die;
+
+$h   = new HTML::Stream $doc;
+$toc = new HTML::Stream \*TOC;
 $xml = new XML::Node;
 
+$toc->HTML->BODY(bgcolor => "#ffffff");
 
 # html setup
-my @copiedhtmltags = qw(i b emph code var sub sup);
+my @copiedhtmltags = qw(br i b strong emph code var sub sup pre);
 my %tagmap = (# section => 'H2', 
 	      map { (uc $_, uc $_, lc $_, uc $_ ) } @copiedhtmltags);
 # register XML->HTML tag mapping handlers
@@ -124,6 +144,8 @@ $xml->register (">sdif-tdl>frame",	     end  => \&frame_end);
 # references in text
 $xml->register ("matrixref:signature", attr  => \$refsig);
 $xml->register ("matrixref",	       char  => \&matrixref_char);
+$xml->register ("frameref:signature",  attr  => \$refsig);
+$xml->register ("frameref",	       char  => \&frameref_char);
 		# no tags in ref text!
 
 $xml->register ("description", start => \&description_start);
@@ -134,12 +156,10 @@ $xml->register ("section",     char  => \&section);
 
 
 # process all input files
-local $arg;
-for $arg (@ARGV)
-{
-    $xml->parsefile ($arg);
-}
+$xml->parsefile ($xmlin);
 
+close $doc;
+close TOC;
 # end of main
 
 
@@ -168,16 +188,17 @@ sub header
 sub footer
 {
     my @g = stat $PROGRAM_NAME;
-    my @s = stat $arg;
+    my @s = stat $xmlin;
 
     $h->BR->BR->BR->ADDRESS->tag('BASEFONT', size => 1)
+      ->A(name => "Section_About This Document")
       ->TABLE(cellpadding => 3)->TR
 	  ->TD(colspan => 4, bgcolor => "gray")
 	      ->FONT(size => +4)->B->t("About This Document")->_B->_FONT
       ->TR(align => 'left', valign => 'top')
 	  ->TD(colspan => 4)
-	      ->t("Document generated " . scalar localtime() . 
-		  " by $PROGRAM_NAME from @ARGV")
+	      ->t("This document $docout generated " . scalar localtime() . 
+		  " by $PROGRAM_NAME from $xmlin")
       ->TR(align => 'left', valign => 'top')
 	  ->TH->t("Generation")->TD->t($ENV{USER})
 	  ->TD(nowrap)->t(scalar localtime())
@@ -187,13 +208,17 @@ sub footer
 	  ->TD(nowrap)->t(scalar localtime($g[9]))
 	  ->TD(nowrap)->t($cvsrev)->_TR
       ->TR(align => 'left', valign => 'top')
-	  ->TH->t("Source file")->TD->t("@ARGV")
+	  ->TH->t("Source file")->TD->t("$xmlin")
 	  ->TD(nowrap)->t(scalar localtime($s[9]))
 	  ->TD(nowrap)->t($revision)->_TR
-      ->_TABLE
+      ->_TABLE->_A
       ->_ADDRESS;
     $h->BR->BR->BR->BR->BR->BR->BR->BR->BR->BR->BR->BR->BR->BR->BR->BR->BR;
     $h->_BODY->_HTML;
+
+    toc ("Section_About This Document", "About This Document", 1);
+    $toc->_DL->_BODY->_HTML;
+
 }
 
 
@@ -234,6 +259,7 @@ sub matrix_start
 {
     $h->BR->A(name => "Matrix_$matrixsig")
       ->H3->t("Matrix $matrixsig $matrixname")->_H3->_A;
+    toc ("Matrix_$matrixsig", "Matrix $matrixsig $matrixname", 2);
 }
 
 sub matrix_end
@@ -260,9 +286,10 @@ sub matrixref
 
 sub frame_start
 {
-    $h->BR->A(name => "Frame_$framesig")->H3
-      ->t("Frame $framesig $framename")->_H3->_A;
+    $h->BR->A(name => "Frame_$framesig")
+      ->H3->t("Frame $framesig $framename")->_H3->_A;
     $framestat  &&  $h->DL->DT->I->t("Status:")->_I->DD->t($framestat)->_DD->_DL;
+    toc ("Frame_$framesig", "Frame $framesig $framename", 2);
     $framestat = '';
 }
 
@@ -296,6 +323,12 @@ sub matrixref_char
     $refsig = '';
 }
 
+sub frameref_char
+{
+    $h->A(HREF=>"#Frame_$refsig")->t($_[1])->_A;    
+    $refsig = '';
+}
+
 sub description_start
 {
     $h->DL->DT->I->t("Description" . ($lang ? " (language = $lang)" : "") . 
@@ -314,6 +347,30 @@ sub section
 {
     chomp $_[1];
     #simple: $h->H2->t($_[1])->_H2;
-    $h->BR->BR->TABLE(bgcolor => 'yellow', cellpadding => 3, width => '100%')->
-	TR->TD->FONT(size => +5)->B->t($_[1])->_B->_FONT->_TD->_TR->_TABLE;
+    $h->BR->BR->A(name => "Section_$_[1]")
+      ->TABLE(bgcolor => 'yellow', cellpadding => 3, width => '100%')
+      ->TR->TD->FONT(size => +5)->B->t($_[1])->_B->_FONT->_TD->_TR->_TABLE->_A;
+    toc ("Section_$_[1]", $_[1], 1);
+}
+
+
+sub toc
+{
+    my ($target, $text, $level) = @_;
+    my @levtag  = ('', 'B' , 'LI');
+
+    if ($level < $lastlevel)
+    {
+	$toc->_DL->P;
+    }
+    if ($level > $lastlevel)
+    {
+	$toc->DL(compact);
+    }
+    $toc->A(target => "doc", href => "$docout#$target");
+    $toc->tag($levtag[$level])		if $levtag[$level];
+    $toc->t($text);
+    $toc->tag("_$levtag[$level]")	if $levtag[$level];
+
+    $lastlevel = $level;
 }

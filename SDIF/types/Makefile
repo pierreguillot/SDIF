@@ -1,6 +1,10 @@
-# $Id: Makefile,v 1.4 2000-08-09 14:43:48 schwarz Exp $
+# $Id: Makefile,v 1.5 2000-08-17 14:34:45 schwarz Exp $
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.4  2000/08/09  14:43:48  schwarz
+# Put all SDIF types into XML format.  Lots of descriptions still missing.
+# Full "about this document" info.
+#
 # Revision 1.3  2000/08/01  10:15:34  schwarz
 # Added clean, new, .DELETE_ON_ERROR.
 #
@@ -26,7 +30,7 @@ sdiftypes.styp:	sdiftypes.xml xmltostyp.pl
 		$(PERL) xmltostyp.pl $< >$@
 
 sdiftypes.html:	sdiftypes.xml xmltohtml.pl
-		$(PERL) xmltohtml.pl $< >$@
+		$(PERL) xmltohtml.pl $< $@ toc.html
 #		 generate in doc?
 
 install:	sdiftypes.styp
