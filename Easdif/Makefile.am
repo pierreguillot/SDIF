@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.11 2003-04-09 16:19:42 roebel Exp $
+# $Id: Makefile.am,v 1.12 2003-04-09 16:33:44 roebel Exp $
 #
 # ./Makefile.am		Feb. 2003     Axel Roebel
 #
@@ -30,6 +30,9 @@
 # 
 
 # $Log: not supported by cvs2svn $
+# Revision 1.11  2003/04/09 16:19:42  roebel
+# Directory was still wrong.
+#
 # Revision 1.10  2003/04/09 16:10:18  roebel
 # Put final publish directory into place.
 #
@@ -112,7 +115,7 @@ EXTRA_PUBLISH     = $(DOCTAR)
 # todo: configure PUBLISH_HOST
 PUBLISH_HOST      = www.ircam.fr
 PUBLISH_USER      = wwwas
-PUBLISH_DIR       = sdif/download/
+PUBLISH_DIR       = sdif/download/Easdif
 PUBLISH_FILES     = $(PUBLISH_FILE) $(PUBLISH_RPM) $(EXTRA_PUBLISH)
 PUBLISH_FILES_MAP = COPYING INSTALL README AUTHORS ChangeLog
 
