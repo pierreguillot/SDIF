@@ -34,9 +34,12 @@
  * sdifframe.h is composed of the different methods which are using to 
  * manipulate the frame.
  * 
- * $Id: sdifframe.h,v 1.9 2003-07-21 09:59:43 roebel Exp $ 
+ * $Id: sdifframe.h,v 1.10 2003-11-18 18:27:04 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.9  2003/07/21 09:59:43  roebel
+ * Fixed Error in Documentation
+ *
  * Revision 1.8  2003/07/18 19:32:41  roebel
  * Improved documentation.
  * Added SetHeader with const std::string instead of SdifSignature.
@@ -94,6 +97,7 @@
 #include <string>
 #include <sdif.h>
 #include "easdif/sdifmatrix.h"
+#include "easdif/sdifexception.h"
 
 namespace Easdif {
 
@@ -272,7 +276,7 @@ public:
  */
     SdifSignature GetMatrixSelection(SdifFileT* file) const;
 
-    SdifSignature GetMatrixSelection(const SDIFEntity& entity) const;
+    SdifSignature GetMatrixSelection(const SDIFEntity& entity)  const;
 
 /**
  * \ingroup infoframe 
@@ -301,8 +305,8 @@ public:
  *
  * @return SDIFMatrix number i
  */
-    SDIFMatrix& GetMatrix(unsigned int index);
-    const SDIFMatrix& GetMatrix(unsigned int index) const;
+    SDIFMatrix& GetMatrix(unsigned int index) throw(Easdif::SDIFMatrixNotAvailable);
+    const SDIFMatrix& GetMatrix(unsigned int index) const throw(Easdif::SDIFMatrixNotAvailable);
 
 
 /** 
@@ -310,10 +314,10 @@ public:
  * get the matrix of SdifSignature : sig in the vector of matrix
  * @return SDIFMatrix
  */
-    SDIFMatrix& GetMatrixWithSig(const SdifSignature sig);/*ambiguity 
+    SDIFMatrix& GetMatrixWithSig(const SdifSignature sig) throw(SDIFMatrixNotAvailable);/*ambiguity 
 					   between signature and int
 					   -> other name : GetMatrixwithSig()*/
-    const SDIFMatrix& GetMatrixWithSig(const SdifSignature sig) const;
+    const SDIFMatrix& GetMatrixWithSig(const SdifSignature sig) const throw(SDIFMatrixNotAvailable);
 
 /**
  * \ingroup mat 
@@ -321,8 +325,8 @@ public:
  * @param signature string
  * @return SDIFMatrix
  */
-  SDIFMatrix& GetMatrix(const std::string& signature);
-   const SDIFMatrix& GetMatrix(const std::string& signature) const;
+  SDIFMatrix& GetMatrix(const std::string& signature) throw(SDIFMatrixNotAvailable);
+  const SDIFMatrix& GetMatrix(const std::string& signature) const throw(SDIFMatrixNotAvailable);
 
 
 
