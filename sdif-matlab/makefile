@@ -1,10 +1,13 @@
-# $Id: makefile,v 1.6 2000-07-24 12:33:33 schwarz Exp $
+# $Id: makefile,v 1.7 2000-07-27 18:24:49 schwarz Exp $
 #
 # makefile	26. January 2000	Diemo Schwarz
 #
 # formesutils matlab library
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.6  2000/07/24  12:33:33  schwarz
+# Install all necessary files.
+#
 # Revision 1.5  2000/07/19  16:32:45  schwarz
 # Factored out commonly used make-definitions for mex compilation,
 # put into mex.makedefs make-include file.
@@ -46,8 +49,9 @@ VPATH		 = $(OBJ_DIR)
 
 # install mex files and supporting m-files INSTALL_FILES into INSTALL_DIR
 INSTALL_DIR	 = /u/formes/lib/matlab
-INSTALL_FILES	 = $(mexfiles) mex.makedefs \
-		   loadsdiffile.m loadsdifflat.m writesdif.m sdifexist.m
+INSTALL_FILES	 = $(mexfiles) mex.makedefs sdifexist.m \
+		   loadsdif.m loadsdiffile.m loadsdifflat.m \
+		   writesdif.m
 INSTALLED_FILES  = $(INSTALL_FILES:%=$(INSTALL_DIR)/%)
 
 #
