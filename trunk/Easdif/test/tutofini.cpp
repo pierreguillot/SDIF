@@ -212,26 +212,23 @@ int main(int argc, char** argv)
       //  for greater efficiency you should enable it right after
       //  opening the file by means of
       //  readentity.EnableFrameDir()
+      readentity.Rewind();
       std::cerr << "frameDirectory is off (== 0): "<<readentity.IsFrameDir() << " \n";
-      
+      readentity.EnableFrameDir();
+      std::cerr << "frameDirectory should be on (==1):  "<<readentity.IsFrameDir()<< "\n";
       // implicitely switched on by means of requesting to
       // read from a selected time position (here 0)
-      int ret = readentity.ReadNextFrame(ff,0.);
-      if(ret == 0) {
-      std::cerr << "frame at time 0 is not selected \n";
-      }
-      else{
-	ff.GetSignature(signature);
-	std::cerr << "read frame at time "<< ff.GetTime() << " Signature "<<signature<< "\n";
-    }
-      
-      std::cerr << "frameDirectory should be on (==1):  "<<readentity.IsFrameDir()<< "\n";
-      
+      SDIFEntity::iterator it(readentity);
+      ff=*it;
+
+      ff.GetSignature(signature);
+      std::cerr << "read frame at time "<< ff.GetTime() << " Signature "<<signature<< "\n";    
+            
       std::cerr << "frameDirectory still incomplete \n ";
       readentity.PrintFrameDir();
       
       // request selected frame after time 0.
-      ret=readentity.ReadNextSelectedFrame(ff,0.);
+      int ret=readentity.ReadNextSelectedFrame(ff,0.);
       if(ret == 0) {
 	std::cerr << "frame at time 0 is not selected should not happen !!\n";
       }
@@ -267,11 +264,30 @@ int main(int argc, char** argv)
       else{
 	ff.GetSignature(signature);
 	std::cerr << "read frame at time "<< ff.GetTime() << " Signature "<<signature<< "\n";
-      }    
+      }
+      
+      std::cerr << "try to increment frames after time 0.5 \n";
+      while(it!=readentity.end()){
+        it->Print();
+        ++it;
+      }
+
+      --it;
+      while(it!=readentity.end()){
+        it->Print();
+        --it;
+      }
+
+      
       // read after end of file
       std::cerr << "try to read after eof \n";
-      ret=readentity.ReadNextSelectedFrame(ff,500);
-      std::cerr << "frame at time 500 is not selected should not happen !!\n";
+      
+      if((ret=readentity.ReadNextSelectedFrame(ff,500))==0) {
+        std::cerr << "frame at time 500 is not selected  !! OK\n";
+      }
+      else {
+        std::cerr << "frame at time 500 is selected!! should not happen !!\n";
+      }
     }
     /* to catch an exception */
     catch(SDIFEof& e)

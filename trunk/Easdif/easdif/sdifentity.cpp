@@ -32,9 +32,13 @@
  * 
  * 
  * 
- * $Id: sdifentity.cpp,v 1.21 2004-09-08 09:14:46 roebel Exp $ 
+ * $Id: sdifentity.cpp,v 1.22 2004-09-09 19:17:37 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.21  2004/09/08 09:14:46  roebel
+ * Improved efficiency of FrameDirectory by means of
+ * preventing the need to  search the complete directoy for each frame read.
+ *
  * Revision 1.20  2004/07/28 13:03:27  roebel
  * Fixed position type to be SdiffPosT
  *
@@ -152,7 +156,7 @@
 
 namespace Easdif {
 
-SDIFEntity::SDIFEntity(): efile(0), mSize(0), mEof(true), 
+SDIFEntity::SDIFEntity(): efile(0), mSize(0), mEof(true), mEofSeen(false),
 			  mOpen(0), generalHeader(0), asciiChunks(0), 
 			  isFrameDirEnabled(false)
 
@@ -163,11 +167,19 @@ SDIFEntity::SDIFEntity(): efile(0), mSize(0), mEof(true),
 /* to open a file in mode Read  */
 bool SDIFEntity::OpenRead(const char* filename)
 {
+    isFrameDirEnabled = false;
+    mFrameDirectory.resize(0);
+    return ReOpenRead(filename);
+}
+
+
+/* to reopen a file in mode Read  */
+bool SDIFEntity::ReOpenRead(const char* filename)
+{
     int n;
 
     // close file in case it was already open
-    Close();
-      
+    Close();      
     efile = SdifFOpen (filename, eReadFile);
 
     if(!efile)
@@ -206,9 +218,9 @@ bool SDIFEntity::OpenRead(const char* filename)
 
     // empty sdif file
     if(feof(efile->Stream))
-      mEof = true;
+      mEofSeen = mEof = true;
     else
-      mEof = false;
+      mEofSeen = mEof = false;
 
     mOpen = 2;
 
@@ -218,55 +230,54 @@ bool SDIFEntity::OpenRead(const char* filename)
 }
 
 // enable Framne directory
-void SDIFEntity::EnableFrameDir() {
+void SDIFEntity::EnableFrameDir()  throw(SDIFDirError){
   if(!isFrameDirEnabled){
-    isFrameDirEnabled = true;    
-    mCurrDirPos       = mFrameDirectory.end();
+    SdiffPosT pos;
+    if(mOpen){
+      SdiffGetPos(GetFile()->Stream,&pos);
+    }
+    if(!mOpen || pos == mFirstFramePos+4){
+      isFrameDirEnabled = true;    
+      mCurrDirPos       = mFrameDirectory.end();
+    }
+    else
+      throw SDIFDirError(eError,
+			  "Error in SDIFEntity::EnableFrameDir:: !!! frame directoy can only enabled when file position is at first data frame  !!!",
+                         0,eUnknown,0,0);
+
   }
 }
 
 void SDIFEntity::PrintFrameDir() const {
-  std::cerr << " init pos "<< mFirstFramePos << "\n";
+  std::cerr << "Init pos "<< mFirstFramePos << "\n";
   std::list<SDIFLocation>::const_iterator  start=mFrameDirectory.begin();
   std::list<SDIFLocation>::const_iterator  end=mFrameDirectory.end();
   while(start != end){
-    std::cerr<< "Pos "<< start->GetPos()<< " time "<< start->GetTime() << "\n";
+    std::cerr<< "Pos "<< start->GetPos()<< " sig " << SdifSignatureToString(start->GetSignature()) <<" time "<< start->GetTime() << "\n";
     ++start;
   }
 }
 
 // Add a new location into the directory
-void SDIFEntity::AddFramePos(SdifFloat8 time,SdifUInt4 pos) {
-#if OLD
-  if(mFrameDirectory.size()==0 || 
-     mFrameDirectory.back().GetPos()<pos  )
-    mFrameDirectory.push_back(SDIFEntity::SDIFLocation(time,pos));
-  else{
-    // search proper place to insert
-    std::list<SDIFLocation>::iterator  start=mFrameDirectory.begin();
-    std::list<SDIFLocation>::const_iterator  end=mFrameDirectory.end();
-
-    while(start!=end && start->GetPos() < pos) ++start;
-    // don't add duplicate entries
-    if(start->GetPos() > pos)
-      mFrameDirectory.insert(start,SDIFEntity::SDIFLocation(time,pos));
-  }
-#else
+void SDIFEntity::AddFramePos(SdifUInt4 id, SdifSignature sig, 
+                             SdifFloat8 time,SdiffPosT pos) {
+  
   if(mCurrDirPos == mFrameDirectory.end()){    
-    mFrameDirectory.push_back(SDIFEntity::SDIFLocation(time,pos));
-    ++mCurrDirPos;
+    mFrameDirectory.push_back(SDIFLocation(pos,id,time,sig));
   }
   else{
-    std::list<SDIFLocation>::iterator        start=mCurrDirPos;
-    std::list<SDIFLocation>::const_iterator  end  =mFrameDirectory.end();
+    std::list<SDIFLocation>::iterator  start=mCurrDirPos;
+    std::list<SDIFLocation>::iterator  end  =mFrameDirectory.end();
 
     while(start!=end && start->GetPos() < pos) ++start;
     // don't add duplicate entries
-    if(start==end || start->GetPos() > pos)
-      mCurrDirPos=mFrameDirectory.insert(start,SDIFEntity::SDIFLocation(time,pos));
+    if(start==end || start->GetPos() > pos){
+      mFrameDirectory.insert(start,SDIFLocation(pos,id,time,sig));
+    }
 
+    mCurrDirPos=start;
   }
-#endif
+
 }
 
 /* to open a file in mode Write  */
@@ -274,6 +285,8 @@ bool SDIFEntity::OpenWrite(const char* filename)
 {
     // close file in case it was already open
     Close();
+    isFrameDirEnabled = false;
+    mFrameDirectory.resize(0);
     efile = SdifFOpen (filename, eWriteFile);
 
     if(!efile)
@@ -348,45 +361,10 @@ bool SDIFEntity::Rewind()
 
     return (SizeR > 0);
   }
-  
+
   return true;
 }
 
-// rewind to frame before or at given time
-bool SDIFEntity::Rewind(SdifFloat8 time)
-{
-  SdiffPosT readpos=0,gotopos=mFirstFramePos;
-
-  if(mFrameDirectory.size()){
-    // serach proper place to insert
-    std::list<SDIFLocation>::iterator        start=mFrameDirectory.begin();
-    std::list<SDIFLocation>::const_iterator  end  =mFrameDirectory.end();
-
-    while(start!=end && start->GetTime() < time) mCurrDirPos=start++;
-    if(start!=end && start->GetTime() == time)
-      mCurrDirPos=start;
-    gotopos     = mCurrDirPos->GetPos();
-  }
-  else
-    mCurrDirPos = mFrameDirectory.begin();  
-
-  if(-1 ==SdiffSetPos(GetFile()->Stream,&gotopos)) return false;
-  SdiffGetPos(GetFile()->Stream,&readpos);
-
-  if(readpos != gotopos)
-    return false;
-
-  mEof = false;
-
-  if(mOpen & 2) {
-    size_t SizeR = 0;
-    SdifFGetSignature(GetFile(), &SizeR);
-
-    return (SizeR > 0);
-  }
-  
-  return true;
-}
 
 SdifFileT* SDIFEntity::GetFile() const
 {
@@ -483,11 +461,10 @@ bool SDIFEntity::Close()
 	efile=0;
 	mSize=0;
 	mEof = true; 
+	mEofSeen = false; 
 	mOpen = 0; 
 	generalHeader = 0; 
 	asciiChunks =0;
-	isFrameDirEnabled = false;
-	mFrameDirectory.resize(0);
 	return true;
     }
     return false;
@@ -517,32 +494,6 @@ int SDIFEntity::ReadNextFrame(SDIFFrame& frame)
 }
 
 
-int SDIFEntity::ReadNextFrame(SDIFFrame& frame, SdifFloat8 time)
-{
-    int bytesread = 0;
-
-    if(!IsFrameDir() ) 
-      EnableFrameDir();
-
-    Rewind(time);
-
-    do{
-      bytesread = frame.Read(*this);
-   }while(!eof() && (time > GetFile()->CurrFramH->Time));
-    
-    if(time<=GetFile()->CurrFramH->Time)
-      return bytesread;
-
-    if(eof()) {
-      // return -1;
-      throw SDIFEof(eError,"Error in SDIFEntity::ReadNextFrame -- Eof reached",
-		    efile,eEof,0,0); 
-    }
-
-    return 0;    
-
-}
-
 int SDIFEntity::ReadNextSelectedFrame(SDIFFrame& frame)
 {
     int bytesread = 0;
@@ -554,8 +505,9 @@ int SDIFEntity::ReadNextSelectedFrame(SDIFFrame& frame)
     }
 
     while(bytesread == 0 && !eof()){
-	    bytesread = frame.Read(*this);
-	}
+      bytesread = frame.Read(*this);
+    }
+
     return bytesread;    
 }
 
@@ -563,28 +515,56 @@ int SDIFEntity::ReadNextSelectedFrame(SDIFFrame& frame)
 
 int SDIFEntity::ReadNextSelectedFrame(SDIFFrame& frame, SdifFloat8 time)
 {
-    int bytesread = 0;
 
-    if(!IsFrameDir() ) 
-      EnableFrameDir();
-
-    Rewind(time);
-
-    do{
-      bytesread = frame.Read(*this);
-    }while(!eof() &&(bytesread == 0 || time > frame.GetTime()));
-    
-    if(bytesread && time <= frame.GetTime())
-      return bytesread;
-
-    if(eof()) {
-      // return -1;
-      throw SDIFEof(eError,"Error in SDIFEntity::ReadNextFrame -- Eof reached",
-		    efile,eEof,0,0); 
+    if(!isFrameDirEnabled){
+      throw SDIFDirError(eError,
+                         "Error in SDIFEntity::ReadNextFrame(SDIFFrame& frame, SdifFloat8 time):: !!! frame directoy not enabled  !!!",
+                         0,eUnknown,0,0);
     }
 
-    return 0;    
+    bool up = false;
+    // attention creation of iterator changes current position
+    if(mCurrDirPos == mFrameDirectory.begin() 
+       ||(mCurrDirPos == mFrameDirectory.end() 
+          && mFrameDirectory.size() &&mFrameDirectory.back().GetTime() < time )
+       ||(mCurrDirPos->GetTime() < time )){
+      up =true;
+    }
 
+    if(up && eof()){
+      // return -1;
+      throw SDIFEof(eError,"Error in SDIFEntity::ReadNextSelectedFrame -- Eof reached",
+                    efile,eEof,0,0); 
+    }
+
+
+    // end works in both directions !!
+    iterator it(this), ite(this,true);
+    if(up) {      
+      while((it!=ite) && it.mBase->GetTime() < time)       {
+        ++it;      
+      }
+    }
+    else {
+      if(it==ite) --it;
+
+      while (it!= ite && it->GetTime() > time) {
+        --it;
+      }
+      ++it;        
+    }
+
+    if(it != ite) {
+      mEof = false;
+      frame = *it;
+      return frame.GetSize();
+    }
+    else {
+      frame.ClearData();
+      mEof = true;
+    }
+
+    return 0;
 }
 
 int SDIFEntity::WriteFrame(SDIFFrame& frame)

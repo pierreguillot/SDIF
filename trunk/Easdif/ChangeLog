@@ -1,3 +1,13 @@
+2004-09-09  Axel Roebel  <Axel.Roebel@ircam.fr>
+Version 1.0.0beta
+	
+	* Added new Frame read access method using iterators.
+	Iterators can be constructed from SDIFEntity that have been
+	opened for read if the framedirectory is enabled. 
+	They update  the frame directory on the fly
+	and use it to efficiently find selected frames.
+
+	
 2004-09-08  Axel Roebel  <roebel@localdomain>
 Version 0.11.1
 	
@@ -575,4 +585,4 @@ Version 0.21
 	* ChangeLog: Added changelog to repository.
 
 
-$Id: ChangeLog,v 1.41 2004-09-08 09:18:16 roebel Exp $
+$Id: ChangeLog,v 1.42 2004-09-09 19:17:39 roebel Exp $
