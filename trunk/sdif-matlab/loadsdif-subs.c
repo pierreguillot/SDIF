@@ -1,4 +1,4 @@
-/* $Id: loadsdif-subs.c,v 1.3 2000-05-12 14:03:53 schwarz Exp $
+/* $Id: loadsdif-subs.c,v 1.4 2000-07-19 16:32:08 schwarz Exp $
 
    loadsdif_subs.c	25. January 2000	Diemo Schwarz
 
@@ -12,7 +12,11 @@
    [matrix, time, stream, frametype, matrixtype] = readframe
 	Returns an empty matrix on end-of-file.
    endread ('close')
-   $Log: not supported by cvs2svn $
+
+  $Log: not supported by cvs2svn $
+  Revision 1.3  2000/05/12  14:03:53  schwarz
+  Oops-style errors.
+
   Revision 1.2  2000/05/11  12:39:24  schwarz
   With new SDIF lib, selection is automatically parsed on open, and
   stored in input->Selection.
@@ -33,13 +37,13 @@
 static size_t readmatrix (SdifFileT *input, mxArray *mxarray [MaxNumOut]);
 static void   exitread (void);
 
-static int    matricesread    = 0, /* counters for reporting, */
+static int    matricesleft    = 0, /* determines action in readframe */
+	      matricesread    = 0, /* counters for reporting, */
 	      matricesskipped = 0; /* reset by beginread */
 static int    eof = 1;		   /* reset by beginread */
 
 
-SdifFileT *
-beginread (int nlhs, mxArray *plhs [], char *filename, char *types)
+SdifFileT *beginread (int nlhs, mxArray *plhs [], char *filename, char *types)
 {
     SdifFileT	   *input = NULL;
     
@@ -67,14 +71,14 @@ beginread (int nlhs, mxArray *plhs [], char *filename, char *types)
 	}
     }
 
+    matricesleft    = 0;
     matricesread    = 0;
     matricesskipped = 0;
     return (input);
 }
 
 
-void 
-endread (SdifFileT *input)
+void endread (SdifFileT *input)
 {
     if (!matricesread  &&  matricesskipped)
         mexWarnMsgTxt ("No Matrices selected!");
@@ -83,51 +87,60 @@ endread (SdifFileT *input)
 
 
 /* [matrix, time, stream, frametype, matrixtype] = readframe */
-int
-readframe (int nlhs, mxArray *plhs [], SdifFileT *f)
+int readframe (int nlhs, mxArray *plhs [], SdifFileT *f)
 {
-    size_t	bytesread = 0;
-    mxArray	*mxarray [MaxNumOut];
-    int		m;
+    static size_t bytesread = 0;
+    mxArray	  *mxarray [MaxNumOut];
+    int		  matrixfound = 0, m;
 
-    if (eof)   return (0);
-
-    bytesread += SdifFReadFrameHeader(f);
-
-    /* search for a frame we're interested in 
-       TODO: heed max time
-     */
-    while (!SdifFCurrFrameIsSelected (f, f->Selection))
+    while (!matrixfound  &&  !eof)
     {
-	size_t   numread;
-	SdifSkipFrameData (f);
-	if ((eof = SdifFGetSignature(f, &numread) == eEof))
-	    return 0;
-	bytesread += numread + SdifFReadFrameHeader(f);
-    }
+	/* are there any matrices left in the frame to read? */
+	if (matricesleft == 0)
+	{   /* no: read next frame header */
+	    bytesread = SdifFReadFrameHeader(f);
 
-    /* go through matrices */
-    for (m = 0; m < SdifFCurrNbMatrix (f); m++)
-    {
-	bytesread += SdifFReadMatrixHeader (f);
-	if (SdifFCurrMatrixIsSelected (f, f->Selection))
-	{
-	    int mret  = readmatrix (f, mxarray);
-	    if (mret == -1)   return (-1);
-	    bytesread += mret;
-	    matricesread++;	/* count for reporting */
+	    /* search for a frame we're interested in 
+	       TODO: heed max time */
+	    while (!SdifFCurrFrameIsSelected (f))
+	    {
+		size_t   numread;
+		SdifSkipFrameData (f);
+		if ((eof = SdifFGetSignature(f, &numread) == eEof))
+		    return 0;
+		bytesread += numread + SdifFReadFrameHeader(f);
+	    }
+	    
+	    /* re-initialise matrices left to read */
+	    matricesleft = SdifFCurrNbMatrix (f);
 	}
-	else
-	{
-	    bytesread += SdifSkipMatrixData(f);
-	    bytesread += SdifFReadPadding(f, SdifFPaddingCalculate(f->Stream, 
-								   bytesread));
-	    matricesskipped++;	/* count for reporting */
+	
+	/* re-test number of matrices left to read because we might
+           have read a new frame header */
+	if (matricesleft > 0)
+	{   /* go through one matrix */
+	    bytesread += SdifFReadMatrixHeader (f);
+	    if (SdifFCurrMatrixIsSelected (f))
+	    {
+		int mret     = readmatrix (f, mxarray);
+		if (mret    == -1)   return (-1);
+		bytesread   += mret;
+		matricesread++;		/* count for reporting */
+		matrixfound  = 1;	/* set success flag -> exit loop */
+	    }
+	    else
+	    {
+		bytesread   += SdifSkipMatrixData(f);
+		matricesskipped++;	/* count for reporting */
+	    }
+	    matricesleft--;
+	}
+
+	if (matricesleft == 0)
+	{   /* no matrices left in frame to read, read next frame signature */
+	    eof = SdifFGetSignature(f, &bytesread) == eEof;
 	}
     }
-
-    /* read next signature */
-    eof = SdifFGetSignature(f, &bytesread) == eEof;
 
     /* assign to output parameters */
     for (m = 0; m < nlhs; m++)
@@ -135,12 +148,11 @@ readframe (int nlhs, mxArray *plhs [], SdifFileT *f)
 	plhs [m] = mxarray [m];
     }
 
-    return (1);
+    return (!eof);
 }
 
 
-static size_t 
-readmatrix (SdifFileT *f, mxArray *mxarray [MaxNumOut])
+static size_t readmatrix (SdifFileT *f, mxArray *mxarray [MaxNumOut])
 {
     size_t	 bytesread = 0;
     double	*prmtx;
