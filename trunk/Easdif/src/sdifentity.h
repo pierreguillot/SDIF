@@ -7,9 +7,13 @@
  * 
  * 
  * 
- * $Id: sdifentity.h,v 1.1 2002-06-18 18:44:14 ftissera Exp $ 
+ * $Id: sdifentity.h,v 1.2 2002-07-12 10:33:56 ftissera Exp $ 
  * 
- * $Log: not supported by cvs2svn $ 
+ * $Log: not supported by cvs2svn $
+ * Revision 1.1  2002/06/18 18:44:14  ftissera
+ * Project for new SDIF API
+ *  ----------------------------------------------------------------------
+ * 
  * 
  */
 
@@ -65,18 +69,20 @@ public:
     int AddMatrixType(const std::string& matrixtype, 
 		      const std::string& colnames);
 
-    int SetSdifString(SdifStringT* String);
-    SdifStringT* GetSdifString();
+
+
     int ViewString();
 
     //  int InitString();
 
+    SdifStringT* GetSdifString();
     int GetNbNVT() const;
     SDIFNameValueTable& GetNVT(unsigned int i);
-
     SdifFileT* GetFile() const;
-    /*temporary*/
+
+    /*temporary SetFile*/
     int SetFile(SdifFileT* SdifFile);
+    int SetSdifString(SdifStringT* String);
 
     int Open(const char* filename, SdifFileModeET Mode);
     int OpenRead(const char* filename);
@@ -103,7 +109,11 @@ public:
 
     //   int Close(char* filename);
 
-
+/*
+Select(signature, stream, time)pour les frames 
+and 
+(signature, col, row, type)pour matrix
+*/
     
 /*
   static Init(std::string sdiftypes = NULL);  // called as SdifEntity::Init(), does SdifGenInit, installs exception callbacks

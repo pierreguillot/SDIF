@@ -8,9 +8,12 @@
  * 
  * 
  * 
- * $Id: sdifmatrixdatainterface.h,v 1.1.1.1 2002-04-11 16:13:31 ftissera Exp $ 
+ * $Id: sdifmatrixdatainterface.h,v 1.2 2002-07-12 10:29:54 ftissera Exp $ 
  * 
- * $Log: not supported by cvs2svn $ 
+ * $Log: not supported by cvs2svn $
+ * Revision 1.1.1.1  2002/04/11 16:13:31  ftissera
+ * Project for new SDIF API	
+ * 
  * 
  */
 
@@ -19,10 +22,11 @@
 
 #include <sdif.h>
 //#include "sdifmatrixdata.h"
+
 class SdifMatrixDataInterface
 { 
 public:
-//    virtual <class T> Get(int i, int j)=0;
+//  virtual <class T> Get(int i, int j)=0;
     virtual double GetDouble(int i, int j)=0;
     virtual float GetFloat(int i, int j)=0;
     virtual int GetInt(int i, int j)=0;
@@ -36,8 +40,6 @@ public:
     virtual int Set(int row, int col, const int& value)=0;
     virtual int Set(int row, int col, const float& value)=0;
     virtual int Set(int row, int col, const double& value)=0;
-
-    // virtual int SetValue()=0;
 
     virtual ~SdifMatrixDataInterface() {};
 };

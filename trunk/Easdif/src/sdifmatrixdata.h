@@ -8,9 +8,13 @@
  * 
  * 
  * 
- * $Id: sdifmatrixdata.h,v 1.2 2002-06-18 14:47:45 ftissera Exp $ 
+ * $Id: sdifmatrixdata.h,v 1.3 2002-07-12 10:27:34 ftissera Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  2002/06/18 14:47:45  ftissera
+ * add comments
+ * 
+ *
  * Revision 1.1.1.1  2002/04/11 16:13:31  ftissera
  * Project for new SDIF API	
  * 
@@ -101,6 +105,7 @@ public:
 	    bytesread += SdifFReadPadding(file, SdifFPaddingCalculate(file->Stream, bytesread));
 	    return bytesread; 
 	}
+
     int write(SdifFileT* file)
 	{
 	    int SizeFrameW = 0;
@@ -110,7 +115,8 @@ public:
 		for (int col = 1; col <= m_Ncols; col++)
 		{
 		    T value = static_cast<T>(m_Data[row*m_Ncols+col-1]);
-		    SdifFSetCurrOneRowCol (file, col, value);	   	  	    }
+		    SdifFSetCurrOneRowCol (file, col, value);	   	 
+		}
 		SizeFrameW += SdifFWriteOneRow (file);
 	    }
 

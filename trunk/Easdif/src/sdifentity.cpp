@@ -7,9 +7,12 @@
  * 
  * 
  * 
- * $Id: sdifentity.cpp,v 1.1 2002-06-18 18:43:08 ftissera Exp $ 
+ * $Id: sdifentity.cpp,v 1.2 2002-07-12 10:34:08 ftissera Exp $ 
  * 
- * $Log: not supported by cvs2svn $ 
+ * $Log: not supported by cvs2svn $
+ * Revision 1.1  2002/06/18 18:43:08  ftissera
+ * Project for new SDIF API
+ * 
  * 
  */
 
@@ -35,7 +38,6 @@ int SDIFEntity::OpenRead(const char* filename)
     SdifFAllFrameTypeToSdifString(efile, mDescription);
 
     // SdifFReadTextMatrixData(efile, mDescription);
-
     // SdifFReadTextMatrix(efile, mDescription);
     //  string =  SdifFReadTextMatrix (efile);
 
@@ -192,6 +194,7 @@ int SDIFEntity::WriteNVTs()
     return 1;
 }
 
+/* to get a NVT of a file */
 SDIFNameValueTable SDIFEntity::TakeNVT()
 {
     SdifUInt4       iNV;
@@ -215,6 +218,7 @@ SDIFNameValueTable SDIFEntity::TakeNVT()
     return nvt;
 }
 
+/* to get a NVT of an entity */
 SDIFNameValueTable& SDIFEntity::GetNVT(unsigned int i)
 {
     /* Check the index */
@@ -242,8 +246,9 @@ bool SDIFEntity::ReadNextFrame(SDIFFrame& frame)
 {
     int eof = 0;
     bool test = false;
-     
-    //eof = SdifFGetSignature(efile, &frame.mFrameBytesRead);
+    
+
+    // eof = SdifFGetSignature(efile, &frame.mFrameBytesRead);
 
     if (!eof  &&  SdifFLastError(efile) == NULL)
     {
@@ -350,8 +355,8 @@ int SDIFEntity::GetColumnIndex(SdifSignature matrixsig, std::string columnname)
     test = strpbrk(signature, mDescription->str);
     std::cout << "variable test = " << test << std::endl;
     if ("1MTD" == test)
-    {	
-	std::cout << "unr matrice trouvee" << std::endl;
+    {	/*temporaly*/
+	std::cout << "une matrice trouvee" << std::endl;
 
 	/* to have the signature for searching the good matrix type*/
 	signature = SdifSignatureToString(matrixsig);
