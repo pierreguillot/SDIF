@@ -1,4 +1,4 @@
-/* $Id: SdifFWrite.c,v 3.8 2000-04-11 13:25:39 schwarz Exp $
+/* $Id: SdifFWrite.c,v 3.9 2000-05-10 15:32:12 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -14,6 +14,12 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.8  2000/04/11  13:25:39  schwarz
+ * Write NVT as frame with 1 text matrix, conforming to SDIF spec, using
+ * new function SdifFWriteTextMatrix.
+ * Fixed ancient bug in ...AllAsciiChunks: SdifExistUserFrameType worked
+ * on SdifF->MatrixTypesTable, not SdifF->FrameTypesTable.
+ *
  * Revision 3.7  2000/03/01  11:19:45  schwarz
  * Added functions for matrix-wise writing:  SdifUpdateFrameHeader,
  * SdifFWriteMatrixData, SdifFWriteMatrix, SdifFWriteFrameAndOneMatrix
@@ -569,11 +575,8 @@ SdifFWriteFrameAndOneMatrix (SdifFileT	    *f,
 			     void	    *Data)
 {
     /* calculate frame size (frame sig and frame size field is not counted) */
-    SdifUInt4 fsz = 
-           /* frame  header  */ sizeof(SdifFloat8)    + 2 * sizeof(SdifUInt4) +
-           /* matrix header  */ sizeof(SdifSignature) + 3 * sizeof(SdifUInt4) +
-           /* matrix data    */ NbRow * NbCol * SdifSizeofDataType (DataType);
-    fsz += /* matrix padding */ SdifPaddingCalculate (fsz);
+    SdifUInt4 fsz = SdifSizeOfFrameHeader () 
+                  + SdifSizeOfMatrix (DataType, NbRow, NbCol);
 
     SdifFSetCurrFrameHeader (f, FrameSignature, fsz, 1, NumID, Time);
     fsz  = SdifFWriteFrameHeader (f);
@@ -581,6 +584,27 @@ SdifFWriteFrameAndOneMatrix (SdifFileT	    *f,
 
     return (fsz);
 }
+
+
+size_t
+SdifSizeOfFrameHeader (void)
+{
+    return (sizeof(SdifFloat8) + 2 * sizeof(SdifUInt4));
+}
+
+
+size_t
+SdifSizeOfMatrix (SdifDataTypeET DataType,
+		  SdifUInt4      NbRow,
+		  SdifUInt4      NbCol)
+{
+    SdifUInt4 msz = 
+           /* matrix header  */ sizeof(SdifSignature) + 3 * sizeof(SdifUInt4) +
+           /* matrix data    */ NbRow * NbCol * SdifSizeofDataType (DataType);
+    msz += /* matrix padding */ SdifPaddingCalculate (msz);
+    return (msz);
+}
+
 
 
 /*
