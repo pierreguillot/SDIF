@@ -33,9 +33,12 @@
  * 
  * 
  * 
- * $Id: sdifmatrixdata.h,v 1.5 2003-07-07 10:29:46 roebel Exp $ 
+ * $Id: sdifmatrixdata.h,v 1.6 2003-07-17 18:09:35 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.5  2003/07/07 10:29:46  roebel
+ * Added support for eInt1 and eUInt1 data types, resize of matrix now reinitializes all elements to 0
+ *
  * Revision 1.4  2003/05/18 23:14:10  roebel
  * Improved error message should be an exception
  *
@@ -313,32 +316,91 @@ public:
     return tmp;
   }
 
-/**
- * \ingroup otherdata 
- * @brief 
- */
-     void CopyData(std::vector<T>& data)
-	{
-	    m_Data.resize(data.size());
-	    std::copy(data.begin(), data.end(), m_Data.begin());
-	}
 
-/** 
- * \ingroup otherdata
- * resize the matrix and clear all data 
- * 
- * @param nrows 
- * @param ncols 
- */
-    void Resize(int nrows, int ncols)
-	{
-	  std::fill(m_Data.begin(),
-		    m_Data.begin()+std::min(nrows*ncols,m_Nrows*m_Ncols),
-		    T(0));
-	  m_Nrows = nrows;
-	  m_Ncols = ncols;
-	  m_Data.resize(m_Nrows*m_Ncols);
+  void CopyData(std::vector<T>& data)
+  {
+    m_Data.resize(data.size());
+    std::copy(data.begin(), data.end(), m_Data.begin());
+  }
+
+  /** 
+   * \ingroup otherdata
+   * \brief clear matrix 
+   *
+   *  all data entries are set to zero.
+   */
+  void Clear() {
+    std::fill(&m_Data[0],&m_Data[m_Data.size()],T(0));
+  }
+
+  /** 
+   * \ingroup otherdata
+   * \brief resize the matrix 
+   *
+   *  Existing data is preserved in the correct locations
+   *  newly initilized data is set to zero
+   * 
+   * @param nrows 
+   * @param ncols 
+   */
+  void Resize(int nrows, int ncols)
+  {
+
+    if(nrows != m_Nrows || ncols != m_Ncols){
+      int i,j;
+      
+      // Resize sufficiently
+      if(static_cast<size_t>(nrows*ncols) > m_Data.size()) {
+	m_Data.resize(nrows*ncols);
+      }
+      
+      // reorganize data
+      if (m_Ncols < ncols) {
+	// start from the end
+	// fill all new fields with zero
+	for (i = nrows-1; 
+	     i >= m_Nrows ; --i){
+	  for (j = ncols-1; j >= 0; --j)
+	    m_Data[i * ncols + j] = T(0);
 	}
+	
+	for (; i >= 0; --i){
+	  for (j = ncols-1; j >=m_Ncols ; --j)
+	    m_Data[i * ncols + j] = T(0);
+	  
+	  for (; j >= 0; --j)
+	    m_Data[i * ncols + j] = m_Data[i * m_Ncols + j];
+	}
+      }
+      else{
+	// Start from the beginning
+	// The first row will need no change
+	int prows = m_Nrows;
+	if (m_Nrows > nrows) prows = nrows;
+	
+	for (i = 1; i < prows; ++i){
+	  for (j=0; j <ncols; ++j)
+	    m_Data[i * ncols + j] = m_Data[i * m_Ncols + j];
+	}
+	for (; i < nrows; ++i){
+	  for (j=0; j <ncols; ++j)
+	    m_Data[i * ncols + j] = T(0);	    
+	}
+      }
+      
+      // If size has been shrinked --> adjust properly
+      if(static_cast<size_t>(ncols*nrows) < m_Data.size()) {
+	m_Data.resize(ncols*nrows);
+      }
+      
+      
+      m_Ncols   = ncols;
+      m_Nrows   = nrows;
+    }
+
+    return;
+  }
+
 
 
 /*************************************************************************/

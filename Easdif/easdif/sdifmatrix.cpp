@@ -32,9 +32,12 @@
  * 
  * 
  * 
- * $Id: sdifmatrix.cpp,v 1.10 2003-07-09 21:06:55 roebel Exp $ 
+ * $Id: sdifmatrix.cpp,v 1.11 2003-07-17 18:09:35 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.10  2003/07/09 21:06:55  roebel
+ * Added support for eUInt4.
+ *
  * Revision 1.9  2003/07/07 10:29:46  roebel
  * Added support for eInt1 and eUInt1 data types, resize of matrix now reinitializes all elements to 0
  *
@@ -130,6 +133,20 @@ SDIFMatrix::SDIFMatrix(const SDIFMatrix& aMatrix):mInter(0)
 }
 
 
+SDIFMatrix & SDIFMatrix::operator=(const SDIFMatrix& aMatrix) {
+    
+  delete mInter;
+  
+  mSig = aMatrix.mSig;
+  mType = aMatrix.mType;
+  bytesread = aMatrix.bytesread;
+  mFile   = aMatrix.mFile;
+  mInter =   aMatrix.mInter->clone(); 
+
+  return *this;
+}
+
+
 void SDIFMatrix::Init(SdifSignature sig, int nrows, int ncols, SdifDataTypeET type)
 {
     if(mInter) {
@@ -195,6 +212,14 @@ void SDIFMatrix::Init(const std::string &sig, int nrows, int ncols, SdifDataType
 bool SDIFMatrix::Resize(int _rows,int _ncols) {
   if(mInter){
     mInter->Resize(_rows,_ncols);
+    return true;
+  }
+  return false;
+}
+
+bool SDIFMatrix::Clear() {
+  if(mInter){
+    mInter->Clear();
     return true;
   }
   return false;

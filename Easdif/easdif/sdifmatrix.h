@@ -33,9 +33,12 @@
  * 
  * 
  * 
- * $Id: sdifmatrix.h,v 1.12 2003-07-10 16:14:03 roebel Exp $ 
+ * $Id: sdifmatrix.h,v 1.13 2003-07-17 18:09:35 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.12  2003/07/10 16:14:03  roebel
+ * Documentation of constructors.
+ *
  * Revision 1.11  2003/07/07 10:29:46  roebel
  * Added support for eInt1 and eUInt1 data types, resize of matrix now reinitializes all elements to 0
  *
@@ -165,7 +168,30 @@ public:
    *  be able to read your data.
    */
     SDIFMatrix(const SdifDataTypeET _type=eFloat4);
-    SDIFMatrix(const SDIFMatrix& aMatrix);
+
+
+  /** 
+   * \ingroup create
+   * \brief assignment operator
+   *
+   * does a deep copy of the data
+   * 
+   *\param aMatrix matrix to copy
+   *
+   */
+  SDIFMatrix & operator=(const SDIFMatrix& aMatrix);
+
+
+  /** 
+   * \ingroup create
+   * \brief copy constrctor
+   *
+   * does a deep copy of the data
+   * 
+   *\param aMatrix
+   *
+   */
+  SDIFMatrix(const SDIFMatrix& aMatrix);
 
 
   /** 
@@ -288,7 +314,8 @@ public:
  * \ingroup rwmat
  * \brief Resize matrix to hold rowsxcolumns
  * 
- * After resizing all data is cleared!
+ *  Existing data is preserved in the correct locations
+ *  newly initilized data is set to zero
  *
  * @param nrows  Number of rows fo the matrix
  * @param ncols  Number of columns of the matrix
@@ -298,7 +325,16 @@ public:
  */
   bool Resize(int nrows, int ncols);
 
-  
+  /** 
+   * \ingroup rwmat
+   * \brief clear matrix 
+   *
+   *  all data entries are set to zero.
+   * \return true if successful/false if matrix has not yet been initialized to a signature/data type
+   *       
+   */
+  bool  Clear();
+
 /*************************************************************************/
 /* Get the members of the matrix */
 /**
