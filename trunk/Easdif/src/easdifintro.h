@@ -154,11 +154,11 @@ int main(int argc, char** argv)
     /* to catch an exception */
     catch(SDIFEof& e)
       {
-	std::cerr << " Catch EOF " << std::endl;
 	/* if we want an access to the file */
 	SdifFileT *sf = e.sdifFile();
+
+	std::cerr << " Catch EOF for file " <<sf->Name << " -- ending program " << std::endl;
 	/* to have the error message */
-	e.ErrorMessage();
       }
     
     catch(SDIFUnDefined& e)
