@@ -7,9 +7,13 @@
  * 
  * 
  * 
- * $Id: sdifentity.h,v 1.6 2002-10-30 15:27:32 roebel Exp $ 
+ * $Id: sdifentity.h,v 1.7 2002-11-27 20:13:04 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.6  2002/10/30 15:27:32  roebel
+ * Changed return type from int to bool.
+ * Changed error checking in openroutines.
+ *
  * Revision 1.5  2002/10/10 10:49:09  roebel
  * Now using namespace Easdif.
  * Fixed handling of zero pointer arguments in initException.
@@ -64,8 +68,6 @@ private:
  * contain the SDIFNameValueTable of the entity
  */
     std::vector<SDIFNameValueTable> mv_NVT;
-    /* for taking a nvt from a file */
-    SDIFNameValueTable NVT;
 
     SdifFileT* efile;
     SdifStringT* mDescription;
@@ -74,7 +76,7 @@ private:
     SdifUInt4 mSize;
 
     bool mEof;
-    int mNbNVT;
+
     int mOpen;
     size_t generalHeader;
     size_t asciiChunks;
