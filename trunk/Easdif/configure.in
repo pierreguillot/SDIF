@@ -1,6 +1,6 @@
 dnl -*-autoconf-*-  (No, it's an autoconf file!)
 dnl -*-m4-*- (He emacs, it's a m4 file)
-dnl $Id: configure.in,v 1.38 2004-08-25 09:22:12 roebel Exp $
+dnl $Id: configure.in,v 1.39 2004-08-25 18:23:57 roebel Exp $
 dnl
 dnl configure.in		Feb 2003      Axel Roebel
 dnl
@@ -33,6 +33,9 @@ dnl
 dnl
 
 dnl $Log: not supported by cvs2svn $
+dnl Revision 1.38  2004/08/25 09:22:12  roebel
+dnl SDIFEntity::Rewind(time) no longer private.
+dnl
 dnl Revision 1.37  2004/07/29 13:45:27  roebel
 dnl Version 0.10.1
 dnl
@@ -160,8 +163,8 @@ AC_MSG_RESULT(PACKAGE NAME)
 PACKAGE=Easdif
 
 EASDIF_VERSION_MAJ=0
-EASDIF_VERSION_MIN=10
-EASDIF_VERSION_RELEASE=2
+EASDIF_VERSION_MIN=11
+EASDIF_VERSION_RELEASE=0
 
 VERSION="${EASDIF_VERSION_MAJ}.${EASDIF_VERSION_MIN}.${EASDIF_VERSION_RELEASE}"
 
