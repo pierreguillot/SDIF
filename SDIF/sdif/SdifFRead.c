@@ -1,4 +1,4 @@
-/* $Id: SdifFRead.c,v 3.20 2004-07-22 14:47:56 bogaards Exp $
+/* $Id: SdifFRead.c,v 3.21 2004-09-09 17:47:53 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -31,6 +31,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.20  2004/07/22 14:47:56  bogaards
+ * removed many global variables, moved some into the thread-safe SdifGlobals structure, added HAVE_PTHREAD define, reorganized the code for selection, made some arguments const, new version 3.8.6
+ *
  * Revision 3.19  2004/06/03 11:18:00  schwarz
  * Profiling showed some waste of cycles in byte swapping and signature reading:
  * - byte swapping now array-wise, not element-wise in SdifSwap<N>[Copy] routines:   -> from 0.24 s (18.5%) to 0.14s
@@ -147,8 +150,6 @@
  *
  * Revision 2.2  1999/01/23  13:57:27  virolle
  * General Lists, and special chunk preparation to become frames
- *
- *
  */
 
 
@@ -276,9 +277,9 @@ size_t SdifFReadOneFrameType(SdifFileT *SdifF)
   return SdifFGetOneFrameType(SdifF, 's');
 }
 
-/*************************************************************************************/
+/****************************************************************************/
 /* THE FOLLOWING FUNCTION DOESN'T TAKE CARE ANYMORE ABOUT THE OLD SDIF SPECIFICATION */
-/*************************************************************************************/
+/****************************************************************************/
 
 /* SdifFReadAllType ne lit pas "1TYP" puisque l'on sera aiguillie sur cette fonction 
  * apres lecture de "1TYP"
@@ -329,9 +330,9 @@ SdifFReadAllType(SdifFileT *SdifF)
 
 
 
-/*************************************************************************************/
+/*****************************************************************************/
 /* THE FOLLOWING FUNCTION DOESN'T TAKE CARE ANYMORE ABOUT THE OLD SDIF SPECIFICATION */
-/*************************************************************************************/
+/*****************************************************************************/
   
 /* SdifFReadAllStreamID ne lit pas "SSIC" puisque l'on sera aiguillie sur cette fonction 
  * apres lecture de "SSIC"
@@ -587,7 +588,6 @@ SdifFReadAndIgnore (SdifFileT *SdifF, size_t bytes)
 }
 
 
-
 /* SdifFSkipMatrix read entire matrix header. */
 size_t SdifFSkipMatrix(SdifFileT *SdifF)
 {
@@ -712,4 +712,49 @@ size_t SdifFReadTextMatrixData(SdifFileT *SdifF, SdifStringT *SdifString)
   
   SdifFree(str);
   return SizeR;
+}
+
+
+/* read matrix data and padding into field CurrMtrxData.
+   matrix header must have been read before */
+size_t SdifFReadMatrixData (SdifFileT *file)
+{
+    char	       errorMess  [_SdifStringLen];
+    SdifMatrixHeaderT *mtxh     = file->CurrMtrxH;
+    int		       numelem  = mtxh->NbRow * mtxh->NbCol;  /* elements */
+    size_t	       nread    = 0;	/* bytes read */
+
+
+    /* update header pointer in matrix data struct to point to the
+       file's current matrix header and see if there's enough space
+       for data, if not, grow buffer */
+    SdifMatrixDataUpdateHeader(file->CurrMtrxData, mtxh);
+
+    /* case template for type from SdifDataTypeET */
+#   define readdatacase(type) \
+    case e##type:  nread += (sizeof (Sdif##type) *			     \
+			     SdiffRead##type (file->CurrMtrxData->Data.type, \
+					      numelem, file->Stream));       \
+    break;
+
+    switch (mtxh->DataType)
+    {
+        /* generate cases for all types */
+	sdif_foralltypes (readdatacase)
+
+	default:
+	    sprintf(errorMess, "SdifFReadMatrixData 0x%04x, then Float4 used", 
+		    mtxh->DataType);
+	    _SdifFError(file, eTypeDataNotSupported, errorMess);
+
+	    nread += (sizeof(SdifFloat4) * 
+		    SdiffReadFloat4(file->CurrMtrxData->Data.Float4, 
+				    numelem, file->Stream));
+	break;
+    }
+
+    /* Number of bytes written */
+    nread += SdifFReadPadding(file, SdifPaddingCalculate(nread));
+  
+    return nread;
 }
