@@ -1,4 +1,4 @@
-/* $Id: sdif.h,v 1.41 2004-07-22 14:47:55 bogaards Exp $
+/* $Id: sdif.h,v 1.42 2004-09-09 18:02:00 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -30,6 +30,9 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.41  2004/07/22 14:47:55  bogaards
+ * removed many global variables, moved some into the thread-safe SdifGlobals structure, added HAVE_PTHREAD define, reorganized the code for selection, made some arguments const, new version 3.8.6
+ *
  * Revision 1.40  2004/06/14 15:56:29  schwarz
  * Padding mask, other constants?
  * More doc for sdif_foralltypes macros.
@@ -202,7 +205,7 @@
  * Revision 1.1.2.1  2000/08/21  13:07:41  tisseran
  * *** empty log message ***
  *
- * $Date: 2004-07-22 14:47:55 $
+ * $Date: 2004-09-09 18:02:00 $
  *
  */
 
@@ -217,7 +220,7 @@ extern "C" {
 #endif
 
 
-static const char _sdif_h_cvs_revision_ [] = "$Id: sdif.h,v 1.41 2004-07-22 14:47:55 bogaards Exp $";
+static const char _sdif_h_cvs_revision_ [] = "$Id: sdif.h,v 1.42 2004-09-09 18:02:00 schwarz Exp $";
 
 
 #include <stdio.h>
@@ -692,9 +695,11 @@ typedef struct SdifMatrixDataS SdifMatrixDataT;
 struct SdifMatrixDataS
 {
   SdifMatrixHeaderT *Header;
-  SdifOneRowT       **Rows;
-  SdifUInt4         Size;
-} ;
+  int		    ForeignHeader;  /* Header was not allocated by me */
+  SdifUInt4         Size;	/* byte size of matrix on file */
+  DataTypeUT        Data;	/* any type pointer to data */
+  SdifUInt4         AllocSize;	/* allocated size of data in bytes */
+};
 
 /* SdifFrame.h */
 typedef struct SdifFrameHeaderS SdifFrameHeaderT;
@@ -1022,6 +1027,9 @@ struct SdifFileS
    * of _SdifGranule, use SdifReInitOneRow(SdifOneRowT *OneRow, SdifDataTypeET DataType, SdifUInt4 NbData)
    * to assure NbData (=NbColumns) objects memory allocated
    */
+
+  /* data pointer used by SdifFReadMatrixData, never uses the Header field */
+  SdifMatrixDataT    *CurrMtrxData;
 
   size_t  FileSize;
   size_t  ChunkSize;
@@ -1572,14 +1580,6 @@ SdifSignature SdifFCurrFrameSignature  (SdifFileT *SdifF);
 SdifSignature SdifFCurrMatrixSignature (SdifFileT *SdifF);
 
 /*DOC: 
-  Renvoie la ligne temporaire de SdifF.  */
-SdifOneRowT*  SdifFCurrOneRow          (SdifFileT *SdifF);
-
-/*DOC:
-  Returns a pointer to the data of the current matrix row.  According to the matrix data type, it can be a pointer to float or double. */
-void*	     SdifFCurrOneRowData	  (SdifFileT *SdifF);
-
-/*DOC: 
   Renvoie SdifF->CurrMtrx->NbCol, nombre de colonnes de la matrice en
   cours de traitement.  */
 SdifUInt4     SdifFCurrNbCol           (SdifFileT *SdifF);
@@ -1608,9 +1608,30 @@ SdifFloat8    SdifFCurrTime            (SdifFileT *SdifF);
 
 
 
+
 /*
 // FUNCTION GROUP:	File Data Access Functions
 */
+
+/*DOC: 
+  Renvoie la ligne temporaire de SdifF.  */
+SdifOneRowT*  SdifFCurrOneRow          (SdifFileT *SdifF);
+
+/*DOC:
+  Returns a pointer to the data of the current matrix row.  
+  According to the matrix data type, it can be a pointer to float or double. */
+void*	     SdifFCurrOneRowData	  (SdifFileT *SdifF);
+
+/*DOC: 
+  Return pointer to current matrix data structure, if read before with
+  SdifFReadMatrixData. */
+SdifMatrixDataT *SdifFCurrMatrixData (SdifFileT *file);
+
+/*DOC: 
+  Return pointer to current raw matrix data, if read before with
+  SdifFReadMatrixData.  Data is specified by current matrix header */
+void*        SdifFCurrMatrixDataPointer (SdifFileT *file);
+
 
 /*DOC:
   Return list of NVTs for querying. 
@@ -1937,6 +1958,47 @@ void*           SdifHashTableSearch (SdifHashTableT* HTable, void *ptr, unsigned
 SdifHashTableT* SdifHashTablePut    (SdifHashTableT* HTable, const void *ptr, unsigned int nobj, void* Data);
 
 
+
+
+/*
+//FUNCTION GROUP:  High-Level I/O Functions
+*/
+
+
+
+/*DOC:
+  Definition of the callback function types, used for SdifReadSimple. 
+*/
+typedef int (*SdifOpenFileCallbackT) (SdifFileT *file, void *userdata);
+typedef int (*SdifMatrixCallbackT)   (SdifFileT *file, int nummatrix, 
+						       void *userdata);
+
+/*DOC: 
+  Reads an entire SDIF file, calling matrixfunc for each matrix in the
+  SDIF selection taken from the filename.  Matrixfunc is called with
+  the SDIF file pointer, the matrix count within the current frame,
+  and the userdata unchanged. 
+
+  no row/column selection yet!
+  
+  @return number of bytes read
+*/
+int SdifReadSimple (const char		  *filename, 
+		    SdifOpenFileCallbackT  openfilefunc,
+		    SdifMatrixCallbackT    matrixfunc,
+		    void		  *userdata);
+
+/*DOC: 
+  Reads matrix data and padding.  The data is stored in CurrMtrxData,
+  for which the library will allocate enough space for the data of one
+  matrix, accessible by SdifFCurrMatrixData().  
+
+  [Precondition:] 
+  Matrix header must have been read with SdifFReadMatrixHeader.  */
+size_t SdifFReadMatrixData   (SdifFileT *file);
+
+
+
 #if 0	/* TBI */
 
 /*
@@ -1970,74 +2032,10 @@ SdifFWriteTextMatrix (SdifFileT f, SdifSignature matrixsig, const char *str)
 }
 
 
-/*DOC:
-  Definition of the matrix callback function type, used for SdifReadSimple. 
-  TBI 
-*/
-typedef int (*SdifMatrixCallbackT) (SdifFileT *file, 
-				    int nummatrix, 
-				    void *userdata);
-
-/*DOC: 
-  Reads an entire SDIF file, calling matrixfunc for each matrix in the
-  SDIF selection taken from the filename.  Matrixfunc is called with
-  the SDIF file pointer, the matrix count within the current frame,
-  and the userdata unchanged. 
-  TBI 
-*/
-SdifReadSimple (char		    *filename, 
-		SdifMatrixCallbackT matrixfunc,
-		void		    *userdata);
-
-
-/* see SdifFRead */
-
-SdifFReadMatrixAs_TYPE_ ();
-
-#if 0
-/* Alternative: extend SdifDataTypeET by */
-  eTranslate = 0x1000, /* flag to be or'ed with data type: Translate on read */
-  eTypeMask  = 0x0fff  /* mask to eliminate flags */
-#endif
-
-
 /*DOC: 
   Reads matrix header and data into memory allocated by the library,
   accessible by SdifFCurrMatrixData (). */
 int SdifFReadMatrix (SdifFileT *file);
-
-/* with type conversion */
-int SdifFReadMatrixAs (SdifFileT *file, SdifDataTypeET as_type);
-
-/*? text special: return allocated, decoded c-string, to be free'd by caller */
-char *SdifFReadTextMatrix (SdifFileT *file);
-
-/*DOC: 
-  Reads matrix data into memory pointed to by target, which must point
-  to at least nbrow * nbcol * size of datatype bytes of memory.  If
-  target is NULL, the library will allocate enough space for the data
-  of one matrix, accessible by SdifFCurrMatrixData ().
-
-  [Precondition:] 
-  Matrix header must have been read with SdifFReadMatrixHeader.  */
-int SdifFReadMatrixData   (SdifFileT *file, void *target);
-
-/* with type conversion */
-int SdifFReadMatrixDataAs (SdifFileT *file, void *target,
-			   SdifDataTypeET as_type);
-
-
-/* --> SdifMatrix.h: add to SdifMatrixHeaderS not void *MatrixData, but:
-
-   DataTypeUT Data;
-
-   --> SdifFile.c: add void *SdifFCurrMatrixData (SdifFileT *);
-*/
-
-void *SdifFCurrMatrixData (SdifFileT *file)
-{
-  return file->CurrMtrxH->Data.Void;
-}
 
 void *SdifGetColumn ();
 
@@ -2066,10 +2064,6 @@ int /*bool*/ SdifFCheckStatusPrint (SdifFileT *file)
    if (!SdifFCheckStatus (file))
       SdifWarningAdd ("Followup error");
 */
-
-
-
-
 
 #endif /* TBI */
 
@@ -2119,6 +2113,7 @@ void*       SdifListGetHead     (SdifListT* List);
 void*       SdifListGetTail     (SdifListT* List);
 int         SdifListIsNext      (SdifListT* List);
 int         SdifListIsEmpty     (SdifListT* List);
+unsigned int SdifListGetNbData  (SdifListT* List);
 
 /*DOC:
   Init for function SdifListGetNext.
@@ -2135,7 +2130,13 @@ void*       SdifListGetCurr     (SdifListT* List);
 
 SdifListT*  SdifListPutTail     (SdifListT* List, void *pData);
 SdifListT*  SdifListPutHead     (SdifListT* List, void *pData);
-unsigned int SdifListGetNbData  (SdifListT* List);
+
+/*DOC:
+  append list b to list a 
+
+  WARNING: This creates double references to the data! */
+SdifListT *SdifListConcat(SdifListT *a, SdifListT *b);
+
 
 
 
@@ -2147,24 +2148,63 @@ SdifMatrixHeaderT* SdifCreateMatrixHeader    (SdifSignature Signature,
 SdifMatrixHeaderT* SdifCreateMatrixHeaderEmpty (void);
 void               SdifKillMatrixHeader        (SdifMatrixHeaderT *MatrixHeader);
 
+
+/*
+ * OneRow class
+ */
+
 SdifOneRowT*       SdifCreateOneRow          (SdifDataTypeET DataType, SdifUInt4  NbGranuleAlloc);
 SdifOneRowT*       SdifReInitOneRow          (SdifOneRowT *OneRow, SdifDataTypeET DataType, SdifUInt4 NbData);
 void               SdifKillOneRow            (SdifOneRowT *OneRow);
+
+/* row element access */
+
 SdifOneRowT*       SdifOneRowPutValue        (SdifOneRowT *OneRow, SdifUInt4 numCol, SdifFloat8 Value);
 SdifFloat8         SdifOneRowGetValue        (SdifOneRowT *OneRow, SdifUInt4 numCol);
 SdifFloat8         SdifOneRowGetValueColName (SdifOneRowT *OneRow, SdifMatrixTypeT *MatrixType, char * NameCD);
 
-SdifMatrixDataT*   SdifCreateMatrixData      (SdifSignature Signature, SdifDataTypeET DataType,
-						     SdifUInt4 NbRow, SdifUInt4 NbCol);
+
+/*
+ * matrix data class 
+ */
+
+SdifMatrixDataT*   SdifCreateMatrixData      (SdifSignature Signature, 
+					      SdifDataTypeET DataType,
+					      SdifUInt4 NbRow, 
+					      SdifUInt4 NbCol);
 
 void               SdifKillMatrixData        (SdifMatrixDataT *MatrixData);
+
+/* see if there's enough space for data, if not, grow buffer */
+int		   SdifMatrixDataRealloc     (SdifMatrixDataT *data, 
+					      int newsize);
+
+/* matrix data element access by index */
+
 SdifMatrixDataT*   SdifMatrixDataPutValue    (SdifMatrixDataT *MatrixData,
-						     SdifUInt4  numRow, SdifUInt4  numCol, SdifFloat8 Value);
+					      SdifUInt4  numRow, 
+					      SdifUInt4  numCol, 
+					      SdifFloat8 Value);
 
 SdifFloat8         SdifMatrixDataGetValue    (SdifMatrixDataT *MatrixData,
-						     SdifUInt4  numRow, SdifUInt4  numCol);
+					      SdifUInt4  numRow, 
+					      SdifUInt4  numCol);
 
+/* matrix data element access by column name */
 
+SdifMatrixDataT *  SdifMatrixDataColNamePutValue (SdifHashTableT *MatrixTypesTable,
+						  SdifMatrixDataT *MatrixData,
+						  SdifUInt4  numRow,
+						  char *ColName,
+						  SdifFloat8 Value);
+
+SdifFloat8	   SdifMatrixDataColNameGetValue (SdifHashTableT *MatrixTypesTable,
+						  SdifMatrixDataT *MatrixData,
+						  SdifUInt4  numRow,
+						  char *ColName);
+
+void SdifCopyMatrixDataToFloat4		     (SdifMatrixDataT *data, 
+					      SdifFloat4 *dest);
 
 
 SdifColumnDefT*  SdifCreateColumnDef (char *Name,  unsigned int Num);
@@ -2484,8 +2524,6 @@ void SdifPrintAllType(FILE *fw, SdifFileT *SdifF);
 
 
 
-#define _SdifBSLittleE 4096
-
 
 /* SdifHard_OS.h */
 
@@ -2559,7 +2597,7 @@ size_t SdiffReadSpace   (FILE* fr);
 size_t SdiffReadSpacefromSdifString(SdifStringT *SdifString);
 
 /*DOC:
-  Return c if it is a reserved char, -1 otherwise.
+  Return true if c is a reserved char. 
 */
 int SdifIsAReservedChar (char c);
 
@@ -2681,6 +2719,7 @@ int SdifFreeSelection (SdifSelectionT *sel);
 void SdifKillSelectElement (/*SdifSelectionT*/ void *victim);
 
 
+
 /*
 // FUNCTION GROUP:	Parse and Set Selection
 */
@@ -2772,6 +2811,18 @@ _addproto (Int,	      int,		integer)
 _addproto (Real,      double,		real)
 _addproto (Signature, SdifSignature,	signature)
 _addproto (String,    char *,		string)
+
+
+/*DOC: 
+  copy a selection list source, appending to an existing one dest
+  the same but freshly allocated elements from source
+
+  @return dest
+*/
+SdifListT *SdifSelectAppendList (SdifListT *dest, SdifListT *source);
+
+
+
 
 /*
 // FUNCTION GROUP:	Query parsed ranges (list of ranges).
@@ -2866,14 +2917,13 @@ int SdifFNumRowsSelected (SdifFileT *file);
   SdifFReadMatrixHeader must have been called before! */
 int SdifFNumColumnsSelected (SdifFileT *file);
 
-
-
 /*DOC: 
   Read frame headers until a frame matching the file selection
   has been found or the end of the file has been reached.
 
   [Return] false if end of file was reached, true if data has been read. */
 int SdifFReadNextSelectedFrameHeader (SdifFileT *f);
+
 
 
 /*DOC: 
@@ -3070,7 +3120,7 @@ int SdifStringGetC(SdifStringT * SdifString);
 
 
 /*DOC:
-  Equivalent of ungetc
+  Equivalent of ungetc: put one character back into string, clear EOS condition
 */
 int SdifStringUngetC(SdifStringT * SdifString);
 
