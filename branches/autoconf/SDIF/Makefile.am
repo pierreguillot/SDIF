@@ -7,3 +7,6 @@ sdifincdir = @top_srcdir@/include
 
 grep:
 	grep $a sdif/*.[ch] /dev/null
+
+ircam_deps:
+	@cd sdif; $(MAKE) ircam_deps
