@@ -32,9 +32,12 @@
  * 
  * 
  * 
- * $Id: sdifframe.cpp,v 1.6 2003-05-19 14:00:20 roebel Exp $ 
+ * $Id: sdifframe.cpp,v 1.7 2003-07-18 20:41:05 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.6  2003/05/19 14:00:20  roebel
+ * Include new easdif_config.h.
+ *
  * Revision 1.5  2003/05/18 21:08:37  roebel
  * Added appropriate const methods.
  * For proper swig access GetMatrixWithSignature does no longer take
@@ -254,6 +257,13 @@ void SDIFFrame::Print()
 void SDIFFrame::SetHeader(SdifSignature sig, SdifUInt4 streamID, float time)//, SdifUInt4 nbMatrix)
 {
     mSig = sig;
+    mStreamID = streamID;
+    mTime = time; //and  mNbMatrix = nbMatrix;
+}
+
+void SDIFFrame::SetHeader(const std::string& sig, SdifUInt4 streamID, float time)//, SdifUInt4 nbMatrix)
+{
+    mSig = SdifStringToSignature(const_cast<char*>(sig.c_str()));
     mStreamID = streamID;
     mTime = time; //and  mNbMatrix = nbMatrix;
 }
