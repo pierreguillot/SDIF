@@ -1,6 +1,6 @@
 dnl -*-autoconf-*-  (No, it's an autoconf file!)
 dnl -*-m4-*- (He emacs, it's a m4 file)
-dnl $Id: configure.in,v 1.13 2003-04-09 16:10:56 roebel Exp $
+dnl $Id: configure.in,v 1.14 2003-04-18 16:46:54 schwarz Exp $
 dnl
 dnl configure.in		Feb 2003      Axel Roebel
 dnl
@@ -33,6 +33,9 @@ dnl
 dnl
 
 dnl $Log: not supported by cvs2svn $
+dnl Revision 1.13  2003/04/09 16:10:56  roebel
+dnl Version 0.3.2 (first public release).
+dnl
 dnl Revision 1.12  2003/04/09 12:30:42  roebel
 dnl Changed default configuration back to enable-shared but added
 dnl README.MacOSX to announce problems with shared libraries to users.
@@ -68,8 +71,8 @@ AC_MSG_RESULT(PACKAGE NAME)
 PACKAGE=Easdif
 
 versmaj=0
-versmin=3
-versrel=2
+versmin=4
+versrel=0
 VERSION=${versmaj}.${versmin}.${versrel}
 
 AC_SUBST(PACKAGE)
