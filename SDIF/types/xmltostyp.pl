@@ -1,28 +1,32 @@
 #!/usr/bin/perl
 #
-# $Id: xmltostyp.pl,v 1.2 2000-08-08 15:59:10 schwarz Exp $
+# $Id: xmltostyp.pl,v 1.3 2000-08-09 14:43:50 schwarz Exp $
 #
 # xmltostyp.pl		6. July 2000		Diemo Schwarz
 #
 # Translate SDIF types description in XML to STYP format for the SDIF-library.
 #
-# TODO:
-# - use DOM parser instead of XML::Node
-#
 # $Log: not supported by cvs2svn $
+# Revision 1.2  2000/08/08  15:59:10  schwarz
+# SDIF-TDL version 0.2 (no matrix:role attr., types-version, types-revision)
+# Generation details in STYP 1NVT / HTML footer
+#
 # revision 1.1 date: 2000/07/27 13:32:03;  author: schwarz;
 # First preliminary trial test version of SDIF types definition using XML:
 # xmltostyp.pl generates library-types file sdiftypes.styp from sdiftypes.xml,
 # xmltohtml.pl generates documentation file sdiftypes.html from sdiftypes.xml.
+#
+# TODO:
+# - use DOM parser instead of XML::Node
 
 
 use English;
 use XML::Node;
 
 
-my $cvsrev     = '$Id: xmltostyp.pl,v 1.2 2000-08-08 15:59:10 schwarz Exp $ ';
+my $cvsrev     = '$Id: xmltostyp.pl,v 1.3 2000-08-09 14:43:50 schwarz Exp $ ';
 my $tdlversion = '';
-my $version    = 'unknown';
+my $version    = '';
 my $revision   = '';
 my $framesig   = '';
 my $matrixsig  = '';
@@ -97,7 +101,7 @@ sub header
 	for my $name (sort keys %nvt)
 	{
 	    # replace reserved chars
-	    (my $value = $nvt{$name}) =~ tr(.;, \n\t)(_); 
+	    (my $value = $nvt{$name}) =~ tr(.:;, \n\t)(_); 
 	    print "  $name\t$value;\n";
 	}
 	print "}\n\n1TYP\n{\n";

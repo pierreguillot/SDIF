@@ -1,6 +1,9 @@
-# $Id: Makefile,v 1.3 2000-08-01 10:15:34 schwarz Exp $
+# $Id: Makefile,v 1.4 2000-08-09 14:43:48 schwarz Exp $
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.3  2000/08/01  10:15:34  schwarz
+# Added clean, new, .DELETE_ON_ERROR.
+#
 # Revision 1.2  2000/08/01  09:37:00  schwarz
 # Targets for both files, use standard Perl modules.
 #
@@ -32,11 +35,11 @@ install:	sdiftypes.styp
 clean:
 		rm -f sdiftypes.styp sdiftypes.html
 
-show:
-		$(PERL) xmltohtml.pl sdiftypes.xml >sdiftypes.html
-		netscape -remote 'reload(file:$(PWD)/sdiftypes.html)'
-test:		show
-		cat sdiftypes.html
+show:		sdiftypes.html
+		netscape -remote 'reload(file:$(PWD)/$<)'
+
+test:		all
+		querysdif -t sdiftypes.styp </dev/null
 
 db:
 		DEBUG=1 $(PERL) xmltohtml.pl sdiftypes.xml >sdiftypes.html

@@ -1,18 +1,16 @@
 #!/usr/bin/perl
 #
-# $Id: xmltohtml.pl,v 1.3 2000-08-08 15:59:09 schwarz Exp $
+# $Id: xmltohtml.pl,v 1.4 2000-08-09 14:43:50 schwarz Exp $
 #
 # xmltohtml.pl		6. July 2000		Diemo Schwarz
 #
 # Translate SDIF types description in XML to HTML.
 #
-# TODO:
-# - table for matrix, frames
-# - use DOM parser instead of XML::Node
-# - generate LaTeX->hevea->html???
-# - if not above, then generate table of contents
-#
 # $Log: not supported by cvs2svn $
+# Revision 1.3  2000/08/08  15:59:09  schwarz
+# SDIF-TDL version 0.2 (no matrix:role attribute, types-version, types-revision
+# Generation details in STYP 1NVT / HTML footer.
+#
 # revision 1.2 date: 2000/08/01 09:36:03;  author: schwarz;
 # Coloured section headings.
 #
@@ -21,18 +19,26 @@
 # xmltostyp.pl generates library-types file sdiftypes.styp from sdiftypes.xml,
 # xmltohtml.pl generates documentation file sdiftypes.html from sdiftypes.xml.
 
+# TODO:
+# - table for matrix, frames
+# - use DOM parser instead of XML::Node
+# - generate LaTeX->hevea->html???
+# - if not above, then generate table of contents
+# - status for matrices
+
 
 use XML::Node;
 use HTML::Stream qw(:funcs);
 use English;
 
 
-my $cvsrev     = '$Id: xmltohtml.pl,v 1.3 2000-08-08 15:59:09 schwarz Exp $ ';
+my $cvsrev     = '$Id: xmltohtml.pl,v 1.4 2000-08-09 14:43:50 schwarz Exp $ ';
 my $tdlversion = '';
 my $version    = 'unknown';
 my $revision   = '';
 my $framesig   = '';
 my $framename  = '';
+my $framestat  = '';
 my $matrixsig  = '';
 my $matrixname = '';
 my $rownum     = '';
@@ -43,6 +49,7 @@ my $colunit    = '';
 my $refsig     = '';
 my $refocc     = '';
 my $text       = '';	# text for all descriptions and refs
+my $lang       = '';
 my @columns    = ();
 my @components = ();
 
@@ -56,7 +63,7 @@ $xml = new XML::Node;
 
 
 # html setup
-my @copiedhtmltags = qw(i b);
+my @copiedhtmltags = qw(i b emph code);
 my %tagmap = (# section => 'H2', 
 	      map { (uc $_, uc $_, lc $_, uc $_ ) } @copiedhtmltags);
 # register XML->HTML tag mapping handlers
@@ -103,6 +110,7 @@ $xml->register (">sdif-tdl>frame>matrixref",            char  => \&out_char);
 # frame handlers
 $xml->register (">sdif-tdl>frame:signature", attr => \$framesig);
 $xml->register (">sdif-tdl>frame:name",      attr => \$framename);
+$xml->register (">sdif-tdl>frame:status",    attr => \$framestat);
 $xml->register (">sdif-tdl>frame",	     start=> \&frame_start);
 $xml->register (">sdif-tdl>frame",	     end  => \&frame_end);
 
@@ -114,6 +122,7 @@ $xml->register ("matrixref",	       char  => \&matrixref_char);
 $xml->register ("description", start => \&description_start);
 $xml->register ("description", char  => \&out_char);
 $xml->register ("description", end   => \&description_end);
+$xml->register ("description:language", attr => \$lang);
 $xml->register ("section",     char  => \&section);
 
 
@@ -155,9 +164,14 @@ sub footer
     my @g = stat $PROGRAM_NAME;
     my @s = stat $arg;
 
-    $h->ADDRESS->t("Document generated " . scalar localtime() . 
-		   " by $PROGRAM_NAME from @ARGV")->P
-      ->tag('BASEFONT', size => 1)->TABLE
+    $h->BR->BR->BR->ADDRESS->tag('BASEFONT', size => 1)
+      ->TABLE(cellpadding => 3)->TR
+	  ->TD(colspan => 4, bgcolor => "gray")
+	      ->FONT(size => +4)->B->t("About This Document")->_B->_FONT
+      ->TR(align => 'left', valign => 'top')
+	  ->TD(colspan => 4)
+	      ->t("Document generated " . scalar localtime() . 
+		  " by $PROGRAM_NAME from @ARGV")
       ->TR(align => 'left', valign => 'top')
 	  ->TH->t("Generation")->TD->t($ENV{USER})
 	  ->TD(nowrap)->t(scalar localtime())
@@ -242,6 +256,8 @@ sub frame_start
 {
     $h->BR->A(name => "Frame_$framesig")->H3
       ->t("Frame $framesig $framename")->_H3->_A;
+    $framestat  &&  $h->DL->DT->I->t("Status:")->_I->DD->t($framestat)->_DD->_DL;
+    $framestat = '';
 }
 
 sub frame_end
@@ -276,8 +292,10 @@ sub matrixref_char
 
 sub description_start
 {
-    $h->DL->DT->I->t("Description:")->_I->DD;
+    $h->DL->DT->I->t("Description" . ($lang ? " (language = $lang)" : "") . 
+		     ":")->_I->DD;
     $text = '';
+    $lang = '';
 }
 
 sub description_end
