@@ -45,140 +45,75 @@ namespace Easdif {
 	{
 	  /* the SdifError.c errors :*/
 	case eFreeNull:
-	  {
-	    SDIFFreeNull exc;
-	    /* initialise the SDFIFreeNull object (substitute the constructor,
-	     * this is more efficient for the SdifFileT and SdifErrorT 
-	     * pointers)*/
-	    exc.initException(errlev, msg, file, error, 
-			      sourcefilename, sourcefileline);
-	    throw exc;	
-	  }
+	  throw SDIFFreeNull(errlev, msg, file, errnum, 
+			     sourcefilename, sourcefileline);
 	  break;
 	  
 	case eAllocFail :
-	  {
-	    SDIFAllocFail exc;
-	    exc.initException(errlev, msg, file, error, 
+	  throw SDIFAllocFail(errlev, msg, file, errnum, 
 			      sourcefilename, sourcefileline);
-	    throw exc;
-	}
-	break;
-
+	  break;
+	  
 	case eArrayPosition :
-	{
-	    SDIFArrayPosition exc;
-	    exc.initException(errlev, msg, file, error, 
-			      sourcefilename, sourcefileline);
-	    throw exc;
-	}
-	break;
-
+	  throw SDIFArrayPosition(errlev, msg, file, errnum, 
+				  sourcefilename, sourcefileline);
+	  break;
+	  
 	case  eEof :	
-	{
-	    SDIFEof exc;
-	    exc.initException(errlev, msg, file, error, 
-			      sourcefilename, sourcefileline);
-	    throw exc;
-	}
- 	break;
+	  throw SDIFEof(errlev, msg, file, errnum, 
+			sourcefilename, sourcefileline);
+	  break;
 
 	case  eNotInDataTypeUnion :	
-	{
-	    SDIFNotInDataTypeUnion exc;
-	    exc.initException(errlev, msg, file, error, 
-			      sourcefilename, sourcefileline);
-	    throw exc;
-	}
-	break;      
+	  throw SDIFNotInDataTypeUnion(errlev, msg, file, errnum, 
+				       sourcefilename, sourcefileline);
+	  break;      
 
 	case  eTokenLength :	
-	{
-	    SDIFTokenLength exc;
-	    exc.initException(errlev, msg, file, error, 
-			      sourcefilename, sourcefileline);
-	    throw exc;
-	}
-	break;
+	  throw SDIFTokenLength(errlev, msg, file, errnum, 
+				sourcefilename, sourcefileline);
+	  break;
 
 	/* the SdifErrMess.c errors */
 	case eReDefined :
-	{
-	    SDIFReDefined exc;
-	    exc.initException(errlev, msg, file, error, 
+	  throw SDIFReDefined(errlev, msg, file, errnum, 
 			      sourcefilename, sourcefileline);
-	    throw exc;
-	}
-	break;
+	  break;
 
 	case eUnDefined :
-	{
-	    SDIFUnDefined exc;
-	    exc.initException(errlev, msg, file, error, 
+	  throw SDIFUnDefined(errlev, msg, file, errnum, 
 			      sourcefilename, sourcefileline);
-	    throw exc;
-	}
-	break;
-
+	  break;
+	  
 	case eBadHeader :
-	{
-	    SDIFBadHeader exc;
-	    exc.initException(errlev, msg, file, error, 
+	  throw SDIFBadHeader(errlev, msg, file, errnum, 
 			      sourcefilename, sourcefileline);
-	    throw exc;
-	}
-	break;
+	  break;
 
 	case eBadMode :
-	{
-	    SDIFBadMode exc;
-	    exc.initException(errlev, msg, file, error, 
-			      sourcefilename, sourcefileline);
-	    throw exc;
-	}
-	break;
+	  throw SDIFBadMode(errlev, msg, file, errnum, 
+			    sourcefilename, sourcefileline);
+	  break;
 
 	case eBadStdFile :
-	{
-	    SDIFBadStdFile exc;
-	    exc.initException(errlev, msg, file, error, 
-			      sourcefilename, sourcefileline);
-	    throw exc;
-	}
-	break;
+	  throw SDIFBadStdFile(errlev, msg, file, errnum, 
+			       sourcefilename, sourcefileline);
+	  break;
 
 	case eReadWriteOnSameFile :
-	{
-	    SDIFReadWriteOnSameFile exc;
-	    exc.initException(errlev, msg, file, error, 
-			      sourcefilename, sourcefileline);
-	    throw exc;
-	}
-	break;
+	  throw SDIFReadWriteOnSameFile(errlev, msg, file, errnum, 
+					sourcefilename, sourcefileline);
+	  break;
 
 	case eBadFormatVersion :
-	{
-	    SDIFBadFormatVersion exc;
-	    exc.initException(errlev, msg, file, error, 
-			      sourcefilename, sourcefileline);
-	    throw exc;
-	}
-	break;
+	  throw SDIFBadFormatVersion(errlev, msg, file, errnum, 
+				     sourcefilename, sourcefileline);
+	  break;
 
 	default :	/*a revoir*/
-	    std::cerr <<"default";
-/*
-  exc.initException(errlev, msg, file, error, 
-  sourcefilename, sourcefileline);
-  throw exc;
-*/
-	    SDIFException exc;
-///
-	    exc.initException(errlev, msg, file, error, 
+	  throw SDIFException(errlev, msg, file, errnum, 
 			      sourcefilename, sourcefileline);
-///
-	    throw exc;
-	    break;
+	  break;
 	}
     }
 
