@@ -36,7 +36,7 @@ $(OBJ_DIR)/%.o: %.cpp $(HEADER)
 
 $(LIBNAME): $(LIB_OBJ)
 	ar cru $(TARGETLIB) $(LIB_OBJ)
-	cd $(OBJ_DIR);list=`ar -xv $(SDIFROOT)/compile.$(SYS)/sdif/libsdif-cpp.a|cut -d" " -f3`;\
+	cd $(OBJ_DIR);list=`ar -xv $(SDIFROOT)/compile.$(SYS)/sdif/.libs/libsdif-cpp.a|cut -d" " -f3`;\
 	ar  -r $(TARGETLIB) $$list; rm -f $$list
 
 clean:
