@@ -1,4 +1,4 @@
-2004-03-05  Axel Roeel  <roebel@compaq.localdomain>
+2004-03-05  Axel Roebel  <roebel@compaq.localdomain>
 Version 0.8.3
 
 	* easdif/sdifmatrix.h, easdif/sdifmatrix.cpp
@@ -491,4 +491,4 @@ Version 0.21
 	* ChangeLog: Added changelog to repository.
 
 
-$Id: ChangeLog,v 1.30 2004-03-19 22:09:49 roebel Exp $
+$Id: ChangeLog,v 1.31 2004-05-03 18:20:41 roebel Exp $
