@@ -7,9 +7,14 @@
  * 
  * 
  * 
- * $Id: sdifentity.h,v 1.5 2002-10-10 10:49:09 roebel Exp $ 
+ * $Id: sdifentity.h,v 1.6 2002-10-30 15:27:32 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.5  2002/10/10 10:49:09  roebel
+ * Now using namespace Easdif.
+ * Fixed handling of zero pointer arguments in initException.
+ * Reading past end of file now throws an exception.
+ *
  * Revision 1.4  2002/10/03 11:26:56  tisseran
  * Check if efile is not null before trying to close it.
  * Initialize efile to 0 by sdifentity::sdifentity()
@@ -191,26 +196,33 @@ public:
  * 
  * @param filename 
  * @param Mode can be "eReadFile" or "eWriteFile"
+ *
+ * @return true if opened/false if error
  */
-    int Open(const char* filename, SdifFileModeET Mode);
+    bool Open(const char* filename, SdifFileModeET Mode);
 
 /** 
  * \ingroup  file
  * open a file in reading mode
+ * @param filename 
+ * @return true if opened/false if error
  */
-    int OpenRead(const char* filename);
+    bool OpenRead(const char* filename);
 
 /** 
  * \ingroup  file
  * open a file in writing mode
- */
-    int OpenWrite(const char* filename);
+ * @param filename 
+ * @return true if opened/false if error
+*/
+    bool OpenWrite(const char* filename);
     
 /** 
  * \ingroup  file
  * close a file 
+ * @return true if closed / false if file was not opened
  */
-    int Close();
+    bool Close();
     
 /** 
  * \ingroup file
@@ -250,20 +262,27 @@ public:
  * 
  * @param nvt Name Value Table to insert in the vector
  * @param StreamID StreamId of the Name Value Table 
+ *
+ * \return true if ok/false if error.
  */
-    int AddNVT(const SDIFNameValueTable &nvt, SdifUInt4 StreamID=0);
+
+  bool AddNVT(const SDIFNameValueTable &nvt, SdifUInt4 StreamID=0);
 
 
 /** 
  * \ingroup nvt
  * write the vector of Name Value Table in the file in the opening in 
  * writing mode
+ *
+ * \return true if ok/false if error.
  */
-    int WriteNVTs();
+    bool WriteNVTs();
 
 /**
  * \ingroup nvt 
- * get the number of Name Value Tables
+ * get the number of Name Value Tables  stored in entity
+ * 
+ * \return number of Name Value Tables
  */
     int GetNbNVT() const;
 
