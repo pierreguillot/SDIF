@@ -1,8 +1,10 @@
 lib_LIBRARIES = libsdif.a
 FORMES_H=host_architecture.h preincluded.h UniversalEnvVar.h host_configure.h XpGuiCalls.h
-FORMES_INCLUDE=/u/formes/include
+FORMES_INCLUDE=/u/formes/share/include
+
 noinst_HEADERS = *.h ${FORMES_H}
 libsdif_a_dir = $(prefix)/libsdif
+
 libsdif_a_SOURCES =  SdifString.c      SdifHash.c     SdifGlobals.c      SdifSignatureTab.c \
 		     SdifError.c       SdifMemory.c   SdifNameValue.c    SdifMatrixType.c \
 		     SdifFrameType.c   SdifStreamID.c SdifMatrix.c       SdifFrame.c \
@@ -13,6 +15,8 @@ libsdif_a_SOURCES =  SdifString.c      SdifHash.c     SdifGlobals.c      SdifSig
 		     SdifPreTypes.c    SdifSelect.c   SdifHighLevel.c    SdifCheck.c 
 sdiftype = $(datadir)/SdifTypes.STYP
 INCLUDES = -D_SdifTypesFileName=\"$(sdiftype)\" -DUSE_CONFIGURE
+
+$(libsdif_a_SOURCES) : % : @IRCAMDEPS@
 
 # EXTRA FOR IRCAM STUFF
 ircam_deps : ${FORMES_H}
