@@ -1,8 +1,13 @@
-/* $Id: sdif.h,v 1.19 2002-08-27 10:51:30 schwarz Exp $
+/* $Id: sdif.h,v 1.20 2002-08-28 14:05:31 schwarz Exp $
  *
  * This file contains type declaration of variables used in SDIF library.
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.19  2002/08/27 10:51:30  schwarz
+ * New file truncate function.
+ * Comments for file positioning macros.
+ * String append from const char *
+ *
  * Revision 1.18  2002/08/13 10:52:56  schwarz
  * Add SdifFReadNextSelectedFrameHeader (from SdifHighLevel.h).
  *
@@ -87,7 +92,7 @@
  * Revision 1.1.2.1  2000/08/21  13:07:41  tisseran
  * *** empty log message ***
  *
- * $Date: 2002-08-27 10:51:30 $
+ * $Date: 2002-08-28 14:05:31 $
  *
  */
 
@@ -103,7 +108,7 @@ extern "C" {
 #endif
 
 
-static const char _sdif_h_cvs_revision_ [] = "$Id: sdif.h,v 1.19 2002-08-27 10:51:30 schwarz Exp $";
+static const char _sdif_h_cvs_revision_ [] = "$Id: sdif.h,v 1.20 2002-08-28 14:05:31 schwarz Exp $";
 
 
 #include <stdio.h>
@@ -181,7 +186,14 @@ struct SdifBlockListS
 /* SdifFile.c */
 
 /*DOC:
+  Rewind to start of file (before header!) 
+  [return] success flag
+*/
+int SdifFRewind(SdifFileT *file);
+
+/*DOC:
   Truncate file at current position
+  [return] success flag
 */
 int SdifFTruncate(SdifFileT *file);
 
@@ -192,7 +204,8 @@ int SdifFTruncate(SdifFileT *file);
 #if 0
 
 /*DOC:
-  Return position in file.
+  Get position in file.
+  [return] file offset or -1 for error.
   SdiffPosT is actually long.
  */
 int SdiffGetPos(SdifFileT *file, SdiffPosT *pos);
@@ -200,6 +213,11 @@ int SdiffGetPos(SdifFileT *file, SdiffPosT *pos);
 /*DOC:
   Set absolute position in file.
   SdiffPosT is actually long.
+  [Return] 0 on success, 
+	  -1 on error (errno is set, see fseek(3) for details)
+
+  On Mac or Windows, seeking on a stream is always considered
+  successful (return 0), even if no seek was done!
  */
 int SdiffSetPos(SdifFileT *file, SdiffPosT *pos);
 
@@ -214,8 +232,8 @@ int SdiffSetPos(SdifFileT *file, SdiffPosT *pos);
 #   define SdiffIsFile(f)	((f)!=stdin && (f)!=stdout && (f)!=stderr)
 #   define Sdiffftell(f)	(SdiffIsFile(f)  ?  ftell(f)  :  0)
 #   define SdiffGetPos(f,p)	((*(p) = Sdiffftell(f)) == -1  ?  -1  :  0)
-#   define SdiffSetPos(f,p)	SdiffIsFile(f)  \
-				    ?  fseek(f, (long)(*(p)), SEEK_SET)  :  0
+#   define SdiffSetPos(f,p)	(SdiffIsFile(f)  \
+				    ?  fseek(f, (long)(*(p)), SEEK_SET)  :  0)
 #else
 /*
 #   define SdiffPosT		fpos_t
@@ -231,7 +249,7 @@ int SdiffSetPos(SdifFileT *file, SdiffPosT *pos);
  * (same as fgetpos/fsetpos) so let's try */
 #   define SdiffPosT		long
 #   define SdiffGetPos(f,p)	((*(p) = ftell(f)) == -1  ?  -1  :  0)
-#   define SdiffSetPos(f,p)	fseek(f, (long)(*(p)), SEEK_SET) 
+#   define SdiffSetPos(f,p)	(fseek(f, (long)(*(p)), SEEK_SET))
 #endif
 
 
@@ -2575,7 +2593,7 @@ int SdifSelectTestString (SdifListT *list, const char *cand);
   Read frame headers until a frame matching the file selection
   has been found or the end of the file has been reached.
 
-  [] Return false if end of file was reached, true if data has been read. */
+  [Return] false if end of file was reached, true if data has been read. */
 int SdifFReadNextSelectedFrameHeader (SdifFileT *f);
 
 
@@ -2754,7 +2772,7 @@ void SdifStringFree(SdifStringT * SdifString);
 /*DOC:
   Append a string to another one.
   Manage memory reallocation.
-  Return a boolean for the succes of the function's call.
+  [Return] a boolean for the succes of the function's call.
 */
 int SdifStringAppend(SdifStringT * SdifString, const char *strToAppend);
 
