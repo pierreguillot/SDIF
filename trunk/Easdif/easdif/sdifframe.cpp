@@ -32,9 +32,12 @@
  * 
  * 
  * 
- * $Id: sdifframe.cpp,v 1.8 2003-11-18 18:17:00 roebel Exp $ 
+ * $Id: sdifframe.cpp,v 1.9 2003-12-05 13:53:14 ellis Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.8  2003/11/18 18:17:00  roebel
+ * Replaced error messages by exceptions.
+ *
  * Revision 1.7  2003/07/18 20:41:05  roebel
  * Added SetHeader with Signature as std::string
  *
@@ -86,6 +89,7 @@
  * 
  */
 
+#include <iostream>
 #include "easdif/easdif_config.h"
 #include "easdif/sdifframe.h"
 #include "easdif/sdifentity.h"

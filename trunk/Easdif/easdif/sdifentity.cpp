@@ -32,9 +32,12 @@
  * 
  * 
  * 
- * $Id: sdifentity.cpp,v 1.12 2003-11-18 18:28:00 roebel Exp $ 
+ * $Id: sdifentity.cpp,v 1.13 2003-12-05 13:53:14 ellis Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.12  2003/11/18 18:28:00  roebel
+ * removed coments, changed exceptions to use new exception interface.
+ *
  * Revision 1.11  2003/05/24 00:27:21  roebel
  * Internal representation of types now using std::string.
  * Parameters for type handling routines completely moved
@@ -114,10 +117,9 @@
  * 
  */
 
+#include <iostream>
 #include "easdif/easdif_config.h"
 #include "easdif/sdifentity.h"
-
-#include "SdifFPut.h"
 
 
 
