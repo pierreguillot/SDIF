@@ -1,10 +1,13 @@
-# $Id: makefile,v 1.21 2001-04-20 14:48:41 roebel Exp $
+# $Id: makefile,v 1.22 2001-05-03 13:03:20 roebel Exp $
 #
 # makefile	26. January 2000	Diemo Schwarz
 #
 # formesutils matlab library
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.21  2001/04/20 14:48:41  roebel
+# Added missing files data/testlm*.out to source distribution.
+#
 # Revision 1.20  2001/04/20 14:33:33  roebel
 # Makefile totally rewritten: Source distribution added,
 # automatic extension determination, support for matlab 5 and 6,
@@ -122,7 +125,7 @@ endif
 
 V_MAJOR 	= 0
 V_MINOR 	= 1
-V_RELEASE	= 8
+V_RELEASE	= 8b
 VERSION		= $(V_MAJOR).$(V_MINOR).$(V_RELEASE)
 CVSTAG		= sdif_matlab_v$(V_MAJOR)_$(V_MINOR)_$(V_RELEASE)
 
