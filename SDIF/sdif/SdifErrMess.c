@@ -1,12 +1,28 @@
-/* $Id: SdifErrMess.c,v 3.9 2000-08-22 13:17:23 schwarz Exp $
+/* $Id: SdifErrMess.c,v 3.10 2000-10-27 20:03:25 roebel Exp $
  *
- *               Copyright (c) 1998 by IRCAM - Centre Pompidou
- *                          All rights reserved.
+ * IRCAM SDIF Library (http://www.ircam.fr/sdif)
+ *
+ * Copyright (C) 1998, 1999, 2000 by IRCAM-Centre Georges Pompidou, Paris, France.
+ * 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ * 
+ * See file COPYING for further informations on licensing terms.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  *  For any information regarding this and other IRCAM software, please
  *  send email to:
- *                            manager@ircam.fr
- *
+ *                            sdif@ircam.fr
  *
  * SdifErrorMess.c
  *
@@ -15,9 +31,21 @@
  * author: Dominique Virolle 1998
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.9  2000/08/22  13:17:23  schwarz
+ * Centralised error report function SdifFError, called from _SdifFError
+ * macro.  Error level names (gSdifErrorLevel) are printed, so that users
+ * can tell warnings from errors.  Errors are counted by level in
+ * SdifFileT.ErrorCount[].  Error counts can be queried with SdifFNumErrors.
+ *
  * Revision 3.8  2000/08/07  15:05:44  schwarz
  * Error checking for read general header.
  * Remove double definition of 1GAI matrix type.
+ * 
+ * Revision 3.8.2.2  2000/08/21  21:34:59  tisseran
+ * *** empty log message ***
+ *
+ * Revision 3.8.2.1  2000/08/21  14:04:03  tisseran
+ * *** empty log message ***
  *
  * Revision 3.7  2000/05/15  16:22:29  schwarz
  * Avoid warning about KillerFT function pointer type (ANSI prototype given).
@@ -203,8 +231,6 @@ SdifUInt4 SdifInsertTailError (SdifErrorLT* ErrorL, int ErrorCount [],
 
 
 
-/* Return pointer to last error of list or NULL if there are no errors
-   present.  */
 SdifErrorT*
 SdifLastError(SdifErrorLT *ErrorL)
 {
@@ -215,11 +241,12 @@ SdifLastError(SdifErrorLT *ErrorL)
 }
 
 
+
 SdifErrorTagET
 SdifLastErrorTag(SdifErrorLT *ErrorL)
 {
-    if (SdifListIsEmpty(ErrorL->ErrorList))
-	return eNoError;
+	if (SdifListIsEmpty(ErrorL->ErrorList))
+		return eNoError;
     else
         return ((SdifErrorT*) SdifListGetTail(ErrorL->ErrorList))->Tag;
 }

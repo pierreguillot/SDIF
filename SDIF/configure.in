@@ -1,0 +1,118 @@
+dnl -*-m4-*- (He emacs, it's a m4 file)
+dnl $Id: configure.in,v 1.2 2000-10-27 20:02:45 roebel Exp $
+dnl
+dnl configure.in		September 2000		Patrice Tisserand
+dnl
+dnl Source file for GNU autoconf, generates configure script.
+dnl
+dnl
+dnl This file is part of the IRCAM SDIF Library (http://www.ircam.fr/sdif)
+dnl
+dnl Copyright (C) 1998, 1999, 2000 by IRCAM - Centre Pompidou, Paris, France.
+dnl 
+dnl This program is free software; you can redistribute it and/or
+dnl modify it under the terms of the GNU General Public License
+dnl as published by the Free Software Foundation; either version 2
+dnl of the License, or (at your option) any later version.
+dnl 
+dnl See file COPYING for further informations on licensing terms.
+dnl 
+dnl This program is distributed in the hope that it will be useful,
+dnl but WITHOUT ANY WARRANTY; without even the implied warranty of
+dnl MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+dnl GNU General Public License for more details.
+dnl 
+dnl You should have received a copy of the GNU General Public License
+dnl along with this program; if not, write to the Free Software
+dnl Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+dnl
+dnl For any information regarding this and other IRCAM software, please
+dnl send email to:  sdif@ircam.fr
+dnl
+dnl $Log: not supported by cvs2svn $
+dnl Revision 1.1.2.3  2000/10/26  17:27:17  schwarz
+dnl Added header with copyright and links to all Makefile.am and configure.in.
+dnl
+
+
+dnl To check if directory is present
+AC_INIT(sdif/SdifGlobals.h)
+
+dnl ############################################################
+dnl PACKAGE NAME AND VERSION
+AC_MSG_RESULT(PACKAGE NAME AND VERSION)
+PACKAGE=SDIF
+VERSION=3.2.0
+AC_SUBST(PACKAGE)
+AC_SUBST(VERSION)
+AM_INIT_AUTOMAKE($PACKAGE,$VERSION)
+
+AM_CONFIG_HEADER(sdif/config.h)
+
+dnl ############################################################
+dnl Checks for programs.
+AC_PROG_CC
+AC_PROG_INSTALL
+AC_PROG_RANLIB
+
+dnl Check for librairies
+
+dnl Check for headers
+AC_MSG_RESULT(CHECK FOR HEADERS)
+AC_HEADER_STDC
+AC_CHECK_HEADERS( sys/types.h sys/stat.h)
+AC_CHECK_HEADERS(errno.h)
+AC_CHECK_HEADERS(unistd.h)
+AC_SUBST(IRCAMDEPS)
+if test -f /u/formes/share/include/preincluded.h ; then
+ IRCAMDEPS=ircam_deps
+else
+ IRCAMDEPS=;
+fi
+
+dnl ############################################################
+dnl Particular compiler characteristics
+AC_MSG_RESULT(PARTICULAR COMPILER CHARACTERISTICS)
+dnl Check for BigEndian (WORDS_BIGENDIAN)
+AC_C_BIGENDIAN 
+dnl Check for Long 64 bits
+AC_CHECK_SIZEOF(long)
+	
+dnl ############################################################
+dnl Check for multi-character character constant inversion
+AC_MSG_CHECKING(Multi-character character constant inversion)
+AC_TRY_RUN([
+#include <stdlib.h>
+#include <stdio.h>
+int main()
+{
+  const char ConstCharTab[] = {'A', 'B', 'C', 'D'};
+  const unsigned int ConstDCBA = 'DCBA';
+  unsigned int *ConstUIntTest;
+
+  ConstUIntTest = (unsigned int*) ConstCharTab;
+
+  if ((*ConstUIntTest) == ConstDCBA)
+	return 0;
+  else
+	return 1;
+}
+
+	], multi_char_inversion=true, multi_char_inversion=false)
+if test "$multi_char_inversion" = "true"; then
+	AC_MSG_RESULT(yes)
+	AC_DEFINE(MULTICHAR_CHAR_CONSTANT_INVERSION)
+else
+	AC_MSG_RESULT(no)
+fi
+dnl Variable affectation
+
+
+dnl ############################################################
+dnl CREATE OUTPUT FILES
+AC_MSG_RESULT(CREATE OUTPUT FILES)
+AC_OUTPUT(Makefile sdif/Makefile tools/Makefile tools/querysdif/Makefile tools/sdifextract/Makefile tools/sdiftotext/Makefile tools/tosdif/Makefile data/Makefile include/Makefile doc/Makefile doc/pics/Makefile doc/extern/Makefile doc/extern/cocoon/Makefile test/Makefile test/files/Makefile test/files/txt/Makefile test/files/sdif/Makefile test/files/txtw/Makefile test/files/sdifw/Makefile)
+
+AC_MSG_RESULT(END OF CONFIGURATION)
+
+

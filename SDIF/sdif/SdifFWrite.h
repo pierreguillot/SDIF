@@ -1,11 +1,28 @@
-/* $Id: SdifFWrite.h,v 3.7 2000-07-18 15:08:35 tisseran Exp $
+/* $Id: SdifFWrite.h,v 3.8 2000-10-27 20:03:31 roebel Exp $
  *
- *               Copyright (c) 1998 by IRCAM - Centre Pompidou
- *                          All rights reserved.
+ * IRCAM SDIF Library (http://www.ircam.fr/sdif)
+ *
+ * Copyright (C) 1998, 1999, 2000 by IRCAM-Centre Georges Pompidou, Paris, France.
+ * 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ * 
+ * See file COPYING for further informations on licensing terms.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  *  For any information regarding this and other IRCAM software, please
  *  send email to:
- *                            manager@ircam.fr
+ *                            sdif@ircam.fr
  *
  *
 LIBRARY
@@ -105,6 +122,26 @@ void main(void)
 
 LOG
  * $Log: not supported by cvs2svn $
+ * Revision 3.7.2.2  2000/08/21  21:35:14  tisseran
+ * *** empty log message ***
+ *
+ * Revision 3.7.2.1  2000/08/21  14:04:13  tisseran
+ * *** empty log message ***
+ *
+ * Revision 3.7  2000/07/18  15:08:35  tisseran
+ * This release implements the New SDIF Specification (june 1999):
+ * - Name Values Table are written in a 1NVT frame which contains a 1NVT matrix
+ * - Frame and matrix type declaration are written in a 1TYP frame which contains a 1TYP matrix.
+ * - Stream ID are written in a 1IDS frame which contains a 1IDS matrix.
+ *
+ * Read function accept the previous version of the specification (read a text frame without matrix) to be compatible with older SDIF files.
+ *
+ * SdifString.h and SdifString.c implements some string mangement (creation, destruction, append, test of end of string, getc, ungetc).
+ *
+ * WATCH OUT:
+ *      We don't care about the old SDIF Specification (_SdifFormatVersion < 3)
+ * To use _SdifFormatVersion < 3, get the previous release.
+ *
  * Revision 3.6  2000/05/10  15:32:13  schwarz
  * Added functions to calculate the Size argument for SdifFSetCurrFrameHeader:
  * SdifSizeOfFrameHeader and SdifSizeOfMatrix
@@ -154,8 +191,8 @@ LOG
  */
 
 
-#ifndef _SdifFWrite_
-#define _SdifFWrite_
+#ifndef _SDIFFWRITE_H 
+#define _SDIFFWRITE_H 1
 
 #include "SdifGlobals.h"
 #include "SdifFileStruct.h"

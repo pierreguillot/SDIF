@@ -1,11 +1,28 @@
-/* $Id: SdifFileStruct.h,v 3.7 2000-08-22 13:17:25 schwarz Exp $
+/* $Id: SdifFileStruct.h,v 3.8 2000-10-27 20:03:31 roebel Exp $
  *
- *               Copyright (c) 1998 by IRCAM - Centre Pompidou
- *                          All rights reserved.
+ * IRCAM SDIF Library (http://www.ircam.fr/sdif)
+ *
+ * Copyright (C) 1998, 1999, 2000 by IRCAM-Centre Georges Pompidou, Paris, France.
+ * 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ * 
+ * See file COPYING for further informations on licensing terms.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  *  For any information regarding this and other IRCAM software, please
  *  send email to:
- *                            manager@ircam.fr
+ *                            sdif@ircam.fr
  *
  *
  * SdifFileStruct.h
@@ -15,6 +32,18 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.7  2000/08/22  13:17:25  schwarz
+ * Centralised error report function SdifFError, called from _SdifFError
+ * macro.  Error level names (gSdifErrorLevel) are printed, so that users
+ * can tell warnings from errors.  Errors are counted by level in
+ * SdifFileT.ErrorCount[].  Error counts can be queried with SdifFNumErrors.
+ *
+ * Revision 3.6.2.2  2000/08/21  21:35:17  tisseran
+ * *** empty log message ***
+ *
+ * Revision 3.6.2.1  2000/08/21  14:04:16  tisseran
+ * *** empty log message ***
+ *
  * Revision 3.6  2000/05/22  15:23:16  schwarz
  * Added functions to retrieve and inspect the stream ID table of a file.
  *
@@ -71,8 +100,8 @@
  *
  */
 
-#ifndef _SdifFileStruct_
-#define _SdifFileStruct_
+#ifndef _SDIFFILESTRUCT_H
+#define _SDIFFILESTRUCT_H 1
 
 #include "SdifGlobals.h"
 #include "SdifSignatureTab.h"
