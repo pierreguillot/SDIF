@@ -33,9 +33,15 @@
  * 
  * 
  * 
- * $Id: sdifmatrixdatainterface.h,v 1.5 2004-07-21 13:27:17 roebel Exp $ 
+ * $Id: sdifmatrixdatainterface.h,v 1.6 2004-07-27 17:40:19 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.5  2004/07/21 13:27:17  roebel
+ * Added new data accessing functions to read complete columns
+ * GetCol(double *,int icol), GetCol(float *,int icol), GetCol(int *,int icol)
+ * and rows
+ * GetRow(double *,int irow), GetRow(float *,int irow), GetRow(int *,int irow)
+ *
  * Revision 1.4  2003/07/17 18:09:35  roebel
  * Improved Resize method, added Clear method and proper assigment operator
  *
@@ -73,7 +79,7 @@
 #ifndef SDIFMATRIXDATAINTERFACE_H_
 #define SDIFMATRIXDATAINTERFACE_H_ 1
 
-#include <sdif.h>
+#include "sdif.h"
 
 namespace Easdif {
 

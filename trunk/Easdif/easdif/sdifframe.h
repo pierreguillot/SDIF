@@ -34,9 +34,13 @@
  * sdifframe.h is composed of the different methods which are using to 
  * manipulate the frame.
  * 
- * $Id: sdifframe.h,v 1.12 2004-07-21 13:20:38 roebel Exp $ 
+ * $Id: sdifframe.h,v 1.13 2004-07-27 17:40:19 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.12  2004/07/21 13:20:38  roebel
+ * Added support to hold a frameDirectory in the entity and
+ * the possibility to read frames from a given time position.
+ *
  * Revision 1.11  2004/02/02 18:07:27  roebel
  * Version 0.8.1: bug fix in sdifframe establishing the possibility to
  * resize matrices within the frame.
@@ -102,7 +106,7 @@
 #define SDIFFRAME_H_ 1
 
 #include <string>
-#include <sdif.h>
+#include "sdif.h"
 #include "easdif/sdifmatrix.h"
 #include "easdif/sdifexception.h"
 

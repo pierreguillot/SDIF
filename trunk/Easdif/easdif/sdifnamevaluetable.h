@@ -33,9 +33,12 @@
  * 
  *
  * 
- * $Id: sdifnamevaluetable.h,v 1.8 2004-02-11 19:28:17 roebel Exp $ 
+ * $Id: sdifnamevaluetable.h,v 1.9 2004-07-27 17:40:19 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.8  2004/02/11 19:28:17  roebel
+ * Added inline function to test state of entity. Added function to access NVTs that indicates existance of name.
+ *
  * Revision 1.7  2003/05/22 21:23:58  roebel
  * SDIFNameValueTable now derived from std::map which makes handling more conform
  * to standard and handling in swig easier.
@@ -93,7 +96,7 @@
 #include <vector>
 #include <map>
 #include <iterator>
-#include <sdif.h>
+#include "sdif.h"
 
 
 namespace Easdif {

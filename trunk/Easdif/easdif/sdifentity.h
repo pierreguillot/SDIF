@@ -32,9 +32,13 @@
  * 
  * 
  * 
- * $Id: sdifentity.h,v 1.18 2004-07-21 13:20:24 roebel Exp $ 
+ * $Id: sdifentity.h,v 1.19 2004-07-27 17:40:19 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.18  2004/07/21 13:20:24  roebel
+ * Added support to hold a frameDirectory in the entity and
+ * the possibility to read frames from a given time position.
+ *
  * Revision 1.17  2004/07/13 15:01:42  roebel
  * Removed unused variable mNbFrames.
  *
@@ -131,7 +135,7 @@
 
 #include <string>
 #include <vector>
-#include <sdif.h>
+#include "sdif.h"
 
 
 #include "easdif/sdifframe.h"
