@@ -1,4 +1,4 @@
-# $Id: Makefile.src,v 3.1 1999-03-14 10:56:29 virolle Exp $
+# $Id: Makefile.src,v 3.2 1999-08-31 10:02:57 schwarz Exp $
 #
 #               Copyright (c) 1998 by IRCAM - Centre Pompidou
 #                          All rights reserved.
@@ -8,6 +8,9 @@
 #                            manager@ircam.fr
 #
 # $Log: not supported by cvs2svn $
+# Revision 3.1  1999/03/14  10:56:29  virolle
+# SdifStdErr add
+#
 # Revision 2.3  1999/02/28  12:16:35  virolle
 # memory report
 #
@@ -20,7 +23,7 @@ SDIF_SRC = \
 	SdifHash.c \
 	SdifGlobals.c \
 	SdifError.c \
-  SdifMemory.c \
+	SdifMemory.c \
 	SdifNameValue.c \
 	SdifMatrixType.c \
 	SdifFrameType.c \
@@ -43,7 +46,8 @@ SDIF_SRC = \
 	SdifHard_OS.c \
 	SdifErrMess.c \
 	SdifList.c \
-	SdifPreTypes.c
+	SdifPreTypes.c \
+	SdifSelect.c
 
 
 

@@ -1,4 +1,4 @@
-/* $Id: sdif.h,v 3.1 1999-03-14 10:57:29 virolle Exp $
+/* $Id: sdif.h,v 3.2 1999-08-31 10:02:58 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -18,6 +18,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.1  1999/03/14  10:57:29  virolle
+ * SdifStdErr add
+ *
  * Revision 2.1  1998/12/21  18:27:46  schwarz
  * Inserted copyright message.
  *
@@ -83,6 +86,7 @@ extern "C" {
 #include "SdifConvToText.h"
 
 #include "SdifPreTypes.h"
+#include "SdifSelect.h"
 
 #ifdef __cplusplus
 }
