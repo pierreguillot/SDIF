@@ -158,6 +158,12 @@ int main(int argc, char** argv)
 	std::cerr << " Catch other Exception: " << e.what() <<std::endl;
 
       }
+
+
+
+    /* to open a file for writing */
+    entity.Close();
+    readentity.Close();
     
     /* deinitialise the SDIF library */
     EasdifEnd();
