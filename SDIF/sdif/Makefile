@@ -1,4 +1,4 @@
-# $Id: Makefile,v 3.2 1999-09-28 13:08:47 schwarz Exp $
+# $Id: Makefile,v 3.3 1999-10-07 15:08:04 schwarz Exp $
 #
 #               Copyright (c) 1998 by IRCAM - Centre Pompidou
 #                          All rights reserved.
@@ -11,6 +11,10 @@
 # Makefile only for .o files of sdif library
 #
 # $Log: not supported by cvs2svn $
+# Revision 3.2  1999/09/28  13:08:47  schwarz
+# Included #include <preincluded.h> for cross-platform uniformisation,
+# which in turn includes host_architecture.h and SDIF's project_preinclude.h.
+#
 # Revision 3.1  1999/03/14  10:56:28  virolle
 # SdifStdErr add
 #
@@ -43,10 +47,10 @@ objects: $(OUTDIRS) $(SDIF_OBJS)
 	@echo objects
 
 semiclean:
-	-rm -f *~ #*
+	-$(RM) $(wildcard *~ #*)
 
 clean:
-	-rm -f $(SDIF_OBJS) *~ #* *.i
+	-$(RM) $(SDIF_OBJS) $(wildcard *~ #* *.i)
 
 preinc:
 	perl -i.bak -p -e '\
