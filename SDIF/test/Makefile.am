@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.10 2002-06-18 16:56:00 tisseran Exp $
+# $Id: Makefile.am,v 1.11 2002-09-24 13:20:34 schwarz Exp $
 #
 # ./test/Makefile.am		September 2000			Patrice Tisserand
 #
@@ -29,6 +29,11 @@
 # send email to:  sdif@ircam.fr
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.10  2002/06/18 16:56:00  tisseran
+# Create two shell script to launch headerTest and NVTTest binary.
+# I do this to call script shell with an explicit shell ( $(SHELL) in TESTS_ENVIRONMENT).
+# It prevents to search how to change execution right on files.
+#
 # Revision 1.9  2001/07/12 14:11:48  roebel
 # Added include file holding library version defines to the distribution.
 #
@@ -60,7 +65,7 @@
 # Added header with copyright and links to all Makefile.am and configure.in.
 #
 SUBDIRS = files
-EXTRA_DIST = test_conv2  cmd_testcheck xpianoRes.m5.FIL.sdif
+EXTRA_DIST = $(TESTS) xpianoRes.m5.FIL.sdif
 
 noinst_PROGRAMS = headerTest NVTTest testcheck testselect
 noinst_HEADERS = utils.h
