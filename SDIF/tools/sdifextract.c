@@ -1,4 +1,4 @@
-/* $Id: sdifextract.c,v 1.5 2001-02-08 15:26:56 tisseran Exp $
+/* $Id: sdifextract.c,v 1.6 2001-05-04 11:32:40 lambert Exp $
  
                 Copyright (c) 1998 by IRCAM - Centre Pompidou
                            All rights reserved.
@@ -13,6 +13,11 @@
    Extract data from an SDIF-file.  
    
    $Log: not supported by cvs2svn $
+   Revision 1.5  2001/02/08 15:26:56  tisseran
+   Add a test on memory allocation in SdifStringNew (call perror if malloc return a NULL pointer).
+   Note on sdifextract.c:
+   	- Rechange SdifSkipFrameData to SdifFSkipFrameData (change by axel have disappeared)
+
    Revision 1.4  2000/12/06 13:43:43  lefevre
    Mix HostArchiteture and AutoConfigure mechanisms
 
@@ -120,12 +125,14 @@
 #include <stdio.h>
 #include <string.h>
 
-#if HOST_OS_UNIX
-#include <unistd.h>
-#elif HOST_OS_MAC
-#include <unix.h>
-#endif
 
+#if defined(HOST_OS_UNIX)
+#include <unistd.h>
+#elif defined(HOST_OS_MAC)
+#include <unix.h>
+#elif defined(WIN32)
+#include <io.h>
+#endif
 
 #define  DB	0	/* heavy debugging level 0, 1, 2 */
 
@@ -166,7 +173,7 @@ void usage (char *msg, char *arg, int longhelp)
     }
     if (longhelp)
     {
-    	fprintf (SdifStdErr, "\n" PROG "version $Revision: 1.5 $\n\n");
+    	fprintf (SdifStdErr, "\n" PROG "version $Revision: 1.6 $\n\n");
     
     	if (types)
     	{
@@ -252,7 +259,7 @@ void usage (char *msg, char *arg, int longhelp)
 "       ASCII with sufficient precision to be exactly equal to the double value\n"
 "       in the SDIF-file.\n"
 "\n");
-    XpExit(0);
+    XpExit (0);
 }
 
 
@@ -479,8 +486,10 @@ int main(int argc, char** argv)
     char	*after;
     SdifSelectionT *isel;
 
-#   define	maxintsel	65536	/* todo: make dynamic */
-#   define	get(arr, ind)	((ind) < maxintsel  ?  arr [ind]  :  	      \
+
+/* 65536 crashes under Win NT */
+#   define	maxintsel	32768	/* todo: make dynamic */
+#   define	hard_defined_get(arr, ind)	((ind) < maxintsel  ?  arr [ind]  :  	      \
 		   (fprintf(stderr, PROG "Number of columns out of bounds, exiting\n"), XpExit (9), 0))
     int		flatcol [maxintsel], cumulcol [maxintsel + 1], numcolsel,
     		flatrow [maxintsel], cumulrow [maxintsel + 1], numrowsel;
@@ -697,7 +706,7 @@ int main(int argc, char** argv)
 #if DB
   fprintf (SdifStdErr, "@matrix\t%s  rows %d  cols %d  cumulcol %d\n", 
     SdifSignatureToString (SdifFCurrMatrixSignature (in)), 
-    SdifFCurrNbRow(in), SdifFCurrNbCol(in), get(cumulcol, SdifFCurrNbCol(in)));
+    SdifFCurrNbRow(in), SdifFCurrNbCol(in), hard_defined_get(cumulcol, SdifFCurrNbCol(in)));
 #endif
 	    /* Check matrix type */
 	    if (!SdifFCurrMatrixIsSelected (in))
@@ -713,7 +722,7 @@ int main(int argc, char** argv)
 
 	    /* TODO: output row only when there is a selected column,
 	       when there is no selected column, output num. of rows 0 */
-	    output (BeginMatrix, get (cumulrow, nbrows));
+	    output (BeginMatrix, hard_defined_get (cumulrow, nbrows));
 	
 	    /* read matrix data: for rows */
 	    for (r = 1; r <= nbrows; r++)
@@ -721,19 +730,19 @@ int main(int argc, char** argv)
 		bytesread += SdifFReadOneRow (in);
 #if DB > 2
   fprintf (SdifStdErr, "@row\t%d  selrow %d flatrow [%d] = %d\n", 
-    r, selrow, selrow, get (flatrow, selrow));
+    r, selrow, selrow, hard_defined_get (flatrow, selrow));
 #endif
 		/*if (!SdifSelectTestInt (isel->row, r))*/
-		if (get (flatrow, selrow) != r)
+		if (hard_defined_get (flatrow, selrow) != r)
 		    continue;	/* START NEXT ITERATION of for rows loop */
 		selrow++;	/* the row we're waiting for */
 
 		/* write selected column(s), but avoid expensive loop
 		   using flattened column list */
-		output (BeginRow, get (cumulcol, nbcols));
+		output (BeginRow, hard_defined_get (cumulcol, nbcols));
 
-		for (c = 0; c < get (cumulcol, nbcols); c++)
-		    output (InRow, SdifFCurrOneRowCol (in, get (flatcol, c)));
+		for (c = 0; c < hard_defined_get (cumulcol, nbcols); c++)
+		    output (InRow, SdifFCurrOneRowCol (in, hard_defined_get (flatcol, c)));
 
 		output (EndRow, 0);
 	    }	/* end for rows */
