@@ -7,9 +7,16 @@
  * 
  * 
  * 
- * $Id: sdifmatrix.cpp,v 1.7 2002-11-07 21:06:52 roebel Exp $ 
+ * $Id: sdifmatrix.cpp,v 1.8 2003-02-10 14:14:49 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.7  2002/11/07 21:06:52  roebel
+ * Allow value type to be specified during Matrix construction.
+ * Do not resize before writing because size will be already correct.
+ * Replaced Copy Constructor to use clone method.
+ * Moved Get/Set methods to header to have the possibility to use
+ * real templates.
+ *
  * Revision 1.6  2002/10/10 10:49:09  roebel
  * Now using namespace Easdif.
  * Fixed handling of zero pointer arguments in initException.
@@ -176,7 +183,7 @@ int SDIFMatrix::GetNbRows() const
     return mInter->GetNbRow();
 }
 
-/* to get the size of matrix */
+/* to get the size of matrix in sdif file including padding */
 int SDIFMatrix::GetSize() const
 {
     return SdifSizeOfMatrix(mType, mInter->GetNbCol(), mInter->GetNbRow());
