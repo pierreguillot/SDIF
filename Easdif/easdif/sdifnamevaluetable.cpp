@@ -32,9 +32,13 @@
  * 
  * 
  * 
- * $Id: sdifnamevaluetable.cpp,v 1.5 2003-05-22 21:23:58 roebel Exp $ 
+ * $Id: sdifnamevaluetable.cpp,v 1.6 2004-02-11 19:28:17 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.5  2003/05/22 21:23:58  roebel
+ * SDIFNameValueTable now derived from std::map which makes handling more conform
+ * to standard and handling in swig easier.
+ *
  * Revision 1.4  2003/05/19 13:59:11  roebel
  * Include new easdif_config.h.
  *
@@ -106,6 +110,17 @@ std::string SDIFNameValueTable::GetValue(const std::string& name) const
   }
 }
 
+bool SDIFNameValueTable::GetValue(const std::string& name, std::string& value) const
+{
+  const_iterator it;
+  if((it= find(name)) != end()){
+    value = it->second;
+    return true;
+  }
+  else {
+    return false;
+  }
+}
 
 SdifUInt4 SDIFNameValueTable::SetStreamID(const SdifUInt4& streamid)
 {

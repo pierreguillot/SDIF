@@ -1,3 +1,14 @@
+2004-02-10  Axel Roebel  <Axel.Roebel@ircam.fr>
+Version 0.8.2
+
+	* easdif/sdifnamevaluetable.h, easdif/sdifnamevaluetable.cpp
+	Added new function to access  values by name in NVT.
+
+	* easdif/sdifentity.h
+	Added test for good() file state.
+	eof() now inline.
+
+	
 2004-02-02  Axel Roebel  <Axel.Roebel@ircam.fr>
 Version 0.8.1
 	
@@ -474,4 +485,4 @@ Version 0.21
 	* ChangeLog: Added changelog to repository.
 
 
-$Id: ChangeLog,v 1.28 2004-02-02 18:07:19 roebel Exp $
+$Id: ChangeLog,v 1.29 2004-02-11 19:28:16 roebel Exp $

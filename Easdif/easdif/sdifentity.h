@@ -32,9 +32,12 @@
  * 
  * 
  * 
- * $Id: sdifentity.h,v 1.14 2004-01-19 15:49:55 bogaards Exp $ 
+ * $Id: sdifentity.h,v 1.15 2004-02-11 19:28:17 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.14  2004/01/19 15:49:55  bogaards
+ * Added Rewind and ReadNextSelectedFrame methods to Entity
+ *
  * Revision 1.13  2003/08/06 18:00:33  roebel
  * Fixed documentation
  *
@@ -335,11 +338,32 @@ public:
  */
     
     bool Rewind();
-/** 
- * \ingroup file
- * get the SdifFileT* file
+
+  /** 
+   * \ingroup file
+   * get the SdifFileT* file
+   * \return SdifFile pointer related to Entity
+   */
+  SdifFileT* GetFile() const;
+
+  /** 
+   * \ingroup file
+   *
+   * test file state
+   *
+   * \return true if file is opened and not at eof
+   */
+  bool good() const {
+    return (!eof() && mOpen && efile);
+  }
+
+/**
+ * \ingroup rnwentity
+ * true if file is at eof
  */
-    SdifFileT* GetFile() const;
+  bool eof() const {return mEof;}
+
+
 
 
     /*temporary SetFile*/
@@ -427,12 +451,7 @@ public:
  * return the number of bytes read
  */
 
-	int ReadNextSelectedFrame(SDIFFrame& frame);
-/**
- * \ingroup rnwentity
- * true if file is at eof
- */
-    bool eof() const;
+  int ReadNextSelectedFrame(SDIFFrame& frame);
 
 /** 
  * \ingroup rnwentity

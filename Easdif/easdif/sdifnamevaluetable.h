@@ -33,9 +33,13 @@
  * 
  *
  * 
- * $Id: sdifnamevaluetable.h,v 1.7 2003-05-22 21:23:58 roebel Exp $ 
+ * $Id: sdifnamevaluetable.h,v 1.8 2004-02-11 19:28:17 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.7  2003/05/22 21:23:58  roebel
+ * SDIFNameValueTable now derived from std::map which makes handling more conform
+ * to standard and handling in swig easier.
+ *
  * Revision 1.6  2003/05/19 13:59:40  roebel
  * swig rename moved to swig  interface desription.
  *
@@ -188,6 +192,14 @@ public:
    * @return value string
    */
   std::string GetValue(const std::string& name) const;
+
+  /** 
+   * @brief get the Value
+   * @param name  string
+   * @param value result string
+   * @return true if name was found false if not. 
+   */
+  bool GetValue(const std::string& name,std::string& value ) const;
 
 
 };
