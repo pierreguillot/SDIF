@@ -1,8 +1,11 @@
-# -*-makefile-*- $Id: mex.makedefs,v 1.4 2000-08-08 17:47:49 schwarz Exp $
+# -*-makefile-*- $Id: mex.makedefs,v 1.5 2000-09-28 19:17:56 schwarz Exp $
 #
 # Commonly used settings for compiling matlab mex extensions.
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.4  2000/08/08  17:47:49  schwarz
+# Make distribution with all mex binaries.
+#
 # Revision 1.3  2000/08/04  14:42:32  schwarz
 # Added reset of file variable, prevents crash on double-close.
 # Version number is written in NVTs, and is used for distribution,
@@ -46,6 +49,7 @@ endif
 # mex suffix per arch
 mex-alpha	 = mexaxp
 mex-i686	 = mexlx
+mex-i386-linux	 = mexlx
 MEXSUF     	 = $(mex-$(ARCH))
 ALLMEXSUF	 = $(mex-alpha) $(mex-i686)
 
@@ -55,11 +59,13 @@ MEX	   	 = mex
 # mex includes
 mexincl-alpha    = /usr/LOCAL/matlab-5.2/extern/include
 mexincl-i686     = /usr/local/matlab/extern/include
+mexincl-i386-linux     = /usr/local/matlab/extern/include
 MEXINCL		 = $(mexincl-$(ARCH))
 
 # flags for C compiler
 mexflags-alpha	 = 
 mexflags-i686	 = CC=gcc LD=gcc
+mexflags-i386-linux	 = CC=gcc LD=gcc
 MEXFLAGS	 = $(mexflags-$(ARCH))
 
 
