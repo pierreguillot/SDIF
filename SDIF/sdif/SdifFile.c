@@ -1,4 +1,4 @@
-/* $Id: SdifFile.c,v 3.24 2002-08-28 14:07:27 schwarz Exp $
+/* $Id: SdifFile.c,v 3.25 2002-08-28 17:08:54 roebel Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -33,6 +33,10 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.24  2002/08/28 14:07:27  schwarz
+ * New function SdifFRewind.
+ * Unified return values for SdifFTruncate.
+ *
  * Revision 3.23  2002/08/27 10:53:48  schwarz
  * New file truncate function.
  *
@@ -195,6 +199,7 @@
 #include "SdifFRead.h"		/* for SdifFReadGeneralHeader */
 #include <stdlib.h>
 #include <stdio.h>
+#include <unistd.h>
 #include <string.h>
 #include <assert.h>
 #include "SdifError.h"
@@ -211,7 +216,7 @@
 #include "SdifVersion.h"
 
 #ifndef AUTOCKSUM
-#define AUTOCKSUM "$Checksum: not available$ IRCAM $Date: 2002-08-28 14:07:27 $" 
+#define AUTOCKSUM "$Checksum: not available$ IRCAM $Date: 2002-08-28 17:08:54 $" 
 #endif
 
 #ifndef lint
