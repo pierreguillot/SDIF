@@ -32,9 +32,12 @@
  * 
  * 
  * 
- * $Id: sdifmatrix.cpp,v 1.9 2003-07-07 10:29:46 roebel Exp $ 
+ * $Id: sdifmatrix.cpp,v 1.10 2003-07-09 21:06:55 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.9  2003/07/07 10:29:46  roebel
+ * Added support for eInt1 and eUInt1 data types, resize of matrix now reinitializes all elements to 0
+ *
  * Revision 1.8  2003/05/22 17:58:12  roebel
  * Improved checks in GetColName
  *
@@ -156,6 +159,9 @@ void SDIFMatrix::Init(SdifSignature sig, int nrows, int ncols, SdifDataTypeET ty
 	break;
       case eInt4:
 	mInter=static_cast<SDIFMatrixDataInterface*>(new SDIFMatrixData<int>(nrows,ncols));
+	break;
+      case eUInt4:
+	mInter=static_cast<SDIFMatrixDataInterface*>(new SDIFMatrixData<unsigned int>(nrows,ncols));
 	break;
       case eFloat4:
 	mInter=static_cast<SDIFMatrixDataInterface*>(new SDIFMatrixData<float>(nrows,ncols));
