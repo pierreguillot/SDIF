@@ -1,3 +1,15 @@
+2003-06-13  Diemo Schwarz  <schwarz@ligeti.ircam.fr>
+
+	Library version is 3.8.0-beta until we decide to announce the
+	official release, to avoid confusion.
+
+	* macosxbuild/Makefile.am, macosxbuild/README.MacOSX, macosxbuild/SDIF.pbproj/Makefile.am, Makefile.am, README.MacOSX, configure.in:
+	Riccardo updated the MacOsX project to live in macosxbuild.
+	Added latest projectbuilder mac os X project to cvs and dist.
+	
+	* macosxbuild/README.MacOSX.binary-distrib:
+	assembled from general readme and LGPL in COPYING
+
 2003-06-06  Diemo Schwarz  <schwarz@ligeti.ircam.fr>
 
 	* sdif/SdifFile.c, sdif/SdifHard_OS.c, include/sdif.h:
@@ -186,4 +198,4 @@ Version 3.3:
 	  Operating System.
 
 	
-$Id: ChangeLog,v 1.21 2003-06-06 10:29:16 schwarz Exp $
+$Id: ChangeLog,v 1.22 2003-06-13 10:09:14 schwarz Exp $
