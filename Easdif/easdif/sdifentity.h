@@ -32,9 +32,12 @@
  * 
  * 
  * 
- * $Id: sdifentity.h,v 1.16 2004-05-04 12:53:35 roebel Exp $ 
+ * $Id: sdifentity.h,v 1.17 2004-07-13 15:01:42 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.16  2004/05/04 12:53:35  roebel
+ * Fixed documentation.
+ *
  * Revision 1.15  2004/02/11 19:28:17  roebel
  * Added inline function to test state of entity. Added function to access NVTs that indicates existance of name.
  *
@@ -159,7 +162,6 @@ private:
     SdifFileT* efile;
     std::string mDescription;
 
-    SdifUInt4 mNbFrame;
     SdifUInt4 mSize;
 	SdifUInt4 mFirstFramePos;	// file position after reading the header
 	 
