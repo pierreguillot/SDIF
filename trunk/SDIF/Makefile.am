@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.23 2003-07-21 13:40:45 tisseran Exp $
+# $Id: Makefile.am,v 1.24 2004-01-29 14:20:16 schwarz Exp $
 #
 # ./Makefile.am		September 2000			Patrice Tisserand
 #
@@ -30,6 +30,9 @@
 
 
 # $Log: not supported by cvs2svn $
+# Revision 1.23  2003/07/21 13:40:45  tisseran
+# Fixed conditionnalk compilation/installation of libsdif-cpp.
+#
 # Revision 1.22  2003/06/13 10:05:40  schwarz
 # Added latest projectbuilder mac os X project to cvs and dist.
 # Library version is 3.8.0-beta until we decide to announce the official release,
@@ -168,7 +171,7 @@ PUBLISH_RPM	  = $(PACKAGE)-$(VERSION)-1.i386.rpm
 rpm:		$(rpmdir) sdif.spec dist
 		cp $(PUBLISH_FILE) $(rpmdir)/SOURCES
 		cp sdif.spec       $(rpmdir)/SPECS
-		cd $(rpmdir)/SPECS; rpm -ba sdif.spec
+		cd $(rpmdir)/SPECS; rpmbuild -ba sdif.spec
 		cp $(rpmdir)/RPMS/i386/$(PUBLISH_RPM) $(top_builddir)
 
 # this must be in your .rpmmacros file: %_topdir /tmp/<your username>-rpm
@@ -188,7 +191,8 @@ publish:	distcheck cvstag dist rpm publish-ftp
 # more files to publish (on server)
 EXTRA_PUBLISH     = README COPYING AUTHORS INSTALL ChangeLog #  doc
 
-# call this as "make PUBLISH_HOST=yourwebhost publish" to publish a new version
+# call this as "make PW=<yourpassword> PUBLISH_HOST=<yourwebhost> publish" 
+# to publish a new version on an ftp server
 # this might work differently for other places
 # todo: configure PUBLISH_HOST
 PUBLISH_DIR       = sdif/download

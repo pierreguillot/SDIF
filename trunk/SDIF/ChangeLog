@@ -1,3 +1,60 @@
+2004-01-29  Diemo Schwarz  <schwarz@ligeti.ircam.fr>
+Version 3.8.0
+	
+	* macosxbuild/*:
+	Add Max OS-X xcode project to dist
+	Added Riccardo's xcode project.
+
+2004-01-12  Patrice Tisserand  <tisseran@ligeti.ircam.fr>
+
+	* sdif.spec.in: Fixed list of files to package.
+
+2004-01-09  Diemo Schwarz  <schwarz@ligeti.ircam.fr>
+
+	* include/sdif.h, sdif/SdifFile.h:
+	Removed declaration of SdifFGetFrameType and SdifFGetMatrixType from
+	public API because they are misleading.
+	Use the correct SdifTestFrameType and SdifTestMatrixType instead.
+
+2003-12-15  Diemo Schwarz  <schwarz@ligeti.ircam.fr>
+
+	* sdif/SdifList.c:
+	SdifKillListCurr for SdifNameValuesLKillCurrNVT, untested
+
+	* sdif/SdifNameValue.c: SdifNameValuesLKillCurrNVT, untested
+
+	* sdif/SdifFile.c, include/sdif.h:
+	Added SdifFileT based functions SdifFSetPos, SdifFGetPos around the
+	Sdiff* Macros, to be callable from OpenMusic.
+
+2003-11-18  Axel Roebel  <roebel@ligeti.ircam.fr>
+
+	* include/sdif.h: Added alias for typo in SdifErrorTagE.
+
+2003-11-07  Axel Roebel  <roebel@ligeti.ircam.fr>
+
+	* tools/*.c, sdif/*.c:
+	Removed last remainings of XpGuiCalls from tools files.
+	removed XpGuiCalls.h and replaced preinclude.h  by local files
+
+	* sdif/sdif_portability.h: added preincluded.h replacement to CVS
+
+2003-11-07  Patrice Tisserand  <tisseran@ligeti.ircam.fr>
+
+	* sdif/SdifFile.c: Removed inclusion of SdifFile.h
+	Used SDIF_VERSION now.
+
+	* sdif/Makefile.am: Removed CKSUM computing.
+	Removed generation of SdifFile.h
+
+2003-11-07  Nicholas Ellis  <ellis@ligeti.ircam.fr>
+
+	* tools/sdiftotext.c, sdif/SdifErrMess.c, sdif/SdifError.c, sdif/SdifFile.c, include/sdif.h:
+	Added the declaration of of two functions in the header file
+	SdifFAllFrameTypeToSdifString and SdifFAllMatrixTypeToSdifString
+
+
+
 2003-11-07  Axel Roebel  <Axel.Roebel@ircam.fr>
 3.8.0-beta3
 
@@ -246,4 +303,4 @@ Version 3.3:
 	  Operating System.
 
 	
-$Id: ChangeLog,v 1.28 2003-11-07 21:47:16 roebel Exp $
+$Id: ChangeLog,v 1.29 2004-01-29 14:20:16 schwarz Exp $
