@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.22 2003-06-13 10:05:40 schwarz Exp $
+# $Id: Makefile.am,v 1.23 2003-07-21 13:40:45 tisseran Exp $
 #
 # ./Makefile.am		September 2000			Patrice Tisserand
 #
@@ -30,6 +30,11 @@
 
 
 # $Log: not supported by cvs2svn $
+# Revision 1.22  2003/06/13 10:05:40  schwarz
+# Added latest projectbuilder mac os X project to cvs and dist.
+# Library version is 3.8.0-beta until we decide to announce the official release,
+# to avoid confusion.
+#
 # Revision 1.21  2003/05/23 17:28:40  schwarz
 # Dammit! win and mac build directories winbuild and maxosxbuild,
 # 	not yet used since you have to change the projects first.
@@ -120,7 +125,13 @@ else
 DOC_SRC_DIR =
 endif 
 
-SUBDIRS = sdif include tools data test sdifcpp macosxbuild $(DOC_SRC_DIR)
+if ENABLECPP
+SDIF_CPP_DIR=sdifcpp
+else
+SDIF_CPP_DIR=
+endif
+
+SUBDIRS = sdif include tools data test $(SDIF_CPP_DIR) macosxbuild $(DOC_SRC_DIR)
 
 sdifincdir = @top_srcdir@/include
 
