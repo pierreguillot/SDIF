@@ -24,5 +24,6 @@ public class main {
 		double val = mat.GetDouble(0, 0);
 		System.out.println("frame " + fsig + " matrix " + msig + "(" + nrow + "," + ncol + ") = " + val);
 	    }
+	file.Close();
     }
 }
