@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.27 2003-03-07 17:33:27 roebel Exp $
+# $Id: Makefile.am,v 1.28 2003-03-18 14:56:02 roebel Exp $
 #
 # ./sdif/Makefile.am		September 2000		Patrice Tisserand
 #
@@ -30,6 +30,9 @@
 
 
 # $Log: not supported by cvs2svn $
+# Revision 1.27  2003/03/07 17:33:27  roebel
+# Improved handling of IRCAM include files.
+#
 # Revision 1.26  2002/10/30 15:48:46  schwarz
 # Fixed dependency for SdifVersion.h: target is SdifFile.lo and not SdifFile.o
 #
@@ -131,7 +134,7 @@
 
 
 # EXTRA_LIBRARIES = libsdif.a libsdif-debug.a libsdif-cpp.a
-EXTRA_LTLIBRARIES = libsdif.la libsdif-debug.la libsdif-cpp.la
+EXTRA_LTLIBRARIES = libsdif.la libsdif-debug.la
 
 # lib_LIBRARIES = @SELLIB@
 lib_LTLIBRARIES = @SELLIB@
@@ -169,11 +172,9 @@ libsdif_la_SOURCES = SdifHash.c       SdifGlobals.c      SdifSignatureTab.c   \
 		     SdifConvToText.c SdifPreTypes.c
 
 libsdif_debug_la_SOURCES = $(libsdif_la_SOURCES)
-libsdif_cpp_la_SOURCES   = $(libsdif_la_SOURCES)
 
 libsdif_la_LDFLAGS = -no-undefined -release @VERSION@ -rpath $(libdir)
 libsdif_debug_la_LDFLAGS = $(libsdif_la_LDFLAGS) -rpath $(libdir)
-libsdif_cpp_la_LDFLAGS   = $(libsdif_la_LDFLAGS) -lstdc++ -rpath $(libdir)
 
 sdiftype = $(datadir)/SdifTypes.STYP
 
