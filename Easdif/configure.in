@@ -1,11 +1,12 @@
 dnl -*-autoconf-*-  (No, it's an autoconf file!)
 dnl -*-m4-*- (He emacs, it's a m4 file)
-dnl $Id: configure.in,v 1.7 2003-04-03 13:15:23 schwarz Exp $
+dnl $Id: configure.in,v 1.8 2003-04-03 13:35:21 schwarz Exp $
 dnl
 dnl configure.in		Feb 2003      Axel Roebel
 dnl
 dnl Source file for GNU autoconf, generates configure script.
 dnl
+dnl $Log: not supported by cvs2svn $
 
 
 dnl To check if directory is present
@@ -16,20 +17,21 @@ dnl PACKAGE NAME AND VERSION
 AC_MSG_RESULT(PACKAGE NAME)
 
 PACKAGE=Easdif
-AC_SUBST(PACKAGE)
 
+versmaj=0
+versmin=3
+versrel=1
+VERSION=${versmaj}.${versmin}.${versrel}
+
+AC_SUBST(PACKAGE)
 AC_SUBST(EASDIF_VERSION_MAJ)
 AC_SUBST(EASDIF_VERSION_MIN)
-
-
-topdir=`dirname $0`
-versmaj=`grep ^PROJECT_NUMBER  ${topdir}/Doxyfile | cut -d"=" -f2| cut -d. -f1| sed -e "s/ //g"`
+AC_SUBST(EASDIF_VERSION_RELEASE)
 
 AC_DEFINE_UNQUOTED(EASDIF_VERSION_MAJ,$versmaj,[Major version number of easdif lib])
-versmin=`grep ^PROJECT_NUMBER  ${topdir}/Doxyfile | cut -d"=" -f2| cut -d. -f2| sed -e "s/ //g"`
 AC_DEFINE_UNQUOTED(EASDIF_VERSION_MIN,$versmin,[Minor version number of easdif lib])
+AC_DEFINE_UNQUOTED(EASDIF_VERSION_RELEASE,$versrel,[Release number of easdif lib])
 
-VERSION=${versmaj}.${versmin}
 AM_INIT_AUTOMAKE($PACKAGE,$VERSION)
 
 AM_CONFIG_HEADER(easdif/easdif_version.h)
@@ -101,8 +103,7 @@ AC_OUTPUT(Makefile
 easdif/Makefile 
 test/Makefile
 Easdif.pc
-Doxyfile)
+Doxyfile
+)
 
-AC_MSG_RESULT(END OF ${PACKAGE} CONFIGURATION)
-
-
+AC_MSG_RESULT(END OF $PACKAGE CONFIGURATION)
