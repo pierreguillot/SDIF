@@ -1,4 +1,4 @@
-/* $id$
+/* $Id: SdifFile.h,v 1.4 1998-05-14 09:50:35 schwarz Exp $
  *
  * SdifFile.h
  *
@@ -7,7 +7,7 @@
  *
  * author: Dominique Virolle 1997
  *
- * $log$
+ * $Log: not supported by cvs2svn $
  */
 
 
@@ -47,6 +47,7 @@ extern SdifSignature SdifCleanCurrSignature  (SdifFileT *SdifF);
 extern SdifSignature SdifCurrFrameSignature  (SdifFileT *SdifF);
 extern SdifSignature SdifCurrMatrixSignature (SdifFileT *SdifF);
 extern SdifOneRowT*  SdifCurrOneRow          (SdifFileT *SdifF);
+extern void*	     SdifCurrOneRowData	     (SdifFileT *SdifF);
 extern SdifUInt4     SdifCurrNbCol           (SdifFileT *SdifF);
 extern SdifUInt4     SdifCurrNbRow           (SdifFileT *SdifF);
 extern SdifUInt4     SdifCurrNbMatrix        (SdifFileT *SdifF);

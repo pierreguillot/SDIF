@@ -1,4 +1,4 @@
-/* $id$
+/* $Id: SdifFile.c,v 1.4 1998-05-14 09:50:34 schwarz Exp $
  *
  * SdifFile.c
  *
@@ -7,7 +7,7 @@
  *
  * author: Dominique Virolle 1997
  *
- * $log$
+ * $Log: not supported by cvs2svn $
  */
 
 
@@ -349,7 +349,7 @@ SdifGenKill(void)
 void SdifPrintVersion(void)
 {
 #ifndef lint
-  static char rcsid[]= "$Revision: 1.3 $ IRCAM $Date: 1998-05-04 15:44:15 $";
+  static char rcsid[]= "$Revision: 1.4 $ IRCAM $Date: 1998-05-14 09:50:34 $";
 #endif
 
 
@@ -478,6 +478,25 @@ SdifOneRowT*
 SdifCurrOneRow(SdifFileT *SdifF)
 {
   return SdifF->CurrOneRow;
+}
+
+/*  DS: Added SdifCurrOneRowData to return a pointer to the raw data.
+    This can subsequently be used for SdifSetCurrOneRow.
+ */
+void*
+SdifCurrOneRowData(SdifFileT *SdifF)
+{
+  switch (SdifF->CurrOneRow->DataType)
+    {
+    case eFloat4:
+      return SdifF->CurrOneRow->Data.F4;
+      break;
+    case eFloat8:
+      return SdifF->CurrOneRow->Data.F8;
+      break;
+    default:
+      return NULL;
+    }
 }
 
 SdifUInt4
