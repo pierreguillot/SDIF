@@ -1,8 +1,11 @@
-/* $Id: sdif.h,v 1.12 2001-05-04 18:09:53 schwarz Exp $
+/* $Id: sdif.h,v 1.13 2001-07-12 14:11:48 roebel Exp $
  *
  * This file contains type declaration of variables used in SDIF library.
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.12  2001/05/04 18:09:53  schwarz
+ * Added function SdifNameValuesLPutCurrNVTTranslate.
+ *
  * Revision 1.11  2001/05/04 14:07:28  tisseran
  * Liitle fix:
  * - Change a c++ commentary in a c one (sdif.h line:1532)
@@ -64,7 +67,7 @@
  * Revision 1.1.2.1  2000/08/21  13:07:41  tisseran
  * *** empty log message ***
  *
- * $Date: 2001-05-04 18:09:53 $
+ * $Date: 2001-07-12 14:11:48 $
  *
  */
 
@@ -72,12 +75,15 @@
 #ifndef _SDIF_H
 #define _SDIF_H 1
 
+
+#include <sdif_version.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 
-static const char _sdif_h_cvs_revision_ [] = "$Id: sdif.h,v 1.12 2001-05-04 18:09:53 schwarz Exp $";
+static const char _sdif_h_cvs_revision_ [] = "$Id: sdif.h,v 1.13 2001-07-12 14:11:48 roebel Exp $";
 
 
 #include <stdio.h>
@@ -656,7 +662,6 @@ typedef enum SdifErrorTagE
 	eUserDefInFileYet,
 	eBadMode,
 	eBadStdFile,
-	eBadNbData,
 	eReadWriteOnSameFile,
     eBadFormatVersion,
     eMtrxUsedYet,

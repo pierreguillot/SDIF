@@ -1,5 +1,5 @@
 dnl -*-m4-*- (He emacs, it's a m4 file)
-dnl $Id: configure.in,v 1.12 2001-05-02 09:34:37 tisseran Exp $
+dnl $Id: configure.in,v 1.13 2001-07-12 14:11:46 roebel Exp $
 dnl
 dnl configure.in		September 2000		Patrice Tisserand
 dnl
@@ -30,6 +30,9 @@ dnl For any information regarding this and other IRCAM software, please
 dnl send email to:  sdif@ircam.fr
 dnl
 dnl $Log: not supported by cvs2svn $
+dnl Revision 1.12  2001/05/02 09:34:37  tisseran
+dnl Change License from GNU Public License to GNU Lesser Public License.
+dnl
 dnl Revision 1.11  2001/04/20 14:04:04  tisseran
 dnl SDIF VERSION 3.3
 dnl Create function: SdifTakeCodedPredefinedTypesfromString (SdifFile.[hc])
@@ -84,9 +87,14 @@ dnl ############################################################
 dnl PACKAGE NAME AND VERSION
 AC_MSG_RESULT(PACKAGE NAME AND VERSION)
 PACKAGE=SDIF
-VERSION=3.3
+SDIF_VERSION_MAJOR=3
+SDIF_VERSION_MINOR=4
+
+VERSION=$SDIF_VERSION_MAJOR.$SDIF_VERSION_MINOR
 AC_SUBST(PACKAGE)
 AC_SUBST(VERSION)
+AC_SUBST(SDIF_VERSION_MINOR)
+AC_SUBST(SDIF_VERSION_MAJOR)
 AM_INIT_AUTOMAKE($PACKAGE,$VERSION)
 
 AM_CONFIG_HEADER(sdif/config.h)
@@ -178,7 +186,7 @@ PROGLIST="querysdif sdifextract sdiftotext tosdif";
 dnl ############################################################
 dnl CREATE OUTPUT FILES
 AC_MSG_RESULT(CREATE OUTPUT FILES)
-AC_OUTPUT(Makefile sdif/Makefile tools/Makefile  data/Makefile include/Makefile doc/Makefile doc/pics/Makefile doc/extern/Makefile doc/extern/cocoon/Makefile test/Makefile test/files/Makefile test/files/txt/Makefile test/files/sdif/Makefile test/files/txtw/Makefile test/files/sdifw/Makefile test/files/sdifref/Makefile)
+AC_OUTPUT(Makefile sdif/Makefile tools/Makefile  data/Makefile include/Makefile include/sdif_version.h doc/Makefile doc/pics/Makefile doc/extern/Makefile doc/extern/cocoon/Makefile test/Makefile test/files/Makefile test/files/txt/Makefile test/files/sdif/Makefile test/files/txtw/Makefile test/files/sdifw/Makefile test/files/sdifref/Makefile)
 
 AC_MSG_RESULT(END OF CONFIGURATION)
 

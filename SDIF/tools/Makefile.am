@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.7 2001-05-02 09:34:54 tisseran Exp $
+# $Id: Makefile.am,v 1.8 2001-07-12 14:11:47 roebel Exp $
 #
 # ./tools/Makefile.am		September 2000			Patrice Tisserand
 #
@@ -29,6 +29,9 @@
 # send email to:  sdif@ircam.fr
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.7  2001/05/02 09:34:54  tisseran
+# Change License from GNU Public License to GNU Lesser Public License.
+#
 # Revision 1.6  2000/11/21 09:04:32  roebel
 # Changed Makefile.am  in tools and sdif to properly use
 # include files in $(topsrcdir)/sdif
@@ -85,5 +88,5 @@ tosdif_LDADD = -lsdif
 tosdif_LDFLAGS = -L../sdif
 tosdif_DEPENDENCIES=../sdif/libsdif.a
 
-INCLUDES = -I$(top_srcdir)/include -I$(top_srcdir)/sdif
+INCLUDES = -I../include -I$(top_srcdir)/include -I$(top_srcdir)/sdif
 
