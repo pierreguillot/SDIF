@@ -1,4 +1,4 @@
-/* $Id: loadsdif-subs.c,v 1.11 2001-05-29 13:24:23 roebel Exp $
+/* $Id: loadsdif-subs.c,v 1.12 2001-07-23 10:58:09 tisseran Exp $
 
    loadsdif_subs.c	25. January 2000	Diemo Schwarz
 
@@ -14,6 +14,9 @@
    endread ('close')
 
   $Log: not supported by cvs2svn $
+  Revision 1.11  2001/05/29 13:24:23  roebel
+  fixed problem for sdif files without ascii chunks
+
   Revision 1.10  2001/05/29 09:55:21  roebel
   fixed memory leak. removed debugging output. Matrices
   with unknown data were not correctly skipped, fixed now!
@@ -298,9 +301,10 @@ static size_t readmatrix (SdifFileT *f, mxArray *mxarray [MaxNumOut])
     break;
 
     case eFloat4:
+    case eFloat8:
       /* alloc output array and scalars */
 
-
+	
       mxarray [0] = mxCreateDoubleMatrix (nrow, ncol, mxREAL);
       mxarray [1] = mxCreateDoubleMatrix (1, 1, mxREAL);
       mxarray [2] = mxCreateDoubleMatrix (1, 1, mxREAL);
