@@ -1,0 +1,96 @@
+# $Id: Makefile.am,v 1.8 2003-04-09 11:48:40 roebel Exp $
+#
+# ./Easdif/src/Makefile.am	Feb. 2003 Axel Roebel
+#
+# Source file for GNU automake, generates Makefile.in.
+#
+
+#  This file is part of the IRCAM EASDIF Library (http://www.ircam.fr/sdif)
+# 
+#  Copyright (C) 2002-2003 by IRCAM-Centre Georges Pompidou, Paris, France.
+# 
+#  This program is free software; you can redistribute it and/or
+#  modify it under the terms of the GNU Lesser General Public License
+#  as published by the Free Software Foundation; either version 2
+#  of the License, or (at your option) any later version.
+# 
+#  See file COPYING for further informations on licensing terms.
+# 
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU Lesser General Public License for more details.
+# 
+#  You should have received a copy of the GNU Lesser General Public License
+#  along with this program; if not, write to the Free Software
+#  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+# 
+# 
+#  The EASDIF library provides an Easy Api for IRCAMs SDIF library. 
+# 
+
+
+# $Log: not supported by cvs2svn $
+# Revision 1.7  2003/04/08 18:29:39  roebel
+# Fixed version numbering in shared library.
+#
+# Revision 1.6  2003/04/06 16:31:08  roebel
+# Added license info
+#
+# Revision 1.5  2003/03/18 15:37:11  roebel
+# Use libtool for conveniance library
+#
+# Revision 1.4  2003/03/07 17:38:41  roebel
+# Updated for correct handling of distribution and new layout of c++ compilation in SDIF.
+#
+# Revision 1.3  2003/03/05 15:33:13  roebel
+# Fixed installation of include files.
+#
+# Revision 1.2  2003/03/04 00:55:02  roebel
+# Removed version determination
+#
+# Revision 1.1  2003/03/03 19:00:16  roebel
+# Moved src directory to new name easdif
+#
+# Revision 1.1  2003/03/03 10:03:50  roebel
+# Adapted for autoconf/automake...
+#
+
+# EXTRA_LIBRARIES to provide knowledge about possible substitutions
+# in lib_LTLIBRARIES
+EXTRA_LTLIBRARIES = libEasdif.la 
+
+# lib_LIBRARIES = @SELLIB@
+lib_LTLIBRARIES = @SELLIB@
+
+EXTRA_DIST = easdif_version.h.in easdifintro.h
+
+EASDIF_H = easdif_version.h easdif.h  sdifentity.h \
+	sdifexception.h sdifframe.h sdifinit.h sdifmatrix.h sdifmatrixdata.h \
+	sdifmatrixdatainterface.h sdifnamevaluetable.h
+
+easdifincdir = $(prefix)/include/easdif
+easdifinc_HEADERS = $(EASDIF_H)
+
+libEasdif_la_SOURCES =  sdifentity.cpp sdifexception.cpp sdifframe.cpp \
+			sdifinit.cpp sdifmatrix.cpp sdifnamevaluetable.cpp
+
+libEasdif_la_LIBADD  = @SDIFCPPLIB@
+libEasdif_la_LDFLAGS = -no-undefined  -release @VERSION@ -rpath $(libdir)
+
+
+INCLUDES = -I$(top_srcdir) -I../SDIF/include -I$(top_srcdir)/SDIF/include -I$(top_srcdir)/SDIF/sdif   -DUSE_CONFIGURE
+
+
+#
+# EXTRA rules and dependencies to generate easdif_version.h
+#
+#$(top_srcdir)/src/easdif_version.h: $(top_srcdir)/Doxyfile
+#	echo "/* Version automatically generated from Makefile/DoxyFile" >$@.h
+#	echo " * do not edit */" >>$@.h
+#	echo "#ifndef EASDIF_VERSION_MAJ"	 >>$@.h
+#	echo "#define" EASDIF_VERSION_MAJ $(strip $(shell grep ^PROJECT_NUMBER  $< | cut -d"=" -f2| cut -d. -f1)) >>$@.h
+#	echo "#define" EASDIF_VERSION_MIN $(strip $(shell grep ^PROJECT_NUMBER  $< | cut -d"=" -f2| cut -d. -f2)) >>$@.h
+#	echo "#endif "	 >>$@.h
+
+
