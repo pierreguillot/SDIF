@@ -1,4 +1,4 @@
-/* $Id: SdifString.c,v 3.7 2001-05-02 09:34:48 tisseran Exp $
+/* $Id: SdifString.c,v 3.8 2002-06-18 13:55:27 ftissera Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -32,6 +32,9 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.7  2001/05/02 09:34:48  tisseran
+ * Change License from GNU Public License to GNU Lesser Public License.
+ *
  * Revision 3.6  2001/02/08 15:26:56  tisseran
  * Add a test on memory allocation in SdifStringNew (call perror if malloc return a NULL pointer).
  * Note on sdifextract.c:
@@ -84,7 +87,7 @@ SdifStringT * SdifStringNew(void)
   SdifString = (SdifStringT *)malloc(sizeof(SdifStringT));
   TotalSize = _SdifStringGranule;
   
-  SdifString->str = (char *)malloc(TotalSize * sizeof(char));
+  SdifString->str = (char *)calloc(TotalSize, sizeof(char));
   if (SdifString->str == NULL) /* Check result of memory allocation */
   {
       /* Error with memory allocation */
