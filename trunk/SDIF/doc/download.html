@@ -1,8 +1,11 @@
 <html>
 
-<!-- $Id: download.html,v 3.3 2000-08-22 16:34:41 schwarz Exp $
+<!-- $Id: download.html,v 3.4 2000-08-27 15:18:49 schwarz Exp $
 
 $Log: not supported by cvs2svn $
+# Revision 3.3  2000/08/22  16:34:41  schwarz
+# Matlab download points to dir.
+#
 # Revision 3.2  2000/08/07  15:12:05  schwarz
 # Cocoon is installed for groups now, more docs.
 #
@@ -39,11 +42,21 @@ Library Download</h1>
 
 <a name=library><h3>SDIF Library</h3></a>
 
-<b>The download of the free, open-source IRCAM SDIF library will be
-possible within a couple of days.</b> <p>
+You can download of the free, open-source IRCAM SDIF library from 
+<a href="http://www.ircam.fr/anasyn/sdif/download">the download
+directory</a>. There are source and binary distributions available.  
+See the files <a href="http://www.ircam.fr/anasyn/sdif/download/SDIF-3.2.0.README">README</a> and INSTALL in the distribution for how to
+compile and install.<p>
 
-We feel that at least a good tutorial of how to use it should be
-written before we give the library to the world.
+The <strong>source distribution</strong> compiles automatically and has been tested on all
+operating systems where <code>configure</code> is available, i.e. all
+flavours of Unix and BeOS.  It compiles on Windows and Macintosh, but
+you might have to tweak the makefiles or set up your own compiler
+project. <p>
+
+The <strong>binary distribution</strong> is available for Linux/PC and
+SGI.  
+<p>
 
 <br>
 <br>
@@ -54,10 +67,20 @@ written before we give the library to the world.
 
 Described in this <a href="http://www.ircam.fr/anasyn/schwarz/publications/icmc2000/">ICMC 2000 article</a>.<p>
 
-Download the latest distribution <a href="download">from here</a> containing
-<i>mex</i>-files for Linux/PC and DEC Alpha, and <tt>.m</tt> files with
-documentation and support functions.
+Download the latest distribution from 
+<a href="http://www.ircam.fr/anasyn/sdif/download">the download directory</a>
+containing <i>mex</i>-files for Linux/PC and DEC Alpha, and
+<tt>.m</tt> files with documentation and support functions.  The <i>mex</i>-files are linked statically, so you don't have to download and install the SDIF library for using them.  You could do it anyway to get the <a href="http://www.ircam.fr/equipes/analyse-synthese/sdif/extern/utilities-main.html">utilities...</a>
+<p>
 
+<br>
+<br>
+<br>
+
+
+<a name=download><h3>Download Directory</h3></a>
+
+<a href="http://www.ircam.fr/anasyn/sdif/download">http://www.ircam.fr/anasyn/sdif/download</a>
 
 
 </body>

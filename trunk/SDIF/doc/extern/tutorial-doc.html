@@ -19,7 +19,7 @@
 
 <H3 ALIGN=center><A HREF="mailto:schwarz@ircam.fr">Diemo Schwarz</A></H3>
 
-<H3 ALIGN=center>August 21, 2000</H3><BR><BR><BR><A NAME="Introduction"></A><!--TOC section Introduction-->
+<H3 ALIGN=center>August 27, 2000</H3><BR><BR><BR><A NAME="Introduction"></A><!--TOC section Introduction-->
 
 <H2>1&nbsp;&nbsp; Introduction</H2><!--SEC END -->
 This tutorial describes the standard way to read and write an SDIF file using
@@ -185,7 +185,40 @@ SizeFrameW += SdifFWritePadding (file, SdifFPaddingCalculate (file-&gt;Stream, S
 SdifUpdateChunkSize (file, SizeFrameW - 8);  <FONT COLOR="#0000ff"><TT><I>/* Set frame size */</I></TT></FONT>
 
 SdifFClose (file);
-</PRE><!--HTMLFOOT-->
+</PRE><BR><BR><BR><A NAME="Goodies"></A><!--TOC section Goodies-->
+
+<H2>5&nbsp;&nbsp; Goodies</H2><!--SEC END -->
+Some functions to make life with SDIF even easier:<BR>
+<BR>
+<PRE>
+	<table cellspacing=0 cellpadding=0><tr valign=top><td>	<FONT COLOR="#0000ff"><TT><I>/* </I></TT></FONT><td><FONT COLOR="#0000ff"><TT><I>Check if the file exists and is a good SDIF file&nbsp;*/</I></TT></FONT></table>
+if (SdifCheckFileFormat ("filename.sdif"))
+    /* ok */;
+
+	<table cellspacing=0 cellpadding=0><tr valign=top><td>	<FONT COLOR="#0000ff"><TT><I>/* </I></TT></FONT><td><FONT COLOR="#0000ff"><TT><I>Check if file is good, exists, and contains certain frame types&nbsp;*/</I></TT></FONT></table>
+SdifSignature wanted [] = { SdifSignatureConst('1TRC'), 
+			    SdifSignatureConst('1HRM'), 
+			    eEmptySignature <FONT COLOR="#0000ff"><TT><I>/* end marker */</I></TT></FONT> 
+			  },
+	      firstfound;
+int           firstindex;
+
+<FONT COLOR="#0000ff"><TT><I>/* This returns the signature of the first wanted frame found */</I></TT></FONT>
+firstfound = SdifCheckFileFramesTab ("filename.sdif", wanted);
+
+printf ("First sig found is: %s\n", 
+	firstfound  ?  SdifSignatureToString(firstfound)  
+		    :  "none of interest");
+
+<FONT COLOR="#0000ff"><TT><I>/* Alternatively, you can get the index of the first frame found */</I></TT></FONT>
+firstindex = SdifCheckFileFramesIndex ("filename.sdif", wanted);
+
+printf ("First sig found is: %s\n", 
+	firstindex &gt;= 0  ?  SdifSignatureToString(wanted [firstindex])  
+		         :  "none of interest");
+</PRE>N.B.: All of the above functions require a real file, and do not work with standard input.<BR>
+<BR>
+<!--HTMLFOOT-->
 <!--ENDHTML-->
 
 <!--FOOTER-->
