@@ -1,4 +1,4 @@
-$Id: README,v 1.1 2003-04-29 15:55:00 schwarz Exp $
+$Id: README,v 1.2 2003-04-29 16:22:23 schwarz Exp $
 
 README for SWIG wrapper generation for eaSDIF
 
@@ -22,14 +22,16 @@ easdif/swig/java
 ...more later...	(especially hoping for matlab, ruby)
 
 
-in the main directory:
+In the main directory (the .i.in files generate the .i files with the
+proper paths set):
 
-easdif-common.i
-sdif-common.i
+easdif-common.i.in
+sdif-common.i.in
 sdifdefines.i
 
 
-in each language dir, there are these source files:
+
+In each language dir, there are these source files:
 
 build			subdirectory with all generated files
 Makefile.am
