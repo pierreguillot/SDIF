@@ -1,4 +1,4 @@
-/* $Id: SdifSelect.c,v 3.9 2000-05-15 16:22:03 schwarz Exp $
+/* $Id: SdifSelect.c,v 3.10 2000-06-15 15:24:10 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -79,6 +79,15 @@ TODO
 
 LOG
   $Log: not supported by cvs2svn $
+  Revision 3.9  2000/05/15  16:22:03  schwarz
+  Changed prototypes of existing functions (we apologize for the inconvenience)
+  SdifFCurrFrameIsSelected and SdifFCurrMatrixIsSelected.
+  They now take only an SdifFileT as parameter, no longer a selection.
+  If you don't want to test the file selection (automatically
+  parsed from the filename), use these new functions like this:
+  SdifFrameIsSelected  (file->CurrFramH, myselection) and
+  SdifMatrixIsSelected (file->CurrMtrxH, myselection).
+
   Revision 3.8  2000/05/12  16:55:30  schwarz
   Added prototype and doc for SdifBaseName.
   Avoid avoidable warnings.
@@ -184,7 +193,7 @@ static char *getstring (SdifSelectValueT val);
 
 /* 
 // FUNCTION GROUP:	Init/Deinit
- */
+*/
 
 /* init module, called by SdifGenInit */
 int 
