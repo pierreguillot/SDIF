@@ -7,9 +7,6 @@
    byte first (like Motorola and SPARC, unlike Intel and VAX).  */
 #undef WORDS_BIGENDIAN
 
-/* Define if multi character character constant inversion */
-#undef MULTICHAR_CHAR_CONSTANT_INVERSION
-
 /* The number of bytes in a long.  */
 #undef SIZEOF_LONG
 
