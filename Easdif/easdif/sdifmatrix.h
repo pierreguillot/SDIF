@@ -33,9 +33,12 @@
  * 
  * 
  * 
- * $Id: sdifmatrix.h,v 1.24 2004-07-28 15:06:23 roebel Exp $ 
+ * $Id: sdifmatrix.h,v 1.25 2004-09-08 09:17:45 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.24  2004/07/28 15:06:23  roebel
+ * Added missing GetUChar.
+ *
  * Revision 1.23  2004/07/28 14:57:34  roebel
  * Added support for accessing data as unsigned char.
  * Added SetRow and SetCol functions.
@@ -393,7 +396,7 @@ public:
  * \ingroup membmat
  * get the number of columns of the matrix
  */
-    int GetNbCols() const {return mInter->GetNbRows();};
+    int GetNbCols() const {return mInter->GetNbCols();};
 
   /**
    * \ingroup membmat 
