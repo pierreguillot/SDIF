@@ -1,6 +1,6 @@
-# $Id: Makefile.am,v 1.12 2003-05-26 08:16:17 tisseran Exp $
+# $Id: Makefile.am,v 1.13 2004-06-03 11:34:17 schwarz Exp $
 #
-# ./tools/Makefile.am		September 2000			Patrice Tisserand
+# ./tools/Makefile.am		September 2000		Patrice Tisserand
 #
 # Source file for GNU automake, generates Makefile.in.
 #
@@ -29,6 +29,9 @@
 # send email to:  sdif@ircam.fr
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.12  2003/05/26 08:16:17  tisseran
+# Added Visual C++ project files for SDIF tools.
+#
 # Revision 1.11  2002/12/02 17:33:50  tisseran
 # Fix link in debug mode
 #
@@ -63,9 +66,16 @@
 #
 # Revision 1.1.2.2  2000/10/26  17:27:47  schwarz
 # Added header with copyright and links to all Makefile.am and configure.in.
-#
 
-EXTRA_PROGRAMS=querysdif-debug sdifextract-debug sdiftotext-debug tosdif-debug querysdif sdifextract sdiftotext tosdif
+
+# tell automake all programs possibly built 
+# (literally, no macro substitutions at this stage!)
+EXTRA_PROGRAMS = \
+	querysdif	  sdifextract	      sdiftotext	 tosdif \
+	querysdif-debug   sdifextract-debug   sdiftotext-debug   tosdif-debug \
+	querysdif-profile sdifextract-profile sdiftotext-profile tosdif-profile
+
+# these are actually built (set by configure)
 bin_PROGRAMS = @PROGLIST@
 
 
@@ -73,6 +83,11 @@ querysdif_debug_SOURCES=querysdif.c
 sdifextract_debug_SOURCES=sdifextract.c
 sdiftotext_debug_SOURCES=sdiftotext.c
 tosdif_debug_SOURCES=tosdif.c
+
+querysdif_profile_SOURCES=querysdif.c
+sdifextract_profile_SOURCES=sdifextract.c
+sdiftotext_profile_SOURCES=sdiftotext.c
+tosdif_profile_SOURCES=tosdif.c
 
 querysdif_debug_LDADD = ../sdif/libsdif-debug.la
 querysdif_debug_DEPENDENCIES= ../sdif/libsdif-debug.la
@@ -86,6 +101,19 @@ sdiftotext_debug_DEPENDENCIES=../sdif/libsdif-debug.la
 tosdif_debug_LDADD = ../sdif/libsdif-debug.la
 tosdif_debug_LDFLAGS = -static
 tosdif_debug_DEPENDENCIES=../sdif/libsdif-debug.la
+
+querysdif_profile_LDADD = ../sdif/libsdif-profile.la
+querysdif_profile_DEPENDENCIES= ../sdif/libsdif-profile.la
+querysdif_profile_LDFLAGS = -static
+sdifextract_profile_LDADD = ../sdif/libsdif-profile.la
+sdifextract_profile_LDFLAGS = -static
+sdifextract_profile_DEPENDENCIES=../sdif/libsdif-profile.la
+sdiftotext_profile_LDADD = ../sdif/libsdif-profile.la
+sdiftotext_profile_LDFLAGS = -static
+sdiftotext_profile_DEPENDENCIES=../sdif/libsdif-profile.la
+tosdif_profile_LDADD = ../sdif/libsdif-profile.la
+tosdif_profile_LDFLAGS = -static
+tosdif_profile_DEPENDENCIES=../sdif/libsdif-profile.la
 
 querysdif_LDADD = -l$(basename $(subst lib,,@SELLIB@))
 querysdif_LDFLAGS = -L../sdif

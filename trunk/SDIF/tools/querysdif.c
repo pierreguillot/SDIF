@@ -1,4 +1,4 @@
-/* $Id: querysdif.c,v 1.8 2003-11-07 22:12:45 roebel Exp $
+/* $Id: querysdif.c,v 1.9 2004-06-03 11:34:17 schwarz Exp $
  
                 Copyright (c) 1998 by IRCAM - Centre Pompidou
                            All rights reserved.
@@ -14,6 +14,9 @@
    
 
    $Log: not supported by cvs2svn $
+   Revision 1.8  2003/11/07 22:12:45  roebel
+   Removed XpGuiCalls remainings.
+
    Revision 1.7  2003/11/07 21:47:19  roebel
    removed XpGuiCalls.h and replaced preinclude.h  by local files
 
@@ -322,8 +325,6 @@ int main(int argc, char** argv)
 		/* We're not actually interested in the matrix data, 
 		   so we skip it.  */
 		bytesread += SdifFSkipMatrixData (in);
-		bytesread += SdifFReadPadding(in, 
-				 SdifFPaddingCalculate(in->Stream, bytesread));
 	    }   /* end for matrices */
 
 	    eof = SdifFGetSignature (in, &bytesread) == eEof;
