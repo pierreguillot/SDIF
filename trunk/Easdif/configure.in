@@ -1,6 +1,6 @@
 dnl -*-autoconf-*-  (No, it's an autoconf file!)
 dnl -*-m4-*- (He emacs, it's a m4 file)
-dnl $Id: configure.in,v 1.15 2003-05-18 21:12:03 roebel Exp $
+dnl $Id: configure.in,v 1.16 2003-05-19 14:06:00 roebel Exp $
 dnl
 dnl configure.in		Feb 2003      Axel Roebel
 dnl
@@ -33,6 +33,9 @@ dnl
 dnl
 
 dnl $Log: not supported by cvs2svn $
+dnl Revision 1.15  2003/05/18 21:12:03  roebel
+dnl Version 0.5.0
+dnl
 dnl Revision 1.14  2003/04/18 16:46:54  schwarz
 dnl Made easdif swiggable -> update version to 0.4.0, because of
 dnl small API changes:
@@ -79,7 +82,7 @@ PACKAGE=Easdif
 versmaj=0
 versmin=5
 versrel=0
-VERSION=${versmaj}.${versmin}.${versrel}
+VERSION="${versmaj}.${versmin}.${versrel}"
 
 AC_SUBST(PACKAGE)
 AC_SUBST(EASDIF_VERSION_MAJ)
@@ -92,7 +95,8 @@ AC_DEFINE_UNQUOTED(EASDIF_VERSION_RELEASE,$versrel,[Release number of easdif lib
 
 AM_INIT_AUTOMAKE($PACKAGE,$VERSION)
 
-AM_CONFIG_HEADER(easdif/easdif_version.h)
+AM_CONFIG_HEADER(easdif/easdif_config.h)
+
 
 dnl ############################################################
 dnl Checks for programs.
@@ -153,6 +157,7 @@ dnl CREATE OUTPUT FILES
 AC_MSG_RESULT(CREATE OUTPUT FILES)
 AC_OUTPUT(Makefile 
 easdif/Makefile 
+easdif/easdif_version.h
 test/Makefile
 Easdif.pc
 Doxyfile
