@@ -1,4 +1,4 @@
-/* $Id: SdifTextConv.c,v 3.2 1999-09-28 13:09:16 schwarz Exp $
+/* $Id: SdifTextConv.c,v 3.3 2000-05-12 14:41:49 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -15,6 +15,10 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.2  1999/09/28  13:09:16  schwarz
+ * Included #include <preincluded.h> for cross-platform uniformisation,
+ * which in turn includes host_architecture.h and SDIF's project_preinclude.h.
+ *
  * Revision 3.1  1999/03/14  10:57:25  virolle
  * SdifStdErr add
  *
@@ -33,6 +37,9 @@
 
 
 #include <preincluded.h>
+#include "XpGuiCalls.h"
+#include "UniversalEnvVar.h"
+
 #include "SdifTextConv.h"
 #include "SdifFile.h"
 #include "SdifTest.h"
@@ -169,8 +176,8 @@ SdifFTextConvAllFrame(SdifFileT *SdifF)
   size_t
     SizeR = 0,
     SizeW = 0;
-  int
-    CharEnd = 0;
+  int CharEnd = 0;
+  long fileSize;
 
   while ((CharEnd != eEof) && (SdifFCurrSignature(SdifF) != eENDC))
     {
@@ -179,6 +186,9 @@ SdifFTextConvAllFrame(SdifFileT *SdifF)
          return SizeW;
       SdifFCleanCurrSignature(SdifF);
       CharEnd = SdiffGetSignature (SdifF->TextStream, &(SdifF->CurrSignature), &SizeR);
+
+      fileSize = ftell(SdifF->TextStream);
+      XpProBarSet((float)fileSize);
     }
 
   if (CharEnd == eEof)
@@ -276,9 +286,8 @@ SdifFTextConv(SdifFileT *SdifF)
 size_t
 SdifTextToSdif(SdifFileT *SdifF, char *TextStreamName)
 {
-  size_t
-    FileSizeW = 0;
-  
+  size_t FileSizeW = 0;
+  long   fileSize = 0;
 
   if (SdifF->Mode != eWriteFile)
     _SdifFError(SdifF, eBadMode, "it must be eWriteFile");
@@ -306,8 +315,14 @@ SdifTextToSdif(SdifFileT *SdifF, char *TextStreamName)
 	    }
       else
         {
+          fileSize = XpFileSize(TextStreamName);
+          XpProBarString("Convert Text To Sdif");
+          XpProBarInit((float)fileSize);
+
           FileSizeW = SdifFTextConv(SdifF);
           fflush(SdifF->Stream);
+ 
+          XpSetFileAttribute(SdifF->Name, FileType_Sdif, 0);
           return FileSizeW;
         }
     }

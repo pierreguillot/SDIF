@@ -1,4 +1,4 @@
-/* $Id: SdifConvToText.c,v 3.2 1999-09-28 13:08:48 schwarz Exp $
+/* $Id: SdifConvToText.c,v 3.3 2000-05-12 14:41:42 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -13,6 +13,10 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.2  1999/09/28  13:08:48  schwarz
+ * Included #include <preincluded.h> for cross-platform uniformisation,
+ * which in turn includes host_architecture.h and SDIF's project_preinclude.h.
+ *
  * Revision 3.1  1999/03/14  10:56:31  virolle
  * SdifStdErr add
  *
@@ -20,6 +24,9 @@
  */
 
 #include <preincluded.h>
+#include "XpGuiCalls.h"
+#include "UniversalEnvVar.h"
+
 #include "SdifConvToText.h"
 #include "SdifFile.h"
 #include "SdifTest.h"
@@ -167,6 +174,7 @@ SdifFConvToTextAllFrame(SdifFileT *SdifF)
     SizeRSign = 0,
     SizeR = 0;
   int CharEnd = 0;
+  long fileSize;
 
   while (CharEnd != eEof)
     {
@@ -174,17 +182,16 @@ SdifFConvToTextAllFrame(SdifFileT *SdifF)
       SdifFCleanCurrSignature(SdifF);
       CharEnd = SdifFGetSignature(SdifF, &SizeRSign);
       if (CharEnd != eEof)
-	{
-	  SizeR += SizeRSign;
-	  SizeRSign = 0;
-	}
+      {  
+	SizeR += SizeRSign;
+	SizeRSign = 0;
+      }
+      fileSize = ftell(SdifF->Stream);
+      XpProBarSet((float)fileSize);
     }
 
   return SizeR;
 }
-
-
-
 
 
 
@@ -224,7 +231,8 @@ SdifFConvToText(SdifFileT *SdifF)
 size_t
 SdifToText(SdifFileT *SdifF, char *TextStreamName)
 {
-  size_t  SizeR = 0;
+  size_t SizeR = 0;
+  long   fileSize = 0;
   
   if (SdifF->Mode != eReadFile)
       _SdifFError(SdifF, eBadMode, "it must be eReadFile");
@@ -254,13 +262,18 @@ SdifToText(SdifFileT *SdifF, char *TextStreamName)
 	    }
       else
         {
+          fileSize = XpFileSize(SdifF->Name);
+          XpProBarString("Convert Sdif To Text");
+          XpProBarInit((float)fileSize);
+
           SizeR = SdifFConvToText(SdifF);
           fflush(SdifF->TextStream);
+
+          XpSetFileAttribute(TextStreamName, FileType_Text, 0);
 	      return  SizeR;
         }
     }
   
   return SizeR;
 }
-
 
