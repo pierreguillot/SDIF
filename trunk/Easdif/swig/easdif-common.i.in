@@ -1,10 +1,14 @@
-// $Id: easdif-common.i.in,v 1.1 2003-04-30 11:34:31 tisseran Exp $ -*-c-*-
+// $Id: easdif-common.i.in,v 1.2 2003-05-19 14:04:20 roebel Exp $ -*-c-*-
 //
 // easdif.i		16.04.2003		Diemo Schwarz
 //
 // Interface file for swig, defining the callable easdif functions
 //
 // $Log: not supported by cvs2svn $
+// Revision 1.1  2003/04/30 11:34:31  tisseran
+// Removee file no conform with Diemo's file hierarchy
+// Started autoconfiscation of swig directory
+//
 // Revision 1.10  2003/04/29 16:28:48  schwarz
 // Use SWIG_RENAME_EASDIF to control class renaming.
 //
@@ -56,15 +60,26 @@ using namespace Easdif;
 
 
 
+// change SWIG class names because we prefix with SDIF:: anyway
+%rename(Frame)          Easdif::SDIFFrame;
+%rename(Entity)         Easdif::SDIFEntity;
+%rename(Matrix)         Easdif::SDIFMatrix;
+%rename(NameValueTable) Easdif::SDIFNameValueTable;
+
+
 // would have to zap other constructors, if not, SdifSignature is invisible...
 //%ignore SDIFMatrix(const SdifDataTypeET);
 //%ignore SDIFMatrix(const SDIFMatrix&);
 
+
+
 // have to ignore constructor, because SdifSignature and
 // SdifDataTypeET are indistinguishably int for swig
-%ignore SDIFMatrix(SdifSignature, int, int, SdifDataTypeET);
-//%ignore CreateMatrixData(SdifSignature, int, int, SdifDataTypeET);
-%ignore CreateMatrixData(std::string &, int, int, SdifDataTypeET);
+%ignore Easdif::SDIFMatrix::SDIFMatrix(SdifSignature, int, int, SdifDataTypeET);
+// have to be ignrored due to bug in swig that does not handle
+// correctly the typemap for SdifSignature when resolving overloaded
+// functions (here const qualifier)
+%ignore Easdif::SDIFFrame::GetMatrixWithSig(const SdifSignature) const;
 
 
 // read all class definitions
