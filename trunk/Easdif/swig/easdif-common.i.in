@@ -1,10 +1,13 @@
-// $Id: easdif-common.i.in,v 1.3 2003-05-21 20:33:59 roebel Exp $ -*-c-*-
+// $Id: easdif-common.i.in,v 1.4 2003-05-22 21:20:22 roebel Exp $ -*-c-*-
 //
 // easdif.i		16.04.2003		Diemo Schwarz
 //
 // Interface file for swig, defining the callable easdif functions
 //
 // $Log: not supported by cvs2svn $
+// Revision 1.3  2003/05/21 20:33:59  roebel
+// Added exception handling to swig interface.
+//
 // Revision 1.2  2003/05/19 14:04:20  roebel
 // To resolve problems with inconsistent nameing in interface files
 // and header files, swig rename declarations have been changed to use
@@ -64,6 +67,10 @@
 using namespace Easdif;
 %}
 
+%include stl.i
+
+// for name value table
+%template(stringmap) std::map<std::string,std::string>;
 
 
 // change SWIG class names because we prefix with SDIF:: anyway
