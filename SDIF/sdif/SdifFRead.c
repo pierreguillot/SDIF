@@ -1,4 +1,4 @@
-/* $Id: SdifFRead.c,v 3.5 1999-11-03 16:42:32 schwarz Exp $
+/* $Id: SdifFRead.c,v 3.6 2000-03-01 11:19:57 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -14,6 +14,11 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.5  1999/11/03  16:42:32  schwarz
+ * Use _SdifNVTStreamID for stream ID of 1NVT frames because of CNMAT
+ * restriction of only one frame type per stream.
+ * (See SdifNameValuesLNewTable)
+ *
  * Revision 3.4  1999/10/15  12:28:43  schwarz
  * Updated writing of types and stream-id chunks to frames.
  * No time parameter for name value tables and stream ID tables, since
@@ -64,6 +69,8 @@
 
 #include "SdifFGet.h"
 
+#include <assert.h>
+#include <errno.h>
 
 
 
@@ -409,10 +416,9 @@ SdifFReadFrameHeader(SdifFileT *SdifF)
 size_t
 SdifFReadPadding (SdifFileT *SdifF, size_t Padding)
 {
-  return sizeof(char) * Sdiffread(gSdifString, sizeof(char), Padding, SdifF->Stream);
+    assert (Padding <= _SdifStringLen);
+    return sizeof(char) * Sdiffread(gSdifString, sizeof(char), Padding, SdifF->Stream);
 }
-
-
 
 
 
@@ -435,6 +441,20 @@ SdifFReadUndeterminatedPadding(SdifFileT *SdifF)
 }
 
 
+/* read and throw away bytes data. */
+size_t
+SdifFReadAndIgnore (SdifFileT *SdifF, size_t bytes)
+{
+    size_t numread = 0, portion = _SdifStringLen;
+
+    while (bytes > 0  &&  portion)
+    {
+	portion  = SdifFReadPadding (SdifF, MIN (bytes, _SdifStringLen));
+	numread += portion;
+	bytes   -= portion;
+    }
+    return (numread);
+}
 
 
 
@@ -475,12 +495,22 @@ SdifSkipMatrixData(SdifFileT *SdifF)
   SdiffGetPos(SdifF->Stream, &Pos);
   Pos += NbBytesToSkip;
   if (SdiffSetPos(SdifF->Stream, &Pos) != 0)
-    return (size_t) -1;
+  {
+      if (errno == ESPIPE)
+      {	  /* second chance: SdiffSetPos didn't work because we're
+	  reading from a pipe.  Instead of making the whole thing
+	  explode, we do the little extra work to read and throw away
+	  the data. */
+	  return (SdifFReadAndIgnore (SdifF, NbBytesToSkip));
+      }
+      else
+	  return (size_t) -1;
+  }
   else
-    {
+  {
       SizeR += NbBytesToSkip;
       return SizeR;
-    }
+  }
 }
 
 
