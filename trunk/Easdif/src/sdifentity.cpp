@@ -7,9 +7,13 @@
  * 
  * 
  * 
- * $Id: sdifentity.cpp,v 1.7 2002-11-27 20:13:04 roebel Exp $ 
+ * $Id: sdifentity.cpp,v 1.8 2003-02-07 18:37:58 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.7  2002/11/27 20:13:04  roebel
+ * Removed member that redundantly indicated size of NVT vector.
+ * Make use of improved SDIFNameValueTable interface.
+ *
  * Revision 1.6  2002/10/30 15:27:32  roebel
  * Changed return type from int to bool.
  * Changed error checking in openroutines.
@@ -81,10 +85,11 @@ bool SDIFEntity::OpenRead(const char* filename)
     SdifFAllMatrixTypeToSdifString(efile, mDescription);
     SdifFAllFrameTypeToSdifString(efile, mDescription);
     n = SdifFNameValueNum(efile);
+    /* initialisation of the vector */
+    mv_NVT.clear();
+
     if( n != 0)
     {
-	/* initialisation of the vector */
-	mv_NVT.clear();
 	/* used in the loop for getting the next NVT  */	
 	SdifNameValuesLT* NVlist;
 	NVlist = efile->NameValues;
@@ -95,6 +100,11 @@ bool SDIFEntity::OpenRead(const char* filename)
 	  AddNVT(TakeNVT(), _SdifNVTStreamID);
 	}
     }  
+
+    // empty sdif file
+    if(feof(efile->Stream))
+      mEof = true;
+
     mOpen = 2;
     return true;
 }
