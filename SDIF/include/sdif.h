@@ -1,4 +1,4 @@
-/* $Id: sdif.h,v 1.42 2004-09-09 18:02:00 schwarz Exp $
+/* $Id: sdif.h,v 1.43 2004-09-13 13:06:27 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -30,6 +30,18 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.42  2004/09/09 18:02:00  schwarz
+ * - Changed SdifMatrixDataT to something sensible that allows to read
+ *   and store a whole matrix's data as one block into field CurrMtrxData
+ *   of SdifFileT with SdifFReadMatrixData and accessed with the
+ *   functions SdifFCurrMatrixData, SdifFCurrMatrixDataPointer, with
+ *   automatic reallocation.
+ * - SdifReadSimple: simple callback-based reading of an entire SDIF file.
+ * - SdifListConcat function
+ * - SdifIsAReservedChar return value changed to boolean flag, much clearer.
+ * - SdifSelectAppendList function
+ * - Removed unimplemented prototypes drafted in sdif/SdifHighLevel.h
+ *
  * Revision 1.41  2004/07/22 14:47:55  bogaards
  * removed many global variables, moved some into the thread-safe SdifGlobals structure, added HAVE_PTHREAD define, reorganized the code for selection, made some arguments const, new version 3.8.6
  *
@@ -205,7 +217,7 @@
  * Revision 1.1.2.1  2000/08/21  13:07:41  tisseran
  * *** empty log message ***
  *
- * $Date: 2004-09-09 18:02:00 $
+ * $Date: 2004-09-13 13:06:27 $
  *
  */
 
@@ -220,7 +232,7 @@ extern "C" {
 #endif
 
 
-static const char _sdif_h_cvs_revision_ [] = "$Id: sdif.h,v 1.42 2004-09-09 18:02:00 schwarz Exp $";
+static const char _sdif_h_cvs_revision_ [] = "$Id: sdif.h,v 1.43 2004-09-13 13:06:27 schwarz Exp $";
 
 
 #include <stdio.h>
@@ -1964,14 +1976,17 @@ SdifHashTableT* SdifHashTablePut    (SdifHashTableT* HTable, const void *ptr, un
 //FUNCTION GROUP:  High-Level I/O Functions
 */
 
-
-
 /*DOC:
   Definition of the callback function types, used for SdifReadSimple. 
+  SdifOpenFileCallbackT returns flag if rest of file should be read.
 */
-typedef int (*SdifOpenFileCallbackT) (SdifFileT *file, void *userdata);
-typedef int (*SdifMatrixCallbackT)   (SdifFileT *file, int nummatrix, 
-						       void *userdata);
+typedef int (*SdifOpenFileCallbackT)   (SdifFileT *file, void *userdata);
+typedef int (*SdifCloseFileCallbackT)  (SdifFileT *file, void *userdata);
+typedef int (*SdifFrameCallbackT)      (SdifFileT *file, void *userdata);
+typedef int (*SdifMatrixCallbackT)     (SdifFileT *file, 
+					int nummatrix,   void *userdata);
+typedef int (*SdifMatrixDataCallbackT) (SdifFileT *file, 
+					int nummatrix,   void *userdata);
 
 /*DOC: 
   Reads an entire SDIF file, calling matrixfunc for each matrix in the
@@ -1983,10 +1998,18 @@ typedef int (*SdifMatrixCallbackT)   (SdifFileT *file, int nummatrix,
   
   @return number of bytes read
 */
-int SdifReadSimple (const char		  *filename, 
-		    SdifOpenFileCallbackT  openfilefunc,
-		    SdifMatrixCallbackT    matrixfunc,
-		    void		  *userdata);
+size_t SdifReadSimple (const char	      *filename, 
+		       SdifMatrixDataCallbackT matrixfunc,
+		       void		      *userdata);
+
+
+size_t SdifReadFile (const char             *filename, 
+		     SdifOpenFileCallbackT   openfilefunc,
+		     SdifFrameCallbackT      framefunc,
+		     SdifMatrixCallbackT     matrixfunc,
+		     SdifMatrixDataCallbackT matrixdatafunc,
+		     SdifCloseFileCallbackT  closefilefunc,
+		     void                   *userdata);
 
 /*DOC: 
   Reads matrix data and padding.  The data is stored in CurrMtrxData,
@@ -1996,6 +2019,62 @@ int SdifReadSimple (const char		  *filename,
   [Precondition:] 
   Matrix header must have been read with SdifFReadMatrixHeader.  */
 size_t SdifFReadMatrixData   (SdifFileT *file);
+
+
+
+
+/*
+//FUNCTION GROUP:  Querying SDIF Files
+*/
+
+typedef struct
+{ 
+    float min, max;	/* use float even for double values, doesn't harm */
+} SdifMinMaxT;
+
+/* two-level tree node for matrices in frames */
+typedef struct SdifQueryTreeElemS
+{
+    /* common fields */
+    SdifSignature sig;
+    int	          count;
+    int	          parent;/* 0 for frames, index to parent frame for matrices */
+
+    /* frame fields */
+    int	          stream;
+    SdifMinMaxT   time, nmatrix;
+
+    /* matrix fields */
+    SdifMinMaxT   ncol, nrow;
+
+} SdifQueryTreeElemT;
+
+
+/* SdifQueryTreeT counts occurence of signatures as frame or matrix under
+   different parent frames. */
+typedef struct
+{
+    int			num;		/* number of elems used */
+    int			nummatrix;	/* number of leaf nodes */
+    int			current;	/* index of current frame */
+    int			allocated;	/* number of elems allocated */
+    SdifQueryTreeElemT *elems;
+    SdifMinMaxT	        time;		/* frame times */
+} SdifQueryTreeT;
+
+
+/* allocate query tree for max elements */
+SdifQueryTreeT *SdifCreateQueryTree(int max);
+
+/* clean all elements from tree */
+SdifQueryTreeT *SdifInitQueryTree(SdifQueryTreeT *tree);
+
+/* create summary of file's data in query tree, return bytesize of file */
+size_t SdifQuery (const char            *filename, 
+		  SdifOpenFileCallbackT  openfilefunc,
+       /*out*/    SdifQueryTreeT        *tree);
+
+
 
 
 
@@ -2303,23 +2382,7 @@ SdifHashTableT *SdifFGetFrameTypesTable(SdifFileT *file);
 
 
 /*
- * make #define or token adding :
- * _SdifMemoryReport		to have a memory report at the end of execution (with the other token too).
- * _SdifMemoryReportAlloc	to have a report only about allocation and re-allocation
- * _SdifMemoryReportReAlloc	to have a report only about re-allocation
- * _SdifMemoryReportFree	to have a report only about memory released to the system
- * _SdifMemoryBigReport		to have a full report
- */
-
-#if !defined(_SdifMemoryReport) && (defined(_SdifMemoryBigReport) || defined(_SdifMemoryReportAlloc) || defined(_SdifMemoryReportReAlloc) || defined(_SdifMemoryReportFree))
-#define _SdifMemoryReport
-#endif /* condition for small report */
-
-
-
-#ifndef _SdifMemoryReport
-/*
- * do not define _SdifMemoryReport to not have memory report
+ * Memory allocation wrappers
  */
 
 #define SdifMalloc(_type) \
@@ -2334,44 +2397,6 @@ SdifHashTableT *SdifFGetFrameTypesTable(SdifFileT *file);
 #define SdifFree(_ptr) \
 (SdifErrorFile = __FILE__, SdifErrorLine = __LINE__, free(_ptr))
 
-
-#else
-
-#define _SdifMrNameSize 64
-#define _SdifTypeToStr(_type) #_type
-
-
-char *SdifMrType;
-
-SdifBlockNodeT*	SdifCreateBlockNode	(SdifBlockNodeT* Next, char *file, int line, char* type, void* ptr, size_t size, size_t nobj);
-SdifBlockNodeT*	SdifKillBlockNode	(SdifBlockNodeT* BlockNode);
-void		SdifPrintBlockNode	(int sizealloc, char* mess, SdifBlockNodeT* BlockNode);
-void*		SdifMr_alloc		(SdifBlockListT* L, size_t size, size_t nobj, int clear);
-size_t		SdifMr_free		(SdifBlockListT* L, void* ptr);
-void*		SdifMr_realloc		(SdifBlockListT* L, void* oldptr, size_t size, size_t nobj);
-void		SdifMrDrainBlockList	(SdifBlockListT* L);
-
-extern SdifBlockListT SdifMrReport;
-
-#define SdifMalloc(_type) \
-(SdifErrorFile = __FILE__, SdifErrorLine = __LINE__, SdifMrType=_SdifTypeToStr(_type), \
-(_type*) SdifMr_alloc(&SdifMrReport, sizeof(_type), 1, 0))
-
-#define SdifCalloc(_type, _nbobj) \
-(SdifErrorFile = __FILE__, SdifErrorLine = __LINE__, SdifMrType=_SdifTypeToStr(_type), \
-(_type*) SdifMr_alloc(&SdifMrReport, sizeof(_type), _nbobj, 1))
-
-#define SdifRealloc(_ptr, _type, _nbobj) \
-(SdifErrorFile = __FILE__, SdifErrorLine = __LINE__, SdifMrType=_SdifTypeToStr(_type), \
-(_type*) SdifMr_realloc(&SdifMrReport, _ptr, sizeof(_type), _nbobj))
-
-
-#define SdifFree(_ptr) \
-(SdifErrorFile = __FILE__, SdifErrorLine = __LINE__, \
-SdifMr_free(&SdifMrReport, (void*) _ptr))
-
-
-#endif /* _SdifMemoryReport */
 
 
 

@@ -24,11 +24,14 @@
  *                            sdif@ircam.fr
  */
 
-/* $Id: SdifHighLevel.c,v 3.10 2004-09-09 17:52:16 schwarz Exp $
+/* $Id: SdifHighLevel.c,v 3.11 2004-09-13 13:06:27 schwarz Exp $
  *
  * SdifHighLevel.c	8.12.1999	Diemo Schwarz
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.10  2004/09/09 17:52:16  schwarz
+ * SdifReadSimple: simple callback-based reading of an entire SDIF file.
+ *
  * Revision 3.9  2004/06/03 11:18:00  schwarz
  * Profiling showed some waste of cycles in byte swapping and signature reading:
  * - byte swapping now array-wise, not element-wise in SdifSwap<N>[Copy] routines:   -> from 0.24 s (18.5%) to 0.14s
@@ -86,7 +89,7 @@
 #include "SdifSelect.h"
 
 
-#define DB 1
+#define DB 0
 
 
 /* Read frame headers until a frame matching the file selection has
@@ -137,77 +140,233 @@ int SdifFReadNextSelectedFrameHeader (SdifFileT *f)
 
    returns success
 */
-int SdifReadSimple (const char		  *filename, 
-		    SdifOpenFileCallbackT  openfilefunc,
-		    SdifMatrixCallbackT    matrixfunc,
-		    void		  *userdata)
+size_t SdifReadSimple (const char	       *filename, 
+		       SdifMatrixDataCallbackT  matrixfunc,
+		       void                    *userdata)
+{
+    return (SdifReadFile (filename, NULL, NULL, 
+			  NULL, matrixfunc, NULL, userdata));
+}
+
+
+size_t SdifReadFile (const char             *filename, 
+		     SdifOpenFileCallbackT   openfilefunc,
+		     SdifFrameCallbackT      framefunc,
+		     SdifMatrixCallbackT     matrixfunc,
+		     SdifMatrixDataCallbackT matrixdatafunc,
+		     SdifCloseFileCallbackT  closefilefunc,
+		     void		    *userdata)
 {
     SdifFileT *file = NULL;
     int	       eof  = 0;
     size_t     bytesread = 0;
-    int        m;
-
+    int        m, wantit;
 
     /* open input file (parses selection from filename into file->Selection) */
     file = SdifFOpen (filename, eReadFile);
     if (!file)
         return 0;
 
-    SdifFReadGeneralHeader(file);
-    SdifFReadAllASCIIChunks(file);
+    bytesread += SdifFReadGeneralHeader(file);
+    bytesread += SdifFReadAllASCIIChunks(file);
     if (SdifFLastError(file))
     {   /* error has already been printed by the library, just clean
            up and exit */
 	return 0;
     }
 
-    /* call begin file handler */
+    /* call begin file handler, return false stops reading */
     if (openfilefunc)
-	openfilefunc(file, userdata);
+	eof = !openfilefunc(file, userdata);
 
     /* main read loop */
     while (!eof)
     {
 	/* Read next selected frame header.  Current signature has
 	   already been read by SdifFReadAllASCIIChunks or the last loop. */
-	SdifFReadNextSelectedFrameHeader(file);
+	bytesread += SdifFReadNextSelectedFrameHeader(file);
+
+	/* call frame header handler that decides if we are interested */
+	wantit = framefunc  ?  framefunc(file, userdata)  :  1;
+
 #if DB
-	fprintf(SdifStdErr, "@frame\t%s  matrices %d  stream %d  time %f\n",
+	fprintf(SdifStdErr, 
+		"@frame\t%s  matrices %d  stream %d  time %f, wantit %d\n",
 		SdifSignatureToString(SdifFCurrFrameSignature(file)), 
 		SdifFCurrNbMatrix(file), SdifFCurrID(file), 
-		SdifFCurrTime(file));
+		SdifFCurrTime(file), wantit);
 #endif
 	
-	/* for matrices loop */
-	for (m = 0; m < SdifFCurrNbMatrix(file); m++)
+	if (wantit)
 	{
-	    /* Read matrix header */
-	    bytesread += SdifFReadMatrixHeader(file);
-#if DB
-	    fprintf(SdifStdErr, "@matrix\t%s  rows %d  cols %d\n", 
-		    SdifSignatureToString(SdifFCurrMatrixSignature(file)), 
-		    SdifFCurrNbRow(file), SdifFCurrNbCol(file));
-#endif
-	    /* Check matrix type */
-	    if (!SdifFCurrMatrixIsSelected(file))
-	    {   /* a matrix type we're not interested in, so we skip it */
-		SdifFSkipMatrixData (file);
-	    }
-	    else
-	    {   /* read matrix data */
-		SdifFReadMatrixData(file);
+	    /* for matrices loop */
+	    for (m = 0; m < SdifFCurrNbMatrix(file); m++)
+	    {
+		/* Read matrix header */
+		bytesread += SdifFReadMatrixHeader(file);
 
-		/* call matrix data handler */
-		if (matrixfunc)
-		    matrixfunc(file, m, userdata);
-	    }
-	}   /* end for matrices */
+		/* call matrix header handler */
+		wantit = matrixfunc  ?  matrixfunc(file, m, userdata)  :  1;
+
+#if DB
+		fprintf(SdifStdErr, 
+			"@matrix\t%s  rows %d  cols %d, wantit %d\n", 
+			SdifSignatureToString(SdifFCurrMatrixSignature(file)), 
+			SdifFCurrNbRow(file), SdifFCurrNbCol(file), wantit);
+#endif
+		/* Check matrix type */
+		if (wantit  &&  SdifFCurrMatrixIsSelected(file))
+		{   /* read matrix data */
+		    bytesread += SdifFReadMatrixData(file);
+		    
+		    /* call matrix data handler */
+		    if (matrixdatafunc)
+			matrixdatafunc(file, m, userdata);
+		}
+		else
+		{   /* a matrix type we're not interested in, so we skip it */
+		    bytesread += SdifFSkipMatrixData(file);
+		}
+	    }   /* end for matrices */
+	}
+	else
+	{   /* we didn't want this frame */
+	    bytesread += SdifFSkipFrameData(file);
+	}
 
 	eof = SdifFGetSignature(file, &bytesread) == eEof;
     }   /* end while frames */ 
+
+    if (closefilefunc)
+	closefilefunc(file, userdata);
 
     /* cleanup */
     SdifFClose(file);
 
     return bytesread;
+}
+
+
+
+
+/*
+ * file querying
+ */
+
+/* update SdifMinMaxT structure */
+#define initminmax(m)	((m).min = FLT_MAX, (m).max = FLT_MIN)
+#define minmax(m, v)	{ if ((v) < (m).min)   (m).min = (v); \
+			  if ((v) > (m).max)   (m).max = (v); }
+
+
+static int SigEqual (SdifQueryTreeElemT *node, 
+		     SdifSignature s, int parent, int stream)
+{
+    return node->sig    == s
+       &&  node->stream == stream
+       &&  node->parent == parent;
+}
+
+int GetSigIndex (SdifQueryTreeT *tree, SdifSignature s, int parent, int stream)
+{
+    int i = 0;
+    SdifQueryTreeElemT *node;
+
+    while (i < tree->num  &&  !SigEqual(&tree->elems[i], s, parent, stream))
+	i++;
+
+    if (i == tree->num)
+    {   /* add new signature */
+	if (tree->num >= tree->allocated)
+	{
+	    char msg[_SdifStringLen];
+	    sprintf(msg, "Too many different signatures, "
+		         "can't handle more than %d!\n", tree->allocated);
+	    _SdifError(eArrayPosition, msg);
+	    return (tree->num - 1);
+	}
+
+	node         = &tree->elems[i];
+	node->sig    = s;
+	node->parent = parent;
+	node->stream = stream;
+	node->count  = 0;
+	initminmax(node->time);
+	initminmax(node->nmatrix);
+	initminmax(node->ncol);
+	initminmax(node->nrow);
+
+	if (parent != -1)
+	    tree->nummatrix++;	/* count distinct types */
+	tree->num++;
+    }
+
+    return (i);
+}
+
+static int CountFrame (SdifFileT *in, void *userdata)
+{
+    SdifQueryTreeT *tree    = (SdifQueryTreeT *) userdata;
+    SdifSignature   sig	    = SdifFCurrSignature(in);
+    int		    stream  = SdifFCurrID(in);
+    float	    time    = SdifFCurrTime(in); /* float is ok for minmax */
+    float	    nmatrix = SdifFCurrNbMatrix(in);   /* float for minmax */
+    int		    i       = GetSigIndex(tree, sig, -1, stream);
+
+    tree->elems[i].count++;
+    minmax(tree->time,		   time);	/* global time */
+    minmax(tree->elems[i].time,    time);	/* this frame/stream's time */
+    minmax(tree->elems[i].nmatrix, nmatrix);
+    tree->current = i;
+
+    return 1;	/* go on reading matrices */
+}
+
+
+static int CountMatrix (SdifFileT *in, int m, void *userdata)
+{
+    SdifQueryTreeT *tree   = (SdifQueryTreeT *) userdata;
+    SdifSignature   sig	   = SdifFCurrMatrixSignature(in);
+    int		    nrow   = SdifFCurrNbRow(in);
+    float	    ncol   = SdifFCurrNbCol(in); /* float for minmax */
+    int		    parent = tree->current;
+    int		    i	   = GetSigIndex(tree, sig, parent, -1);
+
+    tree->elems[i].count++;
+    minmax(tree->elems[i].nrow, nrow);
+    minmax(tree->elems[i].ncol, ncol);
+
+    return 0;	/* don't read matrix data */
+}
+
+
+
+SdifQueryTreeT *SdifCreateQueryTree(int max)
+{
+    SdifQueryTreeT *newtree = SdifMalloc(SdifQueryTreeT);
+
+    newtree->allocated = max;
+    newtree->elems     = SdifCalloc(SdifQueryTreeElemT, max);
+
+    return (SdifInitQueryTree(newtree));
+}
+
+
+SdifQueryTreeT *SdifInitQueryTree(SdifQueryTreeT *tree)
+{
+    tree->num       = 0;
+    tree->nummatrix = 0;
+    tree->current   = 0;
+    initminmax(tree->time);
+
+    return (tree);
+}
+
+
+size_t SdifQuery (const char            *filename, 
+		  SdifOpenFileCallbackT  openfilefunc,
+       /*out*/    SdifQueryTreeT        *tree)
+{
+    return (SdifReadFile(filename, openfilefunc, CountFrame, 
+			 CountMatrix, NULL, NULL, (void *) tree));
 }
