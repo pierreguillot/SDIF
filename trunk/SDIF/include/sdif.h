@@ -1,4 +1,4 @@
-/* $Id: sdif.h,v 1.22 2002-09-20 14:34:41 schwarz Exp $
+/* $Id: sdif.h,v 1.23 2002-11-27 17:53:24 roebel Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -30,6 +30,11 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.22  2002/09/20 14:34:41  schwarz
+ * New functions:
+ * - SdifParseSignatureList Parse comma-separated list of signatures
+ * - SdifKillSelectElement  now public
+ *
  * Revision 1.21  2002/09/17 09:51:18  schwarz
  * Added copyright.
  *
@@ -126,14 +131,13 @@
  * Revision 1.1.2.1  2000/08/21  13:07:41  tisseran
  * *** empty log message ***
  *
- * $Date: 2002-09-20 14:34:41 $
+ * $Date: 2002-11-27 17:53:24 $
  *
  */
 
 
 #ifndef _SDIF_H
 #define _SDIF_H 1
-
 
 #include "sdif_version.h"
 
@@ -142,7 +146,7 @@ extern "C" {
 #endif
 
 
-static const char _sdif_h_cvs_revision_ [] = "$Id: sdif.h,v 1.22 2002-09-20 14:34:41 schwarz Exp $";
+static const char _sdif_h_cvs_revision_ [] = "$Id: sdif.h,v 1.23 2002-11-27 17:53:24 roebel Exp $";
 
 
 #include <stdio.h>
@@ -227,9 +231,12 @@ int SdifFRewind(SdifFileT *file);
 
 /*DOC:
   Truncate file at current position
+  This function is only available on certain systems that have the
+  ftruncate function in their system libraries.   
   [return] success flag
 */
 int SdifFTruncate(SdifFileT *file);
+
 
 
 /* Give documentation and fake prototype for positioning macros.
