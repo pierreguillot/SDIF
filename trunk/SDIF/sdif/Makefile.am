@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.23 2002-10-24 15:48:35 tisseran Exp $
+# $Id: Makefile.am,v 1.24 2002-10-24 16:21:19 tisseran Exp $
 #
 # ./sdif/Makefile.am		September 2000			Patrice Tisserand
 #
@@ -29,6 +29,10 @@
 # send email to:  sdif@ircam.fr
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.23  2002/10/24 15:48:35  tisseran
+# Fix release autoconf variable name
+# Add dependency between lib_sdif_*_la and SdifVersion.h
+#
 # Revision 1.22  2002/10/24 13:51:09  tisseran
 # First version of SDIF library using libtool.
 # It hasn't been tested since I can't compile at home.
@@ -122,6 +126,7 @@ EXTRA_LTLIBRARIES = libsdif.la libsdif-debug.la libsdif-cpp.la
 lib_LTLIBRARIES = @SELLIB@
 
 
+
 FORMES_H=host_architecture.h  preincluded.h UniversalEnvVar.h  XpGuiCalls.h
 FORMES_INCLUDE=/u/formes/share/include
 
@@ -171,9 +176,9 @@ libsdif_la_SOURCES =  SdifHash.c       SdifGlobals.c      SdifSignatureTab.c   \
 libsdif_debug_la_SOURCES = $(libsdif_la_SOURCES)
 libsdif_cpp_la_SOURCES   = $(libsdif_la_SOURCES)
 
-libsdif_la_LDFLAGS = -no-undefined -release @VERSION@
-libsdif_debug_la_LDFLAGS = $(libsdif_la_LDFLAGS)
-libsdif_cpp_la_LDFLAGS   = $(libsdif_la_LDFLAGS) -lstdc++
+libsdif_la_LDFLAGS = -no-undefined -release @VERSION@ -rpath $(libdir)
+libsdif_debug_la_LDFLAGS = $(libsdif_la_LDFLAGS) -rpath $(libdir)
+libsdif_cpp_la_LDFLAGS   = $(libsdif_la_LDFLAGS) -lstdc++ -rpath $(libdir)
 
 sdiftype = $(datadir)/SdifTypes.STYP
 
