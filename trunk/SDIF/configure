@@ -526,7 +526,7 @@ fi
 
 echo "$ac_t""PACKAGE NAME AND VERSION" 1>&6
 PACKAGE=SDIF
-VERSION=3.2.3
+VERSION=3.3
 
 
 ac_aux_dir=

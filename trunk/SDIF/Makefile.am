@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.2 2000-10-27 20:02:42 roebel Exp $
+# $Id: Makefile.am,v 1.3 2001-04-20 17:33:35 schwarz Exp $
 #
 # ./Makefile.am		September 2000			Patrice Tisserand
 #
@@ -29,6 +29,9 @@
 # send email to:  sdif@ircam.fr
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.2  2000/10/27 20:02:42  roebel
+# autoconf merged back to main trunk
+#
 # Revision 1.1.2.4  2000/10/26  17:27:16  schwarz
 # Added header with copyright and links to all Makefile.am and configure.in.
 #
@@ -51,3 +54,11 @@ ircam_deps:
 .PHONY	:	test
 
 test	:	check
+
+# cvs tag
+cvstag	= $(shell echo $(PACKAGE)_lib_version_$(VERSION) | tr . _)
+cvstag:
+	cvs tag $(cvstag)
+
+# call this to publish a new version
+publish:	cvstag dist
