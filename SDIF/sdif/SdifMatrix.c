@@ -1,4 +1,4 @@
-/* $Id: SdifMatrix.c,v 3.9 2004-07-22 14:47:56 bogaards Exp $
+/* $Id: SdifMatrix.c,v 3.10 2004-09-09 17:46:44 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -33,6 +33,9 @@
  *
  * author: Dominique Virolle 1997
  * $Log: not supported by cvs2svn $
+ * Revision 3.9  2004/07/22 14:47:56  bogaards
+ * removed many global variables, moved some into the thread-safe SdifGlobals structure, added HAVE_PTHREAD define, reorganized the code for selection, made some arguments const, new version 3.8.6
+ *
  * Revision 3.8  2003/11/07 21:47:18  roebel
  * removed XpGuiCalls.h and replaced preinclude.h  by local files
  *
@@ -89,6 +92,29 @@
 
 
 
+/* size in bytes of matrix data, according to header */
+size_t
+SdifSizeOfMatrixData (SdifMatrixHeaderT *mtx)
+{
+    return (mtx->NbRow * mtx->NbCol * SdifSizeofDataType (mtx->DataType));
+}
+
+
+/* file size in bytes of matrix including header */
+size_t
+SdifSizeOfMatrix (SdifDataTypeET DataType,
+		  SdifUInt4      NbRow,
+		  SdifUInt4      NbCol)
+{
+    SdifUInt4 msz = 
+           /* matrix header  */ sizeof(SdifSignature) + 3 * sizeof(SdifUInt4) +
+           /* matrix data    */ NbRow * NbCol * SdifSizeofDataType (DataType);
+    msz += /* matrix padding */ SdifPaddingCalculate (msz);
+    return (msz);
+}
+
+
+
 SdifMatrixHeaderT*
 SdifCreateMatrixHeader(SdifSignature  Signature,
 		       SdifDataTypeET DataType,
@@ -115,23 +141,11 @@ SdifCreateMatrixHeader(SdifSignature  Signature,
 }
 
 
-
-
-
-
-
-
 SdifMatrixHeaderT*
 SdifCreateMatrixHeaderEmpty(void)
 {
   return SdifCreateMatrixHeader(eEmptySignature, eFloat4, 0, 0);
 }
-
-
-
-
-
-
 
 
 void
@@ -147,13 +161,17 @@ SdifKillMatrixHeader(SdifMatrixHeaderT *MatrixHeader)
 
 
 
-
+/******************************************************************************
+ *
+ * OneRow class
+ *
+ */
 
 SdifOneRowT*
 SdifCreateOneRow(SdifDataTypeET DataType, SdifUInt4  NbGranuleAlloc)
 {
   SdifOneRowT * NewOneRow = NULL;
-	char errorMess[_SdifStringLen];
+  char		errorMess [_SdifStringLen];
 
   if (NbGranuleAlloc <= 0)
     {
@@ -316,16 +334,11 @@ SdifReInitOneRow (SdifOneRowT *OneRow, SdifDataTypeET DataType, SdifUInt4 NbData
 }
 
 
-
-
-
-
-
-
 void
 SdifKillOneRow(SdifOneRowT *OneRow)
 {
-	char errorMess[_SdifStringLen];
+    char errorMess [_SdifStringLen];
+
   if (OneRow)
     {
 #if (_SdifFormatVersion >= 3)
@@ -381,21 +394,15 @@ SdifKillOneRow(SdifOneRowT *OneRow)
 }
 
 
-
-
-
-
-
-
-
-
+/* row element access */
 
 SdifOneRowT*
 SdifOneRowPutValue(SdifOneRowT *OneRow, SdifUInt4 numCol, SdifFloat8 Value)
 {
-	char errorMess[_SdifStringLen];
+    char errorMess [_SdifStringLen];
+
     /* case template for type from SdifDataTypeET */
-#   define setcase(type) 						   \
+#   define setrowcase(type) 						   \
     case e##type:   OneRow->Data.type [numCol-1] = (Sdif##type) Value;  break;
    
   /* numCol is in [1, NbData] */
@@ -403,7 +410,7 @@ SdifOneRowPutValue(SdifOneRowT *OneRow, SdifUInt4 numCol, SdifFloat8 Value)
     switch (OneRow->DataType)
       {
 	  /* generate cases for all types */
-	  sdif_foralltypes (setcase);
+	  sdif_foralltypes (setrowcase);
   
       default :
 	OneRow->Data.Float4[numCol-1] = (SdifFloat4) Value;      
@@ -418,25 +425,21 @@ SdifOneRowPutValue(SdifOneRowT *OneRow, SdifUInt4 numCol, SdifFloat8 Value)
 }
 
 
-
-
-
-
-
 SdifFloat8
 SdifOneRowGetValue(SdifOneRowT *OneRow, SdifUInt4 numCol)
 {
-	char errorMess[_SdifStringLen];
+    char errorMess [_SdifStringLen];
+
     /* case template for type from SdifDataTypeET */
-#   define getcase(type) 						   \
-    case e##type:   return (Sdif##type) OneRow->Data.type [numCol-1];
+#   define getrowcase(type) 						   \
+    case e##type:   return (SdifFloat8) OneRow->Data.type [numCol-1];
    
   /* numCol is in [1, NbData] */
   if ((numCol <= OneRow->NbData) && (numCol > 0))
     switch (OneRow->DataType)
       {
 	  /* generate cases for all types */
-	  sdif_foralltypes (getcase);
+	  sdif_foralltypes (getrowcase);
   
       default :
 	return (SdifFloat8) OneRow->Data.Float4[numCol-1];
@@ -448,11 +451,6 @@ SdifOneRowGetValue(SdifOneRowT *OneRow, SdifUInt4 numCol)
       return _SdifFloat8Error;
     }
 }
-
-
-
-
-
 
 
 SdifFloat8
@@ -467,144 +465,192 @@ SdifOneRowGetValueColName(SdifOneRowT *OneRow,
 
 
 
+/******************************************************************************
+ *
+ * SdifMatrixDataT class 
+ *
+ */
 
-
-
-
-SdifMatrixDataT*
+SdifMatrixDataT* 
 SdifCreateMatrixData(SdifSignature Signature,
 		     SdifDataTypeET DataType,
 		     SdifUInt4 NbRow,
 		     SdifUInt4 NbCol)
 {
-  SdifMatrixDataT *NewMatrixData = NULL;
-  SdifUInt4 iRow;
-  SdifUInt4 NbGranule;
-  SdifUInt4 MatrixSize;
+    SdifMatrixDataT *NewMatrixData = NULL;
+    SdifUInt4 MatrixSize;
   
-  NewMatrixData = SdifMalloc(SdifMatrixDataT);
-  if (NewMatrixData)
+    NewMatrixData = SdifCalloc(SdifMatrixDataT, 1);	/* all fields zero */
+
+    if (NewMatrixData)
     {
-      NewMatrixData->Header = SdifCreateMatrixHeader(Signature,
-						     DataType,
-						     NbRow,
-						     NbCol);
-      MatrixSize = 
-	(int) sizeof(SdifSignature)
-	+ 3*sizeof(SdifUInt4)    /* DataType,  NbRow, NbCol */
-	+ NbRow*NbCol* SdifSizeofDataType(DataType);
+	NewMatrixData->Header = SdifCreateMatrixHeader(Signature,
+						       DataType,
+						       NbRow,
+						       NbCol);
+	NewMatrixData->ForeignHeader = 0;
+	NewMatrixData->Size      = SdifSizeOfMatrix(DataType, NbRow, NbCol);
+	NewMatrixData->AllocSize = SdifSizeOfMatrixData(NewMatrixData->Header);
+	NewMatrixData->Data.Char = SdifCalloc(char, NewMatrixData->AllocSize);
 
-      /* Padding size added */
-      NewMatrixData->Size = (MatrixSize + SdifPaddingCalculate(MatrixSize));
-
-      NewMatrixData->Rows = SdifCalloc(SdifOneRowT*, NbRow);
-      if (NewMatrixData->Rows)
+	if (!NewMatrixData->Data.Char)
 	{
-	  NbGranule = (NbCol*SdifSizeofDataType(DataType))/_SdifGranule;
-	  NbGranule = NbGranule ? NbGranule : 1;
-	  for (iRow=0; iRow<NbRow; iRow++)
-	    NewMatrixData->Rows[iRow] = SdifCreateOneRow(DataType, NbGranule);
-	  return NewMatrixData;
-	}
-      else
-	{
-	  _SdifError(eAllocFail, "MatrixData->Rows allocation");
-	  return NULL;
+	    SdifFree(NewMatrixData);
+	    NewMatrixData = NULL;
+	    _SdifError(eAllocFail, "MatrixData->Data allocation");
 	}
     }
-  else
+    else
     {
-      _SdifError(eAllocFail, "MatrixData allocation");
-      return NULL;
+	_SdifError(eAllocFail, "MatrixData allocation");
     }
+    
+    return NewMatrixData;
 }
 
 
-
-
-
-
-
-
-
-void
+void 
 SdifKillMatrixData(SdifMatrixDataT *MatrixData)
 {
-  SdifUInt4 iRow;
+    SdifUInt4 iRow;
 
-  if (MatrixData)
+    if (MatrixData)
     {
-      if (MatrixData->Rows)
-	{
-	  for(iRow = 0; iRow<MatrixData->Header->NbRow; iRow++)
-	    SdifKillOneRow(MatrixData->Rows[iRow]);
-	  
-	  SdifKillMatrixHeader(MatrixData->Header);
-	  SdifFree(MatrixData->Rows);
-	}
-      else
-	_SdifError(eFreeNull, "MatrixData->Rows free");
+	if (MatrixData->Data.Void)
+	    SdifFree(MatrixData->Data.Void);
       
-      SdifFree(MatrixData);
+	if (MatrixData->Header  &&  !MatrixData->ForeignHeader)
+	    SdifKillMatrixHeader(MatrixData->Header);
+
+	SdifFree(MatrixData);
     }
-  else
-    _SdifError(eFreeNull, "MatrixData free");
 }
 
 
+/* set header pointer, reallocate to its size */
+int SdifMatrixDataUpdateHeader (SdifMatrixDataT *Data, SdifMatrixHeaderT *NewH)
+{
+    size_t datasize = SdifSizeOfMatrixData(NewH); /* size needed */
+    
+    Data->Header	= NewH;
+    Data->ForeignHeader = 1;
+
+    return SdifMatrixDataRealloc(Data, datasize);
+}
 
 
+/* see if there's enough space for data, if not, grow buffer */
+int SdifMatrixDataRealloc (SdifMatrixDataT *data, int newsize)
+{
+    char errorMess [_SdifStringLen];
+    char *newdata;
 
+    if (data->AllocSize < newsize)
+    {   /* grow buffer to multiple of _SdifGranule (1024 byte block) */
+	newsize = (newsize / _SdifGranule + 1) * _SdifGranule;
+	newdata = SdifRealloc(data->Data.Char, char, newsize);
 
+	if (newdata)
+	{
+	    data->Data.Char = newdata;
+	    data->AllocSize = newsize;
+	    return 1;
+	}
+	else
+	{
+	    sprintf(errorMess, 
+		    "MatrixData reallocation from %d to %d returned %p",
+		    data->AllocSize, newsize, newdata);
 
+	    SdifFree(data->Data.Char);
+	    data->Data.Char = NULL;
+	    data->AllocSize = 0;
+
+	    _SdifError(eAllocFail, errorMess);
+	    return 0;
+	}
+    }
+}
+
+/* matrix data element access by index */
 
 SdifMatrixDataT *
-SdifMatrixDataPutValue(SdifMatrixDataT *MatrixData,
+SdifMatrixDataPutValue(SdifMatrixDataT *data,
 		       SdifUInt4  numRow,
 		       SdifUInt4  numCol,
 		       SdifFloat8 Value)
 {
-	char errorMess[_SdifStringLen];
-  /* numRow is in [1, MatrixData->Header->NbRow] */
-  if ((numRow <=  MatrixData->Header->NbRow) && (numRow > 0))
-    SdifOneRowPutValue(MatrixData->Rows[numRow-1], numCol, Value);
-  else
-    {
-      sprintf(errorMess, "MatrixData Put Value Row : %d ", numRow);
-      _SdifError(eArrayPosition, errorMess);
-    }
+    char errorMess [_SdifStringLen];
 
-  return MatrixData;
+    /* case template for type from SdifDataTypeET */
+#   define setdatacase(type) 						   \
+    case e##type:   data->Data.type [index] = (Sdif##type) Value;  break;
+   
+    /* numRow, numCol count from 1! */
+    if (0 < numRow  &&  numRow <= data->Header->NbRow  &&  
+	0 < numCol  &&  numCol <= data->Header->NbCol)
+    {
+	int index = (numRow-1) * data->Header->NbCol + (numCol-1);
+
+	switch (data->Header->DataType)
+	{
+	    /* generate cases for all types */
+	    sdif_foralltypes (setdatacase);
+  
+	    default:
+		data->Data.Float4[index] = (SdifFloat4) Value;
+	    break;
+	}
+    }
+    else
+    {
+	sprintf(errorMess, "SdifMatrixDataPutValue: row %d, col %d ", 
+		numRow, numCol);
+	_SdifError(eArrayPosition, errorMess);
+    }
+    
+    return data;
 }
 
 
-
-
-
-
-
-
-
 SdifFloat8
-SdifMatrixDataGetValue(SdifMatrixDataT *MatrixData,
+SdifMatrixDataGetValue(SdifMatrixDataT *data,
 		       SdifUInt4  numRow,
 		       SdifUInt4  numCol)
 {
-	char errorMess[_SdifStringLen];
-  /* numRow is in [1, MatrixData->Header->NbRow] */
-  if ((numRow <=  MatrixData->Header->NbRow) && (numRow > 0))
-    return SdifOneRowGetValue(MatrixData->Rows[numRow-1], numCol);
+    char errorMess [_SdifStringLen];
+    
+    /* numRow, numCol count from 1! */
+    if (0 < numRow  &&  numRow <= data->Header->NbRow  &&  
+	0 < numCol  &&  numCol <= data->Header->NbCol)
+    {
+	int index = (numRow-1) * data->Header->NbCol + (numCol-1);
+
+	/* case template for type from SdifDataTypeET */
+#	define getdatacase(type)					   \
+	case e##type:   return (SdifFloat8) data->Data.type [index];
+   
+	switch (data->Header->DataType)
+	{
+	    /* generate cases for all types */
+	    sdif_foralltypes (getdatacase);
+  
+	    default:
+		return (SdifFloat8) data->Data.Float4[index];
+	}
+    }
   else
     {
-      sprintf(errorMess, "MatrixData Get Value Row : %d ", numRow);
+	sprintf(errorMess, "SdifMatrixDataGetValue:  row %d, col %d",
+		numRow, numCol);
       _SdifError(eArrayPosition, errorMess);
+	
       return _SdifFloat8Error;
     }
 }
 
 
-
-
+/* matrix data element access by column name */
 
 SdifMatrixDataT *
 SdifMatrixDataColNamePutValue(SdifHashTableT *MatrixTypesTable,
@@ -615,7 +661,7 @@ SdifMatrixDataColNamePutValue(SdifHashTableT *MatrixTypesTable,
 {
   SdifMatrixTypeT* MtrxT;
   SdifUInt4 numCol;
-	char errorMess[_SdifStringLen];
+  char errorMess [_SdifStringLen];
   
   MtrxT = SdifGetMatrixType(MatrixTypesTable, MatrixData->Header->Signature);
 
@@ -642,12 +688,6 @@ SdifMatrixDataColNamePutValue(SdifHashTableT *MatrixTypesTable,
 }
 
 
-
-
-
-
-
-
 SdifFloat8
 SdifMatrixDataColNameGetValue(SdifHashTableT *MatrixTypesTable,
 			      SdifMatrixDataT *MatrixData,
@@ -656,7 +696,7 @@ SdifMatrixDataColNameGetValue(SdifHashTableT *MatrixTypesTable,
 {
   SdifMatrixTypeT* MtrxT;
   SdifUInt4 numCol;
-	char errorMess[_SdifStringLen];
+  char errorMess [_SdifStringLen];
   
   MtrxT = SdifGetMatrixType(MatrixTypesTable, MatrixData->Header->Signature);
 
@@ -680,5 +720,29 @@ SdifMatrixDataColNameGetValue(SdifHashTableT *MatrixTypesTable,
 	      "'%s' Matrix type", SdifSignatureToString(MatrixData->Header->Signature));
       _SdifError(eNotFound, errorMess);
       return _SdifFloat8Error;
+    }
+}
+
+
+void SdifCopyMatrixDataToFloat4 (SdifMatrixDataT *data, SdifFloat4 *dest)
+{
+    int i, n = data->Header->NbRow * data->Header->NbCol; 
+    
+    switch (data->Header->DataType)
+    {
+	/* case template for type from SdifDataTypeET */
+#	define copydata(type)					   \
+	    case e##type:					   \
+	        for (i = 0; i < n; i++)				   \
+		    dest [i] = (SdifFloat4) data->Data.type [i];   \
+	    break;
+
+	/* generate cases for all types */
+	sdif_foralltypes (copydata);
+
+        default:
+	    _SdifError(eNotInDataTypeUnion, 
+		       "SdifCopyMatrixDataToFloat4 source");
+	break;
     }
 }
