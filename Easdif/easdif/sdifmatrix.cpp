@@ -32,9 +32,12 @@
  * 
  * 
  * 
- * $Id: sdifmatrix.cpp,v 1.17 2003-11-25 10:55:42 roebel Exp $ 
+ * $Id: sdifmatrix.cpp,v 1.18 2003-12-05 13:36:58 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.17  2003/11/25 10:55:42  roebel
+ * Added missing namespace qualifier for exceptions.
+ *
  * Revision 1.16  2003/11/18 18:22:17  roebel
  * Declared exceptions that are used.
  *
@@ -192,6 +195,7 @@ void SDIFMatrix::Init(SdifSignature sig, int nrows, int ncols, SdifDataTypeET ty
       }
     }
 
+    bytesread = 0;
     if (!mInter) {
       switch (type){
       case eInt1:
