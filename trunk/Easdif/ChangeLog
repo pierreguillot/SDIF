@@ -1,3 +1,20 @@
+2003-05-21  Axel Roebel  <Axel.Roebel@ircam.fr>
+Version 0.5.1
+	
+	* easdif/easdifintro.h,test/*.cpp 
+	Improved error handling. 
+
+	* swig/easdif-common.i
+	Implemented exception handling
+
+	* easdif/sdifentity.cpp
+	Reopening the same entity is handled properly. The existing 
+	file will be properly closed and the entity reinitialized.
+
+	* easdif/sdifexception.h
+	Added documentation. Removed unused member "error".
+	Added member functions to access message and errortag.
+	
 2003-05-18  Axel Röbel  <roebel@ircam.fr>
 Version 0.5.0
 	
@@ -338,4 +355,4 @@ Version 0.21
 	* ChangeLog: Added changelog to repository.
 
 
-$Id: ChangeLog,v 1.13 2003-05-19 14:07:25 roebel Exp $
+$Id: ChangeLog,v 1.14 2003-05-21 20:41:21 roebel Exp $
