@@ -1,4 +1,4 @@
-/* $Id: SdifFScan.c,v 3.8 2000-05-15 16:25:55 schwarz Exp $
+/* $Id: SdifFScan.c,v 3.9 2000-08-21 10:02:49 tisseran Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -14,6 +14,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.8  2000/05/15  16:25:55  schwarz
+ * cc on alpha doesn't like empty cases.
+ *
  * Revision 3.7  2000/05/15  16:23:08  schwarz
  * Avoided avoidable warnings.
  *
@@ -182,7 +185,7 @@ SdifFScanAllASCIIChunks(SdifFileT *SdifF)
 	{
 
 	case e1NVT :
-	  SdifNameValuesLNewTable(SdifF->NameValues, _SdifAllStreamID);
+	  SdifNameValuesLNewTable(SdifF->NameValues, _SdifNVTStreamID);
 	  SizeR += SdifFScanNameValueLCurrNVT(SdifF);
 	  break;
 

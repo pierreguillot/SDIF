@@ -1,4 +1,4 @@
-/* $Id: SdifFPut.h,v 3.4 2000-07-18 15:08:30 tisseran Exp $
+/* $Id: SdifFPut.h,v 3.5 2000-08-21 10:02:48 tisseran Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -19,6 +19,20 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.4  2000/07/18  15:08:30  tisseran
+ * This release implements the New SDIF Specification (june 1999):
+ * - Name Values Table are written in a 1NVT frame which contains a 1NVT matrix
+ * - Frame and matrix type declaration are written in a 1TYP frame which contains a 1TYP matrix.
+ * - Stream ID are written in a 1IDS frame which contains a 1IDS matrix.
+ *
+ * Read function accept the previous version of the specification (read a text frame without matrix) to be compatible with older SDIF files.
+ *
+ * SdifString.h and SdifString.c implements some string mangement (creation, destruction, append, test of end of string, getc, ungetc).
+ *
+ * WATCH OUT:
+ *      We don't care about the old SDIF Specification (_SdifFormatVersion < 3)
+ * To use _SdifFormatVersion < 3, get the previous release.
+ *
  * Revision 3.3  2000/07/06  19:01:46  tisseran
  * Add function for frame and matrix type declaration
  * Remove string size limitation for NameValueTable
@@ -74,13 +88,6 @@
 
 size_t SdifFPutOneNameValue         (SdifFileT *SdifF, int Verbose, SdifNameValueT *NameValue);
 size_t SdifFPutNameValueLCurrNVT    (SdifFileT *SdifF, int Verbose);
-
-/* This function makes memory reallocation for extends the Name Value capacity
-   In the previous release of this file, it was limited at a char[_SdifStringLen]
-   with _SdifStringLen = 1024.
-   Now, limits depend only on avaluable memory
-*/
-char * SdifFNameValueLCurrNVTtoString(SdifFileT *SdifF);
 
 
 /*DOC:
