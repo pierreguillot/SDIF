@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.14 2001-05-02 09:34:40 tisseran Exp $
+# $Id: Makefile.am,v 1.15 2001-07-12 14:11:48 roebel Exp $
 #
 # ./sdif/Makefile.am		September 2000			Patrice Tisserand
 #
@@ -29,6 +29,9 @@
 # send email to:  sdif@ircam.fr
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.14  2001/05/02 09:34:40  tisseran
+# Change License from GNU Public License to GNU Lesser Public License.
+#
 # Revision 1.13  2001/04/20 14:04:07  tisseran
 # SDIF VERSION 3.3
 # Create function: SdifTakeCodedPredefinedTypesfromString (SdifFile.[hc])
@@ -84,12 +87,13 @@
 # Revision 1.1.2.5  2000/10/26  17:27:39  schwarz
 # Added header with copyright and links to all Makefile.am and configure.in.
 #
+
 EXTRA_LIBRARIES = libsdif.a libsdif-debug.a
 lib_LIBRARIES = @SELLIB@
 FORMES_H=host_architecture.h preincluded.h UniversalEnvVar.h  XpGuiCalls.h
 FORMES_INCLUDE=/u/formes/share/include
 
-SDIF_H = $(top_srcdir)/include/sdif.h \
+SDIF_H = ../include/sdif_version.h $(top_srcdir)/include/sdif.h \
 	SdifCheck.h 	SdifErrMess.h	SdifConvToText.h 	\
 	SdifError.h 	SdifFGet.h 	SdifFPrint.h 		\
 	SdifFPut.h 	SdifFRead.h	SdifFScan.h 		\
@@ -121,7 +125,7 @@ libsdif_debug_a_SOURCES = $(libsdif_a_SOURCES)
 
 sdiftype = $(datadir)/SdifTypes.STYP
 
-INCLUDES = -I$(top_srcdir)/include -D_SdifTypesFileName=\"$(sdiftype)\" -DUSE_CONFIGURE
+INCLUDES = -I../include -I$(top_srcdir)/include -D_SdifTypesFileName=\"$(sdiftype)\" -DUSE_CONFIGURE
 
 $(libsdif_a_SOURCES) :  @IRCAMDEPS@
 

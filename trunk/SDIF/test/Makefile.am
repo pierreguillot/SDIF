@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.8 2001-05-02 09:34:52 tisseran Exp $
+# $Id: Makefile.am,v 1.9 2001-07-12 14:11:48 roebel Exp $
 #
 # ./test/Makefile.am		September 2000			Patrice Tisserand
 #
@@ -29,6 +29,9 @@
 # send email to:  sdif@ircam.fr
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.8  2001/05/02 09:34:52  tisseran
+# Change License from GNU Public License to GNU Lesser Public License.
+#
 # Revision 1.7  2000/12/07 13:42:21  roebel
 # small reorganization of sdif/Makefile.am
 #
@@ -69,7 +72,7 @@ testselect_DEPENDENCIES = ../sdif/@SELLIB@
 
 LDADD = -l@TESTLIB@
 LDFLAGS = -L../sdif
-INCLUDES = -I$(top_srcdir)/include
+INCLUDES = -I../include -I$(top_srcdir)/include
 
 TESTS_ENVIRONMENT = SDIFTYPES=$(top_srcdir)/data/SdifTypes.STYP
 TESTS = test_conv2  headerTest NVTTest cmd_testcheck

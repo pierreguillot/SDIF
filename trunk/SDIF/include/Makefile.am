@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.3 2001-05-02 09:34:39 tisseran Exp $
+# $Id: Makefile.am,v 1.4 2001-07-12 14:11:48 roebel Exp $
 #
 # ./include/Makefile.am		September 2000		Patrice Tisserand
 #
@@ -29,6 +29,9 @@
 # send email to:  sdif@ircam.fr
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.3  2001/05/02 09:34:39  tisseran
+# Change License from GNU Public License to GNU Lesser Public License.
+#
 # Revision 1.2  2000/10/27 20:03:18  roebel
 # autoconf merged back to main trunk
 #
@@ -42,5 +45,8 @@
 # *** empty log message ***
 #
 
+
+EXTRA_DIST = sdif_version.h.in
+
 sdifincdir = $(prefix)/include
-sdifinc_HEADERS = sdif.h
+sdifinc_HEADERS = sdif.h sdif_version.h
