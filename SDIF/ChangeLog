@@ -1,3 +1,10 @@
+2004-06-17  Axel Roebel  <Axel.Roebel@ircam.fr>
+Version 3.8.4
+
+	* tools/sdifextract.c:
+	fixed sdifextract padding calculation. As it was it worked for
+	many files, but not for all!
+
 2004-06-03  Diemo Schwarz  <schwarz@ligeti.ircam.fr>
 Version 3.8.3
 	
@@ -360,4 +367,4 @@ Version 3.3:
 	  Operating System.
 
 	
-$Id: ChangeLog,v 1.34 2004-06-03 14:13:19 schwarz Exp $
+$Id: ChangeLog,v 1.35 2004-06-17 18:36:49 roebel Exp $
