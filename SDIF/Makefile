@@ -1,4 +1,4 @@
-# $Id: Makefile,v 3.3 1999-04-30 13:46:53 schwarz Exp $
+# $Id: Makefile,v 3.4 1999-10-07 15:22:52 schwarz Exp $
 #
 #               Copyright (c) 1998 by IRCAM - Centre Pompidou
 #                          All rights reserved.
@@ -11,6 +11,9 @@
 # make general	
 #
 # $Log: not supported by cvs2svn $
+# Revision 3.3  1999/04/30  13:46:53  schwarz
+# Fixed little mistake in install target.
+#
 # Revision 3.2  1999/04/21  14:17:42  schwarz
 # Introduced list 'SUBS' of subdirectories, for which automatically
 # all the subtargets M_, clean_, (un)install_ are generated.
@@ -45,7 +48,7 @@ uninstall_all	= $(SUBS:%=uninstall_%)
 # compile
 #
 
-all: tags $(M_all)
+all: 	$(M_all)
 
 
 M_%:
@@ -54,6 +57,11 @@ M_lib:
 	@cd libsdif; $(MAKE)
 $(SUBS) lib:
 	@cd $@; $(MAKE)
+
+debug db:
+	$(MAKE) DEBUG=1 all
+release:
+	$(MAKE) DEBUG=0 all
 
 
 #
@@ -76,7 +84,7 @@ clean:  $(clean_all)
 
 install_%:
 	@cd $*; $(MAKE) install
-install_lib:
+install_lib instlib:
 	@cd libsdif ; $(MAKE) install
 
 install:  $(install_all)
