@@ -1,0 +1,16 @@
+
+Handling of the SdifTypes.STYP File
+
+For proper operation  the sdif library needs a  types definition file.
+Which is read only ones for initializing the library.  This can either
+be specified as a  second parameter to the writesdif/loadsdif commands
+or via setting the environment variable SDIFTYPES for example:
+
+setenv SDIFTYPES /u/formes/share/share/SdifTypes.STYP
+
+THE  LIBRARY  IS  INITIALIZED  ONLY  ONES.  So  if  during  the  first
+invocation  of  the  library   there  is  no  valid  specification  of
+SdifTypes.STYP the  library willl not be properly  initialized and can
+not be reinitialized without restarting matlab.  Therefore, the use of
+the environment variable is strongly recommended.
+
