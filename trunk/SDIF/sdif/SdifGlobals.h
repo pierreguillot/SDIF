@@ -1,4 +1,4 @@
-/* $Id: SdifGlobals.h,v 3.5 1999-10-15 12:27:08 schwarz Exp $
+/* $Id: SdifGlobals.h,v 3.6 1999-11-03 16:42:35 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -14,6 +14,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.5  1999/10/15  12:27:08  schwarz
+ * Changed min/max to upper case.
+ *
  * Revision 3.4  1999/10/13  16:05:49  schwarz
  * Changed data type codes (SdifDataTypeET) to SDIF format version 3, as
  * decided with Matt Wright June 1999, added integer data types.
@@ -107,9 +110,15 @@
 
 #define _SdifFloat8Error  0xffffffff
 #define _SdifNoTime	  _Sdif_MIN_DOUBLE_	/* for header ASCII frames */
-#define _SdifNoStreamID   0xfffffffe
-#define _SdifAllStreamID  0xffffffff
+#define _SdifNoStreamID   0xfffffffe		/* used for 1TYP */
+#define _SdifAllStreamID  0xffffffff		/* used for 1IDS */
 #define _SdifUnknownUInt4 0xffffffff
+
+/* CNMAT restriction: only one frame type per stream.  
+   Therefore we have to use unique IDs for all 'header' frames. */
+#define _SdifNVTStreamID  0xfffffffd		/* used for 1NVT */
+#define _SdifIDSStreamID  0xfffffffc		/* unused */
+#define _SdifTYPStreamID  0xfffffffb		/* unused */
 
 
 /* This seems to be no longer needed with gcc version 2.8.1 */
