@@ -1,8 +1,10 @@
 
-$Id: ChangeLog,v 1.9 2002-10-30 17:48:41 schwarz Exp $
+$Id: ChangeLog,v 1.10 2002-10-31 16:35:35 schwarz Exp $
 	
 Version 3.7.1	2002-10-30  Diemo Schwarz, Patrice Tisserand
 
+	Maintenance release, no changes to sources.
+	
 	* Added dynamic shared library building by default (libsdif-3.7.1.so).
 
 	* Added build targets and sdif.spec.in file for source
@@ -10,6 +12,9 @@ Version 3.7.1	2002-10-30  Diemo Schwarz, Patrice Tisserand
 		
 	* Added support of pkg-config for SDIF library.
 
+	* Added project file for MS Visual C++ 7.0 (.net),
+	  thanks to Michael Gogins (gogins@pipeline.com)
+	
 	
 Version 3.7.0	2002-09-20  Diemo Schwarz  <schwarz@lithium.ircam.fr>
 
