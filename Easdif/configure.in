@@ -1,6 +1,6 @@
 dnl -*-autoconf-*-  (No, it's an autoconf file!)
 dnl -*-m4-*- (He emacs, it's a m4 file)
-dnl $Id: configure.in,v 1.1 2003-03-03 10:05:29 roebel Exp $
+dnl $Id: configure.in,v 1.2 2003-03-03 20:30:40 roebel Exp $
 dnl
 dnl configure.in		Feb 2003      Axel Roebel
 dnl
@@ -19,8 +19,6 @@ PACKAGE=Easdif
 AC_SUBST(PACKAGE)
 
 AM_INIT_AUTOMAKE($PACKAGE,$VERSION)
-
-AM_CONFIG_HEADER(src/config.h)
 
 dnl ############################################################
 dnl Checks for programs.
