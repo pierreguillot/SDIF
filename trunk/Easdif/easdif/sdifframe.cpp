@@ -32,9 +32,13 @@
  * 
  * 
  * 
- * $Id: sdifframe.cpp,v 1.10 2004-02-02 18:07:24 roebel Exp $ 
+ * $Id: sdifframe.cpp,v 1.11 2004-07-21 13:20:33 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.10  2004/02/02 18:07:24  roebel
+ * Version 0.8.1: bug fix in sdifframe establishing the possibility to
+ * resize matrices within the frame.
+ *
  * Revision 1.9  2003/12/05 13:53:14  ellis
  *
  * including <iostream> for the use of std::cout, cerr...
@@ -111,7 +115,7 @@ namespace Easdif {
 int SDIFFrame::Read(SdifFileT* file, bool &eof)
 {
     mFrameBytesRead = 0;
-
+    ClearData();
     mFrameBytesRead += ReadHeader(file);
     /* for selection */
     if (mFrameBytesRead == 0)
@@ -134,15 +138,24 @@ int SDIFFrame::Read(SdifFileT* file, bool &eof)
 //int SDIFFrame::Read(const SDIFEntity& entity)
 int SDIFFrame::Read(SDIFEntity& entity)
 {
-    mFrameBytesRead = 0;
-    SdifFileT* file = entity.GetFile();
+  mFrameBytesRead = 0;
+  SdifFileT* file = entity.GetFile();
 
     if(entity.eof()) {
       throw Easdif::SDIFEof(eError,"Error in SDIFFrame::Read -- Eof reached",
 			    file,eEof,0,0);
     }
-    return Read(file, entity.mEof);
+    
+    if(entity.IsFrameDir()){
+      mFrameBytesRead = Read(file, entity.mEof);
+      // frame info is correct even if frame has been skipped
+      entity.AddFramePos(SdifFCurrTime(file),file->StartChunkPos);
+    }
+    else
+      mFrameBytesRead = Read(file, entity.mEof);
 
+
+    return mFrameBytesRead;
 }
 
 /* reading the data */
@@ -354,25 +367,6 @@ const SDIFMatrix& SDIFFrame::GetMatrix(unsigned int index) const
 }
 
 
-SdifUInt4 SDIFFrame::GetNbMatrix() const
-{
-    return mNbMatrix;
-}
-
-SdifSignature SDIFFrame::GetSignature() const
-{
-    return mSig;
-}
-
-SdifUInt4 SDIFFrame::GetStreamID() const
-{
-    return mStreamID;
-}
-
-SdifFloat8 SDIFFrame::GetTime() const
-{
-    return mTime;
-}
 
 SdifUInt4 SDIFFrame::GetSize() const
 {
@@ -389,6 +383,8 @@ void SDIFFrame::ClearData()
 {
     mStreamID = 0;
     mNbMatrix = 0;
+    mSig      = SdifStringToSignature("0000");
+    mTime     = -1.;
     mv_Matrix.clear();
 }
 
@@ -423,7 +419,6 @@ void SDIFFrame::Resize()
 {
     mv_Matrix.resize(mNbMatrix);    
 }
-
 
 
 bool SDIFFrame::MatrixExists(const SdifSignature& sig) const

@@ -34,9 +34,12 @@
  * 
  * 
  * 
- * $Id: sdifexception.h,v 1.7 2003-12-18 12:15:29 roebel Exp $ 
+ * $Id: sdifexception.h,v 1.8 2004-07-21 13:20:28 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.7  2003/12/18 12:15:29  roebel
+ * Renamed method arguments to prevent shadowing of class members
+ *
  * Revision 1.6  2003/12/05 13:53:14  ellis
  *
  * including <iostream> for the use of std::cout, cerr...
@@ -334,13 +337,6 @@ public:
   constructor(SDIFDescriptionTypeError,SDIFException)
 };
 
-/// \ingroup exception 
-/// \brief SDIFArrayPosition
-class SDIFArrayPosition  : public SDIFReading
-{
-public:
-  constructor(SDIFArrayPosition,SDIFReading)
-};
 
 /****************** MATRIX DATA ELEMENT TYPE CHECKING ****/
 /// \ingroup exception 
@@ -356,6 +352,14 @@ class SDIFNotInDataTypeUnion  : public SDIFMatrixDataError
 {
 public:
   constructor(SDIFNotInDataTypeUnion,SDIFMatrixDataError)
+};
+
+/// \ingroup exception 
+/// \brief SDIFArrayPosition
+class SDIFArrayPosition  : public SDIFMatrixDataError
+{
+public:
+  constructor(SDIFArrayPosition,SDIFMatrixDataError)
 };
 
 /****************** MEMORY MANAGEMENT ********************/
