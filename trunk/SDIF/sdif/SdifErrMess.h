@@ -1,4 +1,4 @@
-/* $Id: SdifErrMess.h,v 2.5 1999-02-28 12:16:36 virolle Exp $
+/* $Id: SdifErrMess.h,v 3.1 1999-03-14 10:56:34 virolle Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -14,6 +14,7 @@
  *
  * author: Dominique Virolle 1998
  * 
+ * $Log: not supported by cvs2svn $
  *
  */
 

@@ -1,4 +1,4 @@
-/* $Id: SdifHash.c,v 2.2 1999-02-28 12:16:48 virolle Exp $
+/* $Id: SdifHash.c,v 3.1 1999-03-14 10:57:01 virolle Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -18,6 +18,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 2.2  1999/02/28  12:16:48  virolle
+ * memory report
+ *
  * Revision 2.1  1998/12/21  18:27:26  schwarz
  * Inserted copyright message.
  *

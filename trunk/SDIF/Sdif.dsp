@@ -33,13 +33,13 @@ CPP=cl.exe
 # PROP BASE Output_Dir "Release"
 # PROP BASE Intermediate_Dir "Release"
 # PROP BASE Target_Dir ""
-# PROP Use_MFC 0
+# PROP Use_MFC 2
 # PROP Use_Debug_Libraries 0
 # PROP Output_Dir "Release"
 # PROP Intermediate_Dir "Release"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /YX /FD /c
-# ADD CPP /nologo /W4 /GX /O2 /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /YX /FD /D _SDIF_VERSION="\"Win32 1.00.alpha\"" /c
+# ADD CPP /nologo /MD /W4 /GX /O2 /D "NDEBUG" /D "_WINDOWS" /D "WIN32" /D "_AFXDLL" /YX /FD /D _SDIF_VERSION="\"Win32 1.00.alpha\"" /c
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
@@ -54,13 +54,13 @@ LIB32=link.exe -lib
 # PROP BASE Output_Dir "Debug"
 # PROP BASE Intermediate_Dir "Debug"
 # PROP BASE Target_Dir ""
-# PROP Use_MFC 0
+# PROP Use_MFC 2
 # PROP Use_Debug_Libraries 1
 # PROP Output_Dir "Debug"
 # PROP Intermediate_Dir "Debug"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /Z7 /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /YX /FD /c
-# ADD CPP /nologo /W4 /GX /Z7 /Od /D "_WINDOWS" /D "_DEBUG" /D "WIN32" /D "_SdifMemoryReport" /FR /YX /FD /D _SDIF_VERSION="\"Win32 1.00.alpha\"" /c
+# ADD CPP /nologo /MDd /W4 /GX /Z7 /Od /D "_WINDOWS" /D "_DEBUG" /D "_SdifMemoryReport" /D "WIN32" /D "_AFXDLL" /FR /YX /FD /D _SDIF_VERSION="\"Win32 1.00.alpha\"" /c
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo

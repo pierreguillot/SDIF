@@ -15,6 +15,9 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 2.1  1999/02/28  12:16:51  virolle
+ * memory report
+ *
  *
  */
 

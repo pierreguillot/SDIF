@@ -1,4 +1,4 @@
-/* $Id: SdifErrMess.c,v 2.5 1999-02-28 12:16:35 virolle Exp $
+/* $Id: SdifErrMess.c,v 3.1 1999-03-14 10:56:33 virolle Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -8,12 +8,13 @@
  *                            manager@ircam.fr
  *
  *
- * sdifError.c
+ * SdifErrorMess.c
  *
  * high level (SdifF) error management
  *
  * author: Dominique Virolle 1998
  *
+ * $Log: not supported by cvs2svn $
  */
 
 

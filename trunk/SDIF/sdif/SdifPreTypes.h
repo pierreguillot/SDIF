@@ -1,4 +1,4 @@
-/* $Id: SdifPreTypes.h,v 2.2 1999-01-23 13:57:44 virolle Exp $
+/* $Id: SdifPreTypes.h,v 3.1 1999-03-14 10:57:15 virolle Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -17,6 +17,9 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 2.2  1999/01/23  13:57:44  virolle
+ * General Lists, and special chunk preparation to become frames
+ *
  * Revision 2.1  1998/12/21  18:27:34  schwarz
  * Inserted copyright message.
  *

@@ -18,6 +18,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 2.3  1999/02/28  12:16:49  virolle
+ * memory report
+ *
  * Revision 2.2  1999/01/23  15:55:52  virolle
  * add querysdif.dsp, delete '\r' chars from previous commit
  *

@@ -1,4 +1,4 @@
-/* $Id: SdifHard_OS.h,v 2.3 1999-01-23 15:55:52 virolle Exp $
+/* $Id: SdifHard_OS.h,v 3.1 1999-03-14 10:57:00 virolle Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -16,6 +16,9 @@
  * author: Dominique Virolle 1998
  *
  * $Log: not supported by cvs2svn $
+ * Revision 2.3  1999/01/23  15:55:52  virolle
+ * add querysdif.dsp, delete '\r' chars from previous commit
+ *
  * Revision 2.2  1999/01/23  13:57:37  virolle
  * General Lists, and special chunk preparation to become frames
  *
@@ -63,8 +66,8 @@
 /* to do fpos_t compatible on MacinTosh */
 #if defined(MACINTOSH) || defined(WIN32)
 #define SdiffPosT long
-#define SdiffGetPos(f,p)    ((((*(p)) = ftell(f)) == -1) ? -1 : 0)
-#define SdiffSetPos(f,p)    fseek(f, (long)(*(p)), SEEK_SET)
+#define SdiffGetPos(f,p) ((((*(p)) = ((f!= stdin) && (f!= stdout) && (f!= stderr)) ? ftell(f) : 0 ) == -1 ) ? -1 : 0)
+#define SdiffSetPos(f,p) ((f!= stdin) && (f!= stdout) && (f!= stderr)) ? fseek(f, (long)(*(p)), SEEK_SET) : 0
 #else
 #define SdiffPosT fpos_t
 #define SdiffGetPos(f,p)    fgetpos((f),(p))

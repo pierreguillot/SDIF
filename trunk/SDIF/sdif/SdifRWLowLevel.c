@@ -1,4 +1,4 @@
-/* $Id: SdifRWLowLevel.c,v 2.3 1999-01-23 15:55:59 virolle Exp $
+/* $Id: SdifRWLowLevel.c,v 3.1 1999-03-14 10:57:18 virolle Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -15,6 +15,9 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 2.3  1999/01/23  15:55:59  virolle
+ * add querysdif.dsp, delete '\r' chars from previous commit
+ *
  * Revision 2.2  1999/01/23  13:57:45  virolle
  * General Lists, and special chunk preparation to become frames
  *

@@ -1,4 +1,4 @@
-/* $Id: SdifUInt8.c,v 2.1 1998-12-21 18:26:51 schwarz Exp $
+/* $Id: SdifUInt8.c,v 3.1 1999-03-14 10:56:21 virolle Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.

@@ -1,4 +1,4 @@
-/* $Id: test.c,v 2.2 1999-01-23 13:58:00 virolle Exp $
+/* $Id: test.c,v 3.1 1999-03-14 10:58:04 virolle Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -37,6 +37,8 @@ main(int argc, char **argv)
   /* test var */
   float t[8] = { 1., 2., 3., 4., 5., 6., 7.};
 
+
+  SdifStdErr = stderr;
 
 /* argument configuration (Outfilename, openmode, UserTypesFile) */
   if (argc > 1)

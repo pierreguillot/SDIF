@@ -1,4 +1,4 @@
-/* $Id: SdifFileStruct.h,v 2.4 1999-02-28 12:16:43 virolle Exp $
+/* $Id: SdifFileStruct.h,v 3.1 1999-03-14 10:56:51 virolle Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -15,6 +15,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 2.4  1999/02/28  12:16:43  virolle
+ * memory report
+ *
  * Revision 2.3  1999/01/23  15:55:48  virolle
  * add querysdif.dsp, delete '\r' chars from previous commit
  *
