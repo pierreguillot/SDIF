@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.8 2000-10-31 11:22:25 roebel Exp $
+# $Id: Makefile.am,v 1.9 2000-11-21 09:04:30 roebel Exp $
 #
 # ./sdif/Makefile.am		September 2000			Patrice Tisserand
 #
@@ -29,6 +29,9 @@
 # send email to:  sdif@ircam.fr
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.8  2000/10/31 11:22:25  roebel
+# Added SDIF to Chksum/date identifier for improved retrieval
+#
 # Revision 1.7  2000/10/31  10:56:56  roebel
 # Adjusted make file paths such that auto cksum version generation works with VPATH
 #
@@ -101,7 +104,7 @@ $(top_srcdir)/sdif/SdifVersion.h : $(Versionsrc)
 
 
 # EXTRA FOR IRCAM STUFF
-ircam_deps : ${FORMES_H}
+ircam_deps : $(FORMES_H:%=$(top_srcdir)/sdif/%)
 
 $(top_srcdir)/sdif/host_architecture.h:
 	cp -p ${FORMES_INCLUDE}/host_architecture.h $@

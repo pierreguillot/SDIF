@@ -1560,7 +1560,7 @@ else
 #include <stdio.h>
 int main()
 {
-  const char ConstCharTab[] = {'A', 'B', 'C', 'D'};
+  char ConstCharTab[] = {'A', 'B', 'C', 'D'};
   const unsigned int ConstDCBA = 'DCBA';
   unsigned int *ConstUIntTest;
 

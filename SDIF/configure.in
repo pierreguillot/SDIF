@@ -1,5 +1,5 @@
 dnl -*-m4-*- (He emacs, it's a m4 file)
-dnl $Id: configure.in,v 1.6 2000-10-30 20:05:12 roebel Exp $
+dnl $Id: configure.in,v 1.7 2000-11-21 09:04:27 roebel Exp $
 dnl
 dnl configure.in		September 2000		Patrice Tisserand
 dnl
@@ -30,6 +30,9 @@ dnl For any information regarding this and other IRCAM software, please
 dnl send email to:  sdif@ircam.fr
 dnl
 dnl $Log: not supported by cvs2svn $
+dnl Revision 1.6  2000/10/30 20:05:12  roebel
+dnl Changed debug option switch from -g to -g2
+dnl
 dnl Revision 1.5  2000/10/30  19:13:59  roebel
 dnl Removed -g and added -O3 flags for configuration without --enable-debug
 dnl
@@ -99,7 +102,7 @@ AC_TRY_RUN([
 #include <stdio.h>
 int main()
 {
-  const char ConstCharTab[] = {'A', 'B', 'C', 'D'};
+  char ConstCharTab[] = {'A', 'B', 'C', 'D'};
   const unsigned int ConstDCBA = 'DCBA';
   unsigned int *ConstUIntTest;
 
