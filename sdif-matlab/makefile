@@ -1,10 +1,16 @@
-# $Id: makefile,v 1.8 2000-08-04 14:42:31 schwarz Exp $
+# $Id: makefile,v 1.9 2000-08-08 17:26:59 schwarz Exp $
 #
 # makefile	26. January 2000	Diemo Schwarz
 #
 # formesutils matlab library
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.8  2000/08/04  14:42:31  schwarz
+# Added reset of file variable, prevents crash on double-close.
+# Version number is written in NVTs, and is used for distribution,
+# defined in makefile (major.minor.release).
+# Types file now included in distribution and documentation.
+#
 # Revision 1.7  2000/07/27  18:24:49  schwarz
 # Install really all necessary files.
 #
@@ -45,9 +51,9 @@ include mex.makedefs
 
 V_MAJOR 	= 0
 V_MINOR 	= 1
-V_RELEASE	= 2
-VERSION		=  $(V_MAJOR).$(V_MINOR).$(V_RELEASE)
-CVSTAG		= v$(V_MAJOR)_$(V_MINOR)_$(V_RELEASE)
+V_RELEASE	= 4
+VERSION		= $(V_MAJOR).$(V_MINOR).$(V_RELEASE)
+CVSTAG		= sdif_matlab_v$(V_MAJOR)_$(V_MINOR)_$(V_RELEASE)
 
 #
 # PATHS and SETTINGS
@@ -87,11 +93,13 @@ allsrc		= $(cfiles)
 
 # install mex files and supporting m-files INSTALL_FILES into INSTALL_DIR
 INSTALL_DIR	= /u/formes/lib/matlab
-INSTALL_FILES	= $(mexfiles) mex.makedefs sdifexist.m \
+CORE_FILES	= $(mexfiles) sdifexist.m \
 		  loadsdif.m loadsdiffile.m loadsdifflat.m \
 		  writesdif.m
+INSTALL_FILES	= $(CORE_FILES) mex.makedefs
 INSTALLED_FILES = $(INSTALL_FILES:%=$(INSTALL_DIR)/%)
-DISTFILES	= $(INSTALL_FILES) -C $(SDIF_TYPES_DIR) $(SDIF_TYPES_FILE)
+DISTFILES	= $(CORE_FILES) -C $(SDIF_TYPES_DIR) $(SDIF_TYPES_FILE) \
+		  -C $(subst /lib/,/bin/,$(SDIF_LIB_DIR)) querysdif #sdifextract
 DISTBASE	= sdif-matlab-$(VERSION)
 
 
@@ -129,12 +137,16 @@ sdif:
 db:
 		$(MAKE) DEBUG=1
 
-test:		$(mexfiles) testl t1.sdif
+test:		$(mexfiles) t0 testl t1.sdif
 
+t0:
+		echo testrw    | matlab -nosplash
 testl:
-		echo testl | matlab -nosplash
+		echo testl     | matlab -nosplash
+t1t:	
+		setenv  SDIFTYPES testtypes.styp; $(MAKE) t1.sdif
 t1.sdif:
-		echo "testwrite('$@')"  |  matlab -nosplash
+		echo "testwrite('$@'), loadsdiffile('$@')"  |  matlab -nosplash
 		querysdif $@
 		sdiftotext -i $@
 
@@ -144,6 +156,8 @@ install:	all $(INSTALL_DIR)
 dist:		all
 		tar cvfz $(DISTBASE).tar.gz $(DISTFILES)
 		@echo now do: cvs tag $(CVSTAG)
+publish:	dist
+		rsh maelzel cp -p $(PWD)/$(DISTBASE).tar.gz /usr/local/www/ircam/equipes/analyse-synthese/sdif/download
 
 clean mexclean cl:
 		-rm -f $(mexfiles) $(loadsdif_obj) $(writesdif_obj) 

@@ -1,4 +1,4 @@
-/* $Id: loadsdif-subs.c,v 1.5 2000-08-04 14:42:28 schwarz Exp $
+/* $Id: loadsdif-subs.c,v 1.6 2000-08-08 17:26:58 schwarz Exp $
 
    loadsdif_subs.c	25. January 2000	Diemo Schwarz
 
@@ -14,6 +14,12 @@
    endread ('close')
 
   $Log: not supported by cvs2svn $
+  Revision 1.5  2000/08/04  14:42:28  schwarz
+  Added reset of file variable, prevents crash on double-close.
+  Version number is written in NVTs, and is used for distribution,
+  defined in makefile (major.minor.release).
+  Types file now included in distribution and documentation.
+
   Revision 1.4  2000/07/19  16:32:08  schwarz
   Updated to new SDIF selection API.
   Proper handling of matrix selection now.
@@ -98,6 +104,8 @@ int readframe (int nlhs, mxArray *plhs [], SdifFileT *f)
     mxArray	  *mxarray [MaxNumOut];
     int		  matrixfound = 0, m;
 
+    if (eof  ||  SdifFLastError(f))   return (0);	/* error or eof */
+
     while (!matrixfound  &&  !eof)
     {
 	/* are there any matrices left in the frame to read? */
@@ -153,7 +161,8 @@ int readframe (int nlhs, mxArray *plhs [], SdifFileT *f)
 	plhs [m] = mxarray [m];
     }
 
-    return (!eof);
+    /* return true even on eof: we want to return the last matrix read */
+    return (SdifFLastError (f) == NULL);
 }
 
 
