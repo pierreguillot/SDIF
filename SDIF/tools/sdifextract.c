@@ -1,4 +1,4 @@
-/* $Id: sdifextract.c,v 1.8 2001-07-19 14:24:36 lefevre Exp $
+/* $Id: sdifextract.c,v 1.9 2001-09-11 13:04:27 roebel Exp $
  
                 Copyright (c) 1998 by IRCAM - Centre Pompidou
                            All rights reserved.
@@ -13,6 +13,9 @@
    Extract data from an SDIF-file.  
    
    $Log: not supported by cvs2svn $
+   Revision 1.8  2001/07/19 14:24:36  lefevre
+   Macintosh Compilation
+
  * Revision 1.7  2001/07/02  15:31:16  lambert
  * Added frame types table to the output file header cpoied from the input
  * file.
@@ -186,7 +189,7 @@ void usage (char *msg, char *arg, int longhelp)
     }
     if (longhelp)
     {
-    	fprintf (SdifStdErr, "\n" PROG "version $Revision: 1.8 $\n\n");
+    	fprintf (SdifStdErr, "\n" PROG "version $Revision: 1.9 $\n\n");
     
     	if (types)
     	{
@@ -345,18 +348,21 @@ outsdif (OutAction what, double data)
 	break;
 
 	case BeginFrame:
-	    *out->CurrFramH           = *in->CurrFramH;
-	    /* leave original data in case we don't change frame structure
-	       out->CurrFramH->Size     = _SdifUnknownSize;
-	       out->CurrFramH->NbMatrix = _SdifUnknownSize; */
-	    out->CurrFramH->Signature = 
-	        SdifSelectGetFirstSignature (out->Selection->frame,
-					     SdifFCurrFrameSignature (in));
-	    out->CurrFramH->NumID     =
-	        SdifSelectGetFirstInt       (out->Selection->stream,
-					     SdifFCurrID (in));
-	    numbytes		      = SdifFWriteFrameHeader (out);
-	    nummatrix		      = 0;
+	  if (out->CurrFramH == NULL)
+	    out->CurrFramH = calloc(1,sizeof(*out->CurrFramH));
+	  
+	  *out->CurrFramH           = *in->CurrFramH;
+	  /* leave original data in case we don't change frame structure
+	     out->CurrFramH->Size     = _SdifUnknownSize;
+	     out->CurrFramH->NbMatrix = _SdifUnknownSize; */
+	  out->CurrFramH->Signature = 
+	    SdifSelectGetFirstSignature (out->Selection->frame,
+					 SdifFCurrFrameSignature (in));
+	  out->CurrFramH->NumID     =
+	    SdifSelectGetFirstInt       (out->Selection->stream,
+					 SdifFCurrID (in));
+	  numbytes		      = SdifFWriteFrameHeader (out);
+	  nummatrix		      = 0;
 	break;
 
 	case BeginMatrix:  
