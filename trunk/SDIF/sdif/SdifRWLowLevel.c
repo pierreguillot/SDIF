@@ -1,4 +1,4 @@
-/* $Id: SdifRWLowLevel.c,v 3.27 2004-09-09 17:33:55 schwarz Exp $
+/* $Id: SdifRWLowLevel.c,v 3.28 2004-10-07 14:53:10 roebel Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -32,6 +32,17 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.27  2004/09/09 17:33:55  schwarz
+ * SdiffGetSignaturefromSdifString, SdiffReadSpacefromSdifString,
+ * SdiffGetWordUntilfromSdifString:
+ * fixed parsing bug that the type definition string had to end with
+ * whitespace.
+ *
+ * At the next bug with the type language parser and tokeniser, it should
+ * be rewritten using flex/bison!
+ *
+ * SdifIsAReservedChar return value changed to boolean flag, much clearer.
+ *
  * Revision 3.26  2004/07/22 14:47:56  bogaards
  * removed many global variables, moved some into the thread-safe SdifGlobals structure, added HAVE_PTHREAD define, reorganized the code for selection, made some arguments const, new version 3.8.6
  *
@@ -672,13 +683,21 @@ SdifIsAReservedChar(char c)
 
 
 /* Convert str <strong>in place</strong> so that it doesn't contain
-  any reserved chars (these become '.') or spaces (these become '_').  
+  the two reserved charsof NVTs '\t' and '\n' that will be transformed
+  to spaces.  
 */
 char *
 SdifStringToNV (/*in out*/ char *str)
 {
     char *s = str;
-
+#if 1
+    while (*s)
+    {
+        if (*s =='\n'  ||  *s =='\t')
+	    *s = ' ';
+	s++;
+    }
+#else
     while (*s)
     {
         if (isspace (*s)  ||  iscntrl (*s))
@@ -687,7 +706,7 @@ SdifStringToNV (/*in out*/ char *str)
 	    *s = '.';
 	s++;
     }
-
+#endif
     return (str);
 }
 
@@ -990,7 +1009,6 @@ SdiffGetWordUntil(FILE* fr, char* s, size_t ncMax, size_t *NbCharRead, const cha
   while( (c = (char) fgetc(fr)) && (ncMax-- > 0) && (!feof(fr)))
     {
       (*NbCharRead)++;
-      
       if (memchr(CharsEnd, c, CharsEndLen))
 	{
 	  *cs = '\0';
