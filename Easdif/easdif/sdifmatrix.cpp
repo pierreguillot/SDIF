@@ -32,9 +32,13 @@
  * 
  * 
  * 
- * $Id: sdifmatrix.cpp,v 1.15 2003-11-18 01:38:22 roebel Exp $ 
+ * $Id: sdifmatrix.cpp,v 1.16 2003-11-18 18:22:17 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.15  2003/11/18 01:38:22  roebel
+ * Fixed internal matrix handling bug that would occure when matrix
+ * would have different data types within a Frame.
+ *
  * Revision 1.14  2003/07/18 20:44:15  roebel
  * removed remaining default arguments in constructor call.
  *
@@ -172,6 +176,7 @@ SDIFMatrix & SDIFMatrix::operator=(const SDIFMatrix& aMatrix) {
 
 
 void SDIFMatrix::Init(SdifSignature sig, int nrows, int ncols, SdifDataTypeET type)
+  throw(SDIFMatrixDataError,bad_alloc)
 {
     if(mInter) {
       if(mType == type) {
@@ -213,13 +218,9 @@ void SDIFMatrix::Init(SdifSignature sig, int nrows, int ncols, SdifDataTypeET ty
 	break;
 	
       default:
-	std::cerr  << std::endl << "!!! matrix type " << type << " not yet implemented !!!" << std::endl;
-	SDIFMatrixDataError exc;
-	exc.initException(eError,
+	throw SDIFMatrixDataError(eError,
 			  "Error in  SDIFMatrix::Init!!! unimplemented matrix type used !!!",
-			  0,0,0,0);      
-	
-	throw exc; // to be implemented
+			  0,eTypeDataNotSupported,0,0);
       }
       mType = type;
     }
@@ -228,7 +229,7 @@ void SDIFMatrix::Init(SdifSignature sig, int nrows, int ncols, SdifDataTypeET ty
 
 
 void SDIFMatrix::Init(const std::string &sig, int nrows, int ncols, SdifDataTypeET type)
-{
+  throw(SDIFMatrixDataError,bad_alloc){
     Init(SdifStringToSignature(sig.c_str()), nrows, ncols, type);
 }
 
