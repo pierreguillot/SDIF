@@ -1,4 +1,4 @@
-/* $Id: SdifError.h,v 3.6 2001-05-02 09:34:41 tisseran Exp $
+/* $Id: SdifError.h,v 3.7 2002-05-24 19:36:02 ftissera Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -32,6 +32,9 @@
  * author: Dominique Virolle 1997
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 3.6  2001/05/02 09:34:41  tisseran
+ * Change License from GNU Public License to GNU Lesser Public License.
+ *
  * Revision 3.5  2000/11/21 14:51:48  schwarz
  * - sdif.h is now included by all sdif/Sdif*.c files.
  * - Removed all public typedefs, enums, structs, and defines from the
@@ -96,11 +99,23 @@
 
 
 extern SdifExitFuncT gSdifExitFunc;
+extern SdifExceptionFuncT  gSdifErrorFunc;
+extern SdifExceptionFuncT  gSdifWarningFunc;
+
 extern char *SdifErrorFile;
 extern int SdifErrorLine;
 extern FILE* SdifStdErr;
 
-void SdifErrorWarning(SdifErrorEnum Error, const void *ErrorMess);
+void SdifErrorWarning(SdifErrorEnum Error, const char *ErrorMess);
+
+void
+SdifDefaultErrorFunc (int errnum, SdifErrorLevelET errlev, 
+		      char *msg, SdifFileT *file, SdifErrorT *error,
+		      char *sourcefilename, int sourcefileline);
+void
+SdifDefaultWarningFunc (int errnum, SdifErrorLevelET errlev, 
+			char *msg, SdifFileT *file, SdifErrorT *error,
+			char *sourcefilename, int sourcefileline);
 
 #define _SdifError(error, mess) \
 (SdifErrorFile = __FILE__, SdifErrorLine = __LINE__, SdifErrorWarning((error), (mess)))
