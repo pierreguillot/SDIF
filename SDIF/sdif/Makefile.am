@@ -1,4 +1,5 @@
 lib_LIBRARIES = libsdif.a
+FORMES_H=host_architecture.h preincluded.h UniversalEnvVar.h host_configure.h XpGuiCalls.h
 FORMES_INCLUDE=/u/formes/include
 noinst_HEADERS = *.h ${FORMES_H}
 libsdif_a_dir = $(prefix)/libsdif
