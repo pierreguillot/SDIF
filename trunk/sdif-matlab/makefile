@@ -1,10 +1,13 @@
-# $Id: makefile,v 1.11 2000-08-08 18:07:30 schwarz Exp $
+# $Id: makefile,v 1.12 2000-08-23 15:03:20 schwarz Exp $
 #
 # makefile	26. January 2000	Diemo Schwarz
 #
 # formesutils matlab library
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.11  2000/08/08  18:07:30  schwarz
+# Added README with release notes to distribution.
+#
 # Revision 1.10  2000/08/08  17:47:48  schwarz
 # Make distribution with all mex binaries.
 #
@@ -67,8 +70,12 @@ CVSTAG		= sdif_matlab_v$(V_MAJOR)_$(V_MINOR)_$(V_RELEASE)
 #
 
 # under IMPORT_ROOT, imported lib and include directories are used
+ifeq ($(USER),schwarz)
+  IMPORT_ROOT	 = $(HOME)
+else
 ifeq ($(USER),tisseran)
   IMPORT_ROOT	 = $(HOME)
+endif
 endif
 
 CFLAGS	   	 = -g -Wall -DTEST '-DVERSION="$(VERSION)"'
@@ -112,6 +119,7 @@ DIST_FILES	= $(foreach s, $(ALLMEXSUF), $(mexbase:%=%.$s)) \
 		  -C $(subst /lib/,/bin/,$(SDIF_LIB_DIR)) querysdif
 DIST_HOST	= maelzel
 DIST_BASE	= sdif-matlab-$(VERSION)
+DIST_COPYFILES  = $(DIST_BASE).tar.gz README readme.txt
 
 
 #
@@ -148,10 +156,11 @@ sdif:
 db:
 		$(MAKE) DEBUG=1
 
-test:		$(mexfiles) t0 testl t1.sdif
+test:		$(mexfiles) testrw testl t1.sdif
 
-t0:
-		echo testrw    | matlab -nosplash
+testrw rw:
+		echo 'testrw(0), testrw(1), testrw(2), testrw(3)' \
+		| matlab -nosplash
 testl:
 		echo testl     | matlab -nosplash
 t1t:	
@@ -168,7 +177,9 @@ dist:		all
 		tar cvfz $(DIST_BASE).tar.gz $(DIST_FILES)
 		@echo now do: cvs tag $(CVSTAG)
 publish:	dist
-		rsh $(DIST_HOST) cp -p $(PWD)/$(DIST_BASE).tar.gz $(DIST_DIR)
+		cp -p README readme.txt	  # bloody webserver ignores uppercaase
+		rsh $(DIST_HOST) cp -f $(DIST_COPYFILES:%=$(PWD)/%) $(DIST_DIR)
+		rm readme.txt
 
 clean mexclean cl:
 		-rm -f $(mexfiles) $(loadsdif_obj) $(writesdif_obj) 
