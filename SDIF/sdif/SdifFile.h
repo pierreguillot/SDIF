@@ -1,4 +1,4 @@
-/* $Id: SdifFile.h,v 3.3 1999-09-20 13:21:58 schwarz Exp $
+/* $Id: SdifFile.h,v 3.4 1999-09-28 10:37:00 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -17,6 +17,9 @@ LIBRARY
 
 LOG
  * $Log: not supported by cvs2svn $
+ * Revision 3.3  1999/09/20  13:21:58  schwarz
+ * Introduced user data and access functions SdifFAddUserData/GetUserData.
+ *
  * Revision 3.2  1999/08/25  18:32:35  schwarz
  * Added cocoon-able comments with sentinel "DOC:" (on a single line).
  *
@@ -64,6 +67,16 @@ LOG
 
 
 /*DOC: 
+  Test if file is an SDIF file.
+
+  [] Returns:	0 if not an SDIF file (the first 4 chars are not "SDIF"),
+		or file can not be opened, else 1.  
+
+  Warning: This function doesn't work with stdio.
+*/
+int SdifCheckFileFormat (char *name);
+
+/*DOC: 
   todo: Test if file is an SDIF file (only when opening for read or
   append) and open it.
 
@@ -71,9 +84,13 @@ LOG
   or file can not be opened.  */
 SdifFileT*	   SdifFTryOpen			(const char *Name, SdifFileModeET Mode);
 
+/*DOC:
+ */
 SdifFileT*         SdifFOpen                    (const char *Name, SdifFileModeET Mode);
 SdifFileT*         SdifOpenFile                 (const char *Name, SdifFileModeET Mode);
 SdifFileT*         SdifFOpenText                (SdifFileT *SdifF, const char* Name, SdifFileModeET Mode);
+/*DOC:
+ */
 void               SdifFClose                   (SdifFileT *SdifF);
 void               SdifCloseFile                (SdifFileT *SdifF);
 SdifFrameHeaderT*  SdifFCreateCurrFramH         (SdifFileT *SdifF, SdifSignature Signature);
