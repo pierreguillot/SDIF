@@ -4,7 +4,7 @@
 typedef void SdifFileT;
 #endif
 
-#define MaxNumOut 5
+/* #define MaxNumOut 5 */
 
 extern int matrixcount;
 SdifFileT *beginwrite (int nrhs, const mxArray *prhs [], char *filename, char *types);
