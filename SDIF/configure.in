@@ -1,5 +1,5 @@
 dnl -*-m4-*- (He emacs, it's a m4 file)
-dnl $Id: configure.in,v 1.13 2001-07-12 14:11:46 roebel Exp $
+dnl $Id: configure.in,v 1.14 2001-12-05 13:32:38 tisseran Exp $
 dnl
 dnl configure.in		September 2000		Patrice Tisserand
 dnl
@@ -30,6 +30,9 @@ dnl For any information regarding this and other IRCAM software, please
 dnl send email to:  sdif@ircam.fr
 dnl
 dnl $Log: not supported by cvs2svn $
+dnl Revision 1.13  2001/07/12 14:11:46  roebel
+dnl Added include file holding library version defines to the distribution.
+dnl
 dnl Revision 1.12  2001/05/02 09:34:37  tisseran
 dnl Change License from GNU Public License to GNU Lesser Public License.
 dnl
@@ -88,7 +91,7 @@ dnl PACKAGE NAME AND VERSION
 AC_MSG_RESULT(PACKAGE NAME AND VERSION)
 PACKAGE=SDIF
 SDIF_VERSION_MAJOR=3
-SDIF_VERSION_MINOR=4
+SDIF_VERSION_MINOR=5
 
 VERSION=$SDIF_VERSION_MAJOR.$SDIF_VERSION_MINOR
 AC_SUBST(PACKAGE)
