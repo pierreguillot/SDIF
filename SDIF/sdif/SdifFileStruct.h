@@ -1,4 +1,4 @@
-/* $Id: SdifFileStruct.h,v 3.6 2000-05-22 15:23:16 schwarz Exp $
+/* $Id: SdifFileStruct.h,v 3.7 2000-08-22 13:17:25 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -15,6 +15,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.6  2000/05/22  15:23:16  schwarz
+ * Added functions to retrieve and inspect the stream ID table of a file.
+ *
  * Revision 3.5  2000/05/04  15:06:42  schwarz
  * Moved SdifSignatureTab into separate file SdifSignatureTab
  *
@@ -173,8 +176,8 @@ struct SdifFileS
   char *TextStreamName;                 /* Name of the text file corresponding to the sdif file */
   FILE *TextStream;                     /* Stream text */
 
-  unsigned int  NbOfWarning;
-  SdifErrorLT  *Errors;
+  SdifUInt4     ErrorCount [eNumLevels];/* Error count per level of severity */
+  SdifErrorLT  *Errors;			/* List of errors or warnings */
 
   int		NbUserData;		/* todo: hash table */
   void		*UserData [MaxUserData];
