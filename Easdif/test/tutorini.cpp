@@ -66,8 +66,22 @@ int main(int argc, char** argv)
     /*for adding with a StreamID number 3 for example */
     entity.AddNVT(NameValueTable2, 3);
 
-    /*for adding the Name Value Tables of the EntityRead*/
-    readentity.OpenRead(argv[1]); //the file of EntityRead must be Open
+    /*for adding the Name Value Tables of the EntityRead
+     *the file of EntityRead must be Open */
+    try {
+      if (!readentity.OpenRead(argv[1]) ) {
+	std::cerr << "Could not open input file :"<<argv[1]<<std::endl;
+	exit(1);
+      }
+    }
+    /* Openread may through BadHeader exception in case the input file
+     * is not a valid SDIF file */
+    catch(SDIFBadHeader& e)
+      {
+	e.ErrorMessage();
+	exit(1);
+      }
+
     y = readentity.GetNbNVT();
     if( y != 0)
     {
@@ -91,7 +105,10 @@ int main(int argc, char** argv)
     entity.AddFrameType("1NEW", "1NEW NewMatrix; 1FQ0 New1FQ0");
 
     /* to open a file for writing*/
-    entity.OpenWrite("FileToWrite.sdif");
+    if(!entity.OpenWrite("FileToWrite.sdif")) {
+	std::cerr << "Could not open output file : FileToWrite.sdif"<<std::endl;
+	exit(1);
+    }
 
 
     /******** SELECTION ********/

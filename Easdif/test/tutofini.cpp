@@ -60,7 +60,20 @@ int main(int argc, char** argv)
 
     /*for adding the Name Value Tables of the EntityRead, the file of
      *EntityToRead must be Open*/
-    readentity.OpenRead(argv[1]);
+    try {
+      if (!readentity.OpenRead(argv[1]) ) {
+	std::cerr << "Could not open input file :"<<argv[1]<<std::endl;
+	exit(1);
+      }
+    }
+    /* Openread may through BadHeader exception in case the input file
+     * is not a valid SDIF file */
+    catch(SDIFBadHeader& e)
+      {
+	e.ErrorMessage();
+	exit(1);
+      }
+
     y = readentity.GetNbNVT();
     if( y != 0)
     {
@@ -87,7 +100,11 @@ int main(int argc, char** argv)
 
 
     /* to open a file for writing */
-    entity.OpenWrite("FileToWrite.sdif");
+    if(!entity.OpenWrite("FileToWrite.sdif")) {
+	std::cerr << "Could not open output file : FileToWrite.sdif"<<std::endl;
+	exit(1);
+    }
+
 
     /******** SELECTION ********/
     /* if you want to change the selection of the EntityRead use the same 
@@ -161,7 +178,7 @@ int main(int argc, char** argv)
     catch(SDIFEof& e)
       {
 	/* if we want an access to the file */
-	SdifFileT *sf = e.sdifFile();
+	const SdifFileT *sf = e.sdifFile();
 
 	std::cerr << " Catch EOF for file " <<sf->Name << " -- ending program " << std::endl;
 	/* to have the error message */
