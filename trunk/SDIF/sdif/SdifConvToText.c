@@ -233,23 +233,18 @@ SdifToText(SdifFileT *SdifF, char *TextStreamName)
       return SizeR;
     }
   else
-    if (SdifStrCmp(TextStreamName, "stdin")==0)
-      _SdifFError(SdifF, eBadStdFile, "write on stdin forbidden");
-    else
-      if (SdifStrCmp(TextStreamName, "stdout")==0)
-	SdifF->TextStream = stdout;
-      else
-	if (! (SdifF->TextStream = SdiffBinOpen(SdifF->TextStreamName, eBinaryModeWrite)) )
-	  {
-	    _SdifError(eFileNotFound, TextStreamName);
-	    free(SdifF->TextStreamName);
-	    return  SizeR;
-	  }
-
-  if ( (SdifF->TextStream) && (SdifF->Stream) )
     {
-      SizeR = SdifFConvToText(SdifF);
-      fflush(SdifF->TextStream);
+      SdifFOpenText(SdifF, TextStreamName, eWriteFile);
+      if (! SdifF->TextStream)
+	    {
+	      return  SizeR;
+	    }
+      else
+        {
+          SizeR = SdifFConvToText(SdifF);
+          fflush(SdifF->TextStream);
+	      return  SizeR;
+        }
     }
   
   return SizeR;
