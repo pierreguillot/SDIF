@@ -7,9 +7,14 @@
  * 
  * 
  * 
- * $Id: sdifmatrix.cpp,v 1.6 2002-10-10 10:49:09 roebel Exp $ 
+ * $Id: sdifmatrix.cpp,v 1.7 2002-11-07 21:06:52 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.6  2002/10/10 10:49:09  roebel
+ * Now using namespace Easdif.
+ * Fixed handling of zero pointer arguments in initException.
+ * Reading past end of file now throws an exception.
+ *
  * Revision 1.5  2002/08/28 16:46:53  roebel
  * Internal reorganization and name changes.
  *
@@ -31,11 +36,10 @@
 
 namespace Easdif {
 
-SDIFMatrix::SDIFMatrix():mInter(0)
+SDIFMatrix::SDIFMatrix(const SdifDataTypeET & _type):
+  mInter(0),mType(_type)
 {
-    //m_Signature =...;
-    /* default type */
-    mType = eFloat4;
+
     /* default signature */
     //mSig = SdifSignatureConst('1','T','R','C');
     // signifies uninitialized matrix
@@ -50,40 +54,8 @@ SDIFMatrix::SDIFMatrix(const SDIFMatrix& aMatrix):mInter(0)
     mSig = aMatrix.mSig;
     mType = aMatrix.mType;
     bytesread = aMatrix.bytesread;
-    int mNrows = aMatrix.mInter->GetNbRow();
-    int mNcols = aMatrix.mInter->GetNbCol();
-    
-   CreateMatrixData(mSig, mNrows, mNcols, mType);
-          
-   switch (mType){
-   case eInt4:
-       for(int row = 0 ; row <mNrows ; row++)
-       {
-	   for(int col = 0 ; col <mNcols ; col++)
-	   {
-	      mInter->Set(row, col, aMatrix.mInter->GetInt(row, col));
-	   }
-       }
-	break;
-   case eFloat4:
-       for(int row = 0 ; row <mNrows ; row++)
-       {
-	   for(int col = 0 ; col <mNcols ; col++)
-	   {
-	       mInter->Set(row, col, aMatrix.mInter->GetFloat(row, col));
-	   }
-       }       
-	break;	
-   case eFloat8:
-       for(int row = 0 ; row <mNrows ; row++)
-       {
-	   for(int col = 0 ; col <mNcols ; col++)
-	   {
-	       mInter->Set(row, col, aMatrix.mInter->GetDouble(row, col));
-	   }
-       }
-	break;
-    }		
+
+    mInter =   aMatrix.mInter->clone(); 
 }
 
 void SDIFMatrix::CreateMatrixData(SdifSignature sig, int nrows, int ncols, SdifDataTypeET type)//=eFloat4)
@@ -119,7 +91,8 @@ int SDIFMatrix::Write(SdifFileT* file)
 
     // SdifDataTypeET  type  = SdifFCurrDataType(file);
    
-    mInter->Resize(nrows, ncols);
+    // we do not ned to resize
+    //    mInter->Resize(nrows, ncols);
     SizeFrameW = 0;
 
     /* convert for the signature*/
@@ -173,38 +146,8 @@ void SDIFMatrix::View()
    mInter->view();
 }
 
-/* to set the value of matrix with type : "int", "float" or "double"*/
-int SDIFMatrix::Set(int i, int j, const int& value)
-{
-    return mInter->Set(i, j, value);
-}
 
-int SDIFMatrix::Set(int i, int j, const float& value)
-{
-    return mInter->Set(i, j, value);
-}
 
-int SDIFMatrix::Set(int i, int j, const double& value)
-{
-    return mInter->Set(i, j, value);
-}
-
-/* to get */
-/* a method to get value with type : "int", "float" or "double": */
-int SDIFMatrix::Get(int i, int j, int& value)
-{
-    return value = mInter->GetInt(i, j);
-}
-
-float SDIFMatrix::Get(int i, int j, float& value)
-{
-    return value = mInter->GetFloat(i, j);
-}
-
-double SDIFMatrix::Get(int i, int j, double& value)
-{
-    return value = mInter->GetDouble(i, j);
-}
 
 /* an other method to get value : */
 int SDIFMatrix::GetInt(int i, int j)
