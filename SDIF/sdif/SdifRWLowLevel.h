@@ -1,4 +1,4 @@
-/* $Id: SdifRWLowLevel.h,v 3.1 1999-03-14 10:57:19 virolle Exp $
+/* $Id: SdifRWLowLevel.h,v 3.2 1999-08-31 10:05:48 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -17,6 +17,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.1  1999/03/14  10:57:19  virolle
+ * SdifStdErr add
+ *
  * Revision 2.1  1998/12/21  18:27:38  schwarz
  * Inserted copyright message.
  *
@@ -99,5 +102,10 @@ int SdifSkipASCIIUntil  (FILE* fr, size_t *NbCharRead, char *CharsEnd);
 
 size_t SdiffScanFloat4  (FILE *stream, SdifFloat4 *ptr, size_t nobj);
 size_t SdiffScanFloat8  (FILE *stream, SdifFloat8 *ptr, size_t nobj);
+
+/*DOC:
+  Convert a string to an SDIF signature (in proper endianness)
+ */
+SdifSignature SdifStringToSignature (char *str);
 
 #endif /* _SdifRWLowLevel_ */

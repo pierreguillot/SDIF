@@ -1,4 +1,4 @@
-/* $Id: SdifRWLowLevel.c,v 3.1 1999-03-14 10:57:18 virolle Exp $
+/* $Id: SdifRWLowLevel.c,v 3.2 1999-08-31 10:05:46 schwarz Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -15,6 +15,9 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.1  1999/03/14  10:57:18  virolle
+ * SdifStdErr add
+ *
  * Revision 2.3  1999/01/23  15:55:59  virolle
  * add querysdif.dsp, delete '\r' chars from previous commit
  *
@@ -640,10 +643,22 @@ SdiffGetString(FILE* fr, char* s, size_t ncMax, size_t *NbCharRead)
 
 
 
+/* exactly 4 chars are considered, so make sure *str has at least that many! */
+SdifSignature
+SdifStringToSignature (char *str)
+{
+  SdifSignature Signature = *((SdifUInt4 *) str);
 
+  switch (gSdifMachineType)
+  {     
+    case eLittleEndianLittleConst :
+    case eLittleEndianLittleConst64 :
+      SdifBigToLittle((void *) Signature, sizeof(Signature));
+    break;
+  }
 
-
-
+  return (Signature);
+}  
 
 
 
@@ -651,10 +666,9 @@ SdiffGetString(FILE* fr, char* s, size_t ncMax, size_t *NbCharRead)
 int
 SdiffGetSignature(FILE* fr, SdifSignature *Signature, size_t *NbCharRead)
 {
-  char Name[4] = "\0\0\0";
+  char Name[4] = "\0\0\0\0";
   char c = 0;
   int cint = 0;
-  char *pCS = NULL;
   unsigned int i;
   
   do
@@ -681,24 +695,6 @@ SdiffGetSignature(FILE* fr, SdifSignature *Signature, size_t *NbCharRead)
 	}
     }
   
-  pCS = (char*) Signature;
-  pCS[0] = Name[0];
-  pCS[1] = Name[1];
-  pCS[2] = Name[2];
-  pCS[3] = Name[3];/* effet de bord sur signature */
-
-
-  switch (gSdifMachineType)
-    {     
-    case eLittleEndianLittleConst :
-    case eLittleEndianLittleConst64 :
-      SdifBigToLittle(Signature, sizeof(Signature));
-      break;
-    default :
-      break;
-    }
-  
-
   if (feof(fr))
     {
       *Signature = eEmptySignature;
@@ -706,7 +702,10 @@ SdiffGetSignature(FILE* fr, SdifSignature *Signature, size_t *NbCharRead)
       return eEof;
     }
   else
-    return cint;
+    {
+      *Signature = SdifStringToSignature (Name);
+      return cint;
+    }
 }
 
 
