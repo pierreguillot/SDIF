@@ -1,4 +1,4 @@
-/* $Id: SdifRWLowLevel.c,v 3.28 2004-10-07 14:53:10 roebel Exp $
+/* $Id: SdifRWLowLevel.c,v 3.29 2004-12-20 12:15:40 roebel Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -32,6 +32,9 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.28  2004/10/07 14:53:10  roebel
+ * Fixed SdifStringToNV to only convert \t and \n.
+ *
  * Revision 3.27  2004/09/09 17:33:55  schwarz
  * SdiffGetSignaturefromSdifString, SdiffReadSpacefromSdifString,
  * SdiffGetWordUntilfromSdifString:
@@ -294,7 +297,7 @@ size_t SdiffwriteLittleEndian2 (void *ptr, size_t nobj, FILE *stream)
 	SdifSwap2Copy(ptr, sdifLittleToBig, ntowrite);
 	nwritten += Sdiffwrite(sdifLittleToBig, 2, ntowrite, stream);
 	nobj     -= ntowrite; 
-	(char *) ptr += _SdifBSLittleE;
+	ptr       = (void *)(((char *) ptr) + _SdifBSLittleE);
     }
 
     return nwritten;
@@ -316,7 +319,7 @@ size_t SdiffwriteLittleEndian4 (void *ptr, size_t nobj, FILE *stream)
 	SdifSwap4Copy(ptr, sdifLittleToBig, ntowrite);
 	nwritten += Sdiffwrite(sdifLittleToBig, 4, ntowrite, stream);
 	nobj     -= ntowrite; 
-	(char *) ptr += _SdifBSLittleE;
+	ptr       = (void *)(((char *) ptr) + _SdifBSLittleE);
     }
 
     return nwritten;
@@ -338,7 +341,7 @@ size_t SdiffwriteLittleEndian8 (void *ptr, size_t nobj, FILE *stream)
 	SdifSwap8Copy(ptr, sdifLittleToBig, ntowrite);
 	nwritten += Sdiffwrite(sdifLittleToBig, 8, ntowrite, stream);
 	nobj     -= ntowrite; 
-	(char *) ptr += _SdifBSLittleE;
+	ptr       = (void *)(((char *) ptr) + _SdifBSLittleE);
     }
 
     return nwritten;
