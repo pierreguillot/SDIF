@@ -33,9 +33,13 @@
  * 
  * 
  * 
- * $Id: sdifmatrix.h,v 1.5 2003-04-29 15:41:30 schwarz Exp $ 
+ * $Id: sdifmatrix.h,v 1.6 2003-04-29 15:54:07 schwarz Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.5  2003/04/29 15:41:30  schwarz
+ * Changed all names View* to Print* and *Info to *Header for consistency
+ * with SDIF library.
+ *
  * Revision 1.4  2003/04/29 15:19:51  schwarz
  * Constructor with space initialisation, default singleton float matrix.
  * CreateMatrixData accepts SdifSignature or std::string.
@@ -103,7 +107,7 @@ namespace Easdif {
  */
 
 // shorten SWIG class names because we prefix with SDIF:: anyway
-#ifdef SWIG
+#ifdef SWIG_RENAME_EASDIF
 %name(Matrix)
 #endif
 

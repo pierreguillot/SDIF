@@ -32,9 +32,13 @@
  * 
  * 
  * 
- * $Id: sdifentity.h,v 1.6 2003-04-29 15:41:30 schwarz Exp $ 
+ * $Id: sdifentity.h,v 1.7 2003-04-29 15:54:04 schwarz Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.6  2003/04/29 15:41:30  schwarz
+ * Changed all names View* to Print* and *Info to *Header for consistency
+ * with SDIF library.
+ *
  * Revision 1.5  2003/04/18 17:43:22  schwarz
  * eof() const method
  *
@@ -108,7 +112,7 @@ namespace Easdif {
  */
 
 // shorten SWIG class name because we prefix with SDIF:: anyway
-#ifdef SWIG
+#ifdef SWIG_RENAME_EASDIF
 %name(Entity)
 #endif
 
