@@ -8,11 +8,15 @@
 % stream frames(i, 2) having frames(i, 4) rows (can be 0!) with frame type 
 % signatures(i, 1:4) and matrix type signatures(i, 5:8).
 
-% $Id: loadsdifflat.m,v 1.5 2003-09-15 15:59:01 schwarz Exp $
+% $Id: loadsdifflat.m,v 1.6 2003-10-29 18:12:38 schwarz Exp $
 %
 % loadsdifflat.m	31. January 2000	Diemo Schwarz
 %
 % $Log: not supported by cvs2svn $
+% Revision 1.5  2003/09/15 15:59:01  schwarz
+% Properly preallocate arrays and cell arrays, dynamic reallocation every 10000 frames
+% --> 100 times faster for big files (no lie!)
+%
 % Revision 1.4  2000/08/27  14:24:11  schwarz
 % Clarified empty matrix issue:  The doc was wrong!
 % Updated doc and loadsdiffile and loadsdifflat now use eof flag right
@@ -46,15 +50,16 @@ function [ data, frames, signatures ] = loadsdifflat (name, types)
 
     di = 0;	% data index
     fi = 0;	% frame index
-
+    rows = 1;
+    
     while (1)				% read frame by frame
 	[ d, t, s, f, m ] = loadsdif;
 
 	if isempty (t),  break;  end
     
-	[ rows, cols ] = size(d);
 	fi = fi + 1;
-	di = di + rows;
+	di = di + rows;			% advance by last matrice's row count
+	[ rows, cols ] = size(d);
 
 	if di > nalloc,			% make more space (blockwise)
 	    frames     = [ frames;     zeros(nblock, 4) ]; % too much here,
