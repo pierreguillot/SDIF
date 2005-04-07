@@ -1,4 +1,4 @@
-/* $Id: SdifSignatureTab.h,v 3.4 2001-05-02 09:34:47 tisseran Exp $
+/* $Id: SdifSignatureTab.h,v 3.5 2005-04-07 15:20:22 schwarz Exp $
   
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -31,6 +31,9 @@ LIBRARY
 
 LOG
     $Log: not supported by cvs2svn $
+    Revision 3.4  2001/05/02 09:34:47  tisseran
+    Change License from GNU Public License to GNU Lesser Public License.
+
     Revision 3.3  2000/11/21 14:51:51  schwarz
     - sdif.h is now included by all sdif/Sdif*.c files.
     - Removed all public typedefs, enums, structs, and defines from the
@@ -50,7 +53,6 @@ LOG
  * Revision 3.1  2000/05/04  14:59:33  schwarz
  * Added modules SdifCheck and SdifSignatureTab, containing functions
  * formerly in SdifFile.
- *
 */
 
 
@@ -63,58 +65,6 @@ LOG
 
 /* Growth steps for reallocation */
 #define _SdifSignatureTabGranule 16
-
-
-
-/*
-// FUNCTION GROUP:	Handling of a Table of Signatures
-*/
-
-/*DOC:
-  Create table for initially NbSignMax signatures. */
-SdifSignatureTabT* SdifCreateSignatureTab (const SdifUInt4 NbSignMax);
-
-/*DOC:
-  Free signature table. */
-void		   SdifKillSignatureTab   (SdifSignatureTabT *SignTab);
-
-/*DOC:
-  Reallocate table to hold NewNbSignMax signatures. */
-SdifSignatureTabT* SdifReAllocSignatureTab(SdifSignatureTabT *SignTab, 
-					   const SdifUInt4 NewNbSignMax);
-
-/*DOC:
-  Reallocate table to hold NewNbSignMax signatures and clear signatures. */
-SdifSignatureTabT* SdifReInitSignatureTab (SdifSignatureTabT *SignTab, 
-					   const SdifUInt4 NewNbSignMax);
-
-/*DOC:
-  Add signature Sign, no overflow check. */
-SdifSignatureTabT* SdifPutInSignatureTab  (SdifSignatureTabT *SignTab, 
-					   const SdifSignature Sign);
-
-/*DOC:
-  Add signature Sign, reallocate table if necessary. */
-SdifSignatureTabT* SdifAddToSignatureTab  (SdifSignatureTabT *SignTab, 
-					   const SdifSignature Sign);
-
-/*DOC:
-  Get signature at position index.  
-  Returns eEmptySignature if index out of bounds. */
-SdifSignature      SdifGetFromSignatureTab(const SdifSignatureTabT* SignTab, 
-					   const int index);
-
-/*DOC:
-  Test if signature Sign is in table SignTab. 
-  [] Returns Sign if yes, 0 (== eEmptySignature) if no. */
-SdifSignature      SdifIsInSignatureTab   (const SdifSignatureTabT *SignTab, 
-					   const SdifSignature Sign);
-
-/*DOC:
-  Test if signature Sign is in table SignTab. 
-  [] Returns index of Sign if yes, -1 if no. */
-int		   SdifFindInSignatureTab (const SdifSignatureTabT* SignTab, 
-					   const SdifSignature Sign);
 
 
 #endif /* _SdifSignatureTab_ */
