@@ -1,4 +1,4 @@
-/* $Id: SdifFRead.c,v 3.23 2004-09-14 15:45:33 schwarz Exp $
+/* $Id: SdifFRead.c,v 3.24 2005-04-07 15:56:47 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -31,6 +31,10 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.23  2004/09/14 15:45:33  schwarz
+ * use return after severe _SdifFError, because some library caller might not
+ * exit in its error handler
+ *
  * Revision 3.22  2004/09/10 09:15:56  roebel
  * Added missing prototype for SdifMatrixDataUpdateHeader. This is necessary to compile with c++.
  *
@@ -167,14 +171,11 @@
 #include "SdifTest.h"
 #include "SdifFile.h"
 #include "SdifGlobals.h"
-#include "SdifRWLowLevel.h"
-#include "SdifNameValue.h"
 #include "SdifHash.h"
 #include "SdifMatrix.h"
 #include "SdifFrameType.h"
 #include "SdifStreamID.h"
 #include "SdifErrMess.h"
-#include "SdifTimePosition.h"
 #include "SdifFGet.h"
 #include <assert.h>
 #include <errno.h>

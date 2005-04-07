@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.34 2004-08-23 17:37:32 roebel Exp $
+# $Id: Makefile.am,v 1.35 2005-04-07 15:56:46 schwarz Exp $
 #
 # ./sdif/Makefile.am		September 2000		Patrice Tisserand
 #
@@ -30,6 +30,9 @@
 
 
 # $Log: not supported by cvs2svn $
+# Revision 1.34  2004/08/23 17:37:32  roebel
+# Fixed for dist target!
+#
 # Revision 1.33  2004/06/03 11:18:00  schwarz
 # Profiling showed some waste of cycles in byte swapping and signature reading:
 # - byte swapping now array-wise, not element-wise in SdifSwap<N>[Copy] routines:   -> from 0.24 s (18.5%) to 0.14s
@@ -166,45 +169,42 @@ EXTRA_LTLIBRARIES = libsdif.la libsdif-debug.la libsdif-profile.la
 lib_LTLIBRARIES = @SELLIB@
 
 SDIF_H = ../include/sdif_version.h $(top_srcdir)/include/sdif.h \
-	SdifCheck.h 	SdifErrMess.h	SdifConvToText.h 	\
-	SdifError.h 	SdifFGet.h 	SdifFPrint.h 		\
+	SdifError.h 	SdifFGet.h 	SdifErrMess.h 		\
+	SdifTest.h 	SdifStreamID.h  SdifMatrixType.h 	\
 	SdifFPut.h 	SdifFRead.h	SdifFScan.h 		\
-	SdifFWrite.h 	SdifFile.h      SdifTimePosition.h 	\
+	SdifFWrite.h 	SdifFile.h      SdifSelect.h	 	\
 	SdifFrame.h 	SdifFrameType.h SdifGlobals.h 		\
 	SdifHard_OS.h 	SdifHash.h	SdifHighLevel.h 	\
-	SdifList.h 	SdifMatrix.h 	SdifMatrixType.h	\
-	SdifMemory.h	SdifNameValue.h	SdifPreTypes.h 		\
-	SdifPrint.h 	SdifSelect.h	SdifRWLowLevel.h	\
-	SdifStreamID.h	SdifString.h 	SdifSignatureTab.h	\
-	SdifTest.h 	SdifTextConv.h 	sdiftypes.h		\
-	sdif_portability.h host_architecture.h  config.h
+	SdifList.h 	SdifMatrix.h 	\
+	config.h	sdiftypes.h	sdif_portability.h      \
+	host_architecture.h
 
 noinst_HEADERS = $(SDIF_H) 
 
-libsdif_la_SOURCES = SdifHash.c       SdifGlobals.c      SdifSignatureTab.c   \
-		     SdifMemory.c     SdifNameValue.c    SdifMatrixType.c     \
-		     SdifStreamID.c   SdifMatrix.c       SdifFrame.c          \
-		     SdifTest.c       SdifTimePosition.c SdifFile.c           \
-		     SdifFGet.c       SdifFRead.c        SdifFScan.c          \
-		     SdifFPrint.c     SdifFWrite.c       SdifTextConv.c       \
-		     SdifHard_OS.c    SdifErrMess.c      SdifList.c           \
-		     SdifSelect.c     SdifHighLevel.c    SdifCheck.c          \
-		     SdifString.c     SdifError.c        SdifFrameType.c      \
-		     SdifPrint.c      SdifRWLowLevel.c   SdifFPut.c           \
-		     SdifConvToText.c SdifPreTypes.c
+libsdif_la_SOURCES = SdifHash.c       SdifGlobals.c      SdifSignatureTab.c \
+		     SdifConvToText.c SdifNameValue.c    SdifMatrixType.c   \
+		     SdifStreamID.c   SdifMatrix.c       SdifFrame.c        \
+		     SdifTest.c       SdifTimePosition.c SdifFile.c         \
+		     SdifFGet.c       SdifFRead.c        SdifFScan.c        \
+		     SdifFPrint.c     SdifFWrite.c       SdifTextConv.c     \
+		     SdifHard_OS.c    SdifErrMess.c      SdifList.c         \
+		     SdifSelect.c     SdifHighLevel.c    SdifCheck.c        \
+		     SdifString.c     SdifError.c        SdifFrameType.c    \
+		     SdifPrint.c      SdifRWLowLevel.c   SdifFPut.c         \
+		     SdifPreTypes.c
 
-libsdif_debug_la_SOURCES = $(libsdif_la_SOURCES)
+libsdif_debug_la_SOURCES   = $(libsdif_la_SOURCES)
 libsdif_profile_la_SOURCES = $(libsdif_la_SOURCES)
 
-libsdif_la_LDFLAGS = -no-undefined -release @VERSION@ -rpath $(libdir)
-libsdif_debug_la_LDFLAGS = $(libsdif_la_LDFLAGS) -rpath $(libdir)
+libsdif_la_LDFLAGS         = -no-undefined -release @VERSION@ -rpath $(libdir)
+libsdif_debug_la_LDFLAGS   = $(libsdif_la_LDFLAGS) -rpath $(libdir)
 libsdif_profile_la_LDFLAGS = $(libsdif_la_LDFLAGS) -rpath $(libdir) -pg
 
-sdiftype = $(datadir)/SdifTypes.STYP
+sdiftype   = $(datadir)/SdifTypes.STYP
 
-EXTRA_DIST=sdif.dsp
+EXTRA_DIST = sdif.dsp
 
-INCLUDES = -I../include -I$(top_srcdir)/include -D_SdifTypesFileName=\"$(sdiftype)\" -DUSE_CONFIGURE
+INCLUDES   = -I../include -I$(top_srcdir)/include -D_SdifTypesFileName=\"$(sdiftype)\" -DUSE_CONFIGURE
 
 
 $(libsdif_a_SOURCES) :  $(FORMES_H:%=$(top_srcdir)/sdif/%)

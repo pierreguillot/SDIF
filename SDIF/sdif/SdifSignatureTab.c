@@ -1,4 +1,4 @@
-/* $Id: SdifSignatureTab.c,v 3.5 2003-11-07 21:47:18 roebel Exp $
+/* $Id: SdifSignatureTab.c,v 3.6 2005-04-07 15:56:48 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -30,6 +30,9 @@
  * Handling of a Table of Signatures
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.5  2003/11/07 21:47:18  roebel
+ * removed XpGuiCalls.h and replaced preinclude.h  by local files
+ *
  * Revision 3.4  2001/05/02 09:34:47  tisseran
  * Change License from GNU Public License to GNU Lesser Public License.
  *
@@ -45,12 +48,13 @@
  * Revision 3.1  2000/05/04  14:59:32  schwarz
  * Added modules SdifCheck and SdifSignatureTab, containing functions
  * formerly in SdifFile.
- *
  */
+
 
 #include "sdif_portability.h"
 
-#include "SdifSignatureTab.h"
+#include <sdif.h>
+#include "SdifGlobals.h"
 
 
 SdifSignatureTabT*

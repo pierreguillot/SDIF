@@ -1,4 +1,4 @@
-/* $Id: SdifRWLowLevel.c,v 3.29 2004-12-20 12:15:40 roebel Exp $
+/* $Id: SdifRWLowLevel.c,v 3.30 2005-04-07 15:56:48 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -32,6 +32,9 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.29  2004/12/20 12:15:40  roebel
+ * Fixed compilation warnings (errors) in gcc (g++) 3.4.2.
+ *
  * Revision 3.28  2004/10/07 14:53:10  roebel
  * Fixed SdifStringToNV to only convert \t and \n.
  *
@@ -182,10 +185,10 @@
 #include <string.h>
 #include <ctype.h>
 #include <assert.h>
-#include "SdifRWLowLevel.h"
+
+#include <sdif.h>
 #include "SdifHard_OS.h"
 #include "SdifError.h"
-#include "SdifString.h"
 
 
 extern int gSdifInitialised;		/* can't include SdifFile.h */

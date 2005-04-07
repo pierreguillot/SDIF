@@ -1,4 +1,4 @@
-/* This document ../sdif/sdiftypes.h generated Tue Sep 24 15:26:59 2002 by xmltostyp.pl from sdiftypes.xml
+/* This document ../sdif/sdiftypes.h generated Tue Sep 24 15:36:54 2002 by xmltostyp.pl from sdiftypes.xml
 */
 #ifndef _SDIFTYPES_H_
 #define _SDIFTYPES_H_

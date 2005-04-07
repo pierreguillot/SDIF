@@ -35,6 +35,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.10  2004/09/09 17:43:39  schwarz
+ * SdifListConcat function
+ *
  * Revision 3.9  2004/07/22 14:47:56  bogaards
  * removed many global variables, moved some into the thread-safe SdifGlobals structure, added HAVE_PTHREAD define, reorganized the code for selection, made some arguments const, new version 3.8.6
  *
@@ -75,8 +78,6 @@
  *
  * Revision 2.1  1999/01/23  13:57:37  virolle
  * General Lists, and special chunk preparation to become frames
- *
- *
  */
 
 #include "sdif_portability.h"
@@ -85,7 +86,6 @@
 #include "SdifList.h"
 #include <stdio.h>
 #include <stdlib.h>
-#include "SdifMemory.h"
 #include "SdifError.h"
 
 

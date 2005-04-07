@@ -1,4 +1,4 @@
-/* $Id: SdifFPut.c,v 3.14 2003-11-07 21:47:18 roebel Exp $
+/* $Id: SdifFPut.c,v 3.15 2005-04-07 15:56:47 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -33,6 +33,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.14  2003/11/07 21:47:18  roebel
+ * removed XpGuiCalls.h and replaced preinclude.h  by local files
+ *
  * Revision 3.13  2003/08/06 15:11:45  schwarz
  * Finally removed obsolete functions (like SdifSkip...).
  *
@@ -95,22 +98,19 @@
  *
  * Revision 3.1  1999/03/14  10:56:41  virolle
  * SdifStdErr add
- *
- *
  */
 
 
 #include "sdif_portability.h"
 
 #include <string.h>
+
+#include <sdif.h>
 #include "SdifFPut.h"
 #include "SdifTest.h"
 #include "SdifFile.h"
-#include "SdifRWLowLevel.h"
 #include "SdifList.h"
 #include "SdifHash.h"
-#include "SdifString.h"
-
 
 
 

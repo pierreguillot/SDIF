@@ -1,4 +1,4 @@
-/* $Id: SdifTextConv.c,v 3.12 2004-07-22 14:47:56 bogaards Exp $
+/* $Id: SdifTextConv.c,v 3.13 2005-04-07 15:56:48 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -32,6 +32,9 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.12  2004/07/22 14:47:56  bogaards
+ * removed many global variables, moved some into the thread-safe SdifGlobals structure, added HAVE_PTHREAD define, reorganized the code for selection, made some arguments const, new version 3.8.6
+ *
  * Revision 3.11  2003/11/07 21:47:18  roebel
  * removed XpGuiCalls.h and replaced preinclude.h  by local files
  *
@@ -82,25 +85,33 @@
  *
  * Revision 2.2  1999/01/23  13:57:48  virolle
  * General Lists, and special chunk preparation to become frames
- *
- *
- *
  */
 
+
+#include <stdlib.h>
 
 #include "sdif_portability.h"
 #ifdef USE_XPGUI
 #include "XpGuiCalls.h"
 #endif
 
-#include "SdifTextConv.h"
+#include <sdif.h>
+#include "SdifGlobals.h"
 #include "SdifFile.h"
 #include "SdifTest.h"
-#include "SdifRWLowLevel.h"
 #include "SdifFScan.h"
 #include "SdifFWrite.h"
 #include "SdifErrMess.h"
-#include <stdlib.h>
+
+
+size_t SdifFTextConvMatrixData     (SdifFileT *SdifF);
+size_t SdifFTextConvMatrix         (SdifFileT *SdifF);
+size_t SdifFTextConvFrameData      (SdifFileT *SdifF);
+size_t SdifFTextConvFrameHeader    (SdifFileT *SdifF);
+size_t SdifFTextConvFrame          (SdifFileT *SdifF);
+size_t SdifFTextConvAllFrame       (SdifFileT *SdifF);
+size_t SdifFTextConvFramesChunk    (SdifFileT *SdifF);
+size_t SdifFTextConv               (SdifFileT *SdifF);
 
 
 size_t

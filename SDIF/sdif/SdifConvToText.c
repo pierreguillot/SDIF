@@ -1,4 +1,4 @@
-/* $Id: SdifConvToText.c,v 3.12 2004-09-06 16:50:58 roebel Exp $
+/* $Id: SdifConvToText.c,v 3.13 2005-04-07 15:56:46 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -30,6 +30,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.12  2004/09/06 16:50:58  roebel
+ * Fixed typo in USE_XPGUI macro.
+ *
  * Revision 3.11  2004/07/22 14:47:55  bogaards
  * removed many global variables, moved some into the thread-safe SdifGlobals structure, added HAVE_PTHREAD define, reorganized the code for selection, made some arguments const, new version 3.8.6
  *
@@ -71,27 +74,33 @@
  *
  * Revision 3.1  1999/03/14  10:56:31  virolle
  * SdifStdErr add
- *
- *
  */
+
+
+#include <stdlib.h>
 
 #include "sdif_portability.h"
 #ifdef USE_XPGUI
 #include "XpGuiCalls.h"
 #endif
 
-#include "SdifConvToText.h"
+#include <sdif.h>
+#include "SdifGlobals.h"
 #include "SdifFile.h"
 #include "SdifTest.h"
-#include "SdifRWLowLevel.h"
 #include "SdifFGet.h"
 #include "SdifFRead.h"
-#include "SdifFPrint.h"
 #include "SdifErrMess.h"
-#include <stdlib.h>
 
 
-
+size_t SdifFConvToTextMatrixData     (SdifFileT *SdifF);
+size_t SdifFConvToTextMatrixHeader   (SdifFileT *SdifF);
+size_t SdifFConvToTextMatrix         (SdifFileT *SdifF);
+size_t SdifFConvToTextFrameData      (SdifFileT *SdifF);
+size_t SdifFConvToTextFrameHeader    (SdifFileT *SdifF);
+size_t SdifFConvToTextFrame          (SdifFileT *SdifF);
+size_t SdifFConvToTextAllFrame       (SdifFileT *SdifF);
+size_t SdifFConvToText               (SdifFileT *SdifF);
 
 
 size_t

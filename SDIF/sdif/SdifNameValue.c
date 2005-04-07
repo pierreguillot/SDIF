@@ -1,4 +1,4 @@
-/* $Id: SdifNameValue.c,v 3.16 2003-12-15 13:15:40 schwarz Exp $
+/* $Id: SdifNameValue.c,v 3.17 2005-04-07 15:56:47 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -34,6 +34,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.16  2003/12/15 13:15:40  schwarz
+ * SdifNameValuesLKillCurrNVT, untested
+ *
  * Revision 3.15  2003/11/07 21:47:18  roebel
  * removed XpGuiCalls.h and replaced preinclude.h  by local files
  *
@@ -112,16 +115,16 @@
  *
  * Revision 1.3  1998/04/24  12:40:35  schwarz
  * Made char * arguments constant for SdifNameValuesLPut and functions called by it.
- *
  */
 
 
 #include "sdif_portability.h"
 
-#include "SdifNameValue.h"
 #include <string.h>
 #include <stdlib.h>
 
+#include <sdif.h>
+#include "SdifGlobals.h"
 
 
 

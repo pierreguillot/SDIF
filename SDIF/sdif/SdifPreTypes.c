@@ -1,4 +1,4 @@
-/* $Id: SdifPreTypes.c,v 3.8 2003-11-07 21:47:18 roebel Exp $
+/* $Id: SdifPreTypes.c,v 3.9 2005-04-07 15:56:47 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -33,6 +33,9 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.8  2003/11/07 21:47:18  roebel
+ * removed XpGuiCalls.h and replaced preinclude.h  by local files
+ *
  * Revision 3.7  2001/05/02 09:34:46  tisseran
  * Change License from GNU Public License to GNU Lesser Public License.
  *
@@ -81,10 +84,8 @@
 
 #include "sdif_portability.h"
 
-#include "SdifPreTypes.h"
-#include "SdifHash.h"
+#include <sdif.h>
 #include "SdifGlobals.h"
-#include "SdifFile.h"
 
 
 

@@ -1,4 +1,4 @@
-/* $Id: SdifTimePosition.c,v 3.8 2003-11-07 21:47:18 roebel Exp $
+/* $Id: SdifTimePosition.c,v 3.9 2005-04-07 15:56:48 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -32,6 +32,9 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.8  2003/11/07 21:47:18  roebel
+ * removed XpGuiCalls.h and replaced preinclude.h  by local files
+ *
  * Revision 3.7  2001/05/02 09:34:48  tisseran
  * Change License from GNU Public License to GNU Lesser Public License.
  *
@@ -73,16 +76,13 @@
  *
  * Revision 2.2  1999/01/23  13:57:49  virolle
  * General Lists, and special chunk preparation to become frames
- *
- *
- *
  */
 
 
-#include "sdif_portability.h"
-#include "SdifTimePosition.h"
-#include "SdifErrMess.h"
 #include <stdlib.h>
+#include <sdif.h>
+#include "sdif_portability.h"
+#include "SdifErrMess.h"
 
 
 SdifTimePositionT*

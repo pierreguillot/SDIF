@@ -1,4 +1,4 @@
-/* $Id: SdifFGet.c,v 3.17 2004-10-07 14:52:24 roebel Exp $
+/* $Id: SdifFGet.c,v 3.18 2005-04-07 15:56:46 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -32,6 +32,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.17  2004/10/07 14:52:24  roebel
+ * Fixed SdifFGetOneNameValue to properly read NVTs from text files.
+ *
  * Revision 3.16  2004/09/09 17:29:00  schwarz
  * better syntax error messages and code reformatted to help finding
  * parsing bug that the type definition string has to end with whitespace.
@@ -135,15 +138,11 @@
 #include "SdifFGet.h"
 #include "SdifTest.h"
 #include "SdifFile.h"
-#include "SdifRWLowLevel.h"
-#include "SdifNameValue.h"
 #include "SdifHash.h"
 #include "SdifMatrixType.h"
 #include "SdifFrameType.h"
 #include "SdifStreamID.h"
 #include "SdifErrMess.h"
-#include "SdifTimePosition.h"
-#include "SdifString.h"
 #include <ctype.h>
 #include <stdlib.h>
 
