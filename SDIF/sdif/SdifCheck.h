@@ -1,4 +1,4 @@
-/* $Id: SdifCheck.h,v 3.4 2001-05-02 09:34:40 tisseran Exp $
+/* $Id: SdifCheck.h,v 3.5 2005-04-07 14:10:32 schwarz Exp $
   
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -31,6 +31,9 @@ LIBRARY
 
 LOG
     $Log: not supported by cvs2svn $
+    Revision 3.4  2001/05/02 09:34:40  tisseran
+    Change License from GNU Public License to GNU Lesser Public License.
+
     Revision 3.3  2000/11/21 14:51:47  schwarz
     - sdif.h is now included by all sdif/Sdif*.c files.
     - Removed all public typedefs, enums, structs, and defines from the
@@ -60,66 +63,6 @@ LOG
 #ifndef _SDIFCHECK_H
 #define _SDIFCHECK_H 1
 
-#include <sdif.h>
 
-
-/*DOC: 
-  Test if file is an SDIF file.
-
-  [] Returns:	0 if not an SDIF file (the first 4 chars are not "SDIF"),
-		or file can not be opened, else 1.  
-
-  Warning: This function doesn't work with stdio. */
-int SdifCheckFileFormat (const char *name);
-
-
-/*DOC: 
-  Test if file contains frames of certain types.
-
-  [in]  name	Filename + selection
-	frames  Table of frame signatures to look for
-  []	return	The first signature from frames found, or eEmptySignature if 
-		no frames could be found (or if file is not SDIF).
-
-  Warning: This function doesn't work with stdio. */
-SdifSignature SdifCheckFileFramesTab   (const char		*name, 
-					const SdifSignatureTabT *frames);
-
-/*DOC: 
-  Test if file contains frames of certain types.
-
-  [in]  name	Filename + selection
-	frames  Array of frame signatures to look for, terminated with 
-		eEmptySignature.
-  []	return	The index in frames of the first signature found, or -1
-		if no frames could be found (or if file is not SDIF).
-
-  Warning: This function doesn't work with stdio. */
-int	      SdifCheckFileFramesIndex (const char	        *name, 
-					const SdifSignature     *frames);
-
-/*DOC: 
-  Test if file contains frames of certain types.
-
-  [in]  in	open SDIF file
-	frames  Table of frame signatures to look for
-  [out] index   If the int pointer index is not NULL, it will receive
-		the index in frames of the first signature found, or -1
-		if no frames could be found (or if file is not SDIF).
-  []	return	The first signature from frames found, or eEmptySignature if 
-		no frames could be found (or if file is not SDIF).
-
-  Warning: This function doesn't work with stdio. */
-SdifSignature SdifCheckNextFrame       (SdifFileT		*in, 
-					const SdifSignatureTabT *frames,
-					int			*index);
-
-/*DOC: 
-  TODO: Test if file is an SDIF file (only when opening for read or
-  append) and open it.
-
-  [Return] NULL if not an SDIF file (the first 4 chars are not "SDIF"),
-  or file can not be opened.  */
-SdifFileT*	   SdifFTryOpen			(const char *Name, SdifFileModeET Mode);
 
 #endif /* _SdifCheck_ */
