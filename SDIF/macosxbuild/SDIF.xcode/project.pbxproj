@@ -19,7 +19,7 @@
 		0F5C28A7047E732E006640BC = {
 			buildSettings = {
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 3.9.0;
+				CURRENT_PROJECT_VERSION = 3.9.2;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
@@ -34,6 +34,8 @@
 				COPY_PHASE_STRIP = YES;
 				CURRENT_PROJECT_VERSION = 3.9.0;
 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_OPTIMIZATION_LEVEL = 3;
 				ZERO_LINK = NO;
 			};
 			isa = PBXBuildStyle;
@@ -62,9 +64,7 @@
 				F70D0BDE0496241101664058,
 				F70D0BE00496241101664058,
 				F70D0BE50496241101664058,
-				F70D0BE60496241101664058,
 				F70D0BE70496241101664058,
-				F70D0BE80496241101664058,
 				F70D0BE90496241101664058,
 				F70D0BEA0496241101664058,
 				F70D0BEB0496241101664058,
@@ -74,7 +74,6 @@
 				F70D0BEF0496241101664058,
 				F70D0BF00496241101664058,
 				F70D0BF10496241101664058,
-				F70D0BF20496241101664058,
 				F70D0BF30496241101664058,
 				F70D0BF40496241101664058,
 				F70D0BF50496241101664058,
@@ -101,30 +100,20 @@
 				F70D0C0A0496241101664058,
 				F70D0C0B0496241101664058,
 				F70D0C0C0496241101664058,
-				F70D0C0D0496241101664058,
-				F70D0C0E0496241101664058,
 				F70D0C0F0496241101664058,
-				F70D0C100496241101664058,
 				F70D0C110496241101664058,
-				F70D0C120496241101664058,
 				F70D0C130496241101664058,
-				F70D0C140496241101664058,
 				F70D0C150496241101664058,
-				F70D0C160496241101664058,
 				F70D0C170496241101664058,
 				F70D0C180496241101664058,
 				F70D0C190496241101664058,
-				F70D0C1A0496241101664058,
 				F70D0C1B0496241101664058,
 				F70D0C1C0496241101664058,
 				F70D0C1D0496241101664058,
-				F70D0C1E0496241101664058,
 				F70D0C1F0496241101664058,
 				F70D0C200496241101664058,
 				F70D0C210496241101664058,
-				F70D0C220496241101664058,
 				F70D0C230496241101664058,
-				F70D0C240496241101664058,
 				F70D0C250496241101664058,
 				F70D0C260496241101664058,
 				0F5C2947047E7471006640BC,
@@ -281,13 +270,10 @@
 			files = (
 				F4A4100E079BCB8D00ADEFEF,
 				F4A4100F079BCB8D00ADEFEF,
-				F4A41010079BCB8D00ADEFEF,
-				F4A41011079BCB8D00ADEFEF,
 				F4A41012079BCB8D00ADEFEF,
 				F4A41013079BCB8D00ADEFEF,
 				F4A41014079BCB8D00ADEFEF,
 				F4A41015079BCB8D00ADEFEF,
-				F4A41016079BCB8D00ADEFEF,
 				F4A41017079BCB8D00ADEFEF,
 				F4A41018079BCB8D00ADEFEF,
 				F4A41019079BCB8D00ADEFEF,
@@ -301,18 +287,9 @@
 				F4A41021079BCB8D00ADEFEF,
 				F4A41022079BCB8D00ADEFEF,
 				F4A41023079BCB8D00ADEFEF,
-				F4A41024079BCB8D00ADEFEF,
-				F4A41025079BCB8D00ADEFEF,
-				F4A41026079BCB8D00ADEFEF,
-				F4A41027079BCB8D00ADEFEF,
-				F4A41028079BCB8D00ADEFEF,
 				F4A41029079BCB8D00ADEFEF,
-				F4A4102A079BCB8D00ADEFEF,
 				F4A4102B079BCB8D00ADEFEF,
-				F4A4102C079BCB8D00ADEFEF,
 				F4A4102D079BCB8D00ADEFEF,
-				F4A4102E079BCB8D00ADEFEF,
-				F4A4102F079BCB8D00ADEFEF,
 				F4A41030079BCB8D00ADEFEF,
 				F4A41031079BCB8D00ADEFEF,
 				F4A41032079BCB8D00ADEFEF,
@@ -329,18 +306,6 @@
 		};
 		F4A4100F079BCB8D00ADEFEF = {
 			fileRef = F70D0BE00496241101664058;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		F4A41010079BCB8D00ADEFEF = {
-			fileRef = F70D0BE60496241101664058;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		F4A41011079BCB8D00ADEFEF = {
-			fileRef = F70D0BE80496241101664058;
 			isa = PBXBuildFile;
 			settings = {
 			};
@@ -365,12 +330,6 @@
 		};
 		F4A41015079BCB8D00ADEFEF = {
 			fileRef = F70D0BF00496241101664058;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		F4A41016079BCB8D00ADEFEF = {
-			fileRef = F70D0BF20496241101664058;
 			isa = PBXBuildFile;
 			settings = {
 			};
@@ -453,44 +412,8 @@
 			settings = {
 			};
 		};
-		F4A41024079BCB8D00ADEFEF = {
-			fileRef = F70D0C0E0496241101664058;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		F4A41025079BCB8D00ADEFEF = {
-			fileRef = F70D0C100496241101664058;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		F4A41026079BCB8D00ADEFEF = {
-			fileRef = F70D0C120496241101664058;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		F4A41027079BCB8D00ADEFEF = {
-			fileRef = F70D0C140496241101664058;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		F4A41028079BCB8D00ADEFEF = {
-			fileRef = F70D0C160496241101664058;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
 		F4A41029079BCB8D00ADEFEF = {
 			fileRef = F70D0C180496241101664058;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		F4A4102A079BCB8D00ADEFEF = {
-			fileRef = F70D0C1A0496241101664058;
 			isa = PBXBuildFile;
 			settings = {
 			};
@@ -501,26 +424,8 @@
 			settings = {
 			};
 		};
-		F4A4102C079BCB8D00ADEFEF = {
-			fileRef = F70D0C1E0496241101664058;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
 		F4A4102D079BCB8D00ADEFEF = {
 			fileRef = F70D0C200496241101664058;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		F4A4102E079BCB8D00ADEFEF = {
-			fileRef = F70D0C220496241101664058;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		F4A4102F079BCB8D00ADEFEF = {
-			fileRef = F70D0C240496241101664058;
 			isa = PBXBuildFile;
 			settings = {
 			};
@@ -586,7 +491,6 @@
 				F4A41048079BCB8D00ADEFEF,
 				F4A41049079BCB8D00ADEFEF,
 				F4A4104A079BCB8D00ADEFEF,
-				F4A4104B079BCB8D00ADEFEF,
 				F4A4104C079BCB8D00ADEFEF,
 				F4A4104D079BCB8D00ADEFEF,
 				F4A4104E079BCB8D00ADEFEF,
@@ -718,12 +622,6 @@
 		};
 		F4A4104A079BCB8D00ADEFEF = {
 			fileRef = F70D0C0B0496241101664058;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		F4A4104B079BCB8D00ADEFEF = {
-			fileRef = F70D0C0D0496241101664058;
 			isa = PBXBuildFile;
 			settings = {
 			};
@@ -889,13 +787,10 @@
 			files = (
 				F4A4105F079BCB8E00ADEFEF,
 				F4A41060079BCB8E00ADEFEF,
-				F4A41061079BCB8E00ADEFEF,
-				F4A41062079BCB8E00ADEFEF,
 				F4A41063079BCB8E00ADEFEF,
 				F4A41064079BCB8E00ADEFEF,
 				F4A41065079BCB8E00ADEFEF,
 				F4A41066079BCB8E00ADEFEF,
-				F4A41067079BCB8E00ADEFEF,
 				F4A41068079BCB8E00ADEFEF,
 				F4A41069079BCB8E00ADEFEF,
 				F4A4106A079BCB8E00ADEFEF,
@@ -909,18 +804,9 @@
 				F4A41072079BCB8E00ADEFEF,
 				F4A41073079BCB8E00ADEFEF,
 				F4A41074079BCB8E00ADEFEF,
-				F4A41075079BCB8E00ADEFEF,
-				F4A41076079BCB8E00ADEFEF,
-				F4A41077079BCB8E00ADEFEF,
-				F4A41078079BCB8E00ADEFEF,
-				F4A41079079BCB8E00ADEFEF,
 				F4A4107A079BCB8E00ADEFEF,
-				F4A4107B079BCB8E00ADEFEF,
 				F4A4107C079BCB8E00ADEFEF,
-				F4A4107D079BCB8E00ADEFEF,
 				F4A4107E079BCB8E00ADEFEF,
-				F4A4107F079BCB8E00ADEFEF,
-				F4A41080079BCB8E00ADEFEF,
 				F4A41081079BCB8E00ADEFEF,
 				F4A41082079BCB8E00ADEFEF,
 				F4A41083079BCB8E00ADEFEF,
@@ -937,18 +823,6 @@
 		};
 		F4A41060079BCB8E00ADEFEF = {
 			fileRef = F70D0BE00496241101664058;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		F4A41061079BCB8E00ADEFEF = {
-			fileRef = F70D0BE60496241101664058;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		F4A41062079BCB8E00ADEFEF = {
-			fileRef = F70D0BE80496241101664058;
 			isa = PBXBuildFile;
 			settings = {
 			};
@@ -973,12 +847,6 @@
 		};
 		F4A41066079BCB8E00ADEFEF = {
 			fileRef = F70D0BF00496241101664058;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		F4A41067079BCB8E00ADEFEF = {
-			fileRef = F70D0BF20496241101664058;
 			isa = PBXBuildFile;
 			settings = {
 			};
@@ -1061,44 +929,8 @@
 			settings = {
 			};
 		};
-		F4A41075079BCB8E00ADEFEF = {
-			fileRef = F70D0C0E0496241101664058;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		F4A41076079BCB8E00ADEFEF = {
-			fileRef = F70D0C100496241101664058;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		F4A41077079BCB8E00ADEFEF = {
-			fileRef = F70D0C120496241101664058;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		F4A41078079BCB8E00ADEFEF = {
-			fileRef = F70D0C140496241101664058;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		F4A41079079BCB8E00ADEFEF = {
-			fileRef = F70D0C160496241101664058;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
 		F4A4107A079BCB8E00ADEFEF = {
 			fileRef = F70D0C180496241101664058;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		F4A4107B079BCB8E00ADEFEF = {
-			fileRef = F70D0C1A0496241101664058;
 			isa = PBXBuildFile;
 			settings = {
 			};
@@ -1109,26 +941,8 @@
 			settings = {
 			};
 		};
-		F4A4107D079BCB8E00ADEFEF = {
-			fileRef = F70D0C1E0496241101664058;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
 		F4A4107E079BCB8E00ADEFEF = {
 			fileRef = F70D0C200496241101664058;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		F4A4107F079BCB8E00ADEFEF = {
-			fileRef = F70D0C220496241101664058;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		F4A41080079BCB8E00ADEFEF = {
-			fileRef = F70D0C240496241101664058;
 			isa = PBXBuildFile;
 			settings = {
 			};
@@ -1180,7 +994,6 @@
 				F4A41097079BCB8E00ADEFEF,
 				F4A41098079BCB8E00ADEFEF,
 				F4A41099079BCB8E00ADEFEF,
-				F4A4109A079BCB8E00ADEFEF,
 				F4A4109B079BCB8E00ADEFEF,
 				F4A4109C079BCB8E00ADEFEF,
 				F4A4109D079BCB8E00ADEFEF,
@@ -1312,12 +1125,6 @@
 		};
 		F4A41099079BCB8E00ADEFEF = {
 			fileRef = F70D0C0B0496241101664058;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		F4A4109A079BCB8E00ADEFEF = {
-			fileRef = F70D0C0D0496241101664058;
 			isa = PBXBuildFile;
 			settings = {
 			};
@@ -1458,30 +1265,12 @@
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
-		F70D0BE60496241101664058 = {
-			fileEncoding = 30;
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.c.h;
-			name = SdifCheck.h;
-			path = ../sdif/SdifCheck.h;
-			refType = 2;
-			sourceTree = SOURCE_ROOT;
-		};
 		F70D0BE70496241101664058 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = SdifConvToText.c;
 			path = ../sdif/SdifConvToText.c;
-			refType = 2;
-			sourceTree = SOURCE_ROOT;
-		};
-		F70D0BE80496241101664058 = {
-			fileEncoding = 30;
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.c.h;
-			name = SdifConvToText.h;
-			path = ../sdif/SdifConvToText.h;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
@@ -1563,15 +1352,6 @@
 			lastKnownFileType = sourcecode.c.c;
 			name = SdifFPrint.c;
 			path = ../sdif/SdifFPrint.c;
-			refType = 2;
-			sourceTree = SOURCE_ROOT;
-		};
-		F70D0BF20496241101664058 = {
-			fileEncoding = 30;
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.c.h;
-			name = SdifFPrint.h;
-			path = ../sdif/SdifFPrint.h;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
@@ -1809,39 +1589,12 @@
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
-		F70D0C0D0496241101664058 = {
-			fileEncoding = 30;
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.c.c;
-			name = SdifMemory.c;
-			path = ../sdif/SdifMemory.c;
-			refType = 2;
-			sourceTree = SOURCE_ROOT;
-		};
-		F70D0C0E0496241101664058 = {
-			fileEncoding = 30;
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.c.h;
-			name = SdifMemory.h;
-			path = ../sdif/SdifMemory.h;
-			refType = 2;
-			sourceTree = SOURCE_ROOT;
-		};
 		F70D0C0F0496241101664058 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = SdifNameValue.c;
 			path = ../sdif/SdifNameValue.c;
-			refType = 2;
-			sourceTree = SOURCE_ROOT;
-		};
-		F70D0C100496241101664058 = {
-			fileEncoding = 30;
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.c.h;
-			name = SdifNameValue.h;
-			path = ../sdif/SdifNameValue.h;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
@@ -1854,15 +1607,6 @@
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
-		F70D0C120496241101664058 = {
-			fileEncoding = 30;
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.c.h;
-			name = SdifPreTypes.h;
-			path = ../sdif/SdifPreTypes.h;
-			refType = 2;
-			sourceTree = SOURCE_ROOT;
-		};
 		F70D0C130496241101664058 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
@@ -1872,30 +1616,12 @@
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
-		F70D0C140496241101664058 = {
-			fileEncoding = 30;
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.c.h;
-			name = SdifPrint.h;
-			path = ../sdif/SdifPrint.h;
-			refType = 2;
-			sourceTree = SOURCE_ROOT;
-		};
 		F70D0C150496241101664058 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = SdifRWLowLevel.c;
 			path = ../sdif/SdifRWLowLevel.c;
-			refType = 2;
-			sourceTree = SOURCE_ROOT;
-		};
-		F70D0C160496241101664058 = {
-			fileEncoding = 30;
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.c.h;
-			name = SdifRWLowLevel.h;
-			path = ../sdif/SdifRWLowLevel.h;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
@@ -1926,15 +1652,6 @@
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
-		F70D0C1A0496241101664058 = {
-			fileEncoding = 30;
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.c.h;
-			name = SdifSignatureTab.h;
-			path = ../sdif/SdifSignatureTab.h;
-			refType = 2;
-			sourceTree = SOURCE_ROOT;
-		};
 		F70D0C1B0496241101664058 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
@@ -1959,15 +1676,6 @@
 			lastKnownFileType = sourcecode.c.c;
 			name = SdifString.c;
 			path = ../sdif/SdifString.c;
-			refType = 2;
-			sourceTree = SOURCE_ROOT;
-		};
-		F70D0C1E0496241101664058 = {
-			fileEncoding = 30;
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.c.h;
-			name = SdifString.h;
-			path = ../sdif/SdifString.h;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
@@ -1998,30 +1706,12 @@
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
-		F70D0C220496241101664058 = {
-			fileEncoding = 30;
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.c.h;
-			name = SdifTextConv.h;
-			path = ../sdif/SdifTextConv.h;
-			refType = 2;
-			sourceTree = SOURCE_ROOT;
-		};
 		F70D0C230496241101664058 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.c;
 			name = SdifTimePosition.c;
 			path = ../sdif/SdifTimePosition.c;
-			refType = 2;
-			sourceTree = SOURCE_ROOT;
-		};
-		F70D0C240496241101664058 = {
-			fileEncoding = 30;
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.c.h;
-			name = SdifTimePosition.h;
-			path = ../sdif/SdifTimePosition.h;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
