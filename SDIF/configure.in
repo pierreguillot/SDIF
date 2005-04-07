@@ -1,6 +1,6 @@
 dnl -*-autoconf-*-  (No, it's an autoconf file!)
 dnl -*-m4-*- (He emacs, it's a m4 file)
-dnl $Id: configure.in,v 1.58 2005-01-31 16:29:01 roebel Exp $
+dnl $Id: configure.in,v 1.59 2005-04-07 17:17:58 schwarz Exp $
 dnl
 dnl configure.in		September 2000		Patrice Tisserand
 dnl
@@ -32,6 +32,9 @@ dnl send email to:  sdif@ircam.fr
 
 
 dnl $Log: not supported by cvs2svn $
+dnl Revision 1.58  2005/01/31 16:29:01  roebel
+dnl respect external CFLAGS/CXXFLAGS variable
+dnl
 dnl Revision 1.57  2004/10/07 14:53:27  roebel
 dnl Version 3.9.1
 dnl
@@ -258,7 +261,7 @@ PACKAGE=SDIF
 
 SDIF_VERSION_MAJOR=3
 SDIF_VERSION_MINOR=9
-SDIF_VERSION_RELEASE=1
+SDIF_VERSION_RELEASE=2
 
 VERSION=$SDIF_VERSION_MAJOR.$SDIF_VERSION_MINOR.$SDIF_VERSION_RELEASE
 
