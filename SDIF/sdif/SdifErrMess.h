@@ -1,4 +1,4 @@
-/* $Id: SdifErrMess.h,v 3.12 2004-07-22 14:47:55 bogaards Exp $
+/* $Id: SdifErrMess.h,v 3.13 2005-04-07 15:20:23 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -32,6 +32,9 @@
  * author: Dominique Virolle 1998
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 3.12  2004/07/22 14:47:55  bogaards
+ * removed many global variables, moved some into the thread-safe SdifGlobals structure, added HAVE_PTHREAD define, reorganized the code for selection, made some arguments const, new version 3.8.6
+ *
  * Revision 3.11  2002/05/24 19:36:38  ftissera
  * Change SdifFError to use new error and warning handlers.
  *
@@ -79,17 +82,16 @@
  *
  * Revision 3.1  1999/03/14  10:56:34  virolle
  * SdifStdErr add
- *
- *
  */
 
 
 #ifndef _SDIFERRMESS_H
 #define _SDIFERRMESS_H 1
 
+#include <stdio.h>
+#include <sdif.h>
 #include "SdifGlobals.h"
 #include "SdifList.h"
-#include <stdio.h>
 #include "SdifError.h"
 
 
@@ -119,20 +121,6 @@ SdifUInt4	SdifFError		(SdifFileT* SdifF,
 SdifInt4	SdifFsPrintError	(char* oErrMess, SdifFileT* SdifF,
 					 SdifErrorT* Error,
 					 const char *LibFile, int LibLine);
-
-/*DOC:
-  Switch output of error messages on stderr by _SdifFError on. 
-*/
-void	SdifEnableErrorOutput  (void);
-
-/*DOC:
-  Switch output of error messages on stderr by _SdifFError off. 
-*/
-void	SdifDisableErrorOutput (void);
-
-
-/*extern char	gSdifBufferError[4096];*/
-extern int	gSdifErrorOutputEnabled;
 
 
 #define _SdifFError(SdifF, ErrorTag, UserMess) \

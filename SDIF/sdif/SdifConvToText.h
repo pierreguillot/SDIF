@@ -1,4 +1,4 @@
-/* $Id: SdifConvToText.h,v 3.6 2001-05-02 09:34:40 tisseran Exp $
+/* $Id: SdifConvToText.h,v 3.7 2005-04-07 15:20:23 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -32,6 +32,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.6  2001/05/02 09:34:40  tisseran
+ * Change License from GNU Public License to GNU Lesser Public License.
+ *
  * Revision 3.5  2000/11/21 14:51:47  schwarz
  * - sdif.h is now included by all sdif/Sdif*.c files.
  * - Removed all public typedefs, enums, structs, and defines from the
@@ -87,21 +90,4 @@
 
 #include "SdifGlobals.h"
 
-
-size_t SdifFConvToTextMatrixData     (SdifFileT *SdifF);
-size_t SdifFConvToTextMatrixHeader   (SdifFileT *SdifF);
-size_t SdifFConvToTextMatrix         (SdifFileT *SdifF);
-size_t SdifFConvToTextFrameData      (SdifFileT *SdifF);
-size_t SdifFConvToTextFrameHeader    (SdifFileT *SdifF);
-size_t SdifFConvToTextFrame          (SdifFileT *SdifF);
-size_t SdifFConvToTextAllFrame       (SdifFileT *SdifF);
-size_t SdifFConvToText               (SdifFileT *SdifF);
-
-
-/*DOC: 
-  Converti un fichier texte pseudo-SDIF de nom TextStreamName en un
-  fichier SDIF binaire de non SdifF->Name. Le fichier doit avoir été
-  ouvert en écriture (eWriteFile).  */
-size_t SdifToText (SdifFileT *SdifF, char *TextStreamName);
-
-#endif /* _SdifConvToText_ */
+SdifConvToText_ */

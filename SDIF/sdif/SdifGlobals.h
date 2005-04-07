@@ -1,4 +1,4 @@
-/* $Id: SdifGlobals.h,v 3.14 2004-07-22 14:47:56 bogaards Exp $
+/* $Id: SdifGlobals.h,v 3.15 2005-04-07 15:20:23 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -31,6 +31,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.14  2004/07/22 14:47:56  bogaards
+ * removed many global variables, moved some into the thread-safe SdifGlobals structure, added HAVE_PTHREAD define, reorganized the code for selection, made some arguments const, new version 3.8.6
+ *
  * Revision 3.13  2001/05/02 09:34:44  tisseran
  * Change License from GNU Public License to GNU Lesser Public License.
  *
@@ -137,10 +140,23 @@
 
 #include <stdio.h>
 #include <float.h>
+
+#include <sdif.h>
 #include "sdif_portability.h"
-#include "SdifError.h"
-#include "SdifMemory.h"
-#include "SdifHard_OS.h"
+
+#ifdef HAVE_PTHREAD
+#include <pthread.h>
+#endif
+
+
+/* some constants for allocation sizes */
+
+/* SdifString:		Default memory size allocated for string */
+#define _SdifStringGranule 128 
+
+/* SdifSignatureTab:	Growth steps for reallocation */
+#define _SdifSignatureTabGranule 16
+
 
 #ifdef HAVE_PTHREAD
 extern pthread_key_t tGlobalsKey;
@@ -154,4 +170,7 @@ struct SdifGlobals{
 
 struct SdifGlobals* GetSdifGlobals();
 void FreeGlobals(void *);
+
+
+
 #endif /* _SdifGlobals_ */

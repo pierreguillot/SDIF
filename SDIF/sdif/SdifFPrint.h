@@ -1,4 +1,4 @@
-/* $Id: SdifFPrint.h,v 3.5 2003-08-06 15:11:45 schwarz Exp $
+/* $Id: SdifFPrint.h,v 3.6 2005-04-07 15:20:23 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -32,6 +32,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.5  2003/08/06 15:11:45  schwarz
+ * Finally removed obsolete functions (like SdifSkip...).
+ *
  * Revision 3.4  2001/05/02 09:34:41  tisseran
  * Change License from GNU Public License to GNU Lesser Public License.
  *
@@ -94,18 +97,5 @@
 #include "SdifMatrix.h"
 #include "SdifFrame.h"
 
-
-size_t SdifFPrintGeneralHeader      (SdifFileT *SdifF);
-size_t SdifFPrintNameValueLCurrNVT  (SdifFileT *SdifF);
-size_t SdifFPrintAllNameValueNVT    (SdifFileT *SdifF);
-size_t SdifFPrintAllType            (SdifFileT *SdifF);
-size_t SdifFPrintAllStreamID        (SdifFileT *SdifF);
-size_t SdifFPrintAllASCIIChunks     (SdifFileT *SdifF);
-size_t SdifFPrintMatrixHeader       (SdifFileT *SdifF);
-size_t SdifFPrintFrameHeader        (SdifFileT *SdifF);
-size_t SdifFPrintOneRow             (SdifFileT *SdifF);
-
-size_t SdifFPrintMatrixType         (SdifFileT *SdifF, SdifMatrixTypeT *MatrixType);
-size_t SdifFPrintFrameType          (SdifFileT *SdifF, SdifFrameTypeT  *FrameType);
 
 #endif /* _SdifFPrint_ */

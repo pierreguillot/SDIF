@@ -1,4 +1,4 @@
-/* $Id: SdifTextConv.h,v 3.6 2001-05-02 09:34:48 tisseran Exp $
+/* $Id: SdifTextConv.h,v 3.7 2005-04-07 15:20:22 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -39,6 +39,9 @@ DESCRIPTION
 
 LOG
  * $Log: not supported by cvs2svn $
+ * Revision 3.6  2001/05/02 09:34:48  tisseran
+ * Change License from GNU Public License to GNU Lesser Public License.
+ *
  * Revision 3.5  2000/11/21 14:51:51  schwarz
  * - sdif.h is now included by all sdif/Sdif*.c files.
  * - Removed all public typedefs, enums, structs, and defines from the
@@ -89,23 +92,6 @@ LOG
 #ifndef _SdifTextConv_
 #define _SdifTextConv_
 
-#include "SdifGlobals.h"
-
-
-size_t SdifFTextConvMatrixData     (SdifFileT *SdifF);
-size_t SdifFTextConvMatrix         (SdifFileT *SdifF);
-size_t SdifFTextConvFrameData      (SdifFileT *SdifF);
-size_t SdifFTextConvFrameHeader    (SdifFileT *SdifF);
-size_t SdifFTextConvFrame          (SdifFileT *SdifF);
-size_t SdifFTextConvAllFrame       (SdifFileT *SdifF);
-size_t SdifFTextConvFramesChunk    (SdifFileT *SdifF);
-size_t SdifFTextConv               (SdifFileT *SdifF);
-
 /* upper level : open the text in read mode */
-
-/*DOC: 
-  Converti un fichier SDIF ouvert en lecture (eReadFile) en un fichier
-  texte pseudo-SDIF de nom TextStreamName.  */
-size_t SdifTextToSdif (SdifFileT *SdifF, char *TextStreamName);
 
 #endif   /* _SdifTextConv_ */

@@ -1,4 +1,4 @@
-/* $Id: SdifHard_OS.h,v 3.9 2001-05-02 09:34:44 tisseran Exp $
+/* $Id: SdifHard_OS.h,v 3.10 2005-04-07 15:20:23 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -33,6 +33,9 @@
  * author: Dominique Virolle 1998
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.9  2001/05/02 09:34:44  tisseran
+ * Change License from GNU Public License to GNU Lesser Public License.
+ *
  * Revision 3.8  2000/11/21 14:51:49  schwarz
  * - sdif.h is now included by all sdif/Sdif*.c files.
  * - Removed all public typedefs, enums, structs, and defines from the
@@ -114,12 +117,8 @@
 
 #include <stdio.h>
 #include <float.h>
-#include <sdif.h>
+#include <sdif.h>	/* SdifMachineET */
 
-/* _Sdif_MIN_DOUBLE_ tested on SGI, DEC alpha, PCWin95 as 0xffefffffffffffff
- * include may be limits.h (float.h is sure with VisualC++5 Win 95 or NT)
- */
-#define _Sdif_MIN_DOUBLE_ (- DBL_MAX)
 
 SdifMachineET SdifGetMachineType(void);
 extern SdifMachineET gSdifMachineType;
@@ -128,23 +127,5 @@ extern SdifUInt4 gSdifSignatureVersionMask;
 
 void SdifLittleToBig(void *BigPtr, void *LittlePtr, size_t size);
 void SdifBigToLittle(void *InOutPtr, size_t size);
-
-
-int       SdifStrLen  (const char *s);
-
-/* returns 0 if strings are equal */
-int       SdifStrCmp  (const char *s1, const char *s2);
-
-/* returns true if strings are equal */
-int	  SdifStrEq(const char *s1, const char *s2);
-int       SdifStrNCmp (const char *s1, const char *s2, unsigned int n);
-char*     SdifStrNCpy (char *s1, const char *s2, unsigned int n);
-char*     SdifCreateStrNCpy (const char* Source, size_t Size);
-void      SdifKillStr (char* String);
-
-
-void     SdifSetStdIOBinary (void);
-FILE*    SdiffBinOpen       (const char * Name, SdifBinaryModeET Mode);
-SdifInt4 SdiffBinClose      (FILE *f);
 
 #endif /* _SdifHard_OS_ */

@@ -1,4 +1,4 @@
-/* $Id: SdifSelect.h,v 3.16 2003-08-06 15:18:54 schwarz Exp $
+/* $Id: SdifSelect.h,v 3.17 2005-04-07 15:20:22 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -88,6 +88,9 @@ TODO
 
 LOG
   $Log: not supported by cvs2svn $
+  Revision 3.16  2003/08/06 15:18:54  schwarz
+  removed part of double defs (sdif.h)
+
   Revision 3.15  2002/09/20 14:43:03  schwarz
   - SdifParseSignatureList Parse comma-separated list of signatures
   - SdifKillSelectElement  now public
@@ -166,7 +169,6 @@ LOG
 #define _SdifSelect_
 
 
-#include "SdifHard_OS.h"	/* SdifSignature */
 #include "SdifFrame.h"
 #include "SdifMatrix.h"
 #include "SdifList.h"
