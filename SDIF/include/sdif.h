@@ -1,4 +1,4 @@
-/* $Id: sdif.h,v 1.44 2004-09-14 15:45:47 schwarz Exp $
+/* $Id: sdif.h,v 1.45 2005-04-07 15:58:52 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -30,6 +30,9 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.44  2004/09/14 15:45:47  schwarz
+ * SdifMinMaxT with double
+ *
  * Revision 1.43  2004/09/13 13:06:27  schwarz
  * SdifReadSimple even simpler, SdifReadFile for full-scale callback reading.
  * Moving the functionality of querysdif into the library with SdifQuery,
@@ -222,7 +225,7 @@
  * Revision 1.1.2.1  2000/08/21  13:07:41  tisseran
  * *** empty log message ***
  *
- * $Date: 2004-09-14 15:45:47 $
+ * $Date: 2005-04-07 15:58:52 $
  *
  */
 
@@ -237,7 +240,7 @@ extern "C" {
 #endif
 
 
-static const char _sdif_h_cvs_revision_ [] = "$Id: sdif.h,v 1.44 2004-09-14 15:45:47 schwarz Exp $";
+static const char _sdif_h_cvs_revision_ [] = "$Id: sdif.h,v 1.45 2005-04-07 15:58:52 schwarz Exp $";
 
 
 #include <stdio.h>
@@ -283,29 +286,7 @@ struct SdifHashTableS
   unsigned int NbOfData;
 } ;
 
-/* SdifMemory.h */
-#define _SdifMrNameSize 64
-typedef struct SdifBlockNodeS SdifBlockNodeT;
-struct SdifBlockNodeS
-{
-    SdifBlockNodeT*   Next;
-    char	    file[_SdifMrNameSize];
-    int		    line;
-    char	    type[_SdifMrNameSize];
-    void*	    ptr;
-    size_t	    size;
-    size_t	    nbobj;
-};
 
-
-typedef struct SdifBlockListS SdifBlockListT;
-struct SdifBlockListS
-{
-    SdifBlockNodeT* Alloc;
-    size_t	    BytesAlloc;
-    size_t	    BytesTotalAlloc;
-    size_t	    BytesDeAlloc;
-};
 
 
 /*
@@ -1920,6 +1901,7 @@ int SdifFloat8Equ(SdifFloat8 f1, SdifFloat8 f2);
 
 
 
+/* SdifHard_OS.h */
 
 /* _Sdif_MIN_DOUBLE_ tested on SGI, DEC alpha, PCWin95 as 0xffefffffffffffff
  * include may be limits.h (float.h is sure with VisualC++5 Win 95 or NT)
@@ -2989,8 +2971,6 @@ int SdifFColumnIsSelected (SdifFileT *file, int col);
 
 
 
-/* Growth steps for reallocation */
-#define _SdifSignatureTabGranule 16
 
 /*
 // FUNCTION GROUP:	Handling of a Table of Signatures
