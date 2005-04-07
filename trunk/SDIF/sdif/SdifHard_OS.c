@@ -1,4 +1,4 @@
-/* $Id: SdifHard_OS.c,v 3.14 2004-09-09 17:42:43 schwarz Exp $
+/* $Id: SdifHard_OS.c,v 3.15 2005-04-07 15:56:47 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -28,6 +28,9 @@
 /* author: Dominique Virolle 1998
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.14  2004/09/09 17:42:43  schwarz
+ * swapping code alternatives
+ *
  * Revision 3.13  2004/06/03 11:18:00  schwarz
  * Profiling showed some waste of cycles in byte swapping and signature reading:
  * - byte swapping now array-wise, not element-wise in SdifSwap<N>[Copy] routines:   -> from 0.24 s (18.5%) to 0.14s
@@ -118,8 +121,6 @@
 #include <fcntl.h>
 #endif
 
-
-#include "SdifMemory.h"
 
 /* To know what hardware we have (check endian and sizeof long ) 
    Endian and size of long are checked in ./configure => config.h */

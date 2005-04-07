@@ -1,4 +1,4 @@
-/* $Id: SdifFile.c,v 3.50 2005-04-07 13:57:53 schwarz Exp $
+/* $Id: SdifFile.c,v 3.51 2005-04-07 15:56:47 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -33,6 +33,10 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.50  2005/04/07 13:57:53  schwarz
+ * removed debug code used to find struct member alignment problem
+ * (--> do this at init by comparing sizeof(SdifFileT) in lib and caller?)
+ *
  * Revision 3.49  2005/04/06 16:21:18  schwarz
  * project for MS Visual Studio C++ 7, configured for building with FTM (struct member align 2)
  *
@@ -290,8 +294,6 @@
 #include <string.h>
 #include <assert.h>
 #include "SdifError.h"
-#include "SdifRWLowLevel.h" /* for SdifInitMachineType()  into SdifFLoadPredinedTypes */
-#include "SdifPreTypes.h"
 #include "SdifFScan.h"
 
 #ifdef HAVE_PTHREAD
@@ -309,7 +311,6 @@
 
 /* Include all Frame Type */
 #include "sdiftypes.h"
-#include "SdifString.h"
 
 
 

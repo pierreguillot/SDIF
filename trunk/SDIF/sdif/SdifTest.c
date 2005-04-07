@@ -1,4 +1,4 @@
-/* $Id: SdifTest.c,v 3.12 2004-09-09 17:50:40 schwarz Exp $
+/* $Id: SdifTest.c,v 3.13 2005-04-07 15:56:48 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -33,6 +33,13 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.12  2004/09/09 17:50:40  schwarz
+ * Better syntax error messages and code reformatted to help finding
+ * parsing bug that the type definition string has to end with whitespace.
+ *
+ * At the next bug with the type language parser and tokeniser, it should
+ * be rewritten using flex/bison!
+ *
  * Revision 3.11  2004/07/22 14:47:56  bogaards
  * removed many global variables, moved some into the thread-safe SdifGlobals structure, added HAVE_PTHREAD define, reorganized the code for selection, made some arguments const, new version 3.8.6
  *
@@ -98,9 +105,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
+
+#include <sdif.h>
 #include "SdifTest.h"
-#include "SdifPrint.h"
-#include "SdifRWLowLevel.h"
 #include "SdifFile.h"
 #include "SdifErrMess.h"
 

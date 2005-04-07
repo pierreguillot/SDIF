@@ -1,4 +1,4 @@
-/* $Id: SdifFPut.h,v 3.9 2003-08-06 15:11:45 schwarz Exp $
+/* $Id: SdifFPut.h,v 3.10 2005-04-07 15:56:47 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -36,6 +36,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.9  2003/08/06 15:11:45  schwarz
+ * Finally removed obsolete functions (like SdifSkip...).
+ *
  * Revision 3.8  2001/05/02 09:34:42  tisseran
  * Change License from GNU Public License to GNU Lesser Public License.
  *
@@ -108,21 +111,20 @@
  * (function prototypes are automatically linked extern), and it
  * prohibits cocoon from generating an entry in the HTML documentation
  * for this function.
- *
  */
 
 
 #ifndef _SDIFFPUT_H
 #define _SDIFFPUT_H 1
 
-#include "SdifGlobals.h"
+
 #include <stdio.h>
-#include "SdifNameValue.h"
+#include <sdif.h>
+#include "SdifGlobals.h"
 #include "SdifMatrixType.h"
 #include "SdifFrameType.h"
 #include "SdifStreamID.h"
 
-#include "SdifString.h"
 
 size_t SdifFPutOneNameValue         (SdifFileT *SdifF, int Verbose, SdifNameValueT *NameValue);
 size_t SdifFPutNameValueLCurrNVT    (SdifFileT *SdifF, int Verbose);

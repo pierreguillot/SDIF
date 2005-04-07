@@ -1,4 +1,4 @@
-/* $Id: SdifPrint.c,v 3.10 2003-11-07 21:47:18 roebel Exp $
+/* $Id: SdifPrint.c,v 3.11 2005-04-07 15:56:48 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -33,6 +33,9 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.10  2003/11/07 21:47:18  roebel
+ * removed XpGuiCalls.h and replaced preinclude.h  by local files
+ *
  * Revision 3.9  2003/07/07 10:27:01  roebel
  * Added support for eInt1 and eUInt1 data types
  *
@@ -76,21 +79,15 @@
  *
  * Revision 2.2  1999/01/23  13:57:45  virolle
  * General Lists, and special chunk preparation to become frames
- *
- *
- *
- *
  */
 
 
+#include <sdif.h>
 #include "sdif_portability.h"
 
-#include "SdifPrint.h"
 
 
 /*************** Matrix Type ***************/
-
-
 
 void
 SdifPrintMatrixType(FILE *fw, SdifMatrixTypeT *MatrixType)

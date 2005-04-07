@@ -1,4 +1,4 @@
-/* $Id: SdifString.c,v 3.10 2004-09-09 17:49:51 schwarz Exp $
+/* $Id: SdifString.c,v 3.11 2005-04-07 15:56:48 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -32,6 +32,13 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.10  2004/09/09 17:49:51  schwarz
+ * Fixed low-level tokenising errors that were part of the parsing bug
+ * that the type definition string had to end with whitespace.
+ *
+ * At the next bug with the type language parser and tokeniser, it should
+ * be rewritten using flex/bison!
+ *
  * Revision 3.9  2002/08/27 10:52:52  schwarz
  * String append from const char *
  * Threw out redundant function prototypes from SdifString.h,
@@ -73,13 +80,15 @@
  * WATCH OUT:
  *      We don't care about the old SDIF Specification (_SdifFormatVersion < 3)
  * To use _SdifFormatVersion < 3, get the previous release.
- *
  */
+
 
 #include <string.h>
 
-#include "SdifString.h"
+#include <sdif.h>
+#include "SdifGlobals.h"
 #include "SdifError.h"
+
 
 /* Function declaration */
 /*DOC:

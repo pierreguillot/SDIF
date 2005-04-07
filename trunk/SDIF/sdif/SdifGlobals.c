@@ -1,4 +1,4 @@
-/* $Id: SdifGlobals.c,v 3.19 2004-09-09 17:38:38 schwarz Exp $
+/* $Id: SdifGlobals.c,v 3.20 2005-04-07 15:56:47 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -31,6 +31,10 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.19  2004/09/09 17:38:38  schwarz
+ * moved SdifSizeOf* functions from SdifFWrite.c to SdifGlobals.c
+ * padding test with ftell now only when compiling in debug mode
+ *
  * Revision 3.18  2004/07/28 14:56:58  roebel
  * Simplified global list initialisation.
  *
@@ -146,14 +150,13 @@
 
 #include "sdif_portability.h"
 
-#include "SdifGlobals.h"
 #include <string.h>
 #include <stdlib.h>
 #include <ctype.h>
 
-#ifdef HAVE_PTHREAD
-#include <pthread.h>
-#endif
+#include "SdifGlobals.h"
+#include "SdifHard_OS.h"
+
 
 /* backward compatibility; these global buffers should not be used anymore */
 char gSdifString[_SdifStringLen] = "unused buffer";
@@ -207,8 +210,6 @@ void FreeGlobals(void *inGlobals){
 	free(globals);
 }
 
-
-#include "SdifRWLowLevel.h"
 
 char *SdifSignatureToString (SdifSignature Signature)
 {

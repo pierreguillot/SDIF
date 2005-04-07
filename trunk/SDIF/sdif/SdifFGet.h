@@ -1,4 +1,4 @@
-/* $Id: SdifFGet.h,v 3.10 2003-08-06 15:11:45 schwarz Exp $
+/* $Id: SdifFGet.h,v 3.11 2005-04-07 15:56:46 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -44,6 +44,9 @@ DESCRIPTION
 
 LOG
  * $Log: not supported by cvs2svn $
+ * Revision 3.10  2003/08/06 15:11:45  schwarz
+ * Finally removed obsolete functions (like SdifSkip...).
+ *
  * Revision 3.9  2002/06/18 13:55:54  ftissera
  * Move SdifFGetAllTypefromSdifString declaration from SdifFGet.h to sdif.h
  *
@@ -126,11 +129,9 @@ LOG
 #ifndef _SDIFFGET_H
 #define _SDIFFGET_H
 
-#include <sdif.h>
-
-#include "SdifGlobals.h"
-#include "SdifString.h"
 #include <stdio.h>
+#include <sdif.h>
+#include "SdifGlobals.h"
 
 
 

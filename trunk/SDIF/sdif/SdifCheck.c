@@ -1,4 +1,4 @@
-/* $Id: SdifCheck.c,v 3.7 2004-07-13 18:03:30 roebel Exp $
+/* $Id: SdifCheck.c,v 3.8 2005-04-07 15:56:46 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -30,6 +30,9 @@
  * File test functions.
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.7  2004/07/13 18:03:30  roebel
+ * Properly initialize byte counter variables to 0.
+ *
  * Revision 3.6  2003/11/07 21:47:18  roebel
  * removed XpGuiCalls.h and replaced preinclude.h  by local files
  *
@@ -65,7 +68,7 @@
 
 #include "sdif_portability.h"
 
-#include "SdifCheck.h"
+#include <sdif.h>
 #include "SdifFRead.h"
 #include "SdifFGet.h"
 #include "SdifFile.h"

@@ -1,4 +1,4 @@
-/* $Id: SdifFRead.h,v 3.13 2003-08-06 15:29:18 schwarz Exp $
+/* $Id: SdifFRead.h,v 3.14 2005-04-07 15:56:47 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -33,6 +33,9 @@ LIBRARY
 
 LOG
  * $Log: not supported by cvs2svn $
+ * Revision 3.13  2003/08/06 15:29:18  schwarz
+ * oops;
+ *
  * Revision 3.12  2003/08/06 15:16:41  schwarz
  * Why not declare and document new functions?
  *
@@ -130,13 +133,13 @@ LOG
 #ifndef _SDIFFREAD_H 
 #define _SDIFFREAD_H 1
 
-#include "SdifGlobals.h"
 #include <stdio.h>
+#include <sdif.h>
+#include "SdifGlobals.h"
 #include "SdifMatrix.h"
 #include "SdifFrame.h"
 #include "SdifFGet.h"
 
-#include "SdifString.h" /* Need for SdifStringT definition */
 
 /*DOC: 
   Lit l'entête du fichier, c'est à dire 'SDIF' puis 4 bytes.  affiche

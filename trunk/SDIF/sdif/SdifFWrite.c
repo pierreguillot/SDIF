@@ -1,4 +1,4 @@
-/* $Id: SdifFWrite.c,v 3.20 2004-09-09 17:37:42 schwarz Exp $
+/* $Id: SdifFWrite.c,v 3.21 2005-04-07 15:57:42 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -31,6 +31,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.20  2004/09/09 17:37:42  schwarz
+ * moved SdifSizeOf* functions from SdifFWrite.c to SdifGlobals.c
+ *
  * Revision 3.19  2004/07/22 14:47:56  bogaards
  * removed many global variables, moved some into the thread-safe SdifGlobals structure, added HAVE_PTHREAD define, reorganized the code for selection, made some arguments const, new version 3.8.6
  *
@@ -139,7 +142,6 @@
 #include "SdifFile.h"
 #include "SdifTest.h"
 #include "SdifHash.h"
-#include "SdifRWLowLevel.h"
 #include "SdifFPut.h"
 #include "SdifErrMess.h"
 #include <string.h>

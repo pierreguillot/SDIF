@@ -1,4 +1,4 @@
-/* $Id: SdifFPrint.c,v 3.13 2004-07-22 14:47:56 bogaards Exp $
+/* $Id: SdifFPrint.c,v 3.14 2005-04-07 15:56:46 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -31,6 +31,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.13  2004/07/22 14:47:56  bogaards
+ * removed many global variables, moved some into the thread-safe SdifGlobals structure, added HAVE_PTHREAD define, reorganized the code for selection, made some arguments const, new version 3.8.6
+ *
  * Revision 3.12  2003/11/07 21:47:18  roebel
  * removed XpGuiCalls.h and replaced preinclude.h  by local files
  *
@@ -79,25 +82,20 @@
  *
  * Revision 3.1  1999/03/14  10:56:39  virolle
  * SdifStdErr add
- *
- *
  */
 
 
 #include "sdif_portability.h"
 
-#include "SdifFPrint.h"
+#include <sdif.h>
 #include "SdifTest.h"
 #include "SdifFile.h"
-#include "SdifRWLowLevel.h"
-#include "SdifNameValue.h"
 #include "SdifHash.h"
 #include "SdifMatrixType.h"
 #include "SdifFrameType.h"
 #include "SdifStreamID.h"
 #include "SdifFPut.h"
 #include "SdifErrMess.h"
-#include "SdifTimePosition.h"
 
 
 

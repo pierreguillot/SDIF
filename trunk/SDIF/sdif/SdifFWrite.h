@@ -1,4 +1,4 @@
-/* $Id: SdifFWrite.h,v 3.11 2003-08-06 15:11:45 schwarz Exp $
+/* $Id: SdifFWrite.h,v 3.12 2005-04-07 15:56:47 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -122,6 +122,9 @@ void main(void)
 
 LOG
  * $Log: not supported by cvs2svn $
+ * Revision 3.11  2003/08/06 15:11:45  schwarz
+ * Finally removed obsolete functions (like SdifSkip...).
+ *
  * Revision 3.10  2001/05/02 09:34:42  tisseran
  * Change License from GNU Public License to GNU Lesser Public License.
  *
@@ -212,14 +215,11 @@ LOG
 
 #include "SdifGlobals.h"
 #include <stdio.h>
-#include "SdifNameValue.h"
 #include "SdifMatrixType.h"
 #include "SdifFrameType.h"
 #include "SdifMatrix.h"
 #include "SdifFrame.h"
 
-#include "SdifString.h"
- 
 
 /*
 //FUNCTION GROUP:	Writing Header and Init-Frames

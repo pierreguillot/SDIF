@@ -1,4 +1,4 @@
-/* $Id: SdifSelect.c,v 3.21 2004-09-09 17:48:51 schwarz Exp $
+/* $Id: SdifSelect.c,v 3.22 2005-04-07 15:56:48 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -96,6 +96,10 @@ TODO
 
 LOG
   $Log: not supported by cvs2svn $
+  Revision 3.21  2004/09/09 17:48:51  schwarz
+  SdifSelectAppendList function, avoids the double references SdifListConcat
+  woulde create.
+
   Revision 3.20  2004/07/22 14:47:56  bogaards
   removed many global variables, moved some into the thread-safe SdifGlobals structure, added HAVE_PTHREAD define, reorganized the code for selection, made some arguments const, new version 3.8.6
 
@@ -191,11 +195,9 @@ LOG
 #include <math.h>	 /* fabs */
 #include <assert.h>	 /* N.B. that assert() calls will vanish with NDEBUG */
 
+#include <sdif.h>
 #include "SdifFile.h"	 /* SdifFileT */
-#include "SdifRWLowLevel.h" /* SdifSignatureToString */
-#include "SdifHard_OS.h" /* SdifSignature */
 #include "SdifGlobals.h" /* eEmptySignature, MIN/MAX */
-#include "SdifMemory.h"	 /* SdifMalloc, SdifCalloc */
 #include "SdifMatrixType.h"
 #include "SdifList.h"	 /* List structs and functions */
 #include "SdifSelect.h"
