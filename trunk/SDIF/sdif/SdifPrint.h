@@ -1,4 +1,4 @@
-/* $Id: SdifPrint.h,v 3.4 2001-05-02 09:34:47 tisseran Exp $
+/* $Id: SdifPrint.h,v 3.5 2005-04-07 15:29:09 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -33,6 +33,9 @@
  *
  * author: Dominique Virolle 1997
  * $Log: not supported by cvs2svn $
+ * Revision 3.4  2001/05/02 09:34:47  tisseran
+ * Change License from GNU Public License to GNU Lesser Public License.
+ *
  * Revision 3.3  2000/11/21 14:51:50  schwarz
  * - sdif.h is now included by all sdif/Sdif*.c files.
  * - Removed all public typedefs, enums, structs, and defines from the
@@ -70,15 +73,15 @@
  * (function prototypes are automatically linked extern), and it
  * prohibits cocoon from generating an entry in the HTML documentation
  * for this function.
- *
  */
+
 
 #ifndef _SdifPrint_
 #define _SdifPrint_
 
-#include "SdifGlobals.h"
 #include <stdio.h>
-#include "SdifNameValue.h"
+#include <sdif.h>
+#include "SdifGlobals.h"
 #include "SdifMatrixType.h"
 #include "SdifFrameType.h"
 #include "SdifStreamID.h"
@@ -86,29 +89,5 @@
 #include "SdifFrame.h"
 
 
-
-/*************** Matrix Type ***************/
-
-void SdifPrintMatrixType(FILE *fw, SdifMatrixTypeT *MatrixType);
-void SdifPrintAllMatrixType(FILE *fw, SdifFileT *SdifF);
-
-/*************** Frame Type ***************/
-
-void SdifPrintFrameType(FILE *fw, SdifFrameTypeT *FrameType);
-void SdifPrintAllFrameType(FILE *fw, SdifFileT *SdifF);
-
-/********** Matrix **********/
-
-void SdifPrintMatrixHeader(FILE *f, SdifMatrixHeaderT *MatrixHeader);
-void SdifPrintOneRow(FILE *f, SdifOneRowT *OneRow);
-void SdifPrintMatrixRows(FILE* f, SdifMatrixDataT *MatrixData);
-
-/********** Frame ***********/
-
-void SdifPrintFrameHeader(FILE *f, SdifFrameHeaderT* FrameHeader);
-
-/************ High ***********/
-
-void SdifPrintAllType(FILE *fw, SdifFileT *SdifF);
 
 #endif /* _SdifPrint_ */
