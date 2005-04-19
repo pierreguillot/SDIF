@@ -1,4 +1,4 @@
-/* $Id: sdif.h,v 1.45 2005-04-07 15:58:52 schwarz Exp $
+/* $Id: sdif.h,v 1.46 2005-04-19 15:30:13 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -30,6 +30,9 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.45  2005/04/07 15:58:52  schwarz
+ * removed unused SdifMr stuff
+ *
  * Revision 1.44  2004/09/14 15:45:47  schwarz
  * SdifMinMaxT with double
  *
@@ -225,7 +228,7 @@
  * Revision 1.1.2.1  2000/08/21  13:07:41  tisseran
  * *** empty log message ***
  *
- * $Date: 2005-04-07 15:58:52 $
+ * $Date: 2005-04-19 15:30:13 $
  *
  */
 
@@ -240,10 +243,11 @@ extern "C" {
 #endif
 
 
-static const char _sdif_h_cvs_revision_ [] = "$Id: sdif.h,v 1.45 2005-04-07 15:58:52 schwarz Exp $";
+static const char _sdif_h_cvs_revision_ [] = "$Id: sdif.h,v 1.46 2005-04-19 15:30:13 schwarz Exp $";
 
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <float.h>
 
 
