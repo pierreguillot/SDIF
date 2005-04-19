@@ -1,4 +1,4 @@
-/* $Id: SdifFile.c,v 3.51 2005-04-07 15:56:47 schwarz Exp $
+/* $Id: SdifFile.c,v 3.52 2005-04-19 15:30:14 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -33,6 +33,10 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.51  2005/04/07 15:56:47  schwarz
+ * removed some now empty local include files,
+ * added include of <sdif.h> and "SdifGlobals.h"
+ *
  * Revision 3.50  2005/04/07 13:57:53  schwarz
  * removed debug code used to find struct member alignment problem
  * (--> do this at init by comparing sizeof(SdifFileT) in lib and caller?)
@@ -280,16 +284,10 @@
 #include "XpGuiCalls.h"
 #endif
 
-#include "SdifGlobals.h"
-#include "SdifFile.h"
-#include "SdifTest.h"
-#include "SdifSelect.h"
-#include "SdifErrMess.h"
-#include "SdifFRead.h"		/* for SdifFReadGeneralHeader */
 #include <stdlib.h>
 #include <stdio.h>
 #ifdef HAVE_UNISTD_H
-#include <unistd.h> /* use for ftruncate */
+#include <unistd.h>		/* use for ftruncate */
 #endif
 #include <string.h>
 #include <assert.h>
@@ -305,12 +303,22 @@
 #include <sys/stat.h>
 #endif
 
+#include "SdifGlobals.h"
+#include "SdifHard_OS.h"	/* SdifInitMachineType */
+#include "SdifFile.h"
+#include "SdifTest.h"
+#include "SdifSelect.h"
+#include "SdifErrMess.h"
+#include "SdifFRead.h"		/* for SdifFReadGeneralHeader */
+
+/* Include all Frame Type */
+#include "sdiftypes.h"
+
+
 #ifndef lint
     static char identstring[]= "$SDIFVersion: " SDIF_VERSION_STRING" $ IRCAM $SDIFcompiled: "__DATE__" $";
 #endif
 
-/* Include all Frame Type */
-#include "sdiftypes.h"
 
 
 

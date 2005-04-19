@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.5 2003-11-07 21:47:19 roebel Exp $
+# $Id: Makefile.am,v 1.6 2005-04-19 15:30:14 schwarz Exp $
 #
 # ./sdifcpp/Makefile.am		March 2003		Axel Roebel
 #
@@ -30,6 +30,9 @@
 
 
 # $Log: not supported by cvs2svn $
+# Revision 1.5  2003/11/07 21:47:19  roebel
+# removed XpGuiCalls.h and replaced preinclude.h  by local files
+#
 # Revision 1.4  2003/08/07 16:20:44  roebel
 # Fixed the fix: we do not want to install the cpp version of libsdif and we only want a static library!
 #
@@ -41,26 +44,20 @@
 #
 # Revision 1.1  2003/03/07 17:34:09  roebel
 # cplusplus compilation is moved in its own directory.
-#
-
 
 
 EXTRA_LTLIBRARIES = libsdif-cpp.la 
 noinst_LTLIBRARIES = @SELLIBCPP@
 
 SDIF_H = ../include/sdif_version.h $(top_srcdir)/include/sdif.h \
-	$(addprefix $(top_srcdir)/sdif/,SdifCheck.h 	SdifErrMess.h	\
-	SdifConvToText.h 	\
-	SdifError.h 	SdifFGet.h 	SdifFPrint.h 		\
+	$(addprefix $(top_srcdir)/sdif/, SdifErrMess.h		\
+	SdifError.h 	SdifFGet.h 	SdifSelect.h 		\
 	SdifFPut.h 	SdifFRead.h	SdifFScan.h 		\
-	SdifFWrite.h 	SdifFile.h	SdifTimePosition.h 	\
+	SdifFWrite.h 	SdifFile.h	SdifTest.h	 	\
 	SdifFrame.h 	SdifFrameType.h SdifGlobals.h 		\
 	SdifHard_OS.h 	SdifHash.h	SdifHighLevel.h 	\
 	SdifList.h 	SdifMatrix.h 	SdifMatrixType.h	\
-	SdifMemory.h	SdifNameValue.h	SdifPreTypes.h 		\
-	SdifPrint.h 	SdifSelect.h	SdifRWLowLevel.h	\
-	SdifStreamID.h	SdifString.h 	SdifSignatureTab.h	\
-	SdifTest.h 	SdifTextConv.h 	sdiftypes.h	        \
+	sdiftypes.h						\
 	sdif_portability.h host_architecture.h ) ../sdif/config.h 
 
 
@@ -68,7 +65,7 @@ noinst_HEADERS = $(SDIF_H)
 
 libsdif_cpp_la_SOURCES = \
 	SdifHash.cpp       SdifGlobals.cpp      SdifSignatureTab.cpp   \
-	SdifMemory.cpp     SdifNameValue.cpp    SdifMatrixType.cpp     \
+	SdifPreTypes.cpp   SdifNameValue.cpp    SdifMatrixType.cpp     \
 	SdifStreamID.cpp   SdifMatrix.cpp       SdifFrame.cpp          \
 	SdifTest.cpp       SdifTimePosition.cpp SdifFile.cpp           \
 	SdifFGet.cpp       SdifFRead.cpp        SdifFScan.cpp          \
@@ -77,7 +74,7 @@ libsdif_cpp_la_SOURCES = \
 	SdifSelect.cpp     SdifHighLevel.cpp    SdifCheck.cpp          \
 	SdifString.cpp     SdifError.cpp        SdifFrameType.cpp      \
 	SdifPrint.cpp      SdifRWLowLevel.cpp   SdifFPut.cpp           \
-	SdifConvToText.cpp SdifPreTypes.cpp
+	SdifConvToText.cpp 
 
 
 CLEANFILES = $(libsdif_cpp_la_SOURCES) SdifVersion.h
