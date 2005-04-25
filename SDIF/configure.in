@@ -1,6 +1,6 @@
 dnl -*-autoconf-*-  (No, it's an autoconf file!)
 dnl -*-m4-*- (He emacs, it's a m4 file)
-dnl $Id: configure.in,v 1.59 2005-04-07 17:17:58 schwarz Exp $
+dnl $Id: configure.in,v 1.60 2005-04-25 19:41:06 roebel Exp $
 dnl
 dnl configure.in		September 2000		Patrice Tisserand
 dnl
@@ -32,6 +32,10 @@ dnl send email to:  sdif@ircam.fr
 
 
 dnl $Log: not supported by cvs2svn $
+dnl Revision 1.59  2005/04/07 17:17:58  schwarz
+dnl let's call this version 3.9.2, with the redundant header files removed
+dnl and Niels' -time extension to sdifextract
+dnl
 dnl Revision 1.58  2005/01/31 16:29:01  roebel
 dnl respect external CFLAGS/CXXFLAGS variable
 dnl
@@ -265,6 +269,11 @@ SDIF_VERSION_RELEASE=2
 
 VERSION=$SDIF_VERSION_MAJOR.$SDIF_VERSION_MINOR.$SDIF_VERSION_RELEASE
 
+# prevent the use of the autoconf default values 
+# we impose our own handling
+EXTERNAL_CFLAGS=$CFLAGS
+
+
 AC_SUBST(PACKAGE)
 AC_SUBST(VERSION)
 AC_SUBST(SDIF_VERSION_MINOR)
@@ -347,15 +356,15 @@ AC_ARG_ENABLE(debug,
 [--enable-debug            support additional library/programs with debug enabled],
 [echo FEATURE enable-debug... $enableval; 
 if test "$enableval" = "yes"; then
-	SELLIB=libsdif-debug.la; CFLAGS="$CFLAGS -g2";
+	SELLIB=libsdif-debug.la; CFLAGS="$EXTERNAL_CFLAGS -g2";
 	PROGLIST="querysdif-debug\$(EXEEXT) sdifextract-debug\$(EXEEXT) sdiftotext-debug\$(EXEEXT) tosdif-debug\$(EXEEXT)";
 
 else 
-	SELLIB=libsdif.la;  CFLAGS="$CFLAGS -O3";
+	SELLIB=libsdif.la;  CFLAGS="$EXTERNAL_CFLAGS -O3";
 	PROGLIST="querysdif\$(EXEEXT) sdifextract\$(EXEEXT) sdiftotext\$(EXEEXT) tosdif\$(EXEEXT)";
 fi ],
 [
-SELLIB=libsdif.la; CFLAGS="$CFLAGS -O3";
+SELLIB=libsdif.la; CFLAGS="$EXTERNAL_CFLAGS -O3";
 PROGLIST="querysdif\$(EXEEXT) sdifextract\$(EXEEXT) sdiftotext\$(EXEEXT) tosdif\$(EXEEXT)";
 ])
 
