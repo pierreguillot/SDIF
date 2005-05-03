@@ -32,9 +32,12 @@
  * 
  * 
  * 
- * $Id: sdifentity.h,v 1.29 2005-05-03 16:23:26 roebel Exp $ 
+ * $Id: sdifentity.h,v 1.30 2005-05-03 16:31:48 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.29  2005/05/03 16:23:26  roebel
+ * Added 2 new functions to handle selections in a more specific manner.
+ *
  * Revision 1.28  2004/10/07 14:48:11  roebel
  * Replaced calls to resize(0) by clear() and
  * test using size() by !empty() to improve efficiency.
@@ -780,13 +783,14 @@ public:
   /** 
    * \brief merge selection to the selection that is currently active
    * \ingroup selection
-   * @param selection selection sting to merge
+   * @param selection selection string to merge
    * \return  true if success
    */ 
   bool MergeSelection(const std::string& selection);
 
   /** 
    * \brief clear part or all of active selection
+   * \ingroup selection
    * 
    * @param part the enum indicating what part of the selection to clear.
    * \return  true if success
