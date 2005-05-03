@@ -1,6 +1,6 @@
 dnl -*-autoconf-*-  (No, it's an autoconf file!)
 dnl -*-m4-*- (He emacs, it's a m4 file)
-dnl $Id: configure.in,v 1.46 2005-04-25 19:41:06 roebel Exp $
+dnl $Id: configure.in,v 1.47 2005-05-03 16:24:21 roebel Exp $
 dnl
 dnl configure.in		Feb 2003      Axel Roebel
 dnl
@@ -33,6 +33,10 @@ dnl
 dnl
 
 dnl $Log: not supported by cvs2svn $
+dnl Revision 1.46  2005/04/25 19:41:06  roebel
+dnl Extension of compiler flag variables CFLAGS and CXXFLAGS did not work properly because autoconf sets default values that may contradict the values we select.
+dnl Therefore, we now store the externally set CFLAGS/CXXFLAGS to later use them as default values.
+dnl
 dnl Revision 1.45  2005/02/25 16:27:30  roebel
 dnl Added missing barces to ninstselprogs
 dnl
@@ -192,8 +196,8 @@ AC_MSG_RESULT(PACKAGE NAME)
 PACKAGE=Easdif
 
 EASDIF_VERSION_MAJ=1
-EASDIF_VERSION_MIN=0
-EASDIF_VERSION_RELEASE=2beta2
+EASDIF_VERSION_MIN=1
+EASDIF_VERSION_RELEASE=0
 
 VERSION="${EASDIF_VERSION_MAJ}.${EASDIF_VERSION_MIN}.${EASDIF_VERSION_RELEASE}"
 
