@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.19 2005-05-03 16:24:03 roebel Exp $
+# $Id: Makefile.am,v 1.20 2005-05-03 16:28:30 roebel Exp $
 #
 # ./Makefile.am		Feb. 2003     Axel Roebel
 #
@@ -30,6 +30,9 @@
 # 
 
 # $Log: not supported by cvs2svn $
+# Revision 1.19  2005/05/03 16:24:03  roebel
+# Fixed documentation installation target.
+#
 # Revision 1.18  2004/07/28 14:59:25  roebel
 # Version 0.10.0:
 # Matrix::SetCol/SetRow and unsigned char element access.
@@ -110,7 +113,7 @@ IRCAMDOCSERVER = iii.ircam.fr
 
 ircam_install_doc: doc
 	chmod -R g+w doc/html
-	ncftpput -u $(USER) $(DOCSERVER) $(DOCDIR)  doc/html/*
+	ncftpput -u $(USER) $(IRCAMDOCSERVER) $(IRCAMDOCDIR)  doc/html/*
 #	rsync -avpz --delete doc/html/* $(IRCAMDOCSERVER):$(IRCAMDOCDIR)
 	chmod -R g-w doc/html
 
