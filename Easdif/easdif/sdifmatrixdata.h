@@ -33,9 +33,13 @@
  * 
  * 
  * 
- * $Id: sdifmatrixdata.h,v 1.15 2004-11-18 18:05:29 ellis Exp $ 
+ * $Id: sdifmatrixdata.h,v 1.16 2005-05-03 16:23:41 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.15  2004/11/18 18:05:29  ellis
+ * .natural comparator function for Esdif Frames
+ * .bug fix in _SetRow
+ *
  * Revision 1.14  2004/09/08 09:17:10  roebel
  * Fixed misleading error message.
  *
@@ -767,9 +771,9 @@ public:
 
   /**
    * \ingroup setdata
-   * setting an entire row 
+   * \brief setting an entire row 
    * 
-   * @param out  pointer to memory holding at least  GetNbCols() elements
+   * @param in  pointer to memory holding at least  GetNbCols() elements
    * @param irow row index [0,m_Nrows[
    * 
    */
@@ -793,9 +797,9 @@ public:
 
   /**
    * \ingroup setdata
-   * setting an entire column
+   * \brief setting an entire column
    * 
-   * @param out  pointer to memory holding at least  GetNbRows() elements
+   * @param in  pointer to memory holding at least  GetNbRows() elements
    * @param icol column index [0,m_Ncols[
    * 
    */
@@ -818,7 +822,7 @@ public:
 
   /**
    * \ingroup setdata
-   * setting an entire column as double
+   * \brief setting an entire column as double
    * 
    * @param out  pointer to memory holding at least GetNbRows() elements
    * @param icol column index [0,m_Ncols[
