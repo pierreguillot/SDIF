@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.18 2004-07-28 14:59:25 roebel Exp $
+# $Id: Makefile.am,v 1.19 2005-05-03 16:24:03 roebel Exp $
 #
 # ./Makefile.am		Feb. 2003     Axel Roebel
 #
@@ -30,6 +30,11 @@
 # 
 
 # $Log: not supported by cvs2svn $
+# Revision 1.18  2004/07/28 14:59:25  roebel
+# Version 0.10.0:
+# Matrix::SetCol/SetRow and unsigned char element access.
+# New pkg-config for debug version of Easdif.
+#
 # Revision 1.17  2004/07/13 15:28:02  roebel
 # Fixed cvstag target to be able to use it from working directories that are not the top
 # source directory.
@@ -100,12 +105,13 @@ doc:
 
 
 # only useful for IRCAM
-IRCAMDOCDIR = /usr/local/www/iii/analyse_synthese/documentation/easdif
-IRCAMDOCSERVER = infirme
+IRCAMDOCDIR = /var/www/html/analyse_synthese/documentation/easdif
+IRCAMDOCSERVER = iii.ircam.fr
 
 ircam_install_doc: doc
 	chmod -R g+w doc/html
-	rsync -avpz --delete doc/html/* $(IRCAMDOCSERVER):$(IRCAMDOCDIR)
+	ncftpput -u $(USER) $(DOCSERVER) $(DOCDIR)  doc/html/*
+#	rsync -avpz --delete doc/html/* $(IRCAMDOCSERVER):$(IRCAMDOCDIR)
 	chmod -R g-w doc/html
 
 test:	check
