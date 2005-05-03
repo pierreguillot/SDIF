@@ -1,3 +1,12 @@
+2005-05-03  Axel Roebel  <Axel.Roebel@ircam.fr>
+Version 1.1.0
+
+	* easdif/sdifentity.h, easdif/sdifentity.cpp (Module): 
+	Added 2 new functions to handle selections in a more specific manner.
+	
+	* easdif/sdifmatrixdata.h (Module): 
+	Fixed documentation.	
+
 2005-02-04  Axel Roebel  <roebel@sam.local>
 Version 1.0.2beta
 
@@ -598,4 +607,4 @@ Version 0.21
 	* ChangeLog: Added changelog to repository.
 
 
-$Id: ChangeLog,v 1.44 2005-02-04 12:31:42 roebel Exp $
+$Id: ChangeLog,v 1.45 2005-05-03 16:24:22 roebel Exp $
