@@ -32,9 +32,13 @@
  * 
  * 
  * 
- * $Id: sdifentity.h,v 1.28 2004-10-07 14:48:11 roebel Exp $ 
+ * $Id: sdifentity.h,v 1.29 2005-05-03 16:23:26 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.28  2004/10/07 14:48:11  roebel
+ * Replaced calls to resize(0) by clear() and
+ * test using size() by !empty() to improve efficiency.
+ *
  * Revision 1.27  2004/09/10 14:45:28  roebel
  * Hopefully fixed the private access problems with CodeWarrior.
  * Added access functions to current location FrameDirectory and directory
@@ -297,6 +301,17 @@ class SDIFEntity
   friend class SDIFFrame;
   typedef std::list<SDIFLocation> Directory;
 
+public:
+  /// The parts of a secltion that can be cleared independently
+  enum SelectionPartsE {
+    SP_Stream,     /** <  Selection on Stream   */
+    SP_Frame,      /** <  Selection on frames   */
+    SP_Matrix,     /** <  Selection on matrix   */
+    SP_Time,       /** <  Selection on time   */
+    SP_Row,        /** <  Selection on rows   */
+    SP_Column,     /** <  Selection on columns   */
+    SP_All         /** <  all selections  */
+  };
 private:
 
 /** 
@@ -729,7 +744,7 @@ public:
  * return a string  containing the user defined types of the
  * file that is stored in the frame "1TYP".
  *
- *  return Type string
+ *  \return Type string
  */
   const std::string& GetTypeString() const;
 
@@ -739,7 +754,7 @@ public:
  * the argument string 
  * 
  * \param TypeString
- * \return return true if success
+ * \return  true if success
  */
   bool SetTypeString(const std::string& TypeString);
 
@@ -750,13 +765,33 @@ public:
  */
 
  /** 
- * \ingroup selection
+  *\brief replace selection for current file
+  * \ingroup selection
   * Replace current selection by new one given in argument.
   * The selection specification may contain all the parts of a filename
   * based selection after the  selection indicator :: .
+  *
+  * @param selection  selection string that will be parsed to replace the selection
+  *
+  * \return  true if success
   */
-    int ChangeSelection(const std::string& selection);
+  bool ChangeSelection(const std::string& selection);
 
+  /** 
+   * \brief merge selection to the selection that is currently active
+   * \ingroup selection
+   * @param selection selection sting to merge
+   * \return  true if success
+   */ 
+  bool MergeSelection(const std::string& selection);
+
+  /** 
+   * \brief clear part or all of active selection
+   * 
+   * @param part the enum indicating what part of the selection to clear.
+   * \return  true if success
+   */
+  bool ClearSelection(Easdif::SDIFEntity::SelectionPartsE part);
 
 /*************************************************************************/
 /* Operation with a file */

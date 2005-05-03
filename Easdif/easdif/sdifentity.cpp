@@ -32,9 +32,12 @@
  * 
  * 
  * 
- * $Id: sdifentity.cpp,v 1.25 2005-02-04 12:31:43 roebel Exp $ 
+ * $Id: sdifentity.cpp,v 1.26 2005-05-03 16:23:34 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.25  2005/02/04 12:31:43  roebel
+ * Fixed return value of SDIFEntity::WriteFrame
+ *
  * Revision 1.24  2004/10/07 14:48:11  roebel
  * Replaced calls to resize(0) by clear() and
  * test using size() by !empty() to improve efficiency.
@@ -166,7 +169,9 @@
 #include "easdif/easdif_config.h"
 #include "easdif/sdifentity.h"
 
-
+// isx indicated as  exported but isn't
+int SdifParseSelection (SdifSelectionT *sel, const char *str);
+void SdifInitIntMask (SdifSelectIntMaskP mask);
 
 namespace Easdif {
 
@@ -654,11 +659,63 @@ bool SDIFEntity::WriteTypes()
 }
 
 
-int SDIFEntity::ChangeSelection(const std::string& selection)
+bool SDIFEntity::ChangeSelection(const std::string& selection)
 {
-    const char* sel = const_cast<const char*>(selection.c_str());
-    SdifReplaceSelection(sel, efile->Selection);
-    return 1;
+  if (!efile) return false;
+  const char* sel = const_cast<const char*>(selection.c_str());
+  SdifReplaceSelection(sel, efile->Selection);
+  return true;
+}
+
+bool SDIFEntity::MergeSelection(const std::string& selection)
+{
+  if (!efile) return false;
+  const char* sel = const_cast<const char*>(selection.c_str());
+  SdifParseSelection(efile->Selection,sel);
+  return true;
+}
+
+bool SDIFEntity::ClearSelection(Easdif::SDIFEntity::SelectionPartsE part)
+{
+  if(!efile) return false;
+  switch(part) {
+  case SP_Stream:    
+    SdifInitIntMask(&efile->Selection->streammask);
+    SdifMakeEmptyList(efile->Selection->stream);    
+    break;
+  case SP_Frame:
+    SdifMakeEmptyList(efile->Selection->frame);   
+    break;
+  case SP_Matrix:
+    SdifMakeEmptyList(efile->Selection->matrix);   
+    break;
+  case SP_Time:
+    SdifMakeEmptyList(efile->Selection->time);   
+    break;
+  case SP_Row:
+    SdifInitIntMask(&efile->Selection->rowmask);
+    SdifMakeEmptyList(efile->Selection->row);    
+    break;
+  case SP_Column:
+    SdifMakeEmptyList(efile->Selection->column);    
+    SdifInitIntMask(&efile->Selection->colmask);
+    break;      
+  case SP_All:
+  default:
+    SdifMakeEmptyList(efile->Selection->stream);    
+    SdifMakeEmptyList(efile->Selection->frame);   
+    SdifMakeEmptyList(efile->Selection->matrix);   
+    SdifMakeEmptyList(efile->Selection->time);   
+    SdifMakeEmptyList(efile->Selection->column);    
+    SdifMakeEmptyList(efile->Selection->row);    
+    
+    SdifInitIntMask(&efile->Selection->colmask);
+    SdifInitIntMask(&efile->Selection->rowmask);
+    SdifInitIntMask(&efile->Selection->streammask);
+    
+    break;
+  }
+  return true;
 }
 
 /*****************************************************/
