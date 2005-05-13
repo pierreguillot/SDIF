@@ -1,4 +1,4 @@
-/* $Id: SdifFRead.c,v 3.24 2005-04-07 15:56:47 schwarz Exp $
+/* $Id: SdifFRead.c,v 3.25 2005-05-13 15:19:24 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -31,6 +31,10 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.24  2005/04/07 15:56:47  schwarz
+ * removed some now empty local include files,
+ * added include of <sdif.h> and "SdifGlobals.h"
+ *
  * Revision 3.23  2004/09/14 15:45:33  schwarz
  * use return after severe _SdifFError, because some library caller might not
  * exit in its error handler
@@ -200,7 +204,7 @@ SdifFReadGeneralHeader(SdifFileT *SdifF)
 {
   size_t SizeR = 0;
   size_t SizeS = 0;
-	char errorMess[_SdifStringLen];
+  char errorMess[_SdifStringLen];
 
   SdiffGetPos(SdifF->Stream, &(SdifF->StartChunkPos));
 
@@ -241,7 +245,7 @@ SdifFReadNameValueLCurrNVT(SdifFileT *SdifF)
 {
   /* Signature of chunck already read and checked for 1NVT */
   size_t SizeR = 0;
-	char errorMess[_SdifStringLen];
+  char errorMess[_SdifStringLen];
   
   SdiffGetPos(SdifF->Stream, &(SdifF->StartChunkPos));
   SdifF->StartChunkPos -= sizeof(SdifSignature);
@@ -424,14 +428,19 @@ SdifFReadAllASCIIChunks(SdifFileT *SdifF)
 size_t
 SdifFReadMatrixHeader(SdifFileT *SdifF)
 {
-  size_t SizeR = 0;
+  size_t newread, SizeR = 0;
   SdifUInt4 UIntTab[3];
-  
+
   SdifFCreateCurrMtrxH(SdifF); /* create only if it's necessary */
   
   SdiffReadSignature(&SdifF->CurrMtrxH->Signature, SdifF->Stream, &SizeR);
-  SizeR += sizeof(SdifUInt4) * SdiffReadUInt4(UIntTab, 3, SdifF->Stream);
- 
+  if (SdifF->CurrMtrxH->Signature == eEmptySignature)
+      return -1;	/* read error */
+
+  /* read 3 unsigned ints: datatype, nrow, ncol, copy into right fields */
+  newread = SdiffReadUInt4(UIntTab, 3, SdifF->Stream);
+  SizeR += newread * sizeof(SdifUInt4);
+
   SdifF->CurrMtrxH->DataType  = (SdifDataTypeET) UIntTab[0];
   SdifF->CurrMtrxH->NbRow     = UIntTab[1];
   SdifF->CurrMtrxH->NbCol     = UIntTab[2];
@@ -728,12 +737,18 @@ size_t SdifFReadMatrixData (SdifFileT *file)
     SdifMatrixHeaderT *mtxh     = file->CurrMtrxH;
     int		       numelem  = mtxh->NbRow * mtxh->NbCol;  /* elements */
     size_t	       nread    = 0;	/* bytes read */
-
+    int		       ok;
 
     /* update header pointer in matrix data struct to point to the
        file's current matrix header and see if there's enough space
        for data, if not, grow buffer */
-    SdifMatrixDataUpdateHeader(file->CurrMtrxData, mtxh);
+    ok = SdifMatrixDataUpdateHeader(file->CurrMtrxData, mtxh);
+
+    if (!ok)
+    {  	/* problem allocating data, attach last global error to file */
+	_SdifFError(file, gSdifLastError, "Previous error repeated");
+	return -1;
+    }
 
     /* case template for type from SdifDataTypeET */
 #   define readdatacase(type) \
