@@ -24,11 +24,15 @@
  *                            sdif@ircam.fr
  */
 
-/* $Id: SdifHighLevel.c,v 3.12 2004-09-14 15:44:00 schwarz Exp $
+/* $Id: SdifHighLevel.c,v 3.13 2005-05-13 15:17:48 schwarz Exp $
  *
  * SdifHighLevel.c	8.12.1999	Diemo Schwarz
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.12  2004/09/14 15:44:00  schwarz
+ * protect from wrong file or no file errors
+ * SdifMinMaxT with double
+ *
  * Revision 3.11  2004/09/13 13:06:27  schwarz
  * SdifReadSimple even simpler, SdifReadFile for full-scale callback reading.
  * Moving the functionality of querysdif into the library with SdifQuery,
@@ -94,7 +98,7 @@
 #include "SdifSelect.h"
 
 
-#define DB 0
+#define _DB 1
 
 
 /* Read frame headers until a frame matching the file selection has
@@ -163,7 +167,7 @@ size_t SdifReadFile (const char             *filename,
 		     void		    *userdata)
 {
     SdifFileT *file = NULL;
-    int	       eof  = 0;
+    int	       eof  = 0, go_on = 1;
     size_t     bytesread = 0, newread;
     int        m, wantit;
 
@@ -185,19 +189,20 @@ size_t SdifReadFile (const char             *filename,
 
     /* call begin file handler, return false stops reading */
     if (openfilefunc)
-	eof = !openfilefunc(file, userdata);
+	go_on = openfilefunc(file, userdata);
 
     /* main read loop:
        Read next selected frame header.  Current signature has
        already been read by SdifFReadAllASCIIChunks or the last loop. */
-    while (!eof  &&  (newread = SdifFReadNextSelectedFrameHeader(file)) > 0)
+    while (go_on  &&  !eof  &&  
+	   (newread = SdifFReadNextSelectedFrameHeader(file)) > 0)
     {
 	bytesread += newread;
 
 	/* call frame header handler that decides if we are interested */
 	wantit = framefunc  ?  framefunc(file, userdata)  :  1;
 
-#if DB
+#if _DB
 	fprintf(SdifStdErr, 
 		"@frame\t%s  matrices %d  stream %d  time %f, wantit %d\n",
 		SdifSignatureToString(SdifFCurrFrameSignature(file)), 
@@ -208,32 +213,49 @@ size_t SdifReadFile (const char             *filename,
 	if (wantit)
 	{
 	    /* for matrices loop */
-	    for (m = 0; m < SdifFCurrNbMatrix(file); m++)
+	    for (m = 0; go_on  &&  m < SdifFCurrNbMatrix(file); m++)
 	    {
 		/* Read matrix header */
-		bytesread += SdifFReadMatrixHeader(file);
+		newread = SdifFReadMatrixHeader(file);
 
-		/* call matrix header handler */
-		wantit = matrixfunc  ?  matrixfunc(file, m, userdata)  :  1;
-
-#if DB
-		fprintf(SdifStdErr, 
-			"@matrix\t%s  rows %d  cols %d, wantit %d\n", 
-			SdifSignatureToString(SdifFCurrMatrixSignature(file)), 
-			SdifFCurrNbRow(file), SdifFCurrNbCol(file), wantit);
-#endif
-		/* Check matrix type */
-		if (wantit  &&  SdifFCurrMatrixIsSelected(file))
-		{   /* read matrix data */
-		    bytesread += SdifFReadMatrixData(file);
-		    
-		    /* call matrix data handler */
-		    if (matrixdatafunc)
-			matrixdatafunc(file, m, userdata);
+		if (newread <= 0)
+		{   /* read problem (also with 0 since we want a full header)  */
+		    go_on = 0;
 		}
 		else
-		{   /* a matrix type we're not interested in, so we skip it */
-		    bytesread += SdifFSkipMatrixData(file);
+		{
+		    bytesread += newread;
+
+		    /* call matrix header handler */
+		    wantit = matrixfunc  ?  matrixfunc(file, m, userdata)  :  1;
+#if _DB
+		    fprintf(SdifStdErr, 
+			    "@matrix\t%s  rows %d  cols %d, wantit %d\n", 
+			    SdifSignatureToString(SdifFCurrMatrixSignature(file)), 
+			    SdifFCurrNbRow(file), SdifFCurrNbCol(file), wantit);
+#endif
+		    /* Check matrix type */
+		    if (wantit  &&  SdifFCurrMatrixIsSelected(file))
+		    {   /* read matrix data */
+			newread = SdifFReadMatrixData(file);
+		    
+			if (newread < 0)
+			{   /* read problem (0 is ok, can be (0, 0) matrix) */
+			    go_on = 0;
+			}
+			else
+			{   /* read ok */
+			    bytesread += newread;
+
+			    /* call matrix data handler */
+			    if (matrixdatafunc)
+				go_on = matrixdatafunc(file, m, userdata);
+			}
+		    }
+		    else
+		    {   /* a matrix type we're not interested in, so we skip it */
+			bytesread += SdifFSkipMatrixData(file);
+		    }
 		}
 	    }   /* end for matrices */
 	}
