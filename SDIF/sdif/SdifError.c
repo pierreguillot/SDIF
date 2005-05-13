@@ -1,4 +1,4 @@
-/* $Id: SdifError.c,v 3.16 2005-04-07 14:02:34 schwarz Exp $
+/* $Id: SdifError.c,v 3.17 2005-05-13 15:30:48 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -31,6 +31,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.16  2005/04/07 14:02:34  schwarz
+ * clearer error msg
+ *
  * Revision 3.15  2004/07/22 14:47:55  bogaards
  * removed many global variables, moved some into the thread-safe SdifGlobals structure, added HAVE_PTHREAD define, reorganized the code for selection, made some arguments const, new version 3.8.6
  *
@@ -137,12 +140,13 @@ SdifExceptionFuncT  gSdifErrorFunc = SdifDefaultErrorFunc;
 SdifExceptionFuncT  gSdifWarningFunc = SdifDefaultWarningFunc;
 
 /* global variables set by the _SdifError macro */
-char *SdifErrorFile;
-int SdifErrorLine;
+char	     *SdifErrorFile;
+int	      SdifErrorLine;
 
-int  gSdifErrorOutputEnabled = 1;
-FILE* SdifStdErr = NULL;
-char gSdifBufferError[4096] = "unused error variable";
+/* global variables to control error output */
+int	      gSdifErrorOutputEnabled = 1;
+SdifErrorEnum gSdifLastError	      = eNoError;
+FILE*	      SdifStdErr	      = NULL;
 
 
 static void 
@@ -200,6 +204,8 @@ SdifErrorWarning(SdifErrorEnum Error, const char *inErrorMess)
   /*
     outMessageLength += strlen(inErrorMess);
   */
+
+  gSdifLastError = Error;
 
   switch(Error)
     {
