@@ -1,4 +1,4 @@
-/* $Id: SdifFile.c,v 3.52 2005-04-19 15:30:14 schwarz Exp $
+/* $Id: SdifFile.c,v 3.53 2005-05-13 15:25:20 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -33,6 +33,11 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.52  2005/04/19 15:30:14  schwarz
+ * make sdifcpp compile again for easdif:
+ * - removed deleted files from makefiles
+ * - fixed some includes that were missing (but only for C++ compilation!?)
+ *
  * Revision 3.51  2005/04/07 15:56:47  schwarz
  * removed some now empty local include files,
  * added include of <sdif.h> and "SdifGlobals.h"
@@ -274,9 +279,7 @@
  * Revision 1.4  1998/05/14  09:50:34  schwarz
  * Added SdifCurrOneRowData to return a pointer to the raw data.
  * This can subsequently be used for SdifSetCurrOneRow.
- *
  */
-
 
 
 #include "sdif_portability.h"
@@ -315,10 +318,10 @@
 #include "sdiftypes.h"
 
 
+/* include file version in object code, to be extracted with "ident libsdif.a" */
 #ifndef lint
-    static char identstring[]= "$SDIFVersion: " SDIF_VERSION_STRING" $ IRCAM $SDIFcompiled: "__DATE__" $";
+    static char identstring[] = "$File: " __FILE__ " $  $SDIFVersion: " SDIF_VERSION_STRING " $ IRCAM $SDIFcompiled: " __DATE__ " $";
 #endif
-
 
 
 
