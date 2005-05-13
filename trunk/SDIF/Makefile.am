@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.28 2004-08-26 17:13:19 schwarz Exp $
+# $Id: Makefile.am,v 1.29 2005-05-13 16:28:57 schwarz Exp $
 #
 # ./Makefile.am		September 2000			Patrice Tisserand
 #
@@ -30,6 +30,10 @@
 
 
 # $Log: not supported by cvs2svn $
+# Revision 1.28  2004/08/26 17:13:19  schwarz
+# ReleaseNotes
+# some echo's don't know -e, is it needed?
+#
 # Revision 1.27  2004/08/26 17:12:54  schwarz
 # ReleaseNotes
 # some echo's don't know -e, is it needed?
@@ -222,7 +226,7 @@ PUBLISH_DIR       = $(PUBLISH_ROOT)/download
 PUBLISH_FILES_R   = doc/index.html
 PUBLISH_FILES_DL  = doc/download/index.html $(EXTRA_PUBLISH) \
 		    $(PUBLISH_DIST) $(PUBLISH_RPM) $(PUBLISH_SRPM) 
-PUBLISH_HOST      = www.ircam.fr
+PUBLISH_HOST      = recherche.ircam.fr
 PUBLISH_USER      = wwwas
 
 publish-ftp:	# (experimental)
