@@ -1,4 +1,4 @@
-/* $Id: SdifTest.c,v 3.13 2005-04-07 15:56:48 schwarz Exp $
+/* $Id: SdifTest.c,v 3.14 2005-05-13 15:28:41 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -33,6 +33,10 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.13  2005/04/07 15:56:48  schwarz
+ * removed some now empty local include files,
+ * added include of <sdif.h> and "SdifGlobals.h"
+ *
  * Revision 3.12  2004/09/09 17:50:40  schwarz
  * Better syntax error messages and code reformatted to help finding
  * parsing bug that the type definition string has to end with whitespace.
@@ -94,11 +98,8 @@
  *
  * Revision 2.2  1999/01/23  13:57:48  virolle
  * General Lists, and special chunk preparation to become frames
- *
- *
- *
- *
  */
+
 
 #include "sdif_portability.h"
 
@@ -111,10 +112,8 @@
 #include "SdifFile.h"
 #include "SdifErrMess.h"
 
+
 #define _NbOfWarningMax 19
-
-
-
 
 
 SdifMatrixTypeT*
@@ -138,16 +137,13 @@ SdifTestMatrixType(SdifFileT *SdifF, SdifSignature Signature)
 	    }
       else
 	    {
-          sprintf(errorMess, "Matrix Type : '%s'", SdifSignatureToString(Signature));
+          sprintf(errorMess, "Matrix Type : '%s' (0x%08x)", 
+		  SdifSignatureToString(Signature), (long) Signature);
           _SdifFError(SdifF, eUnDefined, errorMess);
           return NULL;
         }
     }
 }
-
-
-
-
 
 
 int
@@ -184,14 +180,8 @@ SdifFTestDataType(SdifFileT* SdifF)
 }
 
 
-
-
-
-
 int SdifFTestNbColumns(SdifFileT* SdifF)
 {
-
-
 #if 0
   /* Due to user complaints we shut down the warning
    * regarding the wrong number of columns which 
@@ -209,11 +199,6 @@ int SdifFTestNbColumns(SdifFileT* SdifF)
 #endif
     return eTrue;
 }
-
-
-
-
-
 
 
 int SdifFTestMatrixWithFrameHeader(SdifFileT* SdifF)
@@ -241,9 +226,6 @@ int SdifFTestMatrixWithFrameHeader(SdifFileT* SdifF)
 }
 
 
-
-
-
 int
 SdifFTestNotEmptyMatrix(SdifFileT* SdifF)
 {
@@ -252,9 +234,6 @@ SdifFTestNotEmptyMatrix(SdifFileT* SdifF)
   else
     return eTrue;
 } 
-
-
-
 
 
 int
@@ -279,9 +258,6 @@ SdifFTestMatrixHeader(SdifFileT* SdifF)
 }
 
 
-
-
-
 SdifColumnDefT*
 SdifTestColumnDef(SdifFileT *SdifF, SdifMatrixTypeT *MtrxT, char *NameCD)
 {
@@ -301,12 +277,6 @@ SdifTestColumnDef(SdifFileT *SdifF, SdifMatrixTypeT *MtrxT, char *NameCD)
       return NULL;
     }
 }
-
-
-
-
-
-
 
 
 SdifFrameTypeT*
@@ -331,17 +301,13 @@ SdifTestFrameType(SdifFileT *SdifF, SdifSignature Signature)
 	    }
       else
 	    {
-	      sprintf(errorMess, "Frame Type : '%s'",
-		          SdifSignatureToString(Signature));
+	      sprintf(errorMess, "Frame Type '%s' (0x%08x)",
+		      SdifSignatureToString(Signature), (long) Signature);
 	      _SdifFError(SdifF, eUnDefined, errorMess);
 	      return NULL;
 	    }
     }
 }
-
-
-
-
 
 
 SdifComponentT*
@@ -363,11 +329,6 @@ SdifTestComponent(SdifFileT* SdifF, SdifFrameTypeT *FramT, char *NameCD)
       return NULL;
     }
 }
-
-
-
-
-
 
 
 int
@@ -426,9 +387,6 @@ SdifTestMatrixTypeModifMode(SdifFileT *SdifF, SdifMatrixTypeT *MatrixType)
 }
 
 
-
-
-
 int
 SdifTestFrameTypeModifMode(SdifFileT *SdifF, SdifFrameTypeT *FrameType)
 {
@@ -444,4 +402,3 @@ SdifTestFrameTypeModifMode(SdifFileT *SdifF, SdifFrameTypeT *FrameType)
       return  eFalse;
     }
 }
-
