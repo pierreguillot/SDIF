@@ -1,4 +1,4 @@
-/* $Id: sdif.h,v 1.46 2005-04-19 15:30:13 schwarz Exp $
+/* $Id: sdif.h,v 1.47 2005-05-13 15:35:01 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -30,6 +30,11 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.46  2005/04/19 15:30:13  schwarz
+ * make sdifcpp compile again for easdif:
+ * - removed deleted files from makefiles
+ * - fixed some includes that were missing (but only for C++ compilation!?)
+ *
  * Revision 1.45  2005/04/07 15:58:52  schwarz
  * removed unused SdifMr stuff
  *
@@ -228,7 +233,7 @@
  * Revision 1.1.2.1  2000/08/21  13:07:41  tisseran
  * *** empty log message ***
  *
- * $Date: 2005-04-19 15:30:13 $
+ * $Date: 2005-05-13 15:35:01 $
  *
  */
 
@@ -243,7 +248,7 @@ extern "C" {
 #endif
 
 
-static const char _sdif_h_cvs_revision_ [] = "$Id: sdif.h,v 1.46 2005-04-19 15:30:13 schwarz Exp $";
+static const char _sdif_h_cvs_revision_ [] = "$Id: sdif.h,v 1.47 2005-05-13 15:35:01 schwarz Exp $";
 
 
 #include <stdio.h>
@@ -926,7 +931,8 @@ typedef enum SdifErrorE
 {
   eFalse = 0,
   eTrue = 1,
-  eFreeNull = 256,
+  eGlobalError = 256,
+  eFreeNull = eGlobalError,
   eAllocFail,
   eArrayPosition,
   eEof,
@@ -1156,14 +1162,12 @@ void	SdifEnableErrorOutput  (void);
 void	SdifDisableErrorOutput (void);
 
 
-extern char	gSdifBufferError[4096];
-extern int	gSdifErrorOutputEnabled;
-
-
-extern SdifExitFuncT gSdifExitFunc;
-extern char *SdifErrorFile;
-extern int SdifErrorLine;
-extern FILE* SdifStdErr;
+/* global variables to control error output */
+extern int		gSdifErrorOutputEnabled;
+extern SdifErrorEnum	gSdifLastError;
+extern char	       *SdifErrorFile;
+extern int		SdifErrorLine;
+extern FILE	       *SdifStdErr;
 
 
 
@@ -1190,7 +1194,10 @@ size_t SdifFReadAllASCIIChunks   (SdifFileT *SdifF);
   fichier.  <strong>Elle effectue une mise à jour de l'allocation
   mémoire de SdifF->CurrOneRow en fonction des paramètres de l'entête
   de matrice.</strong> Ainsi, on est normalement près pour lire chaque
-  ligne de la matrice courrante.  */
+  ligne de la matrice courrante.  
+
+  @return	number of bytes read or -1 if error 
+*/
 size_t SdifFReadMatrixHeader     (SdifFileT *SdifF);
 
 /*DOC: 
@@ -2006,6 +2013,8 @@ size_t SdifReadFile (const char             *filename,
   Reads matrix data and padding.  The data is stored in CurrMtrxData,
   for which the library will allocate enough space for the data of one
   matrix, accessible by SdifFCurrMatrixData().  
+  
+  @return	number of bytes read or -1 if error
 
   [Precondition:] 
   Matrix header must have been read with SdifFReadMatrixHeader.  */
@@ -2249,7 +2258,7 @@ void               SdifKillMatrixData        (SdifMatrixDataT *MatrixData);
 int		   SdifMatrixDataRealloc     (SdifMatrixDataT *data, 
 					      int newsize);
 
-/* matrix data element access by index */
+/* matrix data element access by index (starting from 1!) */
 
 SdifMatrixDataT*   SdifMatrixDataPutValue    (SdifMatrixDataT *MatrixData,
 					      SdifUInt4  numRow, 
@@ -2803,6 +2812,9 @@ void SdifSelectAdd_TYPE_ (SdifListT *list, _datatype_ value);
   _datatype_:
   [] _type_ is one of:  <br> Int, Real,   Signature,     String, for
   [] _datatype_ of:	<br> int, double, SdifSignature, char *, respectively.
+
+  Example: to add the time range (t1, t2) to the selection in file, call
+	SdifSelectAddRealRange(file->Selection->time, t1, sst_range, t2);
 */
 void SdifSelectAdd_TYPE_Range (SdifListT *list, 
 			       _datatype_ value, 
