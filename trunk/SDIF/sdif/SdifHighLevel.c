@@ -24,11 +24,14 @@
  *                            sdif@ircam.fr
  */
 
-/* $Id: SdifHighLevel.c,v 3.13 2005-05-13 15:17:48 schwarz Exp $
+/* $Id: SdifHighLevel.c,v 3.14 2005-05-13 16:12:58 schwarz Exp $
  *
  * SdifHighLevel.c	8.12.1999	Diemo Schwarz
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.13  2005/05/13 15:17:48  schwarz
+ * stop read loop on errors and return values of callbacks
+ *
  * Revision 3.12  2004/09/14 15:44:00  schwarz
  * protect from wrong file or no file errors
  * SdifMinMaxT with double
@@ -98,7 +101,7 @@
 #include "SdifSelect.h"
 
 
-#define _DB 1
+#define _DB 0
 
 
 /* Read frame headers until a frame matching the file selection has
