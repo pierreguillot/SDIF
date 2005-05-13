@@ -1,3 +1,105 @@
+2005-05-13  schwarz  <schwarz@mac-borghesi.ircam.fr>
+Version 3.9.3
+
+	* configure.in: version 3.9.3
+
+	* include/sdif.h, sdif/SdifErrMess.c, sdif/SdifError.c:
+	make it possible that global errors from SdifError be passed through
+	the SdifErrMsg functions as file errors.
+
+	* sdif/SdifTest.c: print signatures in hex also
+
+	* sdif/SdifFile.c: file name in identstring
+
+	* sdif/SdifFRead.c: pass read errors to caller as -1 return values
+
+	* sdif/SdifHighLevel.c:
+	stop read loop on errors and return values of callbacks
+
+2005-04-25  roebel  <roebel@mac-borghesi.ircam.fr>
+
+	* configure.in:
+	Extension of compiler flag variables CFLAGS and CXXFLAGS did not work properly because autoconf sets default values that may contradict the values we select.
+	Therefore, we now store the externally set CFLAGS/CXXFLAGS to later use them as default values.
+
+2005-04-19  schwarz  <schwarz@mac-borghesi.ircam.fr>
+
+	* sdif/SdifFile.c, sdifcpp/Makefile.am, include/sdif.h:
+	make sdifcpp compile again for easdif:
+	- removed deleted files from makefiles
+	- fixed some includes that were missing (but only for C++ compilation!?)
+
+2005-04-07  schwarz  <schwarz@mac-borghesi.ircam.fr>
+Version 3.9.2
+
+	* macosxbuild/SDIF.xcode/project.pbxproj:
+	adapted to removed files, framework version 3.9.2
+
+	* configure.in:
+	let's call this version 3.9.2, with the redundant header files removed
+	and Niels' -time extension to sdifextract
+
+	* include/sdif.h: removed unused SdifMr stuff
+
+	* sdif/SdifFWrite.c, sdif/SdifPrint.c, sdif/SdifPrint.h, sdif/SdifRWLowLevel.c, sdif/SdifRWLowLevel.h, sdif/SdifSelect.c, sdif/SdifSignatureTab.c, sdif/SdifSignatureTab.h, sdif/SdifString.c, sdif/SdifString.h, sdif/SdifTest.c, sdif/SdifTextConv.c, sdif/SdifTextConv.h, sdif/SdifTimePosition.c, sdif/SdifTimePosition.h, sdif/sdiftypes.h, sdif/SdifFPrint.h, sdif/SdifFPut.c, sdif/SdifFPut.h, sdif/SdifFRead.c, sdif/SdifFRead.h, sdif/SdifFScan.c, sdif/SdifFWrite.h, sdif/SdifFile.c, sdif/SdifGlobals.c, sdif/SdifGlobals.h, sdif/SdifHard_OS.c, sdif/SdifHash.c, sdif/SdifList.c, sdif/SdifNameValue.c, sdif/SdifNameValue.h, sdif/SdifPreTypes.c, sdif/SdifPreTypes.h, sdif/Makefile.am, sdif/SdifCheck.c, sdif/SdifConvToText.c, sdif/SdifConvToText.h, sdif/SdifFGet.c, sdif/SdifFGet.h, sdif/SdifFPrint.c:
+	removed some now empty local include files,
+	added include of <sdif.h> and "SdifGlobals.h"
+
+	* sdif/SdifPrint.h, sdif/SdifCheck.h, sdif/SdifConvToText.h, sdif/SdifErrMess.h, sdif/SdifFPrint.h, sdif/SdifGlobals.h, sdif/SdifHard_OS.h, sdif/SdifSelect.h, sdif/SdifSignatureTab.h, sdif/SdifTextConv.h:
+	removed duplicated declarations that belong to the external API in sdif.h
+
+	* sdif/SdifMemory.c, sdif/SdifMemory.h:
+	removed unused functions SdifMr_*
+	(they were redefining the Sdif*alloc functions to find memory leaks)
+	removed now empty files SdifMemory.[ch]
+
+	* sdif/SdifCheck.h:
+	removed duplicated declarations that belong to the external API in sdif.h
+
+	* sdif/SdifError.c: clearer error msg
+
+	* sdif/SdifFile.c:
+	removed debug code used to find struct member alignment problem
+	(--> do this at init by comparing sizeof(SdifFileT) in lib and caller?)
+
+2005-04-06  schwarz  <schwarz@mac-borghesi.ircam.fr>
+
+	* sdif/SdifFile.c, sdif.ncb, sdif.pc.in, sdif.sln, sdif.spec.in, sdif.suo, sdif.vcproj:
+	project for MS Visual Studio C++ 7, configured for building with FTM (struct member align 2)
+
+2005-04-05  bogaards  <bogaards@mac-borghesi.ircam.fr>
+
+	* tools/sdifextract.c:
+	added time ouput format to extract only the times of selected frames
+
+2005-01-31  roebel  <roebel@mac-borghesi.ircam.fr>
+
+	* configure.in: respect external CFLAGS/CXXFLAGS variable
+
+2005-01-17  schwarz  <schwarz@mac-borghesi.ircam.fr>
+
+	* macosxbuild/SDIF.xcode/project.pbxproj:
+	converted to native xcode project
+	static lib installed with framework as resource
+	set framework version
+	todo: project version still separate, to be read from configure.in, or
+	      to be written to configure???
+
+2005-01-14  schwarz  <schwarz@mac-borghesi.ircam.fr>
+
+	* macosxbuild/SDIF.xcode/project.pbxproj: static lib target
+
+2004-12-20  roebel  <roebel@mac-borghesi.ircam.fr>
+
+	* sdif/SdifRWLowLevel.c:
+	Fixed compilation warnings (errors) in gcc (g++) 3.4.2.
+
+2004-10-11  schwarz  <schwarz@mac-borghesi.ircam.fr>
+
+	* macosxbuild/SDIF.xcode/project.pbxproj:
+	created install target, installs into /Library/Frameworks
+	set version 3.9.0 in target properties: info.plist basic information
+
 2004-10-07  Axel Roebel  <Axel.Roebel@ircam.fr>
 Version 3.9.1
 
@@ -8,7 +110,7 @@ Version 3.9.1
 	Fixed SdifStringToNV to only convrt \t and \n.
 	
 2004-09-09  Diemo Schwarz  <schwarz@ligeti.ircam.fr>
-Version 3.9.0 rc1
+Version 3.9.0
 	
 	* include/sdif.h:
 	- Changed SdifMatrixDataT to something sensible that allows to read
@@ -525,4 +627,4 @@ Version 3.3:
 	  Operating System.
 
 	
-$Id: ChangeLog,v 1.42 2004-10-07 14:53:27 roebel Exp $
+$Id: ChangeLog,v 1.43 2005-05-13 15:51:36 schwarz Exp $
