@@ -1,4 +1,4 @@
-/* $Id: sdifextract.c,v 1.15 2005-04-05 15:58:23 bogaards Exp $
+/* $Id: sdifextract.c,v 1.16 2005-05-13 16:04:59 schwarz Exp $
  
                 Copyright (c) 1998 by IRCAM - Centre Pompidou
                            All rights reserved.
@@ -13,6 +13,9 @@
    Extract data from an SDIF-file.  
    
    $Log: not supported by cvs2svn $
+   Revision 1.15  2005/04/05 15:58:23  bogaards
+   added time ouput format to extract only the times of selected frames
+
    Revision 1.14  2004/06/17 18:30:05  roebel
    Fixed padding calculation. Only count bytes read for  matrices, because
    frames are by default aligned.
@@ -218,7 +221,7 @@ void usage (char *msg, char *arg, int longhelp)
     }
     if (longhelp)
     {
-    	fprintf (SdifStdErr, "\n" PROG "version $Revision: 1.15 $\n\n");
+    	fprintf (SdifStdErr, "\n" PROG "version $Revision: 1.16 $\n\n");
     
     	if (types)
     	{
@@ -568,9 +571,9 @@ int KERmain(int argc, char** argv)
 /* use global arrays to prevent crash on MacOSX 
  * no need to have the arrays local !*/
 
-#   define	maxintsel	32768	/* todo: make dynamic */
+#   define	maxintsel	(256*1024)	/* todo: make dynamic */
 #   define	hard_defined_get(arr, ind)	((ind) < maxintsel  ?  arr [ind]  :  	      \
-		   (fprintf(stderr, PROG "Number of columns out of bounds, exiting\n"), exit (9), 0))
+		   (fprintf(stderr, PROG "Number of rows/columns out of bounds, exiting\n"), exit (9), 0))
 
 
     int		flatcol[maxintsel], cumulcol[maxintsel+1], numcolsel,
