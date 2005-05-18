@@ -1,4 +1,4 @@
-/* $Id: SdifFile.c,v 3.53 2005-05-13 15:25:20 schwarz Exp $
+/* $Id: SdifFile.c,v 3.54 2005-05-18 20:20:31 roebel Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -33,6 +33,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.53  2005/05/13 15:25:20  schwarz
+ * file name in identstring
+ *
  * Revision 3.52  2005/04/19 15:30:14  schwarz
  * make sdifcpp compile again for easdif:
  * - removed deleted files from makefiles
@@ -474,12 +477,19 @@ SdifFOpen(const char* Name, SdifFileModeET Mode)
 	  SdifF = NULL;
       }
       else
-      {   /* check if we can perform seeks (with Sdiffsetpos) on this file */
+      {   
+        /* check if we can perform seeks (with Sdiffsetpos) on this file */
 #if HAVE_SYS_STAT_H
-	  SdifF->isSeekable  =  stdio == eBinaryModeUnknown
-			        && !S_ISFIFO (fileno (SdifF->Stream));
+        struct stat sb;
+	if (fstat (fileno (SdifF->Stream), &sb) == -1)
+	{	
+          /* Default to maximum safety. */
+          SdifF->isSeekable = 0 ;
+        }
+        else
+	  SdifF->isSeekable = (S_ISFIFO (sb.st_mode) || S_ISSOCK (sb.st_mode));
 #else
-	  SdifF->isSeekable  =  stdio == eBinaryModeUnknown;
+        SdifF->isSeekable  =  stdio == eBinaryModeUnknown;
 #endif
       }
   }
