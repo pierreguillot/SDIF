@@ -1,3 +1,9 @@
+2005-05-18  Axel Roebel  <Axel.Roebel@ircam.fr>
+
+	* sdif/SdifFile.c:
+	Corrected detection seekablility of sdif file. files are not seekable only if 
+	they are pipes!
+
 2005-05-13  schwarz  <schwarz@mac-borghesi.ircam.fr>
 Version 3.9.3
 
@@ -627,4 +633,4 @@ Version 3.3:
 	  Operating System.
 
 	
-$Id: ChangeLog,v 1.43 2005-05-13 15:51:36 schwarz Exp $
+$Id: ChangeLog,v 1.44 2005-05-18 20:21:57 roebel Exp $
