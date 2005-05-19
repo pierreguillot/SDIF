@@ -1,4 +1,4 @@
-/* $Id: SdifFile.c,v 3.54 2005-05-18 20:20:31 roebel Exp $
+/* $Id: SdifFile.c,v 3.55 2005-05-19 14:07:47 roebel Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -33,6 +33,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.54  2005/05/18 20:20:31  roebel
+ * Fixed detection of pipes
+ *
  * Revision 3.53  2005/05/13 15:25:20  schwarz
  * file name in identstring
  *
@@ -487,7 +490,7 @@ SdifFOpen(const char* Name, SdifFileModeET Mode)
           SdifF->isSeekable = 0 ;
         }
         else
-	  SdifF->isSeekable = (S_ISFIFO (sb.st_mode) || S_ISSOCK (sb.st_mode));
+	  SdifF->isSeekable = !((S_ISFIFO (sb.st_mode) || S_ISSOCK (sb.st_mode)));
 #else
         SdifF->isSeekable  =  stdio == eBinaryModeUnknown;
 #endif
