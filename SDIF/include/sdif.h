@@ -1,4 +1,4 @@
-/* $Id: sdif.h,v 1.47 2005-05-13 15:35:01 schwarz Exp $
+/* $Id: sdif.h,v 1.48 2005-05-20 21:13:54 roebel Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -30,6 +30,10 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.47  2005/05/13 15:35:01  schwarz
+ * make it possible that global errors from SdifError be passed through
+ * the SdifErrMsg functions as file errors
+ *
  * Revision 1.46  2005/04/19 15:30:13  schwarz
  * make sdifcpp compile again for easdif:
  * - removed deleted files from makefiles
@@ -233,7 +237,7 @@
  * Revision 1.1.2.1  2000/08/21  13:07:41  tisseran
  * *** empty log message ***
  *
- * $Date: 2005-05-13 15:35:01 $
+ * $Date: 2005-05-20 21:13:54 $
  *
  */
 
@@ -248,7 +252,7 @@ extern "C" {
 #endif
 
 
-static const char _sdif_h_cvs_revision_ [] = "$Id: sdif.h,v 1.47 2005-05-13 15:35:01 schwarz Exp $";
+static const char _sdif_h_cvs_revision_ [] = "$Id: sdif.h,v 1.48 2005-05-20 21:13:54 roebel Exp $";
 
 
 #include <stdio.h>
@@ -1006,7 +1010,7 @@ struct SdifFileS
 {
   char		     *Name;		/* Name of the file, can be "stdin, stdout, stderr */
   SdifFileModeET     Mode;		/* eWriteFile or eReadFile or ePredefinedTypes */
-  int		     isSeekable;	/* file is neither standard i/o nor pipe i/o */
+  int		     isSeekable;	/* file is not pipe i/o */
 
   SdifUInt4	     FormatVersion;	/* version of the SDIF format itself */
   SdifUInt4	     TypesVersion;	/* version of the description type collection */
