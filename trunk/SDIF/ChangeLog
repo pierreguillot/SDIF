@@ -1,7 +1,28 @@
+2005-05-20  Axel Roebel  <Axel.Roebel@ircam.fr>
+Version 3.9.3a
+
+	* sdif/SdifError.c (Module): 
+	Use proper type to initialize gSdifLastError.
+	
+	* sdif/SdifHighLevel.c (Module): 
+	back to returning 0 in case of file read error.
+	the case where it was really used for max is now checked 
+	by means of comparing the expected matrix size.
+	
+	* sdif/SdifFRead.c (Module): 
+	back to returning 0 in case of file read error.
+	Skipping a matrix can never produce a read size of 0
+	so -1 is unnecessary here.
+	 SdifFSkip now uses seekability flag to determine
+	whether to seek or to read.
+	Don't confuse error tags and error enums, which does not compile
+	with c++.
+
 2005-05-18  Axel Roebel  <Axel.Roebel@ircam.fr>
 
-	* sdif/SdifFile.c:
-	Corrected detection seekablility of sdif file. files are not seekable only if 
+	* sdif/SdifFile.c, include/sdif.h:
+	Corrected detection seekablility of sdif file. 
+	files are not seekable only if 
 	they are pipes!
 
 2005-05-13  schwarz  <schwarz@mac-borghesi.ircam.fr>
@@ -633,4 +654,4 @@ Version 3.3:
 	  Operating System.
 
 	
-$Id: ChangeLog,v 1.44 2005-05-18 20:21:57 roebel Exp $
+$Id: ChangeLog,v 1.45 2005-05-20 21:16:17 roebel Exp $

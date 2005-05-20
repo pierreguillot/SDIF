@@ -1,6 +1,6 @@
 dnl -*-autoconf-*-  (No, it's an autoconf file!)
 dnl -*-m4-*- (He emacs, it's a m4 file)
-dnl $Id: configure.in,v 1.61 2005-05-13 15:36:10 schwarz Exp $
+dnl $Id: configure.in,v 1.62 2005-05-20 21:16:17 roebel Exp $
 dnl
 dnl configure.in		September 2000		Patrice Tisserand
 dnl
@@ -32,6 +32,9 @@ dnl send email to:  sdif@ircam.fr
 
 
 dnl $Log: not supported by cvs2svn $
+dnl Revision 1.61  2005/05/13 15:36:10  schwarz
+dnl version 3.9.3
+dnl
 dnl Revision 1.60  2005/04/25 19:41:06  roebel
 dnl Extension of compiler flag variables CFLAGS and CXXFLAGS did not work properly because autoconf sets default values that may contradict the values we select.
 dnl Therefore, we now store the externally set CFLAGS/CXXFLAGS to later use them as default values.
@@ -269,7 +272,7 @@ PACKAGE=SDIF
 
 SDIF_VERSION_MAJOR=3
 SDIF_VERSION_MINOR=9
-SDIF_VERSION_RELEASE=3
+SDIF_VERSION_RELEASE=3a
 
 VERSION=$SDIF_VERSION_MAJOR.$SDIF_VERSION_MINOR.$SDIF_VERSION_RELEASE
 
