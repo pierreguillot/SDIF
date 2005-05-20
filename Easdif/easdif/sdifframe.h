@@ -34,9 +34,13 @@
  * sdifframe.h is composed of the different methods which are using to 
  * manipulate the frame.
  * 
- * $Id: sdifframe.h,v 1.16 2004-11-18 18:05:29 ellis Exp $ 
+ * $Id: sdifframe.h,v 1.17 2005-05-20 21:32:35 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.16  2004/11/18 18:05:29  ellis
+ * .natural comparator function for Esdif Frames
+ * .bug fix in _SetRow
+ *
  * Revision 1.15  2004/08/26 09:33:12  roebel
  * Added stl compliant iterators to iterate over matrices in a frame
  *
@@ -227,7 +231,14 @@ public:
 
     /* for SDIFEntity*/
     //int  Read(const SDIFEntity& entity);
-    int  Read(SDIFEntity& entity);
+  
+  /** 
+   * \ingroup rnw
+   * \brief read a frame
+   * \param entity file to read from
+   * @return number of bytes read
+   */
+  int  Read(SDIFEntity& entity);
     int  ReadData(const SDIFEntity& entity);
     int  ReadHeader(const SDIFEntity& entity);
     int  Write(const SDIFEntity& entity);
@@ -247,6 +258,7 @@ public:
  */
     int  AddMatrix(const SDIFMatrix& aMatrix);
 
+#if 0
 /** 
  * \ingroup addframe
  * add a matrix in the matrix vector of the frame if this matrix is
@@ -254,7 +266,7 @@ public:
  * @return the number of SDIFMatrix contained in the vector
  */
     int  AddMatrixSelected(SdifFileT* file, const SDIFMatrix& aMatrix);
-
+#endif
 
 /*************************************************************************/
 /* Other */
@@ -308,7 +320,7 @@ public:
 /**
 * \defgroup infoframe SDIFFrame - Get Informations 
 */
-
+#if 0
     /* get the matrix signature selected */
 /** 
  * \ingroup infoframe
@@ -318,6 +330,7 @@ public:
     SdifSignature GetMatrixSelection(SdifFileT* file) const;
 
     SdifSignature GetMatrixSelection(const SDIFEntity& entity)  const;
+#endif
 
 /**
  * \ingroup infoframe 
@@ -402,35 +415,29 @@ public:
 
   /*************************************************************************/
   /* Get members of the frame */
-  /**
-   * \defgroup  getmframe SDIFFrame - Get members
-   */
   
   /**
-   * \ingroup getmframe 
+   * \ingroup infoframe 
    * @brief get the number of matrix in the frame
    */
   SdifUInt4 GetNbMatrix() const  {    return mv_Matrix.size();}
 
-  /**
-   * \defgroup  getmframe SDIFFrame - Get members
-   */
   
   /**
-   * \ingroup getmframe 
+   * \ingroup infoframe 
    * @brief get the number of matrix in the frame
    */
   SdifUInt4 size() const  {    return mv_Matrix.size();}
   
   /** 
-   * \ingroup getmframe
+   * \ingroup infoframe
    * @brief get the signature of the frame
    */
   SdifSignature GetSignature() const{    return mSig;}
   
   
   /** 
-   * \ingroup getmframe
+   * \ingroup infoframe
    * @brief get the signature of the frame
    */
   void GetSignature(std::string& sig) const
@@ -440,20 +447,20 @@ public:
   }
 
   /** 
-   * \ingroup getmframe
+   * \ingroup infoframe
    * @brief get the streamID of the frame
    */
   SdifUInt4 GetStreamID() const{ return mStreamID;}
 
   
   /** 
-   * \ingroup getmframe
+   * \ingroup infoframe
    * @brief get the time of the frame
    */
   SdifFloat8 GetTime() const {  return mTime;}
 
   /** 
-   * \ingroup getmframe
+   * \ingroup infoframe
    * @brief get the size of the frame
    */
   SdifUInt4     GetSize() const;
