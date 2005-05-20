@@ -24,11 +24,14 @@
  *                            sdif@ircam.fr
  */
 
-/* $Id: SdifHighLevel.c,v 3.14 2005-05-13 16:12:58 schwarz Exp $
+/* $Id: SdifHighLevel.c,v 3.15 2005-05-20 21:13:09 roebel Exp $
  *
  * SdifHighLevel.c	8.12.1999	Diemo Schwarz
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.14  2005/05/13 16:12:58  schwarz
+ * oops, debug output!
+ *
  * Revision 3.13  2005/05/13 15:17:48  schwarz
  * stop read loop on errors and return values of callbacks
  *
@@ -214,14 +217,14 @@ size_t SdifReadFile (const char             *filename,
 #endif
 	
 	if (wantit)
-	{
+	{          
 	    /* for matrices loop */
 	    for (m = 0; go_on  &&  m < SdifFCurrNbMatrix(file); m++)
 	    {
 		/* Read matrix header */
 		newread = SdifFReadMatrixHeader(file);
-
-		if (newread <= 0)
+                
+		if (newread == 0)
 		{   /* read problem (also with 0 since we want a full header)  */
 		    go_on = 0;
 		}
@@ -240,9 +243,11 @@ size_t SdifReadFile (const char             *filename,
 		    /* Check matrix type */
 		    if (wantit  &&  SdifFCurrMatrixIsSelected(file))
 		    {   /* read matrix data */
+                        size_t toread = SdifSizeOfMatrix(SdifFCurrDataType(file),
+                                                         SdifFCurrNbCol(file) , SdifFCurrNbRow(file));
 			newread = SdifFReadMatrixData(file);
 		    
-			if (newread < 0)
+			if (newread != toread)
 			{   /* read problem (0 is ok, can be (0, 0) matrix) */
 			    go_on = 0;
 			}
