@@ -34,9 +34,15 @@
  * 
  * 
  * 
- * $Id: sdifexception.h,v 1.10 2004-09-09 19:17:38 roebel Exp $ 
+ * $Id: sdifexception.h,v 1.11 2005-05-20 21:32:20 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.10  2004/09/09 19:17:38  roebel
+ * Version 1.0.0beta:
+ * First complete version of iterator access when reading files. Frame-Iterators use the
+ * internal Frame Directory that each Entity will generate and update on the fly
+ * to minimize disk access during positioning.
+ *
  * Revision 1.9  2004/07/27 17:39:31  roebel
  * Changed include directive to use user path and not system path for sdif.h
  * Changed what to be of type const throw() to properly replace the underlying
@@ -287,6 +293,17 @@ class SDIFDirError : public SDIFFileError
 {
 public:
   constructor(SDIFDirError,SDIFFileError)
+};
+
+/**
+ * \brief SDIFNoSeekError: Indicates error while seeking
+ * \ingroup exception
+ *  may happen either because given position cannot be reached or because te file  is a pipe
+ */
+class SDIFSeekError : public SDIFFileError
+{
+public:
+  constructor(SDIFSeekError,SDIFFileError)
 };
 
 
