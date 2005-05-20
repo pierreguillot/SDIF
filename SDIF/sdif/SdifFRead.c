@@ -1,4 +1,4 @@
-/* $Id: SdifFRead.c,v 3.25 2005-05-13 15:19:24 schwarz Exp $
+/* $Id: SdifFRead.c,v 3.26 2005-05-20 21:13:24 roebel Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -31,6 +31,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.25  2005/05/13 15:19:24  schwarz
+ * pass read errors to caller as -1 return values
+ *
  * Revision 3.24  2005/04/07 15:56:47  schwarz
  * removed some now empty local include files,
  * added include of <sdif.h> and "SdifGlobals.h"
@@ -435,7 +438,7 @@ SdifFReadMatrixHeader(SdifFileT *SdifF)
   
   SdiffReadSignature(&SdifF->CurrMtrxH->Signature, SdifF->Stream, &SizeR);
   if (SdifF->CurrMtrxH->Signature == eEmptySignature)
-      return -1;	/* read error */
+      return 0;	/* read error */
 
   /* read 3 unsigned ints: datatype, nrow, ncol, copy into right fields */
   newread = SdiffReadUInt4(UIntTab, 3, SdifF->Stream);
@@ -561,28 +564,31 @@ SdifFReadUndeterminatedPadding(SdifFileT *SdifF)
 /* skip given number of bytes, either by seeking or by reading bytes */
 size_t SdifFSkip (SdifFileT *SdifF, size_t nbytes)
 {
+  if(SdifF->isSeekable) {
     SdiffPosT Pos = 0;
-
     SdiffGetPos(SdifF->Stream, &Pos);
     Pos += nbytes;
     if (SdiffSetPos(SdifF->Stream, &Pos) != 0)
-    {
+      {
 #if HAVE_ERRNO_H
 	if (errno == ESPIPE)
-	{  /* second chance: SdiffSetPos didn't work because we're
-	      reading from a pipe.  Instead of making the whole thing
-	      explode, we do the little extra work to read and throw away
-	      the data. */
+          {  /* second chance: SdiffSetPos didn't work because we're
+                reading from a pipe.  Instead of making the whole thing
+                explode, we do the little extra work to read and throw away
+                the data. */
 	    return (SdifFReadAndIgnore (SdifF, nbytes));
-	}
+          }
 	else
 #endif
-	    return (size_t) -1;
-    }
+          return 0;
+      }
     else
     {
 	return nbytes;
     }
+  }
+  else
+    return (SdifFReadAndIgnore (SdifF, nbytes));
 }
 
 
@@ -643,32 +649,32 @@ size_t SdifFSkipFrameData(SdifFileT *SdifF)
     if (SdifF->CurrFramH->Size != _SdifUnknownSize)
     {
 	NbBytesToSkip = SdifF->CurrFramH->Size - _SdifFrameHeaderSize;
-	SdiffGetPos(SdifF->Stream, &Pos);
-	Pos += NbBytesToSkip;
-	if (SdiffSetPos(SdifF->Stream, &Pos) != 0)
-	{
-	    sprintf(errorMess, "Skip FrameData %s ID:%u T:%g\n",
-		    SdifSignatureToString(SdifF->CurrFramH->Signature),
-		    SdifF->CurrFramH->NumID, SdifF->CurrFramH->Time);
-	    _SdifError(eEof, errorMess);
-	    return ((size_t) -1);
-	}
-	else
-	    return (NbBytesToSkip);    
+        Boo = SdifFSkip (SdifF, NbBytesToSkip);
+        if (Boo != NbBytesToSkip)
+          {
+            sprintf(errorMess,
+                    "Skip  FrameData %s ID:%u T:%g\n",  
+                    SdifSignatureToString(SdifF->CurrFramH->Signature),
+                    SdifF->CurrFramH->NumID, SdifF->CurrFramH->Time);
+            _SdifError(eEof, errorMess);
+            return 0;
+          }
+        else
+          return Boo;
     }
     else
     {
 	for (iMtrx = 0; iMtrx<SdifF->CurrFramH->NbMatrix; iMtrx++)
 	{
 	    Boo = SdifFSkipMatrix(SdifF);
-	    if (Boo == -1)
+	    if (Boo == 0)
 	    {
 		sprintf(errorMess,
 			"Skip Matrix %d in FrameData %s ID:%u T:%g\n", iMtrx, 
 			SdifSignatureToString(SdifF->CurrFramH->Signature),
 			SdifF->CurrFramH->NumID, SdifF->CurrFramH->Time);
 		_SdifError(eEof, errorMess);
-		return ((size_t) -1);
+		return 0;
 	    }
 	    else
 		SizeR += Boo;
@@ -746,8 +752,8 @@ size_t SdifFReadMatrixData (SdifFileT *file)
 
     if (!ok)
     {  	/* problem allocating data, attach last global error to file */
-	_SdifFError(file, gSdifLastError, "Previous error repeated");
-	return -1;
+      _SdifFError(file, eUnknown /*gSdifLastError */, "Previous error repeated");
+	return 0;
     }
 
     /* case template for type from SdifDataTypeET */
