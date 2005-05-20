@@ -32,9 +32,13 @@
  * 
  * 
  * 
- * $Id: sdifframe.cpp,v 1.15 2004-09-10 09:20:52 roebel Exp $ 
+ * $Id: sdifframe.cpp,v 1.16 2005-05-20 21:32:27 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.15  2004/09/10 09:20:52  roebel
+ * Extend frame directory to contain the matrix signatures for each frame.
+ * No longer needs to re read the frame to decide whether frame is selected.
+ *
  * Revision 1.14  2004/09/09 19:17:38  roebel
  * Version 1.0.0beta:
  * First complete version of iterator access when reading files. Frame-Iterators use the
@@ -173,55 +177,40 @@ int SDIFFrame::Read(SDIFEntity& entity)
 
       ClearData();
       mFrameBytesRead += ReadHeader(file);
-      SDIFLocation *loc=
-        entity.AddFramePos(SdifFCurrID(file),SdifFCurrFrameSignature(file),
-                           SdifFCurrTime(file),SdifFCurrNbMatrix(file),
-                           file->StartChunkPos);
-
-      /* for selection */
-      if (mFrameBytesRead == 0 && !loc)
-        {
-          SdifFSkipFrameData (file);
-          //to have exception
-          entity.mEof = (SdifFGetSignature (file, &mFrameBytesRead) == eEof);
-          if(entity.mEof)
-            entity.mEofSeen = true;
-          return 0;
-        }
-      else
-        if(mFrameBytesRead ==0 && loc) {
-          SDIFMatrix tmp;
+      if(!mFrameBytesRead) {
+        SdifFSkipFrameData (file);
+        //to have exception
+        entity.mEof = (SdifFGetSignature (file, &mFrameBytesRead) == eEof);
+        if(entity.mEof)
+          entity.mEofSeen = true;
+        return 0;        
+      }
+      else {
+        SDIFLocation *loc=
+          entity.AddFramePos(SdifFCurrID(file),SdifFCurrFrameSignature(file),
+                             SdifFCurrTime(file),SdifFCurrNbMatrix(file),
+                             file->StartChunkPos);
+        
+        Resize(mNbMatrix);
+        if(!loc)
+          ReadData(file);
+        else{
           SdifUInt4 nb = loc->LocNbMatrix();
+          int ir = 0;
           for(SdifUInt4 i=0 ; i< nb;++i){
-            tmp.Read(file);
+            int ret =0;
+            if((ret=mv_Matrix[ir].Read(file)))
+              ++ir;
+            mFrameBytesRead +=ret;
             loc->SetMSignature(i,file->CurrMtrxH->Signature);
           }
-          entity.mEof = (SdifFGetSignature (file, &mFrameBytesRead) == eEof);
-          if(entity.mEof)
-            entity.mEofSeen = true;
-          return 0;
+          Resize(ir);
         }
-        else {
-          Resize(mNbMatrix);
-          if(!loc)
-            ReadData(file);
-          else{
-            SdifUInt4 nb = loc->LocNbMatrix();
-            int ir = 0;
-            for(SdifUInt4 i=0 ; i< nb;++i){
-              int ret =0;
-              if((ret=mv_Matrix[ir].Read(file)))
-                ++ir;
-              mFrameBytesRead +=ret;
-              loc->SetMSignature(i,file->CurrMtrxH->Signature);
-            }
-            Resize(ir);
-          }
-          /* to have exception */
-          entity.mEof = (SdifFGetSignature (file, &mFrameBytesRead) == eEof);
-          if(entity.mEof)
-            entity.mEofSeen = true;
-        }
+        /* to have exception */
+        entity.mEof = (SdifFGetSignature (file, &mFrameBytesRead) == eEof);
+        if(entity.mEof)
+          entity.mEofSeen = true;
+      }
     }
     else
       mFrameBytesRead = Read(file, entity.mEof);
@@ -465,6 +454,7 @@ int SDIFFrame::AddMatrix(const SDIFMatrix& aMatrix)
     return mNbMatrix;
 }
 
+#if 0
 int SDIFFrame::AddMatrixSelected(SdifFileT* file, const SDIFMatrix& aMatrix)
 {
     SdifSignature sig, sigm;
@@ -482,6 +472,7 @@ int SDIFFrame::AddMatrixSelected(SdifFileT* file, const SDIFMatrix& aMatrix)
     else/* no selection on matrix : all matrix are selected*/
 	return AddMatrix(aMatrix);
 }
+#endif
 
 /* resize */
 void SDIFFrame::Resize(int nbMatrix)
@@ -606,7 +597,7 @@ const SDIFMatrix& SDIFFrame::GetMatrix(const std::string& signature) const
 
 }
 
-
+#if 0
 SdifSignature SDIFFrame::GetMatrixSelection(SdifFileT* file) const
 {
     SdifListT* listsel;
@@ -625,7 +616,7 @@ SdifSignature SDIFFrame::GetMatrixSelection(const SDIFEntity& entity) const
 {
     return GetMatrixSelection(entity.GetFile());
 }
-
+#endif
 
 } // end of namespace Easdif
 
