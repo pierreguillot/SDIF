@@ -60,6 +60,7 @@ int main(int argc, char** argv)
 
     /*for adding the Name Value Tables of the EntityRead, the file of
      *EntityToRead must be Open*/
+
     try {
       if (!readentity.OpenRead(argv[1]) ) {
 	std::cerr << "Could not open input file :"<<argv[1]<<std::endl;
@@ -97,7 +98,6 @@ int main(int argc, char** argv)
     entity.AddMatrixType("1NEW", "col1, col2, col3, col_i, col_n");
    
     entity.AddFrameType("1NEW", "1NEW NewMatrix; 1FQ0 New1FQ0");
-
 
     /* to open a file for writing */
     if(!entity.OpenWrite("FileToWrite.sdif")) {
@@ -179,7 +179,7 @@ int main(int argc, char** argv)
       {
 	/* if we want an access to the file */
 	const SdifFileT *sf = e.sdifFile();
-	std::cerr << " Catch EOF for file " <<sf->Name << " -- ending loop 1 " << std::endl;
+	std::cerr << " Catch EOF for file " << (sf?sf->Name:"unknown") << " -- ending loop 1 " << std::endl;
 	/* to have the error message */
       }
     
@@ -203,120 +203,124 @@ int main(int argc, char** argv)
     /* close output */
     entity.Close();
 
-    try {
-      // try file positioning
-      Easdif::SDIFFrame ff;
-      std::string signature;
-      
-      // frame directory is still off
-      //  for greater efficiency you should enable it right after
-      //  opening the file by means of
-      //  readentity.EnableFrameDir()
-      readentity.Rewind();
-      std::cerr << "frameDirectory is off (== 0): "<<readentity.IsFrameDir() << " \n";
-      readentity.EnableFrameDir();
-      std::cerr << "frameDirectory should be on (==1):  "<<readentity.IsFrameDir()<< "\n";
-      // implicitely switched on by means of requesting to
-      // read from a selected time position (here 0)
-      SDIFEntity::iterator it(readentity);
-      ff=*it;
-
-      ff.GetSignature(signature);
-      std::cerr << "read frame at time "<< ff.GetTime() << " Signature "<<signature<< "\n";    
-            
-      std::cerr << "frameDirectory still incomplete \n ";
-      readentity.PrintFrameDir();
-      
-      // request selected frame after time 0.
-      int ret=readentity.ReadNextSelectedFrame(ff,0.);
-      if(ret == 0) {
-	std::cerr << "frame at time 0 is not selected should not happen !!\n";
-      }
-      else{
-	ff.GetSignature(signature);
-	std::cerr << "read frame at time "<< ff.GetTime() << " Signature "<<signature<< "\n";
-	SDIFMatrix &mat = ff.GetMatrix(0);
-	
-	// read first column
-	int col[mat.GetNbRows()];
-	mat.GetCol(col,0);
-	std::cerr << "1st column read as int\n";
-	for(int iii=0;iii<mat.GetNbRows(); ++iii)
-	  std::cerr << "row "<< iii << " val " << col[iii] <<"\n";
-
-	double row[mat.GetNbCols()];
-	mat.GetRow(row,0);
-	std::cerr << "1st row read as double\n";
-	for(int iii=0;iii<mat.GetNbCols(); ++iii)
-	  std::cerr << "col "<< iii << " val " << row[iii] <<"\n";
+    if(readentity.isSeekable() ) {
+      std::cerr << "seekable is true\n";
+      try {
+        // try file positioning
+        Easdif::SDIFFrame ff;
+        std::string signature;
+        
+        // frame directory is still off
+        //  for greater efficiency you should enable it right after
+        //  opening the file by means of
+        //  readentity.EnableFrameDir()
+        readentity.Rewind();
+        std::cerr << "frameDirectory is off (== 0): "<<readentity.IsFrameDir() << " \n";
+        readentity.EnableFrameDir();
+        std::cerr << "frameDirectory should be on (==1):  "<<readentity.IsFrameDir()<< "\n";
+        // implicitely switched on by means of requesting to
+        // read from a selected time position (here 0)
+        SDIFEntity::iterator it = readentity.current();
+        ff=*it;
+        
+        ff.GetSignature(signature);
+        std::cerr << "read frame at time "<< ff.GetTime() << " Signature "<<signature<< "\n";    
+        
+        std::cerr << "frameDirectory still incomplete \n ";
+        readentity.PrintFrameDir();
+        
+        // request selected frame after time 0.
+        int ret=readentity.ReadNextSelectedFrame(ff,0.);
+        if(ret == 0) {
+          std::cerr << "frame at time 0 is not selected should not happen !!\n";
+        }
+        else{
+          ff.GetSignature(signature);
+          std::cerr << "read frame at time "<< ff.GetTime() << " Signature "<<signature<< "\n";
+          SDIFMatrix &mat = ff.GetMatrix(0);
+          
+          // read first column
+          int col[mat.GetNbRows()];
+          mat.GetCol(col,0);
+          std::cerr << "1st column read as int\n";
+          for(int iii=0;iii<mat.GetNbRows(); ++iii)
+            std::cerr << "row "<< iii << " val " << col[iii] <<"\n";
+          
+          double row[mat.GetNbCols()];
+          mat.GetRow(row,0);
+          std::cerr << "1st row read as double\n";
+          for(int iii=0;iii<mat.GetNbCols(); ++iii)
+            std::cerr << "col "<< iii << " val " << row[iii] <<"\n";
 	  
-      }
-      
-      std::cerr << "frameDirectory extended up to current frame \n ";
-      readentity.PrintFrameDir();
-      
-      // read once again
-      std::cerr << "try to read frame after time 0.5 \n";
-      ret=readentity.ReadNextSelectedFrame(ff,0.5);
-      if(ret == 0) {
-	std::cerr << "frame at time 0 is not selected should not happen !!\n";
-      }
-      else{
-	ff.GetSignature(signature);
-	std::cerr << "read frame at time "<< ff.GetTime() << " Signature "<<signature<< "\n";
-      }
-      
-      std::cerr << "try to increment frames after time 0.5 \n";
-      while(it!=readentity.end()){
-        it->Print();
-        ++it;
-      }
-
-      --it;
-      while(it!=readentity.end()){
-        it->Print();
+        }
+        
+        std::cerr << "frameDirectory extended up to current frame \n ";
+        readentity.PrintFrameDir();
+        
+        // read once again
+        std::cerr << "try to read frame after time 0.5 \n";
+        ret=readentity.ReadNextSelectedFrame(ff,0.5);
+        if(ret == 0) {
+          std::cerr << "frame at time 0 is not selected should not happen !!\n";
+        }
+        else{
+          ff.GetSignature(signature);
+          std::cerr << "read frame at time "<< ff.GetTime() << " Signature "<<signature<< "\n";
+        }
+        
+        std::cerr << "try to increment frames after time 0.5 \n";
+        while(it!=readentity.end()){
+          it->Print();
+          ++it;
+        }
+        
         --it;
-      }
-
+        while(it!=readentity.end()){
+          it->Print();
+          --it;
+        }
+        
+        
+        // read after end of file
+        std::cerr << "try to read after eof \n";
       
-      // read after end of file
-      std::cerr << "try to read after eof \n";
+        if((ret=readentity.ReadNextSelectedFrame(ff,500))==0) {
+          std::cerr << "frame at time 500 is not selected  !! OK\n";
+        }
+        else {
+          std::cerr << "frame at time 500 is selected!! should not happen !!\n";
+        }
+      }
+      /* to catch an exception */
+      catch(SDIFEof& e)
+        {
+          /* if we want an access to the file */
+          const SdifFileT *sf = e.sdifFile();
+          std::cerr << " Catch EOF for file " <<sf->Name << " -- ending program " << std::endl;
+          std::cerr << "complete frameDirectory \n ";
+          readentity.PrintFrameDir();
+          /* to have the error message */
+        }
       
-      if((ret=readentity.ReadNextSelectedFrame(ff,500))==0) {
-        std::cerr << "frame at time 500 is not selected  !! OK\n";
-      }
-      else {
-        std::cerr << "frame at time 500 is selected!! should not happen !!\n";
-      }
+      catch(SDIFUnDefined& e)
+        {
+          std::cerr << " Catch Undefined " << std::endl;	
+          e.ErrorMessage();
+        }
+      
+      catch(Easdif::SDIFException&e)
+        {
+          std::cerr << " Catch other SDIFException " << std::endl;
+          e.ErrorMessage();
+        }
+      catch(std::exception &e)
+        {
+          std::cerr << " Catch other Exception: " << e.what() <<std::endl;          
+        }
     }
-    /* to catch an exception */
-    catch(SDIFEof& e)
-      {
-	/* if we want an access to the file */
-	const SdifFileT *sf = e.sdifFile();
-	std::cerr << " Catch EOF for file " <<sf->Name << " -- ending program " << std::endl;
-	std::cerr << "complete frameDirectory \n ";
-	readentity.PrintFrameDir();
-	/* to have the error message */
-      }
-    
-    catch(SDIFUnDefined& e)
-      {
-	std::cerr << " Catch Undefined " << std::endl;	
-	e.ErrorMessage();
-      }
-    
-    catch(Easdif::SDIFException&e)
-      {
-	std::cerr << " Catch other SDIFException " << std::endl;
-	e.ErrorMessage();
-      }
-    catch(std::exception &e)
-      {
-	std::cerr << " Catch other Exception: " << e.what() <<std::endl;
-
-      }
-
+    else {
+      std::cerr << " cannot rewind a file that is not seekable"  <<std::endl;          
+    }
     readentity.Close();
     
     /* deinitialise the SDIF library */
