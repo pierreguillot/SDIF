@@ -1,4 +1,4 @@
-/* $Id: SdifError.c,v 3.17 2005-05-13 15:30:48 schwarz Exp $
+/* $Id: SdifError.c,v 3.18 2005-05-20 21:13:17 roebel Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -31,6 +31,10 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.17  2005/05/13 15:30:48  schwarz
+ * make it possible that global errors from SdifError be passed through
+ * the SdifErrMsg functions as file errors.
+ *
  * Revision 3.16  2005/04/07 14:02:34  schwarz
  * clearer error msg
  *
@@ -145,7 +149,7 @@ int	      SdifErrorLine;
 
 /* global variables to control error output */
 int	      gSdifErrorOutputEnabled = 1;
-SdifErrorEnum gSdifLastError	      = eNoError;
+SdifErrorEnum gSdifLastError	      = eFalse; //eNoError;
 FILE*	      SdifStdErr	      = NULL;
 
 
