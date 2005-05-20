@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.13 2004-03-19 01:03:26 roebel Exp $
+# $Id: Makefile.am,v 1.14 2005-05-20 21:31:49 roebel Exp $
 #
 # ./Easdif/src/Makefile.am	Feb. 2003 Axel Roebel
 #
@@ -31,6 +31,9 @@
 
 
 # $Log: not supported by cvs2svn $
+# Revision 1.13  2004/03/19 01:03:26  roebel
+# Finalized support for --enable-ddebug
+#
 # Revision 1.12  2003/08/07 11:59:42  tisseran
 # Fixed content of EXTRA_DIST variable.
 #
@@ -93,6 +96,7 @@ libEasdif_la_SOURCES =  sdifentity.cpp sdifexception.cpp sdifframe.cpp \
 
 libEasdif_la_LIBADD  = @SDIFCPPLIB@
 libEasdif_la_LDFLAGS = -no-undefined  -release @VERSION@ -rpath $(libdir)
+libEasdif_la_DEPENDENCIES = @SDIFCPPLIB@
 
 
 libEasdif_debug_la_SOURCES =  sdifentity.cpp sdifexception.cpp sdifframe.cpp \
@@ -100,13 +104,14 @@ libEasdif_debug_la_SOURCES =  sdifentity.cpp sdifexception.cpp sdifframe.cpp \
 
 libEasdif_debug_la_LIBADD  = @SDIFCPPLIB@
 libEasdif_debug_la_LDFLAGS = -no-undefined  -release @VERSION@ -rpath $(libdir)
-
+libEasdif_debug_la_DEPENDENCIES = @SDIFCPPLIB@
 
 libEasdif_gcc3_2_la_SOURCES =  sdifentity.cpp sdifexception.cpp sdifframe.cpp \
                         sdifinit.cpp sdifmatrix.cpp sdifnamevaluetable.cpp
 
 libEasdif_gcc3_2_la_LIBADD  = @SDIFCPPLIB@
 libEasdif_gcc3_2_la_LDFLAGS = -no-undefined  -release @VERSION@ -rpath $(libdir)
+libEasdif_gcc3_2_la_DEPENDENCIES = @SDIFCPPLIB@
 
 
 INCLUDES = -I.. -I$(top_srcdir) -I../SDIF/include -I$(top_srcdir)/SDIF/include -I../SDIF/sdif -I$(top_srcdir)/SDIF/sdif   -DUSE_CONFIGURE
