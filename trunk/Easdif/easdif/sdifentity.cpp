@@ -32,9 +32,12 @@
  * 
  * 
  * 
- * $Id: sdifentity.cpp,v 1.26 2005-05-03 16:23:34 roebel Exp $ 
+ * $Id: sdifentity.cpp,v 1.27 2005-05-20 21:32:04 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.26  2005/05/03 16:23:34  roebel
+ * Added 2 new functions to handle selections in a more specific manner.
+ *
  * Revision 1.25  2005/02/04 12:31:43  roebel
  * Fixed return value of SDIFEntity::WriteFrame
  *
@@ -177,8 +180,9 @@ namespace Easdif {
 
 SDIFEntity::SDIFEntity(): efile(0), mSize(0), mEof(true), mEofSeen(false),
 			  mOpen(0), generalHeader(0), asciiChunks(0), 
-			  isFrameDirEnabled(false)
-
+			  isFrameDirEnabled(false), 
+                          endLoc(SdifUInt4(-1), 0, -1., eEmptySignature,  0),
+                          mlMatrixSigsRead(false),mlFrameSigsRead(false) 
 {
 	mFirstFramePos = 0;
 };
@@ -188,6 +192,7 @@ bool SDIFEntity::OpenRead(const char* filename)
 {
     isFrameDirEnabled = false;
     mFrameDirectory.clear();
+    ClearSelectionState();
     return ReOpenRead(filename);
 }
 
@@ -203,7 +208,7 @@ bool SDIFEntity::ReOpenRead(const char* filename)
 
     if(!efile)
       return false;
-
+      
     generalHeader = SdifFReadGeneralHeader(efile);
     if(!generalHeader){
       Close();
@@ -245,25 +250,42 @@ bool SDIFEntity::ReOpenRead(const char* filename)
 
     SdiffGetPos(GetFile()->Stream,&mFirstFramePos);
     mFirstFramePos -= 4;	// substract the first 4 read chars of the already read signature
+
+    // reestablish selection state
+    if(mlMatrixSigsRead)
+      ReestablishMatrixSelection();
+    if(mlFrameSigsRead)
+      ReestablishFrameSelection();
+
     return true;
 }
 
 // enable Framne directory
-void SDIFEntity::EnableFrameDir()  throw(SDIFDirError){
+bool SDIFEntity::EnableFrameDir() {
+  // directory only makes sense for files that are open for reading
+  if(mOpen!=2)
+    return false;
+
   if(!isFrameDirEnabled){
     SdiffPosT pos;
-    if(mOpen){
-      SdiffGetPos(GetFile()->Stream,&pos);
-    }
-    if(!mOpen || pos == mFirstFramePos+4){
+    SdiffGetPos(GetFile()->Stream,&pos);
+    // this will be true for pipes or if no
+    // frame has yet been read from the file
+    if(pos == mFirstFramePos+4){
       isFrameDirEnabled = true;    
       mCurrDirPos       = mFrameDirectory.end();
+      if(mlFrameSigsRead)
+        mvFrameSigs.clear();
+      mlFrameSigsRead   = true;
+      GetFrameSelection(mvFrameSigs);
+      if(mlMatrixSigsRead)
+        mvMatrixSigs.clear();
+      mlMatrixSigsRead   = true;
+      GetMatrixSelection(mvMatrixSigs);
+    
     }
     else
-      throw SDIFDirError(eError,
-			  "Error in SDIFEntity::EnableFrameDir:: !!! frame directoy can only enabled when file position is at first data frame  !!!",
-                         0,eUnknown,0,0);
-
+      return false;
   }
 }
 
@@ -478,21 +500,22 @@ SDIFNameValueTable& SDIFEntity::GetNVT(unsigned int i)
     return mv_NVT[i];
 }
 
+
 bool SDIFEntity::Close()
 {
-    if (0 != efile)
+  if (0 != efile)
     {
-	SdifFClose(efile);
-	efile=0;
-	mSize=0;
-	mEof = true; 
-	mEofSeen = false; 
-	mOpen = 0; 
-	generalHeader = 0; 
-	asciiChunks =0;
-	return true;
+      SdifFClose(efile);
+      efile=0;
+      mSize=0;
+      mEof = true; 
+      mEofSeen = false; 
+      mOpen = 0; 
+      generalHeader = 0; 
+      asciiChunks =0;
+      return true;
     }
-    return false;
+  return false;
 }
 
 /* temporary  */
@@ -564,7 +587,7 @@ int SDIFEntity::ReadNextSelectedFrame(SDIFFrame& frame, SdifFloat8 time)
 
 
     // end works in both directions !!
-    iterator it(this), ite(this,true);
+    iterator it=current(), ite=end();
     if(up) {      
       while((it!=ite) && it.mBase->LocTime() < time)       {
         ++it;      
@@ -662,6 +685,19 @@ bool SDIFEntity::WriteTypes()
 bool SDIFEntity::ChangeSelection(const std::string& selection)
 {
   if (!efile) return false;
+  if(!mlMatrixSigsRead) 
+    GetMatrixSelection(mvMatrixSigs);
+  if(!mlFrameSigsRead) 
+    GetMatrixSelection(mvFrameSigs);
+
+  if(isFrameDirEnabled)
+    return false;
+#if 0
+  // ChangeSelection only allowed for non streamid and non signature type 
+  if(isFrameDirEnabled 
+     && (selection.find_first_of(":#/",0)!=std::string::npos))
+    return false;
+#endif
   const char* sel = const_cast<const char*>(selection.c_str());
   SdifReplaceSelection(sel, efile->Selection);
   return true;
@@ -670,6 +706,20 @@ bool SDIFEntity::ChangeSelection(const std::string& selection)
 bool SDIFEntity::MergeSelection(const std::string& selection)
 {
   if (!efile) return false;
+  if(!mlMatrixSigsRead) 
+    GetMatrixSelection(mvMatrixSigs);
+  if(!mlFrameSigsRead) 
+    GetMatrixSelection(mvFrameSigs);
+
+  if(isFrameDirEnabled)
+    return false;
+#if 0
+  // ChangeSelection only allowed for non streamid and non signature types
+  if(isFrameDirEnabled 
+     && (selection.find_first_of(":#/",0)!=std::string::npos))
+    return false;
+#endif
+
   const char* sel = const_cast<const char*>(selection.c_str());
   SdifParseSelection(efile->Selection,sel);
   return true;
@@ -678,6 +728,20 @@ bool SDIFEntity::MergeSelection(const std::string& selection)
 bool SDIFEntity::ClearSelection(Easdif::SDIFEntity::SelectionPartsE part)
 {
   if(!efile) return false;
+  if(!mlMatrixSigsRead) 
+    GetMatrixSelection(mvMatrixSigs);
+  if(!mlFrameSigsRead) 
+    GetMatrixSelection(mvFrameSigs);
+  if(isFrameDirEnabled)
+    return false;
+
+#if 0
+  // ClearSelection only allowed for non streamid and non signature types
+  if(isFrameDirEnabled 
+     && (selection.find_first_of(":#/",0)!=std::string::npos))
+    return false;
+#endif
+
   switch(part) {
   case SP_Stream:    
     SdifInitIntMask(&efile->Selection->streammask);
@@ -717,6 +781,218 @@ bool SDIFEntity::ClearSelection(Easdif::SDIFEntity::SelectionPartsE part)
   }
   return true;
 }
+
+bool SDIFEntity::GetMatrixSelection(std::vector<SdifSignature> &out) const
+{
+  out.resize(0);
+  if(efile ==0) return false;
+
+  SdifListT* listsel;
+  SdifSignature sig = eEmptySignature;
+  listsel = efile->Selection->matrix;
+  SdifListInitLoop (listsel);
+  while (SdifListIsNext (listsel))
+    {
+      sig = ((SdifSelectElementT *) SdifListGetNext 
+             (listsel))->value.signature;
+      out.push_back(sig);
+    }
+  return true;
+}
+
+bool SDIFEntity::TestMatrixSelection(SdifSignature sig) const
+{
+  if(efile ==0) return false;
+
+  SdifListT* listsel;
+  listsel = efile->Selection->matrix;
+  SdifListInitLoop (listsel);
+  int cnt = 0;
+  while (SdifListIsNext (listsel))
+    {
+      if(sig == ((SdifSelectElementT *) SdifListGetNext(listsel))->value.signature)
+        return       
+      ++ cnt;
+    }
+  if(cnt) return false;
+  return true;
+}
+
+bool SDIFEntity::TestFrameSelection(SdifSignature sig) const
+{
+  if(efile ==0) return false;
+
+  SdifListT* listsel;
+  listsel = efile->Selection->frame;
+  SdifListInitLoop (listsel);
+  int cnt = 0;
+  while (SdifListIsNext (listsel))
+    {
+      if(sig == ((SdifSelectElementT *) SdifListGetNext(listsel))->value.signature)
+        return       
+      ++ cnt;
+    }
+  if(cnt) return false;
+  return true;
+}
+
+bool SDIFEntity::GetFrameSelection(std::vector<SdifSignature> &out) const
+{
+  out.resize(0);
+  if(efile ==0) return false;
+
+  SdifListT* listsel;
+  SdifSignature sig = eEmptySignature;
+  listsel = efile->Selection->frame;
+  SdifListInitLoop (listsel);
+  while (SdifListIsNext (listsel))
+    {
+      sig = ((SdifSelectElementT *) SdifListGetNext 
+             (listsel))->value.signature;
+      out.push_back(sig);
+    }
+  return true;
+}
+
+bool SDIFEntity::CreateSignatureSelection(SdifListT* listsel,
+                                          const std::vector<SdifSignature>& sigs) {
+  if(!SdifListIsEmpty (listsel))
+    SdifMakeEmptyList(listsel);  
+
+  for(int ii=0;ii<sigs.size();++ii){
+    SdifSelectElementT *elem = SdifMalloc (SdifSelectElementT);
+    elem->rangetype = sst_norange;
+    elem->value.signature = sigs[ii];
+    SdifListPutTail (listsel, elem);          
+  }
+  return true;
+}
+
+bool SDIFEntity::RestrictFrameSelection(const std::vector<SdifSignature>& sigs) {
+
+  if(efile ==0) return false;
+  if(isFrameDirEnabled && !mEofSeen)
+    return false;
+
+  SdifListT* framesel = efile->Selection->frame;
+
+  // We did not yet obtain the original set of  frame signatures
+  // so get them now
+  if(!mlFrameSigsRead) {
+    GetFrameSelection(mvFrameSigs);
+    mlFrameSigsRead = true;
+  }
+
+  // no current selection any more, can only happen if we did not apply 
+  // any restriction because after restricting the List is either containing the
+  // list of signatures that are active or a signature eEmptySignature to signal
+  // that nothing is selected at all.
+  if(SdifListIsEmpty (framesel)) {
+    // either there was no selection at all so we may 
+    // restrict by just adding
+    if(mvFrameSigs.empty())
+      return CreateSignatureSelection(framesel,sigs);
+    // this can only happen if somebody dealed with the selections without using 
+    // RestrictFrameSelection ReestablishFrameSelection, e cannot handle this correctly
+    else 
+      return false;
+  }
+
+  // selection is not yet empty, we need to match it with the input
+
+  // nothing to filter
+  if(sigs.empty())
+    return true;
+
+  std::vector<SdifSignature> tmp;
+  GetFrameSelection(tmp);
+  std::vector<SdifSignature>::iterator newend = tmp.end();
+  // get the set of signatures that match between input and existing signatures
+  // and put them to the end of the tmp storage vector
+  for(int ii=0;ii<sigs.size();++ii){
+    newend = std::remove(tmp.begin(),newend,sigs[ii]);
+  }
+  // remove
+  std::copy(newend,tmp.end(),tmp.begin());
+  tmp.resize(tmp.end()-newend);
+  // whenever the selection becomes empty we add a fake Signature eEmptySignature
+  // to prevent any Signature to match the selection.
+  if(tmp.empty())
+    tmp.push_back(eEmptySignature);
+  return CreateSignatureSelection(framesel,tmp);
+}
+
+bool SDIFEntity::ReestablishFrameSelection() 
+{
+  if(efile ==0) return false;
+  if(!mlFrameSigsRead)
+    return false;
+  SdifListT* framesel = efile->Selection->frame;
+  return CreateSignatureSelection(framesel,mvFrameSigs);  
+}
+
+
+bool SDIFEntity::RestrictMatrixSelection(const std::vector<SdifSignature>& sigs) {
+
+  if(efile ==0) return false;
+  if(isFrameDirEnabled && !mEofSeen)
+    return false;
+
+  SdifListT* matrixsel = efile->Selection->matrix;
+
+  // We did not yet obtain the original set of  matrix signatures
+  // so get them now
+  if(!mlMatrixSigsRead) {
+    GetMatrixSelection(mvMatrixSigs);
+    mlMatrixSigsRead = true;
+  }
+
+  // no current selection any more, can only happen if we did not apply any restriction
+  if(SdifListIsEmpty (matrixsel)) {
+    // either there was no selection at all so we may 
+    // restrict by just adding
+    if(mvMatrixSigs.empty())
+      return CreateSignatureSelection(matrixsel,sigs);
+    // this can only happen if somebody dealed with the selections without using 
+    // RestrictMatrixSelection ReestablishMatrixSelection, we cannot handle this correctly
+    else 
+      return false;
+  }
+
+  // selection is not yet empty, we need to match it with the input
+
+  // nothing to filter
+  if(sigs.empty())
+    return true;
+
+  std::vector<SdifSignature> tmp;
+  GetMatrixSelection(tmp);
+  std::vector<SdifSignature>::iterator newend = tmp.end();
+  // get the set of signatures that match between input and existing signatures
+  // and put them to the end of the tmp storage vector
+  for(int ii=0;ii<sigs.size();++ii){
+    newend = std::remove(tmp.begin(),newend,sigs[ii]);
+  }
+  // remove
+  std::copy(newend,tmp.end(),tmp.begin());
+  tmp.resize(tmp.end()-newend);
+  // whenever the selection becomes empty we add a fake Signature eEmptySignature
+  // to prevent any Signature to match the selection.
+  if(tmp.empty())
+    tmp.push_back(eEmptySignature);
+  return CreateSignatureSelection(matrixsel,tmp);
+}
+
+bool SDIFEntity::ReestablishMatrixSelection() 
+{
+  if(efile ==0) return false;
+  if(!mlMatrixSigsRead)
+    return false;
+  SdifListT* matrixsel = efile->Selection->matrix;
+  return CreateSignatureSelection(matrixsel,mvMatrixSigs);
+}
+
+
 
 /*****************************************************/
 
