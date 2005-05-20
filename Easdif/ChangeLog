@@ -1,3 +1,31 @@
+2005-05-20  Axel Roebel  <Axel.Roebel@ircam.fr>
+Version 1.2.0
+
+	* easdif/easdifintro.h.in, test/tutofini.cpp (Module): 
+	Use new api for frame iterator.
+
+	* easdif/sdifframe.h, easdif/sdifframe.cpp (Module): 
+	Removed remaining functions that were only there for initial tests of
+	Fabien Tisserand.
+	Changed the frame directory handling to include only the selected frames and
+	matrices.
+	
+	* easdif/sdifexception.h (Module): 
+	New Seek error exception
+
+	* easdif/sdifentity.h, easdif/sdifentity.cpp (Module): 
+	Increased consistence and documentation of SDIF frame directory
+	and SDIF frame iterator. The directory is now limited
+	to only the selected frames, streams and matrices.	
+	Added new functions to restrict and reestablish
+	signature selections.	
+	selections modifications are disabled whenever the
+	FrameDirectory is enabled and not yet finished.
+	Added member function to test for seekability.
+	
+	* easdif/Makefile.am (Module): 
+	Added proper dependency on libsdif_cpp.la.	
+	
 2005-05-03  Axel Roebel  <Axel.Roebel@ircam.fr>
 Version 1.1.0
 
@@ -607,4 +635,4 @@ Version 0.21
 	* ChangeLog: Added changelog to repository.
 
 
-$Id: ChangeLog,v 1.45 2005-05-03 16:24:22 roebel Exp $
+$Id: ChangeLog,v 1.46 2005-05-20 21:33:05 roebel Exp $
