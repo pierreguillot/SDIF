@@ -24,11 +24,17 @@
  *                            sdif@ircam.fr
  */
 
-/* $Id: SdifHighLevel.c,v 3.15 2005-05-20 21:13:09 roebel Exp $
+/* $Id: SdifHighLevel.c,v 3.16 2005-05-23 17:52:53 schwarz Exp $
  *
  * SdifHighLevel.c	8.12.1999	Diemo Schwarz
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.15  2005/05/20 21:13:09  roebel
+ * (Module):
+ * back to returning 0 in case of file read error.
+ * the case where it was really used for max is now checked
+ * by means of comparing the expected matrix size.
+ *
  * Revision 3.14  2005/05/13 16:12:58  schwarz
  * oops, debug output!
  *
@@ -223,7 +229,7 @@ size_t SdifReadFile (const char             *filename,
 	    {
 		/* Read matrix header */
 		newread = SdifFReadMatrixHeader(file);
-                
+
 		if (newread == 0)
 		{   /* read problem (also with 0 since we want a full header)  */
 		    go_on = 0;
@@ -243,12 +249,11 @@ size_t SdifReadFile (const char             *filename,
 		    /* Check matrix type */
 		    if (wantit  &&  SdifFCurrMatrixIsSelected(file))
 		    {   /* read matrix data */
-                        size_t toread = SdifSizeOfMatrix(SdifFCurrDataType(file),
-                                                         SdifFCurrNbCol(file) , SdifFCurrNbRow(file));
 			newread = SdifFReadMatrixData(file);
 		    
-			if (newread != toread)
-			{   /* read problem (0 is ok, can be (0, 0) matrix) */
+			if (newread == 0  &&  (SdifFCurrNbRow(file) != 0  &&
+					       SdifFCurrNbCol(file) != 0))
+			{   /* read problem (0 is ok, can be (0, n) matrix) */
 			    go_on = 0;
 			}
 			else

@@ -1,6 +1,6 @@
 dnl -*-autoconf-*-  (No, it's an autoconf file!)
 dnl -*-m4-*- (He emacs, it's a m4 file)
-dnl $Id: configure.in,v 1.62 2005-05-20 21:16:17 roebel Exp $
+dnl $Id: configure.in,v 1.63 2005-05-23 17:52:52 schwarz Exp $
 dnl
 dnl configure.in		September 2000		Patrice Tisserand
 dnl
@@ -32,6 +32,10 @@ dnl send email to:  sdif@ircam.fr
 
 
 dnl $Log: not supported by cvs2svn $
+dnl Revision 1.62  2005/05/20 21:16:17  roebel
+dnl Fix for c++ compilation. Unfinished! But cleaner as before
+dnl and at least compiles.
+dnl
 dnl Revision 1.61  2005/05/13 15:36:10  schwarz
 dnl version 3.9.3
 dnl
@@ -271,8 +275,8 @@ AC_MSG_RESULT(PACKAGE NAME AND VERSION)
 PACKAGE=SDIF
 
 SDIF_VERSION_MAJOR=3
-SDIF_VERSION_MINOR=9
-SDIF_VERSION_RELEASE=3a
+SDIF_VERSION_MINOR=10
+SDIF_VERSION_RELEASE=0
 
 VERSION=$SDIF_VERSION_MAJOR.$SDIF_VERSION_MINOR.$SDIF_VERSION_RELEASE
 

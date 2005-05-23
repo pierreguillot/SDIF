@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.6 2005-04-19 15:30:14 schwarz Exp $
+# $Id: Makefile.am,v 1.7 2005-05-23 17:52:54 schwarz Exp $
 #
 # ./sdifcpp/Makefile.am		March 2003		Axel Roebel
 #
@@ -30,6 +30,11 @@
 
 
 # $Log: not supported by cvs2svn $
+# Revision 1.6  2005/04/19 15:30:14  schwarz
+# make sdifcpp compile again for easdif:
+# - removed deleted files from makefiles
+# - fixed some includes that were missing (but only for C++ compilation!?)
+#
 # Revision 1.5  2003/11/07 21:47:19  roebel
 # removed XpGuiCalls.h and replaced preinclude.h  by local files
 #
@@ -51,13 +56,12 @@ noinst_LTLIBRARIES = @SELLIBCPP@
 
 SDIF_H = ../include/sdif_version.h $(top_srcdir)/include/sdif.h \
 	$(addprefix $(top_srcdir)/sdif/, SdifErrMess.h		\
-	SdifError.h 	SdifFGet.h 	SdifSelect.h 		\
+	SdifFGet.h 	SdifSelect.h 	SdifMatrixType.h	\
 	SdifFPut.h 	SdifFRead.h	SdifFScan.h 		\
 	SdifFWrite.h 	SdifFile.h	SdifTest.h	 	\
 	SdifFrame.h 	SdifFrameType.h SdifGlobals.h 		\
 	SdifHard_OS.h 	SdifHash.h	SdifHighLevel.h 	\
-	SdifList.h 	SdifMatrix.h 	SdifMatrixType.h	\
-	sdiftypes.h						\
+	SdifList.h 	SdifMatrix.h 	sdiftypes.h		\
 	sdif_portability.h host_architecture.h ) ../sdif/config.h 
 
 
@@ -72,9 +76,8 @@ libsdif_cpp_la_SOURCES = \
 	SdifFPrint.cpp     SdifFWrite.cpp       SdifTextConv.cpp       \
 	SdifHard_OS.cpp    SdifErrMess.cpp      SdifList.cpp           \
 	SdifSelect.cpp     SdifHighLevel.cpp    SdifCheck.cpp          \
-	SdifString.cpp     SdifError.cpp        SdifFrameType.cpp      \
-	SdifPrint.cpp      SdifRWLowLevel.cpp   SdifFPut.cpp           \
-	SdifConvToText.cpp 
+	SdifString.cpp     SdifFrameType.cpp    SdifConvToText.cpp     \
+	SdifPrint.cpp      SdifRWLowLevel.cpp   SdifFPut.cpp
 
 
 CLEANFILES = $(libsdif_cpp_la_SOURCES) SdifVersion.h

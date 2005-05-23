@@ -35,6 +35,10 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.11  2005/04/07 15:56:47  schwarz
+ * removed some now empty local include files,
+ * added include of <sdif.h> and "SdifGlobals.h"
+ *
  * Revision 3.10  2004/09/09 17:43:39  schwarz
  * SdifListConcat function
  *
@@ -86,7 +90,6 @@
 #include "SdifList.h"
 #include <stdio.h>
 #include <stdlib.h>
-#include "SdifError.h"
 
 
 /* stocks management */

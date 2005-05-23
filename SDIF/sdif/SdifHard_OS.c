@@ -1,4 +1,4 @@
-/* $Id: SdifHard_OS.c,v 3.15 2005-04-07 15:56:47 schwarz Exp $
+/* $Id: SdifHard_OS.c,v 3.16 2005-05-23 17:52:53 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -28,6 +28,10 @@
 /* author: Dominique Virolle 1998
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.15  2005/04/07 15:56:47  schwarz
+ * removed some now empty local include files,
+ * added include of <sdif.h> and "SdifGlobals.h"
+ *
  * Revision 3.14  2004/09/09 17:42:43  schwarz
  * swapping code alternatives
  *
@@ -110,8 +114,8 @@
 
 #include "sdif_portability.h"
 
+#include "SdifGlobals.h"
 #include "SdifHard_OS.h"
-#include "SdifError.h"
 #include <string.h>
 #include <ctype.h>
 #include <stdlib.h>

@@ -1,4 +1,4 @@
-/* $Id: SdifString.c,v 3.11 2005-04-07 15:56:48 schwarz Exp $
+/* $Id: SdifString.c,v 3.12 2005-05-23 17:52:53 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -32,6 +32,10 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.11  2005/04/07 15:56:48  schwarz
+ * removed some now empty local include files,
+ * added include of <sdif.h> and "SdifGlobals.h"
+ *
  * Revision 3.10  2004/09/09 17:49:51  schwarz
  * Fixed low-level tokenising errors that were part of the parsing bug
  * that the type definition string had to end with whitespace.
@@ -87,7 +91,6 @@
 
 #include <sdif.h>
 #include "SdifGlobals.h"
-#include "SdifError.h"
 
 
 /* Function declaration */

@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.35 2005-04-07 15:56:46 schwarz Exp $
+# $Id: Makefile.am,v 1.36 2005-05-23 17:52:53 schwarz Exp $
 #
 # ./sdif/Makefile.am		September 2000		Patrice Tisserand
 #
@@ -30,6 +30,10 @@
 
 
 # $Log: not supported by cvs2svn $
+# Revision 1.35  2005/04/07 15:56:46  schwarz
+# removed some now empty local include files,
+# added include of <sdif.h> and "SdifGlobals.h"
+#
 # Revision 1.34  2004/08/23 17:37:32  roebel
 # Fixed for dist target!
 #
@@ -169,15 +173,14 @@ EXTRA_LTLIBRARIES = libsdif.la libsdif-debug.la libsdif-profile.la
 lib_LTLIBRARIES = @SELLIB@
 
 SDIF_H = ../include/sdif_version.h $(top_srcdir)/include/sdif.h \
-	SdifError.h 	SdifFGet.h 	SdifErrMess.h 		\
+	SdifFGet.h 	SdifErrMess.h 	SdifMatrix.h		\
 	SdifTest.h 	SdifStreamID.h  SdifMatrixType.h 	\
 	SdifFPut.h 	SdifFRead.h	SdifFScan.h 		\
 	SdifFWrite.h 	SdifFile.h      SdifSelect.h	 	\
 	SdifFrame.h 	SdifFrameType.h SdifGlobals.h 		\
 	SdifHard_OS.h 	SdifHash.h	SdifHighLevel.h 	\
-	SdifList.h 	SdifMatrix.h 	\
-	config.h	sdiftypes.h	sdif_portability.h      \
-	host_architecture.h
+	SdifList.h 	config.h	sdiftypes.h		\
+	sdif_portability.h host_architecture.h
 
 noinst_HEADERS = $(SDIF_H) 
 
@@ -189,9 +192,9 @@ libsdif_la_SOURCES = SdifHash.c       SdifGlobals.c      SdifSignatureTab.c \
 		     SdifFPrint.c     SdifFWrite.c       SdifTextConv.c     \
 		     SdifHard_OS.c    SdifErrMess.c      SdifList.c         \
 		     SdifSelect.c     SdifHighLevel.c    SdifCheck.c        \
-		     SdifString.c     SdifError.c        SdifFrameType.c    \
-		     SdifPrint.c      SdifRWLowLevel.c   SdifFPut.c         \
-		     SdifPreTypes.c
+		     SdifString.c     SdifFrameType.c    SdifPreTypes.c     \
+		     SdifPrint.c      SdifRWLowLevel.c   SdifFPut.c
+ 
 
 libsdif_debug_la_SOURCES   = $(libsdif_la_SOURCES)
 libsdif_profile_la_SOURCES = $(libsdif_la_SOURCES)
