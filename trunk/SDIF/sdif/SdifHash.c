@@ -1,4 +1,4 @@
-/* $Id: SdifHash.c,v 3.9 2005-04-07 15:56:47 schwarz Exp $
+/* $Id: SdifHash.c,v 3.10 2005-05-23 17:52:53 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -35,6 +35,10 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.9  2005/04/07 15:56:47  schwarz
+ * removed some now empty local include files,
+ * added include of <sdif.h> and "SdifGlobals.h"
+ *
  * Revision 3.8  2004/09/09 17:43:14  schwarz
  * local SdifHashInt4 function as macro
  *
@@ -87,11 +91,12 @@
 
 #include "sdif_portability.h"
 
+#include "SdifGlobals.h"
 #include "SdifHash.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include "SdifError.h"
+
 
 SdifHashTableT*
 SdifCreateHashTable(unsigned int HashSize,

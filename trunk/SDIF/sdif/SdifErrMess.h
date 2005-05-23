@@ -1,4 +1,4 @@
-/* $Id: SdifErrMess.h,v 3.13 2005-04-07 15:20:23 schwarz Exp $
+/* $Id: SdifErrMess.h,v 3.14 2005-05-23 17:52:53 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -32,6 +32,9 @@
  * author: Dominique Virolle 1998
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 3.13  2005/04/07 15:20:23  schwarz
+ * removed duplicated declarations that belong to the external API in sdif.h
+ *
  * Revision 3.12  2004/07/22 14:47:55  bogaards
  * removed many global variables, moved some into the thread-safe SdifGlobals structure, added HAVE_PTHREAD define, reorganized the code for selection, made some arguments const, new version 3.8.6
  *
@@ -92,11 +95,15 @@
 #include <sdif.h>
 #include "SdifGlobals.h"
 #include "SdifList.h"
-#include "SdifError.h"
 
 
 /* Table of error format for the fprintf */
 extern const SdifErrorT gSdifErrMessFormat[];
+
+extern SdifExitFuncT gSdifExitFunc;
+extern SdifExceptionFuncT  gSdifErrorFunc;
+extern SdifExceptionFuncT  gSdifWarningFunc;
+extern FILE* SdifStdErr;
 
 
 SdifErrorT*	SdifCreateError		(SdifErrorTagET Tag,
@@ -119,11 +126,32 @@ SdifUInt4	SdifFError		(SdifFileT* SdifF,
 					 const char *file, 
 					 const int line);
 SdifInt4	SdifFsPrintError	(char* oErrMess, SdifFileT* SdifF,
-					 SdifErrorT* Error,
+					 SdifErrorTagET ErrorTag,
+					 const char *UserMess,
 					 const char *LibFile, int LibLine);
+
+
+void SdifDefaultErrorFunc (SdifErrorTagET errnum, SdifErrorLevelET errlev, 
+			   char *msg, SdifFileT *file, SdifErrorT *error,
+			   char *sourcefilename, int sourcefileline);
+void SdifDefaultWarningFunc (SdifErrorTagET errnum, SdifErrorLevelET errlev, 
+			     char *msg, SdifFileT *file, SdifErrorT *error,
+			     char *sourcefilename, int sourcefileline);
 
 
 #define _SdifFError(SdifF, ErrorTag, UserMess) \
 	 SdifFError(SdifF, ErrorTag, UserMess, __FILE__, __LINE__)
+
+
+#define _SdifError(error, mess) _SdifFError(NULL, (error), (mess))
+
+
+#define _Debug(mess) \
+fprintf(SdifStdErr, "*Sdif Debug* %s, %d:\n", __FILE__, __LINE__), \
+fprintf(SdifStdErr, "%s\n",(mess))
+
+#define _SdifRemark(mess) \
+fprintf(SdifStdErr, "*Sdif* %s\n", mess)
+
 
 #endif  /* _SdifErrMess_ */

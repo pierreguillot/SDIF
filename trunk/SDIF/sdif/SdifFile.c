@@ -1,4 +1,4 @@
-/* $Id: SdifFile.c,v 3.55 2005-05-19 14:07:47 roebel Exp $
+/* $Id: SdifFile.c,v 3.56 2005-05-23 17:52:53 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -33,6 +33,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.55  2005/05/19 14:07:47  roebel
+ * new pipe condition needs to be negated.
+ *
  * Revision 3.54  2005/05/18 20:20:31  roebel
  * Fixed detection of pipes
  *
@@ -300,7 +303,6 @@
 #endif
 #include <string.h>
 #include <assert.h>
-#include "SdifError.h"
 #include "SdifFScan.h"
 
 #ifdef HAVE_PTHREAD

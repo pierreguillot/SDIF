@@ -1,4 +1,4 @@
-/* $Id: SdifFRead.c,v 3.26 2005-05-20 21:13:24 roebel Exp $
+/* $Id: SdifFRead.c,v 3.27 2005-05-23 17:52:53 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -31,6 +31,15 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.26  2005/05/20 21:13:24  roebel
+ * back to returning 0 in case of file read error.
+ * Skipping a matrix can never produce a read size of 0
+ * so -1 is unnecessary here.
+ *  SdifFSkip now uses seekability flag to determine
+ * whether to seek or to read.
+ * Don't confuse error tags and error enums, which does not compile
+ * with c++.
+ *
  * Revision 3.25  2005/05/13 15:19:24  schwarz
  * pass read errors to caller as -1 return values
  *
@@ -751,8 +760,9 @@ size_t SdifFReadMatrixData (SdifFileT *file)
     ok = SdifMatrixDataUpdateHeader(file->CurrMtrxData, mtxh);
 
     if (!ok)
-    {  	/* problem allocating data, attach last global error to file */
-      _SdifFError(file, eUnknown /*gSdifLastError */, "Previous error repeated");
+    { /* problem allocating data, attach last global error to file */
+      _SdifFError(file, eAllocFail, 
+		  "not enough memory for Matrix Data header update");
 	return 0;
     }
 

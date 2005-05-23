@@ -1,4 +1,4 @@
-/* $Id: SdifMatrix.c,v 3.11 2004-09-10 13:27:40 schwarz Exp $
+/* $Id: SdifMatrix.c,v 3.12 2005-05-23 17:52:53 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -33,6 +33,9 @@
  *
  * author: Dominique Virolle 1997
  * $Log: not supported by cvs2svn $
+ * Revision 3.11  2004/09/10 13:27:40  schwarz
+ * missing return
+ *
  * Revision 3.10  2004/09/09 17:46:44  schwarz
  * Changed SdifMatrixDataT to something sensible that allows to read and
  * store a whole matrix's data as one block, with automatic reallocation.
@@ -580,6 +583,7 @@ int SdifMatrixDataRealloc (SdifMatrixDataT *data, int newsize)
 	return 1;    
 }
 
+
 /* matrix data element access by index */
 
 SdifMatrixDataT *
@@ -754,3 +758,7 @@ void SdifCopyMatrixDataToFloat4 (SdifMatrixDataT *data, SdifFloat4 *dest)
 	break;
     }
 }
+
+/* todo:
+void SdifCopySelectedMatrixDataToFloat8 (SdifMatrixDataT *data, SdifFloat4 *dest)
+*/

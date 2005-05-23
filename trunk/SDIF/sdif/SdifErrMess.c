@@ -1,4 +1,4 @@
-/* $Id: SdifErrMess.c,v 3.19 2005-05-13 15:30:48 schwarz Exp $
+/* $Id: SdifErrMess.c,v 3.20 2005-05-23 17:52:53 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -31,6 +31,10 @@
  * author: Dominique Virolle 1998
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.19  2005/05/13 15:30:48  schwarz
+ * make it possible that global errors from SdifError be passed through
+ * the SdifErrMsg functions as file errors.
+ *
  * Revision 3.18  2004/07/22 14:47:55  bogaards
  * removed many global variables, moved some into the thread-safe SdifGlobals structure, added HAVE_PTHREAD define, reorganized the code for selection, made some arguments const, new version 3.8.6
  *
@@ -119,6 +123,23 @@
 #include <stdlib.h>
 
 
+static void SdifExit (void);
+
+SdifExitFuncT	    gSdifExitFunc = SdifExit;
+SdifExceptionFuncT  gSdifErrorFunc = SdifDefaultErrorFunc;
+SdifExceptionFuncT  gSdifWarningFunc = SdifDefaultWarningFunc;
+
+/* global variables set by the _SdifError macro */
+/*char	     *SdifErrorFile;
+int	      SdifErrorLine;
+*/
+
+/* global variables to control error output */
+int	      gSdifErrorOutputEnabled = 1;
+SdifErrorTagET gSdifLastError	      = eFalse; //eNoError;
+FILE*	      SdifStdErr	      = NULL;
+
+
 const char * gSdifErrorLevel [ eNumLevels ] = {
     "Fatal Error",
     "Error",
@@ -129,28 +150,40 @@ const char * gSdifErrorLevel [ eNumLevels ] = {
 
 
 const SdifErrorT gSdifErrMessFormat[] = {
-
-{ eUnknown,		eNoLevel,	"Warning unknown"},
-{ eNoError,		eNoLevel,	"No Error"},
-{ eTypeDataNotSupported, eWarning,	"Type of data not actualy supported : %s\n"},
-{ eNameLength,		eWarning,	"Bad UserMess : '%s'\n"},
-{ eReDefined,		eError,		"%s redefined\n"},
-{ eUnDefined,		eError,		"%s undefined\n"},
-{ eSyntax,		eWarning,	"Syntax error: %s\n"},
-{ eBadTypesFile,	eWarning,	"%s is not a Types Definitions file\n"},
-{ eBadType,		eWarning,	"Bad Type used : %s\n"},
-{ eBadHeader,		eError,		"Bad Sdif Header : %s\n"},
-{ eRecursiveDetect,	eWarning,	"Recursive declaration detected : %s\n"},
-{ eUnInterpreted,	eWarning,	"Attempt to interpret %s failed\n"},
-{ eOnlyOneChunkOf,	eWarning,	"There can be only 0 or 1 '%s' chunk.\n"},
-{ eUserDefInFileYet,	eWarning,	"%s has been completed in this file yet\n"},
-{ eBadMode,		eError,		"Bad mode at sdif file opening (%d), %s\n"},
-{ eBadStdFile,		eError,		"Bad standart file or bad mode (%d), %s\n"},
-{ eReadWriteOnSameFile,	eError,		"Read file and Write file are the same file : %s"},
-{ eBadFormatVersion,	eError,		"Bad Format Version : %s"},
-{ eMtrxUsedYet,		eWarning,	"Matrix has been used in this frame yet : %s\n"},
-{ eMtrxNotInFrame,	eWarning,	"Matrix is not in frames components : %s\n"},
-
+{ eUnknown,		 eNoLevel, "Warning unknown"},
+{ eNoError,		 eNoLevel, "No Error"},
+{ eTypeDataNotSupported, eWarning, "Type of data not actualy supported : %s\n"},
+{ eNameLength,		 eWarning, "Bad UserMess : '%s'\n"},
+{ eReDefined,		 eError,   "%s redefined\n"},
+{ eUnDefined,		 eError,   "%s undefined\n"},
+{ eSyntax,		 eWarning, "Syntax error: %s\n"},
+{ eBadTypesFile,	 eWarning, "%s is not a Types Definitions file\n"},
+{ eBadType,		 eWarning, "Bad Type used : %s\n"},
+{ eBadHeader,		 eError,   "Bad Sdif Header : %s\n"},
+{ eRecursiveDetect,	 eWarning, "Recursive declaration detected : %s\n"},
+{ eUnInterpreted,	 eWarning, "Attempt to interpret %s failed\n"},
+{ eOnlyOneChunkOf,	 eWarning, "There can be only 0 or 1 '%s' chunk.\n"},
+{ eUserDefInFileYet,	 eWarning, "%s has been completed in this file yet\n"},
+{ eBadMode,		 eError,   "Bad mode at sdif file opening (%d), %s\n"},
+{ eBadStdFile,		 eError,   "Bad standart file or bad mode (%d), %s\n"},
+{ eReadWriteOnSameFile,	 eError,   "Read file and Write file are the same file : %s"},
+{ eBadFormatVersion,	 eError,   "Bad Format Version : %s"},
+{ eMtrxUsedYet,		 eWarning, "Matrix has been used in this frame yet : %s\n"},
+{ eMtrxNotInFrame,	 eWarning, "Matrix is not in frames components : %s\n"},
+/* global errors */
+{ eFreeNull,		 eFatal,   "Attempt to free a NULL pointer : '%s'\n" },
+{ eAllocFail,		 eFatal,   "Attempt to allocate memory : '%s'\n" },
+{ eInvalidPreType,	 eWarning, "Invalid Predefined Type : %s\n" },
+{ eArrayPosition,	 eFatal,   "Attempt to access to a non-existing square in an array : '%s'\n" },
+{ eEof,			 eFatal,   "End of file : %s\n" },
+{ eFileNotFound,	 eWarning, "File not found or permission denied: \"%s\"\n" },
+{ eAffectationOrder,	 eWarning, "Affectation must be in order : '%s'\n" },
+{ eNoModifErr,		 eWarning, "Type has been defined yet: '%s'\n" },
+{ eNotInDataTypeUnion,	 eFatal,   "Type of data Not in DataTypeUnion  : '%s'\n" },
+{ eNotFound,	         eWarning, "Not Find : '%s'\n" },
+{ eExistYet,	         eWarning, "Object Exists Yet : '%s'\n" },
+{ eWordCut,	         eWarning, "Word cut read : '%s'\n" },
+{ eTokenLength,	         eFatal,   "Token too long : '%s'\n" }
 };
 
 
@@ -234,8 +267,7 @@ SdifUInt4 SdifInsertTailError(SdifErrorLT* ErrorL, unsigned int ErrorCount [],
 			      SdifErrorTagET Tag, const char* UserMess)
 /*, SdifErrorT**  NewError)*/
 {
-    SdifErrorLevelET	Level    = Tag < eGlobalError 
-				   ?  gSdifErrMessFormat[Tag].Level  :  eFatal;
+    SdifErrorLevelET	Level    = gSdifErrMessFormat[Tag].Level;
     SdifUInt4		Count    = ++ErrorCount [Level];
 
     SdifErrorT*         NewError = SdifCreateError(Tag, Level, UserMess);
@@ -273,23 +305,33 @@ SdifLastErrorTag(SdifErrorLT *ErrorL)
 SdifUInt4 SdifFError (SdifFileT* SdifF, SdifErrorTagET ErrorTag, 
 		      const char *UserMess, const char *file, const int line)
 {
-    char sdifBufferError[4096];
-    
-    /* add to list and count error */
-    SdifUInt4   count = SdifInsertTailError (SdifF->Errors, SdifF->ErrorCount,  
-					     ErrorTag, UserMess);
-    SdifErrorT *Error = SdifLastError(SdifF->Errors);
+    SdifUInt4   count = 0;
+    char        sdifBufferError[4096];
+    SdifErrorT *Error = NULL;
+    SdifErrorLevelET ErrorLevel = gSdifErrMessFormat[ErrorTag].Level;
 
-    SdifFsPrintError (sdifBufferError, SdifF, Error, __FILE__, __LINE__);
+    if (SdifF)
+    {   /* add to list and count error */
+	count = SdifInsertTailError(SdifF->Errors, SdifF->ErrorCount,  
+				    ErrorTag, UserMess);
+	Error = SdifLastError(SdifF->Errors);
+    }
+
+    SdifFsPrintError(sdifBufferError, SdifF, ErrorTag, UserMess, 
+		     __FILE__, __LINE__);
 
     /* call error/warning callback that handles printing */
-    switch (Error->Level)
+    switch (ErrorLevel)
     {
         case eFatal:
         case eError:
-	    (*gSdifErrorFunc)   (ErrorTag, eError, sdifBufferError, 
+	    (*gSdifErrorFunc)   (ErrorTag, ErrorLevel, sdifBufferError, 
 				 SdifF, Error, (char *)file, line);
-	    /* no exit, because it was always like that */
+	    if (ErrorLevel == eFatal)
+	    {
+		(*gSdifExitFunc) ();
+	    }
+	    /* else: no exit, because it was always like that */
 	break;
 
         case eWarning:
@@ -313,8 +355,8 @@ SdifUInt4 SdifFError (SdifFileT* SdifF, SdifErrorTagET ErrorTag,
 
 
 SdifInt4
-SdifFsPrintError(char* oErrMess, SdifFileT* SdifF, SdifErrorT* Error,
-		 const char *LibFile, int LibLine)
+SdifFsPrintError(char* oErrMess, SdifFileT* SdifF, SdifErrorTagET ErrorTag,
+		 const char *UserMess, const char *LibFile, int LibLine)
 {
     char HeadErrMess [512]  = "";
     char PosErrMess  [64]   = "";;
@@ -326,64 +368,63 @@ SdifFsPrintError(char* oErrMess, SdifFileT* SdifF, SdifErrorT* Error,
 #if defined (DEBUG)  ||  defined (_DEBUG)
     sprintf(HeadErrMess,
 	    "*Sdif* %s %d (%s, %d):\n  SdifFile: %s",
-	    gSdifErrorLevel [Error->Level], Error->Tag,
-	    LibFile, LibLine, SdifF->Name);
+	    gSdifErrorLevel [gSdifErrMessFormat[ErrorTag].Level], ErrorTag,
+	    LibFile, LibLine, SdifF ? SdifF->Name : "(no file)");
 #else
     sprintf(HeadErrMess,
 	    "*Sdif* %s %d:\n  SdifFile: %s",
-	    gSdifErrorLevel [Error->Level], Error->Tag, SdifF->Name);
+	    gSdifErrorLevel [gSdifErrMessFormat[ErrorTag].Level], ErrorTag, 
+	    SdifF ? SdifF->Name : "(no file)");
 #endif /* ifdef DEBUG */
 
-    if (SdifF->Stream)
-	SdiffGetPos(SdifF->Stream, &(SdifF->Pos));
-    if (SdifF->Pos !=0)
-	sprintf(PosErrMess, " (byte:%6lu=0x%04lx=0%06lo)", 
-		SdifF->Pos, SdifF->Pos, SdifF->Pos);
-
-    if (SdifF->TextStream)
-	sprintf(TextErrMess, ", TextFile: %s\n", SdifF->TextStreamName);
-    else
-	sprintf(TextErrMess, "\n");
-
-    if (SdifF->CurrFramH)
+    if (SdifF)
     {
-	sprintf(FramErrMess, "  FramH : %s   Size: 0x%04x   NbMatrix: %u   NumID: %u   Time: %g\n",
-		SdifSignatureToString(SdifF->CurrFramH->Signature),
-		SdifF->CurrFramH->Size,	 SdifF->CurrFramH->NbMatrix,
-		SdifF->CurrFramH->NumID, SdifF->CurrFramH->Time);
-    }
+	if (SdifF->Stream)
+	    SdiffGetPos(SdifF->Stream, &(SdifF->Pos));
+	if (SdifF->Pos !=0)
+	    sprintf(PosErrMess, " (byte:%6lu=0x%04lx=0%06lo)", 
+		    SdifF->Pos, SdifF->Pos, SdifF->Pos);
 
-    if (SdifF->CurrMtrxH)
-    {
-	if (SdifF->CurrMtrxH->Signature != eEmptySignature)
+	if (SdifF->TextStream)
+	    sprintf(TextErrMess, ", TextFile: %s\n", SdifF->TextStreamName);
+	else
+	    sprintf(TextErrMess, "\n");
+
+	if (SdifF->CurrFramH)
 	{
-	    sprintf(MtrxErrMess, "  MtrxH :   %s   DataWidth: %04x   Rows: %d   Columns: %d\n",
-		    SdifSignatureToString(SdifF->CurrMtrxH->Signature),
-		    SdifF->CurrMtrxH->DataType,
-		    SdifF->CurrMtrxH->NbRow, SdifF->CurrMtrxH->NbCol);
+	    sprintf(FramErrMess, "  FramH : %s   Size: 0x%04x   NbMatrix: %u   NumID: %u   Time: %g\n",
+		    SdifSignatureToString(SdifF->CurrFramH->Signature),
+		    SdifF->CurrFramH->Size,  SdifF->CurrFramH->NbMatrix,
+		    SdifF->CurrFramH->NumID, SdifF->CurrFramH->Time);
+	}
+
+	if (SdifF->CurrMtrxH)
+	{
+	    if (SdifF->CurrMtrxH->Signature != eEmptySignature)
+	    {
+		sprintf(MtrxErrMess, "  MtrxH :   %s   DataWidth: %04x   Rows: %d   Columns: %d\n",
+			SdifSignatureToString(SdifF->CurrMtrxH->Signature),
+			SdifF->CurrMtrxH->DataType,
+			SdifF->CurrMtrxH->NbRow, SdifF->CurrMtrxH->NbCol);
+	    }
 	}
     }
 
-
-    switch(Error->Tag)
+    switch(ErrorTag)
     {
       case eNoError:
-      case eUnknow:
-	  sprintf(ErrErrMess, gSdifErrMessFormat[Error->Tag].UserMess);
+      case eUnknown:
+	  sprintf(ErrErrMess, gSdifErrMessFormat[ErrorTag].UserMess);
       break;
 
       case eBadMode:
       case eBadStdFile:
-	  sprintf(ErrErrMess, gSdifErrMessFormat[Error->Tag].UserMess,
-		  SdifF->Mode, Error->UserMess);
+	  sprintf(ErrErrMess, gSdifErrMessFormat[ErrorTag].UserMess,
+		  SdifF ? SdifF->Mode : -1, UserMess);
       break;
 
       default:
-	  if (Error->Tag < eGlobalError)
-	      sprintf(ErrErrMess, gSdifErrMessFormat[Error->Tag].UserMess,
-		      Error->UserMess);
-	  else
-	      strcpy(ErrErrMess, "Global fatal error");
+	  sprintf(ErrErrMess, gSdifErrMessFormat[ErrorTag].UserMess, UserMess);
       break;
     }
 
@@ -393,18 +434,70 @@ SdifFsPrintError(char* oErrMess, SdifFileT* SdifF, SdifErrorT* Error,
 }
 
 
-/*
+/* moved from now obsolete SdifError.c */
+
+static void 
+SdifExit (void)
+{
+#ifdef USE_XPGUI
+    XpExit(1);
+#else
+    exit(1);
+#endif
+}
+
+
+void
+SdifSetExitFunc (SdifExitFuncT func)
+{
+    gSdifExitFunc = func;
+}
+
+void
+SdifSetErrorFunc (SdifExceptionFuncT func)
+{
+    gSdifErrorFunc = func;
+}
+
+void
+SdifSetWarningFunc (SdifExceptionFuncT func)
+{
+    gSdifWarningFunc = func;
+}
+
+
 void	
 SdifEnableErrorOutput  (void)
 {
-  gSdifErrorOutputEnabled = 1;
+    gSdifErrorOutputEnabled = 1;
 }
-*/
 
-/*
 void
 SdifDisableErrorOutput (void)
 {
-  gSdifErrorOutputEnabled = 0;
+    gSdifErrorOutputEnabled = 0;
 }
-*/
+
+void
+SdifDefaultErrorFunc (SdifErrorTagET errnum, SdifErrorLevelET errlev, 
+		      char *msg, SdifFileT *file, SdifErrorT *error,
+		      char *sourcefilename, int sourcefileline)
+{
+    if (gSdifErrorOutputEnabled)
+    {
+	fprintf(SdifStdErr, msg);
+	fflush(SdifStdErr);
+    }
+}
+
+void
+SdifDefaultWarningFunc (SdifErrorTagET errnum, SdifErrorLevelET errlev, 
+			char *msg, SdifFileT *file, SdifErrorT *error,
+			char *sourcefilename, int sourcefileline)
+{
+    if (gSdifErrorOutputEnabled)
+    {
+	fprintf(SdifStdErr, msg);
+	fflush(SdifStdErr);
+    } 
+}

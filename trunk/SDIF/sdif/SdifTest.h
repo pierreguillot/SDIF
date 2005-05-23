@@ -1,4 +1,4 @@
-/* $Id: SdifTest.h,v 3.7 2001-05-02 09:34:48 tisseran Exp $
+/* $Id: SdifTest.h,v 3.8 2005-05-23 17:52:53 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -36,6 +36,9 @@ LIBRARY
  *
 LOG
  * $Log: not supported by cvs2svn $
+ * Revision 3.7  2001/05/02 09:34:48  tisseran
+ * Change License from GNU Public License to GNU Lesser Public License.
+ *
  * Revision 3.6  2000/11/21 14:51:51  schwarz
  * - sdif.h is now included by all sdif/Sdif*.c files.
  * - Removed all public typedefs, enums, structs, and defines from the
@@ -96,36 +99,6 @@ LOG
 #include "SdifMatrixType.h"
 #include "SdifFrameType.h"
 
-/*
-typedef enum SdifInterpretationErrorE
-{
-  eTypeDataNotSupported= 300,
-  eNameLength,
-  eReDefined,
-  eUnDefined,
-  eSyntax,
-  eRecursiveDetect,
-  eBadTypesFile,
-  eBadType,
-  eBadHeader,
-  eOnlyOneChunkOf,
-  eUnInterpreted,
-  eUserDefInFileYet,
-  eBadMode,
-  eBadStdFile,
-  eBadNbData,
-  eReadWriteOnSameFile
-} SdifInterpretationErrorET;
-
-
-
-void
-SdifInterpretationError(SdifInterpretationErrorET Error, SdifFileT* SdifF, const void *ErrorMess);
-
-#define _SdifFileMess(sdiff, error, mess) \
-(SdifErrorFile = __FILE__, SdifErrorLine = __LINE__, SdifInterpretationError((error), (sdiff),(mess)))
-
-*/
 
 #define _SdifFileMess(sdiff, error, mess) 
 

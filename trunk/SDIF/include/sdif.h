@@ -1,4 +1,4 @@
-/* $Id: sdif.h,v 1.48 2005-05-20 21:13:54 roebel Exp $
+/* $Id: sdif.h,v 1.49 2005-05-23 17:52:52 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -30,6 +30,10 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.48  2005/05/20 21:13:54  roebel
+ * corrected detection seekablility of sdif file.
+ * files are not seekable only if 	they are pipes!
+ *
  * Revision 1.47  2005/05/13 15:35:01  schwarz
  * make it possible that global errors from SdifError be passed through
  * the SdifErrMsg functions as file errors
@@ -237,7 +241,7 @@
  * Revision 1.1.2.1  2000/08/21  13:07:41  tisseran
  * *** empty log message ***
  *
- * $Date: 2005-05-20 21:13:54 $
+ * $Date: 2005-05-23 17:52:52 $
  *
  */
 
@@ -252,7 +256,7 @@ extern "C" {
 #endif
 
 
-static const char _sdif_h_cvs_revision_ [] = "$Id: sdif.h,v 1.48 2005-05-20 21:13:54 roebel Exp $";
+static const char _sdif_h_cvs_revision_ [] = "$Id: sdif.h,v 1.49 2005-05-23 17:52:52 schwarz Exp $";
 
 
 #include <stdio.h>
@@ -877,27 +881,43 @@ typedef struct
 /* SdifErrMess.h */
 typedef enum SdifErrorTagE
 {
-	eUnknow,
-	eUnknown=eUnknow,
-	eNoError,
-	eTypeDataNotSupported,
-	eNameLength,
-	eReDefined,
-	eUnDefined,
-	eSyntax,
-	eBadTypesFile,
-	eBadType,
-	eBadHeader,
-	eRecursiveDetect,
-	eUnInterpreted,
-	eOnlyOneChunkOf,
-	eUserDefInFileYet,
-	eBadMode,
-	eBadStdFile,
-	eReadWriteOnSameFile,
+    eFalse   = 0,
+    eUnknown = 0,
+    eTrue    = 1,
+    eNoError = 1,
+    eTypeDataNotSupported,
+    eNameLength,
+    eReDefined,
+    eUnDefined,
+    eSyntax,
+    eBadTypesFile,
+    eBadType,
+    eBadHeader,
+    eRecursiveDetect,
+    eUnInterpreted,
+    eOnlyOneChunkOf,
+    eUserDefInFileYet,
+    eBadMode,
+    eBadStdFile,
+    eReadWriteOnSameFile,
     eBadFormatVersion,
     eMtrxUsedYet,
-    eMtrxNotInFrame
+    eMtrxNotInFrame,
+/* from here on global errors that don't always have an SdifFileT attached */
+    eGlobalError,
+    eFreeNull = eGlobalError,
+    eAllocFail,
+    eArrayPosition,
+    eEof,
+    eFileNotFound,
+    eInvalidPreType,
+    eAffectationOrder,
+    eNoModifErr,
+    eNotInDataTypeUnion,
+    eNotFound,
+    eExistYet,
+    eWordCut,
+    eTokenLength
 } SdifErrorTagET;
 
 
@@ -919,7 +939,7 @@ struct SdifErrorS
 {
 	SdifErrorTagET		Tag;
 	SdifErrorLevelET	Level;
-	char*				UserMess;
+	char*			UserMess;
 };
 
 typedef struct SdifErrorLS SdifErrorLT;
@@ -930,27 +950,6 @@ struct SdifErrorLS
 };
 
 
-/* SdifError.h */
-typedef enum SdifErrorE
-{
-  eFalse = 0,
-  eTrue = 1,
-  eGlobalError = 256,
-  eFreeNull = eGlobalError,
-  eAllocFail,
-  eArrayPosition,
-  eEof,
-  eFileNotFound,
-  eInvalidPreType,
-  eAffectationOrder,
-  eNoModifErr,
-  eNotInDataTypeUnion,
-  eNotFound,
-  eExistYet,
-  eWordCut,
-  eTokenLength
-} SdifErrorEnum;
-
 
 /*DOC:
   Exit function type (See SdifSetExitFunc). */
@@ -958,7 +957,7 @@ typedef void (*SdifExitFuncT) (void);
 
 /*DOC:
  Exception function type (See SdifSetErrorFunc and SdifSetWarningFunc). */
-typedef void (*SdifExceptionFuncT) (int error_tag, 
+typedef void (*SdifExceptionFuncT) (SdifErrorTagET   error_tag, 
 				    SdifErrorLevelET error_level, 
 				    char *error_message, 
 				    SdifFileT *error_file, 
@@ -1152,9 +1151,6 @@ size_t SdifToText (SdifFileT *SdifF, char *TextStreamName);
  */
 
 
-/* Table of error format for the fprintf */
-extern const SdifErrorT gSdifErrMessFormat[];
-
 /*DOC:
   Switch output of error messages on stderr by _SdifFError on. 
 */
@@ -1168,7 +1164,6 @@ void	SdifDisableErrorOutput (void);
 
 /* global variables to control error output */
 extern int		gSdifErrorOutputEnabled;
-extern SdifErrorEnum	gSdifLastError;
 extern char	       *SdifErrorFile;
 extern int		SdifErrorLine;
 extern FILE	       *SdifStdErr;
@@ -1200,7 +1195,7 @@ size_t SdifFReadAllASCIIChunks   (SdifFileT *SdifF);
   de matrice.</strong> Ainsi, on est normalement près pour lire chaque
   ligne de la matrice courrante.  
 
-  @return	number of bytes read or -1 if error 
+  @return	number of bytes read or 0 if error 
 */
 size_t SdifFReadMatrixHeader     (SdifFileT *SdifF);
 
@@ -2018,10 +2013,20 @@ size_t SdifReadFile (const char             *filename,
   for which the library will allocate enough space for the data of one
   matrix, accessible by SdifFCurrMatrixData().  
   
-  @return	number of bytes read or -1 if error
+  @return	number of bytes read or 0 if error
+		N.B. first of all that an error is signalled to the error callback
+		set with SdifSetErrorFunc, and the library tries to exit via the 
+		function set with SdifSetExitFunc.  So, if you have to check the
+		return value, note that for matrices with 0 rows or 0 columns,
+		a return value of 0 is correct.  
+		You should thus check for this with:
+
+  if (nread == 0  &&  (SdifFCurrNbRow(file) != 0  ||  SdifFCurrNbCol(file) != 0))
+      --> read problem
 
   [Precondition:] 
-  Matrix header must have been read with SdifFReadMatrixHeader.  */
+  Matrix header must have been read with SdifFReadMatrixHeader.  
+*/
 size_t SdifFReadMatrixData   (SdifFileT *file);
 
 
@@ -2389,17 +2394,13 @@ SdifHashTableT *SdifFGetFrameTypesTable(SdifFileT *file);
  * Memory allocation wrappers
  */
 
-#define SdifMalloc(_type) \
-(SdifErrorFile = __FILE__, SdifErrorLine = __LINE__, (_type*) malloc(sizeof(_type)))
+#define SdifMalloc(_type) (_type*) malloc(sizeof(_type))
 
-#define SdifCalloc(_type, _nbobj) \
-(SdifErrorFile = __FILE__, SdifErrorLine = __LINE__, (_type*) calloc(_nbobj, sizeof(_type)))
+#define SdifCalloc(_type, _nbobj) (_type*) calloc(_nbobj, sizeof(_type))
 
-#define SdifRealloc(_ptr, _type, _nbobj) \
-(SdifErrorFile = __FILE__, SdifErrorLine = __LINE__, (_type*) realloc(_ptr, sizeof(_type) * _nbobj))
+#define SdifRealloc(_ptr, _type, _nbobj) (_type*) realloc(_ptr, sizeof(_type) * _nbobj)
 
-#define SdifFree(_ptr) \
-(SdifErrorFile = __FILE__, SdifErrorLine = __LINE__, free(_ptr))
+#define SdifFree(_ptr) free(_ptr)
 
 
 
@@ -2594,7 +2595,7 @@ size_t SdiffReadInt4   (SdifInt4   *ptr, size_t nobj, FILE *stream);
 size_t SdiffReadUInt4  (SdifUInt4  *ptr, size_t nobj, FILE *stream);
 size_t SdiffReadFloat4 (SdifFloat4 *ptr, size_t nobj, FILE *stream);
 size_t SdiffReadFloat8 (SdifFloat8 *ptr, size_t nobj, FILE *stream);
-int    SdiffReadSignature (SdifSignature *Signature,  FILE *stream, size_t *n);
+SdifErrorTagET SdiffReadSignature (SdifSignature *Signature,  FILE *stream, size_t *n);
 
 
 

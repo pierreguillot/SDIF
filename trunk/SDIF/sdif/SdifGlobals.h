@@ -1,4 +1,4 @@
-/* $Id: SdifGlobals.h,v 3.16 2005-04-07 15:56:47 schwarz Exp $
+/* $Id: SdifGlobals.h,v 3.17 2005-05-23 17:52:53 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -31,6 +31,10 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.16  2005/04/07 15:56:47  schwarz
+ * removed some now empty local include files,
+ * added include of <sdif.h> and "SdifGlobals.h"
+ *
  * Revision 3.15  2005/04/07 15:20:23  schwarz
  * removed duplicated declarations that belong to the external API in sdif.h
  *
@@ -146,7 +150,7 @@
 
 #include <sdif.h>
 #include "sdif_portability.h"
-#include "SdifError.h"
+#include "SdifErrMess.h"
 
 #ifdef HAVE_PTHREAD
 #include <pthread.h>

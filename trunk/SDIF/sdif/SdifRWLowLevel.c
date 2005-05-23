@@ -1,4 +1,4 @@
-/* $Id: SdifRWLowLevel.c,v 3.31 2005-05-13 16:01:55 schwarz Exp $
+/* $Id: SdifRWLowLevel.c,v 3.32 2005-05-23 17:52:53 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -33,6 +33,9 @@
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 3.31  2005/05/13 16:01:55  schwarz
+ * more doc
+ *
  * Revision 3.30  2005/04/07 15:56:48  schwarz
  * removed some now empty local include files,
  * added include of <sdif.h> and "SdifGlobals.h"
@@ -192,8 +195,8 @@
 #include <assert.h>
 
 #include <sdif.h>
+#include "SdifGlobals.h"
 #include "SdifHard_OS.h"
-#include "SdifError.h"
 
 
 extern int gSdifInitialised;		/* can't include SdifFile.h */
@@ -475,7 +478,7 @@ SdiffReadFloat8(SdifFloat8 *ptr, size_t nobj, FILE *stream)
 }
 
 
-int SdiffReadSignature (SdifSignature *Signature, FILE *stream, size_t *nread)
+SdifErrorTagET SdiffReadSignature (SdifSignature *Signature, FILE *stream, size_t *nread)
 {
   size_t localread =  fread(Signature, sizeof(Signature), 1, stream);
   
@@ -491,8 +494,8 @@ int SdiffReadSignature (SdifSignature *Signature, FILE *stream, size_t *nread)
       
       *nread += localread * sizeof(Signature);
       
-      /* return last char, as SdiffGetSignature did */
-      return *((char *) Signature + sizeof(Signature) - 1);
+      /* return success */
+      return eNoError;
     }
   else
     { 
