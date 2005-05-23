@@ -1,3 +1,10 @@
+Version 3.10.0	2005-05-23  Diemo Schwarz, Axel Roebel
+
+	* Unified error handling code	
+	* Sdiffread*/Sdiffwrite* functions with SdifFileT instead of FILE *
+	  -> eof error reporting makes more sense
+	* SdifFScanNameValueLCurrNVT reimplemented for ascii only
+
 Version 3.9.3	2005-05-13  Diemo Schwarz
 
 	* SdifReadSimple: robustness to corrupt sdif files (\n -> \r\n)

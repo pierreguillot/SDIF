@@ -1,6 +1,7 @@
 2005-05-23  schwarz  <schwarz@mac-borghesi.ircam.fr>
-
-	* sdif/SdifRWLowLevel.h:
+Version 3.10.0
+	
+	* all sources and headers:
 	- Sdiffread*/Sdiffwrite* functions with SdifFileT instead of FILE *
 	  -> eof error reporting makes more sense
 	- more cleanup of sdif.h, above functions are private in SdifRWLowLevel.h
@@ -691,4 +692,4 @@ Version 3.3:
 	  Operating System.
 
 	
-$Id: ChangeLog,v 1.46 2005-05-23 19:17:52 schwarz Exp $
+$Id: ChangeLog,v 1.47 2005-05-23 19:21:31 schwarz Exp $
