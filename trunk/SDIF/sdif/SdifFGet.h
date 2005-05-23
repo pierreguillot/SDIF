@@ -1,4 +1,4 @@
-/* $Id: SdifFGet.h,v 3.11 2005-04-07 15:56:46 schwarz Exp $
+/* $Id: SdifFGet.h,v 3.12 2005-05-23 19:17:53 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -44,6 +44,10 @@ DESCRIPTION
 
 LOG
  * $Log: not supported by cvs2svn $
+ * Revision 3.11  2005/04/07 15:56:46  schwarz
+ * removed some now empty local include files,
+ * added include of <sdif.h> and "SdifGlobals.h"
+ *
  * Revision 3.10  2003/08/06 15:11:45  schwarz
  * Finally removed obsolete functions (like SdifSkip...).
  *
@@ -136,7 +140,7 @@ LOG
 
 
 int    SdifFGetOneNameValue     (SdifFileT *SdifF, int Verbose, size_t *NbCharRead);
-size_t SdifFGetNameValueLCurrNVT(SdifFileT *SdifF, int Verbose);
+size_t SdifFGetNameValueLCurrNVT(SdifFileT *SdifF);
 int    SdifFNameValueLCurrNVTfromString (SdifFileT *SdifF, char *str);
 
 /*DOC:

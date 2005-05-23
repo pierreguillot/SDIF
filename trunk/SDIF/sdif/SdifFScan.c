@@ -1,4 +1,4 @@
-/* $Id: SdifFScan.c,v 3.17 2005-04-07 15:56:47 schwarz Exp $
+/* $Id: SdifFScan.c,v 3.18 2005-05-23 19:17:53 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -31,6 +31,10 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.17  2005/04/07 15:56:47  schwarz
+ * removed some now empty local include files,
+ * added include of <sdif.h> and "SdifGlobals.h"
+ *
  * Revision 3.16  2004/07/22 14:47:56  bogaards
  * removed many global variables, moved some into the thread-safe SdifGlobals structure, added HAVE_PTHREAD define, reorganized the code for selection, made some arguments const, new version 3.8.6
  *
@@ -108,6 +112,7 @@
 
 #include "sdif.h"
 
+#include "SdifRWLowLevel.h"
 #include "SdifFScan.h"
 #include "SdifTest.h"
 #include "SdifFile.h"
@@ -150,7 +155,22 @@ SdifFScanGeneralHeader(SdifFileT *SdifF)
 size_t
 SdifFScanNameValueLCurrNVT(SdifFileT *SdifF)
 {
-    return SdifFGetNameValueLCurrNVT(SdifF, 't');
+    size_t    SizeR = 0;
+    int CharEnd;
+    char sdifString[_SdifStringLen];
+	
+    /* ascii: intermediate format, read pure data in frame */
+    CharEnd = SdiffGetStringUntil (SdifF->TextStream, sdifString, _SdifStringLen, 
+				   &SizeR, _SdifReservedChars);
+    if (SdifTestCharEnd (SdifF, CharEnd, '{', sdifString, 
+			 SdifStrLen (sdifString) != 0,
+			 "Begin of NameValue Table declarations") != eFalse)
+    {
+	while (SdifFGetOneNameValue(SdifF, 't', &SizeR) != (int) '}')
+	    /*loop*/;
+    }
+  
+    return SizeR;
 }
 
 

@@ -1,4 +1,4 @@
-/* $Id: SdifRWLowLevel.c,v 3.32 2005-05-23 17:52:53 schwarz Exp $
+/* $Id: SdifRWLowLevel.c,v 3.33 2005-05-23 19:17:53 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -33,6 +33,11 @@
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 3.32  2005/05/23 17:52:53  schwarz
+ * Unified error handling:
+ * - SdifErrorEnum (global errors) integrated into SdifErrorTagET (file errors)
+ * - no more SdifError.[ch], everything done by SdifErrMess.[ch]
+ *
  * Revision 3.31  2005/05/13 16:01:55  schwarz
  * more doc
  *
@@ -197,6 +202,7 @@
 #include <sdif.h>
 #include "SdifGlobals.h"
 #include "SdifHard_OS.h"
+#include "SdifRWLowLevel.h"
 
 
 extern int gSdifInitialised;		/* can't include SdifFile.h */
@@ -206,17 +212,17 @@ extern int gSdifInitialised;		/* can't include SdifFile.h */
 
 
 /* fread encapsulation with error check */
-size_t Sdiffread(void *ptr, size_t size, size_t nobj, FILE *stream)
+size_t Sdiffread(void *ptr, size_t size, size_t nobj, SdifFileT *file)
 {
   size_t nobjread;
-	char errorMess[_SdifStringLen];
+  char errorMess[_SdifStringLen];
 
-  nobjread = fread(ptr, size, nobj, stream);
+  nobjread = fread(ptr, size, nobj, file->Stream);
   if (nobjread != nobj)
-    {
-      sprintf(errorMess, "Sdiffread %ld", ftell(stream));
-      _SdifError(eEof, errorMess);
-    }
+  {
+      sprintf(errorMess, "Sdiffread %ld", ftell(file->Stream));
+      _SdifFError(file, eEof, errorMess);
+  }
   
   return nobjread;
 }
@@ -224,16 +230,16 @@ size_t Sdiffread(void *ptr, size_t size, size_t nobj, FILE *stream)
 
 /* fwrite encapsule */
 size_t
-Sdiffwrite(void *ptr, size_t size, size_t nobj, FILE *stream)
+Sdiffwrite(void *ptr, size_t size, size_t nobj, SdifFileT *file)
 {
   size_t nobjwrite;
 	char errorMess[_SdifStringLen];
 
-  nobjwrite = fwrite(ptr, size, nobj, stream);
+  nobjwrite = fwrite(ptr, size, nobj, file->Stream);
   if (nobjwrite != nobj)
     {
-      sprintf(errorMess, "Sdiffwrite %ld", ftell(stream));
-      _SdifError(eEof, errorMess);
+      sprintf(errorMess, "Sdiffwrite %ld", ftell(file->Stream));
+      _SdifFError(file, eEof, errorMess);
     }
 
   return nobjwrite;
@@ -250,33 +256,33 @@ Sdiffwrite(void *ptr, size_t size, size_t nobj, FILE *stream)
 
 /** fread **/
 
-size_t SdiffreadLittleEndian2 (void *ptr, size_t nobj, FILE *stream)
+size_t SdiffreadLittleEndian2 (void *ptr, size_t nobj, SdifFileT *file)
 {
     size_t nobjread;
     
-    nobjread = Sdiffread(ptr, 2, nobj, stream);
+    nobjread = Sdiffread(ptr, 2, nobj, file);
     SdifSwap2(ptr, nobjread);
 
     return nobjread;
 }
 
 
-size_t SdiffreadLittleEndian4 (void *ptr, size_t nobj, FILE *stream)
+size_t SdiffreadLittleEndian4 (void *ptr, size_t nobj, SdifFileT *file)
 {
     size_t nobjread;
     
-    nobjread = Sdiffread(ptr, 4, nobj, stream);
+    nobjread = Sdiffread(ptr, 4, nobj, file);
     SdifSwap4(ptr, nobjread);
 
     return nobjread;
 }
 
 
-size_t SdiffreadLittleEndian8 (void *ptr, size_t nobj, FILE *stream)
+size_t SdiffreadLittleEndian8 (void *ptr, size_t nobj, SdifFileT *file)
 {
     size_t nobjread;
     
-    nobjread = Sdiffread(ptr, 8, nobj, stream);
+    nobjread = Sdiffread(ptr, 8, nobj, file);
     SdifSwap8(ptr, nobjread);
 
     return nobjread;
@@ -287,7 +293,7 @@ size_t SdiffreadLittleEndian8 (void *ptr, size_t nobj, FILE *stream)
    buffer sdifLittleToBig and write from there in order to leave the
    caller's data intact */
 
-size_t SdiffwriteLittleEndian2 (void *ptr, size_t nobj, FILE *stream)
+size_t SdiffwriteLittleEndian2 (void *ptr, size_t nobj, SdifFileT *file)
 {
 #   define nblock     (_SdifBSLittleE / 2)
     size_t nwritten = 0;
@@ -298,7 +304,7 @@ size_t SdiffwriteLittleEndian2 (void *ptr, size_t nobj, FILE *stream)
 	size_t ntowrite = nobj > nblock  ?  nblock  :  nobj;
 
 	SdifSwap2Copy(ptr, sdifLittleToBig, ntowrite);
-	nwritten += Sdiffwrite(sdifLittleToBig, 2, ntowrite, stream);
+	nwritten += Sdiffwrite(sdifLittleToBig, 2, ntowrite, file);
 	nobj     -= ntowrite; 
 	ptr       = (void *)(((char *) ptr) + _SdifBSLittleE);
     }
@@ -308,7 +314,7 @@ size_t SdiffwriteLittleEndian2 (void *ptr, size_t nobj, FILE *stream)
 }
 
 
-size_t SdiffwriteLittleEndian4 (void *ptr, size_t nobj, FILE *stream)
+size_t SdiffwriteLittleEndian4 (void *ptr, size_t nobj, SdifFileT *file)
 {
 #   define nblock     (_SdifBSLittleE / 4)
     size_t nwritten = 0;
@@ -319,7 +325,7 @@ size_t SdiffwriteLittleEndian4 (void *ptr, size_t nobj, FILE *stream)
 	size_t ntowrite = nobj > nblock  ?  nblock  :  nobj;
 
 	SdifSwap4Copy(ptr, sdifLittleToBig, ntowrite);
-	nwritten += Sdiffwrite(sdifLittleToBig, 4, ntowrite, stream);
+	nwritten += Sdiffwrite(sdifLittleToBig, 4, ntowrite, file);
 	nobj     -= ntowrite; 
 	ptr       = (void *)(((char *) ptr) + _SdifBSLittleE);
     }
@@ -329,7 +335,7 @@ size_t SdiffwriteLittleEndian4 (void *ptr, size_t nobj, FILE *stream)
 }
 
 
-size_t SdiffwriteLittleEndian8 (void *ptr, size_t nobj, FILE *stream)
+size_t SdiffwriteLittleEndian8 (void *ptr, size_t nobj, SdifFileT *file)
 {
 #   define nblock     (_SdifBSLittleE / 8)
     size_t nwritten = 0;
@@ -340,7 +346,7 @@ size_t SdiffwriteLittleEndian8 (void *ptr, size_t nobj, FILE *stream)
 	size_t ntowrite = nobj > nblock  ?  nblock  :  nobj;
 
 	SdifSwap8Copy(ptr, sdifLittleToBig, ntowrite);
-	nwritten += Sdiffwrite(sdifLittleToBig, 8, ntowrite, stream);
+	nwritten += Sdiffwrite(sdifLittleToBig, 8, ntowrite, file);
 	nobj     -= ntowrite; 
 	ptr       = (void *)(((char *) ptr) + _SdifBSLittleE);
     }
@@ -357,84 +363,84 @@ size_t SdiffwriteLittleEndian8 (void *ptr, size_t nobj, FILE *stream)
 /* Read */
 
 size_t
-SdiffReadChar (SdifChar *ptr, size_t nobj, FILE *stream)
+SdiffReadChar (SdifChar *ptr, size_t nobj, SdifFileT *file)
 {
-    return Sdiffread(ptr, sizeof(SdifChar),  nobj, stream);
+    return Sdiffread(ptr, sizeof(SdifChar),  nobj, file);
 }
 
 size_t
-SdiffReadInt1 (SdifInt1 *ptr, size_t nobj, FILE *stream)
+SdiffReadInt1 (SdifInt1 *ptr, size_t nobj, SdifFileT *file)
 {
-  return Sdiffread(ptr, sizeof(SdifInt1),  nobj, stream);
+  return Sdiffread(ptr, sizeof(SdifInt1),  nobj, file);
 }
 
 
 size_t
-SdiffReadInt2 (SdifInt2 *ptr, size_t nobj, FILE *stream)
+SdiffReadInt2 (SdifInt2 *ptr, size_t nobj, SdifFileT *file)
 {
   switch (gSdifMachineType)
     {
     case eLittleEndian   :
     case eLittleEndian64 :
-      return SdiffreadLittleEndian2(ptr, nobj, stream);
+      return SdiffreadLittleEndian2(ptr, nobj, file);
     default :
-      return Sdiffread(ptr, sizeof(SdifInt2),  nobj, stream);
+      return Sdiffread(ptr, sizeof(SdifInt2),  nobj, file);
     }  
 }
 
 
 size_t
-SdiffReadUInt1 (SdifUInt1 *ptr, size_t nobj, FILE *stream)
+SdiffReadUInt1 (SdifUInt1 *ptr, size_t nobj, SdifFileT *file)
 {
-  return Sdiffread(ptr, sizeof(SdifUInt1),  nobj, stream);
+  return Sdiffread(ptr, sizeof(SdifUInt1),  nobj, file);
 }
 
 
 size_t
-SdiffReadUInt2(SdifUInt2 *ptr, size_t nobj, FILE *stream)
+SdiffReadUInt2(SdifUInt2 *ptr, size_t nobj, SdifFileT *file)
 {
   switch (gSdifMachineType)
     {
     case eLittleEndian   :
     case eLittleEndian64 :
-      return SdiffreadLittleEndian2(ptr, nobj, stream);
+      return SdiffreadLittleEndian2(ptr, nobj, file);
     default :
-      return Sdiffread(ptr, sizeof(SdifUInt2),  nobj, stream);
+      return Sdiffread(ptr, sizeof(SdifUInt2),  nobj, file);
     }  
 }
 
 
 size_t
-SdiffReadInt4(SdifInt4 *ptr, size_t nobj, FILE *stream)
+SdiffReadInt4(SdifInt4 *ptr, size_t nobj, SdifFileT *file)
 {
   switch (gSdifMachineType)
     {
     case eLittleEndian   :
     case eLittleEndian64 :
-      return SdiffreadLittleEndian4(ptr, nobj, stream);
+      return SdiffreadLittleEndian4(ptr, nobj, file);
     default :
-      return Sdiffread(ptr, sizeof(SdifInt4),  nobj, stream);
+      return Sdiffread(ptr, sizeof(SdifInt4),  nobj, file);
     }  
 }
 
 
 size_t
-SdiffReadUInt4(SdifUInt4 *ptr, size_t nobj, FILE *stream)
+SdiffReadUInt4(SdifUInt4 *ptr, size_t nobj, SdifFileT *file)
 {
   switch (gSdifMachineType)
     {
     case eLittleEndian   :
     case eLittleEndian64 :
-      return SdiffreadLittleEndian4(ptr, nobj, stream);
+      return SdiffreadLittleEndian4(ptr, nobj, file);
     default :
-      return Sdiffread(ptr, sizeof(SdifUInt4),  nobj, stream);
+      return Sdiffread(ptr, sizeof(SdifUInt4),  nobj, file);
     }  
 }
 
 
 /*
  *size_t
- *SdiffReadUInt8(SdifUInt8 *ptr, size_t nobj, FILE *stream)
+ *SdiffReadUInt8(SdifUInt8 *ptr, size_t nobj, SdifFileT *file)
  *{
  * switch (gSdifMachineType)
  *   {
@@ -442,47 +448,47 @@ SdiffReadUInt4(SdifUInt4 *ptr, size_t nobj, FILE *stream)
  *   case eLittleEndian64 :
  *   case eLittleEndianLittleConst :
  *   case eLittleEndianLittleConst64 :
- *     return SdiffreadLittleEndian8(ptr, nobj, stream);
+ *     return SdiffreadLittleEndian8(ptr, nobj, file);
  *   default :
- *     return Sdiffread(ptr, sizeof(SdifUInt8),  nobj, stream);
+ *     return Sdiffread(ptr, sizeof(SdifUInt8),  nobj, file);
  *   }  
  *}
  */
 
 
 size_t
-SdiffReadFloat4(SdifFloat4 *ptr, size_t nobj, FILE *stream)
+SdiffReadFloat4(SdifFloat4 *ptr, size_t nobj, SdifFileT *file)
 {
   switch (gSdifMachineType)
     {
     case eLittleEndian   :
     case eLittleEndian64 :
-      return SdiffreadLittleEndian4(ptr, nobj, stream);
+      return SdiffreadLittleEndian4(ptr, nobj, file);
     default :
-      return Sdiffread(ptr, sizeof(SdifFloat4),  nobj, stream);
+      return Sdiffread(ptr, sizeof(SdifFloat4),  nobj, file);
     }  
 }
 
 
 size_t
-SdiffReadFloat8(SdifFloat8 *ptr, size_t nobj, FILE *stream)
+SdiffReadFloat8(SdifFloat8 *ptr, size_t nobj, SdifFileT *file)
 {
   switch (gSdifMachineType)
     {
     case eLittleEndian   :
     case eLittleEndian64 :
-      return SdiffreadLittleEndian8(ptr, nobj, stream);
+      return SdiffreadLittleEndian8(ptr, nobj, file);
     default :
-      return Sdiffread(ptr, sizeof(SdifFloat8),  nobj, stream);
+      return Sdiffread(ptr, sizeof(SdifFloat8),  nobj, file);
     }  
 }
 
 
-SdifErrorTagET SdiffReadSignature (SdifSignature *Signature, FILE *stream, size_t *nread)
+SdifErrorTagET SdiffReadSignature (SdifSignature *Signature, SdifFileT *file, size_t *nread)
 {
-  size_t localread =  fread(Signature, sizeof(Signature), 1, stream);
+  size_t localread =  fread(Signature, sizeof(Signature), 1, file->Stream);
   
-  if (localread  &&  !feof(stream))
+  if (localread  &&  !feof(file->Stream))
     {
       switch (gSdifMachineType)
     	{
@@ -509,132 +515,132 @@ SdifErrorTagET SdiffReadSignature (SdifSignature *Signature, FILE *stream, size_
 /* Write */
 
 size_t
-SdiffWriteChar (SdifChar *ptr, size_t nobj, FILE *stream)
+SdiffWriteChar (SdifChar *ptr, size_t nobj, SdifFileT *file)
 {
-    return Sdiffwrite(ptr, sizeof(SdifChar),  nobj, stream);
+    return Sdiffwrite(ptr, sizeof(SdifChar),  nobj, file);
 }
 
 size_t
-SdiffWriteInt1 (SdifInt1 *ptr, size_t nobj, FILE *stream)
+SdiffWriteInt1 (SdifInt1 *ptr, size_t nobj, SdifFileT *file)
 {
-    return Sdiffwrite(ptr, sizeof(SdifInt1),  nobj, stream);
+    return Sdiffwrite(ptr, sizeof(SdifInt1),  nobj, file);
 }
 
 size_t
-SdiffWriteInt2 (SdifInt2 *ptr, size_t nobj, FILE *stream)
+SdiffWriteInt2 (SdifInt2 *ptr, size_t nobj, SdifFileT *file)
 {
   switch (gSdifMachineType)
     {
       
     case eLittleEndian   :
     case eLittleEndian64 :
-      return SdiffwriteLittleEndian2(ptr, nobj, stream);
+      return SdiffwriteLittleEndian2(ptr, nobj, file);
       
     default :
-      return Sdiffwrite(ptr, sizeof(SdifInt2),  nobj, stream);
+      return Sdiffwrite(ptr, sizeof(SdifInt2),  nobj, file);
     }  
 }
 
 size_t
-SdiffWriteUInt1 (SdifUInt1 *ptr, size_t nobj, FILE *stream)
+SdiffWriteUInt1 (SdifUInt1 *ptr, size_t nobj, SdifFileT *file)
 {
-    return Sdiffwrite(ptr, sizeof(SdifUInt1),  nobj, stream);
+    return Sdiffwrite(ptr, sizeof(SdifUInt1),  nobj, file);
 }
 
 size_t
-SdiffWriteUInt2(SdifUInt2 *ptr, size_t nobj, FILE *stream)
+SdiffWriteUInt2(SdifUInt2 *ptr, size_t nobj, SdifFileT *file)
 {
   switch (gSdifMachineType)
     {
       
     case eLittleEndian   :
     case eLittleEndian64 :
-      return SdiffwriteLittleEndian2(ptr, nobj, stream);
+      return SdiffwriteLittleEndian2(ptr, nobj, file);
     default :
-      return Sdiffwrite(ptr, sizeof(SdifUInt2),  nobj, stream);
+      return Sdiffwrite(ptr, sizeof(SdifUInt2),  nobj, file);
     }
     
 }
 
 
 size_t
-SdiffWriteInt4(SdifInt4 *ptr, size_t nobj, FILE *stream)
+SdiffWriteInt4(SdifInt4 *ptr, size_t nobj, SdifFileT *file)
 {
   switch (gSdifMachineType)
     {
       
     case eLittleEndian   :
     case eLittleEndian64 :
-      return SdiffwriteLittleEndian4(ptr, nobj, stream);
+      return SdiffwriteLittleEndian4(ptr, nobj, file);
     default :
-      return Sdiffwrite(ptr, sizeof(SdifInt4),  nobj, stream);
+      return Sdiffwrite(ptr, sizeof(SdifInt4),  nobj, file);
     }  
 }
 
 
 size_t
-SdiffWriteUInt4(SdifUInt4 *ptr, size_t nobj, FILE *stream)
+SdiffWriteUInt4(SdifUInt4 *ptr, size_t nobj, SdifFileT *file)
 {
   switch (gSdifMachineType)
     {
       
     case eLittleEndian   :
     case eLittleEndian64 :
-      return SdiffwriteLittleEndian4(ptr, nobj, stream);
+      return SdiffwriteLittleEndian4(ptr, nobj, file);
     default :
-      return Sdiffwrite(ptr, sizeof(SdifUInt4),  nobj, stream);
+      return Sdiffwrite(ptr, sizeof(SdifUInt4),  nobj, file);
     }  
 }
 
 
 /*
  *size_t
- *SdiffWriteUInt8(SdifUInt8 *ptr, size_t nobj, FILE *stream)
+ *SdiffWriteUInt8(SdifUInt8 *ptr, size_t nobj, SdifFileT *file)
  *{
  * switch (gSdifMachineType)
  *   {
  *     
  *   case eLittleEndian   :
  *   case eLittleEndian64 :
- *     return SdiffwriteLittleEndian8(ptr, nobj, stream);
+ *     return SdiffwriteLittleEndian8(ptr, nobj, file);
  *   default :
- *     return Sdiffwrite(ptr, sizeof(SdifUInt8),  nobj, stream);
+ *     return Sdiffwrite(ptr, sizeof(SdifUInt8),  nobj, file);
  *   }  
  *}
  */
 
 
 size_t
-SdiffWriteFloat4(SdifFloat4 *ptr, size_t nobj, FILE *stream)
+SdiffWriteFloat4(SdifFloat4 *ptr, size_t nobj, SdifFileT *file)
 {
   switch (gSdifMachineType)
     {
       
     case eLittleEndian   :
     case eLittleEndian64 :
-      return SdiffwriteLittleEndian4(ptr, nobj, stream);
+      return SdiffwriteLittleEndian4(ptr, nobj, file);
     default :
-      return Sdiffwrite(ptr, sizeof(SdifFloat4),  nobj, stream);
+      return Sdiffwrite(ptr, sizeof(SdifFloat4),  nobj, file);
     }  
 }
 
 
 size_t
-SdiffWriteFloat8(SdifFloat8 *ptr, size_t nobj, FILE *stream)
+SdiffWriteFloat8(SdifFloat8 *ptr, size_t nobj, SdifFileT *file)
 {
   switch (gSdifMachineType)
     {
       
     case eLittleEndian   :
     case eLittleEndian64 :
-      return SdiffwriteLittleEndian8(ptr, nobj, stream);
+      return SdiffwriteLittleEndian8(ptr, nobj, file);
     default :
-      return Sdiffwrite(ptr, sizeof(SdifFloat8),  nobj, stream);
+      return Sdiffwrite(ptr, sizeof(SdifFloat8),  nobj, file);
     }  
 }
 
 
-size_t SdiffWriteSignature(SdifSignature *Signature, FILE *stream)
+size_t SdiffWriteSignature(SdifSignature *Signature, SdifFileT *file)
 {
     SdifSignature SignW;
 
@@ -650,14 +656,14 @@ size_t SdiffWriteSignature(SdifSignature *Signature, FILE *stream)
       break;
     }
 
-    return Sdiffwrite(&SignW, sizeof(SdifSignature), 1, stream);
+    return Sdiffwrite(&SignW, sizeof(SdifSignature), 1, file);
 }
 
 
 size_t
-SdiffWriteString(char* ptr, FILE *stream)
+SdiffWriteString(char* ptr, SdifFileT *file)
 {
-  return Sdiffwrite(ptr, sizeof(char), SdifStrLen(ptr), stream);
+  return Sdiffwrite(ptr, sizeof(char), SdifStrLen(ptr), file);
 }
 
 
@@ -912,7 +918,7 @@ size_t
 SdiffReadSpace(FILE* fr)
 {
   size_t NbCharRead = 0;
- 	char errorMess[_SdifStringLen];
+  char errorMess[_SdifStringLen];
   char c;
 
   while ( isspace(c= (char) fgetc(fr)) )

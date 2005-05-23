@@ -1,4 +1,4 @@
-/* $Id: SdifFRead.c,v 3.27 2005-05-23 17:52:53 schwarz Exp $
+/* $Id: SdifFRead.c,v 3.28 2005-05-23 19:17:53 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -31,6 +31,11 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.27  2005/05/23 17:52:53  schwarz
+ * Unified error handling:
+ * - SdifErrorEnum (global errors) integrated into SdifErrorTagET (file errors)
+ * - no more SdifError.[ch], everything done by SdifErrMess.[ch]
+ *
  * Revision 3.26  2005/05/20 21:13:24  roebel
  * back to returning 0 in case of file read error.
  * Skipping a matrix can never produce a read size of 0
@@ -182,7 +187,9 @@
 
 #include "sdif_portability.h"
 
+#include "sdif.h"
 #include "SdifGlobals.h"
+#include "SdifRWLowLevel.h"
 #include "SdifFRead.h"
 #include "SdifTest.h"
 #include "SdifFile.h"
@@ -205,7 +212,7 @@ SdifFReadChunkSize(SdifFileT *SdifF)
   size_t SizeR = 0;
   SdifInt4 ChunkSizeInt4 = 0;
 
-  SizeR += sizeof(SdifInt4) * SdiffReadInt4(&(ChunkSizeInt4), 1, SdifF->Stream);
+  SizeR += sizeof(SdifInt4) * SdiffReadInt4(&(ChunkSizeInt4), 1, SdifF);
   SdifF->ChunkSize = (size_t) ChunkSizeInt4;
   return SizeR;
 }
@@ -222,8 +229,8 @@ SdifFReadGeneralHeader(SdifFileT *SdifF)
 
   SdifFGetSignature(SdifF, &SizeR);
   SizeS = SizeR += SdifFReadChunkSize(SdifF);
-  SizeR += SdiffReadUInt4 (&(SdifF->FormatVersion), 1, SdifF->Stream) * sizeof(SdifUInt4);
-  SizeR += SdiffReadUInt4 (&(SdifF->TypesVersion),  1, SdifF->Stream) * sizeof(SdifUInt4);
+  SizeR += SdiffReadUInt4 (&(SdifF->FormatVersion), 1, SdifF) * sizeof(SdifUInt4);
+  SizeR += SdiffReadUInt4 (&(SdifF->TypesVersion),  1, SdifF) * sizeof(SdifUInt4);
   
   if (SdifF->CurrSignature != eSDIF)
   {
@@ -269,7 +276,7 @@ SdifFReadNameValueLCurrNVT(SdifFileT *SdifF)
 #else
   SizeR += SdifFReadChunkSize(SdifF);
 #endif
-  SizeR += SdifFGetNameValueLCurrNVT(SdifF, 's');
+  SizeR += SdifFGetNameValueLCurrNVT(SdifF);
   
   if (    (SizeR != SdifF->ChunkSize + sizeof(SdifInt4))
        && ((unsigned) SdifF->ChunkSize != (unsigned) _SdifUnknownSize))
@@ -445,12 +452,12 @@ SdifFReadMatrixHeader(SdifFileT *SdifF)
 
   SdifFCreateCurrMtrxH(SdifF); /* create only if it's necessary */
   
-  SdiffReadSignature(&SdifF->CurrMtrxH->Signature, SdifF->Stream, &SizeR);
+  SdiffReadSignature(&SdifF->CurrMtrxH->Signature, SdifF, &SizeR);
   if (SdifF->CurrMtrxH->Signature == eEmptySignature)
       return 0;	/* read error */
 
   /* read 3 unsigned ints: datatype, nrow, ncol, copy into right fields */
-  newread = SdiffReadUInt4(UIntTab, 3, SdifF->Stream);
+  newread = SdiffReadUInt4(UIntTab, 3, SdifF);
   SizeR += newread * sizeof(SdifUInt4);
 
   SdifF->CurrMtrxH->DataType  = (SdifDataTypeET) UIntTab[0];
@@ -481,7 +488,7 @@ SdifFReadOneRow(SdifFileT *SdifF)
     case e##type:  return (sizeof (Sdif##type) *			  \
 			   SdiffRead##type (SdifF->CurrOneRow->Data.type, \
 					    SdifF->CurrOneRow->NbData,    \
-					    SdifF->Stream));
+					    SdifF));
 
     switch (SdifF->CurrOneRow->DataType)
     {
@@ -495,7 +502,7 @@ SdifFReadOneRow(SdifFileT *SdifF)
 	    return (sizeof(SdifFloat4) * 
 		    SdiffReadFloat4(SdifF->CurrOneRow->Data.Float4,
 				    SdifF->CurrOneRow->NbData,
-				    SdifF->Stream));
+				    SdifF));
     }
 }
 
@@ -523,9 +530,9 @@ SdifFReadFrameHeader(SdifFileT *SdifF)
   /* Create only if it's necessary else update signature */
   SdifFCreateCurrFramH(SdifF, SdifF->CurrSignature);
 
-  SizeR += sizeof(SdifUInt4)  * SdiffReadUInt4 ( &(SdifF->CurrFramH->Size), 1, SdifF->Stream);
-  SizeR += sizeof(SdifFloat8) * SdiffReadFloat8( &(SdifF->CurrFramH->Time), 1, SdifF->Stream);
-  SizeR += sizeof(SdifUInt4)  * SdiffReadUInt4(  UInt4Tab, 2, SdifF->Stream);
+  SizeR += sizeof(SdifUInt4)  * SdiffReadUInt4 ( &(SdifF->CurrFramH->Size), 1, SdifF);
+  SizeR += sizeof(SdifFloat8) * SdiffReadFloat8( &(SdifF->CurrFramH->Time), 1, SdifF);
+  SizeR += sizeof(SdifUInt4)  * SdiffReadUInt4(  UInt4Tab, 2, SdifF);
 
   SdifF->CurrFramH->NumID    = UInt4Tab[0];
   SdifF->CurrFramH->NbMatrix = UInt4Tab[1];
@@ -546,7 +553,7 @@ SdifFReadPadding (SdifFileT *SdifF, size_t Padding)
 {
 	char sdifString[_SdifStringLen];
     assert (Padding <= _SdifStringLen);
-    return sizeof(char) * Sdiffread(sdifString, sizeof(char), Padding, SdifF->Stream);
+    return sizeof(char) * Sdiffread(sdifString, sizeof(char), Padding, SdifF);
 }
 
 
@@ -652,8 +659,7 @@ size_t SdifFSkipFrameData(SdifFileT *SdifF)
 {
     size_t    SizeR = 0, Boo, NbBytesToSkip;
     SdifUInt4 iMtrx;
-    SdiffPosT Pos;
-	char errorMess[_SdifStringLen];
+    char errorMess[_SdifStringLen];
     
     if (SdifF->CurrFramH->Size != _SdifUnknownSize)
     {
@@ -728,13 +734,10 @@ size_t SdifFReadTextMatrixData(SdifFileT *SdifF, SdifStringT *SdifString)
   char *str;
   size_t SizeR = 0;
   int success = 1;
-  FILE *file;
-
-  file = SdifF->Stream;
   
   nrow = SdifFCurrNbRow(SdifF);
   str = SdifCalloc(char, nrow * SdifFCurrNbCol(SdifF));
-  SizeR += SdiffReadChar(str, nrow, file);
+  SizeR += SdiffReadChar(str, nrow, SdifF);
 
   /* Append string in SdifString */
   success = SdifStringAppend(SdifString, str);
@@ -770,7 +773,7 @@ size_t SdifFReadMatrixData (SdifFileT *file)
 #   define readdatacase(type) \
     case e##type:  nread += (sizeof (Sdif##type) *			     \
 			     SdiffRead##type (file->CurrMtrxData->Data.type, \
-					      numelem, file->Stream));       \
+					      numelem, file));       \
     break;
 
     switch (mtxh->DataType)
@@ -785,7 +788,7 @@ size_t SdifFReadMatrixData (SdifFileT *file)
 
 	    nread += (sizeof(SdifFloat4) * 
 		    SdiffReadFloat4(file->CurrMtrxData->Data.Float4, 
-				    numelem, file->Stream));
+				    numelem, file));
 	break;
     }
 

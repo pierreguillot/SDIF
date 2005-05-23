@@ -1,4 +1,4 @@
-/* $Id: SdifFWrite.c,v 3.21 2005-04-07 15:57:42 schwarz Exp $
+/* $Id: SdifFWrite.c,v 3.22 2005-05-23 19:17:53 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -31,6 +31,10 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.21  2005/04/07 15:57:42  schwarz
+ * removed some now empty local include files,
+ * added include of <sdif.h> and "SdifGlobals.h"
+ *
  * Revision 3.20  2004/09/09 17:37:42  schwarz
  * moved SdifSizeOf* functions from SdifFWrite.c to SdifGlobals.c
  *
@@ -138,6 +142,7 @@
 
 #include "sdif_portability.h"
 
+#include "SdifRWLowLevel.h"
 #include "SdifFWrite.h"
 #include "SdifFile.h"
 #include "SdifTest.h"
@@ -168,7 +173,7 @@ SdifUpdateChunkSize(SdifFileT *SdifF, size_t ChunkSize)
 
     /*  ChunkSizeInt4 = (SdifF->Pos - SdifF->StartChunkPos) -sizeof(SdifSignature) -sizeof(SdifUInt4);
 	*/
-	  SdiffWriteInt4(&ChunkSizeInt4, 1, SdifF->Stream);
+	  SdiffWriteInt4(&ChunkSizeInt4, 1, SdifF);
 	  if (SdiffSetPos(SdifF->Stream, &(SdifF->Pos)) !=0)
 	    _SdifRemark("SdifUpdateChunkSize, SdifFSetPos erreur\n");
 	}
@@ -199,13 +204,13 @@ SdifUpdateFrameHeader (SdifFileT *SdifF, size_t ChunkSize, SdifInt4 NumMatrix)
 	    /* skip frame signature */
 	    WritePos = SdifF->StartChunkPos + sizeof(SdifSignature);
 	    SdiffSetPos (SdifF->Stream, &WritePos);
-	    SdiffWriteInt4 (&ChunkSizeInt4, 1, SdifF->Stream);
+	    SdiffWriteInt4 (&ChunkSizeInt4, 1, SdifF);
 
 	    /* skip frame signature, frame size, time, stream id */
 	    WritePos = SdifF->StartChunkPos  + sizeof(SdifSignature) 
 		     + 2 * sizeof (SdifInt4) + sizeof (SdifFloat8);
 	    SdiffSetPos (SdifF->Stream, &WritePos);
-	    SdiffWriteInt4 (&NumMatrix, 1, SdifF->Stream);
+	    SdiffWriteInt4 (&NumMatrix, 1, SdifF);
 
 	    if (SdiffSetPos (SdifF->Stream, &(SdifF->Pos)) !=0)
 		_SdifRemark ("SdifUpdateFrameHeader, SdifFSetPos error\n");
@@ -228,7 +233,7 @@ SdifFWritePadding(SdifFileT *SdifF, size_t Padding)
   if (Padding > 0)
     {
       memset(sdifString, _SdifPaddingChar, Padding);
-      SizeW += sizeof(char) * Sdiffwrite(sdifString, sizeof(char), Padding, SdifF->Stream);
+      SizeW += sizeof(char) * Sdiffwrite(sdifString, sizeof(char), Padding, SdifF);
     }
 
   return  SizeW;
@@ -247,8 +252,8 @@ size_t SdifFWriteChunkHeader (SdifFileT *SdifF, SdifSignature ChunkSignature, si
 
   ChunkSizeInt4 = (SdifInt4) ChunkSize;
 
-  SizeW += sizeof(SdifSignature) * SdiffWriteSignature (&ChunkSignature, SdifF->Stream);
-  SizeW += sizeof(SdifInt4)      * SdiffWriteInt4(&ChunkSizeInt4, 1, SdifF->Stream);
+  SizeW += sizeof(SdifSignature) * SdiffWriteSignature (&ChunkSignature, SdifF);
+  SizeW += sizeof(SdifInt4)      * SdiffWriteInt4(&ChunkSizeInt4, 1, SdifF);
 
   return SizeW;
 }
@@ -266,9 +271,9 @@ SdifFWriteGeneralHeader(SdifFileT *SdifF)
 
   SdifF->ChunkSize  = SdifFWriteChunkHeader (SdifF, eSDIF, 2 * sizeof (SdifUInt4));
   SdifF->ChunkSize += sizeof(SdifUInt4) * 
-		   SdiffWriteUInt4 (&(SdifF->FormatVersion), 1, SdifF->Stream);
+		   SdiffWriteUInt4 (&(SdifF->FormatVersion), 1, SdifF);
   SdifF->ChunkSize += sizeof(SdifUInt4) * 
-		   SdiffWriteUInt4 (&(SdifF->TypesVersion), 1, SdifF->Stream);
+		   SdiffWriteUInt4 (&(SdifF->TypesVersion), 1, SdifF);
 
   /* We know how big the header is.  No need to update it.
      SdifUpdateChunkSize(SdifF, SdifF->ChunkSize -sizeof(SdifSignature) -sizeof(SdifInt4)); */  
@@ -509,8 +514,8 @@ SdifFWriteMatrixHeader (SdifFileT *SdifF)
   UIntTab[1] = SdifF->CurrMtrxH->NbRow;
   UIntTab[2] = SdifF->CurrMtrxH->NbCol;
   
-  SizeW += sizeof(SdifSignature) * SdiffWriteSignature( &(SdifF->CurrMtrxH->Signature), SdifF->Stream);
-  SizeW += sizeof(SdifUInt4)     * SdiffWriteUInt4(UIntTab, 3, SdifF->Stream);
+  SizeW += sizeof(SdifSignature) * SdiffWriteSignature( &(SdifF->CurrMtrxH->Signature), SdifF);
+  SizeW += sizeof(SdifUInt4)     * SdiffWriteUInt4(UIntTab, 3, SdifF);
   return SizeW;
 }
 
@@ -528,7 +533,7 @@ SdifFWriteOneRow (SdifFileT *SdifF)
     case e##type:  return (sizeof (Sdif##type) *			   \
 			   SdiffWrite##type (SdifF->CurrOneRow->Data.type, \
 					     SdifF->CurrOneRow->NbData,    \
-					     SdifF->Stream));
+					     SdifF));
 
     switch (SdifF->CurrOneRow->DataType)
     {
@@ -542,7 +547,7 @@ SdifFWriteOneRow (SdifFileT *SdifF)
 	    return (sizeof (SdifFloat4) * 
 		    SdiffWriteFloat4(SdifF->CurrOneRow->Data.Float4,
 				     SdifF->CurrOneRow->NbData,
-				     SdifF->Stream));
+				     SdifF));
     }
 }
 
@@ -557,7 +562,7 @@ SdifFWriteMatrixData (SdifFileT *SdifF, void *data)
     /* case template for type from SdifDataTypeET */
 #   define writemdatacase(type) \
     case e##type:  return (sizeof (Sdif##type) * SdiffWrite##type ((Sdif##type *)  data, \
-        SdifF->CurrMtrxH->NbRow * SdifF->CurrMtrxH->NbCol, SdifF->Stream));
+        SdifF->CurrMtrxH->NbRow * SdifF->CurrMtrxH->NbCol, SdifF));
 
     switch (SdifF->CurrMtrxH->DataType)
     {
@@ -571,7 +576,7 @@ SdifFWriteMatrixData (SdifFileT *SdifF, void *data)
 	    return (sizeof (SdifFloat4) * 
 		    SdiffWriteFloat4(SdifF->CurrOneRow->Data.Float4,
 				     SdifF->CurrOneRow->NbData,
-				     SdifF->Stream));
+				     SdifF));
     }
 }
 
@@ -628,11 +633,11 @@ SdifFWriteFrameHeader (SdifFileT *SdifF)
 
   SdiffGetPos(SdifF->Stream, &(SdifF->StartChunkPos));
 
-  SizeW += sizeof(SdifSignature) * SdiffWriteSignature( &(SdifF->CurrFramH->Signature), SdifF->Stream);
-  SizeW += sizeof(SdifUInt4)     * SdiffWriteUInt4(     &(SdifF->CurrFramH->Size), 1, SdifF->Stream);
-  SizeW += sizeof(SdifFloat8)    * SdiffWriteFloat8(    &(SdifF->CurrFramH->Time), 1, SdifF->Stream);
-  SizeW += sizeof(SdifUInt4)     * SdiffWriteUInt4(     &(SdifF->CurrFramH->NumID), 1, SdifF->Stream);
-  SizeW += sizeof(SdifUInt4)     * SdiffWriteUInt4(     &(SdifF->CurrFramH->NbMatrix), 1, SdifF->Stream);
+  SizeW += sizeof(SdifSignature) * SdiffWriteSignature( &(SdifF->CurrFramH->Signature), SdifF);
+  SizeW += sizeof(SdifUInt4)     * SdiffWriteUInt4(     &(SdifF->CurrFramH->Size), 1, SdifF);
+  SizeW += sizeof(SdifFloat8)    * SdiffWriteFloat8(    &(SdifF->CurrFramH->Time), 1, SdifF);
+  SizeW += sizeof(SdifUInt4)     * SdiffWriteUInt4(     &(SdifF->CurrFramH->NumID), 1, SdifF);
+  SizeW += sizeof(SdifUInt4)     * SdiffWriteUInt4(     &(SdifF->CurrFramH->NbMatrix), 1, SdifF);
 
   return SizeW;
 }
