@@ -1,4 +1,4 @@
-/* $Id: SdifFGet.c,v 3.18 2005-04-07 15:56:46 schwarz Exp $
+/* $Id: SdifFGet.c,v 3.19 2005-05-23 19:17:53 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -32,6 +32,10 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.18  2005/04/07 15:56:46  schwarz
+ * removed some now empty local include files,
+ * added include of <sdif.h> and "SdifGlobals.h"
+ *
  * Revision 3.17  2004/10/07 14:52:24  roebel
  * Fixed SdifFGetOneNameValue to properly read NVTs from text files.
  *
@@ -125,8 +129,6 @@
  *
  * Revision 3.1  1999/03/14  10:56:37  virolle
  * SdifStdErr add
- *
- *
  */
 
 
@@ -134,6 +136,7 @@
 #include "sdif_portability.h"
 
 #include <string.h>
+#include "SdifRWLowLevel.h"
 #include "SdifFRead.h"
 #include "SdifFGet.h"
 #include "SdifTest.h"
@@ -148,12 +151,10 @@
 
 
 
+/* binary signature read */
 int SdifFGetSignature (SdifFileT *SdifF, size_t *nread)
 {
-    /* ASCII!!!
-       SdiffGetSignature(SdifF->Stream, &(SdifF->CurrSignature), NbCharRead);
-    */
-    return SdiffReadSignature(&SdifF->CurrSignature, SdifF->Stream, nread);
+    return SdiffReadSignature(&SdifF->CurrSignature, SdifF, nread);
 }
 
 
@@ -261,10 +262,9 @@ SdifFGetOneNameValue(SdifFileT *SdifF, int Verbose, size_t *SizeR)
 
 
 size_t
-SdifFGetNameValueLCurrNVT(SdifFileT *SdifF, int Verbose)
+SdifFGetNameValueLCurrNVT(SdifFileT *SdifF)
 {
   size_t    SizeR = 0;
-  FILE      *file = SdifFGetFILE_SwitchVerbose (SdifF, Verbose);
   
   /* nb of matrices > 0: proper SDIF, read text matrices
      else: intermediate format, read pure data in frame */
@@ -281,8 +281,8 @@ SdifFGetNameValueLCurrNVT(SdifFileT *SdifF, int Verbose)
 	      _SdifFError (SdifF, eSyntax, "Name-Value Table text matrix must "
 			   "have exactly one column!");
 	  str    = SdifCalloc (char, nrow * SdifFCurrNbCol (SdifF));
-	  SizeR += SdiffReadChar (str, nrow, file);
-	  SizeR += SdifFReadPadding(SdifF, SdifFPaddingCalculate (file, SizeR));
+	  SizeR += SdiffReadChar (str, nrow, SdifF);
+	  SizeR += SdifFReadPadding(SdifF, SdifFPaddingCalculate (SdifF->Stream, SizeR));
 	  SdifFNameValueLCurrNVTfromString (SdifF, str);
 	  SdifFree (str);
 	}
@@ -290,21 +290,20 @@ SdifFGetNameValueLCurrNVT(SdifFileT *SdifF, int Verbose)
   else
     {
       int CharEnd;
-	char sdifString[_SdifStringLen];
+      char sdifString[_SdifStringLen];
 	
-      if (Verbose != 't')
-	_SdifRemark ("Warning, this file uses an intermediate format for "
-		     "the Name-Value Table.  Portablity with programs not "
-		     "using the IRCAM SDIF library is not guaranteed.  "
-		     "Tip: Use 'sdifextract file newfile' to convert to "
-		     "compliant format.");
-      CharEnd = SdiffGetStringUntil (file, sdifString, _SdifStringLen, 
+      _SdifRemark ("Warning, this file uses an intermediate format for "
+		   "the Name-Value Table.  Portablity with programs not "
+		   "using the IRCAM SDIF library is not guaranteed.  "
+		   "Tip: Use 'sdifextract file newfile' to convert to "
+		   "compliant format.");
+      CharEnd = SdiffGetStringUntil (SdifF->Stream, sdifString, _SdifStringLen, 
 				     &SizeR, _SdifReservedChars);
       if (SdifTestCharEnd (SdifF, CharEnd, '{', sdifString, 
 			   SdifStrLen (sdifString) != 0,
 			   "Begin of NameValue Table declarations") != eFalse)
 	{
-	  while (SdifFGetOneNameValue(SdifF, Verbose, &SizeR) != (int) '}')
+	    while (SdifFGetOneNameValue(SdifF, 's', &SizeR) != (int) '}')
 	    /*loop*/;
 	}
     }

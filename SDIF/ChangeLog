@@ -1,3 +1,40 @@
+2005-05-23  schwarz  <schwarz@mac-borghesi.ircam.fr>
+
+	* sdif/SdifRWLowLevel.h:
+	- Sdiffread*/Sdiffwrite* functions with SdifFileT instead of FILE *
+	  -> eof error reporting makes more sense
+	- more cleanup of sdif.h, above functions are private in SdifRWLowLevel.h
+	- eEof becomes error 4 to be distinguishable from ascii chars
+	- SdifFScanNameValueLCurrNVT reimplemented for ascii only
+
+	* Unified error handling:
+	- SdifErrorEnum (global errors) integrated into SdifErrorTagET (file errors)
+	- no more SdifError.[ch], everything done by SdifErrMess.[ch]
+
+2005-05-20  roebel  <roebel@mac-borghesi.ircam.fr>
+
+	* ChangeLog, configure.in:
+	Fix for c++ compilation. Unfinished! But cleaner as before
+	and at least compiles.
+
+	* include/sdif.h: corrected detection seekablility of sdif file.
+	files are not seekable only if 	they are pipes!
+
+	* sdif/SdifFRead.c: back to returning 0 in case of file read error.
+	Skipping a matrix can never produce a read size of 0
+	so -1 is unnecessary here.
+	 SdifFSkip now uses seekability flag to determine
+	whether to seek or to read.
+	Don't confuse error tags and error enums, which does not compile
+	with c++.
+
+	* sdif/SdifError.c: Use proper type to initialize gSdifLastError.
+
+	* sdif/SdifHighLevel.c (Module):
+	back to returning 0 in case of file read error.
+	the case where it was really used for max is now checked
+	by means of comparing the expected matrix size.
+
 2005-05-20  Axel Roebel  <Axel.Roebel@ircam.fr>
 Version 3.9.3a
 
@@ -654,4 +691,4 @@ Version 3.3:
 	  Operating System.
 
 	
-$Id: ChangeLog,v 1.45 2005-05-20 21:16:17 roebel Exp $
+$Id: ChangeLog,v 1.46 2005-05-23 19:17:52 schwarz Exp $

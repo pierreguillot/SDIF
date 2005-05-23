@@ -1,4 +1,4 @@
-/* $Id: SdifHard_OS.h,v 3.10 2005-04-07 15:20:23 schwarz Exp $
+/* $Id: SdifHard_OS.h,v 3.11 2005-05-23 19:17:53 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -33,6 +33,9 @@
  * author: Dominique Virolle 1998
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.10  2005/04/07 15:20:23  schwarz
+ * removed duplicated declarations that belong to the external API in sdif.h
+ *
  * Revision 3.9  2001/05/02 09:34:44  tisseran
  * Change License from GNU Public License to GNU Lesser Public License.
  *
@@ -124,6 +127,26 @@ SdifMachineET SdifGetMachineType(void);
 extern SdifMachineET gSdifMachineType;
 SdifMachineET SdifInitMachineType(void);
 extern SdifUInt4 gSdifSignatureVersionMask;
+
+
+/** 2 byte array swapping in place. */
+void SdifSwap2 (void *ptr, size_t num);
+
+/** 2 byte array swapping with copy. */
+void SdifSwap2Copy (void *src, void *dest, size_t num);
+
+/** 4 byte array swapping in place. */
+void SdifSwap4 (void *ptr, size_t num);
+
+/** 4 byte array swapping with copy */
+void SdifSwap4Copy (void *src, void *dest, size_t num);
+
+/** 8 byte array swapping in place. */
+void SdifSwap8 (void *ptr, size_t num);
+
+/** 8 byte array swapping with copy. */
+void SdifSwap8Copy (void *src, void *dest, size_t num);
+
 
 void SdifLittleToBig(void *BigPtr, void *LittlePtr, size_t size);
 void SdifBigToLittle(void *InOutPtr, size_t size);

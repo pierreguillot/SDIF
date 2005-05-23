@@ -1,4 +1,4 @@
-/* $Id: SdifErrMess.c,v 3.20 2005-05-23 17:52:53 schwarz Exp $
+/* $Id: SdifErrMess.c,v 3.21 2005-05-23 19:17:53 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -31,6 +31,11 @@
  * author: Dominique Virolle 1998
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.20  2005/05/23 17:52:53  schwarz
+ * Unified error handling:
+ * - SdifErrorEnum (global errors) integrated into SdifErrorTagET (file errors)
+ * - no more SdifError.[ch], everything done by SdifErrMess.[ch]
+ *
  * Revision 3.19  2005/05/13 15:30:48  schwarz
  * make it possible that global errors from SdifError be passed through
  * the SdifErrMsg functions as file errors.
@@ -154,6 +159,7 @@ const SdifErrorT gSdifErrMessFormat[] = {
 { eNoError,		 eNoLevel, "No Error"},
 { eTypeDataNotSupported, eWarning, "Type of data not actualy supported : %s\n"},
 { eNameLength,		 eWarning, "Bad UserMess : '%s'\n"},
+{ eEof,			 eFatal,   "End of file : %s\n" },
 { eReDefined,		 eError,   "%s redefined\n"},
 { eUnDefined,		 eError,   "%s undefined\n"},
 { eSyntax,		 eWarning, "Syntax error: %s\n"},
@@ -175,7 +181,6 @@ const SdifErrorT gSdifErrMessFormat[] = {
 { eAllocFail,		 eFatal,   "Attempt to allocate memory : '%s'\n" },
 { eInvalidPreType,	 eWarning, "Invalid Predefined Type : %s\n" },
 { eArrayPosition,	 eFatal,   "Attempt to access to a non-existing square in an array : '%s'\n" },
-{ eEof,			 eFatal,   "End of file : %s\n" },
 { eFileNotFound,	 eWarning, "File not found or permission denied: \"%s\"\n" },
 { eAffectationOrder,	 eWarning, "Affectation must be in order : '%s'\n" },
 { eNoModifErr,		 eWarning, "Type has been defined yet: '%s'\n" },

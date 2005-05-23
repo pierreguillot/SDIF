@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.36 2005-05-23 17:52:53 schwarz Exp $
+# $Id: Makefile.am,v 1.37 2005-05-23 19:17:53 schwarz Exp $
 #
 # ./sdif/Makefile.am		September 2000		Patrice Tisserand
 #
@@ -30,6 +30,11 @@
 
 
 # $Log: not supported by cvs2svn $
+# Revision 1.36  2005/05/23 17:52:53  schwarz
+# Unified error handling:
+# - SdifErrorEnum (global errors) integrated into SdifErrorTagET (file errors)
+# - no more SdifError.[ch], everything done by SdifErrMess.[ch]
+#
 # Revision 1.35  2005/04/07 15:56:46  schwarz
 # removed some now empty local include files,
 # added include of <sdif.h> and "SdifGlobals.h"
@@ -179,7 +184,8 @@ SDIF_H = ../include/sdif_version.h $(top_srcdir)/include/sdif.h \
 	SdifFWrite.h 	SdifFile.h      SdifSelect.h	 	\
 	SdifFrame.h 	SdifFrameType.h SdifGlobals.h 		\
 	SdifHard_OS.h 	SdifHash.h	SdifHighLevel.h 	\
-	SdifList.h 	config.h	sdiftypes.h		\
+	SdifList.h 	SdifRWLowLevel.h			\
+	config.h	sdiftypes.h				\
 	sdif_portability.h host_architecture.h
 
 noinst_HEADERS = $(SDIF_H) 

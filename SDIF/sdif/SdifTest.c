@@ -1,4 +1,4 @@
-/* $Id: SdifTest.c,v 3.14 2005-05-13 15:28:41 schwarz Exp $
+/* $Id: SdifTest.c,v 3.15 2005-05-23 19:17:53 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -33,6 +33,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.14  2005/05/13 15:28:41  schwarz
+ * print signatures in hex also
+ *
  * Revision 3.13  2005/04/07 15:56:48  schwarz
  * removed some now empty local include files,
  * added include of <sdif.h> and "SdifGlobals.h"
@@ -138,7 +141,7 @@ SdifTestMatrixType(SdifFileT *SdifF, SdifSignature Signature)
       else
 	    {
           sprintf(errorMess, "Matrix Type : '%s' (0x%08x)", 
-		  SdifSignatureToString(Signature), (long) Signature);
+		  SdifSignatureToString(Signature), (unsigned) Signature);
           _SdifFError(SdifF, eUnDefined, errorMess);
           return NULL;
         }
@@ -302,7 +305,7 @@ SdifTestFrameType(SdifFileT *SdifF, SdifSignature Signature)
       else
 	    {
 	      sprintf(errorMess, "Frame Type '%s' (0x%08x)",
-		      SdifSignatureToString(Signature), (long) Signature);
+		      SdifSignatureToString(Signature), (unsigned) Signature);
 	      _SdifFError(SdifF, eUnDefined, errorMess);
 	      return NULL;
 	    }

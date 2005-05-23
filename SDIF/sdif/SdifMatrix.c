@@ -1,4 +1,4 @@
-/* $Id: SdifMatrix.c,v 3.12 2005-05-23 17:52:53 schwarz Exp $
+/* $Id: SdifMatrix.c,v 3.13 2005-05-23 19:17:53 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -33,6 +33,11 @@
  *
  * author: Dominique Virolle 1997
  * $Log: not supported by cvs2svn $
+ * Revision 3.12  2005/05/23 17:52:53  schwarz
+ * Unified error handling:
+ * - SdifErrorEnum (global errors) integrated into SdifErrorTagET (file errors)
+ * - no more SdifError.[ch], everything done by SdifErrMess.[ch]
+ *
  * Revision 3.11  2004/09/10 13:27:40  schwarz
  * missing return
  *
@@ -487,7 +492,6 @@ SdifCreateMatrixData(SdifSignature Signature,
 		     SdifUInt4 NbCol)
 {
     SdifMatrixDataT *NewMatrixData = NULL;
-    SdifUInt4 MatrixSize;
   
     NewMatrixData = SdifCalloc(SdifMatrixDataT, 1);	/* all fields zero */
 
@@ -521,8 +525,6 @@ SdifCreateMatrixData(SdifSignature Signature,
 void 
 SdifKillMatrixData(SdifMatrixDataT *MatrixData)
 {
-    SdifUInt4 iRow;
-
     if (MatrixData)
     {
 	if (MatrixData->Data.Void)

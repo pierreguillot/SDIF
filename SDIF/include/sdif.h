@@ -1,4 +1,4 @@
-/* $Id: sdif.h,v 1.49 2005-05-23 17:52:52 schwarz Exp $
+/* $Id: sdif.h,v 1.50 2005-05-23 19:17:52 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -30,6 +30,11 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.49  2005/05/23 17:52:52  schwarz
+ * Unified error handling:
+ * - SdifErrorEnum (global errors) integrated into SdifErrorTagET (file errors)
+ * - no more SdifError.[ch], everything done by SdifErrMess.[ch]
+ *
  * Revision 1.48  2005/05/20 21:13:54  roebel
  * corrected detection seekablility of sdif file.
  * files are not seekable only if 	they are pipes!
@@ -241,7 +246,7 @@
  * Revision 1.1.2.1  2000/08/21  13:07:41  tisseran
  * *** empty log message ***
  *
- * $Date: 2005-05-23 17:52:52 $
+ * $Date: 2005-05-23 19:17:52 $
  *
  */
 
@@ -256,7 +261,7 @@ extern "C" {
 #endif
 
 
-static const char _sdif_h_cvs_revision_ [] = "$Id: sdif.h,v 1.49 2005-05-23 17:52:52 schwarz Exp $";
+static const char _sdif_h_cvs_revision_ [] = "$Id: sdif.h,v 1.50 2005-05-23 19:17:52 schwarz Exp $";
 
 
 #include <stdio.h>
@@ -887,6 +892,7 @@ typedef enum SdifErrorTagE
     eNoError = 1,
     eTypeDataNotSupported,
     eNameLength,
+    eEof,	/* 4 */
     eReDefined,
     eUnDefined,
     eSyntax,
@@ -908,7 +914,6 @@ typedef enum SdifErrorTagE
     eFreeNull = eGlobalError,
     eAllocFail,
     eArrayPosition,
-    eEof,
     eFileNotFound,
     eInvalidPreType,
     eAffectationOrder,
@@ -2554,77 +2559,6 @@ void SdifPrintAllType(FILE *fw, SdifFileT *SdifF);
 
 
 
-
-/* SdifHard_OS.h */
-
-/** 2 byte array swapping in place. */
-void SdifSwap2 (void *ptr, size_t num);
-
-/** 2 byte array swapping with copy. */
-void SdifSwap2Copy (void *src, void *dest, size_t num);
-
-/** 4 byte array swapping in place. */
-void SdifSwap4 (void *ptr, size_t num);
-
-/** 4 byte array swapping with copy */
-void SdifSwap4Copy (void *src, void *dest, size_t num);
-
-/** 8 byte array swapping in place. */
-void SdifSwap8 (void *ptr, size_t num);
-
-/** 8 byte array swapping with copy. */
-void SdifSwap8Copy (void *src, void *dest, size_t num);
-
-
-
-#define _SdifPaddingChar  '\0'
-#define _SdifReservedChars  ",;{}:"
-
-
-size_t Sdiffread  (void *ptr, size_t size, size_t nobj, FILE *stream);
-size_t Sdiffwrite (void *ptr, size_t size, size_t nobj, FILE *stream);
-
-/* Read, return the number of objects */
-
-size_t SdiffReadChar   (SdifChar   *ptr, size_t nobj, FILE *stream);
-size_t SdiffReadInt1   (SdifInt1   *ptr, size_t nobj, FILE *stream);
-size_t SdiffReadInt2   (SdifInt2   *ptr, size_t nobj, FILE *stream);
-size_t SdiffReadUInt1  (SdifUInt1  *ptr, size_t nobj, FILE *stream);
-size_t SdiffReadUInt2  (SdifUInt2  *ptr, size_t nobj, FILE *stream);
-size_t SdiffReadInt4   (SdifInt4   *ptr, size_t nobj, FILE *stream);
-size_t SdiffReadUInt4  (SdifUInt4  *ptr, size_t nobj, FILE *stream);
-size_t SdiffReadFloat4 (SdifFloat4 *ptr, size_t nobj, FILE *stream);
-size_t SdiffReadFloat8 (SdifFloat8 *ptr, size_t nobj, FILE *stream);
-SdifErrorTagET SdiffReadSignature (SdifSignature *Signature,  FILE *stream, size_t *n);
-
-
-
-/* Write, return the number of objects */
-
-size_t SdiffWriteChar   (SdifChar   *ptr, size_t nobj, FILE *stream);
-size_t SdiffWriteInt1   (SdifInt1   *ptr, size_t nobj, FILE *stream);
-size_t SdiffWriteInt2   (SdifInt2   *ptr, size_t nobj, FILE *stream);
-size_t SdiffWriteUInt1  (SdifUInt1  *ptr, size_t nobj, FILE *stream);
-size_t SdiffWriteUInt2  (SdifUInt2  *ptr, size_t nobj, FILE *stream);
-size_t SdiffWriteInt4   (SdifInt4   *ptr, size_t nobj, FILE *stream);
-size_t SdiffWriteUInt4  (SdifUInt4  *ptr, size_t nobj, FILE *stream);
-size_t SdiffWriteFloat4 (SdifFloat4 *ptr, size_t nobj, FILE *stream);
-size_t SdiffWriteFloat8 (SdifFloat8 *ptr, size_t nobj, FILE *stream);
-
-size_t SdiffWriteSignature (SdifSignature *Signature, FILE *stream);
-size_t SdiffWriteString (char* ptr, FILE *stream);
-
-/*
- *size_t SdiffReadUInt8  (SdifUInt8  *ptr, size_t nobj, FILE *stream);
- *size_t SdiffWriteUInt8  (SdifUInt8  *ptr, size_t nobj, FILE *stream);
- */
-
-/**Ascii**/
-/* fGet --> return the last char
- */
-size_t SdiffReadSpace   (FILE* fr);
-
-size_t SdiffReadSpacefromSdifString(SdifStringT *SdifString);
 
 /*DOC:
   Return true if c is a reserved char. 

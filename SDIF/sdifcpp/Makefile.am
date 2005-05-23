@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.7 2005-05-23 17:52:54 schwarz Exp $
+# $Id: Makefile.am,v 1.8 2005-05-23 19:17:53 schwarz Exp $
 #
 # ./sdifcpp/Makefile.am		March 2003		Axel Roebel
 #
@@ -30,6 +30,11 @@
 
 
 # $Log: not supported by cvs2svn $
+# Revision 1.7  2005/05/23 17:52:54  schwarz
+# Unified error handling:
+# - SdifErrorEnum (global errors) integrated into SdifErrorTagET (file errors)
+# - no more SdifError.[ch], everything done by SdifErrMess.[ch]
+#
 # Revision 1.6  2005/04/19 15:30:14  schwarz
 # make sdifcpp compile again for easdif:
 # - removed deleted files from makefiles
@@ -61,8 +66,9 @@ SDIF_H = ../include/sdif_version.h $(top_srcdir)/include/sdif.h \
 	SdifFWrite.h 	SdifFile.h	SdifTest.h	 	\
 	SdifFrame.h 	SdifFrameType.h SdifGlobals.h 		\
 	SdifHard_OS.h 	SdifHash.h	SdifHighLevel.h 	\
-	SdifList.h 	SdifMatrix.h 	sdiftypes.h		\
-	sdif_portability.h host_architecture.h ) ../sdif/config.h 
+	SdifList.h 	SdifMatrix.h 	SdifRWLowLevel.h	\
+	sdiftypes.h	sdif_portability.h host_architecture.h )\
+	../sdif/config.h 
 
 
 noinst_HEADERS = $(SDIF_H) 
