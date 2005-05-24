@@ -32,9 +32,15 @@
  * 
  * 
  * 
- * $Id: sdifframe.cpp,v 1.16 2005-05-20 21:32:27 roebel Exp $ 
+ * $Id: sdifframe.cpp,v 1.17 2005-05-24 09:53:51 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.16  2005/05/20 21:32:27  roebel
+ * Removed remaining functions that were only there for initial tests of
+ * Fabien Tisserand.
+ * Changed the frame directory handling to include only the selected frames and
+ * matrices.
+ *
  * Revision 1.15  2004/09/10 09:20:52  roebel
  * Extend frame directory to contain the matrix signatures for each frame.
  * No longer needs to re read the frame to decide whether frame is selected.
@@ -177,7 +183,7 @@ int SDIFFrame::Read(SDIFEntity& entity)
 
       ClearData();
       mFrameBytesRead += ReadHeader(file);
-      if(!mFrameBytesRead) {
+      if(!mFrameBytesRead ) {
         SdifFSkipFrameData (file);
         //to have exception
         entity.mEof = (SdifFGetSignature (file, &mFrameBytesRead) == eEof);
@@ -192,14 +198,20 @@ int SDIFFrame::Read(SDIFEntity& entity)
                              file->StartChunkPos);
         
         Resize(mNbMatrix);
-        if(!loc)
-          ReadData(file);
+        if(!loc ) {
+          if(entity.isFrameHLSelected(SdifFCurrID(file),SdifFCurrFrameSignature(file)))
+            mFrameBytesRead +=ReadData(entity);
+          else {
+            SdifFSkipFrameData (file);
+            mFrameBytesRead  = 0;
+          }
+        }
         else{
           SdifUInt4 nb = loc->LocNbMatrix();
           int ir = 0;
           for(SdifUInt4 i=0 ; i< nb;++i){
             int ret =0;
-            if((ret=mv_Matrix[ir].Read(file)))
+            if((ret=mv_Matrix[ir].Read(file,&entity.msHighLevelMatrixSelection)))
               ++ir;
             mFrameBytesRead +=ret;
             loc->SetMSignature(i,file->CurrMtrxH->Signature);
@@ -219,13 +231,13 @@ int SDIFFrame::Read(SDIFEntity& entity)
 }
 
 /* reading the data */
-int SDIFFrame::ReadData(SdifFileT* file)
+int SDIFFrame::ReadData(SdifFileT* file,const std::set<SdifSignature>*hlsel)
 {
     int BytesRead = 0;
     SdifUInt4 index;
     for (index = 0; index < mNbMatrix; ){
-	BytesRead += mv_Matrix[index].Read(file);
-	if(mv_Matrix[index].GetSignature() == 0)
+	BytesRead += mv_Matrix[index].Read(file,hlsel);
+	if(mv_Matrix[index].GetSignature() == eEmptySignature)
 	    mNbMatrix --;
 	else
 	    index++;
@@ -239,7 +251,7 @@ int SDIFFrame::ReadData(const SDIFEntity& entity)
 {
 
     SdifFileT* file = entity.GetFile();
-    return ReadData(file);
+    return ReadData(file,&entity.msHighLevelMatrixSelection);
 }
 
 /* reading the informations */
@@ -251,13 +263,13 @@ int SDIFFrame::ReadHeader(SdifFileT* file)
 
     BytesRead += SdifFReadFrameHeader(file);
     /* for selection*/
-       if (!SdifFCurrFrameIsSelected (file))
-	  {
-	      //SdifFSkipFrameData (file);
-	      //eof = SdifFGetSignature (file, &bytesread) == eEof;
-	 return 0;
-	  }
-
+    if (!SdifFCurrFrameIsSelected (file))
+      {
+        //SdifFSkipFrameData (file);
+        //eof = SdifFGetSignature (file, &bytesread) == eEof;
+        return 0;
+      }
+    
     mTime    = SdifFCurrTime(file);
     mSig      = SdifFCurrFrameSignature(file);
     mStreamID = SdifFCurrID(file);

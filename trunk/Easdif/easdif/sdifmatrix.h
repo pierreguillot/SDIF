@@ -33,9 +33,12 @@
  * 
  * 
  * 
- * $Id: sdifmatrix.h,v 1.25 2004-09-08 09:17:45 roebel Exp $ 
+ * $Id: sdifmatrix.h,v 1.26 2005-05-24 09:53:51 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.25  2004/09/08 09:17:45  roebel
+ * Fixed error in GetNbCols which would return the number of rows!
+ *
  * Revision 1.24  2004/07/28 15:06:23  roebel
  * Added missing GetUChar.
  *
@@ -163,6 +166,7 @@
 
 
 #include <string>
+#include <set>
 #include "sdif.h"
 #include "easdif/sdifexception.h"
 #include "easdif/sdifmatrixdatainterface.h"
@@ -317,10 +321,17 @@ public:
 
 /**
  * \ingroup rwmat 
- * read a matrix
+ * \brief read a matrix
+ * filter only matrices that match the set given in hlsel
+ * \param file sdiffeil 
+ * \param hlsel pointer std::set<SsdifSignature> containing the signatures 
+ *          that should be read, this is the signature restriction on Easdif level
+ *          that filters the existing sdif selection (for efficient implementation
+ *          it is assumed that hlsel contains a subset of the sdif file selection
+ *          which is not used if hlsel != 0 && !hlsel->empty() )
  * @return the count of bytes and create a matrix which keep the values
  */
-    int Read(SdifFileT* file);
+    int Read(SdifFileT* file,const std::set<SdifSignature> *hlsel=0);
 
 /** 
  * \ingroup create

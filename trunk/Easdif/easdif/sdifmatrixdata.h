@@ -33,9 +33,12 @@
  * 
  * 
  * 
- * $Id: sdifmatrixdata.h,v 1.16 2005-05-03 16:23:41 roebel Exp $ 
+ * $Id: sdifmatrixdata.h,v 1.17 2005-05-24 09:53:51 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.16  2005/05/03 16:23:41  roebel
+ * Fixed documentation.
+ *
  * Revision 1.15  2004/11/18 18:05:29  ellis
  * .natural comparator function for Esdif Frames
  * .bug fix in _SetRow
@@ -125,57 +128,80 @@
 #include "easdif/sdifmatrixdatainterface.h"
 
 
+size_t SdiffReadChar   (SdifChar   *ptr, size_t nobj, SdifFileT *file);
+size_t SdiffReadInt1   (SdifInt1   *ptr, size_t nobj, SdifFileT *file);
+size_t SdiffReadInt2   (SdifInt2   *ptr, size_t nobj, SdifFileT *file);
+size_t SdiffReadUInt1  (SdifUInt1  *ptr, size_t nobj, SdifFileT *file);
+size_t SdiffReadUInt2  (SdifUInt2  *ptr, size_t nobj, SdifFileT *file);
+size_t SdiffReadInt4   (SdifInt4   *ptr, size_t nobj, SdifFileT *file);
+size_t SdiffReadUInt4  (SdifUInt4  *ptr, size_t nobj, SdifFileT *file);
+size_t SdiffReadFloat4 (SdifFloat4 *ptr, size_t nobj, SdifFileT *file);
+size_t SdiffReadFloat8 (SdifFloat8 *ptr, size_t nobj, SdifFileT *file);
+
+/* Write, return the number of objects */
+size_t SdiffWriteChar   (SdifChar   *ptr, size_t nobj, SdifFileT *file);
+size_t SdiffWriteInt1   (SdifInt1   *ptr, size_t nobj, SdifFileT *file);
+size_t SdiffWriteInt2   (SdifInt2   *ptr, size_t nobj, SdifFileT *file);
+size_t SdiffWriteUInt1  (SdifUInt1  *ptr, size_t nobj, SdifFileT *file);
+size_t SdiffWriteUInt2  (SdifUInt2  *ptr, size_t nobj, SdifFileT *file);
+size_t SdiffWriteInt4   (SdifInt4   *ptr, size_t nobj, SdifFileT *file);
+size_t SdiffWriteUInt4  (SdifUInt4  *ptr, size_t nobj, SdifFileT *file);
+size_t SdiffWriteFloat4 (SdifFloat4 *ptr, size_t nobj, SdifFileT *file);
+size_t SdiffWriteFloat8 (SdifFloat8 *ptr, size_t nobj, SdifFileT *file);
+
+
+
 namespace {
 
   // collection of functions that allow to read  a whole matrix in a single pass
-  inline size_t SdiffReadMatrix(double *outbuf,size_t nobjs, FILE * stream) {
+  inline size_t SdiffReadMatrix(double *outbuf,size_t nobjs, SdifFileT * stream) {
     return     SdiffReadFloat8(outbuf,nobjs,stream)*sizeof(double);
   }
-  inline size_t SdiffReadMatrix(float *outbuf,size_t nobjs, FILE * stream) {
+  inline size_t SdiffReadMatrix(float *outbuf,size_t nobjs, SdifFileT * stream) {
     return     SdiffReadFloat4(outbuf,nobjs,stream)*sizeof(float);
   }
-  inline size_t SdiffReadMatrix(unsigned char *outbuf,size_t nobjs, FILE * stream) {
+  inline size_t SdiffReadMatrix(unsigned char *outbuf,size_t nobjs, SdifFileT * stream) {
     return     SdiffReadUInt1(outbuf,nobjs,stream)*sizeof(unsigned char);
   }
-  inline size_t SdiffReadMatrix(unsigned short int *outbuf,size_t nobjs, FILE * stream) {
+  inline size_t SdiffReadMatrix(unsigned short int *outbuf,size_t nobjs, SdifFileT * stream) {
     return     SdiffReadUInt2(outbuf,nobjs,stream)*sizeof(unsigned short int);
   }
-  inline size_t SdiffReadMatrix(unsigned int *outbuf,size_t nobjs, FILE * stream) {
+  inline size_t SdiffReadMatrix(unsigned int *outbuf,size_t nobjs, SdifFileT * stream) {
     return     SdiffReadUInt4(outbuf,nobjs,stream)*sizeof(unsigned int);
   }
-  inline size_t SdiffReadMatrix(char *outbuf,size_t nobjs, FILE * stream) {
+  inline size_t SdiffReadMatrix(char *outbuf,size_t nobjs, SdifFileT * stream) {
     return     SdiffReadInt1(outbuf,nobjs,stream)*sizeof(char);
   }
-  inline size_t SdiffReadMatrix(short int *outbuf,size_t nobjs, FILE * stream) {
+  inline size_t SdiffReadMatrix(short int *outbuf,size_t nobjs, SdifFileT * stream) {
     return     SdiffReadInt2(outbuf,nobjs,stream)*sizeof(short int);
   }
-  inline size_t SdiffReadMatrix(int *outbuf,size_t nobjs, FILE * stream) {
+  inline size_t SdiffReadMatrix(int *outbuf,size_t nobjs, SdifFileT * stream) {
     return     SdiffReadInt4(outbuf,nobjs,stream)*sizeof(int);
   }
 
   // collection of functions that allow to  write a whole matrix in a single pass
-  inline size_t SdiffWriteMatrix(double *outbuf,size_t nobjs, FILE * stream) {
+  inline size_t SdiffWriteMatrix(double *outbuf,size_t nobjs, SdifFileT * stream) {
     return     SdiffWriteFloat8(outbuf,nobjs,stream)*sizeof(double);
   }
-  inline size_t SdiffWriteMatrix(float *outbuf,size_t nobjs, FILE * stream) {
+  inline size_t SdiffWriteMatrix(float *outbuf,size_t nobjs, SdifFileT * stream) {
     return     SdiffWriteFloat4(outbuf,nobjs,stream)*sizeof(float);
   }
-  inline size_t SdiffWriteMatrix(unsigned char *outbuf,size_t nobjs, FILE * stream) {
+  inline size_t SdiffWriteMatrix(unsigned char *outbuf,size_t nobjs, SdifFileT * stream) {
     return     SdiffWriteUInt1(outbuf,nobjs,stream)*sizeof(unsigned char);
   }
-  inline size_t SdiffWriteMatrix(unsigned short int *outbuf,size_t nobjs, FILE * stream) {
+  inline size_t SdiffWriteMatrix(unsigned short int *outbuf,size_t nobjs, SdifFileT * stream) {
     return     SdiffWriteUInt2(outbuf,nobjs,stream)*sizeof(unsigned short int);
   }
-  inline size_t SdiffWriteMatrix(unsigned int *outbuf,size_t nobjs, FILE * stream) {
+  inline size_t SdiffWriteMatrix(unsigned int *outbuf,size_t nobjs, SdifFileT * stream) {
     return     SdiffWriteUInt4(outbuf,nobjs,stream)*sizeof(unsigned int);
   }
-  inline size_t SdiffWriteMatrix(char *outbuf,size_t nobjs, FILE * stream) {
+  inline size_t SdiffWriteMatrix(char *outbuf,size_t nobjs, SdifFileT * stream) {
     return     SdiffWriteInt1(outbuf,nobjs,stream)*sizeof(char);
   }
-  inline size_t SdiffWriteMatrix(short int *outbuf,size_t nobjs, FILE * stream) {
+  inline size_t SdiffWriteMatrix(short int *outbuf,size_t nobjs, SdifFileT * stream) {
     return     SdiffWriteInt2(outbuf,nobjs,stream)*sizeof(short int);
   }
-  inline size_t SdiffWriteMatrix(int *outbuf,size_t nobjs, FILE * stream) {
+  inline size_t SdiffWriteMatrix(int *outbuf,size_t nobjs, SdifFileT * stream) {
     return     SdiffWriteInt4(outbuf,nobjs,stream)*sizeof(int);
   }
  
@@ -514,7 +540,7 @@ public:
     /*Read matrix data*/
 	    
     if(  m_Nrows == _rows && m_Ncols == _cols ) {
-      bytesread += SdiffReadMatrix(&m_Data[0],_rows*_cols,file->Stream);
+      bytesread += SdiffReadMatrix(&m_Data[0],_rows*_cols,file);
     }
     else{
       for (int row = 0,outrow=0; row < _rows; row++)
@@ -551,7 +577,7 @@ public:
 	{
 	    size_t SizeFrameW = 0;
 	    /* Write matrix data */
-	    SizeFrameW += SdiffWriteMatrix(&m_Data[0],m_Nrows*m_Ncols,file->Stream);
+	    SizeFrameW += SdiffWriteMatrix(&m_Data[0],m_Nrows*m_Ncols,file);
 
 	    /* Write matrix padding */
 	    SizeFrameW += SdifFWritePadding(file, SdifFPaddingCalculate (file->Stream, SizeFrameW));
