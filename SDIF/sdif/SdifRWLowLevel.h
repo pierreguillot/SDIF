@@ -1,4 +1,4 @@
-/* $Id: SdifRWLowLevel.h,v 3.13 2005-05-23 19:14:54 schwarz Exp $
+/* $Id: SdifRWLowLevel.h,v 3.14 2005-05-24 09:36:09 roebel Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -34,6 +34,13 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.13  2005/05/23 19:14:54  schwarz
+ * - Sdiffread/Sdiffwrite functions with SdifFileT instead of FILE *
+ *   -> eof error reporting makes more sense
+ * - more cleanup of sdif.h, above functions are private in SdifRWLowLevel.h
+ * - eEof becomes error 4 to be distinguishable from ascii chars
+ * - SdifFScanNameValueLCurrNVT reimplemented for ascii only
+ *
  * Revision 3.12  2005/04/07 15:56:48  schwarz
  * removed some now empty local include files,
  * added include of <sdif.h> and "SdifGlobals.h"
