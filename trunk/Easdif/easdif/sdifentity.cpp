@@ -32,9 +32,18 @@
  * 
  * 
  * 
- * $Id: sdifentity.cpp,v 1.28 2005-05-24 09:53:51 roebel Exp $ 
+ * $Id: sdifentity.cpp,v 1.29 2005-05-24 13:12:28 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.28  2005/05/24 09:53:51  roebel
+ * Changed selection management in Easdif:
+ * Before EnableDirectory has been called selection
+ * modification wqorks on the SDIF-Selection, after
+ * enabling the directory a new high level selection mode
+ * is used that can only be used to restrict the secltion by
+ * forming intersections with the existing selections.
+ * This mechanism exists now for stream/frame and matrix selections.
+ *
  * Revision 1.27  2005/05/20 21:32:04  roebel
  * Increased consistence and documentation of SDIF frame directory
  * and SDIF frame iterator. The directory is now limited
@@ -193,8 +202,8 @@ SDIFEntity::SDIFEntity(): efile(0), mSize(0), mEof(true), mEofSeen(false),
 			  mOpen(0), generalHeader(0), asciiChunks(0), 
 			  isFrameDirEnabled(false), 
                           endLoc(SdifUInt4(-1), 0, -1., eEmptySignature,  0),
-                          mlStreamSelectionRead(false),mlFrameSelectionRead(false),
-                          mlMatrixSelectionRead(false),mlStreamSelectionIsOpen(false)
+                          mlMatrixSelectionRead(false),mlFrameSelectionRead(false),
+                          mlStreamSelectionRead(false),mlStreamSelectionIsOpen(false)
 {
 	mFirstFramePos = 0;
 };
@@ -213,6 +222,7 @@ bool SDIFEntity::OpenRead(const char* filename)
     mlFrameSelectionRead =true;
     GetStreamSelection(msStreamSelection,mlStreamSelectionIsOpen);
     mlStreamSelectionRead=true;
+    return ret;
 }
 
 
@@ -312,6 +322,7 @@ bool SDIFEntity::EnableFrameDir() {
     else
       return false;
   }
+  return true;
 }
 
 void SDIFEntity::PrintFrameDir() const {
@@ -322,7 +333,7 @@ void SDIFEntity::PrintFrameDir() const {
     std::cerr<< "Pos "<< start->LocPos()<< " sig " << SdifSignatureToString(start->LocSignature()) <<" time "<< start->LocTime() << "\n";
     std::cerr <<" Matrices:";
 
-    for(int ii=0;ii<start->LocNbMatrix();++ii)
+    for(unsigned int ii=0;ii<start->LocNbMatrix();++ii)
       std::cerr <<" " <<  SdifSignatureToString(start->LocMSignature(ii));
     
     std::cerr << "\n";
