@@ -1,4 +1,4 @@
-/* $Id: sdif.h,v 1.50 2005-05-23 19:17:52 schwarz Exp $
+/* $Id: sdif.h,v 1.51 2005-05-24 09:32:39 roebel Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -30,6 +30,13 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.50  2005/05/23 19:17:52  schwarz
+ * - Sdiffread/Sdiffwrite functions with SdifFileT instead of FILE *
+ *   -> eof error reporting makes more sense
+ * - more cleanup of sdif.h, above functions are private in SdifRWLowLevel.h
+ * - eEof becomes error 4 to be distinguishable from ascii chars
+ * - SdifFScanNameValueLCurrNVT reimplemented for ascii only
+ *
  * Revision 1.49  2005/05/23 17:52:52  schwarz
  * Unified error handling:
  * - SdifErrorEnum (global errors) integrated into SdifErrorTagET (file errors)
@@ -246,7 +253,7 @@
  * Revision 1.1.2.1  2000/08/21  13:07:41  tisseran
  * *** empty log message ***
  *
- * $Date: 2005-05-23 19:17:52 $
+ * $Date: 2005-05-24 09:32:39 $
  *
  */
 
@@ -261,7 +268,7 @@ extern "C" {
 #endif
 
 
-static const char _sdif_h_cvs_revision_ [] = "$Id: sdif.h,v 1.50 2005-05-23 19:17:52 schwarz Exp $";
+static const char _sdif_h_cvs_revision_ [] = "$Id: sdif.h,v 1.51 2005-05-24 09:32:39 roebel Exp $";
 
 
 #include <stdio.h>
