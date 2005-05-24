@@ -1,4 +1,4 @@
-/* $Id: SdifErrMess.c,v 3.22 2005-05-24 09:33:29 roebel Exp $
+/* $Id: SdifErrMess.c,v 3.23 2005-05-24 18:19:43 roebel Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -31,6 +31,12 @@
  * author: Dominique Virolle 1998
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.22  2005/05/24 09:33:29  roebel
+ * Fixed last checkin comment which turned out to be the start of
+ * a c-comment.
+ * Synchronized the extended ErrorTagET with the new
+ * table of error messages.
+ *
  * Revision 3.21  2005/05/23 19:17:53  schwarz
  * - Sdiffread/Sdiffwrite functions with SdifFileT instead of FILE *
  *   -> eof error reporting makes more sense
@@ -371,11 +377,11 @@ SdifFsPrintError(char* oErrMess, SdifFileT* SdifF, SdifErrorTagET ErrorTag,
 		 const char *UserMess, const char *LibFile, int LibLine)
 {
     char HeadErrMess [512]  = "";
-    char PosErrMess  [64]   = "";;
-    char TextErrMess [512]  = "";;
-    char FramErrMess [512]  = "";;
-    char MtrxErrMess [512]  = "";;
-    char ErrErrMess  [1024] = "";;
+    char PosErrMess  [64]   = "";
+    char TextErrMess [512]  = "";
+    char FramErrMess [512]  = "";
+    char MtrxErrMess [512]  = "";
+    char ErrErrMess  [1024] = "";
 
 #if defined (DEBUG)  ||  defined (_DEBUG)
     sprintf(HeadErrMess,
