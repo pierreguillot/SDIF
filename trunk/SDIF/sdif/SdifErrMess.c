@@ -1,4 +1,4 @@
-/* $Id: SdifErrMess.c,v 3.21 2005-05-23 19:17:53 schwarz Exp $
+/* $Id: SdifErrMess.c,v 3.22 2005-05-24 09:33:29 roebel Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -31,6 +31,13 @@
  * author: Dominique Virolle 1998
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.21  2005/05/23 19:17:53  schwarz
+ * - Sdiffread/Sdiffwrite functions with SdifFileT instead of FILE *
+ *   -> eof error reporting makes more sense
+ * - more cleanup of sdif.h, above functions are private in SdifRWLowLevel.h
+ * - eEof becomes error 4 to be distinguishable from ascii chars
+ * - SdifFScanNameValueLCurrNVT reimplemented for ascii only
+ *
  * Revision 3.20  2005/05/23 17:52:53  schwarz
  * Unified error handling:
  * - SdifErrorEnum (global errors) integrated into SdifErrorTagET (file errors)
@@ -179,9 +186,9 @@ const SdifErrorT gSdifErrMessFormat[] = {
 /* global errors */
 { eFreeNull,		 eFatal,   "Attempt to free a NULL pointer : '%s'\n" },
 { eAllocFail,		 eFatal,   "Attempt to allocate memory : '%s'\n" },
-{ eInvalidPreType,	 eWarning, "Invalid Predefined Type : %s\n" },
 { eArrayPosition,	 eFatal,   "Attempt to access to a non-existing square in an array : '%s'\n" },
 { eFileNotFound,	 eWarning, "File not found or permission denied: \"%s\"\n" },
+{ eInvalidPreType,	 eWarning, "Invalid Predefined Type : %s\n" },
 { eAffectationOrder,	 eWarning, "Affectation must be in order : '%s'\n" },
 { eNoModifErr,		 eWarning, "Type has been defined yet: '%s'\n" },
 { eNotInDataTypeUnion,	 eFatal,   "Type of data Not in DataTypeUnion  : '%s'\n" },
@@ -374,12 +381,12 @@ SdifFsPrintError(char* oErrMess, SdifFileT* SdifF, SdifErrorTagET ErrorTag,
     sprintf(HeadErrMess,
 	    "*Sdif* %s %d (%s, %d):\n  SdifFile: %s",
 	    gSdifErrorLevel [gSdifErrMessFormat[ErrorTag].Level], ErrorTag,
-	    LibFile, LibLine, SdifF ? SdifF->Name : "(no file)");
+	    LibFile, LibLine, SdifF ? SdifF->Name : "(no sdiffile)");
 #else
     sprintf(HeadErrMess,
 	    "*Sdif* %s %d:\n  SdifFile: %s",
 	    gSdifErrorLevel [gSdifErrMessFormat[ErrorTag].Level], ErrorTag, 
-	    SdifF ? SdifF->Name : "(no file)");
+	    SdifF ? SdifF->Name : "(no sdiffile)");
 #endif /* ifdef DEBUG */
 
     if (SdifF)
