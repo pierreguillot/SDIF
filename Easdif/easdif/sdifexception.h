@@ -34,9 +34,12 @@
  * 
  * 
  * 
- * $Id: sdifexception.h,v 1.11 2005-05-20 21:32:20 roebel Exp $ 
+ * $Id: sdifexception.h,v 1.12 2005-05-24 09:55:03 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.11  2005/05/20 21:32:20  roebel
+ * New Seek error exception
+ *
  * Revision 1.10  2004/09/09 19:17:38  roebel
  * Version 1.0.0beta:
  * First complete version of iterator access when reading files. Frame-Iterators use the
@@ -449,7 +452,7 @@ public:
 extern "C"
 {
 void
-ExceptionThrower(int errnum, 
+ExceptionThrower(SdifErrorTagET errnum, 
 		 SdifErrorLevelET errlev, 
 		 char* msg, 
 		 SdifFileT* file, 
