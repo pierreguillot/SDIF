@@ -1,3 +1,30 @@
+2005-05-24  Axel Roebel  <roebel@sam.local>
+Version 3.10.1
+	
+	* include/sdif.h, sdif/SdifErrMess.c, sdif/SdifFGet.c, sdif/SdifFPrint.c, sdif/SdifFRead.c, sdif/SdifFScan.c, sdif/SdifFWrite.c, sdif/SdifHard_OS.h, sdif/SdifMatrix.c, sdif/SdifRWLowLevel.c, sdif/SdifRWLowLevel.h, sdif/SdifTest.c, sdif/SdifFGet.h: 
+	Fixed last checkin comment which turned out to be the start of
+	a c-comment.
+
+	* include/sdif.h, sdif/SdifErrMess.c: 
+	Synchronized the extended ErrorTagET with the new
+	table of error messages.
+	
+	* sdif/SdifFPrint.c, sdif/SdifFPut.c, sdif/SdifFPut.h, sdif/SdifFWrite.c, sdif/SdifFWrite.h:
+	Removed all old versions of ASCII Chunk writing functions that were
+	still based on the Text/Binary output distinction via 
+	function argument. Now the write functions are used for binary
+	and the Put functions used for ASCII files.
+	The writing of the pre 1999 SDIF 
+	ASCII chunks in binary files is no longer possible.
+
+	* test/SdifTypes.STYP:
+	fixed local SdifTypes file which will be used for the tests
+	because it is located in the current directory. Who invented
+	that?
+
+	* configure.in :
+	added -Wall to default compiler options. 
+	
 2005-05-23  schwarz  <schwarz@mac-borghesi.ircam.fr>
 Version 3.10.0
 	
@@ -692,4 +719,4 @@ Version 3.3:
 	  Operating System.
 
 	
-$Id: ChangeLog,v 1.47 2005-05-23 19:21:31 schwarz Exp $
+$Id: ChangeLog,v 1.48 2005-05-24 09:39:21 roebel Exp $
