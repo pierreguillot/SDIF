@@ -33,7 +33,7 @@ namespace Easdif {
   extern "C" {
     
     void
-    ExceptionThrower(int errnum, 
+    ExceptionThrower(SdifErrorTagET errnum, 
 		     SdifErrorLevelET errlev, 
 		     char* msg, 
 		     SdifFileT* file, 
