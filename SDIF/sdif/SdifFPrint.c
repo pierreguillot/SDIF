@@ -1,4 +1,4 @@
-/* $Id: SdifFPrint.c,v 3.14 2005-04-07 15:56:46 schwarz Exp $
+/* $Id: SdifFPrint.c,v 3.15 2005-05-24 09:35:00 roebel Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -31,6 +31,10 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.14  2005/04/07 15:56:46  schwarz
+ * removed some now empty local include files,
+ * added include of <sdif.h> and "SdifGlobals.h"
+ *
  * Revision 3.13  2004/07/22 14:47:56  bogaards
  * removed many global variables, moved some into the thread-safe SdifGlobals structure, added HAVE_PTHREAD define, reorganized the code for selection, made some arguments const, new version 3.8.6
  *
@@ -120,7 +124,7 @@ SdifFPrintNameValueLCurrNVT(SdifFileT *SdifF)
   size_t SizeW = 0;
 
   SizeW += fprintf(SdifF->TextStream, "%s\n", SdifSignatureToString(e1NVT));
-  SizeW += SdifFPutNameValueLCurrNVT (SdifF, 't');
+  SizeW += SdifFPutNameValueLCurrNVT (SdifF);
   SizeW += fprintf(SdifF->TextStream, "\n");
   return SizeW;
 }
@@ -148,7 +152,7 @@ SdifFPrintAllNameValueNVT(SdifFileT *SdifF)
 size_t
 SdifFPrintMatrixType(SdifFileT *SdifF, SdifMatrixTypeT *MatrixType)
 {
-  return SdifFPutOneMatrixType(SdifF, 't', MatrixType);
+  return SdifFPutOneMatrixType(SdifF,  MatrixType);
 }
 
 
@@ -157,7 +161,7 @@ SdifFPrintMatrixType(SdifFileT *SdifF, SdifMatrixTypeT *MatrixType)
 size_t
 SdifFPrintFrameType(SdifFileT *SdifF, SdifFrameTypeT *FrameType)
 {
-  return SdifFPutOneFrameType(SdifF, 't', FrameType);
+  return SdifFPutOneFrameType(SdifF, FrameType);
 }
 
 
@@ -171,7 +175,7 @@ SdifFPrintAllType(SdifFileT *SdifF)
   if ((SdifF->TypeDefPass == eNotPass) || (SdifF->TypeDefPass == eReadPass))
     {      
       SizeW += fprintf(SdifF->TextStream, "%s\n", SdifSignatureToString(e1TYP));
-      SizeW += SdifFPutAllType(SdifF, 't');
+      SizeW += SdifFPutAllType(SdifF);
       SizeW += fprintf(SdifF->TextStream, "\n");
 
       SdifF->TypeDefPass = eWritePass;
@@ -194,7 +198,7 @@ SdifFPrintAllStreamID(SdifFileT *SdifF)
   if ((SdifF->StreamIDPass == eNotPass) || (SdifF->StreamIDPass == eReadPass))
     {      
       SizeW += fprintf(SdifF->TextStream, "%s\n", SdifSignatureToString(e1IDS));
-      SizeW += SdifFPutAllStreamID(SdifF, 't');
+      SizeW += SdifFPutAllStreamID(SdifF);
       SizeW += fprintf(SdifF->TextStream, "\n");
 
       SdifF->StreamIDPass = eWritePass;

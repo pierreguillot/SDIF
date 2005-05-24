@@ -1,4 +1,4 @@
-/* $Id: SdifFWrite.c,v 3.22 2005-05-23 19:17:53 schwarz Exp $
+/* $Id: SdifFWrite.c,v 3.23 2005-05-24 09:35:42 roebel Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -31,6 +31,13 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.22  2005/05/23 19:17:53  schwarz
+ * - Sdiffread/Sdiffwrite functions with SdifFileT instead of FILE *
+ *   -> eof error reporting makes more sense
+ * - more cleanup of sdif.h, above functions are private in SdifRWLowLevel.h
+ * - eEof becomes error 4 to be distinguishable from ascii chars
+ * - SdifFScanNameValueLCurrNVT reimplemented for ascii only
+ *
  * Revision 3.21  2005/04/07 15:57:42  schwarz
  * removed some now empty local include files,
  * added include of <sdif.h> and "SdifGlobals.h"
@@ -287,12 +294,6 @@ SdifFWriteGeneralHeader(SdifFileT *SdifF)
 
 
 
-size_t
-SdifFWriteOneNameValue(SdifFileT *SdifF, SdifNameValueT *NameValue)
-{
-  return SdifFPutOneNameValue(SdifF, 's', NameValue);
-}
-
 
 
 
@@ -341,46 +342,28 @@ SdifFWriteAllNameValueNVT(SdifFileT *SdifF)
 
 size_t
 SdifFWriteOneMatrixType (SdifFileT *SdifF, SdifMatrixTypeT *MatrixType)
-{
-  return SdifFPutOneMatrixType(SdifF, 's', MatrixType);
-}
+{ 
+  SdifColumnDefT    *ColumnDef;
+  size_t            SizeW = 0;
 
-
-
-
-size_t
-SdifFWriteAllMatrixType (SdifFileT* SdifF)
-{
-  return SdifFPutAllMatrixType(SdifF, 's');
-}
-
-
-
-
-size_t
-SdifFWriteOneComponent (SdifFileT *SdifF, SdifComponentT *Component)
-{
-  return SdifFPutOneComponent(SdifF, 's', Component);
-}
-
-
-
-
-
-size_t
-SdifFWriteOneFrameType (SdifFileT *SdifF, SdifFrameTypeT *FrameType)
-{
-  return SdifFPutOneFrameType(SdifF, 's', FrameType);
-}
-
-
-
-
-
-size_t
-SdifFWriteAllFrameType (SdifFileT *SdifF)
-{
-  return SdifFPutAllFrameType(SdifF, 's');
+  if (! SdifListIsEmpty(MatrixType->ColumnUserList))
+    {
+      SizeW += fprintf(SdifF->Stream, "  %s\t", SdifSignatureToString(e1MTD));
+      SizeW += sizeof(SdifSignature) * SdiffWriteSignature(&(MatrixType->Signature), SdifF);
+      SizeW += fprintf(SdifF->Stream, "\t{");
+      
+      ColumnDef = (SdifColumnDefT    *)SdifListGetHead(MatrixType->ColumnUserList); /* Reinit GetNext */
+      SizeW += fprintf(SdifF->Stream, "%s",ColumnDef->Name);
+      
+      while (SdifListIsNext(MatrixType->ColumnUserList))
+        {
+          ColumnDef = (SdifColumnDefT    *)SdifListGetNext(MatrixType->ColumnUserList);
+          SizeW += fprintf(SdifF->Stream, ", %s",ColumnDef->Name);
+        }
+      SizeW += fprintf(SdifF->Stream, "}\n");  
+    }
+  
+  return SizeW;
 }
 
 
@@ -429,14 +412,6 @@ SdifFWriteAllType (SdifFileT *SdifF)
 }
 
 
-
-
-
-size_t
-SdifFWriteOneStreamID(SdifFileT *SdifF, SdifStreamIDT *StreamID)
-{
-  return SdifFPutOneStreamID(SdifF, 's', StreamID);
-}
 
 
 
