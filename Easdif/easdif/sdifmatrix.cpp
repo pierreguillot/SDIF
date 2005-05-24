@@ -32,9 +32,18 @@
  * 
  * 
  * 
- * $Id: sdifmatrix.cpp,v 1.23 2005-05-24 09:53:51 roebel Exp $ 
+ * $Id: sdifmatrix.cpp,v 1.24 2005-05-24 13:13:25 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.23  2005/05/24 09:53:51  roebel
+ * Changed selection management in Easdif:
+ * Before EnableDirectory has been called selection
+ * modification wqorks on the SDIF-Selection, after
+ * enabling the directory a new high level selection mode
+ * is used that can only be used to restrict the secltion by
+ * forming intersections with the existing selections.
+ * This mechanism exists now for stream/frame and matrix selections.
+ *
  * Revision 1.22  2004/09/08 09:16:26  roebel
  * White spaces only.
  *
@@ -313,7 +322,6 @@ int SDIFMatrix::Read(SdifFileT* file,const std::set<SdifSignature> * hlselection
   bytesread += SdifFReadMatrixHeader(file);
   /* for selection */
   
-  std::set<SdifSignature>::const_iterator  hlend;
   bool usehl = (hlselection && ! hlselection->empty());
   if ((!usehl && !SdifFCurrMatrixIsSelected (file))
       || (usehl && hlselection->end() == hlselection->find(SdifFCurrMatrixSignature(file))))
