@@ -1,4 +1,4 @@
-/* $Id: SdifFPut.c,v 3.15 2005-04-07 15:56:47 schwarz Exp $
+/* $Id: SdifFPut.c,v 3.16 2005-05-24 09:35:10 roebel Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -33,6 +33,10 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.15  2005/04/07 15:56:47  schwarz
+ * removed some now empty local include files,
+ * added include of <sdif.h> and "SdifGlobals.h"
+ *
  * Revision 3.14  2003/11/07 21:47:18  roebel
  * removed XpGuiCalls.h and replaced preinclude.h  by local files
  *
@@ -105,7 +109,9 @@
 
 #include <string.h>
 
-#include <sdif.h>
+#include "sdif.h"
+#include "SdifHard_OS.h"
+#include "SdifRWLowLevel.h"
 #include "SdifFPut.h"
 #include "SdifTest.h"
 #include "SdifFile.h"
@@ -116,43 +122,54 @@
 
 
 size_t
-SdifFPutOneNameValue(SdifFileT* SdifF, int Verbose, SdifNameValueT *NameValue)
+SdifFPutOneNameValue(SdifFileT* SdifF, SdifNameValueT *NameValue)
 {
   size_t  SizeW = 0;
-  FILE   *file;
-
-  file = SdifFGetFILE_SwitchVerbose(SdifF, Verbose);
   
-  SizeW += fprintf(file, "%s\t", NameValue->Name);
-  SizeW += fprintf(file, "%s;\n", NameValue->Value);
+  SizeW += fprintf(SdifF->TextStream, "%s\t", NameValue->Name);
+  SizeW += fprintf(SdifF->TextStream, "%s;\n", NameValue->Value);
 
   return  SizeW;
 }
 
+size_t SdifFPutSignature  (SdifFileT *SdifF,SdifSignature *sig){
+
+    SdifSignature SignW;
+
+    switch (gSdifMachineType)
+    {     
+    case eLittleEndian :
+    case eLittleEndian64 :
+      SdifSwap4Copy(sig, &SignW, 1);
+      break;
+      
+    default :
+      SignW = *sig;
+      break;
+    }
+
+    return fwrite(&SignW,1,sizeof(SignW),SdifF->TextStream);
+}
 
 
 
 size_t
-SdifFPutNameValueLCurrNVT (SdifFileT *SdifF, int Verbose)
+SdifFPutNameValueLCurrNVT (SdifFileT *SdifF)
 /* SdifFPutNameValueLCurrNVT doesn't write frame header and padding */
 {
   size_t          SizeW = 0;
   SdifUInt4       iNV;
   SdifHashNT     *pNV;
   SdifHashTableT *HTable;
-  FILE           *file;
-
-
-  file = SdifFGetFILE_SwitchVerbose(SdifF, Verbose);
 
   HTable = SdifF->NameValues->CurrNVT->NVHT;
   
-  SizeW += fprintf(file, "{\n");
+  SizeW += fprintf(SdifF->TextStream, "{\n");
   for(iNV=0; iNV<HTable->HashSize; iNV++)
     for (pNV = HTable->Table[iNV]; pNV; pNV = pNV->Next)
-      SizeW += SdifFPutOneNameValue(SdifF, Verbose, (SdifNameValueT *)pNV->Data);
+      SizeW += SdifFPutOneNameValue(SdifF, (SdifNameValueT *)pNV->Data);
   
-  SizeW += fprintf(file, "}");  
+  SizeW += fprintf(SdifF->TextStream, "}");  
 
   return SizeW;
 }
@@ -193,21 +210,18 @@ SdifFNameValueLCurrNVTtoSdifString (SdifFileT *SdifF, SdifStringT *SdifString)
 }
 
 
-
+//ASCII only
 size_t
-SdifFPutOneMatrixType(SdifFileT* SdifF, int Verbose, SdifMatrixTypeT *MatrixType)
+SdifFPutOneMatrixType(SdifFileT* SdifF,  SdifMatrixTypeT *MatrixType)
 {
   SdifColumnDefT    *ColumnDef;
   size_t            SizeW = 0;
-  FILE              *file;
+  FILE              *file=SdifF->TextStream;  
   
-  
-  file = SdifFGetFILE_SwitchVerbose(SdifF, Verbose);
-
   if (! SdifListIsEmpty(MatrixType->ColumnUserList))
     {
       SizeW += fprintf(file, "  %s\t", SdifSignatureToString(e1MTD));
-      SizeW += sizeof(SdifSignature) * SdiffWriteSignature(&(MatrixType->Signature), file);
+      SizeW += SdifFPutSignature(SdifF,&(MatrixType->Signature));
       SizeW += fprintf(file, "\t{");
 
       ColumnDef = (SdifColumnDefT    *)SdifListGetHead(MatrixType->ColumnUserList); /* Reinit GetNext */
@@ -266,7 +280,7 @@ int SdifFOneMatrixTypeToSdifString(SdifMatrixTypeT *MatrixType, SdifStringT *Sdi
 
 
 size_t
-SdifFPutAllMatrixType(SdifFileT* SdifF, int Verbose)
+SdifFPutAllMatrixType(SdifFileT* SdifF)
 {
   unsigned int   iName;
   SdifHashNT    *pName;
@@ -274,7 +288,7 @@ SdifFPutAllMatrixType(SdifFileT* SdifF, int Verbose)
 
   for(iName=0; iName<SdifF->MatrixTypesTable->HashSize; iName++)
     for (pName = SdifF->MatrixTypesTable->Table[iName]; pName;  pName=pName->Next)
-      SizeW += SdifFPutOneMatrixType(SdifF, Verbose, (SdifMatrixTypeT *)pName->Data);
+      SizeW += SdifFPutOneMatrixType(SdifF, (SdifMatrixTypeT *)pName->Data);
   
   return SizeW;
 }
@@ -309,15 +323,13 @@ int SdifFAllMatrixTypeToSdifString(SdifFileT *SdifF, SdifStringT *SdifString)
 
 
 size_t
-SdifFPutOneComponent(SdifFileT *SdifF, int Verbose, SdifComponentT *Component)
+SdifFPutOneComponent(SdifFileT *SdifF, SdifComponentT *Component)
 {
   size_t   SizeW = 0;
-  FILE    *file;
-
-  file = SdifFGetFILE_SwitchVerbose(SdifF, Verbose);
+  FILE    *file = SdifF->TextStream;
 
   SizeW += fprintf(file, "\t  ");
-  SizeW += sizeof(SdifSignature) * SdiffWriteSignature(&(Component->MtrxS), file);
+  SizeW += SdifFPutSignature(SdifF,&Component->MtrxS);
   SizeW += fprintf(file, "\t%s;\n", Component->Name);
   
   return SizeW;
@@ -351,25 +363,23 @@ SdifFOneComponentToSdifString(SdifComponentT *Component, SdifStringT *SdifString
 
 
 size_t
-SdifFPutOneFrameType(SdifFileT *SdifF, int Verbose, SdifFrameTypeT *FrameType)
+SdifFPutOneFrameType(SdifFileT *SdifF,  SdifFrameTypeT *FrameType)
 {
   SdifUInt4 iC;
   size_t    SizeW = 0;
-  FILE      *file;
+  FILE      *file = SdifF->TextStream;
 
-  file = SdifFGetFILE_SwitchVerbose(SdifF, Verbose);
-  
   if (FrameType->NbComponentUse > 0)
     {
       SizeW += fprintf(file, "  %s\t", SdifSignatureToString(e1FTD));
-      SizeW += sizeof(SdifSignature) * SdiffWriteSignature( &(FrameType->Signature), file);
+      SizeW += SdifFPutSignature(SdifF,&(FrameType->Signature));
       SizeW += fprintf(file, "\n\t{\n");
       for(iC = FrameType->NbComponent - FrameType->NbComponentUse + 1;
           iC<= FrameType->NbComponent;
           iC++)
 	    {
-	      SizeW += SdifFPutOneComponent(SdifF, Verbose,
-                   SdifFrameTypeGetNthComponent(FrameType, iC));
+	      SizeW += SdifFPutOneComponent(SdifF, 
+                                            SdifFrameTypeGetNthComponent(FrameType, iC));
 	    }
       SizeW += fprintf(file, "\t}\n");
     }
@@ -419,7 +429,7 @@ SdifFOneFrameTypeToSdifString(SdifFrameTypeT *FrameType, SdifStringT *SdifString
 
 
 size_t
-SdifFPutAllFrameType(SdifFileT *SdifF, int Verbose)
+SdifFPutAllFrameType(SdifFileT *SdifF)
 {
   unsigned int  iName;
   SdifHashNT   *pName;
@@ -427,7 +437,7 @@ SdifFPutAllFrameType(SdifFileT *SdifF, int Verbose)
 
   for(iName=0; iName<SdifF->FrameTypesTable->HashSize; iName++)
     for (pName = SdifF->FrameTypesTable->Table[iName]; pName;  pName=pName->Next)
-      SizeW += SdifFPutOneFrameType(SdifF, Verbose,(SdifFrameTypeT *) pName->Data);
+      SizeW += SdifFPutOneFrameType(SdifF, (SdifFrameTypeT *) pName->Data);
 
   return SizeW;
 }
@@ -461,16 +471,14 @@ SdifFAllFrameTypeToSdifString(SdifFileT *SdifF, SdifStringT *SdifString)
 
 /* SdifFPutAllType writes no '1TYP', no chunk size and no padding too */
 size_t
-SdifFPutAllType(SdifFileT *SdifF, int Verbose)
+SdifFPutAllType(SdifFileT *SdifF)
 {
   size_t  SizeW = 0;
-  FILE   *file;
+  FILE   *file=SdifF->TextStream;
 
-  file = SdifFGetFILE_SwitchVerbose(SdifF, Verbose);
- 
   SizeW += fprintf(file, "{\n");  
-  SizeW += SdifFPutAllMatrixType(SdifF, Verbose);
-  SizeW += SdifFPutAllFrameType(SdifF, Verbose);  
+  SizeW += SdifFPutAllMatrixType(SdifF);
+  SizeW += SdifFPutAllFrameType(SdifF);  
   SizeW += fprintf(file, "}");
 
   return SizeW;
@@ -480,12 +488,10 @@ SdifFPutAllType(SdifFileT *SdifF, int Verbose)
 
 
 size_t
-SdifFPutOneStreamID(SdifFileT *SdifF, int Verbose, SdifStreamIDT *StreamID)
+SdifFPutOneStreamID(SdifFileT *SdifF, SdifStreamIDT *StreamID)
 {
   size_t   SizeW = 0;
-  FILE    *file;
-
-  file = SdifFGetFILE_SwitchVerbose(SdifF, Verbose);
+  FILE    *file =SdifF->TextStream;
 
   SizeW += fprintf(file, "  %u ", StreamID->NumID);
   SizeW += fprintf(file, "%s:", StreamID->Source);
@@ -534,20 +540,18 @@ SdifFOneStreamIDToSdifString(SdifStringT *SdifString,
 
 /* SdifFPutAllStreamID doesn't write '1IDS', chunk size and padding */
 size_t
-SdifFPutAllStreamID(SdifFileT *SdifF, int Verbose)
+SdifFPutAllStreamID(SdifFileT *SdifF)
 {
   unsigned int     iID;
   SdifHashNT *pID;
   size_t           SizeW = 0;
-  FILE             *file;
-
-  file = SdifFGetFILE_SwitchVerbose(SdifF, Verbose);
+  FILE             *file =SdifF->TextStream;
 
   SizeW += fprintf(file, "{\n");
   
   for(iID=0; iID<SdifF->StreamIDsTable->SIDHT->HashSize; iID++)
     for (pID = SdifF->StreamIDsTable->SIDHT->Table[iID]; pID; pID = pID->Next)
-      SizeW += SdifFPutOneStreamID(SdifF, Verbose, (SdifStreamIDT *)pID->Data);
+      SizeW += SdifFPutOneStreamID(SdifF,  (SdifStreamIDT *)pID->Data);
   
   SizeW += fprintf(file, "}");
 
