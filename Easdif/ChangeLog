@@ -1,5 +1,11 @@
+2005-05-24  Axel Roebel  <Axel.Roebel@ircam.fr>
+Version 1.2.1a
+
+	* easdif/sdifentity.cpp, easdif/sdifmatrix.cpp:
+	Added mising return statements and fixed minor compiler warnings.
+
 2005-05-24  Axel Roebel  <roebel@sam.local>
-Version 1.2.0
+Version 1.2.1
 
 	* easdif/sdifentity.cpp, easdif/sdifentity.h, easdif/sdifframe.cpp, easdif/sdifframe.h, easdif/sdifmatrix.cpp, easdif/sdifmatrix.h, easdif/sdifmatrixdata.h: 
 	Changed selection management in Easdif:
@@ -14,6 +20,7 @@ Version 1.2.0
 	modified for new interface to SdifErrorFunction handlers.
 	
 2005-05-20  Axel Roebel  <Axel.Roebel@ircam.fr>
+Version 1.2.0
 
 	* easdif/easdifintro.h.in, test/tutofini.cpp (Module): 
 	Use new api for frame iterator.
@@ -649,4 +656,4 @@ Version 0.21
 	* ChangeLog: Added changelog to repository.
 
 
-$Id: ChangeLog,v 1.47 2005-05-24 09:55:46 roebel Exp $
+$Id: ChangeLog,v 1.48 2005-05-24 13:13:44 roebel Exp $
