@@ -34,9 +34,15 @@
  * sdifframe.h is composed of the different methods which are using to 
  * manipulate the frame.
  * 
- * $Id: sdifframe.h,v 1.17 2005-05-20 21:32:35 roebel Exp $ 
+ * $Id: sdifframe.h,v 1.18 2005-05-24 09:53:51 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.17  2005/05/20 21:32:35  roebel
+ * Removed remaining functions that were only there for initial tests of
+ * Fabien Tisserand.
+ * Changed the frame directory handling to include only the selected frames and
+ * matrices.
+ *
  * Revision 1.16  2004/11/18 18:05:29  ellis
  * .natural comparator function for Esdif Frames
  * .bug fix in _SetRow
@@ -200,13 +206,20 @@ public:
  * in the SDIFEntity! 
  */
     int  Read(SdifFileT* file, bool &eof);
-
-/**
- * \ingroup rnw 
- * read the frame header (used by Read)
- * @return number of bytes read
- */
-    int  ReadData(SdifFileT* file);
+  
+  /**
+   * \ingroup rnw 
+   * \brief Read Frame Data
+   * read the frame data (used by Read)
+   * \param file SDIFFile  to read from
+   * \param hlsig pointer to std::set of signatures that are used 
+   *              to filter the matrices that will be returned.
+   *              If hlsig is not 0 it is used to select matrices
+   *              instead of thesdif internal selection mechanism
+   *              if hlsig is 0 the sdif internal mechanism is used
+   * @return number of bytes read
+   */
+  int  ReadData(SdifFileT* file,const std::set<SdifSignature>*hlsig=0);
 
 /** 
  * \ingroup rnw

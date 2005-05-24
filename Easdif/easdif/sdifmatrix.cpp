@@ -32,9 +32,12 @@
  * 
  * 
  * 
- * $Id: sdifmatrix.cpp,v 1.22 2004-09-08 09:16:26 roebel Exp $ 
+ * $Id: sdifmatrix.cpp,v 1.23 2005-05-24 09:53:51 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.22  2004/09/08 09:16:26  roebel
+ * White spaces only.
+ *
  * Revision 1.21  2004/07/21 13:27:07  roebel
  * Added new data accessing functions to read complete columns
  * GetCol(double *,int icol), GetCol(float *,int icol), GetCol(int *,int icol)
@@ -144,6 +147,7 @@
 
 
 #include <iostream>
+#include <set>
 #include "easdif/easdif_config.h"
 #include "easdif/sdifmatrix.h"
 
@@ -297,8 +301,10 @@ int SDIFMatrix::Write(SdifFileT* file)
     return SizeFrameW;
 }
 
+
+
 /* when reading a matrix, this return the count of bytes and create a matrix which keep the values  */
-int SDIFMatrix::Read(SdifFileT* file)
+int SDIFMatrix::Read(SdifFileT* file,const std::set<SdifSignature> * hlselection)
 {
   // remember file that we read from
   mFile = file;
@@ -306,7 +312,11 @@ int SDIFMatrix::Read(SdifFileT* file)
   bytesread = 0;
   bytesread += SdifFReadMatrixHeader(file);
   /* for selection */
-  if (!SdifFCurrMatrixIsSelected (file))
+  
+  std::set<SdifSignature>::const_iterator  hlend;
+  bool usehl = (hlselection && ! hlselection->empty());
+  if ((!usehl && !SdifFCurrMatrixIsSelected (file))
+      || (usehl && hlselection->end() == hlselection->find(SdifFCurrMatrixSignature(file))))
     {
       //bytesread += SdifFSkipMatrixData(file);
       SdifFSkipMatrixData(file);
@@ -329,6 +339,7 @@ int SDIFMatrix::Read(SdifFileT* file)
     bytesread += mInter->read(file);
     return bytesread;
 }
+
 
 /* to see the matrix */
 void SDIFMatrix::Print()

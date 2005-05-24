@@ -32,9 +32,19 @@
  * 
  * 
  * 
- * $Id: sdifentity.h,v 1.31 2005-05-20 21:32:12 roebel Exp $ 
+ * $Id: sdifentity.h,v 1.32 2005-05-24 09:53:51 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.31  2005/05/20 21:32:12  roebel
+ * Increased consistence and documentation of SDIF frame directory
+ * and SDIF frame iterator. The directory is now limited
+ * to only the selected frames, streams and matrices.
+ * Added new functions to restrict and reestablish
+ * signature selections.
+ * selections modifications are disabled whenever the
+ * FrameDirectory is enabled and not yet finished.
+ * Added member function to test for seekability.
+ *
  * Revision 1.30  2005/05/03 16:31:48  roebel
  * Fixed documentation.
  *
@@ -190,9 +200,25 @@
 /* for initialise SDIF library and install exception*/
 #include "easdif/sdifinit.h"
 
+
+#if defined( __GNUC__) && __GNUC__ > 2
+#include <ext/hash_set>
+#define HASH_NAME_SPACE __gnu_cxx::
+#else
+#include <hash_set>
+#if __MWERKS__
+#define HASH_NAME_SPACE Metrowerks::
+#else
+#define HASH_NAME_SPACE std::
+#endif
+#endif
+
+
 namespace Easdif {
 
   struct SDIFLocation;
+  class  SDIFEntity;
+
 
   /**
    * \defgroup  directory SDIFEntity - Directory 
@@ -207,22 +233,32 @@ namespace Easdif {
    * for all the frames and matrices that have been selected when
    * the directoy has been enabled.  The directory contains the information
    * found in the frame header as well as
-   * the list of selected matrices in the frame.
+   * the list of selected matrices in the frame using the SDIF selection 
+   * that is valid  at the time when EnableFrameDir() has ben called.
    * 
-   * The internal directory can be otained and parsed by means of 
+   * The internal directory can be otained  by means of 
    * Easdif::SDIFEntity::GetDirectory(). The use of the frame iterators 
    * Easdif::SDIFEntity::iterator and Easdif::SDIFEntity::const_iterator
-   * rely on the directory, so you should enable the directry if you want to 
+   * rely on the directory, so you need to enable the directory if you want to 
    * use the iterators.
    *
-   * The use of selection requires some attention. After the framedirectory has been
-   * enabled the selection modification is no longer possible, because changing the selection
-   * may lead to a inconsistent directory. After the directory has been filled (the file has been)
-   * read up to the end, only four functions related to Selections
-   * are allowed: Easdif::SDIFEntity::ReestablishFrameSelection(),
-   * Easdif::SDIFEntity::ReestablishMatrixSelection(),
-   * Easdif::SDIFEntity::RestrictMatrixSelection(const std::vector<SdifSignature>& sigs), and 
-   * Easdif::SDIFEntity::RestrictFrameSelection(const std::vector<SdifSignature>& sigs)
+   * The use of selection requires some attention. As long as the
+   * FrameDirectory is not enabled the Selection functions \ref seclection
+   * work on the low level selection that has been initialized by the 
+   * file name based  selection. 
+   * After the framedirectory has been enabled only the following functions 
+   * are allowed:
+   * Easdif::SDIFEntity::RestrictMatrixSelection(const std::set<SdifSignature>& sigs), and 
+   * Easdif::SDIFEntity::RestrictFrameSelection(const std::set<SdifSignature>& sigs)
+   * Easdif::SDIFEntity::RestrictStreamSelection(const std::set<SdifSignature>& sigs)
+   *    Easdif::SDIFEntity::ReestablishStreamSelection(),
+   *   Easdif::SDIFEntity::ReestablishFrameSelection(),
+   * Easdif::SDIFEntity::ReestablishMatrixSelection().
+   *
+   * The restrict function create a selection that contains the intersection
+   * of the existing selection and the set of elements that is given as 
+   * argument. The reestablish functions will reestablish the selection
+   * that has ben active when the frame directory has been initiialized.
    */
 
 
@@ -401,444 +437,6 @@ namespace {
   };
 }
 
-  /**
-   * @brief bidrectional  iterator 
-   *\ingroup directory
-   *
-   * An iterator class that will
-   * iterate over all selected frames  in the SDIFEntity 
-   * Note that write access to the frame pointed to by the iterator 
-   * will change a frame in memory and will not yet be written into the file
-   *
-   * An FRIterator always indicates a selected frame in the SDIF file.
-   * The frame can be obtained by means of dereferencing the iterator.  
-   *
-   * the frame iterator organizes the Directory as a ring of frames
-   * iterating to the end in both directions (up and down) will finally result in
-   * an iterator matching FRIterator::end(); 
-   *
-   */
-  template<int CONST>
-  class FRIterator {
-    typename Base_Iterator<0>::basic_iterator mBase;
-   //typename std::list<SDIFLocation>::iterator mBase;
-    SDIFEntity   *mpEnt;      // internal pointer to entity that the iterator works on
-    SDIFFrame     mFrame;     // internal frame to hold the current frame
-    bool          mlEndUP;    // if true signals no further selected frame when moving to start of file
-    bool          mlEndDOWN;  // if true signals no further selected frame when moving to end of file
-    bool          mlFrameIsLoaded;  // true if mFrame holds the frame that the iterator is pointing too.
-  private:
-    
-    
-    friend class FRIterator<swap_const<CONST>::CONSTINV>;
-    friend class SDIFEntity;
-    typedef typename Base_Iterator<CONST>::basic_iterator basic_iterator;
-    //typedef std::list<SDIFLocation>::iterator basic_iterator;
-
-    /**
-     *  \brief synchronize iterator position and file pointer position
-     *
-     *  Internal function!
-     * 
-     *  position the entity iterator such that it points to a selected
-     *  frame ( a frame that itself is selected and
-     *  contains a selected matrix) or to FRIterator::end() if no further frame 
-     *  is selected
-     * 
-     * @param up (if true move forward in time to find the next selected frame)
-     *
-     */   
-    void initIterator(bool up) {
-      SdifSelectionT *sel   = mpEnt->GetFile()->Selection;
-      bool matrixSelection = !SdifListIsEmpty (sel->matrix);
-
-      //position to next selected frame or end() if not found
-      if(mBase!=
-         mpEnt->mFrameDirectory.end() ||
-         (!mlEndDOWN && !up)|| (!mlEndUP && up)) {
-
-        if(!mpEnt->mFrameDirectory.empty() && (mlEndUP || mlEndDOWN)
-           && mBase== mpEnt->mFrameDirectory.end()) {
-
-          if(mlEndDOWN && up)
-            {mBase = mpEnt->mFrameDirectory.begin(); mlEndDOWN=false;}
-          if(mlEndUP  && !up) 
-            {--mBase; mlEndUP= false;}
-        }
-
-        while(mBase!=
-              mpEnt->mFrameDirectory.end()){
-
-          if(SdifFrameIsSelected(&(mBase->mFrameHdr),sel)) {
-            if(matrixSelection) {              
-              SdifUInt4 nb = mBase->LocNbMatrix();
-              for(SdifUInt4 i  = 0; i< nb;++i){
-                if(SdifSelectTestSignature (sel->matrix,mBase->LocMSignature(i) )){
-                  return;
-                }
-              }
-            }
-            else {
-              return;
-            }
-          }
-          if(up)
-            ++mBase;
-          else{
-            if(mBase == mpEnt->mFrameDirectory.begin() )
-              break;
-            else
-              --mBase;                
-          }
-        }
-      }
-
-      if(up && !mpEnt->mEofSeen) {      
-        if(mpEnt->ReadNextSelectedFrame(mFrame)){
-          mBase = --mpEnt->mFrameDirectory.end();
-          mlFrameIsLoaded = true;
-          return;
-        }
-      }
-
-      // signal not found for both directions is end of File      
-      mBase = mpEnt->mFrameDirectory.end();
-      if(up)
-        mlEndUP   = true;
-      else
-        mlEndDOWN = true;
-      mlFrameIsLoaded = true;
-      return;
-    }
-
-
-  public:
-    typedef typename basic_iterator::iterator_category  iterator_category;
-    typedef SDIFFrame        value_type;
-    typedef typename basic_iterator::difference_type   difference_type;
-    typedef typename IteratorTypes<CONST>::pointer       pointer;
-    typedef typename IteratorTypes<CONST>::reference     reference;
-
-     
-    /// \ingroup directory
-    /// get the SDIFLocation for the iterators current frame position 
-    const
-    SDIFLocation& GetLoc() {
-      if(mBase == mpEnt->mFrameDirectory.end())
-        return mpEnt->endLoc;
-      return *mBase;
-    }
-    
-    /// \ingroup directory
-    /// get the SDIFLocation for the iterators current frame position 
-    const
-    SDIFLocation& GetLoc() const {
-      if(mBase == mpEnt->mFrameDirectory.end())
-        return mpEnt->endLoc;
-      return *mBase;
-    }
-
-       
-    /// \ingroup directory
-    /// constructor
-    FRIterator () : mpEnt(0),mlEndUP(false),mlEndDOWN(false),mlFrameIsLoaded(false)  {};
-
-    /// \ingroup directory
-    /// copy constructor
-    FRIterator (const FRIterator<CONST> & in) : 
-      mBase(in.mBase),mpEnt(in.mpEnt), 
-      mlEndUP(in.mlEndUP),mlEndDOWN(in.mlEndDOWN),mlFrameIsLoaded(false)
-    {    };
-
-    /// \ingroup directory
-    /// copy constructor
-    FRIterator (const FRIterator<swap_const<CONST>::CONSTINV> & in) : 
-      mBase(in.mBase), mpEnt(in.mpEnt), 
-      mlEndUP(in.mlEndUP), mlEndDOWN(in.mlEndDOWN), mlFrameIsLoaded(false)     
-    {    };
-	
-    /** 
-     * \brief  const constructor from entity pointer  and directory iterator
-     * \ingroup directory
-     * 
-     * @param _ent pointer to SDIFentity
-     * \param it   directory iterator to use for initialization
-     * @param end  if true create iterator pointing to end of file, else
-     *             create iterator pointing to current frame 
-     */
-    FRIterator (const SDIFEntity *  _ent, Directory::iterator& it, bool end) : 
-      mBase(end && it == _ent->mFrameDirectory.end() ? 
-            const_cast<SDIFEntity *>(_ent)->mFrameDirectory.end() : it),
-      mpEnt(const_cast<SDIFEntity *>(_ent)),mlFrameIsLoaded(false)
-    {
-      if(!_ent->IsFrameDir() ) {
-        throw SDIFDirError(eError,
-                           "Error in SDIFEntity::FRIterator:: !!! Iterator can only be used if frame directoy is enabled !!!",
-                           0,eUnknown,0,0);
-
-      }
-      mlEndUP    = (end&& it == mpEnt->mFrameDirectory.end()) 
-        || (mBase == mpEnt->mFrameDirectory.end()&&mpEnt->mEofSeen);
-      mlEndDOWN  = false;
-      if(!mlEndUP) {
-        initIterator(true);
-      }      
-    }
-
-    /** 
-     * \brief  constructor from entity pointer and directory iterator
-     * \ingroup directory
-     * 
-     * @param _ent pointer to SDIFentity
-     * \param it   directory iterator to use for initialization
-     * @param end  if true create iterator pointing to end of file, else
-     *             create iterator pointing to current frame 
-     */
-    FRIterator (SDIFEntity *  _ent, Directory::iterator& it, bool end) : 
-      mBase(end && it == _ent->mFrameDirectory.end() ?  _ent->mFrameDirectory.end() : it),
-      mpEnt(_ent),mlFrameIsLoaded(false)
-    {
-      if(!_ent->IsFrameDir() ) {
-        throw SDIFDirError(eError,
-                           "Error in SDIFEntity::FRIterator:: !!! Iterator can only be used if frame directoy is enabled !!!",
-                           0,eUnknown,0,0);
-
-      }
-      mlEndUP    = (end&& it == mpEnt->mFrameDirectory.end()) 
-        || (mBase == mpEnt->mFrameDirectory.end()&&mpEnt->mEofSeen);
-      mlEndDOWN  = false;
-      if(!mlEndUP) {
-        initIterator(true);
-      }      
-    }
-	
-    ~FRIterator ( ) {};
-	
-    /** 
-     * \brief increment iterator
-     * \ingroup directory
-     * 
-     * when returning the iterator will point to the next selected frame 
-     * the frame is read and stored internally if it is parsed for the first time.
-     * Otherwise the selection operation is performed using the internal directory
-     * and the frame will be read only if the iterator will be dereferenced. 
-     *
-     * @return iterator pointing to next selected frame 
-     */
-    FRIterator& operator ++() {
-      mlFrameIsLoaded = false;
-      mFrame.ClearData();
-
-      if(!mlEndUP ) {
-        if(mBase!=mpEnt->mFrameDirectory.end()) 
-          ++mBase;
-
-        initIterator(true);
-      }    
-      return *this;
-    }
-	
-    /** 
-     * \brief postfix increment iterator
-     * \ingroup directory
-     * 
-     * when returning the iterator will point to the next selected frame 
-     * the frame is read and stored internally if it is parsed for the first time.
-     * Otherwise the selection operation is performed using the internal directory
-     * and the frame will be read only if the iterator will be dereferenced. 
-     *
-     * @return iterator pointing to currently selected frame 
-     */
-    FRIterator operator ++(int) {
-      FRIterator tmp=*this;
-      this->operator++();
-      return tmp;
-    }
-		
-    
-    /** 
-     * \brief decrement iterator
-     * \ingroup directory
-     * 
-     * when returning the iterator will point to the previous selected frame 
-     * the frame is read and stored internally if it is parsed for the first time.
-     * Otherwise the selection operation is performed using the internal directory
-     * and the frame will be read only if the iterator will be dereferenced. 
-     *
-     * @return iterator pointing to next selected frame 
-     */
-    FRIterator& operator --() {
-      mFrame.ClearData();
-      mlFrameIsLoaded = false;
-      if(!mlEndDOWN) {
-        // we decrement from end of file iterator
-        // here we need to read the whole file to point to the correct position
-        if(mBase==
-           mpEnt->mFrameDirectory.end() && !mpEnt->mEofSeen) {
-          
-          while(!mpEnt->eof()) {
-            mpEnt->ReadNextSelectedFrame(mFrame);
-          }        
-        }
-
-        if(mBase != mpEnt->mFrameDirectory.begin()){          
-          --mBase;
-          mlEndUP = false;
-          initIterator(false);      
-        }
-        else{
-          mBase     = mpEnt->mFrameDirectory.end();
-          mlEndDOWN = true;
-          mlFrameIsLoaded = true;
-        }
-      }
-      return *this;
-    }
-	
-    /** 
-     * \brief postfix decrement iterator
-     * \ingroup directory
-     * 
-     * when returning the iterator will point to the next selected frame 
-     * the frame is not read and stored internally, so no real file movement is really
-     * done. Therefore iterator decrement is even possible for pipes.
-     *
-     * @return iterator pointing to currently selected frame 
-     */
-    FRIterator operator --(int) {
-      FRIterator tmp=*this;
-      this->operator--();
-      return tmp;
-    }
-	
-
-    /** 
-     * \brief dereference
-     * \ingroup directory
-     * 
-     * at this point the frame the iterator is currently pointing 
-     * is forced to be loaded from file 
-     * 
-     * @return reference to frame
-     */
-    reference operator*()  { 
-      if(!mlFrameIsLoaded) {
-        GotoPos();
-        if(mpEnt->ReadNextFrame(mFrame) ) {
-          mlFrameIsLoaded = true;            
-        }
-      }
-      return mFrame;
-    }
-
-    /** 
-     * \brief dereference
-     * \ingroup directory
-     * 
-     * at this point the frame the iterator is currently pointing 
-     * is forced to be loaded from file 
-     * 
-     * @return reference to frame
-     */
-    const reference operator*() const { 
-      if(!mlFrameIsLoaded) {
-        GotoPos();
-        if(mpEnt->ReadNextFrame(mFrame) ) {
-          mlFrameIsLoaded = true;            
-        }
-      }
-
-      return mFrame;      
-    }
-    
-    /** 
-     * \brief member access
-     * \ingroup directory
-     * 
-     * at this point the frame the iterator is currently pointing 
-     * is forced to be loaded from file 
-     * 
-     * @return pointer to frame
-     */
-    pointer operator->() const {      
-      if(!mlFrameIsLoaded) {
-        GotoPos();
-        if(mpEnt->ReadNextFrame(mFrame) ) {
-          mlFrameIsLoaded = true;            
-        }
-      }
-      return &mFrame;
-    }
-
-    /** 
-     * \brief member access
-     * \ingroup directory
-     * 
-     * at this point the frame the iterator is currently pointing 
-     * is forced to be loaded from file 
-     * 
-     * @return pointer to frame
-     */
-    pointer operator->()  {      
-      if(!mlFrameIsLoaded) {
-        GotoPos();
-        if(mpEnt->ReadNextFrame(mFrame) ) {
-          mlFrameIsLoaded = true;            
-        }
-      }
-      return &mFrame;
-    }
-
-    /**
-     *  \ingroup directory
-     *  \brief seek file read pointer position to the frame the iterator point's to
-     *
-     *  after calling GotoPos the frame signature has been read
-     *  and the next sdif read will read the frame header of the next
-     *  frame. Exception is thron in case of successfull seek but
-     *  error reading the next frame header.
-     *
-     *  \return true if position has been achieved
-     */
-    bool GotoPos() throw(SDIFSeekError)  {
-      SdiffPosT pos = mBase->LocPos();
-      mpEnt->mCurrDirPos   = mBase;
-      mpEnt->mEof   = false;
-      if(!mpEnt->GetFile()->isSeekable) 
-        return false;
-      if(-1==SdiffSetPos(mpEnt->GetFile()->Stream,&pos)) {
-        return false;
-      }
-      
-      if(mpEnt->mOpen & 2) {
-        size_t SizeR = 0;
-        SdifFGetSignature(mpEnt->GetFile(), &SizeR);            
-        if(SizeR!=sizeof(SdifSignature)){
-          throw SDIFSeekError(eError,
-                              "Error in  SDIFEntity::FRIterator::GotoPos()!!!error while seeking  !!!",
-                              0,eUnknown,__FILE__,__LINE__);
-        }
-      }
-      
-      return true;
-    }
-
-
-
-    /// equal comparision between SDIFEntity::iterator 
-    template<int OC>
-    bool operator==(const FRIterator<OC>& i)const {
-      return((i.mlEndUP  ||i.mlEndDOWN) == (mlEndUP || mlEndDOWN)  && i.mBase == mBase);
-    }
-
-    /// not equal comparision between SDIFEntity::iterator 
-    template<int OC>
-    bool operator!=(const  FRIterator<OC>& i)const {
-      return !operator==(i);
-    }
-
-  };
-
 
 
 
@@ -888,14 +486,27 @@ private:
   mutable Directory::iterator mCurrDirPos;
   bool isFrameDirEnabled;
   const SDIFLocation endLoc;
-
-  bool          mlMatrixSigsRead; // true if matrix signature selection list has been read form the SDifFile
-  std::vector<SdifSignature> mvMatrixSigs; // matrix selection list of the initial user selection
-  bool          mlFrameSigsRead;  // true if frame signature selection list has been read form the SDifFile
-  std::vector<SdifSignature> mvFrameSigs; // frame selection list of the initial user selection
   
+  SdifListP	streamSelection;
+  SdifListP     frameSelection;
+  SdifListP     matrixSelection;
+
+  bool          mlMatrixSelectionRead; // true if matrix signature selection list has been read form the SDifFile
+  std::set<SdifSignature> msMatrixSelection; // matrix selection list of the initial user selection
+  bool          mlFrameSelectionRead;  // true if frame signature selection list has been read form the SDifFile
+  std::set<SdifSignature> msFrameSelection; // frame selection list of the initial user selection
+  bool          mlStreamSelectionRead;  // true if frame signature selection list has been read form the SDifFile
+  std::set<unsigned int>  msStreamSelection;
+  bool          mlStreamSelectionIsOpen;
+
+  std::set<unsigned int>  msHighLevelStreamSelection;
+  std::set<SdifSignature> msHighLevelMatrixSelection;
+  std::set<SdifSignature> msHighLevelFrameSelection;
+
 public: 
 
+  template<int CONST>
+  class FRIterator;
 
 
   /// \ingroup directory
@@ -1158,7 +769,7 @@ public:
    * 
    * @return true if file and returned selection is valid.
    */
-  bool GetMatrixSelection(std::vector<SdifSignature>& out) const;
+  bool GetMatrixSelection(std::set<SdifSignature>& out) const;
 
   /** 
    * \ingroup selection
@@ -1170,6 +781,8 @@ public:
    */
   bool TestMatrixSelection(SdifSignature sig) const;
 
+
+
   /** 
    * \ingroup selection
    * \brief get the vector of selected frame signatures that exist for the current file
@@ -1179,7 +792,7 @@ public:
    * 
    * @return true if file and returned selection is valid.
    */
-  bool GetFrameSelection(std::vector<SdifSignature>& out) const;
+  bool GetFrameSelection(std::set<SdifSignature>& out) const;
 
   /** 
    * \ingroup selection
@@ -1191,25 +804,103 @@ public:
    */
   bool TestFrameSelection(SdifSignature sig) const;
 
+  /** 
+   * \ingroup selection
+   * \brief get the set of selected streamid's that exist for the current file
+   * 
+   * @param out vector to be filled with existing selection, empty result
+   *        indicates no selection
+   * \param isOpen  returns as true if the selection is an open set all ids after
+   *                last streamid are selected as well. 
+   *
+   * @return true if file and returned selection is valid.
+   */
+  bool GetStreamSelection(std::set<unsigned int>& out, bool &isOpen) const;
+
+  /** 
+   * \ingroup selection
+   * \brief test whether a given streamid is part of the current selection
+   * 
+   * @param streamid to test
+   * 
+   * @return true if the given streamid is selected (or if no matrix selection exists at all)
+   */
+  bool TestStreamSelection(unsigned int streamid) const;
+
+
 private:
+
+
+  // test whether aFrame matches a highlevel selection
+  bool isFrameHLSelected(unsigned int streamid, SdifSignature sig){
+    bool streammatch = (msHighLevelStreamSelection.empty() ||
+                         (msHighLevelStreamSelection.end() ==
+                          msHighLevelStreamSelection.find(streamid)));
+    bool framematch  = (msHighLevelFrameSelection.empty() ||
+                         (msHighLevelFrameSelection.end() ==
+                          msHighLevelFrameSelection.find(sig)));
+    return streammatch && framematch;
+  }
+
   /** 
    * \ingroup selection
    * \brief   create a selection list containing the given signatures 
    * 
-   * @param listsel   A selection list pointer obtained from the current SdifFile
+   * @param listsel   A selection list pointer in which the selection list shall
+   *                  be established
    * @param sigs      vector of signatures to use to create the selection list
    * 
    * @return  true if successful created
    */
-  bool CreateSignatureSelection(SdifListT* listsel,const std::vector<SdifSignature>& sigs);
+  bool CreateSignatureSelection(SdifListT* listsel,const std::set<SdifSignature>& sigs);
+
+
+  
+  /** 
+   * \ingroup selection
+   * \brief   create a sdif selection containing the given ids 
+   * 
+   * @param listsel   A selection  pointer obtained from the current SdifFile
+   * @param streams   set of streamids to use to create the selection list
+   * \param _isOpen   if true create an open stream selection (all streams larger than
+   *  the last one given wil be included)
+   * 
+   * @return  true if successful created
+   */
+  bool CreateStreamSelection(SdifSelectionT *sel,
+                             const std::set<unsigned int>& streams,
+                             bool _isOpen);
+
+
+  /** 
+   * \brief create an empty StreamSelection 
+   *
+   * here empty is the real empty where no stream will be selected,
+   * this function is only useful to have consistent behavior of 
+   * RestrictStreamSelection().
+   *
+   * @param sel create a selection that will have no stream selected
+   * 
+   * @return true if successful
+   */
+  bool CreateEmptyStreamSelection(SdifSelectionT *sel);
 
   /// \ingroup selection
   /// remove the state of previous frame and matrix selections
   void ClearSelectionState() {
-    mlMatrixSigsRead = false;
-    mvMatrixSigs.clear();
-    mlFrameSigsRead  = false;
-    mvFrameSigs.clear();
+    if(mlStreamSelectionRead) {
+      msStreamSelection.clear();
+      mlStreamSelectionIsOpen = false;
+      mlStreamSelectionRead   = false;
+    }
+    if(mlFrameSelectionRead) {
+      msFrameSelection.clear();
+      mlFrameSelectionRead = false;
+    }
+    if(mlMatrixSelectionRead) {
+      msMatrixSelection.clear();
+      mlMatrixSelectionRead = false;
+    }    
   }
 
 public:
@@ -1224,24 +915,26 @@ public:
    * This function can be called after EnableFrameDir() has ben called
    * but only after the frame directory is completed (an eof has been read)
    *
-   * @param sigs    vector of signatures that should remain selected
+   * @param sigs    set of signatures that should remain selected
    * 
    * @return  true if successful created
    */
-  bool RestrictFrameSelection(const std::vector<SdifSignature>& sigs);
+  bool RestrictFrameSelection(const std::set<SdifSignature>& sigs);
 
   /** 
    * \ingroup selection
    * \brief reestablish a previous state of frame signature selection
    *
-   * This function can be called after EnableFrameDir() has ben called
-   * but only after the frame directory is completed (an eof has been read)
-   * It will reestablish the selection state after the file has opened, or, if the FrameDirectory
-   * is used, the state of selection when EnableFrameDir() has been called.
+   * This function can either be called before or after EnableFrameDir() has been called.
+   * In the first case it wil reestablish the frame selection that was initially given 
+   * as part opf the filename.
+   * In the second case it will reestablish the selection that was valid at the time
+   * when EnableFrameDir() has been called.
    *
    * @return true if successful reestablished
    */
   bool ReestablishFrameSelection();
+
 
   /** 
    * \ingroup selection
@@ -1253,25 +946,58 @@ public:
    * This function can be called after EnableFrameDir() has ben called
    * but only after the frame directory is completed (an eof has been read)
    * 
-   * @param sigs    vector of signatures that should remain selected
+   * @param sigs    set of signatures that should remain selected
    * 
    * @return  true if successful created
    */
-  bool RestrictMatrixSelection(const std::vector<SdifSignature>& sigs);
+  bool RestrictMatrixSelection(const std::set<SdifSignature>& sigs);
 
   /** 
    * \ingroup selection
    * \brief reestablish a previous state of matrix signature selection
    * 
-   * This function can be called after EnableFrameDir() has ben called
-   * but only after the frame directory is completed (an eof has been read)
-   * It will reestablish the selection state after the file has opened, or, if the FrameDirectory
-   * is used, the state of selection when EnableFrameDir() has been called.
+   * This function can either be called before or after EnableFrameDir() has been called.
+   * In the first case it wil reestablish the frame selection that was initially given 
+   * as part opf the filename.
+   * In the second case it will reestablish the selection that was valid at the time
+   * when EnableFrameDir() has been called.
    *
    * @return true if successful reestablished
    */
   bool ReestablishMatrixSelection();
 
+
+  /** 
+   * \ingroup selection
+   * \brief   restrict the streamid selection 
+   *
+   * The strem selection is updated to contain the intersection between the existing 
+   * and the given list of ids. 
+   *
+   * As long as EnableFrameDir() has not been called thsi function works on
+   * the low level SDIF selection, otherwise it establishes a high level selection
+   * that can be used with the Directory;
+   * 
+   * @param sigs    set of signatures that should remain selected
+   * 
+   * @return  true if successful created
+   */
+  bool RestrictStreamSelection(const std::set<unsigned int>& streamid);
+
+
+  /** 
+   * \ingroup selection
+   * \brief reestablish a previous state of stream signature selection
+   * 
+   * This function can either be called before or after EnableFrameDir() has been called.
+   * In the first case it wil reestablish the frame selection that was initially given 
+   * as part opf the filename.
+   * In the second case it will reestablish the selection that was valid at the time
+   * when EnableFrameDir() has been called.
+   *
+   * @return true if successful reestablished
+   */
+  bool ReestablishStreamSelection();
 
 /*************************************************************************/
 /* Operation with a file */
@@ -1576,13 +1302,489 @@ public:
     int WriteFrame(SDIFFrame& frame);
     
 
-/*
-  TODO
-  int GetColumnIndex(SdifSignature matrixsig, std::string columnname);	// do this after Open
-*/
+  /**
+   * @brief bidrectional  iterator 
+   *\ingroup directory
+   *
+   * An iterator class that will
+   * iterate over all selected frames  in the SDIFEntity 
+   * Note that write access to the frame pointed to by the iterator 
+   * will change a frame in memory and will not yet be written into the file
+   *
+   * An FRIterator always indicates a selected frame in the SDIF file.
+   * The frame can be obtained by means of dereferencing the iterator.  
+   *
+   * the frame iterator organizes the Directory as a ring of frames
+   * iterating to the end in both directions (up and down) will finally result in
+   * an iterator matching FRIterator::end(); 
+   *
+   */
+  template<int CONST>
+  class FRIterator {
+    typename Base_Iterator<0>::basic_iterator mBase;
+   //typename std::list<SDIFLocation>::iterator mBase;
+    SDIFEntity   *mpEnt;      // internal pointer to entity that the iterator works on
+    SDIFFrame     mFrame;     // internal frame to hold the current frame
+    bool          mlEndUP;    // if true signals no further selected frame when moving to start of file
+    bool          mlEndDOWN;  // if true signals no further selected frame when moving to end of file
+    bool          mlFrameIsLoaded;  // true if mFrame holds the frame that the iterator is pointing too.
+  private:
+    
+    
+    friend class FRIterator<swap_const<CONST>::CONSTINV>;
+    friend class SDIFEntity;
+    typedef typename Base_Iterator<CONST>::basic_iterator basic_iterator;
+    //typedef std::list<SDIFLocation>::iterator basic_iterator;
 
+    /**
+     *  \brief synchronize iterator position and file pointer position
+     *
+     *  Internal function!
+     * 
+     *  position the entity iterator such that it points to a selected
+     *  frame ( a frame that itself is selected and
+     *  contains a selected matrix) or to FRIterator::end() if no further frame 
+     *  is selected
+     * 
+     * @param up (if true move forward in time to find the next selected frame)
+     *
+     */   
+    void initIterator(bool up) {
+      SdifSelectionT *sel     = mpEnt->GetFile()->Selection;
+
+      // The frame direcory is enabled so the matrix selection
+      // is either in msMatrixSelection or (if restrict selection has been used)
+      // in msHighLevelMatrixSelection.
+      bool matrixSelection    = !mpEnt->msMatrixSelection.empty(); 
+      bool hlmatrixSelection  = !mpEnt->msHighLevelMatrixSelection.empty(); 
+
+      //position to next selected frame or end() if not found
+      if(mBase!=
+         mpEnt->mFrameDirectory.end() ||
+         (!mlEndDOWN && !up)|| (!mlEndUP && up)) {
+
+        if(!mpEnt->mFrameDirectory.empty() && (mlEndUP || mlEndDOWN)
+           && mBase== mpEnt->mFrameDirectory.end()) {
+
+          if(mlEndDOWN && up)
+            {mBase = mpEnt->mFrameDirectory.begin(); mlEndDOWN=false;}
+          if(mlEndUP  && !up) 
+            {--mBase; mlEndUP= false;}
+        }
+
+        while(mBase!=
+              mpEnt->mFrameDirectory.end()){
+
+          if(SdifFrameIsSelected(&(mBase->mFrameHdr),sel)
+             && (mpEnt->msHighLevelFrameSelection.empty()
+                 || (mpEnt->msHighLevelFrameSelection.end()
+                     != mpEnt->msHighLevelFrameSelection.find(mBase->mFrameHdr.Signature)))) {
+            if(hlmatrixSelection) {
+              SdifUInt4 nb = mBase->LocNbMatrix();
+              for(SdifUInt4 i  = 0; i< nb;++i){
+                if(mpEnt->msHighLevelMatrixSelection.end()
+                   != mpEnt->msHighLevelMatrixSelection.find(mBase->LocMSignature(i)))
+                  return;
+              }
+            }
+            else if (matrixSelection){
+              SdifUInt4 nb = mBase->LocNbMatrix();
+              for(SdifUInt4 i  = 0; i< nb;++i){
+                if(mpEnt->msMatrixSelection.end()
+                   != mpEnt->msMatrixSelection.find(mBase->LocMSignature(i)))
+                  return;
+              }
+            }
+            else {
+              return;
+            }
+          }
+          if(up)
+            ++mBase;
+          else{
+            if(mBase == mpEnt->mFrameDirectory.begin() )
+              break;
+            else
+              --mBase;                
+          }
+        }
+      }
+
+      if(up && !mpEnt->mEofSeen) {      
+        if(mpEnt->ReadNextSelectedFrame(mFrame)){
+          mBase = --mpEnt->mFrameDirectory.end();
+          mlFrameIsLoaded = true;
+          return;
+        }
+      }
+
+      // signal not found for both directions is end of File      
+      mBase = mpEnt->mFrameDirectory.end();
+      if(up)
+        mlEndUP   = true;
+      else
+        mlEndDOWN = true;
+      mlFrameIsLoaded = true;
+      return;
+    }
+
+
+  public:
+    typedef typename basic_iterator::iterator_category  iterator_category;
+    typedef SDIFFrame        value_type;
+    typedef typename basic_iterator::difference_type   difference_type;
+    typedef typename IteratorTypes<CONST>::pointer       pointer;
+    typedef typename IteratorTypes<CONST>::reference     reference;
+
+     
+    /// \ingroup directory
+    /// get the SDIFLocation for the iterators current frame position 
+    const
+    SDIFLocation& GetLoc() {
+      if(mBase == mpEnt->mFrameDirectory.end())
+        return mpEnt->endLoc;
+      return *mBase;
+    }
+    
+    /// \ingroup directory
+    /// get the SDIFLocation for the iterators current frame position 
+    const
+    SDIFLocation& GetLoc() const {
+      if(mBase == mpEnt->mFrameDirectory.end())
+        return mpEnt->endLoc;
+      return *mBase;
+    }
+
+       
+    /// \ingroup directory
+    /// constructor
+    FRIterator () : mpEnt(0),mlEndUP(false),mlEndDOWN(false),mlFrameIsLoaded(false)  {};
+
+    /// \ingroup directory
+    /// copy constructor
+    FRIterator (const FRIterator<CONST> & in) : 
+      mBase(in.mBase),mpEnt(in.mpEnt), 
+      mlEndUP(in.mlEndUP),mlEndDOWN(in.mlEndDOWN),mlFrameIsLoaded(false)
+    {    };
+
+    /// \ingroup directory
+    /// copy constructor
+    FRIterator (const FRIterator<swap_const<CONST>::CONSTINV> & in) : 
+      mBase(in.mBase), mpEnt(in.mpEnt), 
+      mlEndUP(in.mlEndUP), mlEndDOWN(in.mlEndDOWN), mlFrameIsLoaded(false)     
+    {    };
+	
+    /** 
+     * \brief  const constructor from entity pointer  and directory iterator
+     * \ingroup directory
+     * 
+     * @param _ent pointer to SDIFentity
+     * \param it   directory iterator to use for initialization
+     * @param forceend  if true create iterator pointing to end of file, else
+     *             create iterator pointing to current frame 
+     */
+    FRIterator (const SDIFEntity *  _ent, Directory::iterator& it, bool forceend) : 
+      mBase(forceend  ? 
+            const_cast<SDIFEntity *>(_ent)->mFrameDirectory.end() : it),
+      mpEnt(const_cast<SDIFEntity *>(_ent)),mlFrameIsLoaded(false)
+    {
+      if(!_ent->IsFrameDir() ) {
+        throw SDIFDirError(eError,
+                           "Error in SDIFEntity::FRIterator:: !!! Iterator can only be used if frame directoy is enabled !!!",
+                           0,eUnknown,0,0);
+
+      }
+      mlEndUP    = (forceend&& it == mpEnt->mFrameDirectory.end()) 
+        || (mBase == mpEnt->mFrameDirectory.end()&&mpEnt->mEofSeen);
+      mlEndDOWN  = false;
+      if(!mlEndUP) {
+        initIterator(true);
+      }      
+    }
+
+    /** 
+     * \brief  constructor from entity pointer and directory iterator
+     * \ingroup directory
+     * 
+     * @param _ent pointer to SDIFentity
+     * \param it   directory iterator to use for initialization
+     * @param forceend  if true create iterator pointing to end of file, else
+     *             create iterator pointing to current frame 
+     */
+    FRIterator (SDIFEntity *  _ent, Directory::iterator& it, bool forceend) : 
+      mBase(forceend ?  _ent->mFrameDirectory.end() : it),
+      mpEnt(_ent),mlFrameIsLoaded(false)
+    {
+      if(!_ent->IsFrameDir() ) {
+        throw SDIFDirError(eError,
+                           "Error in SDIFEntity::FRIterator:: !!! Iterator can only be used if frame directoy is enabled !!!",
+                           0,eUnknown,0,0);
+
+      }
+      mlEndUP    = (forceend&& (it == mpEnt->mFrameDirectory.end())) 
+        || (mBase == mpEnt->mFrameDirectory.end()&&mpEnt->mEofSeen);
+      mlEndDOWN  = false;
+      if(!mlEndUP) {
+        initIterator(true);
+      }      
+    }
+	
+    ~FRIterator ( ) {};
+	
+    /** 
+     * \brief increment iterator
+     * \ingroup directory
+     * 
+     * when returning the iterator will point to the next selected frame 
+     * the frame is read and stored internally if it is parsed for the first time.
+     * Otherwise the selection operation is performed using the internal directory
+     * and the frame will be read only if the iterator will be dereferenced. 
+     *
+     * @return iterator pointing to next selected frame 
+     */
+    FRIterator& operator ++() {
+      mlFrameIsLoaded = false;
+      mFrame.ClearData();
+
+      if(!mlEndUP ) {
+        if(mBase!=mpEnt->mFrameDirectory.end()) 
+          ++mBase;
+
+        initIterator(true);
+      }    
+      return *this;
+    }
+	
+    /** 
+     * \brief postfix increment iterator
+     * \ingroup directory
+     * 
+     * when returning the iterator will point to the next selected frame 
+     * the frame is read and stored internally if it is parsed for the first time.
+     * Otherwise the selection operation is performed using the internal directory
+     * and the frame will be read only if the iterator will be dereferenced. 
+     *
+     * @return iterator pointing to currently selected frame 
+     */
+    FRIterator operator ++(int) {
+      FRIterator tmp=*this;
+      this->operator++();
+      return tmp;
+    }
+		
+    
+    /** 
+     * \brief decrement iterator
+     * \ingroup directory
+     * 
+     * when returning the iterator will point to the previous selected frame 
+     * the frame is read and stored internally if it is parsed for the first time.
+     * Otherwise the selection operation is performed using the internal directory
+     * and the frame will be read only if the iterator will be dereferenced. 
+     *
+     * @return iterator pointing to next selected frame 
+     */
+    FRIterator& operator --() {
+      mFrame.ClearData();
+      mlFrameIsLoaded = false;
+      if(!mlEndDOWN) {
+        // we decrement from end of file iterator
+        // here we need to read the whole file to point to the correct position
+        if(mBase==
+           mpEnt->mFrameDirectory.end() && !mpEnt->mEofSeen) {
+          
+          while(!mpEnt->eof()) {
+            mpEnt->ReadNextSelectedFrame(mFrame);
+          }        
+        }
+
+        if(mBase != mpEnt->mFrameDirectory.begin()){          
+          --mBase;
+          mlEndUP = false;
+          initIterator(false);      
+        }
+        else{
+          mBase     = mpEnt->mFrameDirectory.end();
+          mlEndDOWN = true;
+          mlFrameIsLoaded = true;
+        }
+      }
+      return *this;
+    }
+	
+    /** 
+     * \brief postfix decrement iterator
+     * \ingroup directory
+     * 
+     * when returning the iterator will point to the next selected frame 
+     * the frame is not read and stored internally, so no real file movement is really
+     * done. Therefore iterator decrement is even possible for pipes.
+     *
+     * @return iterator pointing to currently selected frame 
+     */
+    FRIterator operator --(int) {
+      FRIterator tmp=*this;
+      this->operator--();
+      return tmp;
+    }
+	
+
+    /** 
+     * \brief dereference
+     * \ingroup directory
+     * 
+     * at this point the frame the iterator is currently pointing 
+     * is forced to be loaded from file 
+     * 
+     * @return reference to frame
+     */
+    reference operator*()  { 
+      if(!mlFrameIsLoaded) {
+        GotoPos();
+        if(mpEnt->ReadNextFrame(mFrame) ) {
+          mlFrameIsLoaded = true;            
+        }
+      }
+      return mFrame;
+    }
+
+    /** 
+     * \brief dereference
+     * \ingroup directory
+     * 
+     * at this point the frame the iterator is currently pointing 
+     * is forced to be loaded from file 
+     * 
+     * @return reference to frame
+     */
+    const reference operator*() const { 
+      if(!mlFrameIsLoaded) {
+        GotoPos();
+        if(mpEnt->ReadNextFrame(mFrame) ) {
+          mlFrameIsLoaded = true;            
+        }
+      }
+
+      return mFrame;      
+    }
+    
+    /** 
+     * \brief member access
+     * \ingroup directory
+     * 
+     * at this point the frame the iterator is currently pointing 
+     * is forced to be loaded from file 
+     * 
+     * @return pointer to frame
+     */
+    pointer operator->() const {      
+      if(!mlFrameIsLoaded) {
+        GotoPos();
+        if(mpEnt->ReadNextFrame(mFrame) ) {
+          mlFrameIsLoaded = true;            
+        }
+      }
+      return &mFrame;
+    }
+
+    /** 
+     * \brief member access
+     * \ingroup directory
+     * 
+     * at this point the frame the iterator is currently pointing 
+     * is forced to be loaded from file 
+     * 
+     * @return pointer to frame
+     */
+    pointer operator->()  {      
+      if(!mlFrameIsLoaded) {
+        GotoPos();
+        if(mpEnt->ReadNextFrame(mFrame) ) {
+          mlFrameIsLoaded = true;            
+        }
+      }
+      return &mFrame;
+    }
+
+    /**
+     *  \ingroup directory
+     *  \brief seek file read pointer position to the frame the iterator point's to
+     *
+     *  after calling GotoPos the frame signature has been read
+     *  and the next sdif read will read the frame header of the next
+     *  frame. Exception is thron in case of successfull seek but
+     *  error reading the next frame header.
+     *
+     *  \return true if position has been achieved
+     */
+    bool GotoPos() throw(SDIFSeekError)  {
+      SdiffPosT pos = mBase->LocPos();
+      mpEnt->mCurrDirPos   = mBase;
+      mpEnt->mEof   = false;
+      if(!mpEnt->GetFile()->isSeekable) 
+        return false;
+      if(-1==SdiffSetPos(mpEnt->GetFile()->Stream,&pos)) {
+        return false;
+      }
+      
+      if(mpEnt->mOpen & 2) {
+        size_t SizeR = 0;
+        SdifFGetSignature(mpEnt->GetFile(), &SizeR);            
+        if(SizeR!=sizeof(SdifSignature)){
+          throw SDIFSeekError(eError,
+                              "Error in  SDIFEntity::FRIterator::GotoPos()!!!error while seeking  !!!",
+                              0,eUnknown,__FILE__,__LINE__);
+        }
+      }
+      
+      return true;
+    }
+
+    
+    /// equal  between SDIFEntity::iterator 
+    template<int CCONST>
+    FRIterator&
+    operator=(const FRIterator<CCONST>& i) {
+      mBase           = i.mBase;
+      mpEnt           = i.mpEnt;
+      mFrame          = i.mFrame;
+      mlEndUP         = i.mlEndUP;
+      mlEndDOWN       = i.mlEndDOWN;
+      mlFrameIsLoaded = i.mlFrameIsLoaded;
+      return *this;
+    }
+
+    FRIterator&
+    operator=(const FRIterator& i) {
+      mBase           = i.mBase;
+      mpEnt           = i.mpEnt;
+      mFrame          = i.mFrame;
+      mlEndUP         = i.mlEndUP;
+      mlEndDOWN       = i.mlEndDOWN;
+      mlFrameIsLoaded = i.mlFrameIsLoaded;
+      return *this;
+    }
+
+
+    /// equal comparision between SDIFEntity::iterator 
+    template<int OC>
+    bool operator==(const FRIterator<OC>& i)const {
+      return((i.mlEndUP  ||i.mlEndDOWN) == (mlEndUP || mlEndDOWN)  && i.mBase == mBase);
+    }
+
+    /// not equal comparision between SDIFEntity::iterator 
+    template<int OC>
+    bool operator!=(const  FRIterator<OC>& i)const {
+      return !operator==(i);
+    }
+
+  };
 
 };
+
+
+
+
 
 } // end of namespace Easdif
 
