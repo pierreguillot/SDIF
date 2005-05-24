@@ -1,5 +1,19 @@
-2005-05-20  Axel Roebel  <Axel.Roebel@ircam.fr>
+2005-05-24  Axel Roebel  <roebel@sam.local>
 Version 1.2.0
+
+	* easdif/sdifentity.cpp, easdif/sdifentity.h, easdif/sdifframe.cpp, easdif/sdifframe.h, easdif/sdifmatrix.cpp, easdif/sdifmatrix.h, easdif/sdifmatrixdata.h: 
+	Changed selection management in Easdif:
+	Before EnableDirectory has been called selection
+	modification wqorks on the SDIF-Selection, after 
+	enabling the directory a new high level selection mode
+	is used that can only be used to restrict the secltion by
+	forming intersections with the existing selections.
+	This mechanism exists now for stream/frame and matrix selections.
+
+	* easdif/sdifexception.cpp, easdif/sdifexception.h:
+	modified for new interface to SdifErrorFunction handlers.
+	
+2005-05-20  Axel Roebel  <Axel.Roebel@ircam.fr>
 
 	* easdif/easdifintro.h.in, test/tutofini.cpp (Module): 
 	Use new api for frame iterator.
@@ -635,4 +649,4 @@ Version 0.21
 	* ChangeLog: Added changelog to repository.
 
 
-$Id: ChangeLog,v 1.46 2005-05-20 21:33:05 roebel Exp $
+$Id: ChangeLog,v 1.47 2005-05-24 09:55:46 roebel Exp $
