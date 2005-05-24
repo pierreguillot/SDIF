@@ -2,6 +2,13 @@ SDIF
 
 1TYP
 {
+1MTD 1NVT { NVTText }
+1MTD 1TYP { TYPText }
+1MTD 1IDS { IDSText }
+1FTD 1NVT { 1NVT NameValueTable;  }
+1FTD 1TYP { 1TYP TypeDefinitions;  }
+1FTD 1IDS { 1IDS StreamInfo;  }
+
   1MTD	1FOF	{Frequency, Amplitude, BandWidth, Tex, DebAtt, Atten, Phase}
   1MTD  1FQ0    {Frequency, Mode, Hit}
   1MTD  1CHA	{Channel1, Channel2, Channel3, Channel4}
