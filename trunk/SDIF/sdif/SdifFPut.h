@@ -1,4 +1,4 @@
-/* $Id: SdifFPut.h,v 3.10 2005-04-07 15:56:47 schwarz Exp $
+/* $Id: SdifFPut.h,v 3.11 2005-05-24 09:37:24 roebel Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -36,6 +36,10 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.10  2005/04/07 15:56:47  schwarz
+ * removed some now empty local include files,
+ * added include of <sdif.h> and "SdifGlobals.h"
+ *
  * Revision 3.9  2003/08/06 15:11:45  schwarz
  * Finally removed obsolete functions (like SdifSkip...).
  *
@@ -126,8 +130,9 @@
 #include "SdifStreamID.h"
 
 
-size_t SdifFPutOneNameValue         (SdifFileT *SdifF, int Verbose, SdifNameValueT *NameValue);
-size_t SdifFPutNameValueLCurrNVT    (SdifFileT *SdifF, int Verbose);
+size_t SdifFPutOneNameValue         (SdifFileT *SdifF,  SdifNameValueT *NameValue);
+size_t SdifFPutNameValueLCurrNVT    (SdifFileT *SdifF);
+size_t SdifFPutSignature            (SdifFileT *SdifF,SdifSignature *sig);
 
 
 /*DOC:
@@ -142,8 +147,8 @@ size_t SdifFPutNameValueLCurrNVT    (SdifFileT *SdifF, int Verbose);
 */
 int SdifFNameValueLCurrNVTtoSdifString(SdifFileT *SdifF, SdifStringT *SdifString);
 
-
-size_t SdifFPutOneMatrixType        (SdifFileT *SdifF, int Verbose,
+/* only used for ASCII */
+size_t SdifFPutOneMatrixType        (SdifFileT *SdifF, 
 				     SdifMatrixTypeT *MatrixType);
 /*DOC:
   Remark:
@@ -157,7 +162,8 @@ size_t SdifFPutOneMatrixType        (SdifFileT *SdifF, int Verbose,
 */
 int SdifFOneMatrixTypeToSdifString(SdifMatrixTypeT *MatrixType, SdifStringT *SdifString);
 
-size_t SdifFPutAllMatrixType        (SdifFileT *SdifF, int Verbose);
+/* ionly for ASCII */
+size_t SdifFPutAllMatrixType        (SdifFileT *SdifF);
 
 
 /*DOC:
@@ -172,7 +178,8 @@ size_t SdifFPutAllMatrixType        (SdifFileT *SdifF, int Verbose);
 */
 int SdifFAllMatrixTypeToSdifString(SdifFileT *SdifF, SdifStringT *SdifSTring);
 
-size_t SdifFPutOneComponent(SdifFileT *SdifF, int Verbose, SdifComponentT *Component);
+/* only ASCII */
+size_t SdifFPutOneComponent(SdifFileT *SdifF, SdifComponentT *Component);
 
 
 /*DOC:
@@ -187,7 +194,7 @@ size_t SdifFPutOneComponent(SdifFileT *SdifF, int Verbose, SdifComponentT *Compo
 */
 int SdifFOneComponentToSdifString(SdifComponentT *Component, SdifStringT *SdifString);
 
-size_t SdifFPutOneFrameType(SdifFileT *SdifF, int Verbose, SdifFrameTypeT *FrameType);
+size_t SdifFPutOneFrameType(SdifFileT *SdifF, SdifFrameTypeT *FrameType);
 
 /*DOC:
   Remark:
@@ -201,7 +208,8 @@ size_t SdifFPutOneFrameType(SdifFileT *SdifF, int Verbose, SdifFrameTypeT *Frame
 */
 int SdifFOneFrameTypeToSdifString(SdifFrameTypeT *FrameType, SdifStringT *SdifString);
 
-size_t SdifFPutAllFrameType         (SdifFileT *SdifF, int Verbose);
+/* only ASCII */
+size_t SdifFPutAllFrameType         (SdifFileT *SdifF);
 
 
 /*DOC:
@@ -216,10 +224,10 @@ size_t SdifFPutAllFrameType         (SdifFileT *SdifF, int Verbose);
 */
 int SdifFAllFrameTypeToSdifString   (SdifFileT *SdifF, SdifStringT *SdifString);
 
-size_t SdifFPutAllType              (SdifFileT *SdifF, int Verbose);
+size_t SdifFPutAllType              (SdifFileT *SdifF);
 
 
-size_t SdifFPutOneStreamID          (SdifFileT *SdifF, int Verbose, SdifStreamIDT *StreamID);
+size_t SdifFPutOneStreamID          (SdifFileT *SdifF,  SdifStreamIDT *StreamID);
 
 
 /*DOC:
@@ -234,7 +242,7 @@ size_t SdifFPutOneStreamID          (SdifFileT *SdifF, int Verbose, SdifStreamID
 */
 int SdifFOneStreamIDToSDifString (SdifStringT *SdifString, SdifStreamIDT *StreamID);
 
-size_t SdifFPutAllStreamID          (SdifFileT *SdifF, int Verbose);
+size_t SdifFPutAllStreamID          (SdifFileT *SdifF);
 
 
 /*DOC:

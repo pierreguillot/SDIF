@@ -1,4 +1,4 @@
-/* $Id: SdifFWrite.h,v 3.12 2005-04-07 15:56:47 schwarz Exp $
+/* $Id: SdifFWrite.h,v 3.13 2005-05-24 09:37:29 roebel Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -122,6 +122,10 @@ void main(void)
 
 LOG
  * $Log: not supported by cvs2svn $
+ * Revision 3.12  2005/04/07 15:56:47  schwarz
+ * removed some now empty local include files,
+ * added include of <sdif.h> and "SdifGlobals.h"
+ *
  * Revision 3.11  2003/08/06 15:11:45  schwarz
  * Finally removed obsolete functions (like SdifSkip...).
  *
@@ -233,13 +237,14 @@ size_t  SdifFWriteChunkHeader     (SdifFileT *SdifF, SdifSignature ChunkSignatur
 size_t  SdifFWriteNameValueLCurrNVT (SdifFileT *SdifF);
 size_t  SdifFWriteAllNameValueNVT   (SdifFileT *SdifF);
 
-
+/*
+no longer supported
 size_t  SdifFWriteOneNameValue    (SdifFileT *SdifF, SdifNameValueT  *NameValue);
 size_t  SdifFWriteOneMatrixType   (SdifFileT *SdifF, SdifMatrixTypeT *MatrixType);
 size_t  SdifFWriteOneComponent    (SdifFileT *SdifF, SdifComponentT  *Component);
 size_t  SdifFWriteOneFrameType    (SdifFileT *SdifF, SdifFrameTypeT  *FrameType);
 size_t  SdifFWriteOneStreamID     (SdifFileT *SdifF, SdifStreamIDT   *StreamID);
-
+*/
 
 
 size_t  SdifFWriteAllMatrixType   (SdifFileT* SdifF);
