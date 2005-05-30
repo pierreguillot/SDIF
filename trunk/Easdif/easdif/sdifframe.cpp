@@ -32,9 +32,12 @@
  * 
  * 
  * 
- * $Id: sdifframe.cpp,v 1.19 2005-05-30 19:32:34 bogaards Exp $ 
+ * $Id: sdifframe.cpp,v 1.20 2005-05-30 21:43:01 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.19  2005/05/30 19:32:34  bogaards
+ * check whether frame is high level selected is it is already in the framedir
+ *
  * Revision 1.18  2005/05/30 18:16:58  bogaards
  * return zero if frame is not selected
  *
@@ -140,9 +143,9 @@
  */
 
 #include <iostream>
-#include "easdif/easdif_config.h"
-#include "easdif/sdifframe.h"
-#include "easdif/sdifentity.h"
+#include "easdif/easdif_config.hpp"
+#include "easdif/sdifframe.hpp"
+#include "easdif/sdifentity.hpp"
 #ifdef HAVE_SSTREAM
 #include <sstream>
 #else
@@ -216,12 +219,12 @@ int SDIFFrame::Read(SDIFEntity& entity)
           else {
             SdifFSkipFrameData (file);
             mFrameBytesRead  = 0;
-			/* to have exception */
-			entity.mEof = (SdifFGetSignature (file, &mFrameBytesRead) == eEof);
-			if(entity.mEof)
-				entity.mEofSeen = true;
-			return 0;    
-		  }
+            /* to have exception */
+            entity.mEof = (SdifFGetSignature (file, &mFrameBytesRead) == eEof);
+            if(entity.mEof)
+              entity.mEofSeen = true;
+            return 0;    
+          }
         }
         else{
           SdifUInt4 nb = loc->LocNbMatrix();
@@ -233,22 +236,22 @@ int SDIFFrame::Read(SDIFEntity& entity)
             mFrameBytesRead +=ret;
             loc->SetMSignature(i,file->CurrMtrxH->Signature);
           }
+
           if(entity.isFrameHLSelected(SdifFCurrID(file),SdifFCurrFrameSignature(file))){
-	          Resize(ir);
+            Resize(ir);
           }else{
-        		ClearData();
-       /* to have exception */
-			entity.mEof = (SdifFGetSignature (file, &mFrameBytesRead) == eEof);
-			if(entity.mEof)
-				entity.mEofSeen = true;
-  			return 0;
+            ClearData();
+            /* to have exception */
+            entity.mEof = (SdifFGetSignature (file, &mFrameBytesRead) == eEof);
+            if(entity.mEof)
+              entity.mEofSeen = true;
+            return 0;
           }
-          
         }
        /* to have exception */
-			entity.mEof = (SdifFGetSignature (file, &mFrameBytesRead) == eEof);
-			if(entity.mEof)
-				entity.mEofSeen = true;
+        entity.mEof = (SdifFGetSignature (file, &mFrameBytesRead) == eEof);
+        if(entity.mEof)
+          entity.mEofSeen = true;
       }
     }
     else

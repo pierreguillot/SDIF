@@ -34,9 +34,12 @@
  * 
  * 
  * 
- * $Id: sdifexception.h,v 1.12 2005-05-24 09:55:03 roebel Exp $ 
+ * $Id: sdifexception.hpp,v 1.1 2005-05-30 21:43:01 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.12  2005/05/24 09:55:03  roebel
+ * modified for new interface to SdifErrorFunction handlers.
+ *
  * Revision 1.11  2005/05/20 21:32:20  roebel
  * New Seek error exception
  *

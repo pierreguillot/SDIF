@@ -33,9 +33,12 @@
  * 
  * 
  * 
- * $Id: easdif.h,v 1.8 2004-09-10 14:44:32 roebel Exp $ 
+ * $Id: easdif.h,v 1.9 2005-05-30 21:43:01 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.8  2004/09/10 14:44:32  roebel
+ * Explicte cast to bool.
+ *
  * Revision 1.7  2004/07/27 17:40:19  roebel
  * Changed include directive to use user path and not system path for sdif.h
  *
@@ -98,8 +101,8 @@
 
 
 
-#include "easdif/easdif_version.h"
-#include "easdif/sdifentity.h"
+#include "easdif/easdif_version.hpp"
+#include "easdif/sdifentity.hpp"
 
 
 #endif

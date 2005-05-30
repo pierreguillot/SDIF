@@ -33,9 +33,13 @@
  * 
  * 
  * 
- * $Id: sdifmatrixdatainterface.h,v 1.7 2004-07-28 14:57:34 roebel Exp $ 
+ * $Id: sdifmatrixdatainterface.hpp,v 1.1 2005-05-30 21:43:00 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.7  2004/07/28 14:57:34  roebel
+ * Added support for accessing data as unsigned char.
+ * Added SetRow and SetCol functions.
+ *
  * Revision 1.6  2004/07/27 17:40:19  roebel
  * Changed include directive to use user path and not system path for sdif.h
  *

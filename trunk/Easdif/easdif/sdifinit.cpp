@@ -24,8 +24,8 @@
  *
  */
 
-#include "easdif/easdif_config.h"
-#include "easdif/sdifinit.h"
+#include "easdif/easdif_config.hpp"
+#include "easdif/sdifinit.hpp"
 
 namespace Easdif {
 
