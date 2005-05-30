@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.14 2005-05-20 21:31:49 roebel Exp $
+# $Id: Makefile.am,v 1.15 2005-05-30 21:43:01 roebel Exp $
 #
 # ./Easdif/src/Makefile.am	Feb. 2003 Axel Roebel
 #
@@ -31,6 +31,9 @@
 
 
 # $Log: not supported by cvs2svn $
+# Revision 1.14  2005/05/20 21:31:49  roebel
+# Added proper dependency on libsdif_cpp.la.
+#
 # Revision 1.13  2004/03/19 01:03:26  roebel
 # Finalized support for --enable-ddebug
 #
@@ -82,11 +85,11 @@ EXTRA_LTLIBRARIES = libEasdif.la  libEasdif_gcc3_2.la libEasdif-debug.la
 # lib_LIBRARIES = @SELLIB@
 lib_LTLIBRARIES = @SELLIB@
 
-EXTRA_DIST = easdif_version.h.in easdifintro.h.in easdif_config.h.in
+EXTRA_DIST = easdif_version.hpp.in easdifintro.hpp.in easdif_config.hpp.in
 
-EASDIF_H = easdif_version.h easdif.h  sdifentity.h \
-	sdifexception.h sdifframe.h sdifinit.h sdifmatrix.h sdifmatrixdata.h \
-	sdifmatrixdatainterface.h sdifnamevaluetable.h
+EASDIF_H = easdif_version.hpp easdif.h  sdifentity.hpp \
+	sdifexception.hpp sdifframe.hpp sdifinit.hpp sdifmatrix.hpp sdifmatrixdata.hpp \
+	sdifmatrixdatainterface.hpp sdifnamevaluetable.hpp
 
 easdifincdir = $(prefix)/include/easdif
 easdifinc_HEADERS = $(EASDIF_H)

@@ -34,9 +34,18 @@
  * sdifframe.h is composed of the different methods which are using to 
  * manipulate the frame.
  * 
- * $Id: sdifframe.h,v 1.18 2005-05-24 09:53:51 roebel Exp $ 
+ * $Id: sdifframe.hpp,v 1.1 2005-05-30 21:43:01 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.18  2005/05/24 09:53:51  roebel
+ * Changed selection management in Easdif:
+ * Before EnableDirectory has been called selection
+ * modification wqorks on the SDIF-Selection, after
+ * enabling the directory a new high level selection mode
+ * is used that can only be used to restrict the secltion by
+ * forming intersections with the existing selections.
+ * This mechanism exists now for stream/frame and matrix selections.
+ *
  * Revision 1.17  2005/05/20 21:32:35  roebel
  * Removed remaining functions that were only there for initial tests of
  * Fabien Tisserand.
@@ -130,8 +139,8 @@
 
 #include <string>
 #include "sdif.h"
-#include "easdif/sdifmatrix.h"
-#include "easdif/sdifexception.h"
+#include "easdif/sdifmatrix.hpp"
+#include "easdif/sdifexception.hpp"
 
 namespace Easdif {
 

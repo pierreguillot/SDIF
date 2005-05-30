@@ -32,9 +32,12 @@
  * 
  * 
  * 
- * $Id: sdifmatrix.cpp,v 1.24 2005-05-24 13:13:25 roebel Exp $ 
+ * $Id: sdifmatrix.cpp,v 1.25 2005-05-30 21:43:00 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.24  2005/05/24 13:13:25  roebel
+ * Added mising return statements and fixed minor compiler warnings.
+ *
  * Revision 1.23  2005/05/24 09:53:51  roebel
  * Changed selection management in Easdif:
  * Before EnableDirectory has been called selection
@@ -157,8 +160,8 @@
 
 #include <iostream>
 #include <set>
-#include "easdif/easdif_config.h"
-#include "easdif/sdifmatrix.h"
+#include "easdif/easdif_config.hpp"
+#include "easdif/sdifmatrix.hpp"
 
 namespace Easdif {
 

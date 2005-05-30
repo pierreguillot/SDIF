@@ -33,9 +33,18 @@
  * 
  * 
  * 
- * $Id: sdifmatrixdata.h,v 1.17 2005-05-24 09:53:51 roebel Exp $ 
+ * $Id: sdifmatrixdata.hpp,v 1.1 2005-05-30 21:43:00 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.17  2005/05/24 09:53:51  roebel
+ * Changed selection management in Easdif:
+ * Before EnableDirectory has been called selection
+ * modification wqorks on the SDIF-Selection, after
+ * enabling the directory a new high level selection mode
+ * is used that can only be used to restrict the secltion by
+ * forming intersections with the existing selections.
+ * This mechanism exists now for stream/frame and matrix selections.
+ *
  * Revision 1.16  2005/05/03 16:23:41  roebel
  * Fixed documentation.
  *
@@ -125,7 +134,7 @@
 
 #include <vector>
 #include "sdif.h"
-#include "easdif/sdifmatrixdatainterface.h"
+#include "easdif/sdifmatrixdatainterface.hpp"
 
 
 size_t SdiffReadChar   (SdifChar   *ptr, size_t nobj, SdifFileT *file);

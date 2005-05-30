@@ -28,7 +28,7 @@
 #define SDIFINIT_H_ 1
 
 #include "sdif.h"
-#include "easdif/sdifexception.h"
+#include "easdif/sdifexception.hpp"
 
 namespace Easdif {
 

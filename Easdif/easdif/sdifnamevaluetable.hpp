@@ -33,9 +33,12 @@
  * 
  *
  * 
- * $Id: sdifnamevaluetable.h,v 1.9 2004-07-27 17:40:19 roebel Exp $ 
+ * $Id: sdifnamevaluetable.hpp,v 1.1 2005-05-30 21:43:00 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.9  2004/07/27 17:40:19  roebel
+ * Changed include directive to use user path and not system path for sdif.h
+ *
  * Revision 1.8  2004/02/11 19:28:17  roebel
  * Added inline function to test state of entity. Added function to access NVTs that indicates existance of name.
  *

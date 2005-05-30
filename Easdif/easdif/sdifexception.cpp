@@ -26,8 +26,8 @@
 
 
 #include <iostream>
-#include "easdif/easdif_config.h"
-#include "easdif/sdifexception.h"
+#include "easdif/easdif_config.hpp"
+#include "easdif/sdifexception.hpp"
 
 namespace Easdif {
   extern "C" {
