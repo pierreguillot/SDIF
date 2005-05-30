@@ -32,9 +32,12 @@
  * 
  * 
  * 
- * $Id: sdifframe.cpp,v 1.18 2005-05-30 18:16:58 bogaards Exp $ 
+ * $Id: sdifframe.cpp,v 1.19 2005-05-30 19:32:34 bogaards Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.18  2005/05/30 18:16:58  bogaards
+ * return zero if frame is not selected
+ *
  * Revision 1.17  2005/05/24 09:53:51  roebel
  * Changed selection management in Easdif:
  * Before EnableDirectory has been called selection
@@ -230,7 +233,16 @@ int SDIFFrame::Read(SDIFEntity& entity)
             mFrameBytesRead +=ret;
             loc->SetMSignature(i,file->CurrMtrxH->Signature);
           }
-          Resize(ir);
+          if(entity.isFrameHLSelected(SdifFCurrID(file),SdifFCurrFrameSignature(file))){
+	          Resize(ir);
+          }else{
+        		ClearData();
+       /* to have exception */
+			entity.mEof = (SdifFGetSignature (file, &mFrameBytesRead) == eEof);
+			if(entity.mEof)
+				entity.mEofSeen = true;
+  			return 0;
+          }
           
         }
        /* to have exception */
