@@ -32,9 +32,12 @@
  * 
  * 
  * 
- * $Id: sdifentity.cpp,v 1.29 2005-05-24 13:12:28 roebel Exp $ 
+ * $Id: sdifentity.cpp,v 1.30 2005-05-30 18:14:00 bogaards Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.29  2005/05/24 13:12:28  roebel
+ * Added mising return statements and fixed minor compiler warnings.
+ *
  * Revision 1.28  2005/05/24 09:53:51  roebel
  * Changed selection management in Easdif:
  * Before EnableDirectory has been called selection
@@ -197,6 +200,8 @@ void SdifInitIntMask (SdifSelectIntMaskP mask);
 void SdifSelectGetIntMask (SdifListP list, SdifSelectIntMaskP mask);
 
 namespace Easdif {
+
+const unsigned int kNoStreamSelected = 99998;
 
 SDIFEntity::SDIFEntity(): efile(0), mSize(0), mEof(true), mEofSeen(false),
 			  mOpen(0), generalHeader(0), asciiChunks(0), 
@@ -1001,11 +1006,22 @@ bool SDIFEntity::RestrictFrameSelection(const std::set<SdifSignature>& sigs) {
   if(efile ==0) return false;
   if(isFrameDirEnabled ) {
     std::set<SdifSignature> tmp;
-    std::set_intersection(msHighLevelFrameSelection.begin(),
+  
+ 	if(!msHighLevelFrameSelection.empty()){
+ 		std::set_intersection(msHighLevelFrameSelection.begin(),
                           msHighLevelFrameSelection.end(),
                           sigs.begin(),sigs.end(),std::inserter(tmp,tmp.begin()));
-    msHighLevelFrameSelection.clear();
-    msHighLevelFrameSelection.insert(tmp.begin(),tmp.end());
+    	msHighLevelFrameSelection.clear();
+
+	    if(tmp.empty()){
+	    	msHighLevelFrameSelection.insert(eEmptySignature);
+	    }else{
+		    msHighLevelFrameSelection.insert(tmp.begin(),tmp.end());
+	    }
+ 	}else{
+ 		msHighLevelFrameSelection.insert(sigs.begin(),sigs.end());
+ 	}
+ 	 
     return true;
   } 
 
@@ -1059,12 +1075,23 @@ bool SDIFEntity::RestrictMatrixSelection(const std::set<SdifSignature>& sigs) {
 
   if(efile ==0) return false;
   if(isFrameDirEnabled ) {
-    std::set<SdifSignature> tmp;
-    std::set_intersection(msHighLevelMatrixSelection.begin(),
-                          msHighLevelMatrixSelection.end(),
-                          sigs.begin(),sigs.end(),std::inserter(tmp,tmp.begin()));
-    msHighLevelMatrixSelection.clear();
-    msHighLevelMatrixSelection.insert(tmp.begin(),tmp.end());
+    
+    if(!msHighLevelMatrixSelection.empty()){
+ 		std::set<SdifSignature> tmp;
+	    std::set_intersection(msHighLevelMatrixSelection.begin(),
+	                          msHighLevelMatrixSelection.end(),
+	                          sigs.begin(),sigs.end(),std::inserter(tmp,tmp.begin()));
+	    msHighLevelMatrixSelection.clear();
+	    
+	    if(tmp.empty()){
+	    	msHighLevelMatrixSelection.insert(eEmptySignature);
+	    }else{
+		    msHighLevelMatrixSelection.insert(tmp.begin(),tmp.end());
+	    }
+ 	}else{
+ 		msHighLevelMatrixSelection.insert(sigs.begin(),sigs.end());
+ 	}
+ 	
     return true;
   } 
 
@@ -1117,12 +1144,38 @@ bool SDIFEntity::RestrictStreamSelection(const std::set<unsigned int>& streamid)
 
   if(efile ==0) return false;
   if(isFrameDirEnabled ) {
-    std::set<unsigned int> tmp;
-    std::set_intersection(msHighLevelStreamSelection.begin(),
+  
+    ASDebug("BEF msHighLevelStreamSelection size: %d",msHighLevelStreamSelection.size());
+    int i=0;
+    for(std::set<unsigned int>::iterator iter = msHighLevelStreamSelection.begin(); iter != msHighLevelStreamSelection.end(); iter++){
+	    ASDebug("BEF msHighLevelStreamSelection item: %d [%d]",i++,*iter);
+    }
+ 	 
+ 	 
+  	if(!msHighLevelStreamSelection.empty()){
+  		std::set<unsigned int> tmp;
+    	std::set_intersection(msHighLevelStreamSelection.begin(),
                           msHighLevelStreamSelection.end(),
                           streamid.begin(),streamid.end(),std::inserter(tmp,tmp.begin()));
-    msHighLevelStreamSelection.clear();
-    msHighLevelStreamSelection.insert(tmp.begin(),tmp.end());
+    	msHighLevelStreamSelection.clear();
+    	
+    	if(tmp.empty()){
+    		msHighLevelStreamSelection.insert(kNoStreamSelected);
+    	}else{
+	    	msHighLevelStreamSelection.insert(tmp.begin(),tmp.end());
+    	}
+  	}else{
+  		msHighLevelStreamSelection.insert(streamid.begin(),streamid.end());
+  	}
+    
+    ASDebug("AFT msHighLevelStreamSelection size: %d",msHighLevelStreamSelection.size());
+   	i=0;
+    for(std::set<unsigned int>::iterator iter = msHighLevelStreamSelection.begin(); iter != msHighLevelStreamSelection.end(); iter++){
+	    ASDebug("AFT msHighLevelStreamSelection item: %d [%d]",i++,*iter);
+    }
+    
+
+    
     return true;
   } 
   
