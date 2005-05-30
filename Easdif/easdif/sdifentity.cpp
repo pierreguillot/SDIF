@@ -32,9 +32,19 @@
  * 
  * 
  * 
- * $Id: sdifentity.cpp,v 1.31 2005-05-30 21:46:09 roebel Exp $ 
+ * $Id: sdifentity.cpp,v 1.32 2005-05-30 22:05:31 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.31  2005/05/30 21:46:09  roebel
+ * Changed all include files from .h into .hpp to prevent name clash between
+ * sdifmatix.h and SDIF/sdifcpp/SdifMatrix.h on MacOSX where filenames are
+ * case insensitive.
+ *
+ * Added new class SelectionSet to handle SdifSelections in Easdif.
+ * Problem is that a set can be empty meaning no selection or nothing is selected
+ * because to sets with empty intersection have been applied in RestrictSelection functions.
+ * The new class has a boolean isActive to distinguish these two cases.
+ *
  * Revision 1.30  2005/05/30 18:14:00  bogaards
  * fixed highlevel selection for non-existing base selection
  *
@@ -194,6 +204,7 @@
  */
 
 #include <iostream>
+#include <algorithm>
 #include "easdif/easdif_config.hpp"
 #include "easdif/sdifentity.hpp"
 
