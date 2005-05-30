@@ -32,9 +32,19 @@
  * 
  * 
  * 
- * $Id: sdifentity.hpp,v 1.1 2005-05-30 21:46:18 roebel Exp $ 
+ * $Id: sdifentity.hpp,v 1.2 2005-05-30 23:01:20 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.1  2005/05/30 21:46:18  roebel
+ * Changed all include files from .h into .hpp to prevent name clash between
+ * sdifmatix.h and SDIF/sdifcpp/SdifMatrix.h on MacOSX where filenames are
+ * case insensitive.
+ *
+ * Added new class SelectionSet to handle SdifSelections in Easdif.
+ * Problem is that a set can be empty meaning no selection or nothing is selected
+ * because to sets with empty intersection have been applied in RestrictSelection functions.
+ * The new class has a boolean isActive to distinguish these two cases.
+ *
  * Revision 1.33  2005/05/30 18:16:10  bogaards
  * readnextselectedframe in iterator dereference, fixed bool for isframeselected
  *
@@ -296,7 +306,7 @@ namespace Easdif {
      * @return 
      */    SelectionSet(std::set<TYPE> &inset,bool _open=false) 
       :  std::set<TYPE>(inset),mlActive(false),mlOpen(false)  { 
-       if (!empty())
+       if (!std::set<TYPE>::empty())
          mlActive=true;
      }
 
