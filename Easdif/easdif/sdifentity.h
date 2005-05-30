@@ -32,9 +32,18 @@
  * 
  * 
  * 
- * $Id: sdifentity.h,v 1.32 2005-05-24 09:53:51 roebel Exp $ 
+ * $Id: sdifentity.h,v 1.33 2005-05-30 18:16:10 bogaards Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.32  2005/05/24 09:53:51  roebel
+ * Changed selection management in Easdif:
+ * Before EnableDirectory has been called selection
+ * modification wqorks on the SDIF-Selection, after
+ * enabling the directory a new high level selection mode
+ * is used that can only be used to restrict the secltion by
+ * forming intersections with the existing selections.
+ * This mechanism exists now for stream/frame and matrix selections.
+ *
  * Revision 1.31  2005/05/20 21:32:12  roebel
  * Increased consistence and documentation of SDIF frame directory
  * and SDIF frame iterator. The directory is now limited
@@ -834,10 +843,10 @@ private:
   // test whether aFrame matches a highlevel selection
   bool isFrameHLSelected(unsigned int streamid, SdifSignature sig){
     bool streammatch = (msHighLevelStreamSelection.empty() ||
-                         (msHighLevelStreamSelection.end() ==
+                         (msHighLevelStreamSelection.end() !=
                           msHighLevelStreamSelection.find(streamid)));
     bool framematch  = (msHighLevelFrameSelection.empty() ||
-                         (msHighLevelFrameSelection.end() ==
+                         (msHighLevelFrameSelection.end() !=
                           msHighLevelFrameSelection.find(sig)));
     return streammatch && framematch;
   }
@@ -1641,7 +1650,7 @@ public:
     reference operator*()  { 
       if(!mlFrameIsLoaded) {
         GotoPos();
-        if(mpEnt->ReadNextFrame(mFrame) ) {
+        if(mpEnt->ReadNextSelectedFrame(mFrame) ) {
           mlFrameIsLoaded = true;            
         }
       }
@@ -1660,7 +1669,7 @@ public:
     const reference operator*() const { 
       if(!mlFrameIsLoaded) {
         GotoPos();
-        if(mpEnt->ReadNextFrame(mFrame) ) {
+        if(mpEnt->ReadNextSelectedFrame(mFrame) ) {
           mlFrameIsLoaded = true;            
         }
       }
@@ -1680,7 +1689,7 @@ public:
     pointer operator->() const {      
       if(!mlFrameIsLoaded) {
         GotoPos();
-        if(mpEnt->ReadNextFrame(mFrame) ) {
+        if(mpEnt->ReadNextSelectedFrame(mFrame) ) {
           mlFrameIsLoaded = true;            
         }
       }
@@ -1699,7 +1708,7 @@ public:
     pointer operator->()  {      
       if(!mlFrameIsLoaded) {
         GotoPos();
-        if(mpEnt->ReadNextFrame(mFrame) ) {
+        if(mpEnt->ReadNextSelectedFrame(mFrame) ) {
           mlFrameIsLoaded = true;            
         }
       }
