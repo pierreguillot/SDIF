@@ -32,9 +32,12 @@
  * 
  * 
  * 
- * $Id: sdifentity.cpp,v 1.32 2005-05-30 22:05:31 roebel Exp $ 
+ * $Id: sdifentity.cpp,v 1.33 2005-05-31 19:46:55 bogaards Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.32  2005/05/30 22:05:31  roebel
+ * Added missing include file for good old gcc-2
+ *
  * Revision 1.31  2005/05/30 21:46:09  roebel
  * Changed all include files from .h into .hpp to prevent name clash between
  * sdifmatix.h and SDIF/sdifcpp/SdifMatrix.h on MacOSX where filenames are
@@ -914,7 +917,7 @@ bool SDIFEntity::TestMatrixSelection(SdifSignature sig) const
   }
 
   // we have an active highlevel selection
-  return msHighLevelMatrixSelection.find(sig) != msHighLevelMatrixSelection.end();
+  return msHighLevelMatrixSelection.isSelected(sig);
 
 }
 
@@ -922,7 +925,7 @@ bool SDIFEntity::TestFrameSelection(SdifSignature sig) const
 {
   if(efile ==0) return false;
 
-  if(!isFrameDirEnabled || msHighLevelFrameSelection.empty() ) {
+  if(!isFrameDirEnabled || !msHighLevelFrameSelection.isActive() ) {
     SdifListT* listsel;    
     SdifSignature sig = eEmptySignature;
     listsel = efile->Selection->frame;
@@ -940,7 +943,7 @@ bool SDIFEntity::TestFrameSelection(SdifSignature sig) const
   }
 
   // we have an active highlevel selection
-  return msHighLevelFrameSelection.find(sig) != msHighLevelFrameSelection.end();
+  return msHighLevelFrameSelection.isSelected(sig);
 
 }
 
@@ -954,9 +957,7 @@ bool SDIFEntity::TestStreamSelection(unsigned int streamid) const
   }
 
   // we have an active highlevel selection
-  return ( msHighLevelStreamSelection.find(streamid) != msHighLevelStreamSelection.end())
-    || ( !msHighLevelStreamSelection.empty() 
-         && msHighLevelStreamSelection.isOpen() && streamid > *-- msHighLevelStreamSelection.end());
+  return ( msHighLevelStreamSelection.isSelected(streamid));
 
 }
 
@@ -1103,7 +1104,7 @@ bool SDIFEntity::RestrictMatrixSelection(const SelectionSet<SdifSignature>& sigs
 
   if(isFrameDirEnabled ) {
     
-    if(!msHighLevelMatrixSelection.isActive()){
+    if(msHighLevelMatrixSelection.isActive()){
       SelectionSet<SdifSignature> tmp;
       std::set_intersection(msHighLevelMatrixSelection.begin(),
                             msHighLevelMatrixSelection.end(),
@@ -1168,7 +1169,7 @@ bool SDIFEntity::RestrictStreamSelection(const SelectionSet<unsigned int>& strea
   
   if(isFrameDirEnabled ) {
   
-    if(!msHighLevelStreamSelection.isActive()){
+    if(msHighLevelStreamSelection.isActive()){
       SelectionSet<unsigned int> tmp;
       std::set_intersection(msHighLevelStreamSelection.begin(),
                             msHighLevelStreamSelection.end(),

@@ -32,9 +32,13 @@
  * 
  * 
  * 
- * $Id: sdifentity.hpp,v 1.2 2005-05-30 23:01:20 roebel Exp $ 
+ * $Id: sdifentity.hpp,v 1.3 2005-05-31 19:46:55 bogaards Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  2005/05/30 23:01:20  roebel
+ * fixed error in gcc4 which  requires explicite naming of
+ * derived base class functions.
+ *
  * Revision 1.1  2005/05/30 21:46:18  roebel
  * Changed all include files from .h into .hpp to prevent name clash between
  * sdifmatix.h and SDIF/sdifcpp/SdifMatrix.h on MacOSX where filenames are
@@ -351,6 +355,19 @@ namespace Easdif {
      */
     void setOpen() {mlOpen =true;}
 
+	/** 
+     * \brief test whether element is selected
+     * \ingroup selection
+     *
+     * test whether element is selected
+     *
+     * @return true if the element is found in the set or the selection is not active, or, for an open selection, the element
+     * is larger than the last selected element
+     */
+    bool isSelected(const TYPE inType) const {
+    	return (!isActive() || std::set<TYPE>::find(inType) != std::set<TYPE>::end() || (!std::set<TYPE>::empty() && isOpen() && inType > *--std::set<TYPE>::end()));
+    }
+
     /** 
      * \brief add an element into the selection set
      * \ingroup selection
@@ -383,6 +400,7 @@ namespace Easdif {
      */
     typename std::set<TYPE>::iterator
     insert(typename std::set<TYPE>::iterator __position, const TYPE& __x) {
+      mlActive = true;
       return std::set<TYPE>::insert(__position,__x);
     }
 
@@ -398,6 +416,7 @@ namespace Easdif {
      */
     template <class _InputIterator>
     void insert(_InputIterator __first, _InputIterator __last) {
+      mlActive = true;
       std::set<TYPE>::insert(__first,__last);
     }
 
@@ -993,12 +1012,10 @@ private:
 
   // test whether aFrame matches a highlevel selection
   bool isFrameHLSelected(unsigned int streamid, SdifSignature sig){
-    bool streammatch = (msHighLevelStreamSelection.empty() ||
-                         (msHighLevelStreamSelection.end() !=
-                          msHighLevelStreamSelection.find(streamid)));
-    bool framematch  = (msHighLevelFrameSelection.empty() ||
-                         (msHighLevelFrameSelection.end() !=
-                          msHighLevelFrameSelection.find(sig)));
+    bool streammatch = msHighLevelStreamSelection.isSelected(streamid);
+    
+    bool framematch = msHighLevelFrameSelection.isSelected(sig);
+    
     return streammatch && framematch;
   }
 
@@ -1245,7 +1262,7 @@ public:
    *
    * @return true if file can be seeked which is the case if it is not a pipe
    */    
-  bool isSeekable() {if(efile)return efile->isSeekable; return false; };
+  bool isSeekable() {if(efile)return efile->isSeekable != 0; return false; };
 
 
   /** 
