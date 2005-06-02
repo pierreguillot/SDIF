@@ -32,9 +32,12 @@
  * 
  * 
  * 
- * $Id: sdifentity.hpp,v 1.3 2005-05-31 19:46:55 bogaards Exp $ 
+ * $Id: sdifentity.hpp,v 1.4 2005-06-02 22:23:27 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.3  2005/05/31 19:46:55  bogaards
+ * isSelected function and corrections to the selection tests
+ *
  * Revision 1.2  2005/05/30 23:01:20  roebel
  * fixed error in gcc4 which  requires explicite naming of
  * derived base class functions.
@@ -670,7 +673,6 @@ private:
   SelectionSet<SdifSignature> msFrameSelection; // frame selection list of the initial user selection
   bool          mlStreamSelectionRead;  // true if frame signature selection list has been read form the SDifFile
   SelectionSet<unsigned int>  msStreamSelection;
-  bool          mlStreamSelectionIsOpen;
 
   SelectionSet <unsigned int>  msHighLevelStreamSelection;
   SelectionSet <SdifSignature> msHighLevelMatrixSelection;
@@ -1064,7 +1066,6 @@ private:
   void ClearSelectionState() {
     if(mlStreamSelectionRead) {
       msStreamSelection.clear();
-      mlStreamSelectionIsOpen = false;
       mlStreamSelectionRead   = false;
     }
     if(mlFrameSelectionRead) {
