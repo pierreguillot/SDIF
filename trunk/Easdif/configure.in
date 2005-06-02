@@ -1,6 +1,6 @@
 dnl -*-autoconf-*-  (No, it's an autoconf file!)
 dnl -*-m4-*- (He emacs, it's a m4 file)
-dnl $Id: configure.in,v 1.51 2005-05-30 21:48:42 roebel Exp $
+dnl $Id: configure.in,v 1.52 2005-06-02 22:24:45 roebel Exp $
 dnl
 dnl configure.in		Feb 2003      Axel Roebel
 dnl
@@ -33,6 +33,9 @@ dnl
 dnl
 
 dnl $Log: not supported by cvs2svn $
+dnl Revision 1.51  2005/05/30 21:48:42  roebel
+dnl Updated version and ChangeLog.
+dnl
 dnl Revision 1.50  2005/05/24 13:13:44  roebel
 dnl Version 1.2.1a.
 dnl
@@ -209,7 +212,7 @@ PACKAGE=Easdif
 
 EASDIF_VERSION_MAJ=1
 EASDIF_VERSION_MIN=2
-EASDIF_VERSION_RELEASE=2
+EASDIF_VERSION_RELEASE=2a
 
 VERSION="${EASDIF_VERSION_MAJ}.${EASDIF_VERSION_MIN}.${EASDIF_VERSION_RELEASE}"
 

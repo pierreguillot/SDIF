@@ -1,3 +1,56 @@
+2005-06-02  Axel Roebel  <Axel.Roebel@ircam.fr>
+Version 1.2.2a
+	
+	* easdif/sdifentity.cpp:
+	Fixed RestrictSelection functions for the case that alow level
+	selection exists and a high level selection has to be created.
+
+	* easdif/sdifentity.hpp:
+	Removed open set indicator which is now part of the selection sets.
+
+2005-05-31  Niels Bogaards  <bogaards@siter.ircam.fr>
+
+	* easdif/sdifentity.cpp, easdif/sdifentity.hpp:
+	isSelected function and corrections to the selection tests
+
+2005-05-30  Axel Roebel  <Axel.Roebel@ircam.fr>
+
+	* easdif/sdifentity.hpp:
+	fixed error in gcc4 which  requires explicite naming of
+	derived base class functions.
+
+	* easdif/sdifentity.cpp: Added missing include file for good old gcc-2
+
+	* ChangeLog, configure.in: Updated version and ChangeLog.
+
+	* easdif/sdifentity.hpp, easdif/sdifentity.cpp:
+	Changed all include files from .h into .hpp to prevent name clash between
+	sdifmatix.h and SDIF/sdifcpp/SdifMatrix.h on MacOSX where filenames are
+	case insensitive.
+
+	Added new class SelectionSet to handle SdifSelections in Easdif.
+	Problem is that a set can be empty meaning no selection or nothing is selected
+	because to sets with empty intersection have been applied in RestrictSelection functions.
+	The new class has a boolean isActive to distinguish these two cases.
+
+	* easdif/Makefile.am, easdif/easdif.h, easdif/easdif_config.h.in, easdif/easdif_config.hpp.in, easdif/easdif_version.h.in, easdif/easdif_version.hpp.in, easdif/easdifintro.h.in, easdif/easdifintro.hpp.in, easdif/sdifentity.h, easdif/sdifexception.cpp, easdif/sdifexception.h, easdif/sdifexception.hpp, easdif/sdifframe.cpp, easdif/sdifframe.h, easdif/sdifframe.hpp, easdif/sdifinit.cpp, easdif/sdifinit.h, easdif/sdifinit.hpp, easdif/sdifmatrix.cpp, easdif/sdifmatrix.h, easdif/sdifmatrix.hpp, easdif/sdifmatrixdata.h, easdif/sdifmatrixdata.hpp, easdif/sdifmatrixdatainterface.h, easdif/sdifmatrixdatainterface.hpp, easdif/sdifnamevaluetable.cpp, easdif/sdifnamevaluetable.h, easdif/sdifnamevaluetable.hpp:
+	Changed all include files from .h into .hpp to prevent name clash between
+	sdifmatix.h and SDIF/sdifcpp/SdifMatrix.h on MacOSX where filenames are
+	case insensitive.
+
+2005-05-30  Niels Bogaards  <bogaards@siter.ircam.fr>
+
+	* easdif/sdifframe.cpp:
+	check whether frame is high level selected is it is already in the framedir
+
+	* easdif/sdifframe.cpp: return zero if frame is not selected
+
+	* easdif/sdifentity.h:
+	readnextselectedframe in iterator dereference, fixed bool for isframeselected
+
+	* easdif/sdifentity.cpp:
+	fixed highlevel selection for non-existing base selection
+
 2005-05-30  Axel Roebel  <Axel.Roebel@ircam.fr>
 Version 1.2.2
 	
@@ -790,4 +843,4 @@ Version 0.21
 	* ChangeLog: Added changelog to repository.
 
 
-$Id: ChangeLog,v 1.49 2005-05-30 21:48:43 roebel Exp $
+$Id: ChangeLog,v 1.50 2005-06-02 22:24:45 roebel Exp $
