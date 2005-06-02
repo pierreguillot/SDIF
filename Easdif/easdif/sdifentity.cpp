@@ -32,9 +32,12 @@
  * 
  * 
  * 
- * $Id: sdifentity.cpp,v 1.33 2005-05-31 19:46:55 bogaards Exp $ 
+ * $Id: sdifentity.cpp,v 1.34 2005-06-02 22:22:49 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.33  2005/05/31 19:46:55  bogaards
+ * isSelected function and corrections to the selection tests
+ *
  * Revision 1.32  2005/05/30 22:05:31  roebel
  * Added missing include file for good old gcc-2
  *
@@ -224,7 +227,7 @@ namespace Easdif {
                             isFrameDirEnabled(false), 
                             endLoc(SdifUInt4(-1), 0, -1., eEmptySignature,  0),
                             mlMatrixSelectionRead(false),mlFrameSelectionRead(false),
-                            mlStreamSelectionRead(false),mlStreamSelectionIsOpen(false)
+                            mlStreamSelectionRead(false)
   {
     mFirstFramePos = 0;
   };
@@ -335,7 +338,6 @@ bool SDIFEntity::EnableFrameDir() {
       GetMatrixSelection(msMatrixSelection);
       if(mlStreamSelectionRead) {
         msStreamSelection.clear();
-        mlStreamSelectionIsOpen = false;
       }
       mlStreamSelectionRead   = true;
       GetStreamSelection(msStreamSelection);    
@@ -852,7 +854,7 @@ bool SDIFEntity::GetFrameSelection(SelectionSet<SdifSignature> &out) const
   out.clear();
   if(efile ==0) return false;
 
-  if(!isFrameDirEnabled || msHighLevelFrameSelection.empty() ) {
+  if(!isFrameDirEnabled || !msHighLevelFrameSelection.isActive() ) {
     SdifListT* listsel;    
     SdifSignature sig = eEmptySignature;
     listsel = efile->Selection->frame;
@@ -877,7 +879,7 @@ bool SDIFEntity::GetStreamSelection(SelectionSet<unsigned int> &out) const
   out.clear();
   if(efile ==0) return false;
 
-  if(!isFrameDirEnabled || msHighLevelStreamSelection.empty() ) {    
+  if(!isFrameDirEnabled || !msHighLevelStreamSelection.isActive() ) {    
     SdifSelectIntMaskT &mask = efile->Selection->streammask;
     if(mask.num == 0)
       return true;
@@ -1036,17 +1038,19 @@ bool SDIFEntity::RestrictFrameSelection(const SelectionSet<SdifSignature>& sigs)
   if(!sigs.isActive())
     return true;
   if(isFrameDirEnabled ) {
-    if(msHighLevelFrameSelection.isActive()){
-      std::set<SdifSignature> tmp;    
-      std::set_intersection(msHighLevelFrameSelection.begin(),
-                            msHighLevelFrameSelection.end(),
-                            sigs.begin(),sigs.end(),std::inserter(tmp,tmp.begin()));
-      msHighLevelFrameSelection.clear(false);      
-      msHighLevelFrameSelection.insert(tmp.begin(),tmp.end());
-    }else{
+    SelectionSet<SdifSignature> tmp;
+    GetFrameSelection(tmp);
+    msHighLevelFrameSelection.clear(false);
+    if(tmp.isActive()) {
+      std::set_intersection(tmp.begin(), tmp.end(),
+                            sigs.begin(),sigs.end(),
+                            std::inserter(msHighLevelFrameSelection,
+                                          msHighLevelFrameSelection.begin()));
+    }
+    else{
       msHighLevelFrameSelection.insert(sigs.begin(),sigs.end());
     }
- 	 
+ 	
     return true;
   } 
 
@@ -1068,11 +1072,6 @@ bool SDIFEntity::RestrictFrameSelection(const SelectionSet<SdifSignature>& sigs)
       return false;
   }
   
-  // selection is not yet empty, we need to match it with the input
-  
-  // nothing to filter
-  if(sigs.empty())
-    return true;
   
   SelectionSet<SdifSignature> before,intersect;
   GetFrameSelection(before);
@@ -1103,16 +1102,16 @@ bool SDIFEntity::RestrictMatrixSelection(const SelectionSet<SdifSignature>& sigs
     return true;
 
   if(isFrameDirEnabled ) {
-    
-    if(msHighLevelMatrixSelection.isActive()){
-      SelectionSet<SdifSignature> tmp;
-      std::set_intersection(msHighLevelMatrixSelection.begin(),
-                            msHighLevelMatrixSelection.end(),
-                            sigs.begin(),sigs.end(),std::inserter(tmp,tmp.begin()));
-      
-      msHighLevelMatrixSelection.clear(false);
-      msHighLevelMatrixSelection.insert(tmp.begin(),tmp.end());
-    }else{
+    SelectionSet<SdifSignature> tmp;
+    GetMatrixSelection(tmp);
+    msHighLevelMatrixSelection.clear(false);
+    if(tmp.isActive()) {
+      std::set_intersection(tmp.begin(), tmp.end(),
+                            sigs.begin(),sigs.end(),
+                            std::inserter(msHighLevelMatrixSelection,
+                                          msHighLevelMatrixSelection.begin()));
+    }
+    else{
       msHighLevelMatrixSelection.insert(sigs.begin(),sigs.end());
     }
  	
@@ -1168,19 +1167,20 @@ bool SDIFEntity::RestrictStreamSelection(const SelectionSet<unsigned int>& strea
     return true;
   
   if(isFrameDirEnabled ) {
-  
-    if(msHighLevelStreamSelection.isActive()){
-      SelectionSet<unsigned int> tmp;
-      std::set_intersection(msHighLevelStreamSelection.begin(),
-                            msHighLevelStreamSelection.end(),
-                            streamid.begin(),streamid.end(),std::inserter(tmp,tmp.begin()));
-      msHighLevelStreamSelection.clear(false);
-      msHighLevelStreamSelection.insert(tmp.begin(),tmp.end());
-    }else{
-      msHighLevelStreamSelection.insert(streamid.begin(),streamid.end());
-    }
-    
-    return true;
+     SelectionSet<unsigned int> tmp;
+     GetStreamSelection(tmp);
+     msHighLevelStreamSelection.clear(false);
+     if(tmp.isActive()) {
+       std::set_intersection(tmp.begin(), tmp.end(),
+                             streamid.begin(),streamid.end(),
+                             std::inserter(msHighLevelStreamSelection,
+                                           msHighLevelStreamSelection.begin()));
+     }
+     else{
+       msHighLevelStreamSelection.insert(streamid.begin(),streamid.end());
+     }
+         
+     return true;
   } 
   
   
