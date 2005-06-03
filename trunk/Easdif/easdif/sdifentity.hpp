@@ -32,9 +32,12 @@
  * 
  * 
  * 
- * $Id: sdifentity.hpp,v 1.4 2005-06-02 22:23:27 roebel Exp $ 
+ * $Id: sdifentity.hpp,v 1.5 2005-06-03 18:37:37 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.4  2005/06/02 22:23:27  roebel
+ * Removed open set indicator which is now part of the selection sets.
+ *
  * Revision 1.3  2005/05/31 19:46:55  bogaards
  * isSelected function and corrections to the selection tests
  *
@@ -393,9 +396,10 @@ namespace Easdif {
      * \brief add an element into the selection set
      * \ingroup selection
      *
-     * the lement will be added into the selection an the selection will be 
+     * the element will be added into the selection an the selection will be 
      * automatically enabled
      * 
+     * @param __position iterator giving a hint where the element has to be inserted
      * @param __x element to select
      * 
      * @return  set iterator to new element 
@@ -991,9 +995,6 @@ public:
    *        of two incompatible sets will result in a set with a single stream
    *        of id SDIFEntity::kEmptyStreamSelection
    *    
-   * \param isOpen  returns as true if the selection is an open set all ids after
-   *                last streamid are selected as well. 
-   *
    * @return true if file and returned selection is valid.
    */
   bool GetStreamSelection(SelectionSet<unsigned int>& out) const;
@@ -1166,7 +1167,7 @@ public:
    * the low level SDIF selection, otherwise it establishes a high level selection
    * that can be used with the Directory;
    * 
-   * @param sigs    set of signatures that should remain selected 
+   * @param streamid    set of signatures that should remain selected 
    * (ATTENTION OPEN STREAM SELECTIONS NOT YET PROPERLY HANDLED!!)
    * 
    * @return  true if successful created
