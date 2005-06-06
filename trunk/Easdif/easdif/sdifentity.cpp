@@ -32,9 +32,13 @@
  * 
  * 
  * 
- * $Id: sdifentity.cpp,v 1.34 2005-06-02 22:22:49 roebel Exp $ 
+ * $Id: sdifentity.cpp,v 1.35 2005-06-06 13:54:49 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.34  2005/06/02 22:22:49  roebel
+ * Fixed RestrictSelection functions for the case that alow level
+ * selection exists and a high level selection has to be created.
+ *
  * Revision 1.33  2005/05/31 19:46:55  bogaards
  * isSelected function and corrections to the selection tests
  *
@@ -421,6 +425,8 @@ bool SDIFEntity::OpenWrite(const char* filename)
     mOpen = 1; 
  
     SdiffGetPos(GetFile()->Stream,&mFirstFramePos);
+    mEofSeen = mEof = false;
+
     return true; 
 }
 
