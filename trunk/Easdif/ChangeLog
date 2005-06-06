@@ -1,5 +1,29 @@
+2005-06-06  Axel Roebel  <Axel.Roebel@ircam.fr>
+Version 1.2.2b
+
+	* easdif/sdifentity.cpp:
+	Changed mEof for files opened for writing to false.
+
+	* Doxyfile.in: Changed intro file to be easdifintro.hpp.
+
+2005-06-03  Axel Roebel  <Axel.Roebel@ircam.fr>
+
+	* easdif/sdifentity.hpp: Fixed docu.
+
+
 2005-06-02  Axel Roebel  <Axel.Roebel@ircam.fr>
 Version 1.2.2a
+
+	* ChangeLog, configure.in: updated version and log.
+
+	* easdif/sdifentity.hpp:
+	Removed open set indicator which is now part of the selection sets.
+
+	* easdif/sdifentity.cpp:
+	Fixed RestrictSelection functions for the case that alow level
+	selection exists and a high level selection has to be created.
+
+2005-06-02  Axel Roebel  <Axel.Roebel@ircam.fr>
 	
 	* easdif/sdifentity.cpp:
 	Fixed RestrictSelection functions for the case that alow level
@@ -843,4 +867,4 @@ Version 0.21
 	* ChangeLog: Added changelog to repository.
 
 
-$Id: ChangeLog,v 1.50 2005-06-02 22:24:45 roebel Exp $
+$Id: ChangeLog,v 1.51 2005-06-06 14:12:47 roebel Exp $
