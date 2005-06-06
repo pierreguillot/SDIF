@@ -1,7 +1,11 @@
 # Doxyfile 1.2.12						       -*-sh-*-
-# $Id: Doxyfile.in,v 1.5 2003-11-18 12:37:53 roebel Exp $
+# $Id: Doxyfile.in,v 1.6 2005-06-06 13:54:14 roebel Exp $
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.5  2003/11/18 12:37:53  roebel
+# Made docu creation work correctly if configuring and compiling
+# in a directory which is not top_srcdir.
+#
 # Revision 1.4  2003/04/18 16:46:54  schwarz
 # Made easdif swiggable -> update version to 0.4.0, because of
 # small API changes:
@@ -308,7 +312,7 @@ WARN_LOGFILE           =
 # directories like "/usr/src/myproject". Separate the files or directories 
 # with spaces.
 
-INPUT                  = @top_srcdir@/easdif easdif/easdifintro.h easdif/easdif_version.h easdif/easdif_config.h
+INPUT                  = @top_srcdir@/easdif easdif/easdifintro.hpp easdif/easdif_version.hpp easdif/easdif_config.hpp
 
 # If the value of the INPUT tag contains directories, you can use the 
 # FILE_PATTERNS tag to specify one or more wildcard pattern (like *.cpp 
