@@ -1,4 +1,4 @@
-/* $Id: SdifFGet.c,v 3.20 2005-05-24 09:33:40 roebel Exp $
+/* $Id: SdifFGet.c,v 3.21 2005-06-10 12:45:11 roebel Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -32,6 +32,10 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.20  2005/05/24 09:33:40  roebel
+ * Fixed last checkin comment which turned out to be the start of
+ * a c-comment.
+ *
  * Revision 3.19  2005/05/23 19:17:53  schwarz
  * - Sdiffread/Sdiffwrite functions with SdifFileT instead of FILE *
  *   -> eof error reporting makes more sense
@@ -182,12 +186,24 @@ SdifFGetOneNameValue(SdifFileT *SdifF, int Verbose, size_t *SizeR)
 
   cs = str;
   
-  while( (c = (char) fgetc(file)) && (ncMax-- > 0) && (!feof(file)))
+  while( (c = (char) fgetc(file)) != EOF && (ncMax-- > 0))
     {
       SizeR++;
+      /* replace carrige return by line feed, which is the character
+       * that has to be used to end NVT values in SdifFNameValueLCurrNVTfromString*/
+      if(c=='\r')
+        c = '\n';
       *cs++ = c;
-      if ('\n'== c)
-          break;
+      if ('\n'== c ) {
+        /* skip over empty lines */
+        while((c = (char) fgetc(file))!=EOF) {
+          if(c != '\n' && c != '\r' ){
+            ungetc(c,file);
+            break;
+          }
+        }
+        break;
+      }
     }
   *cs = '\0';        
 
@@ -198,8 +214,8 @@ SdifFGetOneNameValue(SdifFileT *SdifF, int Verbose, size_t *SizeR)
   else {
     /* remove final semicolon that represents end of value in text file */
     if(Verbose =='t') {
-      --cs;
-      while(cs>=str && isspace(*cs)) *cs-- = '\0';
+      if(cs > str) --cs;
+      while(cs>str && isspace(*cs)) *cs-- = '\0';
       if(*cs!=';')
         ++cs;
       *cs++ = '\n'; 
