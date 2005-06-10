@@ -1,3 +1,34 @@
+2005-06-10  Axel Roebel  <Axel.Roebel@ircam.fr>
+Version 3.10.2
+
+	* sdif/SdifFGet.c:
+	Fixed SdifFGetOneNameValue for the case where the file is 
+	read in text mode from an ASCII file
+	with windows or macintosh line feed conventions.
+
+2005-06-03  Diemo Schwarz  <schwarz@siter.ircam.fr>
+
+	* doc/download/sdif-matlab/index.html: sdif matlab for mac
+
+2005-05-26  Nicholas Ellis  <ellis@siter.ircam.fr>
+
+	* macosxbuild/SDIF.xcode/project.pbxproj:
+	added SdifRWLowLevel.h in the Project
+
+	* macosxbuild/Info.plist, macosxbuild/SDIF.xcode/project.pbxproj:
+	. added the prebinding flag
+	. version 3.10.1 in xcode project
+
+	* macosxbuild/SDIF.xcode/project.pbxproj, macosxbuild/Info.plist:
+	added the Info.plist
+	working xcode project
+
+2005-05-24  Axel Roebel  <Axel.Roebel@ircam.fr>
+
+	* sdif/SdifErrMess.c:
+	Removed double semicolons, which apparently make gcc 2.96 stumble.
+
+
 2005-05-24  Axel Roebel  <roebel@sam.local>
 Version 3.10.1
 	
@@ -719,4 +750,4 @@ Version 3.3:
 	  Operating System.
 
 	
-$Id: ChangeLog,v 1.48 2005-05-24 09:39:21 roebel Exp $
+$Id: ChangeLog,v 1.49 2005-06-10 12:48:10 roebel Exp $
