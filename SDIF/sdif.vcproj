@@ -217,12 +217,6 @@
 				RelativePath="sdif\SdifErrMess.h">
 			</File>
 			<File
-				RelativePath="sdif\SdifError.c">
-			</File>
-			<File
-				RelativePath="sdif\SdifError.h">
-			</File>
-			<File
 				RelativePath="sdif\SdifFGet.c">
 			</File>
 			<File
@@ -317,12 +311,6 @@
 			</File>
 			<File
 				RelativePath="sdif\SdifMatrixType.h">
-			</File>
-			<File
-				RelativePath="sdif\SdifMemory.c">
-			</File>
-			<File
-				RelativePath="sdif\SdifMemory.h">
 			</File>
 			<File
 				RelativePath="sdif\SdifNameValue.c">
