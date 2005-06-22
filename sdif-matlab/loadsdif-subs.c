@@ -1,4 +1,4 @@
-/* $Id: loadsdif-subs.c,v 1.15 2004-07-20 17:10:20 roebel Exp $
+/* $Id: loadsdif-subs.c,v 1.16 2005-06-22 13:50:03 roebel Exp $
 
    loadsdif_subs.c	25. January 2000	Diemo Schwarz
 
@@ -14,6 +14,9 @@
    endread ('close')
 
   $Log: not supported by cvs2svn $
+  Revision 1.15  2004/07/20 17:10:20  roebel
+  Added support to read integer data types.
+
   Revision 1.14  2004/07/20 11:18:51  roebel
   Test filename to be an sdif file prior to try to open it.
 
@@ -292,6 +295,9 @@ static size_t readmatrix (SdifFileT *f, mxArray *mxarray [MaxNumOut])
     case eInt8:
     case eInt4:
     case eInt2:
+    case eUInt8:
+    case eUInt4:
+    case eUInt2:
     case eFloat4:
     case eFloat8:
       /* alloc output array and scalars */
