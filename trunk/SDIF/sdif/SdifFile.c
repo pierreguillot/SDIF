@@ -1,4 +1,4 @@
-/* $Id: SdifFile.c,v 3.56 2005-05-23 17:52:53 schwarz Exp $
+/* $Id: SdifFile.c,v 3.57 2005-07-05 10:44:08 roebel Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -33,6 +33,11 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.56  2005/05/23 17:52:53  schwarz
+ * Unified error handling:
+ * - SdifErrorEnum (global errors) integrated into SdifErrorTagET (file errors)
+ * - no more SdifError.[ch], everything done by SdifErrMess.[ch]
+ *
  * Revision 3.55  2005/05/19 14:07:47  roebel
  * new pipe condition needs to be negated.
  *
@@ -492,7 +497,11 @@ SdifFOpen(const char* Name, SdifFileModeET Mode)
           SdifF->isSeekable = 0 ;
         }
         else
+#ifndef __MINGW32__
 	  SdifF->isSeekable = !((S_ISFIFO (sb.st_mode) || S_ISSOCK (sb.st_mode)));
+#else
+	  SdifF->isSeekable = !(S_ISFIFO (sb.st_mode));
+#endif
 #else
         SdifF->isSeekable  =  stdio == eBinaryModeUnknown;
 #endif
