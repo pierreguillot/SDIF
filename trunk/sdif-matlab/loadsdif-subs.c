@@ -1,4 +1,4 @@
-/* $Id: loadsdif-subs.c,v 1.16 2005-06-22 13:50:03 roebel Exp $
+/* $Id: loadsdif-subs.c,v 1.17 2005-07-12 13:29:29 roebel Exp $
 
    loadsdif_subs.c	25. January 2000	Diemo Schwarz
 
@@ -14,6 +14,9 @@
    endread ('close')
 
   $Log: not supported by cvs2svn $
+  Revision 1.16  2005/06/22 13:50:03  roebel
+  Added new support for eUInt data types.
+
   Revision 1.15  2004/07/20 17:10:20  roebel
   Added support to read integer data types.
 
@@ -85,6 +88,13 @@
 
 static size_t readmatrix (SdifFileT *input, mxArray *mxarray [MaxNumOut]);
 static void   exitread (void);
+static void   errorread (SdifErrorTagET error_tag, 
+                         SdifErrorLevelET error_level, 
+                         char *error_message, 
+                         SdifFileT *error_file, 
+                         SdifErrorT *error_ptr, 
+                         char *source_file, 
+                         int source_line);
 
 static int    matricesleft    = 0, /* determines action in readframe */
 	      matricesread    = 0, /* counters for reporting, */
@@ -98,6 +108,7 @@ SdifFileT *beginread (int nlhs, mxArray *plhs [], char *filename, char *types)
     if (!gSdifInitialised)
     {
         SdifGenInit (types);
+	SdifSetErrorFunc (errorread);
 	SdifSetExitFunc (exitread);
     }
     
@@ -200,6 +211,19 @@ int readframe (int nlhs, mxArray *plhs [], SdifFileT *f)
 
 	    /* re-initialise matrices left to read */
 	    matricesleft = SdifFCurrNbMatrix (f);
+            /* handle empty frame */
+            if(matricesleft == 0) {
+
+              mxarray [0] = mxCreateDoubleMatrix (0, 0, mxREAL);
+              mxarray [1] = mxCreateDoubleMatrix (1, 1, mxREAL);
+              mxarray [2] = mxCreateDoubleMatrix (1, 1, mxREAL);
+              mxarray [3] = mxCreateString (SdifSignatureToString (SdifFCurrFrameSignature(f)));
+              mxarray [4] = mxCreateString (SdifSignatureToString (eEmptySignature));
+    
+              *(mxGetPr(mxarray[1])) = SdifFCurrTime (f);
+              *(mxGetPr(mxarray[2])) = SdifFCurrID (f);
+              matrixfound = 1;
+            }
 	}
 	
 	/* re-test number of matrices left to read because we might
@@ -362,3 +386,18 @@ static void exitread (void)
 {
     mexErrMsgTxt ("SDIF error: exiting loadsdif!");
 }
+
+
+static void errorread (SdifErrorTagET error_tag, 
+                       SdifErrorLevelET error_level, 
+                       char *error_message, 
+                       SdifFileT *error_file, 
+                       SdifErrorT *error_ptr, 
+                       char *source_file, 
+                       int  source_line) {
+
+  char buf[1024];
+  sprintf(buf,"SDIF error: %s !",error_message);
+  mexErrMsgTxt (buf);
+}
+
