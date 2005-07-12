@@ -15,9 +15,13 @@
 %     Diemo Schwarz (schwarz@ircam.fr), 31. January 2000
 %
 % CVS REVISION
-%     $Id: loadsdiffile.m,v 1.6 2003-09-15 15:58:54 schwarz Exp $
+%     $Id: loadsdiffile.m,v 1.7 2005-07-12 13:29:00 roebel Exp $
 
 % $Log: not supported by cvs2svn $
+% Revision 1.6  2003/09/15 15:58:54  schwarz
+% Properly preallocate arrays and cell arrays, dynamic reallocation every 10000 frames
+% --> 100 times faster for big files (no lie!)
+%
 % Revision 1.5  2001/04/19 19:06:52  roebel
 % help comment changed, added function parameter types.
 %
@@ -59,30 +63,32 @@ function [ data, header, frame, matrix ] = loadsdiffile (name, types) %  todo: n
     while (1)				% read frame by frame
 	[ d, t, s, f, m ] = loadsdif;
 
-	if isempty (t),  break;  end
+        if length(m)~= 0
+          if isempty (t),  break;  end
     
-	n = n + 1;
-
-	if n > nalloc,			% make more space (blockwise)
-	    % prealloc with (1, 1) matrix inside --> most common case needs
-            % no memory allocation --> 60% runtime reduction
-	    data   = [ data; num2cell(zeros(nblock, 1)) ];
-	    header = [ header; zeros(nblock, 2) ];
-	    frame  = [ frame;  zeros(nblock, 4) ];
-	    matrix = [ matrix; zeros(nblock, 4) ];
-	    nalloc = nalloc + nblock;
-	    if nalloc > nblock,
-		disp([ 'loadsdiffile realloc ' num2str(nalloc) ])
-	    end
-	end
-	
-	data{n}		= d;
-	header(n, 1)	= t;
-	header(n, 2)	= s;
-	frame (n, 1:4)  = f;
-	matrix(n, 1:4)  = m;
+          n = n + 1;
+          
+          if n > nalloc,			% make more space (blockwise)
+                                                % prealloc with (1, 1) matrix inside --> most common case needs
+                                                % no memory allocation --> 60% runtime reduction
+                                                data   = [ data; num2cell(zeros(nblock, 1)) ];
+                                                header = [ header; zeros(nblock, 2) ];
+                                                frame  = [ frame;  zeros(nblock, 4) ];
+                                                matrix = [ matrix; zeros(nblock, 4) ];
+                                                nalloc = nalloc + nblock;
+                                                if nalloc > nblock,
+                                                  disp([ 'loadsdiffile realloc ' num2str(nalloc) ])
+                                                end
+          end
+          
+          data{n}		= d;
+          header(n, 1)	= t;
+          header(n, 2)	= s;
+          frame (n, 1:4)  = f;
+          matrix(n, 1:4)  = m;
+        end    
     end
-
+    
     % cut data to true size
     data   = data  (1:n, :);
     header = header(1:n, :);
