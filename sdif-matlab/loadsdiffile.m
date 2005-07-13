@@ -15,9 +15,13 @@
 %     Diemo Schwarz (schwarz@ircam.fr), 31. January 2000
 %
 % CVS REVISION
-%     $Id: loadsdiffile.m,v 1.7 2005-07-12 13:29:00 roebel Exp $
+%     $Id: loadsdiffile.m,v 1.8 2005-07-13 13:03:26 roebel Exp $
 
 % $Log: not supported by cvs2svn $
+% Revision 1.7  2005/07/12 13:29:00  roebel
+% Changed to new loadsdif behavior which will return empty matrices and zero length
+% matrix signature for empty frames.
+%
 % Revision 1.6  2003/09/15 15:58:54  schwarz
 % Properly preallocate arrays and cell arrays, dynamic reallocation every 10000 frames
 % --> 100 times faster for big files (no lie!)
@@ -64,8 +68,6 @@ function [ data, header, frame, matrix ] = loadsdiffile (name, types) %  todo: n
 	[ d, t, s, f, m ] = loadsdif;
 
         if length(m)~= 0
-          if isempty (t),  break;  end
-    
           n = n + 1;
           
           if n > nalloc,			% make more space (blockwise)
@@ -86,7 +88,9 @@ function [ data, header, frame, matrix ] = loadsdiffile (name, types) %  todo: n
           header(n, 2)	= s;
           frame (n, 1:4)  = f;
           matrix(n, 1:4)  = m;
-        end    
+        else
+          if isempty (t),  break;  end
+	end    
     end
     
     % cut data to true size
