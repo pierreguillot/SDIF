@@ -1,10 +1,13 @@
-# $Id: makefile,v 1.36 2004-07-20 16:07:52 roebel Exp $
+# $Id: makefile,v 1.37 2005-07-13 13:04:21 roebel Exp $
 #
 # makefile	26. January 2000	Diemo Schwarz
 #
 # formesutils matlab library
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.36  2004/07/20 16:07:52  roebel
+# Version 0.4.0
+#
 # Revision 1.35  2004/07/20 14:48:39  roebel
 # Added new target issdiffile.mexglx
 #
@@ -215,7 +218,7 @@ cfiles		= $(mexbase:%=%.c) $(loadsdif_src) $(writesdif_src)
 hfiles		= $(mexbase:%=%.h)
 mexfiles	= $(loadsdif_mex)  $(writesdif_mex) $(issdif_mex) 
 
-mfiles		= loadsdif.m loadsdiffile.m loadsdifflat.m loadsdifbpf.m \
+mfiles		= loadsdif.m loadsdiffile.m loadallsdiffile.m loadsdifflat.m loadsdifbpf.m \
 		  writesdif.m sdifexist.m 
 allsrc		= $(cfiles) $(hfiles) testmexext.c
 srcmfiles       = $(mfiles) tt.m testl.m sdifexist.m testreadwrite.m testrw.m \
