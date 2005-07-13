@@ -18,9 +18,14 @@
 %     Axel Roebel (roebel@ircam.fr), 12. July 2005
 %
 % CVS REVISION
-%     $Id: loadallsdiffile.m,v 1.1 2005-07-12 13:26:47 roebel Exp $
+%     $Id: loadallsdiffile.m,v 1.2 2005-07-13 13:03:03 roebel Exp $
 
 % $Log: not supported by cvs2svn $
+% Revision 1.1  2005/07/12 13:26:47  roebel
+% Added new version of loadsdiffile that will include empty frames
+% in the list of returned matrices, such that a complete list
+% of frmae times can be established.
+%
 
 
 function [ data, header, frame, matrix ] = loadallsdiffile (name, types) %  todo: nmatrix)
@@ -67,7 +72,7 @@ function [ data, header, frame, matrix ] = loadallsdiffile (name, types) %  todo
         header(n, 1)	= t;
         header(n, 2)	= s;
         frame (n, 1:4)  = f;
-        if length(m)!=0
+        if length(m) ~=0
           matrix(n, 1:4)  = m;
         else
           matrix(n, 1:4)  = 'none';
