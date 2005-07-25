@@ -32,9 +32,12 @@
  * 
  * 
  * 
- * $Id: sdifentity.hpp,v 1.5 2005-06-03 18:37:37 roebel Exp $ 
+ * $Id: sdifentity.hpp,v 1.6 2005-07-25 13:28:04 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.5  2005/06/03 18:37:37  roebel
+ * Fixed docu.
+ *
  * Revision 1.4  2005/06/02 22:23:27  roebel
  * Removed open set indicator which is now part of the selection sets.
  *
@@ -619,6 +622,9 @@ namespace {
   };
 }
 
+  // forward declaration
+  template<int CONST>
+  class FRIterator;
 
 
 
@@ -684,9 +690,6 @@ private:
 
 public: 
 
-  template<int CONST>
-  class FRIterator;
-
 
   /// \ingroup directory
   /// sdifentity iterator type
@@ -716,10 +719,7 @@ public:
    * @return const_iterator to first selected frame of entity
    */
   const_iterator
-  begin () const {
-    Directory::iterator beg = this->mFrameDirectory.begin();
-    return const_iterator(this,beg,false);
-  }
+  begin () const;
 
   /** 
    * \brief begin iterator 
@@ -728,10 +728,7 @@ public:
    * @return iterator to first selected frame of entity
    */
   iterator
-  begin ()  { 
-    Directory::iterator beg = this->mFrameDirectory.begin();
-    return iterator(this,beg,false);
-  }
+  begin ();
 
   /** 
    * \brief end iterator 
@@ -740,10 +737,7 @@ public:
    * @return const_iterator to first selected frame of entity
    */
   const_iterator
-  end () const {
-    Directory::iterator iend = this->mFrameDirectory.end();
-    return const_iterator(this,iend,true);
-  }
+  end () const;
 
   /** 
    * \brief SDIFEntity::iterator to end of file 
@@ -752,10 +746,7 @@ public:
    * @return iterator to first selected frame of entity
    */
   iterator
-  end ()  {
-    Directory::iterator iend = this->mFrameDirectory.end();
-    return iterator(this,iend,true);
-  }
+  end ();
 
   /** 
    * \brief Get Current Location
@@ -776,9 +767,7 @@ public:
    * @return A const iterator referencing the current file position
    */  
   const_iterator
-  current() const {
-    return const_iterator(this,mCurrDirPos,false);
-  }
+  current() const;
 
   /** 
    * \brief Get SDIFEntity::iterator pointing to current file position
@@ -787,9 +776,7 @@ public:
    * @return A  iterator referencing the current file position
    */  
   iterator
-  current()  {
-    return iterator(this,mCurrDirPos,false);
-  }
+  current();
 
   /** 
    * \brief get Easdif::Directory of current SDIF File
@@ -1434,23 +1421,6 @@ public:
  */
     int ReadNextFrame(SDIFFrame& frame);
 
-/**
- * \brief read next frame from file having time equal to  or after given time
- * \ingroup rnwentity
- *
- * read the next frame of the file that is located after or at time timePos 
- * return the number of bytes read
- *
- * Prior to calling this function the internal
- * FrameDirectory needs to be enabled.
- *
- * \see EnableFrameDir()
- * @param frame to fill
- * \param timePos time to read from 
- * 
- * @return number of bytes read, zero in case of end of file
- */
-    int ReadNextFrame(SDIFFrame& frame, SdifFloat8 timePos);
 
 /**
  * \brief read next selected frame from file
@@ -1489,8 +1459,10 @@ public:
  * write the next frame of the file
  * return the size of the frame write
  */
-    int WriteFrame(SDIFFrame& frame);
+  int WriteFrame(SDIFFrame& frame);
     
+};
+
 
   /**
    * @brief bidrectional  iterator 
@@ -1970,11 +1942,40 @@ public:
 
   };
 
-};
 
+  // iterator creators need to be defined outside SDIFEntity 
+  // because FRIterator needs to e defined 
+  inline SDIFEntity::const_iterator
+  SDIFEntity::begin () const {
+    Directory::iterator beg = this->mFrameDirectory.begin();
+    return const_iterator(this,beg,false);
+  }
 
+  inline SDIFEntity::iterator
+  SDIFEntity::begin ()  { 
+    Directory::iterator beg = this->mFrameDirectory.begin();
+    return iterator(this,beg,false);
+  }
+  inline SDIFEntity::const_iterator
+  SDIFEntity::end () const {
+    Directory::iterator iend = this->mFrameDirectory.end();
+    return const_iterator(this,iend,true);
+  }
+  inline SDIFEntity::iterator
+  SDIFEntity::end ()  {
+    Directory::iterator iend = this->mFrameDirectory.end();
+    return iterator(this,iend,true);
+  }
 
+  inline SDIFEntity::const_iterator
+  SDIFEntity::current() const {
+    return const_iterator(this,mCurrDirPos,false);
+  }
 
+  inline SDIFEntity::iterator
+  SDIFEntity::current()  {
+    return iterator(this,mCurrDirPos,false);
+  }
 
 } // end of namespace Easdif
 
