@@ -1,6 +1,9 @@
-# $Id: Makefile.am,v 1.2 2003-08-07 16:19:29 roebel Exp $
+# $Id: Makefile.am,v 1.3 2005-07-25 13:29:24 roebel Exp $
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.2  2003/08/07 16:19:29  roebel
+# Java include directories are determined automatically using m4 functions. perl include directory are determined with improved flexibility.
+#
 # Revision 1.1  2003/04/30 11:31:35  tisseran
 # Updated file hierarchy to be conform with Diemo README.
 # Start autoconfiscation for perl module
@@ -60,7 +63,7 @@ dbflag = -g
 modules		= eaSDIF SDIF
 incfiles	= ../easdif-defines.i sdiftypemap-perl5.i
 easdifincbase	= entity frame matrix namevaluetable
-easdifincfiles	= $(easdifincbase:%=@EASDIF_DEFINC_DIR@/easdif/sdif%.h)
+easdifincfiles	= $(easdifincbase:%=@EASDIF_DEFINC_DIR@/easdif/sdif%.hpp)
 sdifincfiles	= @SDIF_DEFINC_DIR@/sdif.h
 
 define swig

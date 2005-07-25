@@ -15,7 +15,7 @@ EASDIF_LIB_PATH	= @EASDIF_LIB_PATH@
 modules		= eaSDIF SDIF
 incfiles	= ../easdif-defines.i sdiftypemap-java.i
 easdifincbase	= entity frame matrix namevaluetable
-easdifincfiles	= $(easdifincbase:%=@EASDIF_DEFINC_DIR@/easdif/sdif%.h)
+easdifincfiles	= $(easdifincbase:%=@EASDIF_DEFINC_DIR@/easdif/sdif%.hpp)
 sdifincfiles	= @SDIF_DEFINC_DIR@/sdif.h
 
 define swig
