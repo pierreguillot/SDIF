@@ -1,0 +1,19 @@
+#! /bin/bash
+
+ 
+if [ "$1" = "" ]; then 
+echo "usage:   $0 target-root-dir [debug]"
+echo "example: $0 /u/formes/share "
+echo "or       $0 /u/formes/share debug"
+exit 1
+else 
+PREFIX="$1" 
+fi 
+echo Installing in $PREFIX 
+export PKG_CONFIG_PATH="$PREFIX"/lib/pkgconfig:/usr/X11R6/lib/pkgconfig:$PKR_CONFIG_PATH 
+
+if [ "$2" = "" ];then
+./all.ircam.sh "$PREFIX"
+else
+flags="CFLAGS=-DDEBUG --enable-debug" ./all.ircam.sh "$PREFIX"
+fi

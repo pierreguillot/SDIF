@@ -1,0 +1,90 @@
+$Id: README,v 1.4 2003-05-15 10:20:27 schwarz Exp $ Diemo Schwarz
+
+README for SWIG wrapper generation for eaSDIF
+
+------------------------------------------------------------------------------
+
+
+1. INTRODUCTION
+
+SWIG generates extension modules for all sorts of interpreted
+languages such as Perl, Python, Tcl, Java, Php, that allow you to call
+the eaSDIF and SDIF library functions from these languages.
+
+There are two modules generated:
+- eaSDIF  with high-level classes (normally you need only this small module)
+- SDIF	  with all the C-definitions of the low-level SDIF library (huge!)
+
+For more info about eaSDIF, the high-level C++ interface to the Ircam 
+SDIF library, see http://www.ircam.fr/sdif or send mail to sdif@ircam.fr.
+
+For more info about SWIG, see http://www.swig.org.
+
+
+
+2. BUILDING
+
+./autogen.sh
+./configure
+make
+make test
+make install
+
+
+
+3. DIRECTORY STRUCTURE
+
+easdif/swig		common files
+easdif/swig/perl5	language dir for perl5
+easdif/swig/python	...
+easdif/swig/java
+...more later...	(especially hoping for matlab, ruby)
+
+
+
+4. SOURCE FILES
+
+4.1 Main Directory
+
+In the main directory, the .i.in files generate the .i files with the
+proper paths set, via configure:
+
+configure.in		configuration for easdif-swig
+Makefile.am
+easdif-common.i.in	common definitions for the eaSDIF module
+sdif-common.i.in	common definitions for the SDIF module
+easdif-defines.i	the basic SDIF stuff needed for eaSDIF
+
+
+4.2 Language Directories
+
+In each language dir, there are these source files:
+
+Makefile.am		generates Makefile by configure
+easdif-<lang>.i		main interface file for eaSDIF module definition, 
+			(includes ../easdif-common.i)
+sdif-<lang>.i		main interface file for SDIF module, 
+			(includes ../sdif-common.i)
+sdiftypemap-<lang>.i	typemaps for both modules
+			(for SdifSignature and SdifStringT)
+...test-scripts, etc.
+
+
+4.3 The Module Definition File
+
+Each <lang>/easdif-<lang>.i has to include ../easdif-common.i and has
+to define the initialisation of the module, and the class renaming:
+
+	#define SWIG_RENAME_EASDIF
+
+if <lang> does force you to use the eaSDIF qualifier anyway, to avoid
+the ugly and redundant eaSDIF::SDIFMatrix().
+
+
+
+5. TODO
+
+- direct set/get of text matrices
+- map/tie matrix columns to hash keys with array value
+
+

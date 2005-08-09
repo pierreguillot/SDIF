@@ -1,0 +1,82 @@
+$Id: sdif-matlab-readme,v 1.13 2003-09-15 17:28:58 schwarz Exp $
+
+sdif-matlab-README	8.8.2000	Diemo Schwarz (schwarz@ircam.fr)
+-------------------------------------------------------------------------------
+
+
+SDIF Extension for Matlab
+
+
+Described in the ICMC 2000 article
+http://www.ircam.fr/anasyn/schwarz/publications/icmc2000/
+
+Download the latest distribution from 
+http://www.ircam.fr/anasyn/sdif/download
+containing mex-files for Linux/PC and DEC Alpha, and .m files
+with documentation and support functions. 
+
+
+-------------------------------------------------------------------------------
+
+
+RELEASES
+
+0.3.0   15.09.2003   Use matrix row/column selection.  
+		     loadsdifflat, loadsdiffile 100 times faster for big files.
+
+0.2.2   not yet published 
+                     Compiled with sdif version 3.4, support for reading 
+                     double added in loadsdif.
+
+0.2.1b  29.05.2001   BUG fix related to opening sdif files that do not
+		     contain any ASCII chunk.
+
+0.2.1   29.05.2001   Fixed memory leak from version 0.2.0. Added automatic
+                     closing of input files if new file is opened and old 
+	             file still not closed. Added cleanup routine that closes
+                     file in case of clear.
+
+0.2.0   28.05.2001   Added support for reading char data and 1NVT frames 
+                     and matrices. The initial loadsdif call now returns
+		     the ASCII chunks of type 1NVT and 1IDS, that make up
+                     the header of the SDIF file, as a single string.
+
+0.1.9   14.05.2001   Added support for writing char data and 1NVT frames 
+                     and matrices. 1NVT matrices have to be specified
+                     as cell string arrays of size Nx2 (N rows and 2 columns) 
+
+0.1.8b  03.05.2001   Removed inconsistency with SDifTypes.STYP
+		     of SDIF Version 3.3. Now correct    SDifTypes.STYP
+                     is included.
+
+0.1.8   20.03.2001   added a source distribution. New makefile
+                     with only three parameters to be adjusted
+		     to support compilation in different environments.
+		     reliability of "make test" improved. 
+		     binary distribution linked with sdif 3.3
+
+0.1.7b  07.02.2001   Added README.first for clarification of
+                     proper library initialization
+
+0.1.7   20.12.2000   Added support for matlab 6
+
+0.1.6   19.12.2000   Fixed Bug in loadsdif - crash when last matrix 
+                     was not selected
+                     Corrected sgi mex extension to mexsg such 
+                     that sgi is now in distribution
+
+0.1.5   27.08.2000   Clarified empty matrix issue:  The doc was wrong!
+		     loadsdif did always return empty time as eof flag.
+		     loadsdiffile and loadsdifflat now use the flag right and 
+		     don't stop on empty matrices.
+
+0.1.4	08.08.2000   Fixed 'last matrix not returned' bug, 
+		     added README with release notes to distribution.
+
+0.1.3	05.08.2000   Types file now included in distribution and documentation.
+
+0.1.2   04.08.2000   Added reset of file variable, prevents crash on 
+		     double-close.  Version number is written in NVTs.
+
+0.1.1	27.06.2000   first release
+

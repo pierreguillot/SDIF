@@ -1,0 +1,439 @@
+
+
+
+
+
+
+ 
+  To get started, type one of these: helpwin, helpdesk, or demo.
+  For product information, type tour or visit www.mathworks.com.
+ 
+>> Testing SDIF file "data/test2.sdif::1TRC/1TRC":
+
+NVTinfo =
+
+StreamID	0
+Date	Mon_Jan_24_14.32.51_2000_
+TableName	SinusoidalTracks
+WrittenBy	Pm_Version_1.2.2
+
+
+time 0  stream 0  frame 1TRC  matrix 1TRC  data [10  4] =
+            2        100.1          1.2          1.3
+            4        200.1          2.2          2.3
+            6        300.1          3.2          3.3
+            8        400.1          4.2          4.3
+           10        500.1          5.2          5.3
+           12        600.1          6.2          6.3
+           14        700.1          7.2          7.3
+           16        800.1          8.2          8.3
+           18        900.1          9.2          9.3
+           20       1000.1         10.2         10.3
+
+time 1  stream 0  frame 1TRC  matrix 1TRC  data [10  4] =
+            2         50.1          1.2          1.3
+            4        100.1          2.2          2.3
+            6        150.1          3.2          3.3
+            8        200.1          4.2          4.3
+           10        250.1          5.2          5.3
+           12        300.1          6.2          6.3
+           14        350.1          7.2          7.3
+           16        400.1          8.2          8.3
+           18        450.1          9.2          9.3
+           20        500.1         10.2         10.3
+
+eouf!
+ 
+Testing SDIF file "data/sequence4seg1.energy.sdif::1NRG/INRG":
+
+NVTinfo =
+
+NumberOfParameters	18
+WrittenBy	MatlabSdifWriter
+
+
+time 0  stream 1  frame 1NRG  matrix INRG  data [2  1] =
+     3
+     0
+
+time 0.02  stream 1  frame 1NRG  matrix INRG  data [2  1] =
+            3
+     0.035417
+
+time 0.03  stream 1  frame 1NRG  matrix INRG  data [2  1] =
+            3
+     0.049037
+
+time 0.04  stream 1  frame 1NRG  matrix INRG  data [2  1] =
+            3
+     0.062499
+
+time 0.05  stream 1  frame 1NRG  matrix INRG  data [2  1] =
+            3
+     0.081541
+
+time 0.06  stream 1  frame 1NRG  matrix INRG  data [2  1] =
+            3
+     0.089611
+
+time 0.07  stream 1  frame 1NRG  matrix INRG  data [2  1] =
+            3
+     0.096367
+
+time 0.08  stream 1  frame 1NRG  matrix INRG  data [2  1] =
+            3
+      0.10993
+
+time 0.09  stream 1  frame 1NRG  matrix INRG  data [2  1] =
+            3
+      0.11946
+
+time 0.1  stream 1  frame 1NRG  matrix INRG  data [2  1] =
+            3
+      0.13179
+
+time 0.11  stream 1  frame 1NRG  matrix INRG  data [2  1] =
+            3
+      0.13671
+
+time 0.12  stream 1  frame 1NRG  matrix INRG  data [2  1] =
+            3
+      0.14463
+
+time 0.13  stream 1  frame 1NRG  matrix INRG  data [2  1] =
+            3
+      0.14812
+
+time 0.14  stream 1  frame 1NRG  matrix INRG  data [2  1] =
+            3
+      0.16639
+
+time 0.15  stream 1  frame 1NRG  matrix INRG  data [2  1] =
+            3
+      0.17039
+
+time 0.16  stream 1  frame 1NRG  matrix INRG  data [2  1] =
+            3
+      0.18354
+
+time 0.17  stream 1  frame 1NRG  matrix INRG  data [2  1] =
+            3
+      0.18363
+
+time 0.18  stream 1  frame 1NRG  matrix INRG  data [2  1] =
+            3
+      0.19492
+
+time 0.19  stream 1  frame 1NRG  matrix INRG  data [2  1] =
+            3
+      0.19795
+
+time 0.2  stream 1  frame 1NRG  matrix INRG  data [2  1] =
+            3
+      0.21102
+
+time 0.21  stream 1  frame 1NRG  matrix INRG  data [2  1] =
+            3
+      0.20568
+
+time 0.22  stream 1  frame 1NRG  matrix INRG  data [2  1] =
+            3
+      0.22036
+
+time 0.23  stream 1  frame 1NRG  matrix INRG  data [2  1] =
+            3
+      0.21825
+
+time 0.24  stream 1  frame 1NRG  matrix INRG  data [2  1] =
+            3
+      0.23131
+
+time 0.25  stream 1  frame 1NRG  matrix INRG  data [2  1] =
+            3
+       0.2189
+
+time 0.26  stream 1  frame 1NRG  matrix INRG  data [2  1] =
+            3
+      0.23656
+
+time 0.27  stream 1  frame 1NRG  matrix INRG  data [2  1] =
+            3
+      0.22843
+
+time 0.28  stream 1  frame 1NRG  matrix INRG  data [2  1] =
+            3
+      0.24517
+
+time 0.29  stream 1  frame 1NRG  matrix INRG  data [2  1] =
+            3
+      0.24504
+
+time 0.3  stream 1  frame 1NRG  matrix INRG  data [2  1] =
+            3
+      0.25855
+
+time 0.31  stream 1  frame 1NRG  matrix INRG  data [2  1] =
+            3
+      0.24721
+
+time 0.32  stream 1  frame 1NRG  matrix INRG  data [2  1] =
+            3
+      0.25931
+
+time 0.33  stream 1  frame 1NRG  matrix INRG  data [2  1] =
+            3
+       0.2466
+
+time 0.34  stream 1  frame 1NRG  matrix INRG  data [2  1] =
+            3
+      0.25601
+
+time 0.35  stream 1  frame 1NRG  matrix INRG  data [2  1] =
+            3
+      0.24839
+
+time 0.36  stream 1  frame 1NRG  matrix INRG  data [2  1] =
+            3
+      0.26215
+
+time 0.37  stream 1  frame 1NRG  matrix INRG  data [2  1] =
+            3
+      0.25972
+
+time 0.38  stream 1  frame 1NRG  matrix INRG  data [2  1] =
+            3
+      0.26552
+
+time 0.39  stream 1  frame 1NRG  matrix INRG  data [2  1] =
+            3
+      0.25743
+
+time 0.4  stream 1  frame 1NRG  matrix INRG  data [2  1] =
+            3
+      0.25277
+
+time 0.41  stream 1  frame 1NRG  matrix INRG  data [2  1] =
+            3
+        0.245
+
+time 0.42  stream 1  frame 1NRG  matrix INRG  data [2  1] =
+            3
+      0.24716
+
+time 0.43  stream 1  frame 1NRG  matrix INRG  data [2  1] =
+            3
+      0.23186
+
+time 0.44  stream 1  frame 1NRG  matrix INRG  data [2  1] =
+            3
+      0.23161
+
+time 0.45  stream 1  frame 1NRG  matrix INRG  data [2  1] =
+            3
+       0.2188
+
+time 0.46  stream 1  frame 1NRG  matrix INRG  data [2  1] =
+            3
+      0.22132
+
+time 0.47  stream 1  frame 1NRG  matrix INRG  data [2  1] =
+            3
+      0.21109
+
+time 0.48  stream 1  frame 1NRG  matrix INRG  data [2  1] =
+            3
+      0.20781
+
+time 0.49  stream 1  frame 1NRG  matrix INRG  data [2  1] =
+            3
+      0.19079
+
+time 0.5  stream 1  frame 1NRG  matrix INRG  data [2  1] =
+            3
+      0.18674
+
+time 0.51  stream 1  frame 1NRG  matrix INRG  data [2  1] =
+            3
+      0.18016
+
+time 0.52  stream 1  frame 1NRG  matrix INRG  data [2  1] =
+            3
+      0.17326
+
+time 0.53  stream 1  frame 1NRG  matrix INRG  data [2  1] =
+            3
+      0.16704
+
+time 0.54  stream 1  frame 1NRG  matrix INRG  data [2  1] =
+            3
+      0.16539
+
+time 0.55  stream 1  frame 1NRG  matrix INRG  data [2  1] =
+            3
+      0.15616
+
+time 0.56  stream 1  frame 1NRG  matrix INRG  data [2  1] =
+            3
+      0.14808
+
+time 0.57  stream 1  frame 1NRG  matrix INRG  data [2  1] =
+            3
+      0.14489
+
+time 0.58  stream 1  frame 1NRG  matrix INRG  data [2  1] =
+            3
+      0.14288
+
+time 0.59  stream 1  frame 1NRG  matrix INRG  data [2  1] =
+            3
+      0.13307
+
+time 0.6  stream 1  frame 1NRG  matrix INRG  data [2  1] =
+            3
+       0.1201
+
+time 0.61  stream 1  frame 1NRG  matrix INRG  data [2  1] =
+            3
+      0.11587
+
+time 0.62  stream 1  frame 1NRG  matrix INRG  data [2  1] =
+            3
+      0.10823
+
+time 0.63  stream 1  frame 1NRG  matrix INRG  data [2  1] =
+            3
+      0.10388
+
+time 0.64  stream 1  frame 1NRG  matrix INRG  data [2  1] =
+            3
+      0.10236
+
+time 0.65  stream 1  frame 1NRG  matrix INRG  data [2  1] =
+            3
+     0.097526
+
+time 0.66  stream 1  frame 1NRG  matrix INRG  data [2  1] =
+            3
+     0.090321
+
+time 0.67  stream 1  frame 1NRG  matrix INRG  data [2  1] =
+            3
+     0.083645
+
+time 0.68  stream 1  frame 1NRG  matrix INRG  data [2  1] =
+            3
+     0.076079
+
+time 0.69  stream 1  frame 1NRG  matrix INRG  data [2  1] =
+            3
+     0.073084
+
+time 0.7  stream 1  frame 1NRG  matrix INRG  data [2  1] =
+            3
+     0.072077
+
+time 0.71  stream 1  frame 1NRG  matrix INRG  data [2  1] =
+            3
+      0.07112
+
+time 0.72  stream 1  frame 1NRG  matrix INRG  data [2  1] =
+            3
+     0.063622
+
+time 0.73  stream 1  frame 1NRG  matrix INRG  data [2  1] =
+            3
+     0.060242
+
+time 0.74  stream 1  frame 1NRG  matrix INRG  data [2  1] =
+            3
+     0.058207
+
+time 0.75  stream 1  frame 1NRG  matrix INRG  data [2  1] =
+            3
+     0.051828
+
+time 0.76  stream 1  frame 1NRG  matrix INRG  data [2  1] =
+            3
+     0.048703
+
+time 0.77  stream 1  frame 1NRG  matrix INRG  data [2  1] =
+            3
+     0.047287
+
+time 0.78  stream 1  frame 1NRG  matrix INRG  data [2  1] =
+            3
+     0.044874
+
+time 0.79  stream 1  frame 1NRG  matrix INRG  data [2  1] =
+            3
+     0.043714
+
+time 0.8  stream 1  frame 1NRG  matrix INRG  data [2  1] =
+            3
+     0.040823
+
+time 0.81  stream 1  frame 1NRG  matrix INRG  data [2  1] =
+            3
+     0.035956
+
+time 0.82  stream 1  frame 1NRG  matrix INRG  data [2  1] =
+            3
+      0.03539
+
+time 0.83  stream 1  frame 1NRG  matrix INRG  data [2  1] =
+            3
+     0.034467
+
+time 0.84  stream 1  frame 1NRG  matrix INRG  data [2  1] =
+            3
+     0.030674
+
+time 0.85  stream 1  frame 1NRG  matrix INRG  data [2  1] =
+            3
+     0.028064
+
+time 0.86  stream 1  frame 1NRG  matrix INRG  data [2  1] =
+            3
+     0.025627
+
+time 0.87  stream 1  frame 1NRG  matrix INRG  data [2  1] =
+            3
+     0.024113
+
+time 0.88  stream 1  frame 1NRG  matrix INRG  data [2  1] =
+            3
+     0.022168
+
+time 0.89  stream 1  frame 1NRG  matrix INRG  data [2  1] =
+            3
+     0.020208
+
+time 0.9  stream 1  frame 1NRG  matrix INRG  data [2  1] =
+            3
+     0.017843
+
+time 0.91  stream 1  frame 1NRG  matrix INRG  data [2  1] =
+            3
+     0.016796
+
+time 0.92  stream 1  frame 1NRG  matrix INRG  data [2  1] =
+            3
+     0.016146
+
+time 0.93  stream 1  frame 1NRG  matrix INRG  data [2  1] =
+            3
+     0.013974
+
+time 0.94  stream 1  frame 1NRG  matrix INRG  data [2  1] =
+            3
+    0.0049436
+
+time 0.95  stream 1  frame 1NRG  matrix INRG  data [2  1] =
+            3
+   0.00041294
+
+eouf!
+ 
+
+ 2413 flops.
+
