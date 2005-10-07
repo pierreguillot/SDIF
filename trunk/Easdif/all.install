@@ -10,7 +10,7 @@ else
 PREFIX="$1" 
 fi 
 echo Installing in $PREFIX 
-export PKG_CONFIG_PATH="$PREFIX"/lib/pkgconfig:/usr/X11R6/lib/pkgconfig:$PKR_CONFIG_PATH 
+export PKG_CONFIG_PATH="$PREFIX"/lib/pkgconfig:/usr/X11R6/lib/pkgconfig:$PKG_CONFIG_PATH 
 
 if [ "$2" = "" ];then
 ./all.ircam.sh "$PREFIX"
