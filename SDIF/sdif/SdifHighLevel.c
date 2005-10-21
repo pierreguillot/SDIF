@@ -24,11 +24,16 @@
  *                            sdif@ircam.fr
  */
 
-/* $Id: SdifHighLevel.c,v 3.16 2005-05-23 17:52:53 schwarz Exp $
+/* $Id: SdifHighLevel.c,v 3.17 2005-10-21 14:32:29 schwarz Exp $
  *
  * SdifHighLevel.c	8.12.1999	Diemo Schwarz
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.16  2005/05/23 17:52:53  schwarz
+ * Unified error handling:
+ * - SdifErrorEnum (global errors) integrated into SdifErrorTagET (file errors)
+ * - no more SdifError.[ch], everything done by SdifErrMess.[ch]
+ *
  * Revision 3.15  2005/05/20 21:13:09  roebel
  * (Module):
  * back to returning 0 in case of file read error.
@@ -325,8 +330,8 @@ int GetSigIndex (SdifQueryTreeT *tree, SdifSignature s, int parent, int stream)
 	if (tree->num >= tree->allocated)
 	{
 	    char msg[_SdifStringLen];
-	    sprintf(msg, "Too many different signatures, "
-		         "can't handle more than %d!\n", tree->allocated);
+	    snprintf(msg, sizeof(msg), "Too many different signatures, "
+		     "can't handle more than %d!\n", tree->allocated);
 	    _SdifError(eArrayPosition, msg);
 	    return (tree->num - 1);
 	}

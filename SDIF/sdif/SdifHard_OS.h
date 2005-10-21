@@ -1,4 +1,4 @@
-/* $Id: SdifHard_OS.h,v 3.12 2005-05-24 09:36:36 roebel Exp $
+/* $Id: SdifHard_OS.h,v 3.13 2005-10-21 14:32:29 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -33,6 +33,11 @@
  * author: Dominique Virolle 1998
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.12  2005/05/24 09:36:36  roebel
+ *
+ * Fixed last checkin comment which turned out to be the start of
+ * a c-comment.
+ *
  * Revision 3.11  2005/05/23 19:17:53  schwarz
  * - Sdiffread/Sdiffwrite functions with SdifFileT instead of FILE *
  *   -> eof error reporting makes more sense
@@ -118,7 +123,6 @@
  * (function prototypes are automatically linked extern), and it
  * prohibits cocoon from generating an entry in the HTML documentation
  * for this function.
- *
  */
 
 #ifndef _SdifHard_OS_

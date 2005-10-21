@@ -1,4 +1,4 @@
-/* $Id: SdifFRead.c,v 3.30 2005-10-20 16:50:26 schwarz Exp $
+/* $Id: SdifFRead.c,v 3.31 2005-10-21 14:32:29 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -31,6 +31,11 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.30  2005/10/20 16:50:26  schwarz
+ * protect all static buffers from overflow by using (v)snprintf instead of (v)sprintf
+ * move big buffers into error branch to avoid too large stack allocation
+ * check for error before reading padding
+ *
  * Revision 3.29  2005/05/24 09:35:18  roebel
  *
  * Fixed last checkin comment which turned out to be the start of
@@ -235,7 +240,6 @@ SdifFReadGeneralHeader(SdifFileT *SdifF)
 {
   size_t SizeR = 0;
   size_t SizeS = 0;
-  char errorMess[_SdifStringLen];
 
   SdiffGetPos(SdifF->Stream, &(SdifF->StartChunkPos));
 
@@ -246,6 +250,8 @@ SdifFReadGeneralHeader(SdifFileT *SdifF)
   
   if (SdifF->CurrSignature != eSDIF)
   {
+      char errorMess[_SdifStringLen];
+
       snprintf(errorMess, sizeof(errorMess), "%s not correctly read", 
 	       SdifSignatureToString(eSDIF));
       _SdifFError(SdifF, eBadHeader, errorMess);
@@ -257,6 +263,7 @@ SdifFReadGeneralHeader(SdifFileT *SdifF)
 
   if (SdifF->FormatVersion != _SdifFormatVersion)
   {
+      char errorMess[_SdifStringLen];
       const char *mfmt = SdifF->FormatVersion > _SdifFormatVersion
 	? "file is in a newer SDIF format version (%d) than the library (%d)"
 	: "File is in an old SDIF format version (%d).  "
@@ -277,7 +284,6 @@ SdifFReadNameValueLCurrNVT(SdifFileT *SdifF)
 {
   /* Signature of chunck already read and checked for 1NVT */
   size_t SizeR = 0;
-  char errorMess[_SdifStringLen];
   
   SdiffGetPos(SdifF->Stream, &(SdifF->StartChunkPos));
   SdifF->StartChunkPos -= sizeof(SdifSignature);
@@ -294,6 +300,8 @@ SdifFReadNameValueLCurrNVT(SdifFileT *SdifF)
   if (    (SizeR != SdifF->ChunkSize + sizeof(SdifInt4))
        && ((unsigned) SdifF->ChunkSize != (unsigned) _SdifUnknownSize))
   {
+      char errorMess[_SdifStringLen];
+
       snprintf(errorMess, sizeof(errorMess),
 	       "erreur size 1NVT: lu: %u  Attendu: %u\n",
 	       SizeR - sizeof(SdifInt4), SdifF->ChunkSize);
@@ -329,7 +337,6 @@ size_t
 SdifFReadAllType(SdifFileT *SdifF)
 {
   size_t  SizeR = 0;
-  char errorMess[_SdifStringLen];
   
   SdiffGetPos(SdifF->Stream, &(SdifF->StartChunkPos));
   SdifF->StartChunkPos -= sizeof(SdifSignature);
@@ -357,6 +364,8 @@ SdifFReadAllType(SdifFileT *SdifF)
   if (    (SizeR != SdifF->ChunkSize + sizeof(SdifInt4))
        && ((unsigned) SdifF->ChunkSize != (unsigned) _SdifUnknownSize))
     {
+      char errorMess[_SdifStringLen];
+
       snprintf(errorMess, sizeof(errorMess),
 	       "erreur size 1TYP: lu: %u  Attendu: %u\n",
 	       SizeR - sizeof(SdifInt4), SdifF->ChunkSize);
@@ -380,7 +389,6 @@ size_t
 SdifFReadAllStreamID(SdifFileT *SdifF)
 {
   size_t SizeR = 0;
-  char errorMess[_SdifStringLen];
   
   SdiffGetPos(SdifF->Stream, &(SdifF->StartChunkPos));
   SdifF->StartChunkPos -= sizeof(SdifSignature);
@@ -408,6 +416,8 @@ SdifFReadAllStreamID(SdifFileT *SdifF)
   if (    (SizeR != SdifF->ChunkSize + sizeof(SdifInt4))
        && ((unsigned) SdifF->ChunkSize != (unsigned) _SdifUnknownSize))
     {
+      char errorMess[_SdifStringLen];
+
       snprintf(errorMess, sizeof(errorMess),
 	       "erreur size 1IDS: lu: %u  Attendu: %u\n",
 	       SizeR - sizeof(SdifInt4), SdifF->ChunkSize);

@@ -1,4 +1,4 @@
-/* $Id: SdifFWrite.c,v 3.23 2005-05-24 09:35:42 roebel Exp $
+/* $Id: SdifFWrite.c,v 3.24 2005-10-21 14:32:29 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -31,6 +31,17 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.23  2005/05/24 09:35:42  roebel
+ * Fixed last checkin comment which turned out to be the start of
+ * a c-comment.
+ *
+ * Removed all old versions of ASCII Chunk writing functions that were
+ * still based on the Text/Binary output distinction via
+ * function argument. Now the write functions are used for binary
+ * and the Put functions used for ASCII files.
+ * The writing of the pre 1999 SDIF
+ * ASCII chunks in binary files is no longer possible.
+ *
  * Revision 3.22  2005/05/23 19:17:53  schwarz
  * - Sdiffread/Sdiffwrite functions with SdifFileT instead of FILE *
  *   -> eof error reporting makes more sense
@@ -502,7 +513,6 @@ SdifFWriteMatrixHeader (SdifFileT *SdifF)
 size_t 
 SdifFWriteOneRow (SdifFileT *SdifF)
 {
-	char errorMess[_SdifStringLen];
     /* case template for type from SdifDataTypeET */
 #   define writerowcase(type) \
     case e##type:  return (sizeof (Sdif##type) *			   \
@@ -516,13 +526,19 @@ SdifFWriteOneRow (SdifFileT *SdifF)
 	sdif_foralltypes (writerowcase);
 
 	default :
-	    sprintf(errorMess, "OneRow 0x%04x, then Float4 used", 
+	{
+	    char errorMess[_SdifStringLen];
+
+	    snprintf(errorMess, sizeof(errorMess), 
+		     "OneRow 0x%04x, then Float4 used", 
 		    SdifF->CurrOneRow->DataType);
 	    _SdifFError(SdifF, eTypeDataNotSupported, errorMess);
 	    return (sizeof (SdifFloat4) * 
 		    SdiffWriteFloat4(SdifF->CurrOneRow->Data.Float4,
 				     SdifF->CurrOneRow->NbData,
 				     SdifF));
+	}
+	break;
     }
 }
 
@@ -533,7 +549,6 @@ SdifFWriteOneRow (SdifFileT *SdifF)
 size_t 
 SdifFWriteMatrixData (SdifFileT *SdifF, void *data)
 {
-	char errorMess[_SdifStringLen];
     /* case template for type from SdifDataTypeET */
 #   define writemdatacase(type) \
     case e##type:  return (sizeof (Sdif##type) * SdiffWrite##type ((Sdif##type *)  data, \
@@ -545,13 +560,19 @@ SdifFWriteMatrixData (SdifFileT *SdifF, void *data)
 	sdif_foralltypes (writemdatacase);
 
 	default :
-	    sprintf(errorMess, "OneRow 0x%04x, then Float4 used", 
-		    SdifF->CurrOneRow->DataType);
+	{
+	    char errorMess[_SdifStringLen];
+
+	    snprintf(errorMess, sizeof(errorMess),
+		     "OneRow 0x%04x, then Float4 used", 
+		     SdifF->CurrOneRow->DataType);
 	    _SdifFError(SdifF, eTypeDataNotSupported, errorMess);
 	    return (sizeof (SdifFloat4) * 
 		    SdiffWriteFloat4(SdifF->CurrOneRow->Data.Float4,
 				     SdifF->CurrOneRow->NbData,
 				     SdifF));
+	}
+	break;
     }
 }
 

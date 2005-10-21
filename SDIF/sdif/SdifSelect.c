@@ -1,4 +1,4 @@
-/* $Id: SdifSelect.c,v 3.22 2005-04-07 15:56:48 schwarz Exp $
+/* $Id: SdifSelect.c,v 3.23 2005-10-21 14:32:30 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -96,6 +96,10 @@ TODO
 
 LOG
   $Log: not supported by cvs2svn $
+  Revision 3.22  2005/04/07 15:56:48  schwarz
+  removed some now empty local include files,
+  added include of <sdif.h> and "SdifGlobals.h"
+
   Revision 3.21  2004/09/09 17:48:51  schwarz
   SdifSelectAppendList function, avoids the double references SdifListConcat
   woulde create.
@@ -400,6 +404,7 @@ void SdifInitIntMask (SdifSelectIntMaskP mask)
 }
 
 
+/* convert list of int selections to mask */
 void SdifSelectGetIntMask (SdifListP list, SdifSelectIntMaskP mask)
 {
     SdifSelectElementIntT range;

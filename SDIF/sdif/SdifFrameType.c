@@ -1,4 +1,4 @@
-/* $Id: SdifFrameType.c,v 3.8 2004-07-22 14:47:56 bogaards Exp $
+/* $Id: SdifFrameType.c,v 3.9 2005-10-21 14:32:29 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -37,6 +37,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.8  2004/07/22 14:47:56  bogaards
+ * removed many global variables, moved some into the thread-safe SdifGlobals structure, added HAVE_PTHREAD define, reorganized the code for selection, made some arguments const, new version 3.8.6
+ *
  * Revision 3.7  2003/11/07 21:47:18  roebel
  * removed XpGuiCalls.h and replaced preinclude.h  by local files
  *
@@ -127,7 +130,6 @@ SdifFrameTypeT*
 SdifCreateFrameType(SdifSignature FramS, SdifFrameTypeT *PredefinedFrameType)
 {
   SdifFrameTypeT *NewFrameType = NULL;
-	char errorMess[_SdifStringLen];
   
   NewFrameType = SdifMalloc(SdifFrameTypeT);
   if (NewFrameType)
@@ -142,7 +144,9 @@ SdifCreateFrameType(SdifSignature FramS, SdifFrameTypeT *PredefinedFrameType)
       {
 	    if (PredefinedFrameType->Signature != FramS)
 	    {
-	      sprintf(errorMess, "'%s'(Pre) != '%s'",
+	      char errorMess[_SdifStringLen];	
+
+	      snprintf(errorMess, sizeof(errorMess), "'%s'(Pre) != '%s'",
 		      SdifSignatureToString(PredefinedFrameType->Signature),
 		      SdifSignatureToString(FramS));
 	      _SdifError(eInvalidPreType, errorMess);

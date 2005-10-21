@@ -1,4 +1,4 @@
-/* $Id: SdifRWLowLevel.c,v 3.34 2005-05-24 09:36:15 roebel Exp $
+/* $Id: SdifRWLowLevel.c,v 3.35 2005-10-21 14:32:30 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -33,6 +33,11 @@
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 3.34  2005/05/24 09:36:15  roebel
+ *
+ * Fixed last checkin comment which turned out to be the start of
+ * a c-comment.
+ *
  * Revision 3.33  2005/05/23 19:17:53  schwarz
  * - Sdiffread/Sdiffwrite functions with SdifFileT instead of FILE *
  *   -> eof error reporting makes more sense
@@ -222,12 +227,14 @@ extern int gSdifInitialised;		/* can't include SdifFile.h */
 size_t Sdiffread(void *ptr, size_t size, size_t nobj, SdifFileT *file)
 {
   size_t nobjread;
-  char errorMess[_SdifStringLen];
-
+  
   nobjread = fread(ptr, size, nobj, file->Stream);
   if (nobjread != nobj)
   {
-      sprintf(errorMess, "Sdiffread %ld", ftell(file->Stream));
+      char errorMess[_SdifStringLen];
+
+      snprintf(errorMess, sizeof(errorMess), 
+	       "Sdiffread %ld", ftell(file->Stream));
       _SdifFError(file, eEof, errorMess);
   }
   
@@ -240,14 +247,16 @@ size_t
 Sdiffwrite(void *ptr, size_t size, size_t nobj, SdifFileT *file)
 {
   size_t nobjwrite;
-	char errorMess[_SdifStringLen];
 
   nobjwrite = fwrite(ptr, size, nobj, file->Stream);
   if (nobjwrite != nobj)
-    {
-      sprintf(errorMess, "Sdiffwrite %ld", ftell(file->Stream));
+  {
+      char errorMess[_SdifStringLen];
+
+      snprintf(errorMess, sizeof(errorMess), 
+	       "Sdiffwrite %ld", ftell(file->Stream));
       _SdifFError(file, eEof, errorMess);
-    }
+  }
 
   return nobjwrite;
 }
@@ -925,7 +934,6 @@ size_t
 SdiffReadSpace(FILE* fr)
 {
   size_t NbCharRead = 0;
-  char errorMess[_SdifStringLen];
   char c;
 
   while ( isspace(c= (char) fgetc(fr)) )
@@ -944,12 +952,15 @@ SdiffReadSpace(FILE* fr)
       if (SdiffSetPos(fr, &Pos)==0) ::: it is a bad solution with stdin, virolle 99/01 
 */
       if ((c = (char) ungetc(c, fr)))
-        return NbCharRead;
+	  return NbCharRead;
       else
-        {
-	      sprintf(errorMess, "ungetc failed : (%d,%c) ", c, c);
-	      _SdifError(eEof, errorMess);
-        }
+      {
+	  char errorMess[_SdifStringLen];
+
+	  snprintf(errorMess, sizeof(errorMess), 
+		   "ungetc failed : (%d,%c) ", c, c);
+	  _SdifError(eEof, errorMess);
+      }
     }
   return NbCharRead;
 }
@@ -967,7 +978,6 @@ SdiffReadSpacefromSdifString(SdifStringT *SdifString)
   char   c;
   int    eos;
   size_t NbCharRead = 0;
-  char   errorMess[_SdifStringLen];
   
   /* need to store end-of-string, because it is changed by subsequent getc */
   while (!(eos = SdifStringIsEOS(SdifString))  &&  
@@ -984,7 +994,10 @@ SdiffReadSpacefromSdifString(SdifStringT *SdifString)
 	  return NbCharRead;
       else
       {
-	  sprintf(errorMess, "ungetc failed : (%d,%c) ", c, c);
+	  char   errorMess[_SdifStringLen];
+
+	  snprintf(errorMess, sizeof(errorMess), 
+		   "ungetc failed : (%d,%c) ", c, c);
 	  _SdifError(eEof, errorMess);
       }
   }

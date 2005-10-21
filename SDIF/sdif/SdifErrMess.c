@@ -1,4 +1,4 @@
-/* $Id: SdifErrMess.c,v 3.23 2005-05-24 18:19:43 roebel Exp $
+/* $Id: SdifErrMess.c,v 3.24 2005-10-21 14:32:29 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -31,6 +31,9 @@
  * author: Dominique Virolle 1998
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.23  2005/05/24 18:19:43  roebel
+ * Removed double semicolons, which apparently make gcc 2.96 stumble.
+ *
  * Revision 3.22  2005/05/24 09:33:29  roebel
  * Fixed last checkin comment which turned out to be the start of
  * a c-comment.
@@ -384,12 +387,12 @@ SdifFsPrintError(char* oErrMess, SdifFileT* SdifF, SdifErrorTagET ErrorTag,
     char ErrErrMess  [1024] = "";
 
 #if defined (DEBUG)  ||  defined (_DEBUG)
-    sprintf(HeadErrMess,
+    snprintf(HeadErrMess, sizeof(HeadErrMess),
 	    "*Sdif* %s %d (%s, %d):\n  SdifFile: %s",
 	    gSdifErrorLevel [gSdifErrMessFormat[ErrorTag].Level], ErrorTag,
 	    LibFile, LibLine, SdifF ? SdifF->Name : "(no sdiffile)");
 #else
-    sprintf(HeadErrMess,
+    snprintf(HeadErrMess, sizeof(HeadErrMess),
 	    "*Sdif* %s %d:\n  SdifFile: %s",
 	    gSdifErrorLevel [gSdifErrMessFormat[ErrorTag].Level], ErrorTag, 
 	    SdifF ? SdifF->Name : "(no sdiffile)");
@@ -400,17 +403,17 @@ SdifFsPrintError(char* oErrMess, SdifFileT* SdifF, SdifErrorTagET ErrorTag,
 	if (SdifF->Stream)
 	    SdiffGetPos(SdifF->Stream, &(SdifF->Pos));
 	if (SdifF->Pos !=0)
-	    sprintf(PosErrMess, " (byte:%6lu=0x%04lx=0%06lo)", 
+	    snprintf(PosErrMess, sizeof(PosErrMess), " (byte:%6lu=0x%04lx=0%06lo)", 
 		    SdifF->Pos, SdifF->Pos, SdifF->Pos);
 
 	if (SdifF->TextStream)
-	    sprintf(TextErrMess, ", TextFile: %s\n", SdifF->TextStreamName);
+	    snprintf(TextErrMess, sizeof(TextErrMess), ", TextFile: %s\n", SdifF->TextStreamName);
 	else
-	    sprintf(TextErrMess, "\n");
+	    snprintf(TextErrMess, sizeof(TextErrMess), "\n");
 
 	if (SdifF->CurrFramH)
 	{
-	    sprintf(FramErrMess, "  FramH : %s   Size: 0x%04x   NbMatrix: %u   NumID: %u   Time: %g\n",
+	    snprintf(FramErrMess, sizeof(FramErrMess), "  FramH : %s   Size: 0x%04x   NbMatrix: %u   NumID: %u   Time: %g\n",
 		    SdifSignatureToString(SdifF->CurrFramH->Signature),
 		    SdifF->CurrFramH->Size,  SdifF->CurrFramH->NbMatrix,
 		    SdifF->CurrFramH->NumID, SdifF->CurrFramH->Time);
@@ -420,7 +423,7 @@ SdifFsPrintError(char* oErrMess, SdifFileT* SdifF, SdifErrorTagET ErrorTag,
 	{
 	    if (SdifF->CurrMtrxH->Signature != eEmptySignature)
 	    {
-		sprintf(MtrxErrMess, "  MtrxH :   %s   DataWidth: %04x   Rows: %d   Columns: %d\n",
+		snprintf(MtrxErrMess, sizeof(MtrxErrMess), "  MtrxH :   %s   DataWidth: %04x   Rows: %d   Columns: %d\n",
 			SdifSignatureToString(SdifF->CurrMtrxH->Signature),
 			SdifF->CurrMtrxH->DataType,
 			SdifF->CurrMtrxH->NbRow, SdifF->CurrMtrxH->NbCol);
@@ -432,21 +435,21 @@ SdifFsPrintError(char* oErrMess, SdifFileT* SdifF, SdifErrorTagET ErrorTag,
     {
       case eNoError:
       case eUnknown:
-	  sprintf(ErrErrMess, gSdifErrMessFormat[ErrorTag].UserMess);
+	  snprintf(ErrErrMess, sizeof(ErrErrMess), gSdifErrMessFormat[ErrorTag].UserMess);
       break;
 
       case eBadMode:
       case eBadStdFile:
-	  sprintf(ErrErrMess, gSdifErrMessFormat[ErrorTag].UserMess,
+	  snprintf(ErrErrMess, sizeof(ErrErrMess), gSdifErrMessFormat[ErrorTag].UserMess,
 		  SdifF ? SdifF->Mode : -1, UserMess);
       break;
 
       default:
-	  sprintf(ErrErrMess, gSdifErrMessFormat[ErrorTag].UserMess, UserMess);
+	  snprintf(ErrErrMess, sizeof(ErrErrMess), gSdifErrMessFormat[ErrorTag].UserMess, UserMess);
       break;
     }
 
-    return sprintf(oErrMess,"%s%s%s%s%s--> %s\n",
+    return snprintf(oErrMess, sizeof(oErrMess), "%s%s%s%s%s--> %s\n",
 		   HeadErrMess, PosErrMess, TextErrMess, FramErrMess,
 		   MtrxErrMess, ErrErrMess);
 }

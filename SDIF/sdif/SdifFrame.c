@@ -1,4 +1,4 @@
-/* $Id: SdifFrame.c,v 3.8 2004-09-09 17:42:13 schwarz Exp $
+/* $Id: SdifFrame.c,v 3.9 2005-10-21 14:32:29 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -30,6 +30,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.8  2004/09/09 17:42:13  schwarz
+ * moved SdifSizeOf* functions to SdifGlobals.c
+ *
  * Revision 3.7  2004/07/22 14:47:56  bogaards
  * removed many global variables, moved some into the thread-safe SdifGlobals structure, added HAVE_PTHREAD define, reorganized the code for selection, made some arguments const, new version 3.8.6
  *
@@ -127,12 +130,13 @@ SdifCreateFrameData(SdifHashTableT *FrameTypesTable,
   SdifFrameDataT *NewFrameData = NULL;
   SdifFrameTypeT *FrameType = NULL;
   SdifUInt4 iMtrxD;
-	char errorMess[_SdifStringLen];
 
   FrameType = SdifGetFrameType(FrameTypesTable, FrameSignature);
   if (! FrameType)
     {
-      sprintf(errorMess, "Frame Type '%s'",
+      char errorMess[_SdifStringLen];
+
+      snprintf(errorMess, sizeof(errorMess), "Frame Type '%s'",
 	      SdifSignatureToString(FrameSignature));
       _SdifError(eNotFound, errorMess);
       return NULL;
@@ -206,8 +210,6 @@ SdifFrameDataPutNthMatrixData(SdifFrameDataT *FrameData,
 			      unsigned int NthMatrix,
 			      SdifMatrixDataT *MatrixData)
 {
-	char errorMess[_SdifStringLen];
-
   if (FrameData->Header->NbMatrix == (NthMatrix-1))
     {
       FrameData->Matrix_s[NthMatrix-1] = MatrixData;
@@ -216,7 +218,9 @@ SdifFrameDataPutNthMatrixData(SdifFrameDataT *FrameData,
     }
   else
     {
-      sprintf(errorMess,
+      char errorMess[_SdifStringLen];
+
+      snprintf(errorMess, sizeof(errorMess),
 	      "in FrameData '%s' ID:%u T:%g with Last:%d YourNth:%d",
 	      SdifSignatureToString(FrameData->Header->Signature),
 	      FrameData->Header->NumID,
@@ -249,12 +253,13 @@ SdifFrameDataPutComponentMatrixData(SdifHashTableT *FrameTypesTable,
 {
   SdifFrameTypeT *FrameType;
   SdifComponentT *Component;
-	char errorMess[_SdifStringLen];
 
   FrameType = SdifGetFrameType(FrameTypesTable, FrameData->Header->Signature);
   if (!FrameType)
     {
-      sprintf(errorMess,
+      char errorMess[_SdifStringLen];
+
+      snprintf(errorMess, sizeof(errorMess),
 	      "Frame Type '%s'",
 	      SdifSignatureToString(FrameData->Header->Signature));
       _SdifError(eNotFound, errorMess);
@@ -264,7 +269,9 @@ SdifFrameDataPutComponentMatrixData(SdifHashTableT *FrameTypesTable,
   Component = SdifFrameTypeGetComponent(FrameType, CompoName);
   if ( ! Component)
     {
-      sprintf(errorMess,
+      char errorMess[_SdifStringLen];
+
+      snprintf(errorMess, sizeof(errorMess),
 	      "'%s' not a component of '%s' Frame Type",
 	      CompoName, SdifSignatureToString(FrameData->Header->Signature));
       _SdifError(eNotFound, errorMess);
@@ -275,7 +282,9 @@ SdifFrameDataPutComponentMatrixData(SdifHashTableT *FrameTypesTable,
     return SdifFrameDataPutNthMatrixData(FrameData, Component->Num,MatrixData);
   else
     {
-      sprintf(errorMess,
+      char errorMess[_SdifStringLen];
+
+      snprintf(errorMess, sizeof(errorMess),
 	      "F:%s ID:%u T:%g\n   '%s' is not matrix type of %s\n   '%s' waiting",
 	      SdifSignatureToString(FrameData->Header->Signature),
 	      FrameData->Header->NumID,
@@ -318,12 +327,13 @@ SdifFrameDataGetComponentMatrixData(SdifHashTableT *FrameTypesTable,
 {
   SdifFrameTypeT *FrameType;
   SdifComponentT *Component;
-	char errorMess[_SdifStringLen];
 
   FrameType = SdifGetFrameType(FrameTypesTable, FrameData->Header->Signature);
   if (!FrameType)
     {
-      sprintf(errorMess,
+      char errorMess[_SdifStringLen];
+
+      snprintf(errorMess, sizeof(errorMess),
 	      "'%s' Frame Type",
 	      SdifSignatureToString(FrameData->Header->Signature));
       _SdifError(eNotFound, errorMess);
@@ -333,7 +343,9 @@ SdifFrameDataGetComponentMatrixData(SdifHashTableT *FrameTypesTable,
   Component = SdifFrameTypeGetComponent(FrameType, CompoName);
   if ( ! Component)
     {
-      sprintf(errorMess,
+      char errorMess[_SdifStringLen];
+
+      snprintf(errorMess, sizeof(errorMess),
 	      "'%s' is not a component of '%s' Frame Type",
 	      CompoName, SdifSignatureToString(FrameData->Header->Signature));
       _SdifError(eNotFound, errorMess);

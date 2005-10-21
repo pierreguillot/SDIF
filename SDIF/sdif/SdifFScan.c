@@ -1,4 +1,4 @@
-/* $Id: SdifFScan.c,v 3.19 2005-05-24 09:35:29 roebel Exp $
+/* $Id: SdifFScan.c,v 3.20 2005-10-21 14:32:29 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -31,6 +31,11 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.19  2005/05/24 09:35:29  roebel
+ *
+ * Fixed last checkin comment which turned out to be the start of
+ * a c-comment.
+ *
  * Revision 3.18  2005/05/23 19:17:53  schwarz
  * - Sdiffread/Sdiffwrite functions with SdifFileT instead of FILE *
  *   -> eof error reporting makes more sense
@@ -136,12 +141,13 @@ size_t
 SdifFScanGeneralHeader(SdifFileT *SdifF)
 {
   size_t SizeR = 0;
-	char errorMess[_SdifStringLen];
   
   SdiffGetSignature(SdifF->TextStream, &(SdifF->CurrSignature), &SizeR);
   if (SdifF->CurrSignature != eSDIF)
     {
-      sprintf(errorMess,
+      char errorMess[_SdifStringLen];
+
+      snprintf(errorMess, sizeof(errorMess),
 	      "'%s' not correctly read\t: '%s'.",
 	       SdifSignatureToString(eSDIF),
 	       SdifSignatureToString(SdifF->CurrSignature));
@@ -245,7 +251,6 @@ size_t
 SdifFScanAllASCIIChunks(SdifFileT *SdifF)
 {
   size_t    SizeR = 0;
-	char errorMess[_SdifStringLen];
   
   while (   (SdiffGetSignature(SdifF->TextStream, &(SdifF->CurrSignature), &SizeR)) != eEof  )
     {
@@ -272,11 +277,15 @@ SdifFScanAllASCIIChunks(SdifFileT *SdifF)
 	  return SizeR;
 	  
 	default :
-	  sprintf(errorMess,
+	{
+	  char errorMess[_SdifStringLen];
+
+	  snprintf(errorMess, sizeof(errorMess),
 		  "It is not a chunk name : '%s'",
 		  SdifSignatureToString(SdifF->CurrSignature));
 	  _SdifFError(SdifF, eSyntax, errorMess);
 	}
+	break;
     }
   return SizeR;
 }
@@ -341,7 +350,6 @@ SdifFScanMatrixHeader(SdifFileT *SdifF)
 void
 SdifFScanOneRow(SdifFileT *SdifF)
 {
-	char errorMess[_SdifStringLen];
     /* case template for type from SdifDataTypeET */
 #   define scanrowcase(type)						  \
     case e##type:  							  \
@@ -354,11 +362,16 @@ SdifFScanOneRow(SdifFileT *SdifF)
         /* generate cases for all types */
 	sdif_foralltypes (scanrowcase);
 
-	default :
-	    sprintf (errorMess, "in text file, OneRow 0x%04x, then Float4 used", SdifF->CurrOneRow->DataType);
+	default:
+	{
+	    char errorMess[_SdifStringLen];
+
+	    snprintf(errorMess, sizeof(errorMess), "in text file, OneRow 0x%04x, then Float4 used", SdifF->CurrOneRow->DataType);
 	    _SdifFError(SdifF, eTypeDataNotSupported, errorMess);
 	    SdiffScanFloat4(SdifF->TextStream, SdifF->CurrOneRow->Data.Float4,
 			    SdifF->CurrOneRow->NbData);
+	}
+	break;
     }
 }
 

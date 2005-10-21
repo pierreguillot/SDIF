@@ -1,4 +1,4 @@
-/* $Id: SdifFPrint.c,v 3.15 2005-05-24 09:35:00 roebel Exp $
+/* $Id: SdifFPrint.c,v 3.16 2005-10-21 14:32:29 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -31,6 +31,17 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.15  2005/05/24 09:35:00  roebel
+ * Fixed last checkin comment which turned out to be the start of
+ * a c-comment.
+ *
+ * Removed all old versions of ASCII Chunk writing functions that were
+ * still based on the Text/Binary output distinction via
+ * function argument. Now the write functions are used for binary
+ * and the Put functions used for ASCII files.
+ * The writing of the pre 1999 SDIF
+ * ASCII chunks in binary files is no longer possible.
+ *
  * Revision 3.14  2005/04/07 15:56:46  schwarz
  * removed some now empty local include files,
  * added include of <sdif.h> and "SdifGlobals.h"
@@ -269,7 +280,6 @@ SdifFPrintOneRow(SdifFileT *SdifF)
 {
   unsigned int iCol;
   size_t SizeW = 0;
-  char errorMess[_SdifStringLen];
   
   switch (SdifF->CurrOneRow->DataType)
   {
@@ -330,12 +340,18 @@ SdifFPrintOneRow(SdifFileT *SdifF)
     break;
 
     default:
-	sprintf(errorMess, "OneRow 0x%04x, then Float4 used", SdifF->CurrOneRow->DataType);
+    {
+	char errorMess[_SdifStringLen];
+  
+	snprintf(errorMess, sizeof(errorMess), 
+		 "OneRow 0x%04x, then Float4 used", 
+		 SdifF->CurrOneRow->DataType);
 	_SdifFError(SdifF, eTypeDataNotSupported, errorMess);
 	/* then values are considered as Float4 */
 	for (iCol = 0; iCol < SdifF->CurrOneRow->NbData; iCol++)
 	    SizeW += fprintf(SdifF->TextStream, "\t%g", 
 			     SdifF->CurrOneRow->Data.Float4[iCol]);
+    }
     break;
   }
   SizeW += fprintf(SdifF->TextStream, "\n");

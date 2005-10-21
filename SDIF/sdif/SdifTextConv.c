@@ -1,4 +1,4 @@
-/* $Id: SdifTextConv.c,v 3.13 2005-04-07 15:56:48 schwarz Exp $
+/* $Id: SdifTextConv.c,v 3.14 2005-10-21 14:32:30 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -32,6 +32,10 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.13  2005/04/07 15:56:48  schwarz
+ * removed some now empty local include files,
+ * added include of <sdif.h> and "SdifGlobals.h"
+ *
  * Revision 3.12  2004/07/22 14:47:56  bogaards
  * removed many global variables, moved some into the thread-safe SdifGlobals structure, added HAVE_PTHREAD define, reorganized the code for selection, made some arguments const, new version 3.8.6
  *
@@ -238,7 +242,6 @@ SdifFTextConvAllFrame(SdifFileT *SdifF)
     SizeR = 0,
     SizeW = 0;
   int CharEnd = 0;
-  char errorMess[_SdifStringLen];
 
   while ((CharEnd != eEof) && (SdifFCurrSignature(SdifF) != eENDC))
     {
@@ -256,7 +259,7 @@ SdifFTextConvAllFrame(SdifFileT *SdifF)
     }
 
   if (CharEnd == eEof)
-    _SdifError(eEof, errorMess);
+    _SdifError(eEof, "SdifFTextConvFrame");
 
   return SizeW;
 }
@@ -302,7 +305,6 @@ size_t
 SdifFTextConv(SdifFileT *SdifF)
 {
   size_t  SizeW = 0;
-  char errorMess[_SdifStringLen];
     
   SdifFScanGeneralHeader(SdifF);  
   
@@ -313,7 +315,7 @@ SdifFTextConv(SdifFileT *SdifF)
   SdifF->FileSize += SdifFWriteAllASCIIChunks(SdifF);
 
   switch (SdifFCurrSignature(SdifF))
-    {
+  {
     case eSDFC:
       SizeW = SdifFTextConvFramesChunk(SdifF);
       SdifF->FileSize += SizeW;
@@ -323,12 +325,16 @@ SdifFTextConv(SdifFileT *SdifF)
       return SdifF->FileSize;
 
     default:
-      sprintf(errorMess,
+    {
+	char errorMess[_SdifStringLen];
+
+	snprintf(errorMess, sizeof(errorMess),
 	      "It is not a chunk signature : '%s'",
 	      SdifSignatureToString(SdifFCurrSignature(SdifF)));
-      _SdifFError(SdifF, eSyntax, errorMess);
-      break;
+	_SdifFError(SdifF, eSyntax, errorMess);
     }
+    break;
+  }
     
   if (SdifFLastErrorTag (SdifF)  != eNoError)
       return SizeW;
@@ -350,7 +356,6 @@ size_t
 SdifTextToSdif(SdifFileT *SdifF, char *TextStreamName)
 {
   size_t FileSizeW = 0;
-  char errorMess[_SdifStringLen];
 
   if (SdifF->Mode != eWriteFile)
     _SdifFError(SdifF, eBadMode, "it must be eWriteFile");
@@ -365,7 +370,10 @@ SdifTextToSdif(SdifFileT *SdifF, char *TextStreamName)
   
   if (SdifStrCmp(TextStreamName, SdifF->Name) == 0)
     {
-      sprintf(errorMess, "Read=%s, Write=%s.", TextStreamName, SdifF->Name);
+      char errorMess[_SdifStringLen];
+
+      snprintf(errorMess, sizeof(errorMess), 
+	       "Read=%s, Write=%s.", TextStreamName, SdifF->Name);
       _SdifFError(SdifF, eReadWriteOnSameFile, errorMess);
       return FileSizeW;
     }
