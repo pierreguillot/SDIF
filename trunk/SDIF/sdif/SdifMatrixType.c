@@ -1,4 +1,4 @@
-/* $Id: SdifMatrixType.c,v 3.10 2004-07-22 14:47:56 bogaards Exp $
+/* $Id: SdifMatrixType.c,v 3.11 2005-10-21 14:32:30 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -37,6 +37,9 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.10  2004/07/22 14:47:56  bogaards
+ * removed many global variables, moved some into the thread-safe SdifGlobals structure, added HAVE_PTHREAD define, reorganized the code for selection, made some arguments const, new version 3.8.6
+ *
  * Revision 3.9  2003/11/07 21:47:18  roebel
  * removed XpGuiCalls.h and replaced preinclude.h  by local files
  *
@@ -141,7 +144,6 @@ SdifMatrixTypeT*
 SdifCreateMatrixType(SdifSignature Signature, SdifMatrixTypeT *PredefinedMatrixType)
 {
   SdifMatrixTypeT *NewMatrixType = NULL;
-	char errorMess[_SdifStringLen];
 
   NewMatrixType = SdifMalloc(SdifMatrixTypeT);
   if (NewMatrixType)
@@ -150,12 +152,14 @@ SdifCreateMatrixType(SdifSignature Signature, SdifMatrixTypeT *PredefinedMatrixT
       NewMatrixType->ColumnUserList = SdifCreateList(SdifKillColumnDef);
       NewMatrixType->NbColumnDef    = 0;
       NewMatrixType->ModifMode      = eCanModif;
-
+      
       if (PredefinedMatrixType)
 	{
 	  if (PredefinedMatrixType->Signature != Signature)
 	    {
-	      sprintf(errorMess, "'%s'(Pre) != '%s'",
+	      char errorMess[_SdifStringLen];
+
+	      snprintf(errorMess, sizeof(errorMess), "'%s'(Pre) != '%s'",
 		      SdifSignatureToString(PredefinedMatrixType->Signature),
 		      SdifSignatureToString(Signature));
 	      _SdifError(eInvalidPreType, errorMess);

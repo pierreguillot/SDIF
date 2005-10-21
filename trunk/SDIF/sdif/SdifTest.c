@@ -1,4 +1,4 @@
-/* $Id: SdifTest.c,v 3.16 2005-05-24 09:36:02 roebel Exp $
+/* $Id: SdifTest.c,v 3.17 2005-10-21 14:32:30 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -33,6 +33,11 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.16  2005/05/24 09:36:02  roebel
+ *
+ * Fixed last checkin comment which turned out to be the start of
+ * a c-comment.
+ *
  * Revision 3.15  2005/05/23 19:17:53  schwarz
  * - Sdiffread/Sdiffwrite functions with SdifFileT instead of FILE *
  *   -> eof error reporting makes more sense
@@ -131,42 +136,43 @@ SdifTestMatrixType(SdifFileT *SdifF, SdifSignature Signature)
 {
   SdifMatrixTypeT* MtrxT;
   SdifMatrixTypeT* PredefinedMtrxT;
-	char errorMess[_SdifStringLen];
 
   MtrxT = SdifGetMatrixType(SdifF->MatrixTypesTable, Signature);
   if (MtrxT)
-    return MtrxT;
+      return MtrxT;
   else
-    {
+  {
       PredefinedMtrxT = SdifGetMatrixType(gSdifPredefinedTypes->MatrixTypesTable, Signature);
       if (PredefinedMtrxT)
-	    {
-	      MtrxT = SdifCreateMatrixType(Signature, PredefinedMtrxT);
-	      SdifPutMatrixType(SdifF->MatrixTypesTable, MtrxT);
-	      return MtrxT;
-	    }
+      {
+	  MtrxT = SdifCreateMatrixType(Signature, PredefinedMtrxT);
+	  SdifPutMatrixType(SdifF->MatrixTypesTable, MtrxT);
+	  return MtrxT;
+      }
       else
-	    {
-          sprintf(errorMess, "Matrix Type : '%s' (0x%08x)", 
-		  SdifSignatureToString(Signature), (unsigned) Signature);
+      {
+	  char errorMess[_SdifStringLen];
+
+          snprintf(errorMess, sizeof(errorMess), "Matrix Type : '%s' (0x%08x)", 
+		   SdifSignatureToString(Signature), (unsigned) Signature);
           _SdifFError(SdifF, eUnDefined, errorMess);
           return NULL;
-        }
-    }
+      }
+  }
 }
 
 
 int
 SdifFTestDataType(SdifFileT* SdifF)
 {
-	char errorMess[_SdifStringLen];
-
 #if (_SdifFormatVersion >= 3)
     if (SdifDataTypeKnown (SdifF->CurrMtrxH->DataType))
         return (eTrue);
     else
     {
-        sprintf (errorMess, " 0x%04x, then Float4 used", 
+	char errorMess[_SdifStringLen];
+
+        snprintf(errorMess, sizeof(errorMess), " 0x%04x, then Float4 used", 
 		 SdifF->CurrMtrxH->DataType);
 	_SdifFError (SdifF, eTypeDataNotSupported, errorMess);
 	SdifF->CurrMtrxH->DataType = eFloat4;
@@ -180,7 +186,11 @@ SdifFTestDataType(SdifFileT* SdifF)
     case eFloat8:
       return eTrue;
     default:
-      sprintf(errorMess, " 0x%04x, then Float4 used", SdifF->CurrMtrxH->DataType);
+    {
+      char errorMess[_SdifStringLen];
+
+      snprintf(errorMess, sizeof(errorMess), 
+	       " 0x%04x, then Float4 used", SdifF->CurrMtrxH->DataType);
       SdifF->CurrMtrxH->DataType = eFloat4;
       _SdifFError(SdifF, eTypeDataNotSupported, errorMess);
       return eFalse;
@@ -198,7 +208,9 @@ int SdifFTestNbColumns(SdifFileT* SdifF)
    * is supported in the standard anyway */
   if (SdifF->CurrMtrxT->NbColumnDef < SdifF->CurrMtrxH->NbCol)
     {
-      sprintf(gSdifErrorMess, "%d maximum, %d in the header",
+      char errorMess[_SdifStringLen];
+
+      snprintf(errorMess, sizeof(errorMess), "%d maximum, %d in the header",
         SdifF->CurrMtrxT->NbColumnDef,
         SdifF->CurrMtrxH->NbCol);
       _SdifFError(SdifF, eBadNbData, gSdifErrorMess);
@@ -272,14 +284,15 @@ SdifColumnDefT*
 SdifTestColumnDef(SdifFileT *SdifF, SdifMatrixTypeT *MtrxT, char *NameCD)
 {
   SdifColumnDefT* CD;
-	char errorMess[_SdifStringLen];
 
   CD = SdifMatrixTypeGetColumnDef(MtrxT, NameCD);
   if (CD)
     return CD;
   else
     {
-      sprintf(errorMess,
+      char errorMess[_SdifStringLen];
+
+      snprintf(errorMess, sizeof(errorMess),
 	      "In Matrix Type '%s', Column : %s",
 	      SdifSignatureToString(MtrxT->Signature),
 	      NameCD);
@@ -295,7 +308,6 @@ SdifTestFrameType(SdifFileT *SdifF, SdifSignature Signature)
   SdifFrameTypeT
     *FrameType,
     *PredefinedFrameType;
-	char errorMess[_SdifStringLen];
   
   FrameType = SdifGetFrameType(SdifF->FrameTypesTable, Signature);
   if (FrameType)
@@ -311,7 +323,9 @@ SdifTestFrameType(SdifFileT *SdifF, SdifSignature Signature)
 	    }
       else
 	    {
-	      sprintf(errorMess, "Frame Type '%s' (0x%08x)",
+	      char errorMess[_SdifStringLen];
+	
+	      snprintf(errorMess, sizeof(errorMess), "Frame Type '%s' (0x%08x)",
 		      SdifSignatureToString(Signature), (unsigned) Signature);
 	      _SdifFError(SdifF, eUnDefined, errorMess);
 	      return NULL;
@@ -324,14 +338,15 @@ SdifComponentT*
 SdifTestComponent(SdifFileT* SdifF, SdifFrameTypeT *FramT, char *NameCD)
 {
   SdifComponentT* CD;
-	char errorMess[_SdifStringLen];
 
   CD = SdifFrameTypeGetComponent(FramT, NameCD);
   if (CD)
     return CD;
   else
     {
-      sprintf(errorMess,
+      char errorMess[_SdifStringLen];
+
+      snprintf(errorMess, sizeof(errorMess),
 	      "In Frame Type '%s', Component : %s",
 	      SdifSignatureToString(FramT->Signature),
 	      NameCD);
@@ -344,14 +359,13 @@ SdifTestComponent(SdifFileT* SdifF, SdifFrameTypeT *FramT, char *NameCD)
 int
 SdifTestSignature(SdifFileT *SdifF, int CharEnd, SdifSignature Signature, char *Mess)
 {
-	char errorMess[_SdifStringLen];
-
   if (SdifIsAReservedChar(CharEnd)  ||  isspace(CharEnd))
     {
-      sprintf(errorMess,
+      char errorMess[_SdifStringLen];
+
+      snprintf(errorMess, sizeof(errorMess),
 	      "%s Name not correctly read : '%s'. Last char read : '%d'",
-	      Mess,
-	      SdifSignatureToString(Signature),
+	      Mess, SdifSignatureToString(Signature),
 	      (char) CharEnd);
       _SdifFError(SdifF, eNameLength, errorMess);
       return eFalse;
@@ -365,11 +379,11 @@ int
 SdifTestCharEnd(SdifFileT *SdifF, int CharEnd, char MustBe, char *StringRead,
 		int ErrCondition, char *Mess)
 {
-    char errorMess[_SdifStringLen];
-
     if ((unsigned) CharEnd != (unsigned) MustBe  ||  ErrCondition)
     {
-	sprintf(errorMess, 
+	char errorMess[_SdifStringLen];
+
+	snprintf(errorMess, sizeof(errorMess), 
 		"In %s, Attempt to read '%c' (%d): actually read '%s%c' (%d) ",
 		Mess, MustBe, MustBe, StringRead, CharEnd, CharEnd);
 	_SdifFError (SdifF, eSyntax, errorMess);
@@ -383,13 +397,13 @@ SdifTestCharEnd(SdifFileT *SdifF, int CharEnd, char MustBe, char *StringRead,
 int
 SdifTestMatrixTypeModifMode(SdifFileT *SdifF, SdifMatrixTypeT *MatrixType)
 {  
-	char errorMess[_SdifStringLen];
-
   if (eCanModif == MatrixType->ModifMode)
     return eTrue;
   else
     {
-      sprintf(errorMess, "Matrix Type '%s' ",
+      char errorMess[_SdifStringLen];
+
+      snprintf(errorMess, sizeof(errorMess), "Matrix Type '%s' ",
 	      SdifSignatureToString(MatrixType->Signature));
       _SdifFError (SdifF, eUserDefInFileYet, errorMess);
       return  eFalse;
@@ -400,13 +414,13 @@ SdifTestMatrixTypeModifMode(SdifFileT *SdifF, SdifMatrixTypeT *MatrixType)
 int
 SdifTestFrameTypeModifMode(SdifFileT *SdifF, SdifFrameTypeT *FrameType)
 {
-	char errorMess[_SdifStringLen];
-
   if (eCanModif == FrameType->ModifMode)
     return eTrue;
   else
     {
-      sprintf(errorMess, "Frame Type '%s' ",
+      char errorMess[_SdifStringLen];
+
+      snprintf(errorMess, sizeof(errorMess), "Frame Type '%s' ",
 	      SdifSignatureToString(FrameType->Signature));
       _SdifFError (SdifF, eUserDefInFileYet, errorMess);
       return  eFalse;

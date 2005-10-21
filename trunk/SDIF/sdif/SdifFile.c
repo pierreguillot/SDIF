@@ -1,4 +1,4 @@
-/* $Id: SdifFile.c,v 3.57 2005-07-05 10:44:08 roebel Exp $
+/* $Id: SdifFile.c,v 3.58 2005-10-21 14:32:29 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -33,6 +33,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.57  2005/07/05 10:44:08  roebel
+ * changed to be able to compile with mingw32
+ *
  * Revision 3.56  2005/05/23 17:52:53  schwarz
  * Unified error handling:
  * - SdifErrorEnum (global errors) integrated into SdifErrorTagET (file errors)
@@ -725,19 +728,21 @@ SdifFCreateCurrMtrxH(SdifFileT* SdifF)
 FILE*
 SdifFGetFILE_SwitchVerbose(SdifFileT* SdifF, int Verbose)
 {
-  char errorMess[_SdifStringLen];
-
   switch (Verbose)
-    {
+  {
     case 't' :
       return SdifF->TextStream;
     case 's' :
       return SdifF->Stream;
     default :
-     sprintf(errorMess, "*Sdif* %c not a verbose ('t': text; 's':SdifFile)\n", Verbose);
-      _Debug(errorMess);
-      return NULL;
+    {
+	char errorMess[_SdifStringLen];
+
+	sprintf(errorMess, "*Sdif* %c not a verbose ('t': text; 's':SdifFile)\n", Verbose);
+	_Debug(errorMess);
+	return NULL;
     }
+  }
 }
 
 

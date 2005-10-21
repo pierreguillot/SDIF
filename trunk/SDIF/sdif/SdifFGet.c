@@ -1,4 +1,4 @@
-/* $Id: SdifFGet.c,v 3.21 2005-06-10 12:45:11 roebel Exp $
+/* $Id: SdifFGet.c,v 3.22 2005-10-21 14:32:29 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -32,6 +32,10 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.21  2005/06/10 12:45:11  roebel
+ * Fixed SdifFGetOneNameValue for the case where the file is stored in
+ * ASCII with windows or macintosh line feed conventions.
+ *
  * Revision 3.20  2005/05/24 09:33:40  roebel
  * Fixed last checkin comment which turned out to be the start of
  * a c-comment.
@@ -226,7 +230,6 @@ SdifFGetOneNameValue(SdifFileT *SdifF, int Verbose, size_t *SizeR)
   return '\n';
 
 #else
-  char errorMess[_SdifStringLen];
   int          CharEnd;
   static const char  CharsEnd[] = " \t\n\f\r\v{},;:";
   char sdifString[_SdifStringLen];
@@ -242,6 +245,8 @@ SdifFGetOneNameValue(SdifFileT *SdifF, int Verbose, size_t *SizeR)
     return  CharEnd;
   if (! isspace(CharEnd))
     {
+      char errorMess[_SdifStringLen];
+
       sprintf(errorMess,
 	      "Wait a space_char after '%s', read char : (%d) '%c'",
 	      sdifString,
@@ -253,6 +258,8 @@ SdifFGetOneNameValue(SdifFileT *SdifF, int Verbose, size_t *SizeR)
   
   if (SdifNameValuesLGetCurrNVT(SdifF->NameValues, sdifString))
     {
+      char errorMess[_SdifStringLen];
+
       sprintf(errorMess, "NameValue : %s ", sdifString);
       _SdifFError(SdifF, eReDefined, errorMess);
       CharEnd = SdiffGetStringUntil(file, sdifString, _SdifStringLen, SizeR, ";");
@@ -266,6 +273,8 @@ SdifFGetOneNameValue(SdifFileT *SdifF, int Verbose, size_t *SizeR)
 
   if (CharEnd != (unsigned) ';')
     {
+      char errorMess[_SdifStringLen];
+
       sprintf(errorMess,
 	      "Attempt to read ';' : '%s%c' ",
 	      sdifString2,
@@ -341,7 +350,6 @@ int
 SdifFNameValueLCurrNVTfromString (SdifFileT *SdifF, char *str)
 {
   char *name, *value;
-  char errorMess[_SdifStringLen];
 
   while (*str)
   {   /* get name */
@@ -359,6 +367,8 @@ SdifFNameValueLCurrNVTfromString (SdifFileT *SdifF, char *str)
       /* check if name already used */
       if (SdifNameValuesLGetCurrNVT (SdifF->NameValues, name))
       {
+	  char errorMess[_SdifStringLen];
+
 	  sprintf(errorMess, "NameValue : %s ", name);
 	  _SdifFError(SdifF, eReDefined, errorMess);
       }
@@ -521,7 +531,6 @@ SdifFGetOneComponent(SdifFileT *SdifF, int Verbose,
 {
   int   CharEnd;
   FILE *file;
-  char errorMess[_SdifStringLen];
 
   file = SdifFGetFILE_SwitchVerbose(SdifF, Verbose);
   
@@ -539,6 +548,8 @@ SdifFGetOneComponent(SdifFileT *SdifF, int Verbose,
 	return  CharEnd;
       else
 	{
+	  char errorMess[_SdifStringLen];
+
 	  sprintf(errorMess,
 		  "Incomplete Component : '%s%c'",
 		  SdifSignatureToString(*MatrixSignature),
@@ -580,7 +591,6 @@ SdifFGetOneComponentfromSdifString(SdifFileT *SdifF, SdifStringT *SdifString,
 				   char *ComponentName)
 {
   int   CharEnd;
-  char errorMess[_SdifStringLen];
 
   ComponentName[0]= '\0';
   *MatrixSignature = eEmptySignature;
@@ -595,6 +605,8 @@ SdifFGetOneComponentfromSdifString(SdifFileT *SdifF, SdifStringT *SdifString,
 	  return  CharEnd;
       else
       {
+	  char errorMess[_SdifStringLen];
+
 	  sprintf(errorMess, "Incomplete Component : '%s%c'",
 		  SdifSignatureToString(*MatrixSignature), CharEnd);
 	  _SdifFError(SdifF, eSyntax, errorMess);
@@ -790,7 +802,6 @@ SdifFGetAllType(SdifFileT *SdifF, int Verbose)
   SdifSignature  TypeOfType = 0;
   FILE          *file;
   char sdifString[_SdifStringLen];
-  char errorMess[_SdifStringLen];
 
   file = SdifFGetFILE_SwitchVerbose(SdifF, Verbose);
 
@@ -816,7 +827,7 @@ SdifFGetAllType(SdifFileT *SdifF, int Verbose)
   while( (CharEnd = SdiffGetSignature(file, &TypeOfType, &SizeR)) != (unsigned) '}' )
     {      
       switch (TypeOfType)
-	{
+      {
 	case e1MTD :
 	  SizeR += SdifFGetOneMatrixType(SdifF, Verbose);
 	  break;
@@ -824,6 +835,9 @@ SdifFGetAllType(SdifFileT *SdifF, int Verbose)
 	  SizeR += SdifFGetOneFrameType(SdifF, Verbose);
 	  break;
 	default :
+	{
+	  char errorMess[_SdifStringLen];
+
 	  sprintf(errorMess, "Wait '%s' or '%s' : '%s'",
 		  SdifSignatureToString(e1MTD),
 		  SdifSignatureToString(e1FTD),
@@ -833,8 +847,9 @@ SdifFGetAllType(SdifFileT *SdifF, int Verbose)
 			  SdifSkipASCIIUntil(file, &SizeR, "}:[]"),
 			  '}', "", eFalse,
 			  "end of unknown type def skiped missing");
-	  break;
 	}
+	  break;
+      }
       TypeOfType = 0;
     }
   
@@ -867,7 +882,6 @@ SdifFGetAllTypefromSdifString(SdifFileT *SdifF, SdifStringT *SdifString)
     size_t SizeR = 0;
     int CharEnd;
     SdifSignature TypeOfType = 0;
-    char errorMess[_SdifStringLen];
 
     while ((CharEnd = SdiffGetSignaturefromSdifString(SdifString, &TypeOfType))
 	   != (unsigned) '}'  &&  !SdifStringIsEOS(SdifString))
@@ -883,6 +897,9 @@ SdifFGetAllTypefromSdifString(SdifFileT *SdifF, SdifStringT *SdifString)
 	  break;
 
 	  default:
+	  {
+	    char errorMess[_SdifStringLen];
+
 	    sprintf(errorMess, "Waiting for signature '%s' or '%s', read '%s' (end char %c=%d) at position %d, \nremaining input '%s'",
 		    SdifSignatureToString(e1MTD),
 		    SdifSignatureToString(e1FTD),
@@ -891,6 +908,7 @@ SdifFGetAllTypefromSdifString(SdifFileT *SdifF, SdifStringT *SdifString)
 		    SdifString->str + SdifString->NbCharRead);
 	    _SdifFError(SdifF, eSyntax, errorMess);
 	    /* return SizeR; */
+	  }
 	  break;
 	}
 	TypeOfType = 0;
