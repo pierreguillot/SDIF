@@ -1,4 +1,4 @@
-/* $Id: SdifFScan.c,v 3.20 2005-10-21 14:32:29 schwarz Exp $
+/* $Id: SdifFScan.c,v 3.21 2005-11-10 17:51:21 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -31,6 +31,10 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.20  2005/10/21 14:32:29  schwarz
+ * protect all static buffers from overflow by using snprintf instead of sprintf
+ * move big errorMess buffers into error branch to avoid too large stack allocation
+ *
  * Revision 3.19  2005/05/24 09:35:29  roebel
  *
  * Fixed last checkin comment which turned out to be the start of
@@ -253,10 +257,9 @@ SdifFScanAllASCIIChunks(SdifFileT *SdifF)
   size_t    SizeR = 0;
   
   while (   (SdiffGetSignature(SdifF->TextStream, &(SdifF->CurrSignature), &SizeR)) != eEof  )
-    {
+  {
       switch (SdifF->CurrSignature)
-	{
-
+      {
 	case e1NVT :
 	  SdifNameValuesLNewTable(SdifF->NameValues, _SdifNVTStreamID);
 	  SizeR += SdifFScanNameValueLCurrNVT(SdifF);
@@ -286,7 +289,8 @@ SdifFScanAllASCIIChunks(SdifFileT *SdifF)
 	  _SdifFError(SdifF, eSyntax, errorMess);
 	}
 	break;
-    }
+      }
+  }
   return SizeR;
 }
 
