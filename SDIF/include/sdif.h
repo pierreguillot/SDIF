@@ -1,4 +1,4 @@
-/* $Id: sdif.h,v 1.51 2005-05-24 09:32:39 roebel Exp $
+/* $Id: sdif.h,v 1.52 2005-12-05 16:39:40 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -30,8 +30,15 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.51  2005/05/24 09:32:39  roebel
+ * Fixed last checkin comment which turned out to be the start of
+ * a c-comment.
+ * Synchronized the extended ErrorTagET with the new
+ * table of error messages.
+ *
  * Revision 1.50  2005/05/23 19:17:52  schwarz
- * - Sdiffread/Sdiffwrite functions with SdifFileT instead of FILE *
+ * - Sdiffread* / Sdiffwrite* functions with SdifFileT instead of FILE *
+
  *   -> eof error reporting makes more sense
  * - more cleanup of sdif.h, above functions are private in SdifRWLowLevel.h
  * - eEof becomes error 4 to be distinguishable from ascii chars
@@ -253,7 +260,7 @@
  * Revision 1.1.2.1  2000/08/21  13:07:41  tisseran
  * *** empty log message ***
  *
- * $Date: 2005-05-24 09:32:39 $
+ * $Date: 2005-12-05 16:39:40 $
  *
  */
 
@@ -268,7 +275,7 @@ extern "C" {
 #endif
 
 
-static const char _sdif_h_cvs_revision_ [] = "$Id: sdif.h,v 1.51 2005-05-24 09:32:39 roebel Exp $";
+static const char _sdif_h_cvs_revision_ [] = "$Id: sdif.h,v 1.52 2005-12-05 16:39:40 schwarz Exp $";
 
 
 #include <stdio.h>
@@ -2794,6 +2801,13 @@ _addproto (String,    char *,		string)
   @return dest
 */
 SdifListT *SdifSelectAppendList (SdifListT *dest, SdifListT *source);
+
+/*DOC:
+  convert list of int selections to mask 
+
+  do this whenever elements have been added to an int selection list
+*/
+void SdifSelectGetIntMask (SdifListP list, SdifSelectIntMaskP mask);
 
 
 
