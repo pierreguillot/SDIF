@@ -1,3 +1,10 @@
+2005-12-19  Axel Roebel  <roebel@sam.local>
+Version 1.2.4
+
+	* easdif/sdifframe.hpp, easdif/sdifframe.cpp :
+	Fixed argument of SetTime function to be SdifFloat8
+	instead of float!
+
 2005-07-25  Axel Roebel  <roebel@sam.local>
 Version 1.2.3
 
@@ -886,4 +893,4 @@ Version 0.21
 	* ChangeLog: Added changelog to repository.
 
 
-$Id: ChangeLog,v 1.53 2005-08-30 13:41:40 roebel Exp $
+$Id: ChangeLog,v 1.54 2005-12-19 11:46:33 roebel Exp $
