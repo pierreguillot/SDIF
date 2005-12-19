@@ -34,9 +34,14 @@
  * sdifframe.h is composed of the different methods which are using to 
  * manipulate the frame.
  * 
- * $Id: sdifframe.hpp,v 1.1 2005-05-30 21:43:01 roebel Exp $ 
+ * $Id: sdifframe.hpp,v 1.2 2005-12-19 11:46:11 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.1  2005/05/30 21:43:01  roebel
+ * Changed all include files from .h into .hpp to prevent name clash between
+ * sdifmatix.h and SDIF/sdifcpp/SdifMatrix.h on MacOSX where filenames are
+ * case insensitive.
+ *
  * Revision 1.18  2005/05/24 09:53:51  roebel
  * Changed selection management in Easdif:
  * Before EnableDirectory has been called selection
@@ -527,7 +532,7 @@ public:
    * \ingroup setmframe
    * @brief Set one element of the frame header : the time
    */
-  void SetTime(float time);
+  void SetTime(SdifFloat8 time);
 
   /** 
    * \ingroup setmframe
