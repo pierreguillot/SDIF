@@ -32,9 +32,14 @@
  * 
  * 
  * 
- * $Id: sdifframe.cpp,v 1.20 2005-05-30 21:43:01 roebel Exp $ 
+ * $Id: sdifframe.cpp,v 1.21 2005-12-19 11:46:11 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.20  2005/05/30 21:43:01  roebel
+ * Changed all include files from .h into .hpp to prevent name clash between
+ * sdifmatix.h and SDIF/sdifcpp/SdifMatrix.h on MacOSX where filenames are
+ * case insensitive.
+ *
  * Revision 1.19  2005/05/30 19:32:34  bogaards
  * check whether frame is high level selected is it is already in the framedir
  *
@@ -408,7 +413,7 @@ void SDIFFrame::SetSignature(const std::string& signature)
     mSig = SdifStringToSignature(const_cast<char*>(signature.c_str()));
 }
 
-void SDIFFrame::SetTime(float time)
+void SDIFFrame::SetTime(SdifFloat8 time)
 {
     mTime = time;
 }
