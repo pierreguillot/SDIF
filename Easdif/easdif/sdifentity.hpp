@@ -32,9 +32,14 @@
  * 
  * 
  * 
- * $Id: sdifentity.hpp,v 1.6 2005-07-25 13:28:04 roebel Exp $ 
+ * $Id: sdifentity.hpp,v 1.7 2006-01-05 08:52:14 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.6  2005/07/25 13:28:04  roebel
+ * FRIterator now no longer a subclass of SDIFEntity. Subclasses
+ * are not supported by swig! With the new design swig interface
+ * works properly at least for swig 1.3.21.
+ *
  * Revision 1.5  2005/06/03 18:37:37  roebel
  * Fixed docu.
  *
@@ -1486,7 +1491,7 @@ public:
     typename Base_Iterator<0>::basic_iterator mBase;
    //typename std::list<SDIFLocation>::iterator mBase;
     SDIFEntity   *mpEnt;      // internal pointer to entity that the iterator works on
-    SDIFFrame     mFrame;     // internal frame to hold the current frame
+    mutable SDIFFrame     mFrame;     // internal frame to hold the current frame
     bool          mlEndUP;    // if true signals no further selected frame when moving to start of file
     bool          mlEndDOWN;  // if true signals no further selected frame when moving to end of file
     bool          mlFrameIsLoaded;  // true if mFrame holds the frame that the iterator is pointing too.
