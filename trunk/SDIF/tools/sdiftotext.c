@@ -1,4 +1,4 @@
-/* $Id: sdiftotext.c,v 1.6 2003-11-07 22:25:20 roebel Exp $
+/* $Id: sdiftotext.c,v 1.7 2006-01-09 10:21:01 ellis Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -11,6 +11,9 @@
  * sdiftotext.c
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.6  2003/11/07 22:25:20  roebel
+ * Removed last remainings of XpGuiCalls from tools files.
+ *
  * Revision 1.5  2003/11/07 21:47:20  roebel
  * removed XpGuiCalls.h and replaced preinclude.h  by local files
  *
@@ -72,7 +75,7 @@
 void
 usage(void)
 {
-  fprintf(SdifStdErr, "\nsdiftotext, %s\n\n", VERSION);
+  fprintf(SdifStdErr, "\nsdiftotext, %s\n\n", SDIF_VERSION_STRING);
   SdifPrintVersion();
   fprintf(SdifStdErr, "\nUsage : tosdif [-i <file>] [-o <file>] [-e <file>] [-t <file>]\n\
  i :   input file (default is \"stdin\")\n\
@@ -109,7 +112,7 @@ GetArgOfOption(int *iArg, int argc, char**argv)
 /*	KERmain / main															*/
 /*--------------------------------------------------------------------------*/
 
-#if HOST_OS_MAC
+#ifdef USE_XPGUI
 
 int KERmain(int argc, char** argv);
 int KERmain(int argc, char** argv)
