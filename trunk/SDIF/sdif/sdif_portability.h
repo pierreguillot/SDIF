@@ -1,6 +1,6 @@
 /******************************************************************************
  *
- * $Id: sdif_portability.h,v 3.2 2004-07-22 14:47:56 bogaards Exp $
+ * $Id: sdif_portability.h,v 3.3 2006-01-16 18:33:29 muller Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -33,6 +33,9 @@
  *
  * LOG
  * $Log: not supported by cvs2svn $
+ * Revision 3.2  2004/07/22 14:47:56  bogaards
+ * removed many global variables, moved some into the thread-safe SdifGlobals structure, added HAVE_PTHREAD define, reorganized the code for selection, made some arguments const, new version 3.8.6
+ *
  * Revision 3.1  2003/11/07 22:00:48  roebel
  * added preincluded.h replacement to CVS
  *
@@ -44,6 +47,10 @@
 
 #include <sdif_version.h>
 
+#if defined(WIN32)
+#   include <stdio.h>
+#   define snprintf _snprintf
+#endif
 
 #ifndef HAVE_CONFIG_H
 /* Host Architecture Mechanism
