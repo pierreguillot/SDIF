@@ -11,10 +11,10 @@ Global
 		Static Release = Static Release
 	EndGlobalSection
 	GlobalSection(ProjectConfiguration) = postSolution
-		{BA352925-3428-47E4-A9A0-9A791841725B}.Dll Debug.ActiveCfg = Dll Debug|Win32
-		{BA352925-3428-47E4-A9A0-9A791841725B}.Dll Debug.Build.0 = Dll Debug|Win32
-		{BA352925-3428-47E4-A9A0-9A791841725B}.Dll Release.ActiveCfg = Dll Release|Win32
-		{BA352925-3428-47E4-A9A0-9A791841725B}.Dll Release.Build.0 = Dll Release|Win32
+		{BA352925-3428-47E4-A9A0-9A791841725B}.Dll Debug.ActiveCfg = Debug|Win32
+		{BA352925-3428-47E4-A9A0-9A791841725B}.Dll Debug.Build.0 = Debug|Win32
+		{BA352925-3428-47E4-A9A0-9A791841725B}.Dll Release.ActiveCfg = Release|Win32
+		{BA352925-3428-47E4-A9A0-9A791841725B}.Dll Release.Build.0 = Release|Win32
 		{BA352925-3428-47E4-A9A0-9A791841725B}.Static Debug.ActiveCfg = Debug|Win32
 		{BA352925-3428-47E4-A9A0-9A791841725B}.Static Debug.Build.0 = Debug|Win32
 		{BA352925-3428-47E4-A9A0-9A791841725B}.Static Release.ActiveCfg = Release|Win32
