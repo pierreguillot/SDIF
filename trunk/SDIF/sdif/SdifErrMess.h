@@ -1,4 +1,4 @@
-/* $Id: SdifErrMess.h,v 3.14 2005-05-23 17:52:53 schwarz Exp $
+/* $Id: SdifErrMess.h,v 3.15 2006-02-03 11:36:56 roebel Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -32,6 +32,11 @@
  * author: Dominique Virolle 1998
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 3.14  2005/05/23 17:52:53  schwarz
+ * Unified error handling:
+ * - SdifErrorEnum (global errors) integrated into SdifErrorTagET (file errors)
+ * - no more SdifError.[ch], everything done by SdifErrMess.[ch]
+ *
  * Revision 3.13  2005/04/07 15:20:23  schwarz
  * removed duplicated declarations that belong to the external API in sdif.h
  *
@@ -125,7 +130,9 @@ SdifUInt4	SdifFError		(SdifFileT* SdifF,
 					 const char *UserMess, 
 					 const char *file, 
 					 const int line);
-SdifInt4	SdifFsPrintError	(char* oErrMess, SdifFileT* SdifF,
+SdifInt4	SdifFsPrintError	(char* oErrMess, 
+                                         unsigned int oErrMessLen,
+                                         SdifFileT* SdifF,
 					 SdifErrorTagET ErrorTag,
 					 const char *UserMess,
 					 const char *LibFile, int LibLine);
