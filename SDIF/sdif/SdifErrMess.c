@@ -1,4 +1,4 @@
-/* $Id: SdifErrMess.c,v 3.24 2005-10-21 14:32:29 schwarz Exp $
+/* $Id: SdifErrMess.c,v 3.25 2006-02-03 11:36:45 roebel Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -31,6 +31,10 @@
  * author: Dominique Virolle 1998
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.24  2005/10/21 14:32:29  schwarz
+ * protect all static buffers from overflow by using snprintf instead of sprintf
+ * move big errorMess buffers into error branch to avoid too large stack allocation
+ *
  * Revision 3.23  2005/05/24 18:19:43  roebel
  * Removed double semicolons, which apparently make gcc 2.96 stumble.
  *
@@ -338,7 +342,8 @@ SdifUInt4 SdifFError (SdifFileT* SdifF, SdifErrorTagET ErrorTag,
 	Error = SdifLastError(SdifF->Errors);
     }
 
-    SdifFsPrintError(sdifBufferError, SdifF, ErrorTag, UserMess, 
+    SdifFsPrintError(sdifBufferError, sizeof(sdifBufferError),
+                     SdifF, ErrorTag, UserMess, 
 		     __FILE__, __LINE__);
 
     /* call error/warning callback that handles printing */
@@ -376,7 +381,8 @@ SdifUInt4 SdifFError (SdifFileT* SdifF, SdifErrorTagET ErrorTag,
 
 
 SdifInt4
-SdifFsPrintError(char* oErrMess, SdifFileT* SdifF, SdifErrorTagET ErrorTag,
+SdifFsPrintError(char* oErrMess, unsigned int oErrMessLen, 
+                 SdifFileT* SdifF, SdifErrorTagET ErrorTag,
 		 const char *UserMess, const char *LibFile, int LibLine)
 {
     char HeadErrMess [512]  = "";
@@ -449,7 +455,7 @@ SdifFsPrintError(char* oErrMess, SdifFileT* SdifF, SdifErrorTagET ErrorTag,
       break;
     }
 
-    return snprintf(oErrMess, sizeof(oErrMess), "%s%s%s%s%s--> %s\n",
+    return snprintf(oErrMess, oErrMessLen, "%s%s%s%s%s--> %s\n",
 		   HeadErrMess, PosErrMess, TextErrMess, FramErrMess,
 		   MtrxErrMess, ErrErrMess);
 }
