@@ -1,3 +1,11 @@
+2006-02-03  Axel Roebel  <roebel@sam.local>
+Version 3.10.3
+
+	* sdif/SdifErrMess.c, SDIF/sdif/SdifErrMess.h: 
+	Fixed SdifFsPrintError which now creates a proper
+	error message. Before the error messages were
+	limited to 4 characters!
+	
 2005-06-10  Axel Roebel  <Axel.Roebel@ircam.fr>
 Version 3.10.2
 
@@ -750,4 +758,4 @@ Version 3.3:
 	  Operating System.
 
 	
-$Id: ChangeLog,v 1.49 2005-06-10 12:48:10 roebel Exp $
+$Id: ChangeLog,v 1.50 2006-02-03 11:49:23 roebel Exp $
