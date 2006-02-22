@@ -1,3 +1,9 @@
+2006-02-22  roebel  <Axel.Roebel@ircam.fr>
+Version 1.2.6
+	
+	* easdif/sdifframe.hpp, easdif/sdifframe.cpp :
+	Fixed SetHeader time argument from float to SdifFloat8.
+
 2006-01-05  Axel Roebel  <roebel@sam.local>
 Version 1.2.5
 
@@ -899,4 +905,4 @@ Version 0.21
 	* ChangeLog: Added changelog to repository.
 
 
-$Id: ChangeLog,v 1.55 2006-01-05 08:52:30 roebel Exp $
+$Id: ChangeLog,v 1.56 2006-02-22 14:20:42 roebel Exp $
