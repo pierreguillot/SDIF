@@ -32,9 +32,13 @@
  * 
  * 
  * 
- * $Id: sdifframe.cpp,v 1.21 2005-12-19 11:46:11 roebel Exp $ 
+ * $Id: sdifframe.cpp,v 1.22 2006-02-22 14:18:06 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.21  2005/12/19 11:46:11  roebel
+ * Fixed argument of SetTime function to be SdifFloat8
+ * instead of float!
+ *
  * Revision 1.20  2005/05/30 21:43:01  roebel
  * Changed all include files from .h into .hpp to prevent name clash between
  * sdifmatix.h and SDIF/sdifcpp/SdifMatrix.h on MacOSX where filenames are
@@ -379,14 +383,14 @@ void SDIFFrame::Print()
 }
 
 /* to Set */
-void SDIFFrame::SetHeader(SdifSignature sig, SdifUInt4 streamID, float time)//, SdifUInt4 nbMatrix)
+void SDIFFrame::SetHeader(SdifSignature sig, SdifUInt4 streamID, SdifFloat8 time)//, SdifUInt4 nbMatrix)
 {
     mSig = sig;
     mStreamID = streamID;
     mTime = time; //and  mNbMatrix = nbMatrix;
 }
 
-void SDIFFrame::SetHeader(const std::string& sig, SdifUInt4 streamID, float time)//, SdifUInt4 nbMatrix)
+void SDIFFrame::SetHeader(const std::string& sig, SdifUInt4 streamID, SdifFloat8 time)//, SdifUInt4 nbMatrix)
 {
     mSig = SdifStringToSignature(const_cast<char*>(sig.c_str()));
     mStreamID = streamID;
