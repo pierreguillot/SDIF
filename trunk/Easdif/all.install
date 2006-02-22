@@ -13,19 +13,21 @@ echo Installing in $PREFIX
 export PKG_CONFIG_PATH="$PREFIX"/lib/pkgconfig:/usr/X11R6/lib/pkgconfig:$PKG_CONFIG_PATH 
 
 if [ `uname` = "Darwin" -a `arch` = "ppc" ];then
-export flags="CFLAGS=-isysroot /Developer/SDKs/MacOSX10.3.9.sdk"
+export CFLAGS="-isysroot /Developer/SDKs/MacOSX10.3.9.sdk"
 export MACOSX_DEPLOYMENT_TARGET=10.3
 elif [ `uname` = "Darwin" -a `arch` = "i386" ];then
-export flags="CFLAGS=-isysroot /Developer/SDKs/MacOSX10.4u.sdk"
+export CFLAGS="-isysroot /Developer/SDKs/MacOSX10.4u.sdk"
 export MACOSX_DEPLOYMENT_TARGET=10.4
 fi
 
 if [ "$2" != "" ];then
 if [ "$flags" = "" ];then
-export flags="CFLAGS=-DDEBUG --enable-debug" 
+export CFLAGS=-DDEBUG
+export configflags=--enable-debug
 else
-export flags="$flags -DDEBUG --enable-debug"
+export CFLAGS="$CFLAGS -DDEBUG"
+export configflags=--enable-debug
 fi
 fi
-echo $flags
+echo $CFLAGS
 ./all.ircam.sh "$PREFIX"
