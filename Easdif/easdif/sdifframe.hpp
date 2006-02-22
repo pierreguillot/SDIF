@@ -34,9 +34,13 @@
  * sdifframe.h is composed of the different methods which are using to 
  * manipulate the frame.
  * 
- * $Id: sdifframe.hpp,v 1.2 2005-12-19 11:46:11 roebel Exp $ 
+ * $Id: sdifframe.hpp,v 1.3 2006-02-22 14:18:14 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  2005/12/19 11:46:11  roebel
+ * Fixed argument of SetTime function to be SdifFloat8
+ * instead of float!
+ *
  * Revision 1.1  2005/05/30 21:43:01  roebel
  * Changed all include files from .h into .hpp to prevent name clash between
  * sdifmatix.h and SDIF/sdifcpp/SdifMatrix.h on MacOSX where filenames are
@@ -502,13 +506,13 @@ public:
  * \ingroup setmframe
  * @brief Set the frame header
  */
-  void SetHeader(SdifSignature sig, SdifUInt4 streamID, float time);//, SdifUInt4 nbMatrix);
+  void SetHeader(SdifSignature sig, SdifUInt4 streamID, SdifFloat8 time);//, SdifUInt4 nbMatrix);
   
   /** 
    * \ingroup setmframe
    * @brief Set the frame header
    */
-  void SetHeader(const std::string& sig, SdifUInt4 streamID, float time);
+  void SetHeader(const std::string& sig, SdifUInt4 streamID, SdifFloat8 time);
     
   /** 
    * \ingroup setmframe
