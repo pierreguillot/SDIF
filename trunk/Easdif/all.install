@@ -13,11 +13,19 @@ echo Installing in $PREFIX
 export PKG_CONFIG_PATH="$PREFIX"/lib/pkgconfig:/usr/X11R6/lib/pkgconfig:$PKG_CONFIG_PATH 
 
 if [ `uname` = "Darwin" -a `arch` = "ppc" ];then
+if [ -r /Developer/SDKs/MacOSX10.3.9.sdk ] ; then
 export CFLAGS="-isysroot /Developer/SDKs/MacOSX10.3.9.sdk"
 export MACOSX_DEPLOYMENT_TARGET=10.3
+else
+echo SDK /Developer/SDKs/MacOSX10.3.9.sdk not installed using standard compiler tools
+fi
 elif [ `uname` = "Darwin" -a `arch` = "i386" ];then
+if [ -r /Developer/SDKs/MacOSX10.4u.sdk ] ; then
 export CFLAGS="-isysroot /Developer/SDKs/MacOSX10.4u.sdk"
 export MACOSX_DEPLOYMENT_TARGET=10.4
+else
+echo SDK /Developer/SDKs/MacOSX10.4u.sdk not installed using standard compiler tools
+fi
 fi
 
 if [ "$2" != "" ];then
