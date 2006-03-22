@@ -1,4 +1,4 @@
-/* $Id: SdifRWLowLevel.c,v 3.35 2005-10-21 14:32:30 schwarz Exp $
+/* $Id: SdifRWLowLevel.c,v 3.36 2006-03-22 22:00:41 roebel Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -33,6 +33,10 @@
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 3.35  2005/10/21 14:32:30  schwarz
+ * protect all static buffers from overflow by using snprintf instead of sprintf
+ * move big errorMess buffers into error branch to avoid too large stack allocation
+ *
  * Revision 3.34  2005/05/24 09:36:15  roebel
  *
  * Fixed last checkin comment which turned out to be the start of
@@ -502,7 +506,7 @@ SdiffReadFloat8(SdifFloat8 *ptr, size_t nobj, SdifFileT *file)
 
 SdifErrorTagET SdiffReadSignature (SdifSignature *Signature, SdifFileT *file, size_t *nread)
 {
-  size_t localread =  fread(Signature, sizeof(Signature), 1, file->Stream);
+  size_t localread =  fread(Signature, sizeof(SdifSignature), 1, file->Stream);
   
   if (localread  &&  !feof(file->Stream))
     {
@@ -514,7 +518,7 @@ SdifErrorTagET SdiffReadSignature (SdifSignature *Signature, SdifFileT *file, si
 	  break;
     	}
       
-      *nread += localread * sizeof(Signature);
+      *nread += localread * sizeof(SdifSignature);
       
       /* return success */
       return eNoError;
