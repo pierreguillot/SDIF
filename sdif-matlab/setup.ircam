@@ -6,9 +6,11 @@ ifeq ($(ARCH),i686)
  LINKFLAGS = "LDFLAGS=-shared -nodefaultlibs"
 endif
 
-ifeq ($(ARCH),x64_86)
- MEXCMD = /usr/local/bin/mex
+ifeq ($(ARCH),x86_64)
+ MEXCMD = mex
  LINKFLAGS = "LDFLAGS=-shared -nodefaultlibs"
+# static library does not link with option shared therfore we use shared library here.
+SDIF_LIB  = /u/formes/share/lib/$(SYS)/libsdif.so
 endif
 
 ifeq ($(ARCH),sgi)
