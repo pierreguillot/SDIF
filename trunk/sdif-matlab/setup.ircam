@@ -6,6 +6,11 @@ ifeq ($(ARCH),i686)
  LINKFLAGS = "LDFLAGS=-shared -nodefaultlibs"
 endif
 
+ifeq ($(ARCH),x64_86)
+ MEXCMD = /usr/local/bin/mex
+ LINKFLAGS = "LDFLAGS=-shared -nodefaultlibs"
+endif
+
 ifeq ($(ARCH),sgi)
  MEXCMD = /usr/LOCAL/matlab/bin/mex
 endif
