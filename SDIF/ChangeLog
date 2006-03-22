@@ -1,3 +1,16 @@
+2006-03-22  Axel Roebel  <Axel.Roebel@ircam.fr>
+Version 3.10.4
+
+	* sdif/SdifRWLowLevel.c :
+	Fixed wrong sizeof which would work only if
+	sizeof(pointer)  == sizeof(int)
+
+	* sdif/SdifSelect.c : 
+	cast pointer difference to int for printf arguments
+
+	* sdif/SdifFRead.c : 
+	use correct format specifier for long int arguments.	
+
 2006-02-03  Axel Roebel  <roebel@sam.local>
 Version 3.10.3
 
@@ -758,4 +771,4 @@ Version 3.3:
 	  Operating System.
 
 	
-$Id: ChangeLog,v 1.50 2006-02-03 11:49:23 roebel Exp $
+$Id: ChangeLog,v 1.51 2006-03-22 22:48:46 roebel Exp $
