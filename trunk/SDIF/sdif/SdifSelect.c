@@ -1,4 +1,4 @@
-/* $Id: SdifSelect.c,v 3.23 2005-10-21 14:32:30 schwarz Exp $
+/* $Id: SdifSelect.c,v 3.24 2006-03-22 22:00:46 roebel Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -96,6 +96,10 @@ TODO
 
 LOG
   $Log: not supported by cvs2svn $
+  Revision 3.23  2005/10/21 14:32:30  schwarz
+  protect all static buffers from overflow by using snprintf instead of sprintf
+  move big errorMess buffers into error branch to avoid too large stack allocation
+
   Revision 3.22  2005/04/07 15:56:48  schwarz
   removed some now empty local include files,
   added include of <sdif.h> and "SdifGlobals.h"
@@ -611,11 +615,11 @@ static int parse (int (*parseval) (SdifSelectValueT *valu, SdifSelectContext *co
 {
 #   define print_error1(msg, arg)	/* todo: use sdiferr... */       \
 	   fprintf (stderr,						 \
-		    "ERROR: SDIF selection: can't parse %s from '%s'\n(recently read: '%.*s'):\n" msg "\n\n", name, SYMBOL, SYMBOL - ORIG, ORIG, arg)
+		    "ERROR: SDIF selection: can't parse %s from '%s'\n(recently read: '%.*s'):\n" msg "\n\n", name, SYMBOL, (int)(SYMBOL - ORIG), ORIG, arg)
 
 #   define print_error0(msg)	/* todo: use sdiferr... */       \
 	   fprintf (stderr,						 \
-		    "ERROR: SDIF selection: can't parse %s from '%s'\n(recently read: '%.*s'):\n" msg "\n\n", name, SYMBOL, SYMBOL - ORIG, ORIG)
+		    "ERROR: SDIF selection: can't parse %s from '%s'\n(recently read: '%.*s'):\n" msg "\n\n", name, SYMBOL, (int)(SYMBOL - ORIG), ORIG)
 
     int		       ret   = 0;	/* being pessimistic */
     SdifSelectElementT *elem = SdifMalloc (SdifSelectElementT);
