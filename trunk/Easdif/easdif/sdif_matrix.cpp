@@ -32,9 +32,14 @@
  * 
  * 
  * 
- * $Id: sdifmatrix.cpp,v 1.25 2005-05-30 21:43:00 roebel Exp $ 
+ * $Id: sdif_matrix.cpp,v 1.1 2006-04-22 08:57:24 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.25  2005/05/30 21:43:00  roebel
+ * Changed all include files from .h into .hpp to prevent name clash between
+ * sdifmatix.h and SDIF/sdifcpp/SdifMatrix.h on MacOSX where filenames are
+ * case insensitive.
+ *
  * Revision 1.24  2005/05/24 13:13:25  roebel
  * Added mising return statements and fixed minor compiler warnings.
  *

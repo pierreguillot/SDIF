@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.15 2005-05-30 21:43:01 roebel Exp $
+# $Id: Makefile.am,v 1.16 2006-04-22 08:57:24 roebel Exp $
 #
 # ./Easdif/src/Makefile.am	Feb. 2003 Axel Roebel
 #
@@ -31,6 +31,11 @@
 
 
 # $Log: not supported by cvs2svn $
+# Revision 1.15  2005/05/30 21:43:01  roebel
+# Changed all include files from .h into .hpp to prevent name clash between
+# sdifmatix.h and SDIF/sdifcpp/SdifMatrix.h on MacOSX where filenames are
+# case insensitive.
+#
 # Revision 1.14  2005/05/20 21:31:49  roebel
 # Added proper dependency on libsdif_cpp.la.
 #
@@ -88,29 +93,29 @@ lib_LTLIBRARIES = @SELLIB@
 EXTRA_DIST = easdif_version.hpp.in easdifintro.hpp.in easdif_config.hpp.in
 
 EASDIF_H = easdif_version.hpp easdif.h  sdifentity.hpp \
-	sdifexception.hpp sdifframe.hpp sdifinit.hpp sdifmatrix.hpp sdifmatrixdata.hpp \
+	sdifexception.hpp sdif_frame.hpp sdifinit.hpp sdif_matrix.hpp sdifmatrixdata.hpp \
 	sdifmatrixdatainterface.hpp sdifnamevaluetable.hpp
 
 easdifincdir = $(prefix)/include/easdif
 easdifinc_HEADERS = $(EASDIF_H)
 
-libEasdif_la_SOURCES =  sdifentity.cpp sdifexception.cpp sdifframe.cpp \
-			sdifinit.cpp sdifmatrix.cpp sdifnamevaluetable.cpp
+libEasdif_la_SOURCES =  sdifentity.cpp sdifexception.cpp sdif_frame.cpp \
+			sdifinit.cpp sdif_matrix.cpp sdifnamevaluetable.cpp
 
 libEasdif_la_LIBADD  = @SDIFCPPLIB@
 libEasdif_la_LDFLAGS = -no-undefined  -release @VERSION@ -rpath $(libdir)
 libEasdif_la_DEPENDENCIES = @SDIFCPPLIB@
 
 
-libEasdif_debug_la_SOURCES =  sdifentity.cpp sdifexception.cpp sdifframe.cpp \
-			sdifinit.cpp sdifmatrix.cpp sdifnamevaluetable.cpp
+libEasdif_debug_la_SOURCES =  sdifentity.cpp sdifexception.cpp sdif_frame.cpp \
+			sdifinit.cpp sdif_matrix.cpp sdifnamevaluetable.cpp
 
 libEasdif_debug_la_LIBADD  = @SDIFCPPLIB@
 libEasdif_debug_la_LDFLAGS = -no-undefined  -release @VERSION@ -rpath $(libdir)
 libEasdif_debug_la_DEPENDENCIES = @SDIFCPPLIB@
 
-libEasdif_gcc3_2_la_SOURCES =  sdifentity.cpp sdifexception.cpp sdifframe.cpp \
-                        sdifinit.cpp sdifmatrix.cpp sdifnamevaluetable.cpp
+libEasdif_gcc3_2_la_SOURCES =  sdifentity.cpp sdifexception.cpp sdif_frame.cpp \
+                        sdifinit.cpp sdif_matrix.cpp sdifnamevaluetable.cpp
 
 libEasdif_gcc3_2_la_LIBADD  = @SDIFCPPLIB@
 libEasdif_gcc3_2_la_LDFLAGS = -no-undefined  -release @VERSION@ -rpath $(libdir)

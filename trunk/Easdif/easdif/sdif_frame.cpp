@@ -32,9 +32,12 @@
  * 
  * 
  * 
- * $Id: sdifframe.cpp,v 1.22 2006-02-22 14:18:06 roebel Exp $ 
+ * $Id: sdif_frame.cpp,v 1.1 2006-04-22 08:57:24 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.22  2006/02/22 14:18:06  roebel
+ * Fixed SetHeader time argument from float to SdifFloat8.
+ *
  * Revision 1.21  2005/12/19 11:46:11  roebel
  * Fixed argument of SetTime function to be SdifFloat8
  * instead of float!
@@ -153,7 +156,7 @@
 
 #include <iostream>
 #include "easdif/easdif_config.hpp"
-#include "easdif/sdifframe.hpp"
+#include "easdif/sdif_frame.hpp"
 #include "easdif/sdifentity.hpp"
 #ifdef HAVE_SSTREAM
 #include <sstream>

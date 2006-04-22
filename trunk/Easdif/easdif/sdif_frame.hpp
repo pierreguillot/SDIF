@@ -34,9 +34,12 @@
  * sdifframe.h is composed of the different methods which are using to 
  * manipulate the frame.
  * 
- * $Id: sdifframe.hpp,v 1.3 2006-02-22 14:18:14 roebel Exp $ 
+ * $Id: sdif_frame.hpp,v 1.1 2006-04-22 08:57:24 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.3  2006/02/22 14:18:14  roebel
+ * Fixed SetHeader time argument from float to SdifFloat8.
+ *
  * Revision 1.2  2005/12/19 11:46:11  roebel
  * Fixed argument of SetTime function to be SdifFloat8
  * instead of float!
@@ -148,7 +151,7 @@
 
 #include <string>
 #include "sdif.h"
-#include "easdif/sdifmatrix.hpp"
+#include "easdif/sdif_matrix.hpp"
 #include "easdif/sdifexception.hpp"
 
 namespace Easdif {
