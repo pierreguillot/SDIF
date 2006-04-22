@@ -25,7 +25,7 @@
  *
  */
 /**
- * @file   sdifframe.h
+ * @file   sdif_frame.h
  * @author Fabien Tisserand
  * @date   Mon Apr  8 17:29:25 2002
  * 
@@ -34,9 +34,12 @@
  * sdifframe.h is composed of the different methods which are using to 
  * manipulate the frame.
  * 
- * $Id: sdif_frame.hpp,v 1.1 2006-04-22 08:57:24 roebel Exp $ 
+ * $Id: sdif_frame.hpp,v 1.2 2006-04-22 11:48:09 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.1  2006/04/22 08:57:24  roebel
+ * Renamed some files to prevent name clash of object files on macosx
+ *
  * Revision 1.3  2006/02/22 14:18:14  roebel
  * Fixed SetHeader time argument from float to SdifFloat8.
  *

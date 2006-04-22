@@ -1,6 +1,6 @@
 
 SET(noinst_HEADERS  easdifintro.hpp easdif_config.hpp)
-SET(HEADERS  easdif.h easdif_version.hpp sdifentity.hpp sdifexception.hpp sdifframe.hpp sdifinit.hpp sdifmatrixdata.hpp sdifmatrixdatainterface.hpp sdifmatrix.hpp sdifnamevaluetable.hpp)
+SET(HEADERS  easdif.h easdif_version.hpp sdifentity.hpp sdifexception.hpp sdif_frame.hpp sdifinit.hpp sdifmatrixdata.hpp sdifmatrixdatainterface.hpp sdif_matrix.hpp sdifnamevaluetable.hpp)
 
 SET(SOURCES sdifentity.cpp  sdifexception.cpp sdif_matrix.cpp sdif_frame.cpp sdifnamevaluetable.cpp sdifinit.cpp)
 SET(SDIF_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/../SDIF/sdif/SdifCheck.c  
