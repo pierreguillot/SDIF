@@ -24,7 +24,7 @@
  *
  */
 /**
- * @file   sdifmatrix.cpp
+ * @file   sdif_matrix.cpp
  * @author Fabien Tisserand
  * @date   Thu Apr 11 18:36:39 2002
  * 
@@ -32,9 +32,12 @@
  * 
  * 
  * 
- * $Id: sdif_matrix.cpp,v 1.1 2006-04-22 08:57:24 roebel Exp $ 
+ * $Id: sdif_matrix.cpp,v 1.2 2006-04-22 11:48:09 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.1  2006/04/22 08:57:24  roebel
+ * Renamed some files to prevent name clash of object files on macosx
+ *
  * Revision 1.25  2005/05/30 21:43:00  roebel
  * Changed all include files from .h into .hpp to prevent name clash between
  * sdifmatix.h and SDIF/sdifcpp/SdifMatrix.h on MacOSX where filenames are
@@ -166,7 +169,7 @@
 #include <iostream>
 #include <set>
 #include "easdif/easdif_config.hpp"
-#include "easdif/sdifmatrix.hpp"
+#include "easdif/sdif_matrix.hpp"
 
 namespace Easdif {
 

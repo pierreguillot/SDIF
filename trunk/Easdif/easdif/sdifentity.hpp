@@ -32,9 +32,12 @@
  * 
  * 
  * 
- * $Id: sdifentity.hpp,v 1.7 2006-01-05 08:52:14 roebel Exp $ 
+ * $Id: sdifentity.hpp,v 1.8 2006-04-22 11:48:09 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.7  2006/01/05 08:52:14  roebel
+ * Added mutable for internal frame store (required by gcc 4.0 linux).
+ *
  * Revision 1.6  2005/07/25 13:28:04  roebel
  * FRIterator now no longer a subclass of SDIFEntity. Subclasses
  * are not supported by swig! With the new design swig interface
@@ -235,7 +238,7 @@
 #include "sdif.h"
 
 
-#include "easdif/sdifframe.hpp"
+#include "easdif/sdif_frame.hpp"
 #include "easdif/sdifnamevaluetable.hpp"
 
 /* for initialise SDIF library and install exception*/

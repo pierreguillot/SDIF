@@ -24,7 +24,7 @@
  *
  */
 /**
- * @file   sdifframe.cpp
+ * @file   sdif_frame.cpp
  * @author Fabien Tisserand
  * @date   Thu Apr 11 18:44:52 2002
  * 
@@ -32,9 +32,12 @@
  * 
  * 
  * 
- * $Id: sdif_frame.cpp,v 1.1 2006-04-22 08:57:24 roebel Exp $ 
+ * $Id: sdif_frame.cpp,v 1.2 2006-04-22 11:48:09 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.1  2006/04/22 08:57:24  roebel
+ * Renamed some files to prevent name clash of object files on macosx
+ *
  * Revision 1.22  2006/02/22 14:18:06  roebel
  * Fixed SetHeader time argument from float to SdifFloat8.
  *
