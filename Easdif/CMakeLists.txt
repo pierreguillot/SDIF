@@ -147,7 +147,9 @@ CONFIGURE_FILE(Doxyfile.in ${CMAKE_BINARY_DIR}/Doxyfile)
 
 
 
-
+IF(APPLE)
+  INCLUDE(REDIRECT_COMPILERS_TO_SYSROOT OPTIONAL)
+ENDIF(APPLE)
 
 # set default values for build type and install prefix
 INCLUDE(SET_LOCAL_DEFAULTS OPTIONAL)
