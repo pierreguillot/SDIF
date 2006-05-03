@@ -1,4 +1,4 @@
-/* $Id: sdifextract.c,v 1.16 2005-05-13 16:04:59 schwarz Exp $
+/* $Id: sdifextract.c,v 1.17 2006-05-03 15:47:25 schwarz Exp $
  
                 Copyright (c) 1998 by IRCAM - Centre Pompidou
                            All rights reserved.
@@ -13,6 +13,9 @@
    Extract data from an SDIF-file.  
    
    $Log: not supported by cvs2svn $
+   Revision 1.16  2005/05/13 16:04:59  schwarz
+   more rows/columns
+
    Revision 1.15  2005/04/05 15:58:23  bogaards
    added time ouput format to extract only the times of selected frames
 
@@ -193,7 +196,8 @@ typedef enum {OpenFile,    CloseFile,
 /* output functions */
 void outsdif   (OutAction what, double data);
 void outbpf    (OutAction what, double data);
-void outtime    (OutAction what, double data);
+void outtime   (OutAction what, double data);
+void outdata   (OutAction what, double data);
 void outformat (OutAction what, double data);
 
 /* support functions */
@@ -221,7 +225,7 @@ void usage (char *msg, char *arg, int longhelp)
     }
     if (longhelp)
     {
-    	fprintf (SdifStdErr, "\n" PROG "version $Revision: 1.16 $\n\n");
+    	fprintf (SdifStdErr, "\n" PROG "version $Revision: 1.17 $\n\n");
     
     	if (types)
     	{
@@ -264,6 +268,7 @@ void usage (char *msg, char *arg, int longhelp)
 "	-bpf                  output data as ASCII multi-bpf\n"
 "	-format               output data as ASCII .format file\n"
 "	-time                 output only frame-times as ASCII\n"
+"	-data                 output data only (without frame-times) as ASCII\n"
 "\nSelection options:\n"
 "	-t <begin>[-<end>|+<delta>]  select time range <begin> to <end> or \n"
 "                             <begin>-<delta> to <begin>+<delta>\n"
@@ -300,6 +305,8 @@ void usage (char *msg, char *arg, int longhelp)
 "\n"
 "-time   In time format, only the frame-times of the selected frames are\n"
 "	printed, where every time is printed on a new line\n" 
+"\n"
+"-data   In data-only format, output is like bpf but without time (the first column)\n"
 "\n"
 "\nRemarks:\n\n"
 "--     Watch out for possible ambiguities between floating point time spec and\n"
@@ -358,7 +365,8 @@ outsdif (OutAction what, double data)
 			 outfile), exit (2);
 
 	    if (isatty (fileno (out->Stream)))
-		fprintf (SdifStdErr, PROG"won't write SDIF to your screen.\n"),
+		fprintf (SdifStdErr, PROG "won't write SDIF to your screen.\n"
+			 "(hint: use an ascii output format like -bpf or -format, or output to SDIF file)\n"),
 		exit (3);
 
 	    if (!(SdifListIsEmpty(in->Selection->row)  &&  
@@ -483,6 +491,43 @@ outbpf (OutAction what, double data)
 	case CloseFile:	    fclose (out);			break;
     }
 }
+
+
+
+void 
+outdata (OutAction what, double data)
+{
+    static FILE	  *out = NULL;
+    static double time = -1;
+
+    switch (what)
+    {
+	case OpenFile:
+	    if (outfile)
+	    {
+		if (!(out = fopen (outfile, "w")))
+		    fprintf (SdifStdErr, "Can't open bpf output file %s.\n", 
+			     outfile), exit (0);
+	    }
+	    else
+		out = stdout;
+	break;
+
+	case BeginFrame:    time = data;			break;
+			    
+	case BeginMatrix:   
+	case EndMatrix:     
+	case EndFrame:	    
+	case BeginRow:
+	default:	    /* do nothing */			break;
+			    
+	case InRow:	    fprintf (out, "%10f\t", data);	break;
+	case EndRow:	    fprintf (out, "\n");		break;
+	case CloseFile:	    fclose (out);			break;
+    }
+}
+
+
 void
 outtime (OutAction what, double data)
 {
@@ -622,7 +667,8 @@ int main(int argc, char** argv)
 	        if      (SdifStrEq (argv [i], "-sdif"))   output = outsdif;
 		else if (SdifStrEq (argv [i], "-bpf"))    output = outbpf; 
 		else if (SdifStrEq (argv [i], "-format")) output = outformat;
-		else if (SdifStrEq (argv [i], "-time")) output = outtime;
+		else if (SdifStrEq (argv [i], "-time"))   output = outtime;
+		else if (SdifStrEq (argv [i], "-data"))   output = outdata;
 		else if (SdifStrEq (argv [i], "-help")  || 
 			 SdifStrEq (argv [i], "--help"))
 		    usage (NULL, NULL, 1);
@@ -745,7 +791,8 @@ int main(int argc, char** argv)
 	fprintf (SdifStdErr, "writing as %s\n", 
 		 output == outsdif    ?  "SDIF"         :
 		 output == outbpf     ?  "multi-bpf"    :
-		 output == outtime     ?  "time"    :
+		 output == outtime    ?  "time"    :
+		 output == outdata    ?  "data"    :
 		 output == outformat  ?  "format file"  :  "");
     }
 
