@@ -1,4 +1,4 @@
-/* $Id: sdif.h,v 1.53 2006-05-03 14:33:29 schwarz Exp $
+/* $Id: sdif.h,v 1.54 2006-05-03 15:06:23 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -30,6 +30,9 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.53  2006/05/03 14:33:29  schwarz
+ * correct doc and remove function sketch (is now implemented)
+ *
  * Revision 1.52  2005/12/05 16:39:40  schwarz
  * export SdifSelectGetIntMask
  *
@@ -54,7 +57,7 @@
  *
  * Revision 1.48  2005/05/20 21:13:54  roebel
  * corrected detection seekablility of sdif file.
- * files are not seekable only if 	they are pipes!
+ * files are not seekable only if they are pipes!
  *
  * Revision 1.47  2005/05/13 15:35:01  schwarz
  * make it possible that global errors from SdifError be passed through
@@ -212,7 +215,7 @@
  * Correct a stupid error in previous log (arrggghh DON'T USE C COMMENTARY in cvs log).
  * Correct Makefile.am, change cvstag rules:
  * cvstags:
- * 	cvs -F tags $(CVSTAGS)
+ *     cvs -F tags $(CVSTAGS)
  * Add some explication in file ChangeLog
  *
  * Revision 1.9  2001/04/25 11:29:10  tisseran
@@ -263,7 +266,7 @@
  * Revision 1.1.2.1  2000/08/21  13:07:41  tisseran
  * *** empty log message ***
  *
- * $Date: 2006-05-03 14:33:29 $
+ * $Date: 2006-05-03 15:06:23 $
  *
  */
 
@@ -278,12 +281,19 @@ extern "C" {
 #endif
 
 
-static const char _sdif_h_cvs_revision_ [] = "$Id: sdif.h,v 1.53 2006-05-03 14:33:29 schwarz Exp $";
+static const char _sdif_h_cvs_revision_ [] = "$Id: sdif.h,v 1.54 2006-05-03 15:06:23 schwarz Exp $";
 
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <float.h>
+
+
+#ifdef WIN32
+#   define SDIF_API __declspec(dllexport)
+#else
+#   define SDIF_API extern
+#endif
 
 
 /* SdifHash.h */
@@ -338,7 +348,7 @@ struct SdifHashTableS
   Rewind to start of file (before header!) 
   [return] 1 on success, 0 on error
 */
-int SdifFRewind(SdifFileT *file);
+SDIF_API int SdifFRewind(SdifFileT *file);
 
 
 #define SDIFFTRUNCATE_NOT_AVAILABLE -2
@@ -349,7 +359,7 @@ int SdifFRewind(SdifFileT *file);
   [return] 1 on success, 0 for error (check errno),  
         MACRO SDIFFTRUNCATE_NOT_AVAILABLE if function is not available.
 */
-int SdifFTruncate(SdifFileT *file);
+SDIF_API int SdifFTruncate(SdifFileT *file);
 
 
 
@@ -369,42 +379,42 @@ int SdiffGetPos(SdifFileT *file, SdiffPosT *pos);
   Set absolute position in file.
   SdiffPosT is actually long.
   [Return] 0 on success, 
-	  -1 on error (errno is set, see fseek(3) for details)
+          -1 on error (errno is set, see fseek(3) for details)
 
   On Mac or Windows, seeking on a stream is always considered
   successful (return 0), even if no seek was done!
  */
 int SdiffSetPos(SdifFileT *file, SdiffPosT *pos);
 
-#endif	/* if 0 */
+#endif  /* if 0 */
 
 
 /* to do fpos_t compatible on MacinTosh */
 #if defined(MACINTOSH) || defined(WIN32)
     /* on mac or windows, seeking on a stream is always considered
        successful (return 0)! */
-#   define SdiffPosT		long
-#   define SdiffIsFile(f)	((f)!=stdin && (f)!=stdout && (f)!=stderr)
-#   define Sdiffftell(f)	(SdiffIsFile(f)  ?  ftell(f)  :  0)
-#   define SdiffGetPos(f,p)	((*(p) = Sdiffftell(f)) == -1  ?  -1  :  0)
-#   define SdiffSetPos(f,p)	(SdiffIsFile(f)  \
-				    ?  fseek(f, (long)(*(p)), SEEK_SET)  :  0)
+#   define SdiffPosT            long
+#   define SdiffIsFile(f)       ((f)!=stdin && (f)!=stdout && (f)!=stderr)
+#   define Sdiffftell(f)        (SdiffIsFile(f)  ?  ftell(f)  :  0)
+#   define SdiffGetPos(f,p)     ((*(p) = Sdiffftell(f)) == -1  ?  -1  :  0)
+#   define SdiffSetPos(f,p)     (SdiffIsFile(f)  \
+                                    ?  fseek(f, (long)(*(p)), SEEK_SET)  :  0)
 #else
 /*
-#   define SdiffPosT		fpos_t
+#   define SdiffPosT            fpos_t
 #   define SdiffGetPos(f,p)     fgetpos((f),(p))
 #   define SdiffSetPos(f,p)     fsetpos((f),(p))
 
-#   define SdiffGetPos(f,p)	((*(p) = ftell(f)) == -1  ?  -1  :  0)
+#   define SdiffGetPos(f,p)     ((*(p) = ftell(f)) == -1  ?  -1  :  0)
 #   define SdiffSetPos(f,p)     (fseek(f, (long)(*(p)), SEEK_SET))
 */
 
 /*DS: FORCE long fpos*/
 /* ftell/fseek can be applied to stdin/out/err at least in a restricted manner
  * (same as fgetpos/fsetpos) so let's try */
-#   define SdiffPosT		long
-#   define SdiffGetPos(f,p)	((*(p) = ftell(f)) == -1  ?  -1  :  0)
-#   define SdiffSetPos(f,p)	(fseek(f, (long)(*(p)), SEEK_SET))
+#   define SdiffPosT            long
+#   define SdiffGetPos(f,p)     ((*(p) = ftell(f)) == -1  ?  -1  :  0)
+#   define SdiffSetPos(f,p)     (fseek(f, (long)(*(p)), SEEK_SET))
 #endif
 
 
@@ -414,18 +424,18 @@ int SdiffSetPos(SdifFileT *file, SdiffPosT *pos);
   [return] file offset or -1 for error.
   SdiffPosT is actually long.
  */
-int SdifFGetPos(SdifFileT *file, SdiffPosT *pos);
+SDIF_API int SdifFGetPos(SdifFileT *file, SdiffPosT *pos);
 
 /*DOC:
   Set absolute position in file.
   SdiffPosT is actually long.
   [Return] 0 on success, 
-	  -1 on error (errno is set, see fseek(3) for details)
+          -1 on error (errno is set, see fseek(3) for details)
 
   On Mac or Windows, seeking on a stream is always considered
   successful (return 0), even if no seek was done!
  */
-int SdifFSetPos(SdifFileT *file, SdiffPosT *pos);
+SDIF_API int SdifFSetPos(SdifFileT *file, SdiffPosT *pos);
 
 
 
@@ -521,7 +531,7 @@ typedef enum SdifModifModeE
 */
 typedef enum SdifDataTypeE
 {
-  eText	    = 0x0301,
+  eText     = 0x0301,
   eChar     = 0x0301,
   eFloat4   = 0x0004,
   eFloat8   = 0x0008,
@@ -533,11 +543,11 @@ typedef enum SdifDataTypeE
   eUInt2    = 0x0202,
   eUInt4    = 0x0204,
   eUInt8    = 0x0208,
- 	    
-  eFloat4a  = 0x0001,	/* =  1 */    /* Backwards compatibility with old */
-  eFloat4b  = 0x0020,	/* = 32 */    /* IRCAM versions < 3 of SDIF */
-  eFloat8a  = 0x0002,	/* =  2 */    /* IN TEXT MODE ONLY! */
-  eFloat8b  = 0x0040	/* = 64 */
+            
+  eFloat4a  = 0x0001,   /* =  1 */    /* Backwards compatibility with old */
+  eFloat4b  = 0x0020,   /* = 32 */    /* IRCAM versions < 3 of SDIF */
+  eFloat8a  = 0x0002,   /* =  2 */    /* IN TEXT MODE ONLY! */
+  eFloat8b  = 0x0040    /* = 64 */
 } SdifDataTypeET;
 
 /* SdifList.h */
@@ -569,7 +579,7 @@ struct SdifListNStockS
 /* lists management */
 
 typedef struct SdifListS SdifListT;
-typedef SdifListT	*SdifListP;
+typedef SdifListT       *SdifListP;
 
 struct SdifListS
 {
@@ -594,7 +604,7 @@ struct SdifNameValueTableS
 {
     SdifHashTableT* NVHT;
     SdifUInt4       NumTable;
-    SdifUInt4       StreamID;	/* id of stream the table belongs to */
+    SdifUInt4       StreamID;   /* id of stream the table belongs to */
 } ;
 
 typedef struct SdifNameValuesLS SdifNameValuesLT;
@@ -609,7 +619,7 @@ struct SdifNameValuesLS
 /* SdifStreamID.h */
 
 /*
-// DATA GROUP:		Stream ID Table and Entries for 1IDS ASCII chunk
+// DATA GROUP:          Stream ID Table and Entries for 1IDS ASCII chunk
 */
 
 
@@ -630,7 +640,7 @@ struct SdifStreamIDTableS
 {
     SdifHashTableT* SIDHT;
     SdifUInt4       StreamID;
-    SdifFloat8      Time;	/* always _SdifNoTime */
+    SdifFloat8      Time;       /* always _SdifNoTime */
 } ;
 
 
@@ -653,12 +663,12 @@ struct SdifMatrixTypeS
   SdifMatrixTypeT*  MatrixTypePre;
 
   SdifListT*        ColumnUserList; /* List of columns added by user: 
-				       SdifMatrixTypeInsertTailColumn(MatrixTypeT *)
-				    */
+                                       SdifMatrixTypeInsertTailColumn(MatrixTypeT *)
+                                    */
 
   SdifUInt4       NbColumnDef; /* Number of columns created by user:
-				  SdifMatrixTypeInsertTailColumn(MatrixTypeT *)
-			       */
+                                  SdifMatrixTypeInsertTailColumn(MatrixTypeT *)
+                               */
   SdifModifModeET ModifMode;
 };
 
@@ -714,7 +724,7 @@ union DataTypeU
   SdifUInt4  *UInt4 ;
 /*SdifUInt8  *UInt8 ;*/
   SdifChar   *Char  ;
-  void	     *Void  ;	/* generic pointer */
+  void       *Void  ;   /* generic pointer */
 } ;
 
 
@@ -732,10 +742,10 @@ typedef struct SdifMatrixDataS SdifMatrixDataT;
 struct SdifMatrixDataS
 {
   SdifMatrixHeaderT *Header;
-  int		    ForeignHeader;  /* Header was not allocated by me */
-  SdifUInt4         Size;	/* byte size of matrix on file */
-  DataTypeUT        Data;	/* any type pointer to data */
-  SdifUInt4         AllocSize;	/* allocated size of data in bytes */
+  int               ForeignHeader;  /* Header was not allocated by me */
+  SdifUInt4         Size;       /* byte size of matrix on file */
+  DataTypeUT        Data;       /* any type pointer to data */
+  SdifUInt4         AllocSize;  /* allocated size of data in bytes */
 };
 
 /* SdifFrame.h */
@@ -802,13 +812,13 @@ struct SdifSignatureTabS
 /* SdifSelect.h */
 
 /* 
-// DATA GROUP:	SDIF Selection
+// DATA GROUP:  SDIF Selection
 */
 
 /* tokens (numerical ids) for sdifspec separators */
 typedef enum { sst_specsep, sst_stream, sst_frame, sst_matrix, sst_column, 
-	       sst_row,     sst_time,   sst_list,  sst_range,  sst_delta,
-	       sst_num	/* number of tokens */,	   sst_norange = 0
+               sst_row,     sst_time,   sst_list,  sst_range,  sst_delta,
+               sst_num  /* number of tokens */,    sst_norange = 0
 } SdifSelectTokens;
 
 /*DOC: 
@@ -816,20 +826,20 @@ typedef enum { sst_specsep, sst_stream, sst_frame, sst_matrix, sst_column,
   One basic data element value, with optional range.  
   The meaning of range is determined by rangetype: 
 
-  [] 0		no range
-  [] sst_range	range is value..range
-  [] sst_delta	range is value-range..value+range
+  [] 0          no range
+  [] sst_range  range is value..range
+  [] sst_delta  range is value-range..value+range
 */
 
 typedef struct 
 {
-    SdifUInt4	       value, range;
+    SdifUInt4          value, range;
     SdifSelectTokens   rangetype; /* 0 for not present, sst_range, sst_delta */
 } SdifSelectElementIntT;
 
 typedef struct 
 {
-    double	       value, range;
+    double             value, range;
     SdifSelectTokens   rangetype; /* 0 for not present, sst_range, sst_delta */
 } SdifSelectElementRealT;
 
@@ -845,7 +855,7 @@ typedef union SdifSelectValueS
 {
     SdifUInt4      integer;
     double         real;
-    char	   *string;
+    char           *string;
     SdifSignature  signature;
 } SdifSelectValueT;
 
@@ -865,10 +875,10 @@ typedef struct SdifSelectElementS
 
 typedef struct SdifSelectIntMaskS
 {
-    SdifUInt4   num;		/* number of ints selected */
-    SdifUInt4	max;		/* max given int, #elems in mask */
-    int	       *mask;		/* selection bit mask */
-    int		openend;	/* are elems > max included? */
+    SdifUInt4   num;            /* number of ints selected */
+    SdifUInt4   max;            /* max given int, #elems in mask */
+    int        *mask;           /* selection bit mask */
+    int         openend;        /* are elems > max included? */
 } SdifSelectIntMaskT, *SdifSelectIntMaskP;
 
 /*DOC: 
@@ -877,10 +887,10 @@ typedef struct SdifSelectIntMaskS
 */
 typedef struct
 {
-    char	*filename,	/* allocated / freed by 
-				   SdifInitSelection / SdifFreeSelection */
-		*basename;	/* points into filename */
-    SdifListP	stream, frame, matrix, column, row, time;
+    char        *filename,      /* allocated / freed by 
+                                   SdifInitSelection / SdifFreeSelection */
+                *basename;      /* points into filename */
+    SdifListP   stream, frame, matrix, column, row, time;
 
     SdifSelectIntMaskT streammask;
     SdifSelectIntMaskT rowmask;
@@ -889,9 +899,9 @@ typedef struct
 
 /* TODO: array of select elements
      struct { 
-	SdifListP list; 
-	SdifSelectElementT minmax; 
-	SdifSelectIntMaskP mask;
+        SdifListP list; 
+        SdifSelectElementT minmax; 
+        SdifSelectIntMaskP mask;
      } elem [eSelNum];
      indexed by
      enum   { eTime, eStream, eFrame, eMatrix, eColumn, eRow, eSelNum }
@@ -909,7 +919,7 @@ typedef enum SdifErrorTagE
     eNoError = 1,
     eTypeDataNotSupported,
     eNameLength,
-    eEof,	/* 4 */
+    eEof,       /* 4 */
     eReDefined,
     eUnDefined,
     eSyntax,
@@ -947,28 +957,28 @@ typedef enum SdifErrorTagE
   Level of Error */
 typedef enum SdifErrorLevelE
 {
-	eFatal,
-	eError,
-	eWarning,
-	eRemark,
-	eNoLevel,
-	eNumLevels	/* level count, must always be last */
+        eFatal,
+        eError,
+        eWarning,
+        eRemark,
+        eNoLevel,
+        eNumLevels      /* level count, must always be last */
 } SdifErrorLevelET;
 
 
 typedef struct SdifErrorS SdifErrorT;
 struct SdifErrorS
 {
-	SdifErrorTagET		Tag;
-	SdifErrorLevelET	Level;
-	char*			UserMess;
+        SdifErrorTagET          Tag;
+        SdifErrorLevelET        Level;
+        char*                   UserMess;
 };
 
 typedef struct SdifErrorLS SdifErrorLT;
 struct SdifErrorLS
 {
   SdifListT*    ErrorList;
-  SdifFileT*	SdifF; /* only a link */
+  SdifFileT*    SdifF; /* only a link */
 };
 
 
@@ -980,31 +990,31 @@ typedef void (*SdifExitFuncT) (void);
 /*DOC:
  Exception function type (See SdifSetErrorFunc and SdifSetWarningFunc). */
 typedef void (*SdifExceptionFuncT) (SdifErrorTagET   error_tag, 
-				    SdifErrorLevelET error_level, 
-				    char *error_message, 
-				    SdifFileT *error_file, 
-				    SdifErrorT *error_ptr, 
-				    char *source_file, int source_line);
+                                    SdifErrorLevelET error_level, 
+                                    char *error_message, 
+                                    SdifFileT *error_file, 
+                                    SdifErrorT *error_ptr, 
+                                    char *source_file, int source_line);
 
 
 
 /* SdifFileStruct.h */
 
 /*
-// DATA GROUP:	SDIF File Structure
+// DATA GROUP:  SDIF File Structure
 */
 
 /*DOC:
   File mode argument for SdifFOpen. */
 typedef enum SdifFileModeE
 {
-  eUnknownFileMode,	/* 0 */
+  eUnknownFileMode,     /* 0 */
   eWriteFile,
   eReadFile,
   eReadWriteFile,
-  ePredefinedTypes,	/* 4 */
+  ePredefinedTypes,     /* 4 */
 
-  eModeMask = 7,	/* get rid of flags */
+  eModeMask = 7,        /* get rid of flags */
 
   /* from here on we have flags that can be or'ed with the previous modes */
   eParseSelection = 8
@@ -1021,20 +1031,20 @@ enum SdifPassE
 
 
 /*
-// DATA GROUP:		SDIF File Structure
+// DATA GROUP:          SDIF File Structure
 */
 
-#define	MaxUserData	10
+#define MaxUserData     10
 /*DOC:
   THE SDIF File Structure! */
 struct SdifFileS
 {
-  char		     *Name;		/* Name of the file, can be "stdin, stdout, stderr */
-  SdifFileModeET     Mode;		/* eWriteFile or eReadFile or ePredefinedTypes */
-  int		     isSeekable;	/* file is not pipe i/o */
+  char               *Name;             /* Name of the file, can be "stdin, stdout, stderr */
+  SdifFileModeET     Mode;              /* eWriteFile or eReadFile or ePredefinedTypes */
+  int                isSeekable;        /* file is not pipe i/o */
 
-  SdifUInt4	     FormatVersion;	/* version of the SDIF format itself */
-  SdifUInt4	     TypesVersion;	/* version of the description type collection */
+  SdifUInt4          FormatVersion;     /* version of the SDIF format itself */
+  SdifUInt4          TypesVersion;      /* version of the description type collection */
 
   SdifNameValuesLT   *NameValues;       /* DataBase of Names Values */
   SdifHashTableT     *MatrixTypesTable; /* DataBase of Matrix Types */
@@ -1042,7 +1052,7 @@ struct SdifFileS
 /*  SdifHashTableT     *StreamIDsTable;    DataBase of Stream IDs */
   SdifStreamIDTableT *StreamIDsTable;   /* DataBase of Stream IDs */
   SdifTimePositionLT *TimePositions;    /* List of (Time, Position in file) */
-  SdifSelectionT     *Selection;	/* default selection parsed from Name */
+  SdifSelectionT     *Selection;        /* default selection parsed from Name */
 
   FILE *Stream;                         /* Stream to read or to write */
 
@@ -1078,11 +1088,11 @@ struct SdifFileS
   FILE *TextStream;                     /* Stream text */
 
   SdifUInt4     ErrorCount [eNumLevels];/* Error count per level of severity */
-  SdifErrorLT  *Errors;			/* List of errors or warnings */
+  SdifErrorLT  *Errors;                 /* List of errors or warnings */
 
-  int		NbUserData;		/* todo: hash table */
-  void		*UserData [MaxUserData];
-};	/* end struct SdifFileS */
+  int           NbUserData;             /* todo: hash table */
+  void          *UserData [MaxUserData];
+};      /* end struct SdifFileS */
 
 
 
@@ -1105,53 +1115,53 @@ struct SdifStringS
 /*DOC: 
   Test if file is an SDIF file.
 
-  [] Returns:	0 if not an SDIF file (the first 4 chars are not "SDIF"),
-		or file can not be opened, else 1.  
+  [] Returns:   0 if not an SDIF file (the first 4 chars are not "SDIF"),
+                or file can not be opened, else 1.  
 
   Warning: This function doesn't work with stdio. */
-int SdifCheckFileFormat (const char *name);
+SDIF_API int SdifCheckFileFormat (const char *name);
 
 
 /*DOC: 
   Test if file contains frames of certain types.
 
-  [in]  name	Filename + selection
-	frames  Table of frame signatures to look for
-  []	return	The first signature from frames found, or eEmptySignature if 
-		no frames could be found (or if file is not SDIF).
+  [in]  name    Filename + selection
+        frames  Table of frame signatures to look for
+  []    return  The first signature from frames found, or eEmptySignature if 
+                no frames could be found (or if file is not SDIF).
 
   Warning: This function doesn't work with stdio. */
-SdifSignature SdifCheckFileFramesTab   (const char		*name, 
-					const SdifSignatureTabT *frames);
+SDIF_API SdifSignature SdifCheckFileFramesTab (const char              *name, 
+                                               const SdifSignatureTabT *frames);
 
 /*DOC: 
   Test if file contains frames of certain types.
 
-  [in]  name	Filename + selection
-	frames  Array of frame signatures to look for, terminated with 
-		eEmptySignature.
-  []	return	The index in frames of the first signature found, or -1
-		if no frames could be found (or if file is not SDIF).
+  [in]  name    Filename + selection
+        frames  Array of frame signatures to look for, terminated with 
+                eEmptySignature.
+  []    return  The index in frames of the first signature found, or -1
+                if no frames could be found (or if file is not SDIF).
 
   Warning: This function doesn't work with stdio. */
-int	      SdifCheckFileFramesIndex (const char	        *name, 
-					const SdifSignature     *frames);
+SDIF_API int  SdifCheckFileFramesIndex (const char              *name, 
+                                        const SdifSignature     *frames);
 
 /*DOC: 
   Test if file contains frames of certain types.
 
-  [in]  in	open SDIF file
-	frames  Table of frame signatures to look for
+  [in]  in      open SDIF file
+        frames  Table of frame signatures to look for
   [out] index   If the int pointer index is not NULL, it will receive
-		the index in frames of the first signature found, or -1
-		if no frames could be found (or if file is not SDIF).
-  []	return	The first signature from frames found, or eEmptySignature if 
-		no frames could be found (or if file is not SDIF).
+                the index in frames of the first signature found, or -1
+                if no frames could be found (or if file is not SDIF).
+  []    return  The first signature from frames found, or eEmptySignature if 
+                no frames could be found (or if file is not SDIF).
 
   Warning: This function doesn't work with stdio. */
-SdifSignature SdifCheckNextFrame       (SdifFileT		*in, 
-					const SdifSignatureTabT *frames,
-					int			*index);
+SDIF_API SdifSignature SdifCheckNextFrame (SdifFileT               *in, 
+                                           const SdifSignatureTabT *frames,
+                                           int                     *index);
 
 /*DOC: 
   TODO: Test if file is an SDIF file (only when opening for read or
@@ -1159,7 +1169,7 @@ SdifSignature SdifCheckNextFrame       (SdifFileT		*in,
 
   [Return] NULL if not an SDIF file (the first 4 chars are not "SDIF"),
   or file can not be opened.  */
-SdifFileT*	   SdifFTryOpen			(const char *Name, SdifFileModeET Mode);
+SDIF_API SdifFileT* SdifFTryOpen (const char *Name, SdifFileModeET Mode);
 
 
 /*DOC: 
@@ -1176,19 +1186,19 @@ size_t SdifToText (SdifFileT *SdifF, char *TextStreamName);
 /*DOC:
   Switch output of error messages on stderr by _SdifFError on. 
 */
-void	SdifEnableErrorOutput  (void);
+SDIF_API void   SdifEnableErrorOutput  (void);
 
 /*DOC:
   Switch output of error messages on stderr by _SdifFError off. 
 */
-void	SdifDisableErrorOutput (void);
+SDIF_API void   SdifDisableErrorOutput (void);
 
 
 /* global variables to control error output */
-extern int		gSdifErrorOutputEnabled;
-extern char	       *SdifErrorFile;
-extern int		SdifErrorLine;
-extern FILE	       *SdifStdErr;
+extern int              gSdifErrorOutputEnabled;
+extern char            *SdifErrorFile;
+extern int              SdifErrorLine;
+extern FILE            *SdifStdErr;
 
 
 
@@ -1196,15 +1206,15 @@ extern FILE	       *SdifStdErr;
   Lit 4 bytes, les considère comme une signature qui est placée dans
   SdifF->CurrSignature, incrémente NbCharRead du nombre de bytes lus
   et renvoie le dernier caractère lu convert en int (-1 si erreur).  */
-int    SdifFGetSignature	(SdifFileT *SdifF, size_t *NbCharRead);
+SDIF_API int    SdifFGetSignature       (SdifFileT *SdifF, size_t *NbCharRead);
 
 
 /*DOC: 
   Lit l'entête du fichier, c'est à dire 'SDIF' puis 4 bytes.  affiche
   un message en cas de non reconnaissance du format.  */
-size_t SdifFReadGeneralHeader    (SdifFileT *SdifF);
+SDIF_API size_t SdifFReadGeneralHeader    (SdifFileT *SdifF);
 
-size_t SdifFReadAllASCIIChunks   (SdifFileT *SdifF);
+SDIF_API size_t SdifFReadAllASCIIChunks   (SdifFileT *SdifF);
 
 /*DOC: 
   Cette fonction lit une entête de matrice <strong>signature
@@ -1217,9 +1227,9 @@ size_t SdifFReadAllASCIIChunks   (SdifFileT *SdifF);
   de matrice.</strong> Ainsi, on est normalement près pour lire chaque
   ligne de la matrice courrante.  
 
-  @return	number of bytes read or 0 if error 
+  @return       number of bytes read or 0 if error 
 */
-size_t SdifFReadMatrixHeader     (SdifFileT *SdifF);
+SDIF_API size_t SdifFReadMatrixHeader     (SdifFileT *SdifF);
 
 /*DOC: 
   Cette fonction permet de lire 1 ligne de matrice. Les données lues
@@ -1238,14 +1248,14 @@ size_t SdifFSkipOneRow(SdifFileT *SdifF);
   mais donne à SdifF->CurrFramH->Signature la valeur de
   SdifF->CurrSignature.  La lecture doit se faire avant, avec
   SdifFGetSignature.  */
-size_t SdifFReadFrameHeader      (SdifFileT *SdifF);
+SDIF_API size_t SdifFReadFrameHeader      (SdifFileT *SdifF);
 
 /*DOC: 
   Cette fonction permet de passer une matrice toute entière entête
   incluse. Elle est utile lorsque qu'un frame contient plus de
   matrices que le programme lecteur n'en connaît. Il peut ainsi les
   passer pour retomber sur un autre frame.  */
-size_t SdifFSkipMatrix	         (SdifFileT *SdifF);
+SDIF_API size_t SdifFSkipMatrix          (SdifFileT *SdifF);
 
 /*DOC: 
   Cette fonction permet de passer une matrice mais après la lecture de
@@ -1253,13 +1263,13 @@ size_t SdifFSkipMatrix	         (SdifFileT *SdifF);
   inconnu, non interprétable par le programme lecteur.
 
   Note:  The matrix padding is skipped also. */
-size_t SdifFSkipMatrixData       (SdifFileT *SdifF);
+SDIF_API size_t SdifFSkipMatrixData       (SdifFileT *SdifF);
 
 /*DOC: 
   Cette fonction à le même sens que SdifSkipMatrixData mais pour les
   frames. Il faut donc pour l'utiliser avoir au préalable lu la
   signature et l'entête.  */
-size_t SdifFSkipFrameData        (SdifFileT *SdifF);
+SDIF_API size_t SdifFSkipFrameData        (SdifFileT *SdifF);
 
 /*DOC: 
   Cette fonction permet de lire le Padding en fin de matrice.
@@ -1285,7 +1295,7 @@ size_t SdifFReadAndIgnore (SdifFileT *SdifF, size_t bytes);
 
 /*DOC: 
   écrit sur le fichier 'SDIF' puis 4 bytes chunk size.  */
-size_t  SdifFWriteGeneralHeader   (SdifFileT *SdifF);
+SDIF_API size_t  SdifFWriteGeneralHeader   (SdifFileT *SdifF);
 
 /*DOC: 
   écrit tous les chunks ASCII. C'est à dire: les tables de names
@@ -1293,11 +1303,11 @@ size_t  SdifFWriteGeneralHeader   (SdifFileT *SdifF);
   au préalable avoir rempli complétement les tables avant de la
   lancer. Cette fonction de peut donc pas être executer une 2nd fois
   durant une écriture.  */
-size_t  SdifFWriteAllASCIIChunks  (SdifFileT *SdifF);
+SDIF_API size_t  SdifFWriteAllASCIIChunks  (SdifFileT *SdifF);
 
 
 /*
-//FUNCTION GROUP:	Writing Matrices
+//FUNCTION GROUP:       Writing Matrices
 */
 
 /*DOC: 
@@ -1306,7 +1316,7 @@ size_t  SdifFWriteAllASCIIChunks  (SdifFileT *SdifF);
   écrit toute l'entête de la matrice.  Cette fonction réalise aussi
   une mise à jour de SdifF->CurrOneRow, tant au niveau de l'allocation
   mémoire que du type de données.  */
-size_t  SdifFWriteMatrixHeader    (SdifFileT *SdifF);
+SDIF_API size_t  SdifFWriteMatrixHeader    (SdifFileT *SdifF);
 
 /*DOC: 
   Après avoir donner les valeurs à chaque case de SdifF->CurrOneRow à
@@ -1321,18 +1331,18 @@ size_t  SdifFWriteOneRow          (SdifFileT *SdifF);
   SdifFSetCurrMatrixHeader (file, matrixsig, datatype, nrow, ncol).
   Data points to nbrow * nbcol * SdifSizeofDataType (datatype) bytes in 
   row-major order.  Padding still has to be written.  */
-size_t SdifFWriteMatrixData (SdifFileT *SdifF, void *Data);
+SDIF_API size_t SdifFWriteMatrixData (SdifFileT *SdifF, void *Data);
 
 /*DOC:
   Write whole matrix: header, data, and padding.
   Data points to NbRow * NbCol * SdifSizeofDataType (DataType) bytes in
   row-major order. */
-size_t SdifFWriteMatrix (SdifFileT     *SdifF,
-			 SdifSignature  Signature,
-			 SdifDataTypeET DataType,
-			 SdifUInt4      NbRow,
-			 SdifUInt4      NbCol,
-			 void	       *Data);
+SDIF_API size_t SdifFWriteMatrix (SdifFileT     *SdifF,
+                                  SdifSignature  Signature,
+                                  SdifDataTypeET DataType,
+                                  SdifUInt4      NbRow,
+                                  SdifUInt4      NbCol,
+                                  void          *Data);
 
 /*DOC:
   Write a matrix with datatype text (header, data, and padding).
@@ -1340,10 +1350,10 @@ size_t SdifFWriteMatrix (SdifFileT     *SdifF,
   includes the terminating '\0' character!!!  That is, to write a
   C-String, use SdifFWriteTextMatrix (f, sig, strlen (str) + 1, str);
   to include it. */
-size_t SdifFWriteTextMatrix (SdifFileT     *SdifF,
-			     SdifSignature  Signature,
-			     SdifUInt4      Length,
-			     char	   *Data);
+SDIF_API size_t SdifFWriteTextMatrix (SdifFileT     *SdifF,
+                             SdifSignature  Signature,
+                             SdifUInt4      Length,
+                             char          *Data);
 
 /*DOC: 
   TBI: Convert ASCII C-String to UTF-8 encoded string, returning
@@ -1363,7 +1373,7 @@ size_t  SdifFWritePadding         (SdifFileT *SdifF, size_t Padding);
 
 
 /*
-//FUNCTION GROUP:	Writing Frames
+//FUNCTION GROUP:       Writing Frames
 */
 
 /*DOC: 
@@ -1373,7 +1383,7 @@ size_t  SdifFWritePadding         (SdifFileT *SdifF, size_t Padding);
   moment de l'écriture, donner la valeur _SdifUnknownSize. Ensuite,
   compter le nombre de bytes écrit dans le frame et réaliser un
   SdifUpdateChunkSize avec la taille calculée.  */
-size_t  SdifFWriteFrameHeader     (SdifFileT *SdifF);
+SDIF_API size_t  SdifFWriteFrameHeader     (SdifFileT *SdifF);
 
 /*DOC: 
   Execute un retour fichier de ChunkSize bytes et l'écrit, donc on
@@ -1384,8 +1394,8 @@ void    SdifUpdateChunkSize       (SdifFileT *SdifF, size_t ChunkSize);
 /*DOC: 
   Rewrite given frame size and number of matrices in frame header.
   Return -1 on error or if file is not seekable (stdout or stderr). */
-int     SdifUpdateFrameHeader	  (SdifFileT *SdifF, size_t ChunkSize, 
-				   SdifInt4 NumMatrix);
+int     SdifUpdateFrameHeader     (SdifFileT *SdifF, size_t ChunkSize, 
+                                   SdifInt4 NumMatrix);
 
 /*DOC:
   Write a whole frame containing one matrix: 
@@ -1396,79 +1406,80 @@ int     SdifUpdateFrameHeader	  (SdifFileT *SdifF, size_t ChunkSize,
   This function has the big advantage that the frame size is known in
   advance, so there's no need to rewind and update after the matrix
   has been written.  */
-size_t  SdifFWriteFrameAndOneMatrix (SdifFileT	    *SdifF,
-				     SdifSignature  FrameSignature,
-				     SdifUInt4      NumID,
-				     SdifFloat8     Time,
-				     SdifSignature  MatrixSignature,
-				     SdifDataTypeET DataType,
-				     SdifUInt4      NbRow,
-				     SdifUInt4      NbCol,
-				     void	    *Data);
+SDIF_API size_t SdifFWriteFrameAndOneMatrix (SdifFileT     *SdifF,
+                                             SdifSignature  FrameSignature,
+                                             SdifUInt4      NumID,
+                                             SdifFloat8     Time,
+                                             SdifSignature  MatrixSignature,
+                                             SdifDataTypeET DataType,
+                                             SdifUInt4      NbRow,
+                                             SdifUInt4      NbCol,
+                                             void          *Data);
 
 
 /*DOC:
   Return (constant) size of frame header after signature and size field. 
   Use this to calculate the Size argument for SdifFSetCurrFrameHeader. */
-size_t SdifSizeOfFrameHeader (void);
+SDIF_API size_t SdifSizeOfFrameHeader (void);
 
 /*DOC:
   Return size of matrix (header, data, padding).
   Use this to calculate the Size argument for SdifFSetCurrFrameHeader. */
-size_t SdifSizeOfMatrix (SdifDataTypeET DataType,
-			 SdifUInt4      NbRow,
-			 SdifUInt4      NbCol);
+SDIF_API size_t SdifSizeOfMatrix (SdifDataTypeET DataType,
+                                  SdifUInt4      NbRow,
+                                  SdifUInt4      NbCol);
 
 /*DOC:
   Write a text matrix using a string.
   Return number of bytes written.
 */
-size_t SdifFWriteTextFrame(SdifFileT     *SdifF,
-			   SdifSignature FrameSignature,
-			   SdifUInt4     NumID,
-			   SdifFloat8    Time,
-			   SdifSignature MatrixSignature,
-			   char          *str,
-			   size_t        length);
+SDIF_API size_t SdifFWriteTextFrame(SdifFileT     *SdifF,
+                                    SdifSignature FrameSignature,
+                                    SdifUInt4     NumID,
+                                    SdifFloat8    Time,
+                                    SdifSignature MatrixSignature,
+                                    char          *str,
+                                    size_t        length);
 
 /*DOC:
   Write a text matrix using a SdifString.
   Return number of bytes written.
 */
-size_t SdifFWriteTextFrameSdifString(SdifFileT     *SdifF,
-				     SdifSignature FrameSignature,
-				     SdifUInt4     NumID,
-				     SdifFloat8    Time,
-				     SdifSignature MatrixSignature,
-				     SdifStringT   *SdifString);
+SDIF_API size_t SdifFWriteTextFrameSdifString(SdifFileT     *SdifF,
+                                              SdifSignature FrameSignature,
+                                              SdifUInt4     NumID,
+                                              SdifFloat8    Time,
+                                              SdifSignature MatrixSignature,
+                                              SdifStringT   *SdifString);
 
 
 /*
-// FUNCTION GROUP:	Opening and Closing of Files
+// FUNCTION GROUP:      Opening and Closing of Files
 */
 
 /*DOC:
  */
-SdifFileT*         SdifFOpen                    (const char *Name, SdifFileModeET Mode);
-SdifFileT*         SdifOpenFile                 (const char *Name, SdifFileModeET Mode);
+SDIF_API SdifFileT* SdifFOpen                   (const char *Name, SdifFileModeET Mode);
+
 SdifFileT*         SdifFOpenText                (SdifFileT *SdifF, const char* Name, SdifFileModeET Mode);
+
 /*DOC:
  */
-void               SdifFClose                   (SdifFileT *SdifF);
-void               SdifCloseFile                (SdifFileT *SdifF);
+SDIF_API void      SdifFClose                   (SdifFileT *SdifF);
+
 SdifFrameHeaderT*  SdifFCreateCurrFramH         (SdifFileT *SdifF, SdifSignature Signature);
 SdifMatrixHeaderT* SdifFCreateCurrMtrxH         (SdifFileT *SdifF);
 FILE*              SdifFGetFILE_SwitchVerbose   (SdifFileT *SdifF, int Verbose);
 void               SdifTakeCodedPredefinedTypes (SdifFileT *SdifF);
 void               SdifFLoadPredefinedTypes     (SdifFileT *SdifF, const char *TypesFileName);
 
-extern int	  gSdifInitialised;
+extern int        gSdifInitialised;
 extern SdifFileT *gSdifPredefinedTypes;
 
 
 
 /*
-// FUNCTION GROUP:	Init/Deinit of the Library
+// FUNCTION GROUP:      Init/Deinit of the Library
 */
 
 /*DOC: 
@@ -1476,7 +1487,7 @@ extern SdifFileT *gSdifPredefinedTypes;
   file with type definitions or "".
   <b>This function has to be called once and only once per process 
   before any other call to the SDIF library.</b> */
-void SdifGenInit (const char *PredefinedTypesFile); 
+SDIF_API void SdifGenInit (const char *PredefinedTypesFile); 
 
 /*DOC:
   Initialise the SDIF library if it has not been initialised before.
@@ -1484,35 +1495,35 @@ void SdifGenInit (const char *PredefinedTypesFile);
   many times as desired.  Especially useful for dynamic libraries.
 
   [in] PredefinedTypesFile:
-	name for an optional additional file with type definitions or "". */
-void SdifGenInitCond (const char *PredefinedTypesFile);
+        name for an optional additional file with type definitions or "". */
+SDIF_API void SdifGenInitCond (const char *PredefinedTypesFile);
 
 /*DOC:
   Deinitialise the SDIF library */
-void SdifGenKill (void); 
+SDIF_API void SdifGenKill (void); 
 
 /*DOC:
   Set function that will be called after a grave error has occurred.  
   Default is exit(). */
-void SdifSetExitFunc (SdifExitFuncT func);
+SDIF_API void SdifSetExitFunc (SdifExitFuncT func);
 
 /*DOC:
   Set function that will be called after an error has occured.
   make an exception. */
-void SdifSetErrorFunc (SdifExceptionFuncT func);
+SDIF_API void SdifSetErrorFunc (SdifExceptionFuncT func);
 
 /*DOC:
   Set function that will be called after a warning has occured.
   make an exception. */
-void SdifSetWarningFunc (SdifExceptionFuncT func);
+SDIF_API void SdifSetWarningFunc (SdifExceptionFuncT func);
 
 /*DOC:
   Print version information to standard error. */
-void SdifPrintVersion(void);
+SDIF_API void SdifPrintVersion(void);
 
 
 /*
-// FUNCTION GROUP:	Current Header Access Functions
+// FUNCTION GROUP:      Current Header Access Functions
 */
 
 /*DOC: 
@@ -1521,12 +1532,12 @@ void SdifPrintVersion(void);
 
   Exemple:
   <code>SdifSetCurrFrameHeader(SdifF, '1FOB', _SdifUnknownSize, 3, streamid, 1.0);</code> */
-SdifFrameHeaderT* SdifFSetCurrFrameHeader (SdifFileT *SdifF, 
-					   SdifSignature Signature, 
-					   SdifUInt4 Size,
-					   SdifUInt4 NbMatrix, 
-					   SdifUInt4 NumID, 
-					   SdifFloat8 Time);
+SDIF_API SdifFrameHeaderT* SdifFSetCurrFrameHeader (SdifFileT *SdifF, 
+                                                    SdifSignature Signature, 
+                                                    SdifUInt4 Size,
+                                                    SdifUInt4 NbMatrix, 
+                                                    SdifUInt4 NumID, 
+                                                    SdifFloat8 Time);
 
 /*DOC: 
   Permet de donner des valeurs à chaque champ de l'entête de matice
@@ -1534,10 +1545,11 @@ SdifFrameHeaderT* SdifFSetCurrFrameHeader (SdifFileT *SdifF,
 
   Exemple:
   <code>SdifSetCurrMatrixHeader(SdifF, '1FOF', eFloat4, NbFofs, 7);</code> */
-SdifMatrixHeaderT* SdifFSetCurrMatrixHeader (SdifFileT *SdifF, 
-					     SdifSignature Signature,
-					     SdifDataTypeET DataType, 
-					     SdifUInt4 NbRow, SdifUInt4 NbCol);
+SDIF_API SdifMatrixHeaderT* SdifFSetCurrMatrixHeader (SdifFileT *SdifF, 
+                                                      SdifSignature Signature,
+                                                      SdifDataTypeET DataType, 
+                                                      SdifUInt4 NbRow, 
+                                                      SdifUInt4 NbCol);
 
 
 /*DOC: 
@@ -1586,13 +1598,13 @@ SdifFloat8 SdifFCurrOneRowCol (SdifFileT *SdifF, SdifUInt4 numCol);
   Idem que la fonction précédente mais en utilisant le type de la
   matrice et le nom de la colonne.  */
 SdifFloat8    SdifFCurrOneRowColName   (SdifFileT *SdifF, 
-					SdifMatrixTypeT *MatrixType, 
-					char *NameCD);
+                                        SdifMatrixTypeT *MatrixType, 
+                                        char *NameCD);
 
 
 /*DOC: 
   Renvoie la signature temporaire de Chunk ou de Frame.  */
-SdifSignature SdifFCurrSignature       (SdifFileT *SdifF);
+SDIF_API SdifSignature SdifFCurrSignature       (SdifFileT *SdifF);
 
 
 /*DOC: 
@@ -1602,45 +1614,45 @@ SdifSignature SdifFCleanCurrSignature  (SdifFileT *SdifF);
 /*DOC: 
   Renvoie la signature temporaire du dernier Frame lu ou du prochain à
   écrire.  */
-SdifSignature SdifFCurrFrameSignature  (SdifFileT *SdifF);
+SDIF_API SdifSignature SdifFCurrFrameSignature  (SdifFileT *SdifF);
 
 /*DOC: 
   Renvoie la signature temporaire de la dernier matrice lue ou de la
   prochaine à écrire.  */
-SdifSignature SdifFCurrMatrixSignature (SdifFileT *SdifF);
+SDIF_API SdifSignature SdifFCurrMatrixSignature (SdifFileT *SdifF);
 
 /*DOC: 
   Renvoie SdifF->CurrMtrx->NbCol, nombre de colonnes de la matrice en
   cours de traitement.  */
-SdifUInt4     SdifFCurrNbCol           (SdifFileT *SdifF);
+SDIF_API SdifUInt4     SdifFCurrNbCol           (SdifFileT *SdifF);
 
 /*DOC: 
   Renvoie SdifF->CurrMtrx->NbRow, nombre de lignes de la matrice en
   cours de traitement.  */
-SdifUInt4     SdifFCurrNbRow           (SdifFileT *SdifF);
+SDIF_API SdifUInt4     SdifFCurrNbRow           (SdifFileT *SdifF);
 
 /*DOC: 
   Returns the data type of the current matrix. */
-SdifDataTypeET SdifFCurrDataType (SdifFileT *SdifF);
+SDIF_API SdifDataTypeET SdifFCurrDataType (SdifFileT *SdifF);
 
 /*DOC: 
   Renvoie SdifF->CurrFramH->NbMatrix, mombre de matrices du frame
   courant.  */
-SdifUInt4     SdifFCurrNbMatrix        (SdifFileT *SdifF);
+SDIF_API SdifUInt4     SdifFCurrNbMatrix        (SdifFileT *SdifF);
 
 /*DOC: 
   Renvoie SdifF->CurrFramH->NumID, index de l'objet du frame courant.  */
-SdifUInt4     SdifFCurrID              (SdifFileT *SdifF);
+SDIF_API SdifUInt4     SdifFCurrID              (SdifFileT *SdifF);
 
 /*DOC: 
   Renvoie SdifF->CurrFramH->Time.  */
-SdifFloat8    SdifFCurrTime            (SdifFileT *SdifF);
+SDIF_API SdifFloat8    SdifFCurrTime            (SdifFileT *SdifF);
 
 
 
 
 /*
-// FUNCTION GROUP:	File Data Access Functions
+// FUNCTION GROUP:      File Data Access Functions
 */
 
 /*DOC: 
@@ -1650,40 +1662,40 @@ SdifOneRowT*  SdifFCurrOneRow          (SdifFileT *SdifF);
 /*DOC:
   Returns a pointer to the data of the current matrix row.  
   According to the matrix data type, it can be a pointer to float or double. */
-void*	     SdifFCurrOneRowData	  (SdifFileT *SdifF);
+void*        SdifFCurrOneRowData          (SdifFileT *SdifF);
 
 /*DOC: 
   Return pointer to current matrix data structure, if read before with
   SdifFReadMatrixData. */
-SdifMatrixDataT *SdifFCurrMatrixData (SdifFileT *file);
+SDIF_API SdifMatrixDataT *SdifFCurrMatrixData (SdifFileT *file);
 
 /*DOC: 
   Return pointer to current raw matrix data, if read before with
   SdifFReadMatrixData.  Data is specified by current matrix header */
-void*        SdifFCurrMatrixDataPointer (SdifFileT *file);
+SDIF_API void*        SdifFCurrMatrixDataPointer (SdifFileT *file);
 
 
 /*DOC:
   Return list of NVTs for querying. 
   [] precondition NVTs have been read with SdifFReadAllASCIIChunks. */
-SdifNameValuesLT *SdifFNameValueList (SdifFileT *file);
+SDIF_API SdifNameValuesLT *SdifFNameValueList (SdifFileT *file);
 
 /*DOC:
   Return number of NVTs present.
   [] precondition NVTs have been read with SdifFReadAllASCIIChunks. */
-int SdifFNameValueNum (SdifFileT *file);
+SDIF_API int SdifFNameValueNum (SdifFileT *file);
 
 /*DOC:
   Return the file's stream ID table, created automatically by SdifFOpen. */
-SdifStreamIDTableT *SdifFStreamIDTable (SdifFileT *file);
+SDIF_API SdifStreamIDTableT *SdifFStreamIDTable (SdifFileT *file);
 
 /*DOC:
   Add user data, return index added */
-int SdifFAddUserData (SdifFileT *file, void *data);
+SDIF_API int SdifFAddUserData (SdifFileT *file, void *data);
 
 /*DOC:
   Get user data by index */
-void *SdifFGetUserData (SdifFileT *file, int index);
+SDIF_API void *SdifFGetUserData (SdifFileT *file, int index);
 
 
 
@@ -1694,17 +1706,17 @@ SdifSignature SdifFIsInMtrxUsed   (SdifFileT *SdifF, SdifSignature Sign);
 
 
 /*
-// FUNCTION GROUP:	Error flag for file
+// FUNCTION GROUP:      Error flag for file
 */
 
 /*DOC: 
   Return pointer to last error struct or NULL if no error present
   for this file. */
-SdifErrorT*     SdifFLastError    (SdifFileT *SdifF);
+SDIF_API SdifErrorT*     SdifFLastError    (SdifFileT *SdifF);
 
 /*DOC: 
   Return tag of last error or eNoError if no error present for this file. */
-SdifErrorTagET  SdifFLastErrorTag (SdifFileT *SdifF);
+SDIF_API SdifErrorTagET  SdifFLastErrorTag (SdifFileT *SdifF);
 
 
 #define _SdifFrameHeaderSize 16  /* (ID=4)+(size=4)+(time=8) */
@@ -1712,34 +1724,34 @@ SdifErrorTagET  SdifFLastErrorTag (SdifFileT *SdifF);
 
 
 SdifFrameHeaderT* SdifCreateFrameHeader(SdifSignature Signature,
-					       SdifUInt4 Size,
-					       SdifUInt4 NbMatrix,
-					       SdifUInt4 NumID,
-					       SdifFloat8 Time);
+                                               SdifUInt4 Size,
+                                               SdifUInt4 NbMatrix,
+                                               SdifUInt4 NumID,
+                                               SdifFloat8 Time);
 
 SdifFrameHeaderT* SdifCreateFrameHeaderEmpty(SdifSignature Signature);
 
 void              SdifKillFrameHeader  (SdifFrameHeaderT *FrameHeader);
 
 SdifFrameDataT* SdifCreateFrameData(SdifHashTableT *FrameTypesTable,
-					   SdifSignature FrameSignature,
-					   SdifUInt4 NumID,
-					   SdifFloat8 Time);
+                                           SdifSignature FrameSignature,
+                                           SdifUInt4 NumID,
+                                           SdifFloat8 Time);
 
 void            SdifKillFrameData   (SdifHashTableT *FrameTypesTable, SdifFrameDataT *FrameData);
 
 SdifFrameDataT* SdifFrameDataPutNthMatrixData(SdifFrameDataT *FrameData, unsigned int NthMatrix,
-						     SdifMatrixDataT *MatrixData);
+                                                     SdifMatrixDataT *MatrixData);
 
 SdifFrameDataT* SdifFrameDataPutComponentMatrixData(SdifHashTableT *FrameTypesTable,
-							   SdifFrameDataT *FrameData,
-							   char *CompoName, SdifMatrixDataT *MatrixData);
+                                                           SdifFrameDataT *FrameData,
+                                                           char *CompoName, SdifMatrixDataT *MatrixData);
 
 SdifMatrixDataT* SdifFrameDataGetNthMatrixData(SdifFrameDataT *FrameData, unsigned int NthMatrix);
 
 SdifMatrixDataT* SdifFrameDataGetComponentMatrixData(SdifHashTableT *FrameTypesTable,
-							    SdifFrameDataT *FrameData,
-						     char *CompoName);
+                                                            SdifFrameDataT *FrameData,
+                                                     char *CompoName);
 
 
 
@@ -1780,7 +1792,7 @@ SdifUInt2       SdifExistUserFrameType (SdifHashTableT *FrameTypeHT);
 
 /* set default if not overridden from makefile */
 #ifndef _SdifFormatVersion
-#define	_SdifFormatVersion 3
+#define _SdifFormatVersion 3
 #endif
 
 #define _SdifTypesVersion  1
@@ -1802,21 +1814,21 @@ SdifUInt2       SdifExistUserFrameType (SdifHashTableT *FrameTypeHT);
 #define _SdifGenHashSize         127 /* size of matrix/frame type table */
 #define _SdifNameValueHashSize    31 /* size of hash table for NVTs */
 #define _SdifUnknownSize  0xffffffff
-#define _SdifGranule	        1024 /* for OneRow allocation in bytes */
-#define _SdifPadding		   8
+#define _SdifGranule            1024 /* for OneRow allocation in bytes */
+#define _SdifPadding               8
 #define _SdifPaddingBitMask (_SdifPadding - 1)
 
 #define _SdifFloat8Error  0xffffffff
-#define _SdifNoTime	  _Sdif_MIN_DOUBLE_	/* for header ASCII frames */
-#define _SdifNoStreamID   0xfffffffe		/* used for 1TYP */
-#define _SdifAllStreamID  0xffffffff		/* used for 1IDS */
+#define _SdifNoTime       _Sdif_MIN_DOUBLE_     /* for header ASCII frames */
+#define _SdifNoStreamID   0xfffffffe            /* used for 1TYP */
+#define _SdifAllStreamID  0xffffffff            /* used for 1IDS */
 #define _SdifUnknownUInt4 0xffffffff
 
 /* CNMAT restriction: only one frame type per stream.  
    Therefore we have to use unique IDs for all 'header' frames. */
-#define _SdifNVTStreamID  0xfffffffd		/* used for 1NVT */
-#define _SdifIDSStreamID  0xfffffffc		/* unused */
-#define _SdifTYPStreamID  0xfffffffb		/* unused */
+#define _SdifNVTStreamID  0xfffffffd            /* used for 1NVT */
+#define _SdifIDSStreamID  0xfffffffc            /* unused */
+#define _SdifTYPStreamID  0xfffffffb            /* unused */
 
 
 #define _SdifFloatEps  FLT_EPSILON
@@ -1844,31 +1856,31 @@ SdifUInt2       SdifExistUserFrameType (SdifHashTableT *FrameTypeHT);
 
 /* generate template for all types, 
    called by sdif_foralltypes and sdif_proto_foralltypes. */
-#define sdif__foralltypes(macro, post)	macro(Float4)post \
-					macro(Float8)post \
-					macro(Int1  )post \
-					macro(Int2  )post \
-					macro(Int4  )post \
-					macro(UInt1 )post \
-					macro(UInt2 )post \
-					macro(UInt4 )post \
-					macro(Char  )post \
-				     /* macro(Int8  )post \
-					macro(UInt8 )post \
-				      */
+#define sdif__foralltypes(macro, post)  macro(Float4)post \
+                                        macro(Float8)post \
+                                        macro(Int1  )post \
+                                        macro(Int2  )post \
+                                        macro(Int4  )post \
+                                        macro(UInt1 )post \
+                                        macro(UInt2 )post \
+                                        macro(UInt4 )post \
+                                        macro(Char  )post \
+                                     /* macro(Int8  )post \
+                                        macro(UInt8 )post \
+                                      */
 
 #define sdif_foralltypes_post_body    /* this is empty */
 #define sdif_foralltypes_post_proto ; /* this is a semicolon */
 
 
 /* generate template for all types */
-#define sdif_foralltypes(macro)		\
-	sdif__foralltypes(macro,sdif_foralltypes_post_body)
+#define sdif_foralltypes(macro)         \
+        sdif__foralltypes(macro,sdif_foralltypes_post_body)
 
 
 /* generate prototype template for all types */
 #define sdif_proto_foralltypes(macro)   \
-	sdif__foralltypes(macro,sdif_foralltypes_post_proto)
+        sdif__foralltypes(macro,sdif_foralltypes_post_proto)
 
 /* #endif */ /* STDC_HEADERS */
 #endif /* SWIG */
@@ -1886,12 +1898,12 @@ extern int  CurrStringPosSignature;
 
 
 /*
-// FUNCTION GROUP:	utility functions
+// FUNCTION GROUP:      utility functions
 */
 
 /*DOC:
 */
-char*     SdifSignatureToString(SdifSignature Signature);
+SDIF_API char*     SdifSignatureToString(SdifSignature Signature);
 
 /*DOC: 
   Compare two signatures, ignoring the first character which
@@ -1904,7 +1916,7 @@ int     SdifSignatureCmpNoVersion(SdifSignature Signature1, SdifSignature Signat
   Returns size of SDIF data type in bytes
   (which is always the low-order byte).  
 */
-SdifUInt4 SdifSizeofDataType (SdifDataTypeET DataType);
+SDIF_API SdifUInt4 SdifSizeofDataType (SdifDataTypeET DataType);
 
 /*DOC: 
   Returns true if DataType is in the list of known data types.
@@ -1924,11 +1936,11 @@ int SdifFloat8Equ(SdifFloat8 f1, SdifFloat8 f2);
 
 
 #ifndef MIN
-#define MIN(a,b)	((a) < (b)  ?  (a)  :  (b))
+#define MIN(a,b)        ((a) < (b)  ?  (a)  :  (b))
 #endif
 
 #ifndef MAX
-#define MAX(a,b)	((a) > (b)  ?  (a)  :  (b))
+#define MAX(a,b)        ((a) > (b)  ?  (a)  :  (b))
 #endif
 
 
@@ -1947,7 +1959,7 @@ int       SdifStrLen  (const char *s);
 int       SdifStrCmp  (const char *s1, const char *s2);
 
 /* returns true if strings are equal */
-int	  SdifStrEq(const char *s1, const char *s2);
+int       SdifStrEq(const char *s1, const char *s2);
 int       SdifStrNCmp (const char *s1, const char *s2, unsigned int n);
 char*     SdifStrNCpy (char *s1, const char *s2, unsigned int n);
 char*     SdifCreateStrNCpy (const char* Source, size_t Size);
@@ -2003,9 +2015,9 @@ typedef int (*SdifOpenFileCallbackT)   (SdifFileT *file, void *userdata);
 typedef int (*SdifCloseFileCallbackT)  (SdifFileT *file, void *userdata);
 typedef int (*SdifFrameCallbackT)      (SdifFileT *file, void *userdata);
 typedef int (*SdifMatrixCallbackT)     (SdifFileT *file, 
-					int nummatrix,   void *userdata);
+                                        int nummatrix,   void *userdata);
 typedef int (*SdifMatrixDataCallbackT) (SdifFileT *file, 
-					int nummatrix,   void *userdata);
+                                        int nummatrix,   void *userdata);
 
 /*DOC: 
   Reads an entire SDIF file, calling matrixfunc for each matrix in the
@@ -2017,31 +2029,31 @@ typedef int (*SdifMatrixDataCallbackT) (SdifFileT *file,
   
   @return number of bytes read
 */
-size_t SdifReadSimple (const char	      *filename, 
-		       SdifMatrixDataCallbackT matrixfunc,
-		       void		      *userdata);
+SDIF_API size_t SdifReadSimple (const char              *filename, 
+                                SdifMatrixDataCallbackT  matrixfunc,
+                                void                    *userdata);
 
 
-size_t SdifReadFile (const char             *filename, 
-		     SdifOpenFileCallbackT   openfilefunc,
-		     SdifFrameCallbackT      framefunc,
-		     SdifMatrixCallbackT     matrixfunc,
-		     SdifMatrixDataCallbackT matrixdatafunc,
-		     SdifCloseFileCallbackT  closefilefunc,
-		     void                   *userdata);
+SDIF_API size_t SdifReadFile   (const char              *filename, 
+                                SdifOpenFileCallbackT    openfilefunc,
+                                SdifFrameCallbackT       framefunc,
+                                SdifMatrixCallbackT      matrixfunc,
+                                SdifMatrixDataCallbackT  matrixdatafunc,
+                                SdifCloseFileCallbackT   closefilefunc,
+                                void                    *userdata);
 
 /*DOC: 
   Reads matrix data and padding.  The data is stored in CurrMtrxData,
   for which the library will allocate enough space for the data of one
   matrix, accessible by SdifFCurrMatrixData().  
   
-  @return	number of bytes read or 0 if error
-		N.B. first of all that an error is signalled to the error callback
-		set with SdifSetErrorFunc, and the library tries to exit via the 
-		function set with SdifSetExitFunc.  So, if you have to check the
-		return value, note that for matrices with 0 rows or 0 columns,
-		a return value of 0 is correct.  
-		You should thus check for this with:
+  @return       number of bytes read or 0 if error
+                N.B. first of all that an error is signalled to the error callback
+                set with SdifSetErrorFunc, and the library tries to exit via the 
+                function set with SdifSetExitFunc.  So, if you have to check the
+                return value, note that for matrices with 0 rows or 0 columns,
+                a return value of 0 is correct.  
+                You should thus check for this with:
 
   if (nread == 0  &&  (SdifFCurrNbRow(file) != 0  ||  SdifFCurrNbCol(file) != 0))
       --> read problem
@@ -2049,7 +2061,7 @@ size_t SdifReadFile (const char             *filename,
   [Precondition:] 
   Matrix header must have been read with SdifFReadMatrixHeader.  
 */
-size_t SdifFReadMatrixData   (SdifFileT *file);
+SDIF_API size_t SdifFReadMatrixData   (SdifFileT *file);
 
 
 
@@ -2060,7 +2072,7 @@ size_t SdifFReadMatrixData   (SdifFileT *file);
 
 typedef struct
 { 
-    double min, max;	/* use double even for int, doesn't harm */
+    double min, max;    /* use double even for int, doesn't harm */
 } SdifMinMaxT;
 
 /* two-level tree node for matrices in frames */
@@ -2068,11 +2080,11 @@ typedef struct SdifQueryTreeElemS
 {
     /* common fields */
     SdifSignature sig;
-    int	          count;
-    int	          parent;/* -1 for frames, index to parent frame for matrices */
+    int           count;
+    int           parent;/* -1 for frames, index to parent frame for matrices */
 
     /* frame fields */
-    int	          stream;
+    int           stream;
     SdifMinMaxT   time, nmatrix;
 
     /* matrix fields */
@@ -2085,31 +2097,31 @@ typedef struct SdifQueryTreeElemS
    different parent frames. */
 typedef struct
 {
-    int			num;		/* number of elems used */
-    int			nummatrix;	/* number of leaf nodes */
-    int			current;	/* index of current frame */
-    int			allocated;	/* number of elems allocated */
+    int                 num;            /* number of elems used */
+    int                 nummatrix;      /* number of leaf nodes */
+    int                 current;        /* index of current frame */
+    int                 allocated;      /* number of elems allocated */
     SdifQueryTreeElemT *elems;
-    SdifMinMaxT	        time;		/* frame times */
+    SdifMinMaxT         time;           /* frame times */
 } SdifQueryTreeT;
 
 
 /* allocate query tree for max elements */
-SdifQueryTreeT *SdifCreateQueryTree(int max);
+SDIF_API SdifQueryTreeT *SdifCreateQueryTree(int max);
 
 /* clean all elements from tree */
-SdifQueryTreeT *SdifInitQueryTree(SdifQueryTreeT *tree);
+SDIF_API SdifQueryTreeT *SdifInitQueryTree(SdifQueryTreeT *tree);
 
 /* create summary of file's data in query tree, return bytesize of file */
-size_t SdifQuery (const char            *filename, 
-		  SdifOpenFileCallbackT  openfilefunc,
-       /*out*/    SdifQueryTreeT        *tree);
+SDIF_API size_t SdifQuery (const char            *filename, 
+                           SdifOpenFileCallbackT  openfilefunc,
+                /*out*/    SdifQueryTreeT        *tree);
 
 
 
 
 
-#if 0	/* TBI */
+#if 0   /* TBI */
 
 /*
 //FUNCTION GROUP: to be implemented / TBI
@@ -2123,11 +2135,11 @@ size_t SdifQuery (const char            *filename,
   TBI 
 */
 SdifFWriteMatrixColumns (SdifFileT     *file,
-			 SdifSignature  Signature,
-			 SdifDataTypeET DataType,
-			 SdifUInt4      NbRow,
-			 SdifUInt4      NbCol,
-			 void	       *columns []);
+                         SdifSignature  Signature,
+                         SdifDataTypeET DataType,
+                         SdifUInt4      NbRow,
+                         SdifUInt4      NbCol,
+                         void          *columns []);
 
 
 /*DOC: 
@@ -2140,7 +2152,7 @@ void *SdifGetColumn ();
 
 
 /*
- * Error handling
+ * Error handling (sketch TBI)
  */
 
 int /*bool*/ SdifFCheckStatus (SdifFileT *file)
@@ -2206,25 +2218,25 @@ void        SdifKillList        (SdifListT* List);
 /*DOC:
   Init the function SdifListGetNext. 
   [Return] head of List. */
-void*       SdifListGetHead     (SdifListT* List); 
+SDIF_API void*       SdifListGetHead     (SdifListT* List); 
 
-void*       SdifListGetTail     (SdifListT* List);
-int         SdifListIsNext      (SdifListT* List);
-int         SdifListIsEmpty     (SdifListT* List);
-unsigned int SdifListGetNbData  (SdifListT* List);
+SDIF_API void*       SdifListGetTail     (SdifListT* List);
+SDIF_API int         SdifListIsNext      (SdifListT* List);
+SDIF_API int         SdifListIsEmpty     (SdifListT* List);
+SDIF_API unsigned int SdifListGetNbData  (SdifListT* List);
 
 /*DOC:
   Init for function SdifListGetNext.
   [Returns] true if List has elements. */
-int         SdifListInitLoop    (SdifListT* List);
+SDIF_API int         SdifListInitLoop    (SdifListT* List);
 
 /*DOC:
   Set Curr to Curr->Next and after return Curr->Data */
-void*       SdifListGetNext     (SdifListT* List);
+SDIF_API void*       SdifListGetNext     (SdifListT* List);
 
 /*DOC:
   Only return Curr->Data. */
-void*       SdifListGetCurr     (SdifListT* List);
+SDIF_API void*       SdifListGetCurr     (SdifListT* List);
 
 SdifListT*  SdifListPutTail     (SdifListT* List, void *pData);
 SdifListT*  SdifListPutHead     (SdifListT* List, void *pData);
@@ -2239,9 +2251,9 @@ SdifListT *SdifListConcat(SdifListT *a, SdifListT *b);
 
 
 SdifMatrixHeaderT* SdifCreateMatrixHeader    (SdifSignature Signature, 
-					      SdifDataTypeET DataType,
-					      SdifUInt4 NbRow, 
-					      SdifUInt4 NbCol);
+                                              SdifDataTypeET DataType,
+                                              SdifUInt4 NbRow, 
+                                              SdifUInt4 NbCol);
 
 SdifMatrixHeaderT* SdifCreateMatrixHeaderEmpty (void);
 void               SdifKillMatrixHeader        (SdifMatrixHeaderT *MatrixHeader);
@@ -2267,42 +2279,42 @@ SdifFloat8         SdifOneRowGetValueColName (SdifOneRowT *OneRow, SdifMatrixTyp
  */
 
 SdifMatrixDataT*   SdifCreateMatrixData      (SdifSignature Signature, 
-					      SdifDataTypeET DataType,
-					      SdifUInt4 NbRow, 
-					      SdifUInt4 NbCol);
+                                              SdifDataTypeET DataType,
+                                              SdifUInt4 NbRow, 
+                                              SdifUInt4 NbCol);
 
 void               SdifKillMatrixData        (SdifMatrixDataT *MatrixData);
 
 /* see if there's enough space for data, if not, grow buffer */
-int		   SdifMatrixDataRealloc     (SdifMatrixDataT *data, 
-					      int newsize);
+int                SdifMatrixDataRealloc     (SdifMatrixDataT *data, 
+                                              int newsize);
 
 /* matrix data element access by index (starting from 1!) */
 
 SdifMatrixDataT*   SdifMatrixDataPutValue    (SdifMatrixDataT *MatrixData,
-					      SdifUInt4  numRow, 
-					      SdifUInt4  numCol, 
-					      SdifFloat8 Value);
+                                              SdifUInt4  numRow, 
+                                              SdifUInt4  numCol, 
+                                              SdifFloat8 Value);
 
 SdifFloat8         SdifMatrixDataGetValue    (SdifMatrixDataT *MatrixData,
-					      SdifUInt4  numRow, 
-					      SdifUInt4  numCol);
+                                              SdifUInt4  numRow, 
+                                              SdifUInt4  numCol);
 
 /* matrix data element access by column name */
 
 SdifMatrixDataT *  SdifMatrixDataColNamePutValue (SdifHashTableT *MatrixTypesTable,
-						  SdifMatrixDataT *MatrixData,
-						  SdifUInt4  numRow,
-						  char *ColName,
-						  SdifFloat8 Value);
+                                                  SdifMatrixDataT *MatrixData,
+                                                  SdifUInt4  numRow,
+                                                  char *ColName,
+                                                  SdifFloat8 Value);
 
-SdifFloat8	   SdifMatrixDataColNameGetValue (SdifHashTableT *MatrixTypesTable,
-						  SdifMatrixDataT *MatrixData,
-						  SdifUInt4  numRow,
-						  char *ColName);
+SdifFloat8         SdifMatrixDataColNameGetValue (SdifHashTableT *MatrixTypesTable,
+                                                  SdifMatrixDataT *MatrixData,
+                                                  SdifUInt4  numRow,
+                                                  char *ColName);
 
-void SdifCopyMatrixDataToFloat4		     (SdifMatrixDataT *data, 
-					      SdifFloat4 *dest);
+SDIF_API void      SdifCopyMatrixDataToFloat4    (SdifMatrixDataT *data, 
+                                                  SdifFloat4      *dest);
 
 
 SdifColumnDefT*  SdifCreateColumnDef (char *Name,  unsigned int Num);
@@ -2321,7 +2333,7 @@ void             SdifKillColumnDef   (void *ColumnDef);
   à jour se fait automatiquement à l'aide des fonctions
   SdifTestMatrixType et SdifTestFrameType. */
 SdifMatrixTypeT* SdifCreateMatrixType              (SdifSignature Signature,
-                    							   SdifMatrixTypeT *PredefinedMatrixType);
+                                                                           SdifMatrixTypeT *PredefinedMatrixType);
 void             SdifKillMatrixType                (SdifMatrixTypeT *MatrixType);
 
 /*DOC: 
@@ -2360,8 +2372,8 @@ const char*  SdifMatrixTypeGetColumnName           (SdifMatrixTypeT *MatrixType,
 
   Tip: use SdifFGetMatrixTypesTable to obtain the matrix types hash table.
 */
-SdifMatrixTypeT* SdifGetMatrixType		   (SdifHashTableT *MatrixTypesTable, 
-						    SdifSignature Signature);
+SdifMatrixTypeT* SdifGetMatrixType                 (SdifHashTableT *MatrixTypesTable, 
+                                                    SdifSignature Signature);
 
 /*DOC: 
   permet d'ajouter un type de matrice dans une table.  */
@@ -2378,7 +2390,8 @@ SdifUInt2        SdifExistUserMatrixType(SdifHashTableT *MatrixTypesTable);
        1IDS 1IDS
   Get all types from a SdifStringT
 */
-size_t    SdifFGetAllTypefromSdifString   (SdifFileT *SdifF, SdifStringT *SdifString);
+SDIF_API size_t SdifFGetAllTypefromSdifString (SdifFileT *SdifF, 
+                                               SdifStringT *SdifString);
 
 
 
@@ -2432,7 +2445,7 @@ void            SdifKillNameValue(SdifNameValueT *NameValue);
 
 SdifNameValueTableT* SdifCreateNameValueTable(  SdifUInt4 StreamID, 
                                                 SdifUInt4 HashSize, 
-						SdifUInt4 NumTable);
+                                                SdifUInt4 NumTable);
 void            SdifKillNameValueTable          (void* NVTable);
 SdifNameValueT* SdifNameValueTableGetNV         (SdifNameValueTableT* NVTable, const char *Name);
 SdifNameValueT* SdifNameValueTablePutNV         (SdifNameValueTableT* NVTable, const char *Name,  const char *Value);
@@ -2497,7 +2510,7 @@ SdifNameValueT*     SdifNameValuesLPutCurrNVT   (SdifNameValuesLT *NameValuesL, 
   (using SdifStringToNV).  FYI: The strings are copied. */
 SdifNameValueT*     SdifNameValuesLPutCurrNVTTranslate(SdifNameValuesLT *NameValuesL, const char *Name,  const char *Value);
 
-SdifUInt2           SdifNameValuesLIsNotEmpty   (SdifNameValuesLT *NameValuesL);
+SDIF_API SdifUInt2           SdifNameValuesLIsNotEmpty   (SdifNameValuesLT *NameValuesL);
 
 
 
@@ -2577,7 +2590,7 @@ int SdifIsAReservedChar (char c);
 
   [] returns str
 */
-char *SdifStringToNV (/*in out*/ char *str);
+SDIF_API char *SdifStringToNV (/*in out*/ char *str);
 
 /* SdiffGetString lit un fichier jusqu'a un caractere reserve, ne
    rempli s que des caracteres non-espacement, renvoie le caractere
@@ -2606,27 +2619,27 @@ int SdiffGetStringUntil (FILE* fr, char* s, size_t ncMax, size_t *NbCharRead, co
   Function return the string until in a SdifStringT
  */
 int SdiffGetStringUntilfromSdifString(SdifStringT *SdifString, char *s, size_t ncMax,
-				     const char *CharsEnd);
+                                     const char *CharsEnd);
 
 int SdiffGetStringWeakUntil(FILE* fr, char* s, size_t ncMax, size_t *NbCharRead, const char *CharsEnd);
 /*DOC:
   Return the weak string until in a SdifStringT
 */
 int SdiffGetStringWeakUntilfromSdifString(SdifStringT *SdifString, char* s,
-					  size_t ncMax, const char *CharsEnd);
+                                          size_t ncMax, const char *CharsEnd);
 
 int SdifSkipASCIIUntil  (FILE* fr, size_t *NbCharRead, char *CharsEnd);
 int SdifSkipASCIIUntilfromSdifString  (SdifStringT *SdifString, size_t *NbCharRead, char *CharsEnd);
 
 
-#if 0	/* for cocoon's eyes only */
+#if 0   /* for cocoon's eyes only */
 /* scan nobj items of TYPE from stream, return number sucessfully read */
 size_t SdiffScan_TYPE   (FILE *stream, Sdif_TYPE  *ptr, size_t nobj);
 size_t SdiffScanFloat4  (FILE *stream, SdifFloat4 *ptr, size_t nobj);
 size_t SdiffScanFloat8  (FILE *stream, SdifFloat8 *ptr, size_t nobj);
 #endif
 
-#ifndef SWIG	/* are we scanned by SWIG? */
+#ifndef SWIG    /* are we scanned by SWIG? */
 
 /* generate function prototypes for all types TYPE for the 
    SdiffScan<TYPE> functions */
@@ -2663,7 +2676,7 @@ char *SdifBaseName (const char* inPathFileName);
 
 
 /* 
-// FUNCTION GROUP:	Init/Deinit
+// FUNCTION GROUP:      Init/Deinit
  */
 
 /* init module, called by SdifGenInit */
@@ -2690,7 +2703,7 @@ void SdifKillSelectElement (/*SdifSelectionT*/ void *victim);
 
 
 /*
-// FUNCTION GROUP:	Parse and Set Selection
+// FUNCTION GROUP:      Parse and Set Selection
 */
 
 
@@ -2703,8 +2716,8 @@ char *SdifSelectFindSelection (const char *filename);
 
 /*DOC: 
 */
-char *SdifGetFilenameAndSelection (/*in*/  const char *filename, 
-				   /*out*/ SdifSelectionT *sel);
+SDIF_API char *SdifGetFilenameAndSelection (/*in*/  const char *filename, 
+                                            /*out*/ SdifSelectionT *sel);
 
 /*DOC: 
   Replace current selection by new one given in first argument.
@@ -2712,7 +2725,7 @@ char *SdifGetFilenameAndSelection (/*in*/  const char *filename,
   based selection after the  selection indicator :: .
 */
 void SdifReplaceSelection (/*in*/ const char* selectionstr,
-			   /*out*/ SdifSelectionT *sel);
+                           /*out*/ SdifSelectionT *sel);
 
 
 /*DOC: 
@@ -2726,14 +2739,14 @@ void SdifPrintSelection (FILE *out, SdifSelectionT *sel, int options);
   [Return] true if ok 
 
   List has to be created before with
-	list = SdifCreateList (SdifKillSelectElement)
+        list = SdifCreateList (SdifKillSelectElement)
 */
 int SdifParseSignatureList (SdifListT *list, const char *str);
 
 
 
 /*
-// FUNCTION GROUP:	Add Selections to Element Lists
+// FUNCTION GROUP:      Add Selections to Element Lists
 */
 
 /* Give documentation and fake prototype for _add... macro generated functions.
@@ -2746,7 +2759,7 @@ int SdifParseSignatureList (SdifListT *list, const char *str);
   functions generated automatically, with the meta type-variables _type_ and 
   _datatype_:
   [] _type_ is one of:  <br> Int, Real,   Signature,     String, for
-  [] _datatype_ of:	<br> int, double, SdifSignature, char *, respectively.
+  [] _datatype_ of:     <br> int, double, SdifSignature, char *, respectively.
 */
 void SdifSelectAdd_TYPE_ (SdifListT *list, _datatype_ value);
 
@@ -2755,22 +2768,22 @@ void SdifSelectAdd_TYPE_ (SdifListT *list, _datatype_ value);
   functions generated automatically, with the meta type-variables _type_ and 
   _datatype_:
   [] _type_ is one of:  <br> Int, Real,   Signature,     String, for
-  [] _datatype_ of:	<br> int, double, SdifSignature, char *, respectively.
+  [] _datatype_ of:     <br> int, double, SdifSignature, char *, respectively.
 
   Example: to add the time range (t1, t2) to the selection in file, call
-	SdifSelectAddRealRange(file->Selection->time, t1, sst_range, t2);
+        SdifSelectAddRealRange(file->Selection->time, t1, sst_range, t2);
 */
 void SdifSelectAdd_TYPE_Range (SdifListT *list, 
-			       _datatype_ value, 
-			       SdifSelectTokens rt, 
-			       _datatype_ range);
+                               _datatype_ value, 
+                               SdifSelectTokens rt, 
+                               _datatype_ range);
 
-#endif	/* if 0 */
+#endif  /* if 0 */
 
 
 #define _addrangeproto(name, type, field) \
 void SdifSelectAdd##name##Range (SdifListT *list, \
-				 type value, SdifSelectTokens rt, type range)
+                                 type value, SdifSelectTokens rt, type range)
 
 #define _addsimpleproto(name, type, field) \
 void SdifSelectAdd##name (SdifListT *list, type value)
@@ -2779,10 +2792,10 @@ void SdifSelectAdd##name (SdifListT *list, type value)
 _addsimpleproto (name, type, field); \
 _addrangeproto  (name, type, field);
 
-_addproto (Int,	      int,		integer)
-_addproto (Real,      double,		real)
-_addproto (Signature, SdifSignature,	signature)
-_addproto (String,    char *,		string)
+_addproto (Int,       int,              integer)
+_addproto (Real,      double,           real)
+_addproto (Signature, SdifSignature,    signature)
+_addproto (String,    char *,           string)
 
 
 /*DOC: 
@@ -2798,13 +2811,13 @@ SdifListT *SdifSelectAppendList (SdifListT *dest, SdifListT *source);
 
   do this whenever elements have been added to an int selection list
 */
-void SdifSelectGetIntMask (SdifListP list, SdifSelectIntMaskP mask);
+SDIF_API void SdifSelectGetIntMask (SdifListP list, SdifSelectIntMaskP mask);
 
 
 
 
 /*
-// FUNCTION GROUP:	Query parsed ranges (list of ranges).
+// FUNCTION GROUP:      Query parsed ranges (list of ranges).
 */
 
 /*DOC:
@@ -2821,15 +2834,15 @@ void SdifSelectGetIntMask (SdifListP list, SdifSelectIntMaskP mask);
   case, with value <= range guaranteed.  
 */
 int SdifSelectGetNextIntRange  (/*in*/  SdifListP list, 
-				/*out*/ SdifSelectElementIntT  *range, 
-				/*in*/  int force_range);
+                                /*out*/ SdifSelectElementIntT  *range, 
+                                /*in*/  int force_range);
 
 /*DOC: 
   See SdifSelectGetNextInt.
 */
 int SdifSelectGetNextRealRange (/*in*/  SdifListP list, 
-				/*out*/ SdifSelectElementRealT *range, 
-				/*in*/  int force_range);
+                                /*out*/ SdifSelectElementRealT *range, 
+                                /*in*/  int force_range);
 
 /*DOC: 
   Query list of parsed selection elements (one of the SdifListP
@@ -2844,15 +2857,15 @@ SdifSignature  SdifSelectGetNextSignature (/*in*/  SdifListP list);
 /*DOC: 
   See SdifSelectGetNextSignature.
 */
-char	      *SdifSelectGetNextString    (/*in*/  SdifListP list);
+char          *SdifSelectGetNextString    (/*in*/  SdifListP list);
 
 
 /*DOC: 
   Return value of first selection (ignoring range).
 */
-int	       SdifSelectGetFirstInt       (SdifListP l, int defval);
-double	       SdifSelectGetFirstReal      (SdifListP l, double defval);
-char	      *SdifSelectGetFirstString    (SdifListP l, char *defval);
+int            SdifSelectGetFirstInt       (SdifListP l, int defval);
+double         SdifSelectGetFirstReal      (SdifListP l, double defval);
+char          *SdifSelectGetFirstString    (SdifListP l, char *defval);
 SdifSignature  SdifSelectGetFirstSignature (SdifListP l, SdifSignature defval);
 
 
@@ -2860,7 +2873,7 @@ SdifSignature  SdifSelectGetFirstSignature (SdifListP l, SdifSignature defval);
 
 
 /*
-// FUNCTION GROUP:	Selection Testing Functions
+// FUNCTION GROUP:      Selection Testing Functions
 */
 
 int SdifSelectTestIntMask (SdifSelectIntMaskT *mask, SdifUInt4 cand);
@@ -2876,7 +2889,7 @@ int SdifSelectTestString (SdifListT *list, const char *cand);
 
 
 /*
-// FUNCTION GROUP:	Using a Selection in File I/O.
+// FUNCTION GROUP:      Using a Selection in File I/O.
 */
 
 
@@ -2940,7 +2953,7 @@ int SdifFColumnIsSelected (SdifFileT *file, int col);
 
 
 /*
-// FUNCTION GROUP:	Handling of a Table of Signatures
+// FUNCTION GROUP:      Handling of a Table of Signatures
 */
 
 /*DOC:
@@ -2949,45 +2962,45 @@ SdifSignatureTabT* SdifCreateSignatureTab (const SdifUInt4 NbSignMax);
 
 /*DOC:
   Free signature table. */
-void		   SdifKillSignatureTab   (SdifSignatureTabT *SignTab);
+void               SdifKillSignatureTab   (SdifSignatureTabT *SignTab);
 
 /*DOC:
   Reallocate table to hold NewNbSignMax signatures. */
 SdifSignatureTabT* SdifReAllocSignatureTab(SdifSignatureTabT *SignTab, 
-					   const SdifUInt4 NewNbSignMax);
+                                           const SdifUInt4 NewNbSignMax);
 
 /*DOC:
   Reallocate table to hold NewNbSignMax signatures and clear signatures. */
 SdifSignatureTabT* SdifReInitSignatureTab (SdifSignatureTabT *SignTab, 
-					   const SdifUInt4 NewNbSignMax);
+                                           const SdifUInt4 NewNbSignMax);
 
 /*DOC:
   Add signature Sign, no overflow check. */
 SdifSignatureTabT* SdifPutInSignatureTab  (SdifSignatureTabT *SignTab, 
-					   const SdifSignature Sign);
+                                           const SdifSignature Sign);
 
 /*DOC:
   Add signature Sign, reallocate table if necessary. */
 SdifSignatureTabT* SdifAddToSignatureTab  (SdifSignatureTabT *SignTab, 
-					   const SdifSignature Sign);
+                                           const SdifSignature Sign);
 
 /*DOC:
   Get signature at position index.  
   Returns eEmptySignature if index out of bounds. */
 SdifSignature      SdifGetFromSignatureTab(const SdifSignatureTabT* SignTab, 
-					   const int index);
+                                           const int index);
 
 /*DOC:
   Test if signature Sign is in table SignTab. 
   [] Returns Sign if yes, 0 (== eEmptySignature) if no. */
 SdifSignature      SdifIsInSignatureTab   (const SdifSignatureTabT *SignTab, 
-					   const SdifSignature Sign);
+                                           const SdifSignature Sign);
 
 /*DOC:
   Test if signature Sign is in table SignTab. 
   [] Returns index of Sign if yes, -1 if no. */
-int		   SdifFindInSignatureTab (const SdifSignatureTabT* SignTab, 
-					   const SdifSignature Sign);
+int                SdifFindInSignatureTab (const SdifSignatureTabT* SignTab, 
+                                           const SdifSignature Sign);
 
 
 
@@ -2995,7 +3008,7 @@ int		   SdifFindInSignatureTab (const SdifSignatureTabT* SignTab,
 
 
 /*
-// DATA GROUP:		Stream ID Table and Entries for 1IDS ASCII chunk
+// DATA GROUP:          Stream ID Table and Entries for 1IDS ASCII chunk
 */
 
 
@@ -3019,28 +3032,28 @@ void                SdifKillStreamIDTable       (SdifStreamIDTableT *SIDTable);
   Add an entry to a stream ID table.  The table will be written by
   SdifFWriteAllASCIIChunks.
   [in]  SIDTable pointer to stream ID table, e.g. obtained by SdifFStreamIDTable
-  [in]	NumID	stream ID of the frames the stream ID table describes
-  [in]	Source	Source identifier for the table (ex. "Chant")
-  [in]	TreeWay	Routing and parameters, separated by slashes
+  [in]  NumID   stream ID of the frames the stream ID table describes
+  [in]  Source  Source identifier for the table (ex. "Chant")
+  [in]  TreeWay Routing and parameters, separated by slashes
   [return]
-		The stream ID table entry just created and added */
+                The stream ID table entry just created and added */
 SdifStreamIDT*      SdifStreamIDTablePutSID     (SdifStreamIDTableT *SIDTable,
-						 SdifUInt4	     NumID, 
-						 char 		    *Source, 
-						 char 		    *TreeWay);
+                                                 SdifUInt4           NumID, 
+                                                 char               *Source, 
+                                                 char               *TreeWay);
 
 /*DOC:
   Retrieve an entry to a stream ID table.  The table has to have been
   read by SdifFReadAllASCIIChunks.
 
   [in]  SIDTable pointer to stream ID table, e.g. obtained by 
-		 SdifFStreamIDTable
-  [in]	NumID	 stream ID of the frames the stream ID table describes
+                 SdifFStreamIDTable
+  [in]  NumID    stream ID of the frames the stream ID table describes
   [return]
-		 pointer to stream ID table entry, or NULL if no entry for 
-		 stream ID NumID exists. */
+                 pointer to stream ID table entry, or NULL if no entry for 
+                 stream ID NumID exists. */
 SdifStreamIDT*      SdifStreamIDTableGetSID     (SdifStreamIDTableT *SIDTable, 
-						 SdifUInt4	     NumID);
+                                                 SdifUInt4           NumID);
 
 /*DOC:
   Return number of entries in stream ID table SIDTable */
@@ -3049,15 +3062,15 @@ SdifUInt4           SdifStreamIDTableGetNbData  (SdifStreamIDTableT *SIDTable);
 
 /*DOC:
   Return stream ID field in stream ID table entry SID */
-SdifUInt4	    SdifStreamIDEntryGetSID	(SdifStreamIDT *SID);
+SdifUInt4           SdifStreamIDEntryGetSID     (SdifStreamIDT *SID);
 
 /*DOC:
   Return source field in stream ID table entry SID */
-char		   *SdifStreamIDEntryGetSource	(SdifStreamIDT *SID);
+char               *SdifStreamIDEntryGetSource  (SdifStreamIDT *SID);
 
 /*DOC:
   Return "treeway" field in stream ID table entry SID */
-char		   *SdifStreamIDEntryGetTreeWay	(SdifStreamIDT *SID);
+char               *SdifStreamIDEntryGetTreeWay (SdifStreamIDT *SID);
 
 
 
@@ -3166,7 +3179,7 @@ SdifComponentT*  SdifTestComponent (SdifFileT* SdifF, SdifFrameTypeT *FramT, cha
 
 int SdifTestSignature            (SdifFileT *SdifF, int CharEnd, SdifSignature Signature, char *Mess);
 int SdifTestCharEnd              (SdifFileT *SdifF, int CharEnd, char MustBe,
-					   char *StringRead, int ErrCondition, char *Mess);
+                                           char *StringRead, int ErrCondition, char *Mess);
 
 
 int SdifTestMatrixTypeModifMode  (SdifFileT *SdifF, SdifMatrixTypeT *MatrixType);
