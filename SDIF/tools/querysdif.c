@@ -1,4 +1,4 @@
-/* $Id: querysdif.c,v 1.9 2004-06-03 11:34:17 schwarz Exp $
+/* $Id: querysdif.c,v 1.10 2006-05-03 15:46:51 schwarz Exp $
  
                 Copyright (c) 1998 by IRCAM - Centre Pompidou
                            All rights reserved.
@@ -14,6 +14,10 @@
    
 
    $Log: not supported by cvs2svn $
+   Revision 1.9  2004/06/03 11:34:17  schwarz
+   Enable profiling compilation.
+   Don't read padding when skipping matrices!
+
    Revision 1.8  2003/11/07 22:12:45  roebel
    Removed XpGuiCalls remainings.
 
@@ -86,6 +90,7 @@ void usage (void)
 "Options:\n"
 "	-a	view ASCII chunks\n"
 "	-d	view data\n"
+"	-b	view data brief (output in SDIF selection syntax)\n"
 /* todo:
 "	-n	view NVTs (name value tables)\n"
 "	-T	view type declarations in sdif-file\n"
@@ -101,7 +106,6 @@ void usage (void)
 "\n");
 
     exit(1);
-
 }
 
 
@@ -223,6 +227,7 @@ int main(int argc, char** argv)
     int		vall	  = 1,
  		vascii	  = 0,
 		vdata	  = 0,
+		vbrief	  = 0,
 		vnvt	  = 0,
 		vtypes	  = 0,
 		valltypes = 0,
@@ -241,11 +246,12 @@ int main(int argc, char** argv)
 		{
 		  case 'a': vall = 0;  vascii    = 1;  break;
 		  case 'd': vall = 0;  vdata     = 1;  break;
-		  case 'n': vall = 0;  vnvt      = 1;  break;
+		  case 'b': vall = 0;  vdata = vbrief = 1;  break;
+/* todo:	  case 'n': vall = 0;  vnvt      = 1;  break;
 		  case 'T': vall = 0;  vtypes    = 1;  break;
 		  case 'D': vall = 0;  valltypes = 1;  break;
 		  case 's': vall = 0;  vstream   = 1;  break;
-		  case 't': /* no arg after last option, complain */
+*/		  case 't': /* no arg after last option, complain */
 			    if (i == argc - 1)   
 				usage ();
 			    types = argv [++i];	       break;
@@ -334,39 +340,57 @@ int main(int argc, char** argv)
 	/* 
 	 * print results 
 	 */
-
-	printf ("Data in file %s (%d bytes):\n", infile, bytesread);
-	/* useless 
-	   printf ("Number of different signatures/streams: %d\n\n", nsig); */
-
-	for (i = 0; i < nsig; i++)
-	{
-	    if (sigs [i].parent == -1)
+	if (vbrief)
+	{   /* brief selection-syntax output without counts */
+	    for (i = 0; i < nsig; i++)
 	    {
-		/* frames */
-		printf ("%5d %s frames in stream %d between time %f and %f containing\n", 
-			sigs [i].count, 
-			SdifSignatureToString (sigs [i].sig),
-			sigs [i].stream,
-			sigs [i].time.min,
-			sigs [i].time.max);
-
-		/* search children matrices of this frame */
-		for (m = 0; m < nsig; m++)
-		{
-		    if (sigs [m].parent == i)
-			printf ("   %5d %s matrices with %3g --%3g rows, %3g --%3g columns\n",
-				sigs [m].count, 
-				SdifSignatureToString (sigs [m].sig),
-				sigs [m].nrow.min,
-				sigs [m].nrow.max,
-				sigs [m].ncol.min,
-				sigs [m].ncol.max);
-		}
+		if (sigs[i].parent == -1)
+		{   /* search children matrices of this frame */
+		    for (m = 0; m < nsig; m++)
+		    {
+			if (sigs[m].parent == i)
+			    printf ("#%d:%s/%s@%f-%f\n", 
+				    sigs[i].stream,
+				    SdifSignatureToString (sigs[i].sig),
+				    SdifSignatureToString (sigs[m].sig),
+				    sigs[i].time.min,
+				    sigs[i].time.max);
+		    }
+		} 
 	    }
 	}
+	else
+	{
+	    printf ("Data in file %s (%d bytes):\n", infile, bytesread);
+
+	    for (i = 0; i < nsig; i++)
+	    {
+		if (sigs [i].parent == -1)
+		{   /* frames */
+		    printf ("%5d %s frames in stream %d between time %f and %f containing\n", 
+			    sigs [i].count, 
+			    SdifSignatureToString (sigs [i].sig),
+			    sigs [i].stream,
+			    sigs [i].time.min,
+			    sigs [i].time.max);
+
+		    /* search children matrices of this frame */
+		    for (m = 0; m < nsig; m++)
+		    {
+			if (sigs [m].parent == i)
+			    printf ("   %5d %s matrices with %3g --%3g rows, %3g --%3g columns\n",
+				    sigs [m].count, 
+				    SdifSignatureToString (sigs [m].sig),
+				    sigs [m].nrow.min,
+				    sigs [m].nrow.max,
+				    sigs [m].ncol.min,
+				    sigs [m].ncol.max);
+		    }
+		}
+	    }
+	    printf ("\n");
+	}
     }
-    printf ("\n");
 
     /* check for error */
     if (SdifFLastError(in) == NULL)
@@ -378,7 +402,5 @@ int main(int argc, char** argv)
     SdifFClose (in);
     SdifGenKill ();
 
-
     return result;
-
 }    
