@@ -1,4 +1,4 @@
-/* $Id: sdif.h,v 1.52 2005-12-05 16:39:40 schwarz Exp $
+/* $Id: sdif.h,v 1.53 2006-05-03 14:33:29 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -30,6 +30,9 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.52  2005/12/05 16:39:40  schwarz
+ * export SdifSelectGetIntMask
+ *
  * Revision 1.51  2005/05/24 09:32:39  roebel
  * Fixed last checkin comment which turned out to be the start of
  * a c-comment.
@@ -260,7 +263,7 @@
  * Revision 1.1.2.1  2000/08/21  13:07:41  tisseran
  * *** empty log message ***
  *
- * $Date: 2005-12-05 16:39:40 $
+ * $Date: 2006-05-03 14:33:29 $
  *
  */
 
@@ -275,7 +278,7 @@ extern "C" {
 #endif
 
 
-static const char _sdif_h_cvs_revision_ [] = "$Id: sdif.h,v 1.52 2005-12-05 16:39:40 schwarz Exp $";
+static const char _sdif_h_cvs_revision_ [] = "$Id: sdif.h,v 1.53 2006-05-03 14:33:29 schwarz Exp $";
 
 
 #include <stdio.h>
@@ -2066,7 +2069,7 @@ typedef struct SdifQueryTreeElemS
     /* common fields */
     SdifSignature sig;
     int	          count;
-    int	          parent;/* 0 for frames, index to parent frame for matrices */
+    int	          parent;/* -1 for frames, index to parent frame for matrices */
 
     /* frame fields */
     int	          stream;
@@ -2125,18 +2128,6 @@ SdifFWriteMatrixColumns (SdifFileT     *file,
 			 SdifUInt4      NbRow,
 			 SdifUInt4      NbCol,
 			 void	       *columns []);
-
-
-SdifFWriteTextMatrix (SdifFileT f, SdifSignature matrixsig, const char *str)
-{
-    /* convert to UTF-8 */
-    SdifConvertToUTF8 (str, utfstr);
-    nbytes = strlen (utfstr);
-    SdifFSetCurrMatrixHeader (f, matrixsig, eText, nbytes, 1);
-    SdifFWriteMatrixHeader (f);
-
-    /* write text data and padding */
-}
 
 
 /*DOC: 
