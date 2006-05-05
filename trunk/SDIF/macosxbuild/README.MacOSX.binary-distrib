@@ -1,13 +1,13 @@
 
 # SDIF README for Mac binary distribution
-# $Id: README.MacOSX.binary-distrib,v 1.1 2003-06-10 15:50:01 schwarz Exp $
+# $Id: README.MacOSX.binary-distrib,v 1.2 2006-05-05 16:44:48 schwarz Exp $
 
 (C) Copyright Ircam 1998-2003
 
 
 # Introduction
 
-SDIF stands for SoundDescription Interchange Format.
+SDIF stands for Sound Description Interchange Format.
 
 The general idea of SDIF is to store information related to signal
 processing and specifically of sound, in files, according to a common
@@ -16,6 +16,12 @@ parameters of analyses, syntheses...
 
 
 # Installation 
+
+- from zip
+
+The zip contains the static library libsdif.a that should go into /usr/local/lib and the dynamic or share library SDIF.framework that should go into /Library/Frameworks.
+
+- from pkg
 
 Double clicking on the pkg file installs the SDIF framework (the
 compiled libray and header files) into 
