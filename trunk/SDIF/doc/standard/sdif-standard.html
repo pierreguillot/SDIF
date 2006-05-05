@@ -1,14 +1,9 @@
 <html>
-<!-- $Id: sdif-standard.html,v 1.1 2006-05-05 09:50:31 schwarz Exp $
+<!-- $Id: sdif-standard.html,v 1.2 2006-05-05 09:54:54 schwarz Exp $
 
 SdifNormDoc.html		crée le 08/11/1998	Dominique Virolle 
 
 SDIF Specification
-     
-$Log: not supported by cvs2svn $
-Revision 3.2  2000/08/07 15:12:04  schwarz
-Cocoon is installed for groups now, more docs.
-
 
 -->
 
@@ -17,18 +12,33 @@ Cocoon is installed for groups now, more docs.
 </head>
 <body BGCOLOR="white">
 <p>
-<img src="pics/logo.gif" alt="Image logo.gif" height=22 width=276 align=lefttop>
+<img src="../pics/logo.gif" alt="Image logo.gif" height=22 width=276 align=lefttop>
 </p>
 <p><hr width="100%"></p>
 <h1>SDIF</h1>
 <h1>Format Specification</h1>
 
-<em>
-<p>Analyse/Synthèse <br>
+<em>Format Version: 3<br>
+Authors: <au>Dominique Virolle, Diemo Schwarz</au>
+
+<p><hr width="100%"></p>
+
+Document Revision: $Header: /home/cvs/s/sd/sdif/SDIF/doc/standard/Attic/sdif-standard.html,v 1.2 2006-05-05 09:54:54 schwarz Exp $
 <!--#echo var="LAST_MODIFIED"-->
-</p>
-</em>
-<au>Dominique Virolle</au>
+
+<p>
+Change Log:
+<font size=-3>
+<pre>
+$Log: not supported by cvs2svn $
+Revision 1.1  2006/05/05 09:50:31  schwarz
+moved SDIF standard specification document from doc to doc/standard
+
+SdifNormDoc.html		crée le 08/11/1998	Dominique Virolle 
+</pre>
+</font>
+</em></p>
+
 <p><hr width="100%"></p>
 
 <a name="Index"></a>
@@ -127,7 +137,7 @@ column represents a field of structure, and each row an element of
 this structure.  A structure which one can represent in the form of
 matrix is called "simple" in this document.
 </p>
- <img src="pics/Matrix.gif" alt="Image Matrix.gif" height=271 width=241 align=lefttop>
+ <img src="../pics/Matrix.gif" alt="Image Matrix.gif" height=271 width=241 align=lefttop>
 
 <p> Thus, for a structure "FilterStruct", made up of three fields "frequency",
 "amplitude", and "bandwidth", elements of "FilterStruct" are stored like
@@ -150,7 +160,7 @@ frame FilterBank makes it possible to represent a whole of Filters.
   A structure associated with a frame is called "compound".
 </p>
 
- <img src="pics/Frame.gif" alt="Image Frame.gif" height=261 width=221 align=lefttop>
+ <img src="../pics/Frame.gif" alt="Image Frame.gif" height=261 width=221 align=lefttop>
 
   <a name="Temporal Concept"></a><h2>Temporal Concept</h2>
 
@@ -158,7 +168,7 @@ frame FilterBank makes it possible to represent a whole of Filters.
 a SDIF frame block for object type.
   A SDIF file is overall a succession of frames ordered in time.
 </p>
-<img src="pics/DataChunk.gif" alt="Image Frames in time (gif)" height=256 width=241 align=lefttop>
+<img src="../pics/DataChunk.gif" alt="Image Frames in time (gif)" height=256 width=241 align=lefttop>
 
 
   <a name="Special Frames"></a><h2>Special Frames</h2>
@@ -166,13 +176,13 @@ a SDIF frame block for object type.
 
 <p> A file SDIF is composed of several Special Frames in the order:</p>
 <ul>
-  <li>Zero, one or more table of information "Information Table",</li>
   <li>Optional Special Frame of declarations or completions of the types of
       matrices or frames "Types Declaration",</li>
   <li>An optional table of index SDIF "Stream IDs Table",</li>
-  <li>A continuation of Special Frames of the type "Frame".</li>
+  <li>Zero, one or more table of information "Information Table",</li>
+<!-- ???  <li>A continuation of Special Frames of the type "Frame".</li> -->
 </ul>
- <img src="pics/FileLevel.gif" alt="Image FileLevel.gif" height=381 width=261 align=lefttop>
+ <img src="../pics/FileLevel.gif" alt="Image FileLevel.gif" height=381 width=261 align=lefttop>
 <p> There should be Time Table but its format and its position were not decided yet.
 </p>
 
@@ -384,33 +394,17 @@ with a alignement of 8 bytes for each block (matrix).
 
   <a name="Special Frames Specifications"></a><h2>Special Frames Specifications</h2>
 
-<p>A SDIF Special Frame is frame which doesn't contain any matrices. It is
- marked by a Signature at the upper level of SDIF file or stream.
+<p>SDIF Special Frames contain one ASCII text matrix with header information at the beginning of the file.
 </p>
 
-  <a name="Informations Table"></a><h2>Informations Table</h2>
+  <a name="Informations Table"></a><h2>1NVT Informations Table</h2>
+    <a name="Informations Table Header"></a>
+    <a name="Informations Table Data"></a>
 
-    <a name="Informations Table Header"></a><h3>Informations Table Header</h3>
-
-
-<p>Informations Table Header is a frame header with particular values to
-indicate the special aspect of this frame.
-</p>
-<table border=1 bordercolor="black" cellpadding=5>
-<tr><td>Signature Informations Table</td><td>4 bytes</td><td>"1NVT"</td></tr>
-<tr><td>Special Frame Size</td><td>4 bytes</td>
-        <td>not counting signature and size <br>
-(<a href="#Padding">Padding</a> included and by default ffffffff hexa)</td></tr>
-<tr> <td>Time</td>        <td>8 bytes</td>  <td>float8 (-DBL_MAX == ffefffff hexa)</td> </tr>
-<tr> <td>StreamID</td>    <td>4 bytes</td>  <td>int4 (0)</td> </tr>
-<tr> <td>MatrixCount</td> <td>4 bytes</td>  <td>int4 (0)</td> </tr>
-</table>
-
-    <a name="Informations Table Data"></a><h3>Informations Table Data</h3>
 
 <p> The table of information makes it possible to have general
 information like the author of the file, the version of SDIF library, the
-number of cannels...  The data of this Special Frame are in ASCII.
+number of cannels...  The data of this Special Frame are in an ASCII text matrixwith name-value pairs of meta data.
 </p>
 <p> The data start with ' { ' and finish by ' } '. Each
 information is in the form <code> &lt;Name&gt; &lt;Value&gt; ';' </code>.
@@ -422,12 +416,13 @@ is an ASCII part).
 
 <p> Informations Table Data Example :
 </p>
+1NVT text Matrix in 1NVT frame on stream 0xfffffffd (-3):
 <pre>
-1NVT&lt;FrameSize&gt;&lt;Time==-DLB_MAX&gt;&lt;StreamID==0&gt;&lt;MatrixCount==0&gt;{
+{
   numChannels   6;
   IrcamSdifLibraryVersion    1.0.0.alpha;
   MonProgrammeParametreSpecial  integer4  ;
-}&lt;Padding&gt;
+}
 </pre>
 <p>Associated grammar is:
 </p>
@@ -442,21 +437,10 @@ is an ASCII part).
     &lt;Value&gt;          := ASCII string
 </pre>
 
-    <a name="Padding"></a><h3>Padding</h3>
-
-<p> The ASCII aspect of the table of information starts with the
-' { ' and ends with the ' } '. But after the ' } ', there is
-Padding which can vary from 0 to 7 bytes.  Each bytes of Padding is
-put at ' \0 '.  Padding makes it possible to align the file on 64
-bits.  Thus the next frame begins aligned.
-</p>
 
 
 
-
-
-
-  <a name="Types Declaration"></a><h2>Types Declaration</h2>
+  <a name="Types Declaration"></a><h2>1TYP Types Declaration</h2>
 
 
 <p> It is possible in SDIF to complete the types of matrices or
@@ -480,21 +464,7 @@ then it is a creation.
 </p>
 
 
-    <a name="Types Declaration Header"></a><h3>Types Declaration Header</h3>
-
-<p>Types Declaration Header is a frame header with particular values to
- indicate the special aspect of this frame.
-</p>
-<table fontsize="small" border=1 bordercolor="black" cellpadding=5>
-<tr><td>Signature Types Declaration</td><td>4 bytes</td><td>"1TYP"</td></tr>
-<tr><td>Special Frame Size</td><td>4 bytes</td>
-        <td>not counting signature and size <br>
-(<a href="#Padding">Padding</a> included and by default ffffffff hexa)</td></tr>
-<tr> <td>Time</td>        <td>8 bytes</td>  <td>float8 (-DBL_MAX == ffefffff hexa)</td> </tr>
-<tr> <td>StreamID</td>    <td>4 bytes</td>  <td>int4 (0)</td> </tr>
-<tr> <td>MatrixCount</td> <td>4 bytes</td>  <td>int4 (0)</td> </tr>
-</table>
-
+    <a name="Types Declaration Header"></a>
     <a name="Types Declaration Data"></a><h3>Types Declaration Data</h3>
 
 <p>The data of Types Declaration is in ASCII. It starts with '{' and
@@ -610,8 +580,9 @@ important, a frame type cannot contains more than one matrix of the same matrix 
 
 </pre>
 <p>Types declaration example:</p>
+1TYP text Matrix in 1TYP frame on stream 0xfffffffe (-2)
 <pre>
-1TYP&lt;FrameSize&gt;&lt;Time==-DLB_MAX&gt;&lt;StreamID==0&gt;&lt;MatrixCount==0&gt;{
+{
   1MTD 1FIL {frequency, amplitude, banwidth}
   1MTD 1CHA {channel1, channel2}
 
@@ -631,7 +602,7 @@ important, a frame type cannot contains more than one matrix of the same matrix 
       1FOF fofsparameters;
       1CHA fofschannels;
     }
-}&lt;Padding&gt;
+}
 </pre>
 
 
@@ -644,24 +615,10 @@ important, a frame type cannot contains more than one matrix of the same matrix 
 
 
 
-  <a name="Stream IDs Table"></a><h2>Stream IDs Table</h2>
+  <a name="Stream IDs Table"></a><h2>1IDS Stream IDs Table</h2>
 
-    <a name="Stream IDs Table Header"></a><h3>Stream IDs Table Header</h3>
-
-<p>Types Declaration Header is a frame header with particular values to
- indicate the special aspect of this frame.
-</p>
-<table fontsize="small" border=1 bordercolor="black" cellpadding=5>
-<tr><td>Signature Stream IDs Table</td><td>4 bytes</td><td>"1IDS"</td></tr>
-<tr><td>Special Frame Size</td><td>4 bytes</td>
-        <td>not counting signature and size <br>
-(<a href="#Padding">Padding</a> included and by default ffffffff hexa)</td></tr>
-<tr> <td>Time</td>        <td>8 bytes</td>  <td>float8 (-DBL_MAX == ffefffff hexa)</td> </tr>
-<tr> <td>StreamID</td>    <td>4 bytes</td>  <td>int4 (0)</td> </tr>
-<tr> <td>MatrixCount</td> <td>4 bytes</td>  <td>int4 (0)</td> </tr>
-</table>
-
-    <a name="Stream IDs Table Data"></a><h3>Stream IDs Table Data</h3>
+    <a name="Stream IDs Table Header"></a>
+    <a name="Stream IDs Table Data"></a>
 
 <p>The table of ID makes it possible to have information on the objects to which
  the frames will apply. A ID is an integer refering a particular object.
@@ -677,13 +634,14 @@ important, a frame type cannot contains more than one matrix of the same matrix 
 
 <p>Stream IDs Table Data example:
 </p>
+1IDS matrix in 1IDS frame on stream 0xffffffff (-1)
 <pre>
-1IDS&lt;FrameSize&gt;&lt;Time==-DLB_MAX&gt;&lt;StreamID==0&gt;&lt;MatrixCount==0&gt;{
+{
   1   MyProg:Group1/1/FIB/0/12/500./3./80.;
   2   MyProg:Group1/1/FIB/1/5/500./3./80.;
   3   MyProg:Group1/1/FIB/2/8/500./3./80.;
   4   YourProg:FOB/"Fofbank"/4/4/2;
-}&lt;Padding&gt;
+}
 </pre>
 
 <p>Meaning and the construction of TreeWay depend on the Source, but nothing is
@@ -694,7 +652,6 @@ important, a frame type cannot contains more than one matrix of the same matrix 
  obligatory: there must be the name of the type of the object in TreeWay.
  The table of the ID is the means to declare objects which will be modified
  in time via the frames.<br>
- As for the precedents chunk, Stream IDs Chunk is aligned on 8 bytes by Padding. 
 </p>
 
 
@@ -726,7 +683,7 @@ important, a frame type cannot contains more than one matrix of the same matrix 
     <ul>
       <li><a href="#Predefined Matrix Types">Predefined Matrix Types</a></li>
         <ul>
-          <li><a href="#1FQ0">Fondamental frequency "1FQ0"</a></li>
+          <li><a href="#1FQ0">Fundamental frequency "1FQ0"</a></li>
           <li><a href="#1FOF">"Forme d'Onde Formantique" "1FOF"</a></li>
           <li><a href="#1CHA">Channels "1CHA"</a></li>
           <li><a href="#1RES">Resonnant filers "1RES"</a></li>
@@ -735,7 +692,7 @@ important, a frame type cannot contains more than one matrix of the same matrix 
       <li><a href="#Predefined Frame Types">Predefined Frame Types</a></li>
         <ul>
           <li><a href="#1FOB">Fofs bank "1FOB"</a></li>
-          <li><a href="#1REB">Resonnant filters bank "1REB"</a></li>
+          <li><a href="#1REB">Resonant filters bank "1REB"</a></li>
           <li><a href="#1NOI">Noise "1NOI"</a></li>
         </ul>
     </ul>
@@ -862,170 +819,6 @@ NoiseInfo : Noise parameters.
 
 
 }
-
-
-
-
-
-
-
-
-    <a name="StreamID TreeWay for the Chant program">
-	     <h2>StreamID TreeWay for the Chant program</h2></a>
-
-
-
-<p> The TreeWay field of StreamID does not have an absolute definition. Its
-interpretation depends on the Source field which represents the type of TreeWay which
-follows it. Only format envisaged is that TreeWay must have the pace of a URL
-</p> 
-
-<p>Chant library can interpret of StreamID whose Source field is 'Chant' and
-where the TreeWay field follows this format:<br>
-<code>&lt;PatchType&gt;/&lt;NumPatch&gt;/&lt;ObjType&gt;/&lt;NumObj&gt;
-/&lt;NbSubObjt&gt;/&lt;StartTime&gt;/&lt;EndTime&gt;[/"&lt;SoundFileName&gt;"]</code><br>
- ([ ] means here "eventually", Obj: Object, Num: Number, Nb: Numbers ). 
-</p>
-
-
-
-
-      <a name="Description of each element of TreeWay">
-      <h3>Description of each element of TreeWay</h3></a>
-
-
-<p>
-<ul>
-  <li>PatchType: It is the predefined type of patch in Chant to which
-   belongs the indexed object. The possible values are Patch0, Patch1,
-   ..., Patch10, (November98).</li>
-
-
-  <li>NumPatch:Number which refers the patch among all patchs in
-   the same type. One can control several patch of the Patch0 type.
-   The first will have NumPatch=1 and second NumPatch=2...</li>
-
-  <li>ObjType: A Chant patch is an assembly of objects of
-   different types. ObjType represents the type of the indexed object.
-   The recognized types are: 'FOB', 'REB', 'NOI' and 'SND'.
-   The three first are also predefined frames types signatures
-   without version. Then, there is a link between the object type
-   in TreeWay and the frame type which makes it possible to
-   make move this object.</li>
-
-
-  <li>NumObj: If a patch contains several objects of same type,
-   it is necessary to be able to refer each one of them.
-   Then, NumObj determines which object of ObjType type frame addresses itself.
-   The number has a very precise meaning for the patch connection.
-   Also, the predefined patchs are fixed, one cannot have NumObj=3
-   if the patch contains only two objects.
-   (cf. <a href="#Example TreeWay for the Chant program">Exemple below</a>).</li>
-
-
-  <li>NbSubObj: Maximum Numbers of sub-objects of the object indexed by StreamID.
-   For a bank of FOFs, it is typically the number of FOFs maximum of the bank
-   (in the same way for the banks of filters). The objects typified by 'NOI'
-    or 'SND' are the noise and the files sounds. They do not have sub-objects.
-   In this case NbSubObj=0.</li>
-
-  <li>StartTime and EndTime: They are times of beginning and end of the object.</li>
-
-
-  <li>SoundFileName: This TreeWay element must be in TreeWay only for a 'SND' object.
-   It contains the name of the sound file referred by this object. The only
-   constraint is the name placed between '"' must not contains characters
-    ';' and '"'.</li>
-</ul>
-</p>
-
-
-      <a name="Example TreeWay for the Chant program">
-      <h3>Exemple</h3></a>
-
-<p>Let us take an example of the very general type of patch. 
-<br><img src="pics/PatchExemple.gif" alt="Image PatchExemple.gif" height=156 width=421>
-<br>
-Each object type of Chant is represented here. This patch type is only one
-example and does not exist like predefined patch type. 
-</p>
-
-<p>There are 2 banks of filters. This will utilize the number of the object (on
-the right names on the diagram). Indeed, the bank of filter whose number is 1
-corresponds to the bank which filters only the bank of FOFs. Bank 2 corresponds to
-that which filters all the objects. Follows for example the patch StreamIDs. 
-</p>
-<pre>
-1IDS  (...)
-{
-  145   Chant:PatchTypeExample/1/FOB/1/23/0./5.;
-  7     Chant:PatchTypeExample/1/REB/1/45/0./5.;
-  32    Chant:PatchTypeExample/1/NOI/1/0/0./6.;
-  12    Chant:PatchTypeExample/1/SND/1/0/0./6./"./snd/file.sf.rs";
-  122   Chant:PatchTypeExample/1/REB/2/85/0./6.;
-} (padding)
-</pre>
-<p>NumID are independants. They must only be single. The number of
-sub-object, times of ends and beginning are also independent for each object.
-The object of NumID 7 is the bank of filters 1 of the patch.
-Then, it filters only the bank of FOFs.
-The object of NumID 122 is the bank of filters 2 which filters the bank
-of FOFs, the noise and the file sound.<br>
-
-
-To have another StreamID:<br>
-<code> 123 Chant:PatchTypeExemple/1/REB/3/85/0./6.;</code><br>
-does not allow to have a third bank of filters, because a type of patch is fixed.
-Moreover, if it misses one of the components of the patch, then this patch will
-not appears in the synthesis. <strong>A patch must be complete to be computed.</strong> 
-
-
-
-<p>
-Currently, these patch types are available: 
-</p>
-<table border=0 bordercolor="black" cellpadding=5>
-<tr>
-  <td>
-      <img src="pics/Patch0.gif" alt="Image Patch0.gif" height=51  width=291>
-      <img src="pics/Patch1.gif" alt="Image Patch1.gif" height=91  width=291>
-      <img src="pics/Patch2.gif" alt="Image Patch2.gif" height=91  width=291>
-      <img src="pics/Patch3.gif" alt="Image Patch3.gif" height=131 width=291>
-      <img src="pics/Patch4.gif" alt="Image Patch4.gif" height=51  width=291>
-      <img src="pics/Patch5.gif" alt="Image Patch5.gif" height=51  width=291>
-  </td>
-  <td>
-      <img src="pics/Patch6.gif" alt="Image Patch6.gif" height=51  width=291>
-      <img src="pics/Patch7.gif" alt="Image Patch7.gif" height=91  width=291>
-      <img src="pics/Patch8.gif" alt="Image Patch8.gif" height=131  width=291>
-      <img src="pics/Patch9.gif" alt="Image Patch9.gif" height=91  width=291>
-      <img src="pics/Patch10.gif" alt="Image Patch10.gif" height=91  width=291>
-  </td>
-</tr>
-</table>
-<p>
-Stream ID SND of Patch2 contains the name of a sound file to filter.
-However, there is neither matrix, nor frame associated with this object. 
-</p>
-
-<p>
-<pre> Stream ID Example for a Patch1 :
-  1	Chant:Patch1/1/FOB/1/4/0./1.;
-  2	Chant:Patch1/1/REB/1/5/0./1.;
-  3	Chant:Patch1/1/NOI/1/0/0./1.;   // a noise doesn't have sub-object.<br>
-
-another Patch1:
-  4	Chant:Patch1/2/FOB/1/3/2./5.;
-  5	Chant:Patch1/2/REB/1/8/2./5.;
-  6	Chant:Patch1/2/NOI/1/0/2./5.;
-
-
-Patch2:
-  7	Chant:Patch2/1/NOI/1/0/0./4.;
-  8	Chant:Patch2/1/REB/1/5/0./5.;
-  9	Chant:Patch2/1/SND/1/0/0./4./"filename";
-</pre>
-
 
 
 
