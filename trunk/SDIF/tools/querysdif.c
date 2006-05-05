@@ -1,4 +1,4 @@
-/* $Id: querysdif.c,v 1.10 2006-05-03 15:46:51 schwarz Exp $
+/* $Id: querysdif.c,v 1.11 2006-05-05 10:31:40 schwarz Exp $
  
                 Copyright (c) 1998 by IRCAM - Centre Pompidou
                            All rights reserved.
@@ -14,6 +14,9 @@
    
 
    $Log: not supported by cvs2svn $
+   Revision 1.10  2006/05/03 15:46:51  schwarz
+   added brief output option
+
    Revision 1.9  2004/06/03 11:34:17  schwarz
    Enable profiling compilation.
    Don't read padding when skipping matrices!
@@ -217,7 +220,7 @@ int main(int argc, char** argv)
 #endif
 {
     int		i, m, eof = 0;
-    size_t	bytesread = 0;
+    size_t	bytesread = 0, nread = 0;
     SdifFileT	*in;
     int         result;
 
@@ -287,8 +290,13 @@ int main(int argc, char** argv)
     }
     in->TextStream = stdout;	/* SdifFPrint* functions need this */
 
-    bytesread += SdifFReadGeneralHeader  (in);
-    bytesread += SdifFReadAllASCIIChunks (in);
+    if ((nread = SdifFReadGeneralHeader(in)) == 0)
+    {
+        SdifGenKill ();
+	exit(1);
+    }
+    
+    bytesread += SdifFReadAllASCIIChunks (in) + nread;
     eof = SdifFCurrSignature(in) == eEmptySignature;
 
     if (vall || vascii)
