@@ -1,3 +1,10 @@
+Version 3.10.5	2005-05-05  Diemo Schwarz, Niels Bogaards
+
+	* doc/standard/sdif-standard.html updated
+ 	* querysdif: exit on invalid sdif header, added brief output option
+	* sdifextract: added data only output option
+	* lots of small fixes, 64-bit compilation
+
 Version 3.10.0	2005-05-23  Diemo Schwarz, Axel Roebel
 
 	* Unified error handling code	
