@@ -1,3 +1,153 @@
+2006-05-05  Diemo Schwarz  <schwarz@ATR-DarkStar.local>
+
+	* configure.in, ReleaseNotes: version 3.10.5
+
+	* tools/querysdif.c: exit on invalid sdif header
+
+	* doc/standard/sdif-standard.html:
+	removed remains of "TreeWay" examples specific to the Chant program
+
+	* doc/standard/sdif-standard.html: adapted to format version 3:
+	ascii header frames contain text matrices, no more "special frames"
+
+	* doc/standard/sdif-standard.html:
+	moved SDIF standard specification document from doc to doc/standard
+
+2006-05-05  Diemo Schwarz  <schwarz@ATR-DarkStar.local>
+
+	* tools/querysdif.c: exit on invalid sdif header
+
+	* doc/standard/sdif-standard.html:
+	removed remains of "TreeWay" examples specific to the Chant program
+
+	* doc/standard/sdif-standard.html: adapted to format version 3:
+	ascii header frames contain text matrices, no more "special frames"
+
+	* doc/standard/sdif-standard.html:
+	moved SDIF standard specification document from doc to doc/standard
+
+2006-05-03  Diemo Schwarz  <schwarz@ATR-DarkStar.local>
+
+	* tools/sdifextract.c: added data only output option
+
+	* tools/querysdif.c: added brief output option
+
+	* include/sdif.h: add SDIF_API (for windows dll)
+	untabify
+
+	* include/sdif.h:
+	correct doc and remove function sketch (is now implemented)
+
+2006-03-22  roebel  <roebel@m1213.ircam.fr>
+
+	* ChangeLog, configure.in: Version 3.10.4: x86_64
+
+	* sdif/SdifSelect.c:
+	cast pointer difference to int for printf arguments
+
+	* sdif/SdifRWLowLevel.c: Fixed wrong sizeof which would work only if
+	sizeof(pointer)  == sizeof(int)
+
+	* sdif/SdifFRead.c:
+	use correct format specifier for long int arguments.
+
+2006-02-04  roebel  <roebel@m1213.ircam.fr>
+
+	* configure.in: updated version
+
+2006-02-03  roebel  <roebel@m1213.ircam.fr>
+
+	* ChangeLog: Version 3.10.3
+
+	* sdif/SdifErrMess.h, sdif/SdifErrMess.c:
+	Fixed SdifFsPrintError which now creates a proper
+	error message. Before the error messages were
+	limited to 4 characters!
+
+2006-01-31  muller  <muller@m1213.ircam.fr>
+
+	* tools/querysdif.vcproj, tools/sdifextract.vcproj, tools/sdiftotext.vcproj, tools/sdifusage.vcproj, tools/tosdif.vcproj:
+	visual studio 7.1 projects for sdif tools
+
+	* sdif.ncb, sdif.suo:
+	removed visual C++ temporary files that shouldn't be in cvs
+
+2006-01-16  muller  <muller@m1213.ircam.fr>
+
+	* sdif.sln, sdif.vcproj, sdif/sdif_portability.h:
+	updated visual studio 7.1 projects in order to build the latest sdif version. (only tested with FTM)
+
+	it only builds a static library for now.
+	for a DLL we either need a module definition file with the list of exported symbols
+	or something like:
+
+	#ifdef WIN32
+	#if defined(SDIFDLL_EXPORTS)
+	#define SDIF_API __declspec(dllexport)
+	#else
+	#define SDIF_API __declspec(dllimport)
+	#endif
+	#else
+	#define SDIF_API extern
+	#endif
+
+	and SDIF_API in front of all exported symbols
+
+2006-01-09  ellis  <ellis@m1213.ircam.fr>
+
+	* macosxbuild/sdiftotext-Info.plist, macosxbuild/texttosdif-Info.plist:
+	 added 2 new targets to the macosx project to build sdiftotext & texttosdif with minimal gui
+
+	* tools/ProgressBar.cp, tools/ProgressBar.h, tools/StandardSuite.sdef, tools/Worker.cp, tools/Worker.h, tools/main.cp, tools/main.nib/classes.nib, tools/main.nib/info.nib, tools/main.nib/objects.xib, tools/sdiftotext.c:
+	minimal set of files to add XP-gui to the sdif tools
+
+2006-01-03  roebel  <roebel@m1213.ircam.fr>
+
+	* doc/download/Easdif/index.html: Released version 1.2.2b.
+
+2005-12-05  Diemo Schwarz  <schwarz@ATR-DarkStar.local>
+
+	* include/sdif.h: export SdifSelectGetIntMask
+
+2005-11-10  Diemo Schwarz  <schwarz@ATR-DarkStar.local>
+
+	* sdif/SdifFScan.c: hoppla!
+
+2005-10-21  Diemo Schwarz  <schwarz@m1213.ircam.fr>
+
+	* sdif/SdifMatrixType.c, sdif/SdifRWLowLevel.c, sdif/SdifRWLowLevel.h, sdif/SdifSelect.c, sdif/SdifTest.c, sdif/SdifTextConv.c, sdif/SdifErrMess.c, sdif/SdifFGet.c, sdif/SdifFPrint.c, sdif/SdifFRead.c, sdif/SdifFScan.c, sdif/SdifFWrite.c, sdif/SdifFile.c, sdif/SdifFrame.c, sdif/SdifFrameType.c, sdif/SdifHard_OS.h, sdif/SdifHighLevel.c, sdif/SdifMatrix.c:
+	protect all static buffers from overflow by using snprintf instead of sprintf
+	move big errorMess buffers into error branch to avoid too large stack allocation
+
+2005-10-20  Diemo Schwarz  <schwarz@m1213.ircam.fr>
+
+	* sdif/SdifFRead.c:
+	protect all static buffers from overflow by using (v)snprintf instead of (v)sprintf
+	move big buffers into error branch to avoid too large stack allocation
+	check for error before reading padding
+
+2005-07-25  roebel  <roebel@m1213.ircam.fr>
+
+	* .cvsignore, test/.cvsignore, include/.cvsignore, sdif/.cvsignore:
+	Removed user configuration files from cvs.
+
+2005-07-05  roebel  <roebel@m1213.ircam.fr>
+
+	* sdif/SdifFile.c: changed to be able to compile with mingw32
+
+2005-06-15  Diemo Schwarz  <schwarz@m1213.ircam.fr>
+
+	* sdif.ncb, sdif.suo, sdif.vcproj:
+	adapted windows project to 3.10 (removed files)
+
+2005-06-10  roebel  <roebel@m1213.ircam.fr>
+
+	* ChangeLog, configure.in: Updated for new version.
+
+	* sdif/SdifFGet.c:
+	Fixed SdifFGetOneNameValue for the case where the file is stored in
+	ASCII with windows or macintosh line feed conventions.
+
 2006-03-22  Axel Roebel  <Axel.Roebel@ircam.fr>
 Version 3.10.4
 
@@ -771,4 +921,4 @@ Version 3.3:
 	  Operating System.
 
 	
-$Id: ChangeLog,v 1.51 2006-03-22 22:48:46 roebel Exp $
+$Id: ChangeLog,v 1.52 2006-05-05 15:35:28 schwarz Exp $
