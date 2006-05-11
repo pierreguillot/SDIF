@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.29 2005-05-13 16:28:57 schwarz Exp $
+# $Id: Makefile.am,v 1.30 2006-05-11 16:39:13 schwarz Exp $
 #
 # ./Makefile.am		September 2000			Patrice Tisserand
 #
@@ -30,6 +30,9 @@
 
 
 # $Log: not supported by cvs2svn $
+# Revision 1.29  2005/05/13 16:28:57  schwarz
+# new host
+#
 # Revision 1.28  2004/08/26 17:13:19  schwarz
 # ReleaseNotes
 # some echo's don't know -e, is it needed?
@@ -222,15 +225,17 @@ EXTRA_PUBLISH     = README COPYING AUTHORS INSTALL ChangeLog ReleaseNotes # doc
 # this might work differently for other places
 # todo: configure PUBLISH_HOST
 PUBLISH_ROOT      = sdif
-PUBLISH_DIR       = $(PUBLISH_ROOT)/download
 PUBLISH_FILES_R   = doc/index.html
+PUBLISH_FILES_S	  = doc/standard/sdif-standard.html \
+		    doc/standard/sdif-standard.pdf
 PUBLISH_FILES_DL  = doc/download/index.html $(EXTRA_PUBLISH) \
 		    $(PUBLISH_DIST) $(PUBLISH_RPM) $(PUBLISH_SRPM) 
 PUBLISH_HOST      = recherche.ircam.fr
 PUBLISH_USER      = wwwas
 
 publish-ftp:	# (experimental)
-	echo put $(PUBLISH_FILES_DL) | ncftp -u$(PUBLISH_USER) -p$(PW) ftp://$(PUBLISH_HOST)/$(PUBLISH_DIR)
+	echo put $(PUBLISH_FILES_DL) | ncftp -u$(PUBLISH_USER) -p$(PW) ftp://$(PUBLISH_HOST)/$(PUBLISH_ROOT)/download
+	echo put $(PUBLISH_FILES_S)  | ncftp -u$(PUBLISH_USER) -p$(PW) ftp://$(PUBLISH_HOST)/$(PUBLISH_ROOT)/standard
 	echo put $(PUBLISH_FILES_R)  | ncftp -u$(PUBLISH_USER) -p$(PW) ftp://$(PUBLISH_HOST)/$(PUBLISH_ROOT)
 
 # tag the cvsrepository with the current version 
