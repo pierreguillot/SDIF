@@ -1,13 +1,13 @@
 
 # SDIF README
-# $Id: README,v 3.4 2002-10-30 18:18:51 schwarz Exp $
+# $Id: README,v 3.5 2006-05-11 16:39:35 schwarz Exp $
 
 (C) Copyright Ircam 1998-2003
 
 
 # Introduction
 
-SDIF stands for SoundDescription Interchange Format.
+SDIF stands for Sound Description Interchange Format.
 
 The general idea of SDIF is to store information related to signal
 processing and specifically of sound, in files, according to a common
