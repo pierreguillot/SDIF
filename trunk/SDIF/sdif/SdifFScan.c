@@ -1,4 +1,4 @@
-/* $Id: SdifFScan.c,v 3.21 2005-11-10 17:51:21 schwarz Exp $
+/* $Id: SdifFScan.c,v 3.22 2006-06-21 15:40:00 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -31,6 +31,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.21  2005/11/10 17:51:21  schwarz
+ * hoppla!
+ *
  * Revision 3.20  2005/10/21 14:32:29  schwarz
  * protect all static buffers from overflow by using snprintf instead of sprintf
  * move big errorMess buffers into error branch to avoid too large stack allocation
@@ -229,12 +232,6 @@ SdifFScanAllType(SdifFileT *SdifF)
 
 
 
-
-
-
-
-
-
 /* SdifFScanAllStreamID ne lit pas "1IDS" puisque l'on sera aiguillie sur cette fonction 
  * apres lecture de "1IDS"
  */
@@ -243,10 +240,6 @@ SdifFScanAllStreamID(SdifFileT *SdifF)
 {
   return SdifFGetAllStreamID(SdifF, 't');
 }
-
-
-
-
 
 
 
@@ -293,13 +286,6 @@ SdifFScanAllASCIIChunks(SdifFileT *SdifF)
   }
   return SizeR;
 }
-
-
-
-
-
-
-
 
 
 
