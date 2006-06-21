@@ -1,4 +1,4 @@
-/* $Id: sdif.h,v 1.54 2006-05-03 15:06:23 schwarz Exp $
+/* $Id: sdif.h,v 1.55 2006-06-21 15:40:00 schwarz Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -30,6 +30,10 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.54  2006/05/03 15:06:23  schwarz
+ * add SDIF_API (for windows dll)
+ * untabify
+ *
  * Revision 1.53  2006/05/03 14:33:29  schwarz
  * correct doc and remove function sketch (is now implemented)
  *
@@ -266,7 +270,7 @@
  * Revision 1.1.2.1  2000/08/21  13:07:41  tisseran
  * *** empty log message ***
  *
- * $Date: 2006-05-03 15:06:23 $
+ * $Date: 2006-06-21 15:40:00 $
  *
  */
 
@@ -281,7 +285,7 @@ extern "C" {
 #endif
 
 
-static const char _sdif_h_cvs_revision_ [] = "$Id: sdif.h,v 1.54 2006-05-03 15:06:23 schwarz Exp $";
+static const char _sdif_h_cvs_revision_ [] = "$Id: sdif.h,v 1.55 2006-06-21 15:40:00 schwarz Exp $";
 
 
 #include <stdio.h>
@@ -1820,15 +1824,15 @@ SdifUInt2       SdifExistUserFrameType (SdifHashTableT *FrameTypeHT);
 
 #define _SdifFloat8Error  0xffffffff
 #define _SdifNoTime       _Sdif_MIN_DOUBLE_     /* for header ASCII frames */
-#define _SdifNoStreamID   0xfffffffe            /* used for 1TYP */
-#define _SdifAllStreamID  0xffffffff            /* used for 1IDS */
+#define _SdifNoStreamID   0xfffffffe            /* -2 used for 1TYP */
+#define _SdifAllStreamID  0xffffffff            /* -1 used for 1IDS */
 #define _SdifUnknownUInt4 0xffffffff
 
 /* CNMAT restriction: only one frame type per stream.  
    Therefore we have to use unique IDs for all 'header' frames. */
-#define _SdifNVTStreamID  0xfffffffd            /* used for 1NVT */
-#define _SdifIDSStreamID  0xfffffffc            /* unused */
-#define _SdifTYPStreamID  0xfffffffb            /* unused */
+#define _SdifNVTStreamID  0xfffffffd            /* -3 used for 1NVT */
+#define _SdifIDSStreamID  0xfffffffc            /* -4 unused */
+#define _SdifTYPStreamID  0xfffffffb            /* -5 unused */
 
 
 #define _SdifFloatEps  FLT_EPSILON

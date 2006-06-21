@@ -1,5 +1,5 @@
 <html>
-<!-- $Id: sdif-standard.html,v 1.3 2006-05-05 10:09:46 schwarz Exp $
+<!-- $Id: sdif-standard.html,v 1.4 2006-06-21 15:40:00 schwarz Exp $
 
 SdifNormDoc.html		crée le 08/11/1998	Dominique Virolle 
 
@@ -23,7 +23,7 @@ Authors: <au>Dominique Virolle, Diemo Schwarz</au>
 
 <p><hr width="100%"></p>
 
-Document Revision: $Id: sdif-standard.html,v 1.3 2006-05-05 10:09:46 schwarz Exp $
+Document Revision: $Id: sdif-standard.html,v 1.4 2006-06-21 15:40:00 schwarz Exp $
 <!--#echo var="LAST_MODIFIED"-->
 
 <p>
@@ -31,6 +31,9 @@ Change Log:
 <font size=-3>
 <pre>
 $Log: not supported by cvs2svn $
+Revision 1.3  2006/05/05 10:09:46  schwarz
+removed remains of "TreeWay" examples specific to the Chant program
+
 Revision 1.2  2006/05/05 09:54:54  schwarz
 adapted to format version 3:
 ascii header frames contain text matrices, no more "special frames"
@@ -695,7 +698,7 @@ important, a frame type cannot contains more than one matrix of the same matrix 
 <table border=1 bordercolor="black" cellpadding=5>
 <tr><td>Author</td><td>author of the file</td></tr>
 <tr><td>SDIFTypesVersion</td><td>version of the format of the types</td></tr>
-<tr><td>NVTName</td><td>Name of the name value table</td></tr>
+<tr><td>TableName</td><td>Name of the name-value table</td></tr>
 </table>
 
   <a name="Predefined Types"><h2>Predefined Types</h2></a>
@@ -768,7 +771,6 @@ important, a frame type cannot contains more than one matrix of the same matrix 
 <tr><td>1NOI</td><td>Noise</td></tr>
 </table>
 
-
 <pre>
 <a name="1FOB">
 1FOB</a>
@@ -781,7 +783,6 @@ important, a frame type cannot contains more than one matrix of the same matrix 
  Formants         : parameters of the envelopes of fof.
  FormantsChannels : amplitude of output of the fofs on each channel.
 
-
 <a name="1REB">
 1REB</a>
   {
@@ -791,22 +792,13 @@ important, a frame type cannot contains more than one matrix of the same matrix 
  Filters: paramameters of the filters.
  Filterschannels: amplitude of output of the filters on each channel.
 
-
 <a name="1NOI">
 1NOI</a>
   {
     1DIS  NoiseInfo;
   }
 NoiseInfo : Noise parameters.
-
-
-</pre>
-
-
 }
-
-
-
 </body>
 <p></p>
 </html>
