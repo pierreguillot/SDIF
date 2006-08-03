@@ -1,4 +1,4 @@
-/* $Id: sdif.h,v 1.55 2006-06-21 15:40:00 schwarz Exp $
+/* $Id: sdif.h,v 1.56 2006-08-03 13:51:17 borghesi Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -30,6 +30,10 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.55  2006/06/21 15:40:00  schwarz
+ * LAST commit on this repository before moving to sourceforge
+ * (documentation stuff)
+ *
  * Revision 1.54  2006/05/03 15:06:23  schwarz
  * add SDIF_API (for windows dll)
  * untabify
@@ -270,7 +274,7 @@
  * Revision 1.1.2.1  2000/08/21  13:07:41  tisseran
  * *** empty log message ***
  *
- * $Date: 2006-06-21 15:40:00 $
+ * $Date: 2006-08-03 13:51:17 $
  *
  */
 
@@ -285,7 +289,7 @@ extern "C" {
 #endif
 
 
-static const char _sdif_h_cvs_revision_ [] = "$Id: sdif.h,v 1.55 2006-06-21 15:40:00 schwarz Exp $";
+static const char _sdif_h_cvs_revision_ [] = "$Id: sdif.h,v 1.56 2006-08-03 13:51:17 borghesi Exp $";
 
 
 #include <stdio.h>
@@ -2473,7 +2477,7 @@ void                SdifKillNameValuesL         (SdifNameValuesLT *NameValuesL);
   Attention, à l'ouverture de SdifF, il n'y a aucune table dans
   SdifF->NamefValues. Il faudra donc au moins en ajouter une pour
   pouvoir y mettre des NameValue.  */
-SdifNameValuesLT*   SdifNameValuesLNewTable     (SdifNameValuesLT *NameValuesL, SdifUInt4 StreamID);
+SDIF_API SdifNameValuesLT*   SdifNameValuesLNewTable     (SdifNameValuesLT *NameValuesL, SdifUInt4 StreamID);
 
 /*DOC: 
   Cette fonction permet de définir la nième NVT de la liste des
@@ -2512,7 +2516,7 @@ SdifNameValueT*     SdifNameValuesLPutCurrNVT   (SdifNameValuesLT *NameValuesL, 
   Add a Name-Value pair to the current Name-Value Table, while
   replacing reserved characters and spaces with underscores "_" 
   (using SdifStringToNV).  FYI: The strings are copied. */
-SdifNameValueT*     SdifNameValuesLPutCurrNVTTranslate(SdifNameValuesLT *NameValuesL, const char *Name,  const char *Value);
+SDIF_API SdifNameValueT*     SdifNameValuesLPutCurrNVTTranslate(SdifNameValuesLT *NameValuesL, const char *Name,  const char *Value);
 
 SDIF_API SdifUInt2           SdifNameValuesLIsNotEmpty   (SdifNameValuesLT *NameValuesL);
 
@@ -2870,7 +2874,7 @@ char          *SdifSelectGetNextString    (/*in*/  SdifListP list);
 int            SdifSelectGetFirstInt       (SdifListP l, int defval);
 double         SdifSelectGetFirstReal      (SdifListP l, double defval);
 char          *SdifSelectGetFirstString    (SdifListP l, char *defval);
-SdifSignature  SdifSelectGetFirstSignature (SdifListP l, SdifSignature defval);
+SDIF_API SdifSignature  SdifSelectGetFirstSignature (SdifListP l, SdifSignature defval);
 
 
 
