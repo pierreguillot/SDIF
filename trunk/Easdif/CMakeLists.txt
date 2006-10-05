@@ -228,7 +228,8 @@ SET(prefix ${CMAKE_INSTALL_PREFIX})
 SET(exec_prefix ${CMAKE_INSTALL_PREFIX})
 SET(libdir ${CMAKE_INSTALL_PREFIX}/lib)
 SET(includedir ${CMAKE_INSTALL_PREFIX}/include)
-CONFIGURE_FILE(Easdif${DEBUGEXT}.pc.in   Easdif${DEBUGEXT}.pc )
+SET(EASDIFBASENAME Easdif${DEBUGEXT})
+CONFIGURE_FILE(Easdif.pc.in   Easdif${DEBUGEXT}.pc )
 
 
 # Get PKGCONFIGDIR path relative too CMAKE_INSTALL_PREFIX
