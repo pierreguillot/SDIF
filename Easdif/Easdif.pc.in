@@ -6,5 +6,5 @@ includedir=@includedir@
 Name: Easdif
 Description: the Easy Interface for the Sound Description Interchange File Format library
 Version: @VERSION@
-Libs: -L${libdir} -lEasdif @PTHREAD_CFLAGS@ @PTHREAD_LIBS@
+Libs: -L${libdir} -l@EASDIFBASENAME@ @PTHREAD_CFLAGS@ @PTHREAD_LIBS@
 Cflags: -I${includedir} @PTHREAD_CFLAGS@
