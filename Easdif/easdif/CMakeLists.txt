@@ -1,6 +1,7 @@
 
-SET(noinst_HEADERS  easdifintro.hpp easdif_config.hpp)
-SET(HEADERS  easdif.h easdif_version.hpp sdifentity.hpp sdifexception.hpp sdif_frame.hpp sdifinit.hpp sdifmatrixdata.hpp sdifmatrixdatainterface.hpp sdif_matrix.hpp sdifnamevaluetable.hpp)
+# easdif_version.hpp is installed as well but in ../CMakeLists.txt
+SET(noinst_HEADERS easdif_version.hpp easdifintro.hpp easdif_config.hpp)
+SET(HEADERS  easdif.h  sdifentity.hpp sdifexception.hpp sdif_frame.hpp sdifinit.hpp sdifmatrixdata.hpp sdifmatrixdatainterface.hpp sdif_matrix.hpp sdifnamevaluetable.hpp)
 
 SET(SOURCES sdifentity.cpp  sdifexception.cpp sdif_matrix.cpp sdif_frame.cpp sdifnamevaluetable.cpp sdifinit.cpp)
 SET(SDIF_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/../SDIF/sdif/SdifCheck.c  
@@ -61,4 +62,4 @@ SET(BEFORE_RENAME "Easdif_static${DEBUGEXT}")
 SET(AFTER_RENAME "Easdif${DEBUGEXT}")
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/../cmModules/RenameInstalledStaticLib.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/RenameInstalledStaticLib.cmake @ONLY)
 INCLUDE(STORE_FILES_LIST)
-STORE_FILES_LIST(srcDOCFILES ${SOURCES} ${HEADERS} ${noinst_HEADERS})
+STORE_FILES_LIST(srcDOCFILES ${SOURCES} ${HEADERS}  ${noinst_HEADERS})
