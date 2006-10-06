@@ -32,9 +32,12 @@
  * 
  * 
  * 
- * $Id: sdifentity.cpp,v 1.35 2005-06-06 13:54:49 roebel Exp $ 
+ * $Id: sdifentity.cpp,v 1.36 2006-10-06 10:08:13 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.35  2005/06/06 13:54:49  roebel
+ * Changed mEof for files opened for writing to false.
+ *
  * Revision 1.34  2005/06/02 22:22:49  roebel
  * Fixed RestrictSelection functions for the case that alow level
  * selection exists and a high level selection has to be created.
@@ -357,8 +360,8 @@ void SDIFEntity::PrintFrameDir() const {
   std::list<SDIFLocation>::const_iterator  start=mFrameDirectory.begin();
   std::list<SDIFLocation>::const_iterator  end=mFrameDirectory.end();
   while(start != end){
-    std::cerr<< "Pos "<< start->LocPos()<< " sig " << SdifSignatureToString(start->LocSignature()) <<" time "<< start->LocTime() << "\n";
-    std::cerr <<" Matrices:";
+    std::cerr<< "Pos "<< start->LocPos()<< " sig " << SdifSignatureToString(start->LocSignature()) <<" time "<< start->LocTime() << " stream id "<< start->LocStreamID() << "\n";
+    std::cerr <<" Matrices: ";
 
     for(unsigned int ii=0;ii<start->LocNbMatrix();++ii)
       std::cerr <<" " <<  SdifSignatureToString(start->LocMSignature(ii));
@@ -653,7 +656,7 @@ int SDIFEntity::ReadNextSelectedFrame(SDIFFrame& frame, SdifFloat8 time)
     if(mCurrDirPos == mFrameDirectory.begin() 
        ||(mCurrDirPos == mFrameDirectory.end() 
           && !mFrameDirectory.empty() &&mFrameDirectory.back().LocTime() < time )
-       ||(mCurrDirPos->LocTime() < time )){
+       ||(mCurrDirPos != mFrameDirectory.end() && mCurrDirPos->LocTime() < time )){
       up =true;
     }
 
