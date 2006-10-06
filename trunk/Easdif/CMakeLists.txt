@@ -1,3 +1,26 @@
+# This file computes/replaces some default values:
+# CMAKE_BUILD_TYPE     : default value is "release" other selectable value is "debug"
+# CMAKE_INSTALL_PREFIX : default value is "/u/formes/share" 
+# PKGCONFIGDIR         : /u/formes/share/lib/$ENV{SYS}/pkgconfig 
+#
+# The default values can be disabled by means of setting USECMAKEDEFAULTS:BOOL=ON on the command line
+# if you choose this you are expected to provide reasonable values for all of the above
+# variables or you are happy with the cmake defaults.
+#
+# On macosx and if the SDKs are available it replaces gcc/c++ by an script that sets
+# an environment variable MACOSX_DEPLOYMENT_TARGET to 10.3 (for ppc architectures)
+# and 10.4 (for intel architectures) 
+#
+# For partly replacing the default values you may run cmake twice, first to create
+# a CMakeCache.txt with the above default values and second to override some of the default values
+# by means of command line arguments.
+#
+# default values can be reestablished if the related variable is set to the value "default"
+#
+#  OPTIONS provided
+#  USE_THREADS:BOOL=ON/OFF enable disable use of threads
+#  BUILD_MING:BOOL=ON/OFF  if cygwin add -mno-cygwin to compiler commands
+
 PROJECT(EaSDIF)
 
 MESSAGE("===============================================================")
@@ -8,9 +31,8 @@ SET(PACKAGE "\"Easdif\"")
 
 SET(EASDIF_VERSION_MAJ 1)
 SET(EASDIF_VERSION_MIN 2)
-SET(EASDIF_VERSION_RELEASE 7)
+SET(EASDIF_VERSION_RELEASE 8)
 SET(EASDIF_VERSION  "${EASDIF_VERSION_MAJ}.${EASDIF_VERSION_MIN}.${EASDIF_VERSION_RELEASE}")
-
 
 
 SET(CMAKE_VERBOSE_MAKEFILE false)
@@ -170,6 +192,18 @@ IF(APPLE)
   INCLUDE(REDIRECT_COMPILERS_TO_SYSROOT OPTIONAL)
 ENDIF(APPLE)
 
+
+IF (WIN32)
+  IF(${CMAKE_COMPILER_IS_GNUCXX})
+    OPTION(BUILD_MINGW "Build MingW Version" ON)
+    IF(BUILD_MINGW)
+      ADD_DEFINITIONS (-mno-cygwin )
+      SET(CMAKE_CXX_LINK_FLAGS "${CMAKE_CXX_LINK_FLAGS} -mno-cygwin")
+      SET(CMAKE_C_LINK_FLAGS "${CMAKE_C_LINK_FLAGS} -mno-cygwin")
+    ENDIF(BUILD_MINGW)
+  ENDIF(${CMAKE_COMPILER_IS_GNUCXX})
+ENDIF(WIN32)
+
 # set default values for build type and install prefix
 INCLUDE(SET_LOCAL_DEFAULTS OPTIONAL)
 
@@ -177,15 +211,15 @@ INCLUDE(GET_ARCH)
 
 IF   ( "$ENV{SYS}" STREQUAL "" )
   SET(ARCHDIR ${ARCH})
-  SET(INSTALL_LIB_DIR  /lib)
-  SET(INSTALL_BIN_DIR  /bin)
+  SET(INSTALL_LIB_DIR  lib)
+  SET(INSTALL_BIN_DIR  bin)
 ELSE ( "$ENV{SYS}" STREQUAL "" )
   SET(ARCHDIR $ENV{SYS})
-  SET(INSTALL_LIB_DIR /lib/$ENV{SYS})
-  SET(INSTALL_BIN_DIR /bin/$ENV{SYS})
+  SET(INSTALL_LIB_DIR lib/$ENV{SYS})
+  SET(INSTALL_BIN_DIR bin/$ENV{SYS})
 ENDIF( "$ENV{SYS}" STREQUAL "" )
 
-SET(INSTALL_INC_DIR /include)
+SET(INSTALL_INC_DIR include)
 
 
 # include special traget to remove cache, system and compiler info
@@ -206,22 +240,35 @@ INCLUDE_DIRECTORIES( ${CMAKE_CURRENT_BINARY_DIR}/sdifconfig ${CMAKE_CURRENT_BINA
 ADD_SUBDIRECTORY( easdif ) 
 ADD_SUBDIRECTORY( test ) 
 
-
-
 ########### install files ###############
-IF(PKGCONFIGDIR STREQUAL default )
-SET(PKGCONFIGDIR ${CMAKE_INSTALL_PREFIX}${INSTALL_LIB_DIR}/pkgconfig CACHE PATH "install path for pkgconfig support files" FORCE)
-ELSE(PKGCONFIGDIR STREQUAL default )
-SET(PKGCONFIGDIR ${CMAKE_INSTALL_PREFIX}${INSTALL_LIB_DIR}/pkgconfig CACHE PATH "install path for pkgconfig support files")
-ENDIF(PKGCONFIGDIR STREQUAL default )
+FILE(TO_CMAKE_PATH "${PKGCONFIGDIR}" tmp)
 
+IF(NOT "${tmp}" STREQUAL  "")
+  IF("${tmp}" MATCHES "/.*")
+    SET(PKGCONFIGPATH "${tmp}" CACHE PATH "install path for pkg config files" FORCE)
+    MESSAGE("pkgconfig  abs    : ${PKGCONFIGPATH}")
+  ELSE("${tmp}" MATCHES "/.*")
+    IF("${tmp}" STREQUAL "default" )
+      SET(PKGCONFIGPATH "${CMAKE_INSTALL_PREFIX}/${INSTALL_LIB_DIR}/pkgconfig" CACHE PATH "install path for pkg config files" FORCE)
+      MESSAGE("pkgconfig  rel   : ${CMAKE_INSTALL_PREFIX}/${INSTALL_LIB_DIR}/pkgconfig")
+    ELSE("${tmp}" STREQUAL "default" )
+      SET(PKGCONFIGPATH "${CMAKE_INSTALL_PREFIX}/${INSTALL_LIB_DIR}/${tmp}" CACHE PATH "install path for pkg config files" FORCE)
+    ENDIF("${tmp}" STREQUAL "default" )
+    MESSAGE("pkgconfig  rel   : ${PKGCONFIGPATH}")  
+  ENDIF("${tmp}" MATCHES "/.*")
+ENDIF(NOT "${tmp}" STREQUAL  "")
+
+# if install path is empty set to default
+IF("${PKGCONFIGPATH}" STREQUAL  "")
+  SET(PKGCONFIGPATH "${CMAKE_INSTALL_PREFIX}/${INSTALL_LIB_DIR}/pkgconfig" CACHE PATH "install path for pkg config files" FORCE)
+ENDIF("${PKGCONFIGPATH}" STREQUAL  "")
 
 MESSAGE("Installation in:")
 MESSAGE("Prefix         : ${CMAKE_INSTALL_PREFIX}")
-MESSAGE("bin            : ${CMAKE_INSTALL_PREFIX}${INSTALL_BIN_DIR}")
-MESSAGE("lib            : ${CMAKE_INSTALL_PREFIX}${INSTALL_LIB_DIR}")
-MESSAGE("includes       : ${CMAKE_INSTALL_PREFIX}${INSTALL_INC_DIR}")
-MESSAGE("pkgconfig      : ${PKGCONFIGDIR}")
+MESSAGE("bin            : ${CMAKE_INSTALL_PREFIX}/${INSTALL_BIN_DIR}")
+MESSAGE("lib            : ${CMAKE_INSTALL_PREFIX}/${INSTALL_LIB_DIR}")
+MESSAGE("includes       : ${CMAKE_INSTALL_PREFIX}/${INSTALL_INC_DIR}")
+MESSAGE("pkgconfig      : ${PKGCONFIGPATH}")
 
 
 SET(prefix ${CMAKE_INSTALL_PREFIX})
@@ -232,30 +279,33 @@ SET(EASDIFBASENAME Easdif${DEBUGEXT})
 CONFIGURE_FILE(Easdif.pc.in   Easdif${DEBUGEXT}.pc )
 
 
-# Get PKGCONFIGDIR path relative too CMAKE_INSTALL_PREFIX
-GET_FILENAME_COMPONENT(abspref  ${CMAKE_INSTALL_PREFIX} ABSOLUTE)
-GET_FILENAME_COMPONENT(abspkg  ${PKGCONFIGDIR} ABSOLUTE)
-STRING(REPLACE "${abspref}"  "" PKGCONFIG_REL ${abspkg} )
-#if we have complete path that is outside of CMAKE_INSTALL_PREFIX
-IF(PKGCONFIG_REL STREQUAL PKGCONFIGDIR)
-SET(remainingpath ${CMAKE_INSTALL_PREFIX})
-#MESSAGE("int remains ${remainingpath}")
-SET(torelative)
-WHILE(remainingpath)
-#MESSAGE("remains ${remainingpath}")
-#MESSAGE("last ${lastpath}")
-GET_FILENAME_COMPONENT(lastpath ${remainingpath} NAME)
-GET_FILENAME_COMPONENT(remainingpath ${remainingpath} PATH)
-IF(lastpath)
-SET(torelative "${torelative}../")
-ENDIF(lastpath)
-ENDWHILE(remainingpath)
-#MESSAGE("torelative: ${torelative}")
-SET( PKGCONFIG_REL /${torelative}${abspkg} )
-ENDIF(PKGCONFIG_REL STREQUAL PKGCONFIGDIR)
-#MESSAGE("pkgconfig      : ${PKGCONFIG_REL}")
-INSTALL_FILES(${PKGCONFIG_REL} FILES Easdif${DEBUGEXT}.pc)
+# # Get PKGCONFIGDIR path relative too CMAKE_INSTALL_PREFIX
+# GET_FILENAME_COMPONENT(abspref  ${CMAKE_INSTALL_PREFIX} ABSOLUTE)
+# STRING(REPLACE "${abspref}"  "" PKGCONFIG_REL ${abspkg} )
+# #if we have complete path that is outside of CMAKE_INSTALL_PREFIX
+# IF(PKGCONFIG_REL STREQUAL PKGCONFIGDIR)
+# SET(remainingpath ${CMAKE_INSTALL_PREFIX})
+# MESSAGE("int remains ${remainingpath}")
+# SET(torelative)
+# WHILE(remainingpath)
+# MESSAGE("remains ${remainingpath}")
+# MESSAGE("last ${lastpath}")
+# GET_FILENAME_COMPONENT(lastpath ${remainingpath} NAME)
+# GET_FILENAME_COMPONENT(remainingpath ${remainingpath} PATH)
+# IF(lastpath)
+# SET(torelative "${torelative}../")
+# ENDIF(lastpath)
+# ENDWHILE(remainingpath)
+# MESSAGE("torelative: ${torelative}")
+# SET( PKGCONFIG_REL /${torelative}${abspkg} )
+# ENDIF(PKGCONFIG_REL STREQUAL PKGCONFIGDIR)
+# MESSAGE("pkgconfig      : ${PKGCONFIG_REL}")
 
+INSTALL(FILES  ${CMAKE_CURRENT_BINARY_DIR}/Easdif${DEBUGEXT}.pc DESTINATION ${PKGCONFIGPATH} )
+
+# install sdif headers
+INSTALL(FILES  ${CMAKE_CURRENT_BINARY_DIR}/sdifconfig/sdif_version.h DESTINATION ${INSTALL_INC_DIR})
+INSTALL(FILES  ${CMAKE_CURRENT_SOURCE_DIR}/SDIF/include/sdif.h DESTINATION ${INSTALL_INC_DIR})
 
 
 GET_DIRECTORY_PROPERTY(easdifDOCFILES DIRECTORY easdif DEFINITION srcDOCFILES)
