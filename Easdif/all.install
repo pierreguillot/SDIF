@@ -16,8 +16,10 @@ rm -f CMakeCache.txt
 cmake -DPKGCONFIGDIR:PATH=default -DCMAKE_INSTALL_PREFIX:PATH=$PREFIX -DCMAKE_INSTALL_PREFIX_DEFAULT_INIT:BOOL=1 ..
 cmake -DPKGCONFIGDIR:PATH=default -DCMAKE_INSTALL_PREFIX:PATH=$PREFIX -DCMAKE_INSTALL_PREFIX_DEFAULT_INIT:BOOL=1 ..
 make set_release
+make clean
 make install
 make set_debug
+make clean
 make install
 
  
