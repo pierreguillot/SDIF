@@ -1,3 +1,13 @@
+2006-10-06  Axel Roebel  <Axel.Roebel@ircam.fr>
+Version 1.2.8
+
+	* easdif/sdifentity.cpp :
+        Completed output of PrintFrameDir.
+        Fixed test of direction in ReadNextSelectedFrame(SDIFFrame& frame, SdifFloat8 time)
+
+	* CMakeLists.txt, easdif/CMakeLists.txt :
+	install include files in correct place.
+	
 2006-04-22  Axel Roebel  <Axel.Roebel@ircam.fr>
 Version 1.2.7
 
@@ -912,4 +922,4 @@ Version 0.21
 	* ChangeLog: Added changelog to repository.
 
 
-$Id: ChangeLog,v 1.57 2006-04-22 11:49:28 roebel Exp $
+$Id: ChangeLog,v 1.58 2006-10-06 10:09:51 roebel Exp $
