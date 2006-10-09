@@ -50,11 +50,48 @@ SET(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmModules)
 
 # AM_CONFIG_HEADER(easdif/easdif_config.hpp)
 
+IF(APPLE)
+  INCLUDE(REDIRECT_COMPILERS_TO_SYSROOT OPTIONAL)
+ENDIF(APPLE)
+
+
+IF (WIN32)
+  IF(CYGWIN AND NOT MINGW)
+    OPTION(BUILD_MINGW "Build MingW Version" ON)
+    IF(BUILD_MINGW)
+      ADD_DEFINITIONS (-mno-cygwin )
+      #SET(CMAKE_CXX_LINK_FLAGS "${CMAKE_CXX_LINK_FLAGS} -mno-cygwin")
+      #SET(CMAKE_C_LINK_FLAGS "${CMAKE_C_LINK_FLAGS} -mno-cygwin")
+      LIST(APPEND CMAKE_REQUIRED_DEFINITIONS -mno-cygwin)
+      LIST(APPEND CMAKE_REQUIRED_FLAGS -mno-cygwin)
+      LINK_LIBRARIES(-mno-cygwin)
+    ENDIF(BUILD_MINGW)
+  ENDIF(CYGWIN AND NOT MINGW)
+ENDIF(WIN32)
+
+# set default values for build type and install prefix
+INCLUDE(SET_LOCAL_DEFAULTS OPTIONAL)
+
+INCLUDE(GET_ARCH)
+
+IF   ( "$ENV{SYS}" STREQUAL "" )
+  SET(ARCHDIR ${ARCH})
+  SET(INSTALL_LIB_DIR  lib)
+  SET(INSTALL_BIN_DIR  bin)
+ELSE ( "$ENV{SYS}" STREQUAL "" )
+  SET(ARCHDIR $ENV{SYS})
+  SET(INSTALL_LIB_DIR lib/$ENV{SYS})
+  SET(INSTALL_BIN_DIR bin/$ENV{SYS})
+ENDIF( "$ENV{SYS}" STREQUAL "" )
+
+SET(INSTALL_INC_DIR include)
+
 
 ############################################################
 # Checks for programs.
 
 FIND_PROGRAM(HAVEDOT NAMES dot )
+
 
 
 ## Configure SDIF
@@ -188,38 +225,6 @@ CONFIGURE_FILE(easdif/easdif_version.hpp.in ${CMAKE_CURRENT_BINARY_DIR}/easdif/e
 CONFIGURE_FILE(easdif/easdifintro.hpp.in ${CMAKE_CURRENT_BINARY_DIR}/easdif/easdifintro.hpp)
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile.in ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile)
 
-IF(APPLE)
-  INCLUDE(REDIRECT_COMPILERS_TO_SYSROOT OPTIONAL)
-ENDIF(APPLE)
-
-
-IF (WIN32)
-  IF(${CMAKE_COMPILER_IS_GNUCXX})
-    OPTION(BUILD_MINGW "Build MingW Version" ON)
-    IF(BUILD_MINGW)
-      ADD_DEFINITIONS (-mno-cygwin )
-      SET(CMAKE_CXX_LINK_FLAGS "${CMAKE_CXX_LINK_FLAGS} -mno-cygwin")
-      SET(CMAKE_C_LINK_FLAGS "${CMAKE_C_LINK_FLAGS} -mno-cygwin")
-    ENDIF(BUILD_MINGW)
-  ENDIF(${CMAKE_COMPILER_IS_GNUCXX})
-ENDIF(WIN32)
-
-# set default values for build type and install prefix
-INCLUDE(SET_LOCAL_DEFAULTS OPTIONAL)
-
-INCLUDE(GET_ARCH)
-
-IF   ( "$ENV{SYS}" STREQUAL "" )
-  SET(ARCHDIR ${ARCH})
-  SET(INSTALL_LIB_DIR  lib)
-  SET(INSTALL_BIN_DIR  bin)
-ELSE ( "$ENV{SYS}" STREQUAL "" )
-  SET(ARCHDIR $ENV{SYS})
-  SET(INSTALL_LIB_DIR lib/$ENV{SYS})
-  SET(INSTALL_BIN_DIR bin/$ENV{SYS})
-ENDIF( "$ENV{SYS}" STREQUAL "" )
-
-SET(INSTALL_INC_DIR include)
 
 
 # include special traget to remove cache, system and compiler info
