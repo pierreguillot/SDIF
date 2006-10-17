@@ -18,7 +18,7 @@ HAVE_STL        =
 endif
 modules		= eaSDIF SDIF
 incfiles	= ../easdif-common.i ../easdif-defines.i sdiftypemap-python.i
-easdifincbase	= entity frame matrix namevaluetable
+easdifincbase	= entity _frame _matrix namevaluetable
 easdifincfiles	= $(easdifincbase:%=@EASDIF_DEFINC_DIR@/easdif/sdif%.hpp)
 sdifincfiles	= @SDIF_DEFINC_DIR@/sdif.h
 
