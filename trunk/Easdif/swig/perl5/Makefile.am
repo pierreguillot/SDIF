@@ -1,6 +1,9 @@
-# $Id: Makefile.am,v 1.3 2005-07-25 13:29:24 roebel Exp $
+# $Id: Makefile.am,v 1.4 2006-10-17 10:36:45 roebel Exp $
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.3  2005/07/25 13:29:24  roebel
+# Adapted for new include file names - h->hpp.
+#
 # Revision 1.2  2003/08/07 16:19:29  roebel
 # Java include directories are determined automatically using m4 functions. perl include directory are determined with improved flexibility.
 #
@@ -55,14 +58,14 @@
 
 PERL5_INCLUDE	= /usr/lib/perl5/$(shell perl -MConfig -e 'print $$Config{version}')/$(shell perl -MConfig -e 'print $$Config{archname}')/CORE/
 INCL		= -I/usr/local/include -I$(PERL5_INCLUDE) \
-		  -I@SDIF_INC_DIR@ -I@SDIF_DEFINC_DIR@  -I@EASDIF_INC_DIR@ -I@EASDIF_DEFINC_DIR@
+		  -I@SDIF_INC_DIR@ -I@SDIF_DEFINC_DIR@  -I@EASDIF_INC_DIR@ -I@EASDIF_DEFINC_DIR@ -I$(top_srcdir)/../SDIF/include -I$(top_srcdir)/..
 EASDIF_LIB_PATH	= @EASDIF_LIB_PATH@
 dbflag = -g
 
 
 modules		= eaSDIF SDIF
 incfiles	= ../easdif-defines.i sdiftypemap-perl5.i
-easdifincbase	= entity frame matrix namevaluetable
+easdifincbase	= entity _frame _matrix namevaluetable
 easdifincfiles	= $(easdifincbase:%=@EASDIF_DEFINC_DIR@/easdif/sdif%.hpp)
 sdifincfiles	= @SDIF_DEFINC_DIR@/sdif.h
 
