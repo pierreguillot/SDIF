@@ -7,14 +7,14 @@ PYTHON_INCLUDE=`$(PYTHON) -c 'import distutils.sysconfig; print distutils.syscon
 JAVA_INCLUDE=@JAVA_INCLUDE@
 
 INCL		= -I/usr/local/include $(JAVA_INCLUDE) \
-		  -I@SDIF_INC_DIR@ -I@SDIF_DEFINC_DIR@  -I@EASDIF_INC_DIR@ -I@EASDIF_DEFINC_DIR@
+		  -I@SDIF_INC_DIR@ -I@SDIF_DEFINC_DIR@  -I@EASDIF_INC_DIR@ -I@EASDIF_DEFINC_DIR@ -I$(top_srcdir)/../SDIF/include -I$(top_srcdir)/..
 EASDIF_LIB_PATH	= @EASDIF_LIB_PATH@
 # dbflag = -g
 
 
 modules		= eaSDIF SDIF
 incfiles	= ../easdif-defines.i sdiftypemap-java.i
-easdifincbase	= entity frame matrix namevaluetable
+easdifincbase	= entity _frame _matrix namevaluetable
 easdifincfiles	= $(easdifincbase:%=@EASDIF_DEFINC_DIR@/easdif/sdif%.hpp)
 sdifincfiles	= @SDIF_DEFINC_DIR@/sdif.h
 

@@ -1,10 +1,13 @@
-// $Id: easdif-common.i.in,v 1.9 2006-10-17 10:10:41 roebel Exp $ -*-c-*-
+// $Id: easdif-common.i.in,v 1.10 2006-10-17 10:36:45 roebel Exp $ -*-c-*-
 //
 // easdif.i		16.04.2003		Diemo Schwarz
 //
 // Interface file for swig, defining the callable easdif functions
 //
 // $Log: not supported by cvs2svn $
+// Revision 1.9  2006/10/17 10:10:41  roebel
+// Updated for new names of include files sdif_frame.hpp and sdif_matrix.hpp.
+//
 // Revision 1.8  2005/07/25 13:29:25  roebel
 // Adapted for new include file names - h->hpp.
 //
@@ -77,7 +80,7 @@
 
 // include header to make wrapper compile
 %{
-#include "@EASDIF_DEFINC_DIR@/easdif/easdif.h"
+#include "easdif/easdif.h"
 
 using namespace Easdif;
 %}

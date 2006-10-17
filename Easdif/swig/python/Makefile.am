@@ -6,7 +6,7 @@ PYTHON=python
 PYTHON_INCLUDE=`$(PYTHON) -c 'import distutils.sysconfig; print distutils.sysconfig.get_python_inc()'`
 
 INCL		= -I/usr/local/include -I$(PYTHON_INCLUDE) \
-		  -I@SDIF_INC_DIR@ -I@SDIF_DEFINC_DIR@  -I@EASDIF_INC_DIR@ -I@EASDIF_DEFINC_DIR@
+		  -I@SDIF_INC_DIR@ -I@SDIF_DEFINC_DIR@  -I@EASDIF_INC_DIR@ -I@EASDIF_DEFINC_DIR@ -I$(top_srcdir)/../SDIF/include -I$(top_srcdir)/..
 
 EASDIF_LIB_PATH	= @EASDIF_LIB_PATH@
 # dbflag = -g
