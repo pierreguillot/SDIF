@@ -1,10 +1,13 @@
-// $Id: easdif-common.i.in,v 1.8 2005-07-25 13:29:25 roebel Exp $ -*-c-*-
+// $Id: easdif-common.i.in,v 1.9 2006-10-17 10:10:41 roebel Exp $ -*-c-*-
 //
 // easdif.i		16.04.2003		Diemo Schwarz
 //
 // Interface file for swig, defining the callable easdif functions
 //
 // $Log: not supported by cvs2svn $
+// Revision 1.8  2005/07/25 13:29:25  roebel
+// Adapted for new include file names - h->hpp.
+//
 // Revision 1.7  2003/08/07 16:19:29  roebel
 // Java include directories are determined automatically using m4 functions. perl include directory are determined with improved flexibility.
 //
@@ -113,9 +116,9 @@ using namespace Easdif;
 
 // read all class definitions
 #define SWIG_RENAME_EASDIF
-%include "@EASDIF_DEFINC_DIR@/easdif/sdifmatrix.hpp"
+%include "@EASDIF_DEFINC_DIR@/easdif/sdif_matrix.hpp"
 %include "@EASDIF_DEFINC_DIR@/easdif/sdifnamevaluetable.hpp"
-%include "@EASDIF_DEFINC_DIR@/easdif/sdifframe.hpp"
+%include "@EASDIF_DEFINC_DIR@/easdif/sdif_frame.hpp"
 %include "@EASDIF_DEFINC_DIR@/easdif/sdifexception.hpp"
 
 // exceptions to be used for entity only
