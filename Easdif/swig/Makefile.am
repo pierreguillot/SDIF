@@ -1,10 +1,13 @@
-# $Id: Makefile.am,v 1.6 2006-11-26 16:51:29 roebel Exp $
+# $Id: Makefile.am,v 1.7 2006-11-26 16:52:20 roebel Exp $
 #
 # eaSDIF - swig/Makefile.am
 #
 # Main makefile for swig wrapper generation for eaSDIF C++ library.
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.6  2006/11/26 16:51:29  roebel
+# Fixed configuration where java compiler is not available.
+#
 # Revision 1.5  2006/11/26 16:12:18  roebel
 # Disable java subdir if not java compiler is not available.
 #
@@ -20,7 +23,7 @@ else
 JAVADIR =
 endif
 
-SUBDIRS = python $(JAVA_DIR) perl5 
+SUBDIRS = python $(JAVADIR) perl5 
 DIST_SUBDIRS = python java perl5  m4
 
 
