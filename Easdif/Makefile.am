@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.20 2005-05-03 16:28:30 roebel Exp $
+# $Id: Makefile.am,v 1.21 2006-11-26 16:45:07 roebel Exp $
 #
 # ./Makefile.am		Feb. 2003     Axel Roebel
 #
@@ -30,6 +30,9 @@
 # 
 
 # $Log: not supported by cvs2svn $
+# Revision 1.20  2005/05/03 16:28:30  roebel
+# Fixed ircam doc install target.
+#
 # Revision 1.19  2005/05/03 16:24:03  roebel
 # Fixed documentation installation target.
 #
@@ -98,6 +101,7 @@
 #
 
 SUBDIRS =  SDIF easdif  test 
+DIST_SUBDIRS =  SDIF easdif  test swig
 EXTRA_DIST = Doxyfile.in README.MacOSX 
 
 pkgconfigdir = $(libdir)/pkgconfig
