@@ -1,3 +1,16 @@
+2006-11-26  axel roebel  <roebel@marl.hd.free.fr>
+Version 1.2.9
+
+	* swig :
+	first release with swig included, configuration partly reworked.
+	
+	* swig/Makefile.am :
+	Disable java subdir if not available
+
+	* easdif/sdif_matrix.hpp :
+	Add support for Get/Set/Row/Col with std::vector argument to facilitate
+	use in scritping lacguanges via swig.
+
 2006-10-06  Axel Roebel  <Axel.Roebel@ircam.fr>
 Version 1.2.8
 
@@ -922,4 +935,4 @@ Version 0.21
 	* ChangeLog: Added changelog to repository.
 
 
-$Id: ChangeLog,v 1.58 2006-10-06 10:09:51 roebel Exp $
+$Id: ChangeLog,v 1.59 2006-11-26 20:30:31 roebel Exp $
