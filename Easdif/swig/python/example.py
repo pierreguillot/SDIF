@@ -35,28 +35,35 @@ frameout.SetHeader("1TRC", 0, 0)
 count = {}
 
 rowind = 0
+if len(sys.argv) == 4 :
+    rowind = int(sys.argv[3])
+sys.stderr.write( " select row ... %d  \n" % (rowind))
+    
 bytes = 0
-row=eaSDIF.vectord();
-rowtrc=eaSDIF.vectord();
+row=eaSDIF.Vector();
+rowtrc=eaSDIF.Vector();
 
 while not file.eof():
     res  = file.ReadNextFrame(frame);
     fsig = frame.GetSignature();
-    # need typemap SdifSignature -> string 
-    #    count[fsig] += 1;
+    #need typemap SdifSignature -> string     
+    # count[fsig] += 1;
+
 
     # print frame to stdout
     #$frame->View();
 
     mat  = frame.GetMatrix(0)
-    mat.GetRow(row,rowind)
-    sys.stderr.write( "fsig %s row %d -> %f \n" % (fsig, rowind , row[0]))
-    rowtrc = [0,row[0],row[0],0 ]
-    matrixout.SetRow(rowtrc,0)
-    frameout.AddMatrix(matrixout)
-    frameout.SetTime(frame.GetTime())
-    bytes += frameout.Write(fileout)
-    frameout.Resize(0)
+    if mat.GetNbRows() > rowind :
+        mat.GetRow(row,rowind)
+        sys.stderr.write( "fsig %s row %d -> %f \n" % (fsig, rowind , row[0]))
+        # map value into frequency
+        rowtrc = [0,row[0],0.5,0 ]
+        matrixout.SetRow(rowtrc,0)
+        frameout.AddMatrix(matrixout)
+        frameout.SetTime(frame.GetTime())
+        bytes += frameout.Write(fileout)
+        frameout.Resize(0)
     
 
 # close file
