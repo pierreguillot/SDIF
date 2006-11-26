@@ -1,10 +1,13 @@
-// $Id: easdif-common.i.in,v 1.10 2006-10-17 10:36:45 roebel Exp $ -*-c-*-
+// $Id: easdif-common.i.in,v 1.11 2006-11-26 16:17:01 roebel Exp $ -*-c-*-
 //
 // easdif.i		16.04.2003		Diemo Schwarz
 //
 // Interface file for swig, defining the callable easdif functions
 //
 // $Log: not supported by cvs2svn $
+// Revision 1.10  2006/10/17 10:36:45  roebel
+// Fixed out of source directory configuration and compilation.
+//
 // Revision 1.9  2006/10/17 10:10:41  roebel
 // Updated for new names of include files sdif_frame.hpp and sdif_matrix.hpp.
 //
@@ -86,12 +89,10 @@ using namespace Easdif;
 %}
 
 
-#ifdef SWIG_HAVE_STLMAP
 %include stl.i
 
 // for name value table
 %template(stringmap) std::map<std::string,std::string>;
-#endif
 
 
 
@@ -123,6 +124,34 @@ using namespace Easdif;
 %include "@EASDIF_DEFINC_DIR@/easdif/sdifnamevaluetable.hpp"
 %include "@EASDIF_DEFINC_DIR@/easdif/sdif_frame.hpp"
 %include "@EASDIF_DEFINC_DIR@/easdif/sdifexception.hpp"
+
+%apply std::vector<double>& OUTPUT {std::vector<double>&out}
+
+// template instantiation 
+%extend Easdif::SDIFMatrix {
+/*   %template(GetRow) GetRow<double>; */
+/*   %template(GetCol) GetCol<double>; */
+/*   %template(SetRow) SetRow<double>; */
+/*   %template(SetCol) SetCol<double>; */
+  void GetRow(std::vector<double>&out,int ii) {
+    out.resize(GetNbCols());
+    GetRow(&out[0],ii);
+  }
+  void
+  GetCol(std::vector<double>&out,int ii) {
+    out.resize(GetNbRows());
+    GetCol(&out[0],ii);
+  }
+  void
+  SetRow(const std::vector<double>&v,int ii) {
+    SetRow(&v[0],ii);
+  }
+  void
+  SetCol(const std::vector<double>&v,int ii) {
+    SetCol(&v[0],ii);
+  }
+};
+
 
 // exceptions to be used for entity only
 %exception {
