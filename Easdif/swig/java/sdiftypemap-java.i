@@ -1,10 +1,14 @@
-// $Id: sdiftypemap-java.i,v 1.1 2003-05-05 16:05:32 tisseran Exp $ -*-c-*-
+// $Id: sdiftypemap-java.i,v 1.2 2006-11-26 16:16:27 roebel Exp $ -*-c-*-
 //
 // sdiftypemap.i		17.04.2003		Diemo Schwarz
 //
 // typemaps for SWIG to map SdifSignature to strings and back
 //
 // $Log: not supported by cvs2svn $
+// Revision 1.1  2003/05/05 16:05:32  tisseran
+// Added swig java binding.
+// TODO: change configure and java/Makefile.am for jni include path
+//
 // Revision 1.1  2003/04/18 17:45:23  schwarz
 // Renamed sdifsignature.i to sdiftypemap.i, because all types are in there.
 // Include typemap for std::string from SWIG library
@@ -38,7 +42,7 @@
 /*     } */
 /* } */
 
-%typemap(java, in) SdifSignature
+%typemap(in) SdifSignature
 {
     if ($input)
     {
@@ -49,7 +53,7 @@
     }
 }
 
-%typemap(java, out) SdifSignature
+%typemap(out) SdifSignature
 {
     $result = jenv->NewStringUTF(SdifSignatureToString($1));
 }
@@ -62,21 +66,21 @@
 // typemaps for SWIG to map SdifStringT to strings and back
 //
 
-// using an SdifStringT as input argument: convert from python string
-%typemap(python, in) SdifStringT *
-{
-    SdifStringT *str = SdifStringNew();		// memory leak...
-    SdifStringAppend(str, PyString_AsString($input));
-    $1 = str;
-}
+/* // using an SdifStringT as input argument: convert from python string */
+/* %typemap(in) SdifStringT * */
+/* { */
+/*     SdifStringT *str = SdifStringNew();		// memory leak... */
+/*     SdifStringAppend(str, PyString_AsString($input)); */
+/*     $1 = str; */
+/* } */
 
-// using an SdifStringT as return value: convert to python string
-%typemap(python, out) SdifStringT *
-{ 
-    $result = PyString_FromString($1->str);
-}
+/* // using an SdifStringT as return value: convert to python string */
+/* %typemap(out) SdifStringT * */
+/* {  */
+/*     $result = PyString_FromString($1->str); */
+/* } */
 
-%typemap (python, freearg) SdifStringT *
-{
-    SdifStringFree($1);
-}
+/* %typemap (python, freearg) SdifStringT * */
+/* { */
+/*     SdifStringFree($1); */
+/* } */

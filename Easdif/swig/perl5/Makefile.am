@@ -1,6 +1,9 @@
-# $Id: Makefile.am,v 1.4 2006-10-17 10:36:45 roebel Exp $
+# $Id: Makefile.am,v 1.5 2006-11-26 16:15:42 roebel Exp $
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.4  2006/10/17 10:36:45  roebel
+# Fixed out of source directory configuration and compilation.
+#
 # Revision 1.3  2005/07/25 13:29:24  roebel
 # Adapted for new include file names - h->hpp.
 #
@@ -89,7 +92,7 @@ SDIF_wrap.cxx:		sdif.i   $(sdifincfiles)   $(incfiles)
 %.so: 	%_wrap.o
 	g++ -shared $(EASDIF_LIB_PATH)/libEasdif.so $< -o $@
 
-test:	eaSDIF.pm eaSDIF.so SDIF.so
+test:	eaSDIF.pm eaSDIF.so #SDIF.so
 	LD_LIBRARY_PATH=$(EASDIF_LIB_PATH):$(LD_LIBRARY_PATH) \
 	perl -I. test.pl
 
