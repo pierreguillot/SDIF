@@ -42,13 +42,6 @@ HAVESWIG=no;
 fi
 
 
-dnl if not given the configure generated files are found in the
-dnl standard places.
-
-EASDIF_LIB_PATH="$top_builddir/easdif/.libs"
-EASDIF_INC_DIRS="$top_builddir,$top_srcdir"
-SDIF_INC_DIRS="$top_builddir/SDIF/include $top_srcdir/SDIF/include"
-
 
 AC_ARG_ENABLE(java,
 [  --enable-java          configure java interface],
