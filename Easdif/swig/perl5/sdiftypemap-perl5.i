@@ -1,10 +1,13 @@
-// $Id: sdiftypemap-perl5.i,v 1.2 2006-11-26 16:15:42 roebel Exp $ -*-c-*-
+// $Id: sdiftypemap-perl5.i,v 1.3 2006-11-26 20:35:41 roebel Exp $ -*-c-*-
 //
 // sdiftypemap.i		17.04.2003		Diemo Schwarz
 //
 // typemaps for SWIG to map SdifSignature to strings and back
 //
 // $Log: not supported by cvs2svn $
+// Revision 1.2  2006/11/26 16:15:42  roebel
+// Reorganized to work with swig 1.3.31!
+//
 // Revision 1.1  2003/04/30 11:31:35  tisseran
 // Updated file hierarchy to be conform with Diemo README.
 // Start autoconfiscation for perl module
@@ -21,9 +24,6 @@
 // Perl output mapping for SdifSignature works
 // (by comparison with _wrap_SdifSignatureToString).
 
-
-// include typemap for std::string from SWIG library
-%include std_string.i
 
 
 //

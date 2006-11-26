@@ -1,10 +1,14 @@
-// $Id: sdiftypemap-python.i,v 1.4 2006-11-26 16:39:30 roebel Exp $
+// $Id: sdiftypemap-python.i,v 1.5 2006-11-26 20:35:41 roebel Exp $ -*-c-*-
 //
 // sdiftypemap-python.i		30.04.2003		Patrice Tisserand
 //
 // typemaps for SWIG to map SdifSignature to strings and back
 //
 // $Log: not supported by cvs2svn $
+// Revision 1.4  2006/11/26 16:39:30  roebel
+// Renamed representation of std::vector<double> from eaSDIF.vectord
+// into eaSDIF.Vector
+//
 // Revision 1.3  2006/11/26 16:15:08  roebel
 // Improved platform support by means of using automake more consistently.
 // Added new example script.
@@ -18,16 +22,6 @@
 // Started autoconfiscation of swig
 //
 
-// include typemap for std::string from SWIG library
-%include std_string.i
-
-// include typemap for std::string from SWIG library
-%include std_vector.i
-
-// provide access to std::vector as eaSDIF.vector
-namespace std {
-   %template(Vector) vector<double>;
-};
 
 //
 // typemaps for SWIG to map SdifSignature to strings and back

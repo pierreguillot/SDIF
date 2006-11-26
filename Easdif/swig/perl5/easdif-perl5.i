@@ -1,12 +1,5 @@
-// generate perl module named 'eaSDIF'
-%module eaSDIF
-
-
-// module initialisation code
-%init 
-%{
-    EasdifInit();
-%}
+// include common init
+%include ../easdif-common-init.i
 
 // include typemap
 %include sdiftypemap-perl5.i

@@ -1,10 +1,15 @@
-// $Id: easdif-python.i,v 1.4 2006-11-26 16:15:08 roebel Exp $ -*-c-*-
+// $Id: easdif-python.i,v 1.5 2006-11-26 20:35:41 roebel Exp $ -*-c-*-
 //
 // easdif-python.i		30.04.2003		Patrice Tisserand
 //
 // Interface file for swig, defining the callable easdif functions
 //
 // $Log: not supported by cvs2svn $
+// Revision 1.4  2006/11/26 16:15:08  roebel
+// Improved platform support by means of using automake more consistently.
+// Added new example script.
+// Reorganized to work with swig 1.3.31!
+//
 // Revision 1.3  2003/06/05 11:15:09  roebel
 // Moved stlmap conditional to easdif-common.i.in
 //
@@ -15,17 +20,8 @@
 // Added swig python stuff
 // Started autoconfiscation of swig
 //
-
-// generate python module named 'eaSDIF'
-%module eaSDIF
-%include typemaps.i
-
-%init
-%{
-    EasdifInit();
-%}
-
-
+// include common init
+%include ../easdif-common-init.i
 
 // include typemaps
 %include sdiftypemap-python.i
