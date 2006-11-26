@@ -5,17 +5,17 @@ TOP_BUILDDIR=$(TOP_SRCDIR)
 
 JAVA_INCLUDE=#@JAVA_INCLUDE@
 
-INCL		= -I/usr/local/include $(JAVA_INCLUDE) \
-		  -I@SDIF_INC_DIR@ -I@SDIF_DEFINC_DIR@  -I@EASDIF_INC_DIR@ -I@EASDIF_DEFINC_DIR@ -I$(top_srcdir)/../SDIF/include -I$(top_srcdir)/..
-EASDIF_LIB_PATH	= @EASDIF_LIB_PATH@
+INCL		=  $(JAVA_INCLUDE) \
+		   -I$(top_builddir)/.. -I$(top_srcdir)/.. -I$(top_builddir)/../SDIF/include -I$(top_srcdir)/../SDIF/include 
+EASDIF_LIB_PATH	= $(top_builddir)/../easdif/.libs
 # dbflag = -g
 
 
 modules		= eaSDIF #SDIF
 incfiles	= ../easdif-defines.i sdiftypemap-java.i
 easdifincbase	= entity _frame _matrix namevaluetable
-easdifincfiles	= $(easdifincbase:%=@EASDIF_DEFINC_DIR@/easdif/sdif%.hpp)
-sdifincfiles	= @SDIF_DEFINC_DIR@/sdif.h
+easdifincfiles	= $(easdifincbase:%=$(top_srcdir)/../easdif/sdif%.hpp)
+sdifincfiles	= $(top_srcdir)/../SDIF/include/sdif.h
 
 define swig
 	swig -c++ -java -o $@ $<
