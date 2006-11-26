@@ -1,10 +1,13 @@
-// $Id: sdiftypemap-python.i,v 1.2 2003-05-18 21:10:55 roebel Exp $
+// $Id: sdiftypemap-python.i,v 1.3 2006-11-26 16:15:08 roebel Exp $
 //
 // sdiftypemap-python.i		30.04.2003		Patrice Tisserand
 //
 // typemaps for SWIG to map SdifSignature to strings and back
 //
 // $Log: not supported by cvs2svn $
+// Revision 1.2  2003/05/18 21:10:55  roebel
+// Added proper handling of int to typemap.
+//
 // Revision 1.1  2003/04/30 11:45:48  tisseran
 // Added swig python stuff
 // Started autoconfiscation of swig
@@ -13,11 +16,17 @@
 // include typemap for std::string from SWIG library
 %include std_string.i
 
+// include typemap for std::string from SWIG library
+%include std_vector.i
+
+namespace std {
+   %template(vectord) vector<double>;
+};
 
 //
 // typemaps for SWIG to map SdifSignature to strings and back
 //
-%typemap(python, in) SdifSignature 
+%typemap(in) SdifSignature 
 {
     if (PyString_Check($input))
     {
@@ -34,7 +43,7 @@
     }
 }
 
-%typemap(python, out) SdifSignature 
+%typemap(out) SdifSignature 
 {
     $result = PyString_FromString(SdifSignatureToString($1));
 }
@@ -45,7 +54,7 @@
 //
 
 // using an SdifStringT as input argument: convert from python string
-%typemap(python, in) SdifStringT *
+%typemap(in) SdifStringT *
 {
     SdifStringT *str = SdifStringNew();		// memory leak...
     SdifStringAppend(str, PyString_AsString($input));
@@ -53,12 +62,12 @@
 }
 
 // using an SdifStringT as return value: convert to python string
-%typemap(python, out) SdifStringT *
+%typemap(out) SdifStringT *
 { 
     $result = PyString_FromString($1->str);
 }
 
-%typemap (python, freearg) SdifStringT *
+%typemap (freearg) SdifStringT *
 {
     SdifStringFree($1);
 }
