@@ -1,10 +1,14 @@
-// $Id: sdiftypemap-perl5.i,v 1.1 2003-04-30 11:31:35 tisseran Exp $ -*-c-*-
+// $Id: sdiftypemap-perl5.i,v 1.2 2006-11-26 16:15:42 roebel Exp $ -*-c-*-
 //
 // sdiftypemap.i		17.04.2003		Diemo Schwarz
 //
 // typemaps for SWIG to map SdifSignature to strings and back
 //
 // $Log: not supported by cvs2svn $
+// Revision 1.1  2003/04/30 11:31:35  tisseran
+// Updated file hierarchy to be conform with Diemo README.
+// Start autoconfiscation for perl module
+//
 // Revision 1.1  2003/04/18 17:45:23  schwarz
 // Renamed sdifsignature.i to sdiftypemap.i, because all types are in there.
 // Include typemap for std::string from SWIG library
@@ -26,14 +30,14 @@
 // typemaps for SWIG to map SdifSignature to strings and back
 //
 
-%typemap(perl5, in) SdifSignature 
+%typemap(in) SdifSignature 
 {
     // I have no idea what PL_na is, 
     // but it works like in _wrap_SdifStringToSignature
     $1 = SdifStringToSignature(SvPV($input, PL_na));
 }
 
-%typemap(perl5, out) SdifSignature 
+%typemap(out) SdifSignature 
 {
     $result = sv_newmortal();
     sv_setpvn($result, SdifSignatureToString($1), 4);
@@ -48,7 +52,7 @@
 //
 
 // using an SdifStringT as input argument: convert from perl string
-%typemap(perl5, in) SdifStringT *
+%typemap(in) SdifStringT *
 {
     SdifStringT *str = SdifStringNew();		// memory leak...
     SdifStringAppend(str, SvPV($input, PL_na));
@@ -56,7 +60,7 @@
 }
 
 // using an SdifStringT as return value: convert to perl string
-%typemap(perl5, out) SdifStringT *
+%typemap(out) SdifStringT *
 { 
     SdifStringT *str = $1;
     $result = sv_newmortal();
@@ -66,7 +70,7 @@
     argvi++;
 }
 
-%typemap (perl5, freearg) SdifStringT *
+%typemap (freearg) SdifStringT *
 {
     SdifStringFree($1);
 }
