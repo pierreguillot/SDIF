@@ -1,6 +1,9 @@
-# $Id: Makefile.am,v 1.5 2006-11-26 16:15:42 roebel Exp $
+# $Id: Makefile.am,v 1.6 2006-11-26 20:35:08 roebel Exp $
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.5  2006/11/26 16:15:42  roebel
+# Reorganized to work with swig 1.3.31!
+#
 # Revision 1.4  2006/10/17 10:36:45  roebel
 # Fixed out of source directory configuration and compilation.
 #
@@ -60,17 +63,16 @@
 
 
 PERL5_INCLUDE	= /usr/lib/perl5/$(shell perl -MConfig -e 'print $$Config{version}')/$(shell perl -MConfig -e 'print $$Config{archname}')/CORE/
-INCL		= -I/usr/local/include -I$(PERL5_INCLUDE) \
-		  -I@SDIF_INC_DIR@ -I@SDIF_DEFINC_DIR@  -I@EASDIF_INC_DIR@ -I@EASDIF_DEFINC_DIR@ -I$(top_srcdir)/../SDIF/include -I$(top_srcdir)/..
-EASDIF_LIB_PATH	= @EASDIF_LIB_PATH@
+INCL		= -I$(PERL5_INCLUDE) -I$(top_builddir)/.. -I$(top_srcdir)/.. -I$(top_builddir)/../SDIF/include -I$(top_srcdir)/../SDIF/include 
+EASDIF_LIB_PATH	= $(top_builddir)/../easdif/.libs
 dbflag = -g
 
 
 modules		= eaSDIF SDIF
 incfiles	= ../easdif-defines.i sdiftypemap-perl5.i
 easdifincbase	= entity _frame _matrix namevaluetable
-easdifincfiles	= $(easdifincbase:%=@EASDIF_DEFINC_DIR@/easdif/sdif%.hpp)
-sdifincfiles	= @SDIF_DEFINC_DIR@/sdif.h
+easdifincfiles	= $(easdifincbase:%=$(top_srcdir)/../easdif/sdif%.hpp)
+sdifincfiles	= $(top_srcdir)/../SDIF/include/sdif.h
 
 define swig
 	swig -c++ -perl5 -shadow -o $@ $<

@@ -1,20 +1,22 @@
-// $Id: easdif-java.i,v 1.2 2005-07-25 13:29:24 roebel Exp $ -*-c-*-
+// $Id: easdif-java.i,v 1.3 2006-11-26 20:34:44 roebel Exp $ -*-c-*-
 //
 // easdif-java.i		05.05.2003		Patrice Tisserand
 //
 // Interface file for swig, defining the callable easdif functions
 //
 // $Log: not supported by cvs2svn $
+// Revision 1.2  2005/07/25 13:29:24  roebel
+// Adapted for new include file names - h->hpp.
+//
 // Revision 1.1  2003/05/05 16:05:32  tisseran
 // Added swig java binding.
 // TODO: change configure and java/Makefile.am for jni include path
 //
 //
 
-// generate python module named 'eaSDIF'
+
+// generate java module named 'eaSDIF'
 %module eaSDIF
-
-
 
 
 // swig + java doesn't like a lot method overloaded only by const
