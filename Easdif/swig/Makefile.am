@@ -1,10 +1,13 @@
-# $Id: Makefile.am,v 1.8 2006-11-26 20:38:30 roebel Exp $
+# $Id: Makefile.am,v 1.9 2006-11-26 22:49:24 roebel Exp $
 #
 # eaSDIF - swig/Makefile.am
 #
 # Main makefile for swig wrapper generation for eaSDIF C++ library.
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.8  2006/11/26 20:38:30  roebel
+# Reordered sub directories according to stability and cross platform support.
+#
 # Revision 1.7  2006/11/26 16:52:20  roebel
 # fixed typo in variable name.
 #
@@ -18,6 +21,8 @@
 # Added targets to make just one language.
 # Moved java to back because it doesn't work at the moment.
 #
+
+ACLOCAL_AMFLAGS = -I m4
 
 
 if MAKE_JAVA
