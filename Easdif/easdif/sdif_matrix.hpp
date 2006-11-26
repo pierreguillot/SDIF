@@ -33,9 +33,12 @@
  * 
  * 
  * 
- * $Id: sdif_matrix.hpp,v 1.2 2006-04-22 11:48:09 roebel Exp $ 
+ * $Id: sdif_matrix.hpp,v 1.3 2006-11-26 16:38:06 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  2006/04/22 11:48:09  roebel
+ * Fixed left over problems from last renameing operation.
+ *
  * Revision 1.1  2006/04/22 08:57:24  roebel
  * Renamed some files to prevent name clash of object files on macosx
  *
@@ -580,6 +583,20 @@ public:
 
   /**
    * \ingroup valmat
+   * getting an entire row
+   * 
+   * @param out std::vector will be resized to hold the row
+   * @param irow row index
+   * 
+   */
+  void
+  GetRow(std::vector<double> &out,int irow) const throw (SDIFArrayPosition) {
+    out.resize(GetNbCols());
+    mInter->GetRow(&(out[0]),irow);
+  }
+
+  /**
+   * \ingroup valmat
    * getting an entire column
    * 
    * @param out  pointer to memory holding at least GetNbRows() elements
@@ -592,6 +609,19 @@ public:
     return;
   }
 
+  /**
+   * \ingroup valmat
+   * getting an entire column
+   * 
+   * @param out std::vector will be resized to hold the column
+   * @param icol column index
+   * 
+   */
+  void
+  GetCol(std::vector<double> &out,int icol) const throw (SDIFArrayPosition) {
+    out.resize(GetNbRows());
+    mInter->GetCol(&(out[0]),icol);
+  }
 
 /*************************************************************************
  * Set the values of the matrix  
@@ -665,6 +695,20 @@ public:
   }
 
   /**
+   * \ingroup valmat
+   * setting an entire row
+   * 
+   * @param in std::vector containing row
+   * @param irow row index
+   * 
+   */
+  void
+  SetRow(const std::vector<double> &in,int irow) const throw (SDIFArrayPosition) {
+    mInter->SetRow(&(in[0]),irow);
+    return;
+  }
+
+  /**
    * \ingroup setmat
    * setting an entire column
    * 
@@ -677,6 +721,20 @@ public:
     mInter->SetCol(out,icol);
     return;
   }
+  
+  /**
+   * \ingroup valmat
+   * setting an entire column
+   * 
+   * @param in std::vector holding the column
+   * @param icol col index
+   * 
+   */
+  void
+  SetCol(const std::vector<double> &in,int icol) const throw (SDIFArrayPosition) {
+    mInter->SetCol(&(in[0]),icol);
+  }
+
 
 };
 
