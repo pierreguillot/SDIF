@@ -41,38 +41,27 @@ else
 HAVESWIG=no;
 fi
 
-EASDIF_DEFINC_DIR="../.."
-AC_SUBST(EASDIF_DEFINC_DIR)
-SDIF_DEFINC_DIR="../../SDIF/include"
-AC_SUBST(SDIF_DEFINC_DIR)
-
-AC_SUBST(EASDIF_INC_DIR)
-AC_SUBST(EASDIF_LIB_PATH)
-AC_SUBST(SDIF_INC_DIR)
 
 dnl if not given the configure generated files are found in the
 dnl standard places.
 
-AC_ARG_WITH(compiledir,
-[  --with-compiledir=dir          Easdif library has been configured and compiled in dir],
-[echo FEATURE with-compiledir... $withval; 
-abspath=`cd $withval && echo $PWD` 
-EASDIF_INC_DIR="$abspath"
-EASDIF_LIB_PATH="$abspath/easdif/.libs"
-SDIF_INC_DIR="$abspath/SDIF/include"
-],
-[
-EASDIF_INC_DIR="../.."
-EASDIF_LIB_PATH="../../easdif/.libs"
-SDIF_INC_DIR="../../SDIF/include"
-])
+EASDIF_LIB_PATH="$top_builddir/easdif/.libs"
+EASDIF_INC_DIRS="$top_builddir,$top_srcdir"
+SDIF_INC_DIRS="$top_builddir/SDIF/include $top_srcdir/SDIF/include"
 
 
+AC_ARG_ENABLE(java,
+[  --enable-java          configure java interface],
+[echo FEATURE enable-java... $enableval; 
+if test "$enableval" = "yes"; then
 dnl get java compiler
 AC_PROG_JAVAC
 
 dnl get java include directories
-#AC_JNI_INCLUDE_DIR
+dnl AC_JNI_INCLUDE_DIR
+fi
+],
+)
 
 #for JNI_INCLUDE_DIR in $JNI_INCLUDE_DIRS
 #do
