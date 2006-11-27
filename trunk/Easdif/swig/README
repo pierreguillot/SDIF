@@ -1,4 +1,4 @@
-$Id: README,v 1.5 2006-11-26 20:37:45 roebel Exp $ Diemo Schwarz
+$Id: README,v 1.6 2006-11-27 11:01:30 roebel Exp $ Diemo Schwarz
 
 README for SWIG wrapper generation for eaSDIF
 
@@ -13,7 +13,7 @@ the eaSDIF and SDIF library functions from these languages.
 
 The main  module that can be generated is
 - eaSDIF  it contains  high-level classes and is normally
-          sufficent for all programming needs.
+          sufficient for all programming needs.
 
 - SDIF	  with all the C-definitions of the low-level SDIF library (huge, currently commented out!)
 
@@ -30,20 +30,20 @@ currently three different languages (python perl, java) are supported,
 by means of copy pasting  the different configuration files in the sub
 directories new  bindings for other  languages are easy to  setup. the
 configuration has  been tested with  swig 1.3.31, all  earlier version
-are not supported.
+are not supported and will most likely not work.
 
 Note that  the python module is completely  based on automake/autoconf
-configuration. It should  run on linux, mac os  x. The perl5 directory
+configuration. It should  run on linux, mac OS  x. The perl5 directory
 is less configurable  and it will work only on  linux. The java module
 uses the  same type of  configuration and, therefore, it  is currently
-limted too linux as well.
+limited too linux as well.
 
 To configure run:
 
-#./autogen.sh
+./autogen.sh (cvs version only!)
 ./configure
 
-then choose the sub directroy and run
+then choose the sub directory and run
 
 cd python
 make
@@ -71,7 +71,7 @@ proper paths set, via configure:
 configure.in		configuration for easdif-swig
 Makefile.am
 easdif-common.i.in	common definitions for the eaSDIF module
-easdif-common-init.i	common initilizations for the eaSDIF module
+easdif-common-init.i	common initializations for the eaSDIF module
 sdif-common.i.in	common definitions for the SDIF module
 easdif-defines.i	the basic SDIF stuff needed for eaSDIF
 
@@ -93,7 +93,7 @@ sdiftypemap-<lang>.i	typemaps for both modules
 4.3 The Module Definition File
 
 Each <lang>/easdif-<lang>.i has to include ../easdif-common.i and has
-to define the initialisation of the module, and the class renaming:
+to define the initialization of the module, and the class renaming:
 
 	#define SWIG_RENAME_EASDIF
 
