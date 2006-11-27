@@ -12,7 +12,7 @@ public class main {
 	Frame frame = new Frame();
 	System.out.println("created new SDIFFrame");
 	res = file.OpenRead("../../test/lic.sdif");
-	System.out.println("open (mode " + eaSDIF.eReadFile + "..." + res);
+	System.out.println("open (mode " + SdifFileModeET.eReadFile + ")..." + res);
 	while (!file.eof())
 	    {
 		int ress = file.ReadNextFrame(frame);
