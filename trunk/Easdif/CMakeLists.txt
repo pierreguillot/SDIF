@@ -23,16 +23,16 @@
 
 PROJECT(EaSDIF)
 
-MESSAGE("===============================================================")
-MESSAGE("== Configuring Easdif")
-MESSAGE("===============================================================")
-
-SET(PACKAGE "\"Easdif\"")
-
 SET(EASDIF_VERSION_MAJ 1)
 SET(EASDIF_VERSION_MIN 2)
 SET(EASDIF_VERSION_RELEASE 9)
 SET(EASDIF_VERSION  "${EASDIF_VERSION_MAJ}.${EASDIF_VERSION_MIN}.${EASDIF_VERSION_RELEASE}")
+
+MESSAGE("===============================================================")
+MESSAGE("== Configuring Easdif   ${EASDIF_VERSION} ")
+MESSAGE("===============================================================")
+
+SET(PACKAGE "\"Easdif\"")
 
 
 SET(CMAKE_VERBOSE_MAKEFILE false)
@@ -245,10 +245,9 @@ ADD_DEPENDENCIES(lib Easdif${DEBUGEXT})
 
 INCLUDE_DIRECTORIES( ${CMAKE_CURRENT_BINARY_DIR}/sdifconfig ${CMAKE_CURRENT_BINARY_DIR}/config ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/SDIF/include ${CMAKE_CURRENT_SOURCE_DIR}  )
 
-
 ADD_SUBDIRECTORY( easdif ) 
 ADD_SUBDIRECTORY( test ) 
-OPTION(SWIGSUPPORT OFF)
+OPTION(DOSWIG OFF)
 IF(DOSWIG)
 ADD_SUBDIRECTORY( swig EXCLUDE_FROM_ALL )
 ENDIF(DOSWIG)
