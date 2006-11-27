@@ -1,15 +1,4 @@
-# This example shows how to use python
-# Currently these languages have been tested:
-#  perl tcl ruby php4 pike
-
-FIND_PROGRAM(SWIG_EXECUTABLE swig)
-SET(SWIG ${SWIG_EXCUTABLE})
-EXECUTE_PROCESS(COMMAND ${SWIG} -version OUTPUT_VARIABLE SWIGVERSIONOUT)
-EXECUTE_PROCESS(COMMAND ${SWIG} -swiglib OUTPUT_VARIABLE SWIG_DIR_TMP)
-SET(SWIG_DIR ${SWIG_DIR_TMP} CACHE PATH "swig library path")
-
-STRING(REGEX REPLACE ".*SWIG Version \([0-9.]*\).*"  "\\1" SWIGVERSION ${SWIGVERSIONOUT} )
-MESSAGE("SWIG Version ${SWIGVERSION}")
+# Swig configuration
 
 FIND_PACKAGE(SWIG REQUIRED)
 INCLUDE(${SWIG_USE_FILE})
@@ -26,11 +15,12 @@ CONFIGURE_FILE(easdif-common.i.in ${CMAKE_CURRENT_BINARY_DIR}/easdif-common.i)
 CONFIGURE_FILE(sdif-common.i.in ${CMAKE_CURRENT_BINARY_DIR}/sdif-common.i)
 
 SET(SWIG_COMMON_EASDIF_SRC ${CMAKE_CURRENT_SOURCE_DIR}/easdif-common-init.i ${CMAKE_CURRENT_BINARY_DIR}/easdif-common.i ${CMAKE_CURRENT_SOURCE_DIR}/easdif-defines.i)
-
+MESSAGE(STATUS "python")
 ADD_SUBDIRECTORY(python)
+MESSAGE(STATUS "perl5")
 ADD_SUBDIRECTORY(perl5)
+MESSAGE(STATUS "java")
 ADD_SUBDIRECTORY(java)
 
 
-SET(CMAKE_SWIG_FLAGS "")
 
