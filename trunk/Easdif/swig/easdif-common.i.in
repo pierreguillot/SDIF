@@ -1,10 +1,13 @@
-// $Id: easdif-common.i.in,v 1.13 2006-11-26 22:53:39 roebel Exp $ -*-c-*-
+// $Id: easdif-common.i.in,v 1.14 2006-11-27 16:49:45 roebel Exp $ -*-c-*-
 //
 // easdif.i		16.04.2003		Diemo Schwarz
 //
 // Interface file for swig, defining the callable easdif functions
 //
 // $Log: not supported by cvs2svn $
+// Revision 1.13  2006/11/26 22:53:39  roebel
+// Reput easdif source  directory.
+//
 // Revision 1.12  2006/11/26 16:35:40  roebel
 // Removed unnecessary extension.
 //
@@ -124,6 +127,15 @@ using namespace Easdif;
 // functions (here const qualifier)
 %ignore Easdif::SDIFFrame::GetMatrixWithSig(const SdifSignature) const;
 
+// if this is given then the
+// Easdif::SDIFMatrix::GetRow(std::vector,int) and
+// Easdif::SDIFMatrix::GetCol(std::vector,int) functions
+// take only one argument and provide the standard vector as
+// result!
+// to improve consistency with c++ this is not given here.
+//
+// %apply std::vector<double>& OUTPUT {std::vector<double>&out}
+//
 
 // read all class definitions
 #define SWIG_RENAME_EASDIF
@@ -131,10 +143,6 @@ using namespace Easdif;
 %include "@EASDIF_INC_DIR@/easdif/sdifnamevaluetable.hpp"
 %include "@EASDIF_INC_DIR@/easdif/sdif_frame.hpp"
 %include "@EASDIF_INC_DIR@/easdif/sdifexception.hpp"
-
-%apply std::vector<double>& OUTPUT {std::vector<double>&out}
-
-
 
 // exceptions to be used for entity only
 %exception {
