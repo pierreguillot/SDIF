@@ -35,7 +35,7 @@ IF(SWIG_EXECUTABLE)
         SET(SWIG_VERSION ${SWIG_version_tmp_2} CACHE STRING "Swig version")
       ENDIF(result)
     ENDIF(SWIG_DIR)    
-  ENDIF(NOT ${result} EQUAL 0)
+  ENDIF(result)
 ENDIF(SWIG_EXECUTABLE)
 
 IF(NOT SWIG_FOUND)
