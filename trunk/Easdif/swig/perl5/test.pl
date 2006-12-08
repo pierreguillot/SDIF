@@ -1,8 +1,11 @@
 #!/usr/bin/perl
 
-# $Id: test.pl,v 1.2 2003-05-15 11:38:22 schwarz Exp $
+# $Id: test.pl,v 1.3 2006-12-08 18:03:58 roebel Exp $
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.2  2003/05/15 11:38:22  schwarz
+# Changed method names, print time.
+#
 # Revision 1.1  2003/05/07 15:14:36  tisseran
 # Readded missing test.pl
 #
@@ -52,37 +55,55 @@ print "created new SDIFEntity $file\n";
 $frame = new eaSDIF::Frame;
 print "created new SDIFFrame $frame\n";
 
-$filename = "../../test/lic.sdif";
+$filename = "../../test/mrk.sdif";
 $res = $file->OpenRead($filename)  ||  die;
 print "open ('$filename', mode $eaSDIF::eReadFile)...$res\n";
+
+$set = new eaSDIF::Selection;
+$set->push(eaSDIF::CreateSignature('1','T','R','C'));
+print "size ",$set->size(),"\n";
+print "set ",$set->get(0),"\n";
+
+$file->RestrictMatrixSelection($set);
 
 %count = ();
 
 while (!$file->eof())
 {
-    $res  = $file->ReadNextFrame($frame);
-    $fsig = $frame->GetSignature();
-    $count{$fsig}++;
-
-    # print frame to stdout
-    #$frame->Print();
-
-    $mat  = $frame->GetMatrix(0);
-#    $nomat= $frame->GetMatrix(1);	# test exception
-    $msig = $mat->GetSignature();
-    $nrow = $mat->GetNbRows();
-    $ncol = $mat->GetNbCols();
-    $val  = $mat->GetDouble(0, 0);
-
-    $sig  = "$fsig/$msig";
-    $valfsig{$sig}  = $fsig;
-    $valmsig{$sig}  = $msig;
-    $valcount{$sig}++;
-    $valsum{$sig}  += $val;
-    $valssum{$sig} += $val * $val;
-
-    printf "frame %s(%.3f) matrix %s(%d, %d) = %g\n", 
-           $fsig, $frame->GetTime(), $msig, $nrow, $ncol, $val;
+    $res  = $file->ReadNextSelectedFrame($frame);
+    if ($res) {
+        $fsig = $frame->GetSignature();
+        $count{$fsig}++;
+        
+        # print frame to stdout
+        #$frame->Print();
+        if($frame->GetNbMatrix() > 0) {
+            $mat  = $frame->GetMatrix(0);
+            #    $nomat= $frame->GetMatrix(1);	# test exception
+            $msig = $mat->GetSignature();
+            $nrow = $mat->GetNbRows();
+            $ncol = $mat->GetNbCols();
+            if( $nrow > 0 && $ncol >0 ){
+                $val  = $mat->GetDouble(0, 0);
+            }
+            else {
+                $val  = 0;
+            }
+        
+            $sig  = "$fsig/$msig";
+            $valfsig{$sig}  = $fsig;
+            $valmsig{$sig}  = $msig;
+            $valcount{$sig}++;
+            $valsum{$sig}  += $val;
+            $valssum{$sig} += $val * $val;
+            
+            printf "frame %s(%.3f) matrix %s(%d, %d) = %g\n", 
+                 $fsig, $frame->GetTime(), $msig, $nrow, $ncol, $val;
+        }
+        else {
+            printf "matrix skipped \n";
+        }
+    }
 }
 
 print "\ntypes defined in file:\n";
