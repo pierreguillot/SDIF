@@ -34,11 +34,10 @@ IF( EXISTS ${PYTHON_INCLUDE_PATH})
       ENDIF(WIN32)
     ENDIF(APPLE)
 
-    ADD_CUSTOM_TARGET(check
+    ADD_CUSTOM_TARGET(checkswig
       COMMAND echo Testing python swig interface
-      COMMAND ${LOADPATH}=${CMAKE_BINARY_DIR}/easdif ${PYTHON} ${CMAKE_CURRENT_BINARY_DIR}/test.py)
-    ADD_DEPENDENCIES(check pythonswig)
-
+      COMMAND ${LOADPATH}=$(CMAKE_BINARY_DIR)/easdif ${PYTHON} ${CMAKE_CURRENT_BINARY_DIR}/test.py)
+    ADD_DEPENDENCIES(checkswig pythonswig)
   ENDIF(EXISTS ${PYTHON})
 ENDIF(EXISTS ${PYTHON_INCLUDE_PATH}) 
 

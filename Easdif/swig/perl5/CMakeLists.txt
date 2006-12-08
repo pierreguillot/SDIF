@@ -33,11 +33,11 @@ IF(PERL_EXECUTABLE)
           ENDIF( "${CMAKE_SYSTEM_NAME}" MATCHES "FreeBSD")
         ENDIF(WIN32)
       ENDIF(APPLE)
-
-      ADD_CUSTOM_TARGET(check
+      
+      ADD_CUSTOM_TARGET(checkswig
         COMMAND echo Testing perl swig interface
         COMMAND ${LOADPATH}=$(CMAKE_BINARY_DIR)/easdif ${PERL_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/test.pl)
-      ADD_DEPENDENCIES(check perlswig)
+      ADD_DEPENDENCIES(checkswig perlswig)
     ENDIF(EXISTS ${PERL_EXECUTABLE})
   ENDIF(PERL_INCLUDE_PATH)
 ENDIF(PERL_EXECUTABLE)
