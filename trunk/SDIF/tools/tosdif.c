@@ -1,4 +1,4 @@
-/* $Id: tosdif.c,v 1.5 2003-11-07 22:25:27 roebel Exp $
+/* $Id: tosdif.c,v 1.6 2006-12-08 18:11:57 roebel Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -10,6 +10,9 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.5  2003/11/07 22:25:27  roebel
+ * Removed last remainings of XpGuiCalls from tools files.
+ *
  * Revision 1.4  2003/11/07 21:47:20  roebel
  * removed XpGuiCalls.h and replaced preinclude.h  by local files
  *
@@ -70,7 +73,7 @@ enum TypeInE
 void
 usage(void)
 {
-  fprintf(SdifStdErr, "\ntosdif, %s\n\n", VERSION);
+  fprintf(SdifStdErr, "\ntosdif, %s\n\n", SDIF_VERSION_STRING);
   SdifPrintVersion();
   fprintf(SdifStdErr, "\nUsage : tosdif [-i <file>] [-o <file>] [-e <file>] [-t <file>] [-T]\n\
  i :   input file (default is \"stdin\")\n\
