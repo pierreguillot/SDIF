@@ -3,7 +3,8 @@
 SET(noinst_HEADERS easdif_version.hpp easdifintro.hpp easdif_config.hpp)
 SET(HEADERS  easdif.h  sdifentity.hpp sdifexception.hpp sdif_frame.hpp sdifinit.hpp sdifmatrixdata.hpp sdifmatrixdatainterface.hpp sdif_matrix.hpp sdifnamevaluetable.hpp)
 
-GET_DIRECTORY_PROPERTY(sdif_C_SOURCES DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/../SDIF/sdif DEFINITION sdif_SOURCES)
+GET_FILENAME_COMPONENT(normalize_path ${CMAKE_CURRENT_SOURCE_DIR}/../SDIF/sdif ABSOLUTE)
+GET_DIRECTORY_PROPERTY(sdif_C_SOURCES DIRECTORY ${normalize_path} DEFINITION sdif_SOURCES)
 SET(easdif_SOURCES sdifentity.cpp  sdifexception.cpp sdif_matrix.cpp sdif_frame.cpp sdifnamevaluetable.cpp sdifinit.cpp)
 
 SET(sdif_CXX_SOURCES)
