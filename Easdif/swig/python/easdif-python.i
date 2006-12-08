@@ -1,10 +1,13 @@
-// $Id: easdif-python.i,v 1.5 2006-11-26 20:35:41 roebel Exp $ -*-c-*-
+// $Id: easdif-python.i,v 1.6 2006-12-08 18:02:20 roebel Exp $ -*-c-*-
 //
 // easdif-python.i		30.04.2003		Patrice Tisserand
 //
 // Interface file for swig, defining the callable easdif functions
 //
 // $Log: not supported by cvs2svn $
+// Revision 1.5  2006/11/26 20:35:41  roebel
+// Unified by means of ../easdif-common-init.i
+//
 // Revision 1.4  2006/11/26 16:15:08  roebel
 // Improved platform support by means of using automake more consistently.
 // Added new example script.
@@ -31,4 +34,14 @@
 
 // include common module directive
 %include ../easdif-common.i
+
+// include typemap for std::string from SWIG library
+%include std_set.i
+
+// provide access to std::set as eaSDIF.vector
+namespace std {
+   %template(ISet) set<unsigned int>;
+};
+
+%template(SelectionSet) Easdif::SelectionSet<unsigned int>;
 
