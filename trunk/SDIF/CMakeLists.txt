@@ -10,7 +10,6 @@
 # This file computes/replaces some default values:
 #
 # CMAKE_BUILD_TYPE     : default value is "release" other selectable value is "debug"
-# CMAKE_INSTALL_PREFIX : default value is "/u/formes/share" 
 # PKGCONFIGDIR         : /u/formes/share/lib/$ENV{SYS}/pkgconfig 
 #
 # The default values can be disabled by means of setting USECMAKEDEFAULTS:BOOL=ON on the command line
