@@ -1,6 +1,14 @@
+#
+# cmake configuration file
+#
+# This file is part of the IRCAM EaSDIF Library (http://www.ircam.fr/sdif)
+#
+# Copyright (C) 2006 by IRCAM - Centre Pompidou, Paris, France.
+#
+# created by Axel Roebel                     7.12.2006
+#
 # This file computes/replaces some default values:
 # CMAKE_BUILD_TYPE     : default value is "release" other selectable value is "debug"
-# CMAKE_INSTALL_PREFIX : default value is "/u/formes/share" 
 # PKGCONFIGDIR         : /u/formes/share/lib/$ENV{SYS}/pkgconfig 
 #
 # The default values can be disabled by means of setting USECMAKEDEFAULTS:BOOL=ON on the command line
@@ -24,8 +32,8 @@
 PROJECT(EaSDIF)
 
 SET(EASDIF_VERSION_MAJ 1)
-SET(EASDIF_VERSION_MIN 2)
-SET(EASDIF_VERSION_RELEASE 9)
+SET(EASDIF_VERSION_MIN 3)
+SET(EASDIF_VERSION_RELEASE 0)
 SET(EASDIF_VERSION  "${EASDIF_VERSION_MAJ}.${EASDIF_VERSION_MIN}.${EASDIF_VERSION_RELEASE}")
 
 MESSAGE("===============================================================")
