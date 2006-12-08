@@ -3,46 +3,29 @@
 SET(noinst_HEADERS easdif_version.hpp easdifintro.hpp easdif_config.hpp)
 SET(HEADERS  easdif.h  sdifentity.hpp sdifexception.hpp sdif_frame.hpp sdifinit.hpp sdifmatrixdata.hpp sdifmatrixdatainterface.hpp sdif_matrix.hpp sdifnamevaluetable.hpp)
 
-SET(SOURCES sdifentity.cpp  sdifexception.cpp sdif_matrix.cpp sdif_frame.cpp sdifnamevaluetable.cpp sdifinit.cpp)
-SET(SDIF_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/../SDIF/sdif/SdifCheck.c  
-  ${CMAKE_CURRENT_SOURCE_DIR}/../SDIF/sdif/SdifConvToText.c  
-  ${CMAKE_CURRENT_SOURCE_DIR}/../SDIF/sdif/SdifErrMess.c 
-  ${CMAKE_CURRENT_SOURCE_DIR}/../SDIF/sdif/SdifFGet.c          
-  ${CMAKE_CURRENT_SOURCE_DIR}/../SDIF/sdif/SdifFile.c        
-  ${CMAKE_CURRENT_SOURCE_DIR}/../SDIF/sdif/SdifFPrint.c
-  ${CMAKE_CURRENT_SOURCE_DIR}/../SDIF/sdif/SdifFPut.c          
-  ${CMAKE_CURRENT_SOURCE_DIR}/../SDIF/sdif/SdifFrame.c       
-  ${CMAKE_CURRENT_SOURCE_DIR}/../SDIF/sdif/SdifFrameType.c
-  ${CMAKE_CURRENT_SOURCE_DIR}/../SDIF/sdif/SdifFRead.c         
-  ${CMAKE_CURRENT_SOURCE_DIR}/../SDIF/sdif/SdifFScan.c       
-  ${CMAKE_CURRENT_SOURCE_DIR}/../SDIF/sdif/SdifFWrite.c
-  ${CMAKE_CURRENT_SOURCE_DIR}/../SDIF/sdif/SdifGlobals.c       
-  ${CMAKE_CURRENT_SOURCE_DIR}/../SDIF/sdif/SdifHard_OS.c     
-  ${CMAKE_CURRENT_SOURCE_DIR}/../SDIF/sdif/SdifHash.c
-  ${CMAKE_CURRENT_SOURCE_DIR}/../SDIF/sdif/SdifHighLevel.c     
-  ${CMAKE_CURRENT_SOURCE_DIR}/../SDIF/sdif/SdifList.c        
-  ${CMAKE_CURRENT_SOURCE_DIR}/../SDIF/sdif/SdifMatrix.c
-  ${CMAKE_CURRENT_SOURCE_DIR}/../SDIF/sdif/SdifMatrixType.c    
-  ${CMAKE_CURRENT_SOURCE_DIR}/../SDIF/sdif/SdifNameValue.c   
-  ${CMAKE_CURRENT_SOURCE_DIR}/../SDIF/sdif/SdifPreTypes.c
-  ${CMAKE_CURRENT_SOURCE_DIR}/../SDIF/sdif/SdifPrint.c         
-  ${CMAKE_CURRENT_SOURCE_DIR}/../SDIF/sdif/SdifRWLowLevel.c  
-  ${CMAKE_CURRENT_SOURCE_DIR}/../SDIF/sdif/SdifSelect.c
-  ${CMAKE_CURRENT_SOURCE_DIR}/../SDIF/sdif/SdifSignatureTab.c  
-  ${CMAKE_CURRENT_SOURCE_DIR}/../SDIF/sdif/SdifStreamID.c    
-  ${CMAKE_CURRENT_SOURCE_DIR}/../SDIF/sdif/SdifString.c
-  ${CMAKE_CURRENT_SOURCE_DIR}/../SDIF/sdif/SdifTest.c          
-  ${CMAKE_CURRENT_SOURCE_DIR}/../SDIF/sdif/SdifTextConv.c    
-  ${CMAKE_CURRENT_SOURCE_DIR}/../SDIF/sdif/SdifTimePosition.c
-)
+GET_DIRECTORY_PROPERTY(sdif_C_SOURCES DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/../SDIF/sdif DEFINITION sdif_SOURCES)
+SET(easdif_SOURCES sdifentity.cpp  sdifexception.cpp sdif_matrix.cpp sdif_frame.cpp sdifnamevaluetable.cpp sdifinit.cpp)
 
+SET(sdif_CXX_SOURCES)
+FOREACH( file ${sdif_C_SOURCES})
+  GET_FILENAME_COMPONENT(filetmp ${file} NAME_WE)
+  SET(filecxx ${CMAKE_CURRENT_BINARY_DIR}/${filetmp}.cxx)
+  CONFIGURE_FILE(${file} ${filecxx} COPYONLY)
+  LIST(APPEND sdif_CXX_SOURCES ${filecxx})
+ENDFOREACH( file ${sdif_C_SOURCES})
 
-ADD_LIBRARY(Easdif_static${DEBUGEXT} STATIC  ${SOURCES} ${SDIF_SOURCES}  )
-ADD_LIBRARY(Easdif${DEBUGEXT} SHARED ${SOURCES} ${SDIF_SOURCES} )
+INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/../SDIF/sdif)
+OPTION(EASDIF_BUILD_STATIC "build static versions of the library" off)
+IF(EASDIF_BUILD_STATIC)
+  ADD_LIBRARY(Easdif${DEBUGEXT} STATIC  ${easdif_SOURCES} ${sdif_CXX_SOURCES}  )
+ELSE(EASDIF_BUILD_STATIC)
+  ADD_LIBRARY(Easdif${DEBUGEXT} SHARED ${easdif_SOURCES} ${sdif_CXX_SOURCES} )
+ENDIF(EASDIF_BUILD_STATIC)
+
 
 SET_TARGET_PROPERTIES(Easdif${DEBUGEXT} PROPERTIES VERSION ${EASDIF_VERSION} LINKER_LANGUAGE CXX)
 
-IF(APPLE)
+IF(APPLE AND NOT EASDIF_BUILD_STATIC)
 IF(CMAKE_MINOR_VERSION GREATER 3 AND CMAKE_MAJOR_VERSION EQUAL 2)
  SET_TARGET_PROPERTIES(Easdif${DEBUGEXT} PROPERTIES INSTALL_NAME_DIR  ${CMAKE_INSTALL_PREFIX}/${INSTALL_LIB_DIR} )
 ELSE(CMAKE_MINOR_VERSION GREATER 3 AND CMAKE_MAJOR_VERSION EQUAL 2)
@@ -51,15 +34,20 @@ CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/cmModules/SET_INSTALL_NAME.cmake.in ${CMAKE_C
  SET_TARGET_PROPERTIES(Easdif${DEBUGEXT} PROPERTIES POST_INSTALL_SCRIPT  ${CMAKE_CURRENT_BINARY_DIR}/SET_INSTALL_NAME.cmake )
 
 ENDIF(CMAKE_MINOR_VERSION GREATER 3 AND CMAKE_MAJOR_VERSION EQUAL 2)
-ENDIF(APPLE)
+ENDIF(APPLE AND NOT EASDIF_BUILD_STATIC)
 
-SET_TARGET_PROPERTIES(Easdif_static${DEBUGEXT} PROPERTIES VERSION ${EASDIF_VERSION} POST_INSTALL_SCRIPT ${CMAKE_BINARY_DIR}/easdif/RenameInstalledStaticLib.cmake )
+
+#SET_TARGET_PROPERTIES(Easdif_static${DEBUGEXT} PROPERTIES VERSION ${EASDIF_VERSION} POST_INSTALL_SCRIPT ${CMAKE_BINARY_DIR}/easdif/RenameInstalledStaticLib.cmake )
 #SET_TARGET_PROPERTIES(Easdif_static${DEBUGEXT} PROPERTIES VERSION ${EASDIF_VERSION} OUTPUT_NAME Easdif${DEBUGEXT})
-INSTALL(TARGETS  Easdif${DEBUGEXT} Easdif_static${DEBUGEXT} DESTINATION ${INSTALL_LIB_DIR})
+INSTALL(TARGETS  Easdif${DEBUGEXT} DESTINATION ${INSTALL_LIB_DIR})
 INSTALL(FILES  ${HEADERS} DESTINATION ${INSTALL_INC_DIR}/easdif )
 
-SET(BEFORE_RENAME "Easdif_static${DEBUGEXT}")
-SET(AFTER_RENAME "Easdif${DEBUGEXT}")
-CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/../cmModules/RenameInstalledStaticLib.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/RenameInstalledStaticLib.cmake @ONLY)
+#prevent name clash between import library
+#IF(NOT WIN32)
+#  SET(BEFORE_RENAME "Easdif_static${DEBUGEXT}")
+#  SET(AFTER_RENAME "Easdif${DEBUGEXT}")
+#  CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/../cmModules/RenameInstalledStaticLib.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/RenameInstalledStaticLib.cmake @ONLY)
+#ENDIF(NOT WIN32)
+
 INCLUDE(STORE_FILES_LIST)
 STORE_FILES_LIST(srcDOCFILES ${SOURCES} ${HEADERS}  ${noinst_HEADERS})
