@@ -1,4 +1,4 @@
-/* $Id: querysdif.c,v 1.11 2006-05-05 10:31:40 schwarz Exp $
+/* $Id: querysdif.c,v 1.12 2006-12-08 18:11:49 roebel Exp $
  
                 Copyright (c) 1998 by IRCAM - Centre Pompidou
                            All rights reserved.
@@ -14,6 +14,9 @@
    
 
    $Log: not supported by cvs2svn $
+   Revision 1.11  2006/05/05 10:31:40  schwarz
+   exit on invalid sdif header
+
    Revision 1.10  2006/05/03 15:46:51  schwarz
    added brief output option
 
@@ -85,7 +88,7 @@
 
 void usage (void)
 {
-    fprintf (SdifStdErr, "\nquerysdif, %s\n\n", VERSION);
+    fprintf (SdifStdErr, "\nquerysdif, %s\n\n", SDIF_VERSION_STRING);
     SdifPrintVersion();
     fprintf (SdifStdErr, "\n"
 "Usage: querysdif [options] [sdif-file]\n"
