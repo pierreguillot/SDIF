@@ -14,6 +14,7 @@ echo "***  Test on selection  ***"
 echo \****************************
 echo
 
+if [ "$QUERYPROG" = "" ]; then
 
 if [  -x ../tools/querysdif ]; then
 QUERYPROG=../tools/querysdif
@@ -27,20 +28,25 @@ if [ "$QUERYPROG" = "" ]; then
   echo Program querysdif not found
   exit 1
 fi
+fi
 
 $QUERYPROG $FILE
 if [ "$?" != "0" ] ; then
   exit 1;
 fi
   
+if [ "$TESTCHECK" = "" ];then
+    TESTCHECK=./testcheck
+fi
+
 echo
 echo Waiting for output: Found 1REB frame, index 0.
-./testcheck $FILE 1REB
+"${TESTCHECK}" $FILE 1REB
 echo
 echo Waiting for output: Found 1REB frame, index 1. 
-./testcheck $FILE 1NOI 1REB
+"${TESTCHECK}" $FILE 1NOI 1REB
 echo
 echo Waiting for output: Found no frame, index -1.
-./testcheck $FILE 1HRM 1HRM 1HRM
+"${TESTCHECK}" $FILE 1HRM 1HRM 1HRM
 echo
 

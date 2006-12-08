@@ -5,15 +5,24 @@ if [ "$SDIFTYPES" = "" ] ;then
  exit 1
 fi
 
-if [  -x ../tools/sdiftotext ]; then
-SDIFTOTEXT=../tools/sdiftotext
-TOSDIF=../tools/tosdif
+if [ ! -x "$SDIFTOTEXT" ] ;then 
+    if [  -x ../tools/sdiftotext ]; then
+        SDIFTOTEXT=../tools/sdiftotext
+    fi
+    if [  -x ../tools/sdiftotext-debug ]; then
+        SDIFTOTEXT=../tools/sdiftotext-debug
+    fi
 fi
 
-if [  -x ../tools/sdiftotext-debug ]; then
-SDIFTOTEXT=../tools/sdiftotext-debug
-TOSDIF=../tools/tosdif-debug
+if [ ! -x "$TOSDIF" ] ;then 
+    if [  -x ../tools/tosdif ]; then
+        TOSDIF=../tools/tosdif
+    fi
+    if [  -x ../tools/tosdif-debug ]; then
+        TOSDIF=../tools/tosdif-debug
+    fi
 fi
+
 
 if [ "$SDIFTOTEXT" = "" -o "$TOSDIF" = "" ]; then
   echo Programs sdiftotext of tosdif  not found
