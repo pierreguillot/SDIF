@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.13 2004-06-03 11:34:17 schwarz Exp $
+# $Id: Makefile.am,v 1.14 2006-12-10 17:24:11 roebel Exp $
 #
 # ./tools/Makefile.am		September 2000		Patrice Tisserand
 #
@@ -29,6 +29,10 @@
 # send email to:  sdif@ircam.fr
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.13  2004/06/03 11:34:17  schwarz
+# Enable profiling compilation.
+# Don't read padding when skipping matrices!
+#
 # Revision 1.12  2003/05/26 08:16:17  tisseran
 # Added Visual C++ project files for SDIF tools.
 #
@@ -131,4 +135,5 @@ tosdif_DEPENDENCIES=../sdif/@SELLIB@
 INCLUDES  = -I../include -I$(top_srcdir)/include -I$(top_srcdir)/sdif
 CFLAGS   = @CFLAGS@ '-DVERSION="$(VERSION)"'
 
-EXTRA_DIST=querysdif.dsp sdifextract.dsp sdiftotext.dsp sdifusage.dsp tosdif.dsp
+EXTRA_DIST=querysdif.dsp sdifextract.dsp sdiftotext.dsp sdifusage.dsp tosdif.dsp CMakeLists.txt
+
