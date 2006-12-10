@@ -27,7 +27,7 @@
 #
 #  OPTIONS provided
 #  USE_THREADS:BOOL=ON/OFF enable disable use of threads
-#  BUILD_MING:BOOL=ON/OFF  if cygwin add -mno-cygwin to compiler commands
+#  BUILD_MINGW:BOOL=ON/OFF  if cygwin add -mno-cygwin to compiler commands
 
 PROJECT(EaSDIF)
 
@@ -96,10 +96,12 @@ SET(INSTALL_INC_DIR include)
 ############################################################
 # Checks for programs.
 
-FIND_PROGRAM(HAVEDOT NAMES dot )
-
-
-
+FIND_PROGRAM(HAVEDOT_EXECUTABLE NAMES dot )
+IF(HAVEDOT_EXECUTABLE)
+  SET(HAVEDOT YES)
+ELSE(HAVEDOT_EXECUTABLE)
+  SET(HAVEDOT NO)
+ENDIF(HAVEDOT_EXECUTABLE)
 ## Configure SDIF
 
 MESSAGE("CHECK FOR HEADERS")
@@ -165,6 +167,9 @@ INCLUDE(CheckIncludeFileCXX)
 CHECK_INCLUDE_FILE_CXX(sstream HAVE_SSTREAM)
 CHECK_INCLUDE_FILE_CXX(strstream HAVE_STRSTREAM)
 
+SET(top_srcdir ${CMAKE_CURRENT_SOURCE_DIR})
+CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile.in ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile)
+
 
 # include special traget to remove cache, system and compiler info
 IF(CMAKE_GENERATOR MATCHES "^Unix Makefiles")
@@ -181,37 +186,17 @@ CREATE_CVSTAG_TARGET("libEasdif_${EASDIF_VERSION_MAJ}_${EASDIF_VERSION_MIN}_${EA
 ADD_SUBDIRECTORY(SDIF)
 
 
-FILE(READ ${CMAKE_CURRENT_SOURCE_DIR}/easdif/easdif_config.hpp.in CONFIG)
-STRING(REGEX REPLACE "#undef[ \t]*\([^ \t\n\r]*\)" "#cmakedefine \\1 @\\1@" EASDIFCMCONFIG ${CONFIG})
-
-STRING(CONFIGURE ${EASDIFCMCONFIG} EASDIFCMCONFIGURED)
-IF(EXISTS  ${CMAKE_CURRENT_BINARY_DIR}/easdif/easdif_config.hpp)
-  FILE(READ ${CMAKE_CURRENT_BINARY_DIR}/easdif/easdif_config.hpp CURRENTCONFIG)
-ENDIF(EXISTS  ${CMAKE_CURRENT_BINARY_DIR}/easdif/easdif_config.hpp)
-
-IF(NOT "${CURRENTCONFIG}" STREQUAL "${EASDIFCMCONFIGURED}")
-  MESSAGE("Writing Easdif config")
-  FILE(WRITE ${CMAKE_CURRENT_BINARY_DIR}/easdif/easdif_config.hpp ${EASDIFCMCONFIGURED})
-ENDIF(NOT "${CURRENTCONFIG}" STREQUAL "${EASDIFCMCONFIGURED}")
-
-SET(VERSION "${EASDIF_VERSION_MAJ}.${EASDIF_VERSION_MIN}.${EASDIF_VERSION_RELEASE}")
-CONFIGURE_FILE(easdif/easdif_version.hpp.in ${CMAKE_CURRENT_BINARY_DIR}/easdif/easdif_version.hpp)
-CONFIGURE_FILE(easdif/easdifintro.hpp.in ${CMAKE_CURRENT_BINARY_DIR}/easdif/easdifintro.hpp)
-CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile.in ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile)
-
 ADD_DEFINITIONS("-DHAVE_CONFIG_H")
 
-ADD_CUSTOM_TARGET(lib)
-ADD_DEPENDENCIES(lib Easdif${DEBUGEXT})
 
 INCLUDE_DIRECTORIES( ${CMAKE_CURRENT_BINARY_DIR}/SDIF/sdifconfig ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/SDIF/include ${CMAKE_CURRENT_SOURCE_DIR}  )
 
 ADD_SUBDIRECTORY( easdif ) 
 ADD_SUBDIRECTORY( test ) 
-OPTION(DOSWIG OFF)
-IF(DOSWIG)
-ADD_SUBDIRECTORY( swig EXCLUDE_FROM_ALL )
-ENDIF(DOSWIG)
+
+ADD_CUSTOM_TARGET(lib)
+ADD_DEPENDENCIES(lib Easdif${DEBUGEXT})
+
 
 ########### install files ###############
 FILE(TO_CMAKE_PATH "${PKGCONFIGDIR}" tmp)
@@ -236,12 +221,6 @@ IF("${PKGCONFIGPATH}" STREQUAL  "")
   SET(PKGCONFIGPATH "${CMAKE_INSTALL_PREFIX}/${INSTALL_LIB_DIR}/pkgconfig" CACHE PATH "install path for pkg config files" FORCE)
 ENDIF("${PKGCONFIGPATH}" STREQUAL  "")
 
-MESSAGE("Installation in:")
-MESSAGE("Prefix         : ${CMAKE_INSTALL_PREFIX}")
-MESSAGE("bin            : ${CMAKE_INSTALL_PREFIX}/${INSTALL_BIN_DIR}")
-MESSAGE("lib            : ${CMAKE_INSTALL_PREFIX}/${INSTALL_LIB_DIR}")
-MESSAGE("includes       : ${CMAKE_INSTALL_PREFIX}/${INSTALL_INC_DIR}")
-MESSAGE("pkgconfig      : ${PKGCONFIGPATH}")
 
 
 SET(prefix ${CMAKE_INSTALL_PREFIX})
@@ -251,59 +230,76 @@ SET(includedir ${CMAKE_INSTALL_PREFIX}/include)
 SET(EASDIFBASENAME Easdif${DEBUGEXT})
 CONFIGURE_FILE(Easdif.pc.in   Easdif${DEBUGEXT}.pc )
 
+OPTION(DOSWIG OFF)
+IF(DOSWIG)
+ADD_SUBDIRECTORY( swig EXCLUDE_FROM_ALL )
+ENDIF(DOSWIG)
 
-# # Get PKGCONFIGDIR path relative too CMAKE_INSTALL_PREFIX
-# GET_FILENAME_COMPONENT(abspref  ${CMAKE_INSTALL_PREFIX} ABSOLUTE)
-# STRING(REPLACE "${abspref}"  "" PKGCONFIG_REL ${abspkg} )
-# #if we have complete path that is outside of CMAKE_INSTALL_PREFIX
-# IF(PKGCONFIG_REL STREQUAL PKGCONFIGDIR)
-# SET(remainingpath ${CMAKE_INSTALL_PREFIX})
-# MESSAGE("int remains ${remainingpath}")
-# SET(torelative)
-# WHILE(remainingpath)
-# MESSAGE("remains ${remainingpath}")
-# MESSAGE("last ${lastpath}")
-# GET_FILENAME_COMPONENT(lastpath ${remainingpath} NAME)
-# GET_FILENAME_COMPONENT(remainingpath ${remainingpath} PATH)
-# IF(lastpath)
-# SET(torelative "${torelative}../")
-# ENDIF(lastpath)
-# ENDWHILE(remainingpath)
-# MESSAGE("torelative: ${torelative}")
-# SET( PKGCONFIG_REL /${torelative}${abspkg} )
-# ENDIF(PKGCONFIG_REL STREQUAL PKGCONFIGDIR)
-# MESSAGE("pkgconfig      : ${PKGCONFIG_REL}")
 
 INSTALL(FILES  ${CMAKE_CURRENT_BINARY_DIR}/Easdif${DEBUGEXT}.pc DESTINATION ${PKGCONFIGPATH} )
 
-# install sdif headers
-INSTALL(FILES  ${CMAKE_CURRENT_BINARY_DIR}/sdifconfig/sdif_version.h DESTINATION ${INSTALL_INC_DIR})
-INSTALL(FILES  ${CMAKE_CURRENT_SOURCE_DIR}/SDIF/include/sdif.h DESTINATION ${INSTALL_INC_DIR})
-
-# install configured easdif headers.
-INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/easdif/easdif_version.hpp DESTINATION ${INSTALL_INC_DIR}/easdif)
 
 GET_DIRECTORY_PROPERTY(easdifDOCFILES DIRECTORY easdif DEFINITION srcDOCFILES)
 SET(DOCFILES ${easdifDOCFILES} CACHE INTERNAL "files containing doc sources" FORCE)
 MESSAGE("doc files : ${DOCFILES}")
 
 # Documentation generation with Doxygen
-ADD_CUSTOM_TARGET(doc COMMAND  doxygen  ${CMAKE_BINARY_DIR}/Doxyfile DEPENDS CMakeLists.txt ${DOCFILES})
-ADD_CUSTOM_TARGET(install_doc  
-  COMMAND chmod -R  g+w doc/html 
-  COMMAND ncftpput -u $ENV{USER} ${DOCSERVER} ${DOCDIR} doc/html/* 
-  COMMAND chmod -R  g-w doc/html)
-ADD_DEPENDENCIES(install_doc doc)
+ADD_CUSTOM_TARGET(doc COMMAND  doxygen  ${CMAKE_BINARY_DIR}/Doxyfile DEPENDS CMakeLists.txt;${DOCFILES})
+IF(DEFINED DOCSERVER)
+  FIND_PROGRAM(NCFTPPUT_EXECUTABLE ncftpput)
+  IF(NCFTPPUT_EXECUTABLE)
+    ADD_CUSTOM_TARGET(install_doc  
+      COMMAND chmod -R  g+w doc/html 
+      COMMAND ${NCFTPPUT_EXECUTABLE} -u $ENV{USER} ${DOCSERVER} ${DOCDIR} doc/html/* 
+      COMMAND chmod -R  g-w doc/html)
+    ADD_DEPENDENCIES(install_doc doc)
+  ELSE(NCFTPPUT_EXECUTABLE)
+    MESSAGE("++++++++++++++++++++++++")
+    MESSAGE(STATUS "ncftpput not found! no install_doc target generated \n++++++++++++++++++++++++")
+  ENDIF(NCFTPPUT_EXECUTABLE)
+ENDIF(DEFINED DOCSERVER)
+
+SET(DOCTAR Easdif-${EASDIF_VERSION}.doc.tgz)
+
+ADD_CUSTOM_TARGET(pubdoc
+COMMAND	cp -r doc   Easdif-${EASDIF_VERSION}.doc
+COMMAND	tar -cvzf ${DOCTAR} Easdif-${EASDIF_VERSION}.doc
+COMMAND	rm -rf Easdif-${EASDIF_VERSION}.doc)
+ADD_DEPENDENCIES(pubdoc doc)
 
 
 
-SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "EaSDIF, the high level API to SDIF data")
+GET_FILENAME_COMPONENT(normalize_path ${CMAKE_CURRENT_SOURCE_DIR}/SDIF ABSOLUTE)
+GET_DIRECTORY_PROPERTY(sdif_version DIRECTORY ${normalize_path} DEFINITION  SDIF_VERSION)
+
+
+SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "EaSDIF/SDIF libraries and tools for handling SDIF files")
 SET(CPACK_PACKAGE_VENDOR "IRCAM")
 SET(CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_CURRENT_SOURCE_DIR}/README")
 SET(CPACK_PACKAGE_VERSION_MAJOR "${EASDIF_VERSION_MAJ}")
 SET(CPACK_PACKAGE_VERSION_MINOR "${EASDIF_VERSION_MIN}")
 SET(CPACK_PACKAGE_VERSION_PATCH "${EASDIF_VERSION_RELEASE}")
+SET(CPACK_SOURCE_IGNORE_FILES ${CPACK_SOURCE_IGNORE_FILES} "~$" \\.dsp$ ^build*)
 SET(CPACK_SOURCE_PACKAGE_FILE_NAME
-    "Easdif-${EASDIF_VERSION_MAJ}.${EASDIF_VERSION_MIN}.${EASDIF_VERSION_RELEASE}")
+    "Easdif-${EASDIF_VERSION_MAJ}.${EASDIF_VERSION_MIN}.${EASDIF_VERSION_RELEASE}_SDIF-${SDIF_VERSION}")
 SET(CPACK_PACKAGE_FILE_NAME)
 INCLUDE(CPack)
+
+
+MESSAGE("===================================================================")
+MESSAGE("Option summary:")
+MESSAGE("install prefix (CMAKE_INSTALL_PREFIX)         : ${CMAKE_INSTALL_PREFIX}")
+MESSAGE("enable swig support (DOSWIG)                  : ${DOSWIG}")
+MESSAGE("build static Easdif lib (EASDIF_BUILD_STATIC) : ${EASDIF_BUILD_STATIC}")
+MESSAGE("build static sdif lib (SDIF_BUILD_STATIC)     : ${SDIF_BUILD_STATIC}")
+MESSAGE("enable thread support (USE_THREADS)           : ${USE_THREADS}")
+IF(CYGWIN)
+  MESSAGE("Use mingw (BUILD_MINGW)                : ${BUILD_MINGW}")
+ENDIF(CYGWIN)
+
+MESSAGE("Easdif installation summary:")
+MESSAGE("bin            : ${CMAKE_INSTALL_PREFIX}/${INSTALL_BIN_DIR}")
+MESSAGE("lib            : ${CMAKE_INSTALL_PREFIX}/${INSTALL_LIB_DIR}")
+MESSAGE("includes       : ${CMAKE_INSTALL_PREFIX}/${INSTALL_INC_DIR}")
+MESSAGE("pkgconfig      : ${PKGCONFIGPATH}")
+MESSAGE("===================================================================")
