@@ -227,28 +227,41 @@ IF("${PKGCONFIGPATH}" STREQUAL  "")
   SET(PKGCONFIGPATH "${CMAKE_INSTALL_PREFIX}/${INSTALL_LIB_DIR}/pkgconfig" CACHE PATH "install path for pkg config files" FORCE)
 ENDIF("${PKGCONFIGPATH}" STREQUAL  "")
 
-MESSAGE("Installation in:")
-MESSAGE("Prefix         : ${CMAKE_INSTALL_PREFIX}")
-MESSAGE("bin            : ${CMAKE_INSTALL_PREFIX}/${INSTALL_BIN_DIR}")
-MESSAGE("lib            : ${CMAKE_INSTALL_PREFIX}/${INSTALL_LIB_DIR}")
-MESSAGE("includes       : ${CMAKE_INSTALL_PREFIX}/${INSTALL_INC_DIR}")
-MESSAGE("pkgconfig      : ${PKGCONFIGPATH}")
-
 
 IF(NOT CMAKE_BUILD_TYPE MATCHES debug)
   SET(prefix ${CMAKE_INSTALL_PREFIX})
   SET(exec_prefix ${CMAKE_INSTALL_PREFIX})
   SET(libdir ${CMAKE_INSTALL_PREFIX}/lib)
   SET(includedir ${CMAKE_INSTALL_PREFIX}/include)
-  CONFIGURE_FILE(sdif.pc.in  sdif.pc )
+  CONFIGURE_FILE(sdif.pc.in   ${CMAKE_CURRENT_BINARY_DIR}/sdif.pc )
   INSTALL(FILES  ${CMAKE_CURRENT_BINARY_DIR}/sdif.pc DESTINATION ${PKGCONFIGPATH} )
 ENDIF(NOT CMAKE_BUILD_TYPE MATCHES debug)
 
 
 # install sdif headers
 INSTALL(FILES  ${CMAKE_CURRENT_BINARY_DIR}/sdifconfig/sdif_version.h DESTINATION ${INSTALL_INC_DIR})
-INSTALL(FILES  ${CMAKE_CURRENT_SOURCE_DIR}/SDIF/include/sdif.h DESTINATION ${INSTALL_INC_DIR})
+INSTALL(FILES  ${CMAKE_CURRENT_SOURCE_DIR}/include/sdif.h DESTINATION ${INSTALL_INC_DIR})
 
 
 ADD_SUBDIRECTORY( tools ) 
 ADD_SUBDIRECTORY( test ) 
+
+
+IF("${CMAKE_CURRENT_SOURCE_DIR}" STREQUAL "${CMAKE_SOURCE_DIR}")
+  MESSAGE("===================================================================")
+  MESSAGE("Option summary:")
+  MESSAGE("install prefix (CMAKE_INSTALL_PREFIX)         : ${CMAKE_INSTALL_PREFIX}")
+  MESSAGE("build static sdif lib (SDIF_BUILD_STATIC)     : ${SDIF_BUILD_STATIC}")
+  MESSAGE("enable thread support (USE_THREADS)           : ${USE_THREADS}")
+  IF(CYGWIN)
+    MESSAGE("Use mingw (BUILD_MINGW)                : ${BUILD_MINGW}")
+  ENDIF(CYGWIN)
+
+  MESSAGE("sdif installation summary:")
+  MESSAGE("bin            : ${CMAKE_INSTALL_PREFIX}/${INSTALL_BIN_DIR}")
+  MESSAGE("lib            : ${CMAKE_INSTALL_PREFIX}/${INSTALL_LIB_DIR}")
+  MESSAGE("includes       : ${CMAKE_INSTALL_PREFIX}/${INSTALL_INC_DIR}")
+  MESSAGE("pkgconfig      : ${PKGCONFIGPATH}")
+  MESSAGE("===================================================================")
+ENDIF("${CMAKE_CURRENT_SOURCE_DIR}" STREQUAL "${CMAKE_SOURCE_DIR}")
+
