@@ -1,4 +1,5 @@
 
+EXTRA_DIST = CMakeLists.txt test.py test.py.in easdif-python.i sdiftypemap-python.i example.py
 
 INCL		= -I/usr/local/include -I$(PYTHON_INCLUDE) \
 		   -I$(top_builddir)/.. -I$(top_srcdir)/.. -I$(top_builddir)/../SDIF/include -I$(top_srcdir)/../SDIF/include 
@@ -23,10 +24,10 @@ easdifincfiles	= $(easdifincbase:%=$(top_srcdir)/../easdif/sdif%.hpp)
 sdifincfiles	= $(top_srcdir)/../SDIF/include/sdif.h
 
 eaSDIF_wrap.cpp : easdif-python.i $(SWIG_SOURCES)  $(easdifincfiles) $(incfiles)
-	$(SWIG) $(SWIG_PYTHON_OPT)  -I$(top_srcdir)/swig/python -o $@ $<
+	$(SWIG) $(SWIG_PYTHON_OPT)  -I$(top_srcdir)/swig/python $(INCL) -o $@ $<
 
 $(srcdir)/SDIF_wrap.cpp : sdif.i $(SWIG_SOURCES)  $(sdifincfiles) $(incfiles)
-	$(SWIG) $(SWIG_PYTHON_OPT)  -I$(top_srcdir)/swig/python -o $@ $<
+	$(SWIG) $(SWIG_PYTHON_OPT)  -I$(top_srcdir)/swig/python  $(INCL) -o $@ $<
 
 
 test:	eaSDIF.py _eaSDIF.la # _SDIF.so

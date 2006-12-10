@@ -1,6 +1,9 @@
-# $Id: Makefile.am,v 1.6 2006-11-26 20:35:08 roebel Exp $
+# $Id: Makefile.am,v 1.7 2006-12-10 17:43:48 roebel Exp $
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.6  2006/11/26 20:35:08  roebel
+# Use automatic directory names.
+#
 # Revision 1.5  2006/11/26 16:15:42  roebel
 # Reorganized to work with swig 1.3.31!
 #
@@ -61,6 +64,7 @@
 # Classes re-declared in easdif.i, simple method without shadow classes.
 # Doesn't do much except counting frames.
 
+EXTRA_DIST = CMakeLists.txt easdif-perl5.i test.pl test.pl.in sdiftypemap-perl5.i
 
 PERL5_INCLUDE	= /usr/lib/perl5/$(shell perl -MConfig -e 'print $$Config{version}')/$(shell perl -MConfig -e 'print $$Config{archname}')/CORE/
 INCL		= -I$(PERL5_INCLUDE) -I$(top_builddir)/.. -I$(top_srcdir)/.. -I$(top_builddir)/../SDIF/include -I$(top_srcdir)/../SDIF/include 
@@ -75,7 +79,7 @@ easdifincfiles	= $(easdifincbase:%=$(top_srcdir)/../easdif/sdif%.hpp)
 sdifincfiles	= $(top_srcdir)/../SDIF/include/sdif.h
 
 define swig
-	swig -c++ -perl5 -shadow -o $@ $<
+	swig -c++ -perl5 -shadow $(INCL) -o $@ $<
 endef
 
 

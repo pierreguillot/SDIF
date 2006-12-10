@@ -1,4 +1,4 @@
-
+EXTRA_DIST = CMakeLists.txt easdif-java.i main.java sdiftypemap-java.i main.java.in
 
 TOP_SRCDIR=../..
 TOP_BUILDDIR=$(TOP_SRCDIR)
@@ -18,7 +18,7 @@ easdifincfiles	= $(easdifincbase:%=$(top_srcdir)/../easdif/sdif%.hpp)
 sdifincfiles	= $(top_srcdir)/../SDIF/include/sdif.h
 
 define swig
-	swig -c++ -java -o $@ $<
+	swig -c++ -java $(INCL) -o $@ $<
 endef
 
 
