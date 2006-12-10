@@ -4,4 +4,8 @@ REPLACE_DEFAULT_VALUE(CMAKE_BUILD_TYPE  STRING release 0 "set build type, debug 
 IF(EXISTS /u/formes/share)
   REPLACE_DEFAULT_VALUE(CMAKE_INSTALL_PREFIX PATH /u/formes/share 0 "install prefix" )
 ENDIF(EXISTS /u/formes/share)
+IF("$ENV{HOST}" MATCHES ".*ircam.fr$" )
+  SET(DOCSERVER iii-old.ircam.fr)
+  SET(DOCDIR  /var/www/html/analyse_synthese/documentation/easdif)
+ENDIF("$ENV{HOST}" MATCHES ".*ircam.fr$" )
 MESSAGE("Configure for mode = ${CMAKE_BUILD_TYPE}")
