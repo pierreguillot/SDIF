@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.30 2006-05-11 16:39:13 schwarz Exp $
+# $Id: Makefile.am,v 1.31 2006-12-10 17:13:40 roebel Exp $
 #
 # ./Makefile.am		September 2000			Patrice Tisserand
 #
@@ -30,6 +30,9 @@
 
 
 # $Log: not supported by cvs2svn $
+# Revision 1.30  2006/05/11 16:39:13  schwarz
+# publish standard
+#
 # Revision 1.29  2005/05/13 16:28:57  schwarz
 # new host
 #
@@ -159,6 +162,8 @@ endif
 
 SUBDIRS = sdif include tools data test $(SDIF_CPP_DIR) macosxbuild $(DOC_SRC_DIR)
 
+DIST_SUBDIRS = sdif include tools data test  macosxbuild doc sdifcpp cmModules
+
 sdifincdir = @top_srcdir@/include
 
 pkgconfigdir = $(libdir)/pkgconfig
@@ -182,7 +187,8 @@ test:	check
 #
 
 # more files to include in dist
-EXTRA_DIST	  = ReleaseNotes sdif.vcproj sdif.dsw
+EXTRA_DIST	  = ReleaseNotes sdif.vcproj sdif.dsw CMakeLists.txt
+
 
 
 # base name of distribution (override automake generated variable to make source distribution!)
