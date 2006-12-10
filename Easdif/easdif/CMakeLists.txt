@@ -1,7 +1,7 @@
 
 # easdif_version.hpp is installed as well but in ../CMakeLists.txt
-SET(noinst_HEADERS easdif_version.hpp easdifintro.hpp easdif_config.hpp)
-SET(HEADERS  easdif.h  sdifentity.hpp sdifexception.hpp sdif_frame.hpp sdifinit.hpp sdifmatrixdata.hpp sdifmatrixdatainterface.hpp sdif_matrix.hpp sdifnamevaluetable.hpp)
+SET(noinst_HEADERS ${CMAKE_CURRENT_BINARY_DIR}/easdifintro.hpp ${CMAKE_CURRENT_BINARY_DIR}/easdif_config.hpp)
+SET(HEADERS  easdif.h  sdifentity.hpp sdifexception.hpp sdif_frame.hpp sdifinit.hpp sdifmatrixdata.hpp sdifmatrixdatainterface.hpp sdif_matrix.hpp sdifnamevaluetable.hpp ${CMAKE_CURRENT_BINARY_DIR}/easdif_version.hpp )
 
 GET_FILENAME_COMPONENT(normalize_path ${CMAKE_CURRENT_SOURCE_DIR}/../SDIF/sdif ABSOLUTE)
 GET_DIRECTORY_PROPERTY(sdif_C_SOURCES DIRECTORY ${normalize_path} DEFINITION sdif_SOURCES)
@@ -15,6 +15,7 @@ FOREACH( file ${sdif_C_SOURCES})
   LIST(APPEND sdif_CXX_SOURCES ${filecxx})
 ENDFOREACH( file ${sdif_C_SOURCES})
 
+
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/../SDIF/sdif)
 OPTION(EASDIF_BUILD_STATIC "build static versions of the library" off)
 IF(EASDIF_BUILD_STATIC)
@@ -22,6 +23,24 @@ IF(EASDIF_BUILD_STATIC)
 ELSE(EASDIF_BUILD_STATIC)
   ADD_LIBRARY(Easdif${DEBUGEXT} SHARED ${easdif_SOURCES} ${sdif_CXX_SOURCES} )
 ENDIF(EASDIF_BUILD_STATIC)
+
+
+FILE(READ ${CMAKE_CURRENT_SOURCE_DIR}/easdif_config.hpp.in CONFIG)
+STRING(REGEX REPLACE "#undef[ \t]*\([^ \t\n\r]*\)" "#cmakedefine \\1 @\\1@" EASDIFCMCONFIG ${CONFIG})
+
+STRING(CONFIGURE ${EASDIFCMCONFIG} EASDIFCMCONFIGURED)
+IF(EXISTS  ${CMAKE_CURRENT_BINARY_DIR}/easdif_config.hpp)
+  FILE(READ ${CMAKE_CURRENT_BINARY_DIR}/easdif_config.hpp CURRENTCONFIG)
+ENDIF(EXISTS  ${CMAKE_CURRENT_BINARY_DIR}/easdif_config.hpp)
+
+IF(NOT "${CURRENTCONFIG}" STREQUAL "${EASDIFCMCONFIGURED}")
+  MESSAGE("Writing Easdif config")
+  FILE(WRITE ${CMAKE_CURRENT_BINARY_DIR}/easdif_config.hpp ${EASDIFCMCONFIGURED})
+ENDIF(NOT "${CURRENTCONFIG}" STREQUAL "${EASDIFCMCONFIGURED}")
+
+SET(VERSION "${EASDIF_VERSION_MAJ}.${EASDIF_VERSION_MIN}.${EASDIF_VERSION_RELEASE}")
+CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/easdif_version.hpp.in ${CMAKE_CURRENT_BINARY_DIR}/easdif_version.hpp)
+CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/easdifintro.hpp.in ${CMAKE_CURRENT_BINARY_DIR}/easdifintro.hpp)
 
 
 SET_TARGET_PROPERTIES(Easdif${DEBUGEXT} PROPERTIES VERSION ${EASDIF_VERSION} LINKER_LANGUAGE CXX)
@@ -42,6 +61,8 @@ ENDIF(APPLE AND NOT EASDIF_BUILD_STATIC)
 #SET_TARGET_PROPERTIES(Easdif_static${DEBUGEXT} PROPERTIES VERSION ${EASDIF_VERSION} OUTPUT_NAME Easdif${DEBUGEXT})
 INSTALL(TARGETS  Easdif${DEBUGEXT} DESTINATION ${INSTALL_LIB_DIR})
 INSTALL(FILES  ${HEADERS} DESTINATION ${INSTALL_INC_DIR}/easdif )
+
+
 
 #prevent name clash between import library
 #IF(NOT WIN32)
