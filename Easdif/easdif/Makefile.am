@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.16 2006-04-22 08:57:24 roebel Exp $
+# $Id: Makefile.am,v 1.17 2006-12-10 17:54:40 roebel Exp $
 #
 # ./Easdif/src/Makefile.am	Feb. 2003 Axel Roebel
 #
@@ -31,6 +31,9 @@
 
 
 # $Log: not supported by cvs2svn $
+# Revision 1.16  2006/04/22 08:57:24  roebel
+# Renamed some files to prevent name clash of object files on macosx
+#
 # Revision 1.15  2005/05/30 21:43:01  roebel
 # Changed all include files from .h into .hpp to prevent name clash between
 # sdifmatix.h and SDIF/sdifcpp/SdifMatrix.h on MacOSX where filenames are
@@ -90,7 +93,7 @@ EXTRA_LTLIBRARIES = libEasdif.la  libEasdif_gcc3_2.la libEasdif-debug.la
 # lib_LIBRARIES = @SELLIB@
 lib_LTLIBRARIES = @SELLIB@
 
-EXTRA_DIST = easdif_version.hpp.in easdifintro.hpp.in easdif_config.hpp.in
+EXTRA_DIST = easdif_version.hpp.in easdifintro.hpp.in easdif_config.hpp.in CMakeLists.txt
 
 EASDIF_H = easdif_version.hpp easdif.h  sdifentity.hpp \
 	sdifexception.hpp sdif_frame.hpp sdifinit.hpp sdif_matrix.hpp sdifmatrixdata.hpp \
