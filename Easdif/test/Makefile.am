@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.11 2005-02-01 09:59:29 roebel Exp $
+# $Id: Makefile.am,v 1.12 2006-12-10 17:48:59 roebel Exp $
 #
 # ./Easdif/test/Makefile.am	Feb. 2003 Axel Roebel
 #
@@ -29,6 +29,9 @@
 # 
 
 # $Log: not supported by cvs2svn $
+# Revision 1.11  2005/02/01 09:59:29  roebel
+# Fix LDADD and LIBS
+#
 # Revision 1.10  2004/07/26 11:29:58  roebel
 # Fixed debug version of non installable (demo) files.
 #
@@ -61,6 +64,7 @@
 # Revision 1.1  2003/03/03 10:04:25  roebel
 # Adapted for autoconf/automake...
 #
+EXTRA_DIST = CMakeLists.txt mrk.sdif lic.sdif
 
 EXTRA_PROGRAMS= easdifRmNVT easdifRmNVT-debug tutorini tutofini tutorini-debug tutofini-debug
 bin_PROGRAMS = @SELPROG@
