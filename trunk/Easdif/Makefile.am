@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.21 2006-11-26 16:45:07 roebel Exp $
+# $Id: Makefile.am,v 1.22 2006-12-10 17:53:54 roebel Exp $
 #
 # ./Makefile.am		Feb. 2003     Axel Roebel
 #
@@ -30,6 +30,9 @@
 # 
 
 # $Log: not supported by cvs2svn $
+# Revision 1.21  2006/11/26 16:45:07  roebel
+# No automatic configuration in swug subdir.
+#
 # Revision 1.20  2005/05/03 16:28:30  roebel
 # Fixed ircam doc install target.
 #
@@ -102,7 +105,7 @@
 
 SUBDIRS =  SDIF easdif  test 
 DIST_SUBDIRS =  SDIF easdif  test swig
-EXTRA_DIST = Doxyfile.in README.MacOSX 
+EXTRA_DIST = Doxyfile.in README.MacOSX CMakeLists.txt
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = Easdif@PKGDEBUG@.pc
