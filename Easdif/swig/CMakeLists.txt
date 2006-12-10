@@ -1,9 +1,13 @@
 # Swig configuration
 
+MESSAGE("-------------------------------------------------")
+MESSAGE("Configuring SWIG wrappers")
 FIND_PACKAGE(SWIG REQUIRED)
 IF(SWIG_FOUND)
   MESSAGE("-- using swig installation in ${SWIG_DIR}")
-  INCLUDE(${SWIG_USE_FILE})
+  IF(SWIG_FOUND)
+    INCLUDE(UseSWIG)
+  ENDIF(SWIG_FOUND)
 
   INCLUDE_DIRECTORIES(${CMAKE_BINARY_DIR})
   INCLUDE_DIRECTORIES(${CMAKE_BINARY_DIR}/SDIF/include)
@@ -24,5 +28,6 @@ IF(SWIG_FOUND)
   MESSAGE(STATUS "java")
   ADD_SUBDIRECTORY(java)
 ENDIF(SWIG_FOUND)
+MESSAGE("-------------------------------------------------")
 
 
