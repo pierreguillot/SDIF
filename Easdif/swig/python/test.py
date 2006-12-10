@@ -14,7 +14,7 @@ print "created new SDIFFrame ", frame
 res = file.OpenRead("/u/formes/roebel/src/EASDIF_SDIF/swig/python/../../test/mrk.sdif")
 print "open (mode ", eaSDIF.eReadFile , ")...",res
 
-set=eaSDIF.SelectionSet()
+set=eaSDIF.SelectionSetI()
 set.insert(eaSDIF.CreateSignature('1','T','R','C'))
 
 file.RestrictMatrixSelection(set)
