@@ -1,0 +1,33 @@
+# Swig configuration
+
+MESSAGE("-------------------------------------------------")
+MESSAGE("Configuring SWIG wrappers")
+FIND_PACKAGE(SWIG REQUIRED)
+IF(SWIG_FOUND)
+  MESSAGE("-- using swig installation in ${SWIG_DIR}")
+  IF(SWIG_FOUND)
+    INCLUDE(UseSWIG)
+  ENDIF(SWIG_FOUND)
+
+  INCLUDE_DIRECTORIES(${CMAKE_BINARY_DIR})
+  INCLUDE_DIRECTORIES(${CMAKE_BINARY_DIR}/SDIF/include)
+  INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR})
+  INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/SDIF/include)
+  SET(EASDIF_INC_DIR ${CMAKE_SOURCE_DIR})
+  SET(SDIF_INC_DIR ${CMAKE_SOURCE_DIR})
+  SET(EASDIF_BUILDINC_DIR ${CMAKE_BINARY_DIR})
+  SET(SDIF_BUILDINC_DIR ${CMAKE_BINARY_DIR})
+  CONFIGURE_FILE(easdif-common.i.in ${CMAKE_CURRENT_BINARY_DIR}/easdif-common.i)
+  CONFIGURE_FILE(sdif-common.i.in ${CMAKE_CURRENT_BINARY_DIR}/sdif-common.i)
+  
+  SET(SWIG_COMMON_EASDIF_SRC ${CMAKE_CURRENT_SOURCE_DIR}/easdif-common-init.i ${CMAKE_CURRENT_BINARY_DIR}/easdif-common.i ${CMAKE_CURRENT_SOURCE_DIR}/easdif-defines.i)
+  MESSAGE(STATUS "python")
+  ADD_SUBDIRECTORY(python)
+  MESSAGE(STATUS "perl5")
+  ADD_SUBDIRECTORY(perl5)
+  MESSAGE(STATUS "java")
+  ADD_SUBDIRECTORY(java)
+ENDIF(SWIG_FOUND)
+MESSAGE("-------------------------------------------------")
+
+
