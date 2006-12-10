@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.37 2005-05-23 19:17:53 schwarz Exp $
+# $Id: Makefile.am,v 1.38 2006-12-10 17:23:32 roebel Exp $
 #
 # ./sdif/Makefile.am		September 2000		Patrice Tisserand
 #
@@ -30,6 +30,13 @@
 
 
 # $Log: not supported by cvs2svn $
+# Revision 1.37  2005/05/23 19:17:53  schwarz
+# - Sdiffread*/Sdiffwrite* functions with SdifFileT instead of FILE *
+#   -> eof error reporting makes more sense
+# - more cleanup of sdif.h, above functions are private in SdifRWLowLevel.h
+# - eEof becomes error 4 to be distinguishable from ascii chars
+# - SdifFScanNameValueLCurrNVT reimplemented for ascii only
+#
 # Revision 1.36  2005/05/23 17:52:53  schwarz
 # Unified error handling:
 # - SdifErrorEnum (global errors) integrated into SdifErrorTagET (file errors)
@@ -211,7 +218,8 @@ libsdif_profile_la_LDFLAGS = $(libsdif_la_LDFLAGS) -rpath $(libdir) -pg
 
 sdiftype   = $(datadir)/SdifTypes.STYP
 
-EXTRA_DIST = sdif.dsp
+EXTRA_DIST = sdif.dsp CMakeLists.txt
+
 
 INCLUDES   = -I../include -I$(top_srcdir)/include -D_SdifTypesFileName=\"$(sdiftype)\" -DUSE_CONFIGURE
 

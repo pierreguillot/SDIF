@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.14 2004-06-03 11:33:05 schwarz Exp $
+# $Id: Makefile.am,v 1.15 2006-12-10 17:24:11 roebel Exp $
 #
 # ./test/Makefile.am		September 2000		Patrice Tisserand
 #
@@ -29,6 +29,12 @@
 # send email to:  sdif@ircam.fr
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.14  2004/06/03 11:33:05  schwarz
+# Complete profiling harness with a list of test cases with variable
+# arguments, pre-/postprocessing, logging, etc.
+# All output is saved into the prof directory.  The .mon.out files should
+# be kept for reference, the .gprof files can be regenerated from that.
+#
 # Revision 1.13  2004/06/02 14:46:27  schwarz
 # Added profiling target to check runtime spent in which functions
 #
@@ -75,7 +81,7 @@
 
 
 SUBDIRS = files
-EXTRA_DIST = $(TESTS) xpianoRes.m5.FIL.sdif
+EXTRA_DIST = $(TESTS) xpianoRes.m5.FIL.sdif CMakeLists.txt
 
 noinst_PROGRAMS = headerTest NVTTest testcheck testselect
 noinst_HEADERS = utils.h
