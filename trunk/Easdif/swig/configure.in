@@ -74,4 +74,5 @@ Makefile
 java/Makefile
 perl5/Makefile
 python/Makefile
+m4/Makefile
 )
