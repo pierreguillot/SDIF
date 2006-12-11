@@ -1,3 +1,9 @@
+2006-12-11  axel roebel  <roebel@local>
+
+	* Makefile.am, configure.in, CMakeLists.txt :
+	version 3.10.6 added support for cmake project configuration
+	system.
+
 2006-05-05  Diemo Schwarz  <schwarz@ATR-DarkStar.local>
 
 	* configure.in, ReleaseNotes: version 3.10.5
@@ -38,7 +44,7 @@
 	* include/sdif.h:
 	correct doc and remove function sketch (is now implemented)
 
-2006-03-22  roebel  <roebel@m1213.ircam.fr>
+2006-03-22  roebel  <roebel@local>
 
 	* ChangeLog, configure.in: Version 3.10.4: x86_64
 
@@ -51,11 +57,11 @@
 	* sdif/SdifFRead.c:
 	use correct format specifier for long int arguments.
 
-2006-02-04  roebel  <roebel@m1213.ircam.fr>
+2006-02-04  roebel  <roebel@local>
 
 	* configure.in: updated version
 
-2006-02-03  roebel  <roebel@m1213.ircam.fr>
+2006-02-03  roebel  <roebel@local>
 
 	* ChangeLog: Version 3.10.3
 
@@ -101,7 +107,7 @@
 	* tools/ProgressBar.cp, tools/ProgressBar.h, tools/StandardSuite.sdef, tools/Worker.cp, tools/Worker.h, tools/main.cp, tools/main.nib/classes.nib, tools/main.nib/info.nib, tools/main.nib/objects.xib, tools/sdiftotext.c:
 	minimal set of files to add XP-gui to the sdif tools
 
-2006-01-03  roebel  <roebel@m1213.ircam.fr>
+2006-01-03  roebel  <roebel@local>
 
 	* doc/download/Easdif/index.html: Released version 1.2.2b.
 
@@ -126,12 +132,12 @@
 	move big buffers into error branch to avoid too large stack allocation
 	check for error before reading padding
 
-2005-07-25  roebel  <roebel@m1213.ircam.fr>
+2005-07-25  roebel  <roebel@local>
 
 	* .cvsignore, test/.cvsignore, include/.cvsignore, sdif/.cvsignore:
 	Removed user configuration files from cvs.
 
-2005-07-05  roebel  <roebel@m1213.ircam.fr>
+2005-07-05  roebel  <roebel@local>
 
 	* sdif/SdifFile.c: changed to be able to compile with mingw32
 
@@ -140,7 +146,7 @@
 	* sdif.ncb, sdif.suo, sdif.vcproj:
 	adapted windows project to 3.10 (removed files)
 
-2005-06-10  roebel  <roebel@m1213.ircam.fr>
+2005-06-10  roebel  <roebel@local>
 
 	* ChangeLog, configure.in: Updated for new version.
 
@@ -148,7 +154,7 @@
 	Fixed SdifFGetOneNameValue for the case where the file is stored in
 	ASCII with windows or macintosh line feed conventions.
 
-2006-03-22  Axel Roebel  <Axel.Roebel@ircam.fr>
+2006-03-22  Axel Roebel  <Axel.Roebel@local>
 Version 3.10.4
 
 	* sdif/SdifRWLowLevel.c :
@@ -161,7 +167,7 @@ Version 3.10.4
 	* sdif/SdifFRead.c : 
 	use correct format specifier for long int arguments.	
 
-2006-02-03  Axel Roebel  <roebel@sam.local>
+2006-02-03  Axel Roebel  <roebel@local>
 Version 3.10.3
 
 	* sdif/SdifErrMess.c, SDIF/sdif/SdifErrMess.h: 
@@ -169,7 +175,7 @@ Version 3.10.3
 	error message. Before the error messages were
 	limited to 4 characters!
 	
-2005-06-10  Axel Roebel  <Axel.Roebel@ircam.fr>
+2005-06-10  Axel Roebel  <Axel.Roebel>
 Version 3.10.2
 
 	* sdif/SdifFGet.c:
@@ -194,13 +200,13 @@ Version 3.10.2
 	added the Info.plist
 	working xcode project
 
-2005-05-24  Axel Roebel  <Axel.Roebel@ircam.fr>
+2005-05-24  Axel Roebel  <Axel.Roebel@local>
 
 	* sdif/SdifErrMess.c:
 	Removed double semicolons, which apparently make gcc 2.96 stumble.
 
 
-2005-05-24  Axel Roebel  <roebel@sam.local>
+2005-05-24  Axel Roebel  <roebel@local>
 Version 3.10.1
 	
 	* include/sdif.h, sdif/SdifErrMess.c, sdif/SdifFGet.c, sdif/SdifFPrint.c, sdif/SdifFRead.c, sdif/SdifFScan.c, sdif/SdifFWrite.c, sdif/SdifHard_OS.h, sdif/SdifMatrix.c, sdif/SdifRWLowLevel.c, sdif/SdifRWLowLevel.h, sdif/SdifTest.c, sdif/SdifFGet.h: 
@@ -241,7 +247,7 @@ Version 3.10.0
 	- SdifErrorEnum (global errors) integrated into SdifErrorTagET (file errors)
 	- no more SdifError.[ch], everything done by SdifErrMess.[ch]
 
-2005-05-20  roebel  <roebel@mac-borghesi.ircam.fr>
+2005-05-20  roebel  <roebel@local>
 
 	* ChangeLog, configure.in:
 	Fix for c++ compilation. Unfinished! But cleaner as before
@@ -265,7 +271,7 @@ Version 3.10.0
 	the case where it was really used for max is now checked
 	by means of comparing the expected matrix size.
 
-2005-05-20  Axel Roebel  <Axel.Roebel@ircam.fr>
+2005-05-20  Axel Roebel  <Axel.Roebel@local>
 Version 3.9.3a
 
 	* sdif/SdifError.c (Module): 
@@ -285,7 +291,7 @@ Version 3.9.3a
 	Don't confuse error tags and error enums, which does not compile
 	with c++.
 
-2005-05-18  Axel Roebel  <Axel.Roebel@ircam.fr>
+2005-05-18  Axel Roebel  <Axel.Roebel@local>
 
 	* sdif/SdifFile.c, include/sdif.h:
 	Corrected detection seekablility of sdif file. 
@@ -310,7 +316,7 @@ Version 3.9.3
 	* sdif/SdifHighLevel.c:
 	stop read loop on errors and return values of callbacks
 
-2005-04-25  roebel  <roebel@mac-borghesi.ircam.fr>
+2005-04-25  roebel  <roebel@local>
 
 	* configure.in:
 	Extension of compiler flag variables CFLAGS and CXXFLAGS did not work properly because autoconf sets default values that may contradict the values we select.
@@ -366,7 +372,7 @@ Version 3.9.2
 	* tools/sdifextract.c:
 	added time ouput format to extract only the times of selected frames
 
-2005-01-31  roebel  <roebel@mac-borghesi.ircam.fr>
+2005-01-31  roebel  <roebel@local>
 
 	* configure.in: respect external CFLAGS/CXXFLAGS variable
 
@@ -383,7 +389,7 @@ Version 3.9.2
 
 	* macosxbuild/SDIF.xcode/project.pbxproj: static lib target
 
-2004-12-20  roebel  <roebel@mac-borghesi.ircam.fr>
+2004-12-20  roebel  <roebel@local>
 
 	* sdif/SdifRWLowLevel.c:
 	Fixed compilation warnings (errors) in gcc (g++) 3.4.2.
@@ -394,7 +400,7 @@ Version 3.9.2
 	created install target, installs into /Library/Frameworks
 	set version 3.9.0 in target properties: info.plist basic information
 
-2004-10-07  Axel Roebel  <Axel.Roebel@ircam.fr>
+2004-10-07  Axel Roebel  <Axel.Roebel@local>
 Version 3.9.1
 
 	* sdif/SdifFGet.c
@@ -469,7 +475,7 @@ Version 3.9.0
 	moved SdifSizeOf* functions from SdifFWrite.c to SdifGlobals.c
 
 
-2004-09-01  Axel Roebel  <Axel.Roebel@ircam.fr>
+2004-09-01  Axel Roebel  <Axel.Roebel@local>
 Version 3.8.7
 	
 	* configure.in
@@ -512,19 +518,19 @@ Version 3.8.6 released
 	real release notes give a high-level summary of the changes,
 	ChangeLog gives the details per file
 
-2004-08-23  Axel Roebel  <roebel@ligeti.ircam.fr>
+2004-08-23  Axel Roebel  <roebel@local>
 
 	* sdif/Makefile.am: Fixed for dist target!
 
-2004-07-28  Axel Roebel  <roebel@ligeti.ircam.fr>
+2004-07-28  Axel Roebel  <roebel@local>
 
 	* sdif/SdifGlobals.c: Simplified global list initialisation.
 
-2004-07-27  Axel Roebel  <roebel@ligeti.ircam.fr>
+2004-07-27  Axel Roebel  <roebel@local>
 
 	* sdif/SdifGlobals.c: Fixed infinite recursion in FreeGlobals.
 
-2004-07-26  Niels Bogaards <bogaards@ircam.fr> and Axel Roebel  <roebel@localdomain>
+2004-07-26  Niels Bogaards <bogaards@ircam.fr> and Axel Roebel  <roebel@local>
 Version 3.8.6 
 	
 	* SDIF now thread save if pthreads are available:
@@ -544,7 +550,7 @@ Version 3.8.6
 	* ChangeLog, acinclude.m4, configure.in: Version 3.8.6:
 	thread safe sdif: finished pthread support in SDIF by means of adding pthread detection to configure.
 
-2004-07-13  Axel Roebel  <Axel.Roebel@ircam.fr>
+2004-07-13  Axel Roebel  <Axel.Roebel@local>
 Version 3.8.5
 
 	* Fixed SdiffReadSignature. Number of bytes read need to be added not stored
@@ -552,7 +558,7 @@ Version 3.8.5
 
 	* properly initilize byte counters ind SdifCheck.c
 
-2004-06-17  Axel Roebel  <Axel.Roebel@ircam.fr>
+2004-06-17  Axel Roebel  <Axel.Roebel@local>
 Version 3.8.4
 
 	* tools/sdifextract.c:
@@ -605,7 +611,7 @@ Version 3.8.2
 	Now, calculating padding from ftell is redundant, but we leave it in,
 	with a warning, until everyone's code is tested.
 
-2004-02-10  Axel Roebel  <Axel.Roebel@ircam.fr>
+2004-02-10  Axel Roebel  <Axel.Roebel@local>
 Version 3.8.1
 	
 	* sdif/SdifFile.c
@@ -643,11 +649,11 @@ Version 3.8.0
 	Added SdifFileT based functions SdifFSetPos, SdifFGetPos around the
 	Sdiff* Macros, to be callable from OpenMusic.
 
-2003-11-18  Axel Roebel  <roebel@ligeti.ircam.fr>
+2003-11-18  Axel Roebel  <roebel@local>
 
 	* include/sdif.h: Added alias for typo in SdifErrorTagE.
 
-2003-11-07  Axel Roebel  <roebel@ligeti.ircam.fr>
+2003-11-07  Axel Roebel  <roebel@local>
 
 	* tools/*.c, sdif/*.c:
 	Removed last remainings of XpGuiCalls from tools files.
@@ -671,7 +677,7 @@ Version 3.8.0
 
 
 
-2003-11-07  Axel Roebel  <Axel.Roebel@ircam.fr>
+2003-11-07  Axel Roebel  <Axel.Roebel@local>
 3.8.0-beta3
 
 	* reorganized Mac related portability code
@@ -702,7 +708,7 @@ Version 3.8.0
 	Finally removed obsolete functions (like SdifSkip...).
 	
 
-2003-07-21  Axel Roebel  <roebel@ligeti.ircam.fr>
+2003-07-21  Axel Roebel  <roebel@local>
 
 	* SdifFPrint.c: Added support for intreger types to SdifFPrintOneRow
 
@@ -710,13 +716,13 @@ Version 3.8.0
 
 	* Makefile.am, sdifcpp/Makefile.am: fixed conditionnal compilation/installation of libsdif-cpp.
 
-2003-07-05  Axel Röbel  <roebel@ircam.fr>
+2003-07-05  Axel Röbel  <roebel@local>
 3.8.0-beta2
 	
 	* include/sdif.h, sdif/SdifRWLowLevel.c, sdif/SdifFPrint.c, sdif/SdifGlobals.c
 	Added support for types eInt1 and eUInt1.
 
-2003-06-24  Axel Roebel  <Axel.Roebel@ircam.fr>
+2003-06-24  Axel Roebel  <Axel.Roebel@local>
 
 	* sdif/SdifConvToText.c, sdif/SdifFile.c, sdif/SdifTextConv.c
 	removed unnecessary include of UniversalEnvVar.h
@@ -758,7 +764,7 @@ Version 3.8.0
 	(called from SdifConvToText.c)
 
 
-Version 3.7.5	2003-05-24  Axel Röbel  <roebel@ircam.fr>
+Version 3.7.5	2003-05-24  Axel Röbel  <roebel@local>
 
 	* include/sdif_version.h.in: 
 	Renamed  VERSION string to SDIF_VERSION_STRING
@@ -781,7 +787,7 @@ Version 3.7.4	2003-05-23  Diemo Schwarz  <schwarz@ircam.fr>
 	This is necessary for non-configured builds like on Mac.
 
 	
-2003-05-01  Axel Roebel  <roebel@ligeti.ircam.fr>
+2003-05-01  Axel Roebel  <roebel@local>
 
 	* ChangeLog: Added last changes.
 
@@ -797,7 +803,7 @@ Version 3.7.4	2003-05-23  Diemo Schwarz  <schwarz@ircam.fr>
 	Added missing declaration for SdifSkipASCIIUntilfromSdifString.
 
 	
-2003-05-01  Axel Röbel  <roebel@ircam.fr>
+2003-05-01  Axel Röbel  <roebel@local>
 
 	* Removed the declarations from SdifRWLowLevel.h that are in
 	sdif.h
@@ -806,7 +812,7 @@ Version 3.7.4	2003-05-23  Diemo Schwarz  <schwarz@ircam.fr>
 	takes now "const char *" as argument
 
 	
-Version 3.7.3	2003-03-07  Axel Roebel  <roebel@kempyang.ircam.fr>
+Version 3.7.3	2003-03-07  Axel Roebel  <roebel@local>
 
         * maintenance release for Easdif integration
 	
@@ -868,7 +874,7 @@ Version 3.7.0	2002-09-20  Diemo Schwarz  <schwarz@lithium.ircam.fr>
 	  -> tdl-version 0.4beta
 	
 	
-Version 3.6	2002-08-05  Axel Roebel  <roebel@kempyang.ircam.fr>
+Version 3.6	2002-08-05  Axel Roebel  <roebel@local>
 
 	* Fixed some unwanted redeclarations.
 
@@ -921,4 +927,4 @@ Version 3.3:
 	  Operating System.
 
 	
-$Id: ChangeLog,v 1.52 2006-05-05 15:35:28 schwarz Exp $
+$Id: ChangeLog,v 1.53 2006-12-11 22:45:45 roebel Exp $
