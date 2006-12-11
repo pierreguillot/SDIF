@@ -30,15 +30,16 @@
  *
  * Easdif is a C++ interface based on IRCAM's Sdif library.
  * The Easdif library includes all sdif functions and provides 
- * a much simpler API. Easdif requires Sdif version 3.7
- * to compile.
+ * a much simpler API. Easdif @EASDIF_VERSION@ contains 
+ * Sdif version @sdif_version@.
  * 
  * \section example Example
  *
- * To use the library the include file easdif.h has to be included 
- * All
- * Below, is an complete example :
- *for reading and writing a file with modifications
+ * To use the library the include file easdif.h has to be included.
+ * Below, is an simple example 
+ * for reading and writing a file with modifications. It demonstrates
+ * first the use of the basic classes and methods. In the second
+ * part the use of the frame directory is shown. 
  * 
 \code
 #include "easdif/easdif.h"
@@ -48,7 +49,7 @@ using namespace Easdif;
 int main(int argc, char** argv)
 {  
 
-    /* initialise the SDIF library and install exceptions*/
+    /* initialise the SDIF library and install exceptions */
     EasdifInit();
 
     SDIFEntity readentity;
@@ -136,7 +137,7 @@ int main(int argc, char** argv)
 
 	/* reading the next frame of the EntityRead, return the number of
 	 * bytes read, return 0 if the frame is not selected 
-	 * and produces an exceptio n if eof is reached */
+	 * and produces an exception if eof is reached */
 	if(!readentity.ReadNextFrame(frame))	    
 	  continue;
 	
