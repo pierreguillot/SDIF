@@ -1,0 +1,20 @@
+Support for shared libraries
+============================
+
+The default behavior of the configure script is to enable 
+the use of shared librairies. While libtool
+exists for MacOSX some earlier versions are not working properly.
+Therefore, for versions before 10.3.9 
+we recommand to disable creation of shared libraries
+under  MacOSX  by means of adding the configure
+option --disable-shared to the configuration command line.
+So under MacOSX before 10.3.9
+the prefered configuration command line would read
+
+> ./configure --disable-shared
+
+while for other versions you may keep shared  libraries as
+with
+
+> ./configure 
+
