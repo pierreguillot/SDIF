@@ -1,3 +1,7 @@
+Version 3.10.6  2006-12-11  Axel Roebel
+
+        * added support for cmake project configuration system
+
 Version 3.10.5	2005-05-05  Diemo Schwarz, Niels Bogaards
 
 	* doc/standard/sdif-standard.html updated
