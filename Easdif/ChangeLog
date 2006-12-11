@@ -1,9 +1,16 @@
-2006-11-26  axel roebel  <roebel@marl.hd.free.fr>
-Version 1.2.9
+2006-12-11  axel roebel  <roebel@local>
+Version 1.3.0
+
+	* added cmake support for SDIF. Updated Easdif cmake build system
+	to use to SDIF cmake build system.
 
 	* swig :
 	first release with swig included, configuration partly reworked.
-	
+		
+
+2006-11-26  axel roebel  <roebel@local>
+Version 1.2.9
+
 	* swig/Makefile.am :
 	Disable java subdir if not available
 
@@ -11,7 +18,7 @@ Version 1.2.9
 	Add support for Get/Set/Row/Col with std::vector argument to facilitate
 	use in scritping lacguanges via swig.
 
-2006-10-06  Axel Roebel  <Axel.Roebel@ircam.fr>
+2006-10-06  Axel Roebel  <Axel.Roebel@local>
 Version 1.2.8
 
 	* easdif/sdifentity.cpp :
@@ -21,33 +28,33 @@ Version 1.2.8
 	* CMakeLists.txt, easdif/CMakeLists.txt :
 	install include files in correct place.
 	
-2006-04-22  Axel Roebel  <Axel.Roebel@ircam.fr>
+2006-04-22  Axel Roebel  <Axel.Roebel@local>
 Version 1.2.7
 
 	* easdif/sdifentity.hpp, easdif/sdif_matrix.hpp, easdif/sdif_frame.hpp, easdif/sdif_frame.cpp, easdif/sdif_matrix.cpp :
 	Renamed some files to prevent name clash of object files for cmake generator system
 	on MacOSX.
 
-2006-02-22  roebel  <Axel.Roebel@ircam.fr>
+2006-02-22  roebel  <Axel.Roebel@local>
 Version 1.2.6
 	
 	* easdif/sdifframe.hpp, easdif/sdifframe.cpp :
 	Fixed SetHeader time argument from float to SdifFloat8.
 
-2006-01-05  Axel Roebel  <roebel@sam.local>
+2006-01-05  Axel Roebel  <roebel@local>
 Version 1.2.5
 
 	* easdif/sdifentity.hpp : 
 	Added mutable for internal frame store (required by gcc 4.0 linux).
 	
-2005-12-19  Axel Roebel  <roebel@sam.local>
+2005-12-19  Axel Roebel  <roebel@local>
 Version 1.2.4
 
 	* easdif/sdifframe.hpp, easdif/sdifframe.cpp :
 	Fixed argument of SetTime function to be SdifFloat8
 	instead of float!
 
-2005-07-25  Axel Roebel  <roebel@sam.local>
+2005-07-25  Axel Roebel  <roebel@local>
 Version 1.2.3
 
 	* swig/configure.in, swig/easdif-common.i.in, swig/python/Makefile.am, swig/java/Makefile.am, swig/java/easdif-java.i, swig/perl5/Makefile.am:
@@ -66,7 +73,7 @@ Version 1.2.3
 	Changed mEof for files opened for writing to false.
 
 
-2005-06-06  Axel Roebel  <Axel.Roebel@ircam.fr>
+2005-06-06  Axel Roebel  <Axel.roebel@local>
 Version 1.2.2b
 
 	* easdif/sdifentity.cpp:
@@ -74,12 +81,12 @@ Version 1.2.2b
 
 	* Doxyfile.in: Changed intro file to be easdifintro.hpp.
 
-2005-06-03  Axel Roebel  <Axel.Roebel@ircam.fr>
+2005-06-03  Axel Roebel  <Axel.Roebel@local>
 
 	* easdif/sdifentity.hpp: Fixed docu.
 
 
-2005-06-02  Axel Roebel  <Axel.Roebel@ircam.fr>
+2005-06-02  Axel Roebel  <Axel.Roebel@local>
 Version 1.2.2a
 
 	* ChangeLog, configure.in: updated version and log.
@@ -91,7 +98,7 @@ Version 1.2.2a
 	Fixed RestrictSelection functions for the case that alow level
 	selection exists and a high level selection has to be created.
 
-2005-06-02  Axel Roebel  <Axel.Roebel@ircam.fr>
+2005-06-02  Axel Roebel  <Axel.Roebel@local>
 	
 	* easdif/sdifentity.cpp:
 	Fixed RestrictSelection functions for the case that alow level
@@ -105,7 +112,7 @@ Version 1.2.2a
 	* easdif/sdifentity.cpp, easdif/sdifentity.hpp:
 	isSelected function and corrections to the selection tests
 
-2005-05-30  Axel Roebel  <Axel.Roebel@ircam.fr>
+2005-05-30  Axel Roebel  <Axel.Roebel@local>
 
 	* easdif/sdifentity.hpp:
 	fixed error in gcc4 which  requires explicite naming of
@@ -143,7 +150,7 @@ Version 1.2.2a
 	* easdif/sdifentity.cpp:
 	fixed highlevel selection for non-existing base selection
 
-2005-05-30  Axel Roebel  <Axel.Roebel@ircam.fr>
+2005-05-30  Axel Roebel  <Axel.Roebel@local>
 Version 1.2.2
 	
 	* easdif/sdifentity.hpp, easdif/sdifentity.cpp:
@@ -187,7 +194,7 @@ Version 1.2.2
 	added the Info.plist
 	working xcode project
 
-2005-05-24  Axel Roebel  <Axel.Roebel@ircam.fr>
+2005-05-24  Axel Roebel  <Axel.Roebel@local>
 
 	* SDIF/sdif/SdifErrMess.c:
 	Removed double semicolons, which apparently make gcc 2.96 stumble.
@@ -277,13 +284,13 @@ Version 1.2.2
 	Synchronized the extended ErrorTagET with the new
 	table of error messages.
 
-2005-05-24  Axel Roebel  <Axel.Roebel@ircam.fr>
+2005-05-24  Axel Roebel  <Axel.Roebel@local>
 Version 1.2.1a
 
 	* easdif/sdifentity.cpp, easdif/sdifmatrix.cpp:
 	Added mising return statements and fixed minor compiler warnings.
 
-2005-05-24  Axel Roebel  <roebel@sam.local>
+2005-05-24  Axel Roebel  <roebel@local>
 Version 1.2.1
 
 	* easdif/sdifentity.cpp, easdif/sdifentity.h, easdif/sdifframe.cpp, easdif/sdifframe.h, easdif/sdifmatrix.cpp, easdif/sdifmatrix.h, easdif/sdifmatrixdata.h: 
@@ -298,7 +305,7 @@ Version 1.2.1
 	* easdif/sdifexception.cpp, easdif/sdifexception.h:
 	modified for new interface to SdifErrorFunction handlers.
 	
-2005-05-20  Axel Roebel  <Axel.Roebel@ircam.fr>
+2005-05-20  Axel Roebel  <Axel.Roebel@local>
 Version 1.2.0
 
 	* easdif/easdifintro.h.in, test/tutofini.cpp (Module): 
@@ -326,7 +333,7 @@ Version 1.2.0
 	* easdif/Makefile.am (Module): 
 	Added proper dependency on libsdif_cpp.la.	
 	
-2005-05-03  Axel Roebel  <Axel.Roebel@ircam.fr>
+2005-05-03  Axel Roebel  <Axel.Roebel@local>
 Version 1.1.0
 
 	* easdif/sdifentity.h, easdif/sdifentity.cpp (Module): 
@@ -335,20 +342,20 @@ Version 1.1.0
 	* easdif/sdifmatrixdata.h (Module): 
 	Fixed documentation.	
 
-2005-02-04  Axel Roebel  <roebel@sam.local>
+2005-02-04  Axel Roebel  <roebel@local>
 Version 1.0.2beta
 
 	* easdif/sdifentity.cpp 
 	WriteFrame would not return frame size written.
 
-2004-09-10  Axel Roebel  <roebel@localdomain>
+2004-09-10  Axel Roebel  <roebel@local>
 Version 1.0.1beta
 
 	* Extended frame directory to contain matrix signatures.
 	Now Easdif can determine frame and matrix selection
 	without rereading the matrices.
 
-2004-09-09  Axel Roebel  <Axel.Roebel@ircam.fr>
+2004-09-09  Axel Roebel  <Axel.Roebel@local>
 Version 1.0.0beta
 	
 	* Added new Frame read access method using iterators.
@@ -358,7 +365,7 @@ Version 1.0.0beta
 	and use it to efficiently find selected frames.
 
 	
-2004-09-08  Axel Roebel  <roebel@localdomain>
+2004-09-08  Axel Roebel  <roebel@local>
 Version 0.11.1
 	
 	* easdif/sdifentity.h, easdif/sdifentity.cpp
@@ -367,7 +374,7 @@ Version 0.11.1
 	* easdif/sdifmatrix.h
 	fixed bug in GetNbCols which would return the number of rows
 	
-2004-08-25  Axel Roebel  <Axel.Roebel@ircam.fr>
+2004-08-25  Axel Roebel  <Axel.Roebel@local>
 Version 0.11.0
 
 	* easdif/sdifframe.h, easdif/sdifframe.cpp 
@@ -378,13 +385,13 @@ Version 0.11.0
 
 	added iterators that iterate over the matrices in a frame.
 	
-2004-08-25  Axel Roebel  <roebel@localdomain>
+2004-08-25  Axel Roebel  <roebel@local>
 Version 0.10.2
 
 	* easdif/sdifentity.h, 
 	Rewind(time) made public.
 	
-2004-07-29  Axel Roebel  <roebel@localdomain>
+2004-07-29  Axel Roebel  <roebel@local>
 Version 0.10.1
 
 	* easdif/sdifmatrixdata.h
@@ -394,7 +401,7 @@ Version 0.10.1
 	use eEmptySignature for Frame init.
 	
 
-2004-07-28  Axel Roebel  <Axel.Roebel@ircam.fr>
+2004-07-28  Axel Roebel  <Axel.Roebel@local>
 Version 0.10.0
 
 	* easdif/sdifmatrixdata.h, easdif/sdifmatrixdatainterface.h, easdif/sdifmatrix.h
@@ -403,12 +410,12 @@ Version 0.10.0
 	
 
 	
-2004-07-26  Axel Roebel  <roebel@localdomain>
+2004-07-26  Axel Roebel  <roebel@local>
 Version 0.9.1
 
 	* Added configure support for pthreads.
 
-2004-07-21  Axel Roebel  <roebel@localdomain>
+2004-07-21  Axel Roebel  <roebel@local>
 Version 0.9.0
 
 	* easdif/sdifentity.h, easdif/sdifentity.cpp, easdif/sdifframe.cpp, easdif/sdifframe.h
@@ -425,7 +432,7 @@ Version 0.9.0
 	and GetNbCol by GetNbCols.
 
 	 
-2004-07-20  Axel Roebel  <Axel.Roebel@ircam.fr>
+2004-07-20  Axel Roebel  <Axel.Roebel@local>
 Version 0.8.5
 
 	* easdif/sdifmatrixdata.h, easdif/sdifmatrix.cpp
@@ -433,7 +440,7 @@ Version 0.8.5
 	means of writing and reading (if no selection on row or column)
 	complete matrices  
 
-2004-07-13  Axel Roebel  <Axel.Roebel@ircam.fr>
+2004-07-13  Axel Roebel  <Axel.Roebel@local>
 Version 0.8.4
 
 	* easdif/sdifmatrix.h, easdif/sdifmatrix.cpp
@@ -442,13 +449,13 @@ Version 0.8.4
 	* easdif/sdifentity.h
 	removed unused variable mNbFrames!
 
-2004-03-05  Axel Roebel  <roebel@compaq.localdomain>
+2004-03-05  Axel Roebel  <roebel@local>
 Version 0.8.3
 
 	* easdif/sdifmatrix.h, easdif/sdifmatrix.cpp
 	added methods to set matrix signatures
 
-2004-02-10  Axel Roebel  <Axel.Roebel@ircam.fr>
+2004-02-10  Axel Roebel  <Axel.Roebel@local>
 Version 0.8.2
 
 	* easdif/sdifnamevaluetable.h, easdif/sdifnamevaluetable.cpp
@@ -459,14 +466,14 @@ Version 0.8.2
 	eof() now inline.
 
 	
-2004-02-02  Axel Roebel  <Axel.Roebel@ircam.fr>
+2004-02-02  Axel Roebel  <Axel.Roebel@local>
 Version 0.8.1
 	
 	* easdif/sdifframe.h, easdif/sdifframe.cpp
 	fixed problem in sdifframe that would result in 
 	error when matrices in the frame would be resized.
 	
-2004-01-19  Axel Roebel  <Axel.Roebel@ircam.fr>
+2004-01-19  Axel Roebel  <Axel.Roebel@local>
 Version 0.8.0
 	
 	* easdif/sdifentity.h, easdif/sdifentity.cpp
@@ -475,7 +482,7 @@ Version 0.8.0
 
 	* added --enable-java switch to swig configure
 
-2003-11-25  Axel Roebel  <Axel.Roebel@ircam.fr>
+2003-11-25  Axel Roebel  <Axel.Roebel@local>
 Version 0.7.3
 
 	* easdif/sdifinit.cpp, easdif/sdifinit.h
@@ -500,7 +507,7 @@ Version 0.7.3
 	added exception for accessing a matrix which is not contained 
 	in a frame.
 	
-2003-08-06  Axel Roebel  <Axel.Roebel@ircam.fr>
+2003-08-06  Axel Roebel  <Axel.Roebel@local>
 Version 0.7.2
 
 	* easdif/easdif.h
@@ -509,7 +516,7 @@ Version 0.7.2
 	* easdif/easdifintro.h
 	demo command line follows installation prefix.
 	
-2003-07-18  Axel Roebel  <Axel.Roebel@ircam.fr>
+2003-07-18  Axel Roebel  <Axel.Roebel@local>
 
 	* easdif/sdifmatrix.cpp, easdif/sdifmatrix.h
 	Improved documentation, moved constructors from .h to .cpp
@@ -523,7 +530,7 @@ Version 0.7.2
 	* easdif/sdifframe.h, easdif/sdifframe.cpp
 	Added SetHeader with Signature as std::string
 
-2003-07-17  Axel Roebel  <Axel.Roebel@ircam.fr>
+2003-07-17  Axel Roebel  <Axel.Roebel@local>
 
 	* easdif/sdifmatrix.cpp, easdif/sdifmatrix.h, easdif/sdifmatrixdata.h,easdif/sdifmatrixdatainterface.h
 	Updated Resize method to properly
@@ -533,7 +540,7 @@ Version 0.7.2
 	of the matrx data.
 	
 	
-2003-07-05  Axel Röbel  <roebel@ircam.fr>
+2003-07-05  Axel Röbel  <roebel@local>
 
 	* easdif/sdifmatrix.cpp
 	Added support for sdif data types eUint1 and eInt1.
@@ -545,17 +552,17 @@ Version 0.7.2
 	After Resize-ing a matrix all elements are set to zero.
 	
 
-2003-05-28  Axel Roebel  <Axel.Roebel@ircam.fr>
+2003-05-28  Axel Roebel  <Axel.Roebel@local>
 
 	* Added configuration dependend map support for swig.
 
-2003-05-26  Axel Roebel  <Axel.Roebel@ircam.fr>
+2003-05-26  Axel Roebel  <Axel.Roebel@local>
 Version 0.7.1
 	
 	* configure.in, easdif/easdif_version.h.in,easdif_config.h.in
 	the version macros were not working, now they do
 
-2003-05-24  Axel Röbel  <roebel@ircam.fr>
+2003-05-24  Axel Röbel  <roebel@local>
 Version 0.7.0
 	
 	* easdif/sdifentity.h,cpp
@@ -568,7 +575,7 @@ Version 0.7.0
 	the type string before.
 	
 
-2003-05-22  Axel Roebel  <Axel.Roebel@ircam.fr>
+2003-05-22  Axel Roebel  <Axel.Roebel@local>
 Version 0.6.0
 	
 	* swig/easdif-common.i.in 
@@ -578,7 +585,7 @@ Version 0.6.0
 	SDIFNameValueTable now derived from std::map which makes 
 	handling more conforming to standard and handling in swig easier.
 
-2003-05-21  Axel Roebel  <Axel.Roebel@ircam.fr>
+2003-05-21  Axel Roebel  <Axel.Roebel@local>
 Version 0.5.1
 
 	* easdif/easdifintro.h,test/*.cpp 
@@ -595,7 +602,7 @@ Version 0.5.1
 	Added documentation. Removed unused member "error".
 	Added member functions to access message and errortag.
 	
-2003-05-18  Axel Röbel  <roebel@ircam.fr>
+2003-05-18  Axel Röbel  <roebel@local>
 Version 0.5.0
 	
 	* easdif/sdifframe.h,cpp
@@ -622,7 +629,7 @@ Version 0.5.0
 	description.
 	Due to bug in swig const version of GetMatrixWithSig had to be ignored.
 
-2003-05-01  Axel Röbel  <roebel@ircam.fr>
+2003-05-01  Axel Röbel  <roebel@local>
 
 	* easdif/sdifmatrix.h/cpp:
 	CreateMatrixData is now simply called Init. 
@@ -664,13 +671,13 @@ Version 0.5.0
 	- Matrix::Set takes int/float, not int&/float&
 
 	
-2003-04-10  Axel Roebel  <roebel@ircam.fr>
+2003-04-10  Axel Roebel  <roebel@local>
 
 	* Makefile.am:
 	Change name of doc directory in doc distribution to Easdif-VERSION.doc.
 
 	
-2003-04-09  Axel Roebel  <roebel@ircam.fr>
+2003-04-09  Axel Roebel  <roebel@local>
 
 	* Makefile.am:
 	Because Easdif has its own subdir in the download directory
@@ -712,7 +719,7 @@ Version 0.5.0
 
 	* easdif/Makefile.am: Added missing easdifintro.h to dsitributed files.
 
-2003-04-08  Axel Roebel  <roebel@ligeti.ircam.fr>
+2003-04-08  Axel Roebel  <roebel@local>
 
 	* test/Makefile.am: Dont install test programs
 
@@ -723,7 +730,7 @@ Version 0.5.0
 
 	* Doxyfile.in: Added test for program dot
 
-2003-04-09  Axel Roebel  <Axel.Roebel@ircam.fr>
+2003-04-09  Axel Roebel  <Axel.Roebel@local>
 Version 0.32
 
 	* Added dot flag support in Doxyfile.in
@@ -766,13 +773,13 @@ Version 0.32
 	* autogen.sh:
 	Added conditional to prevent endless loop when directory SDIF doesn't exist.
 
-2003-03-18  Axel Roebel  <roebel@ircam.fr>
+2003-03-18  Axel Roebel  <roebel@local>
 
 	* easdif/Makefile.am: Use libtool for conveniance library
 
 	* configure.in: Improved messages for check of MacOSX Darwin.
 
-2003-03-07  Axel Roebel  <roebel@ircam.fr>
+2003-03-07  Axel Roebel  <roebel@local>
 
 	* Makefile, Makefile.in, configure, easdif/Makefile, easdif/Makefile.in, test/Makefile, test/Makefile.in:
 	Removed generated files from CVS.
@@ -783,14 +790,14 @@ Version 0.32
 	Updated for correct handling of distribution and new layout of c++ compilation in SDIF.
 
 	
-2003-03-05  Axel Roebel  <roebel@ircam.fr>
+2003-03-05  Axel Roebel  <roebel@local>
 
 	* configure.in:
 	test for MacOSX and disable shraed libraries for this system.
 
 	* easdif/Makefile.am: Fixed installation of include files.
 
-2003-03-04  Axel Roebel  <roebel@ircam.fr>
+2003-03-04  Axel Roebel  <roebel@local>
 
 	* Makefile, Makefile.in, configure, easdif/Makefile, easdif/Makefile.in, easdif/easdif_version.h, test/Makefile, test/Makefile.in:
 	Regenerated for configure.in with version detection
@@ -809,7 +816,7 @@ Version 0.32
 
 	* Doxyfile: Version 0.30
 
-2003-03-03  Axel Roebel  <roebel@ircam.fr>
+2003-03-03  Axel Roebel  <roebel@local>
 
 	* configure.in, Makefile, Makefile.in, configure: Updated with automake
 
@@ -829,7 +836,7 @@ Version 0.32
 	Adapted for autoconf/automake...
 
 
-2003-02-10  Axel Roebel  <roebel@ircam.fr>
+2003-02-10  Axel Roebel  <roebel@local>
 
 	* src/sdifmatrix.h, src/sdifmatrix.cpp: Comment changed.
 
@@ -841,7 +848,7 @@ Version 0.32
 	Added exception for writing frame header with wrong number of bytes for the framesize.
 
 	
-2003-02-07  Axel Roebel  <roebel@ircam.fr>
+2003-02-07  Axel Roebel  <roebel@local>
 
 	* test/easdifRmNVT.cpp: Updated usage info.
 
@@ -854,18 +861,18 @@ Version 0.32
 	* test/Makefile: Added easdifRmNVT to makefile.
 
 
-2002-12-13  Axel Roebel  <roebel@ircam.fr>
+2002-12-13  Axel Roebel  <roebel@local>
 
 	* test/tutofini.cpp: explicitely close sdif files at the end.
 
 
-2002-12-02  Axel Roebel  <roebel@ircam.fr>
+2002-12-02  Axel Roebel  <roebel@local>
 
 	* src/sdifinit.cpp, src/sdifinit.h:
 	Added init function with char* argument
 
 
-2002-11-28  Axel Roebel  <roebel@ircam.fr>
+2002-11-28  Axel Roebel  <roebel@local>
 
 	* src/sdifnamevaluetable.cpp, src/sdifnamevaluetable.h:
 	Back to simple map which sorts alphabetically. In any case
@@ -879,7 +886,7 @@ Version 0.32
 	* test/tutofini.cpp: Added NVT name retrieval test.
 
 	
-2002-11-27  Axel Roebel  <roebel@ircam.fr>
+2002-11-27  Axel Roebel  <roebel@local>
 
 	* src/sdifentity.cpp, src/sdifentity.h:
 	Removed member that redundantly indicated size of NVT vector.
@@ -892,7 +899,7 @@ Version 0.32
 	Removed member that redundantly indicated size of map.
 
 
-2002-11-07  Axel Roebel  <roebel@ircam.fr>
+2002-11-07  Axel Roebel  <roebel@local>
 
 	* test/tutofini.cpp: Updated demo to have reasonable message for EOF.
 
@@ -920,7 +927,7 @@ Version 0.32
 	* src/easdif_version.h: Version 0.21.
 
 
-2002-10-30  Axel Roebel  <Axel.Roebel@ircam.fr>
+2002-10-30  Axel Roebel  <Axel.Roebel@local>
 Version 0.21
 	
 	* src/sdifentity.cpp, src/sdifentity.h:
@@ -935,4 +942,4 @@ Version 0.21
 	* ChangeLog: Added changelog to repository.
 
 
-$Id: ChangeLog,v 1.59 2006-11-26 20:30:31 roebel Exp $
+$Id: ChangeLog,v 1.60 2006-12-11 22:45:26 roebel Exp $
