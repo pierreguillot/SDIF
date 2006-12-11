@@ -1,4 +1,4 @@
-$Id: README,v 1.7 2006-11-27 17:18:51 roebel Exp $ Diemo Schwarz
+$Id: README,v 1.8 2006-12-11 22:07:04 roebel Exp $ Diemo Schwarz
 
 README for SWIG wrapper generation for eaSDIF
 
@@ -11,14 +11,17 @@ SWIG  generates  extension  modules   for  all  sorts  of  interpreted
 languages such as Perl, Python, Tcl, Java, Php, that allow you to call
 the eaSDIF and SDIF library functions from these languages.
 
-The main  module that can be generated is
+The extension modules  that can be generated are
+
 - eaSDIF  it contains  high-level classes and is normally
           sufficient for all programming needs.
-	  the eaSDIF module can be compiled us9nig the cmake
-	  build system. It should be available on most existing
+	  the project files for the eaSDIF module can be created
+          using the cmake build system. 
+          It should be available on most existing
           compilers and OS.
 
-- SDIF	  with all the C-definitions of the low-level SDIF library (huge, currently commented out!)
+- SDIF	  with all the C-definitions of the low-level SDIF library 
+          (huge, currently commented out!)
 	  the SDIF module is only working on linux systems. 
 	  Due to its size and low level api it is strongly 
 	  suggested to use eaSDIF for scripting languages.
@@ -36,18 +39,17 @@ directories new  bindings for other  languages are easy to  setup. the
 configuration has  been tested with  swig 1.3.31, all  earlier version
 are not supported and will most likely not work.
 
-The cmake build system  provides configurations for all three targets.
-The swig interfaces  are configured the cmake OPTION  DOSWIG is set to
-ON during configuration and build system generation.
+The cmake  build configuration  provides configurations for  all three
+targets (if the  required libraries and compilers are  avilable on the
+system).   The swig  interfaces  are configured  if  the cmake  option
+DOSWIG is set to ON during configuration and build system generation.
 
 Note, the  cmake build  system requires out  of source  building. This
 means  your  build  directory  should  be  distinct  from  the  source
 directory.
 
-To configure run (in the build directory)
+To configure cd into the Easdif build directory (see ../README) and run
 
-> mkdir build
-> cd  build
 > # configuration
 > cmake PATH_TO_EASDIF_SRC_DIR -DDOSWIG=ON 
 
@@ -62,9 +64,16 @@ To configure run (in the build directory)
 The Interface file is eaSDIF.py and the bindings to the Easdif library
 are in the shared library eaSDIF.so (eaSDIF.dylib, or eaSDIF.dll)
 
-Note, that different nuild systems then unix makefiles can be selected
-by means  of the -Gbuildsystem switch  of the cmake  command. For more
-info on cmake look at www.cmake.org.
+Note, that  other build system configurations than  unix makefiles can
+be  selected  by  means  of  the -Gbuildsystem  switch  of  the  cmake
+command. For more info on cmake look at www.cmake.org.
+
+GNU autoools configure
+
+
+If you want to use GNU autotools configuration you are warned that the
+autotools configure does not support out of source tree building. Moreover
+all but the python modules will build only on Linux systems.
 
 
 3. DIRECTORY STRUCTURE
@@ -116,6 +125,7 @@ the ugly and redundant eaSDIF::SDIFMatrix().
 
 5. TODO
 
+- finish support for selection functions
 - direct set/get of text matrices
 - map/tie matrix columns to hash keys with array value
 
