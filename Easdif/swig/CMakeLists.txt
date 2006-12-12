@@ -19,8 +19,7 @@ IF(SWIG_FOUND)
   SET(SDIF_BUILDINC_DIR ${CMAKE_BINARY_DIR})
   CONFIGURE_FILE(easdif-common.i.in ${CMAKE_CURRENT_BINARY_DIR}/easdif-common.i)
   CONFIGURE_FILE(sdif-common.i.in ${CMAKE_CURRENT_BINARY_DIR}/sdif-common.i)
-  
-  SET(SWIG_COMMON_EASDIF_SRC ${CMAKE_CURRENT_SOURCE_DIR}/easdif-common-init.i ${CMAKE_CURRENT_BINARY_DIR}/easdif-common.i ${CMAKE_CURRENT_SOURCE_DIR}/easdif-defines.i)
+
   MESSAGE(STATUS "python")
   ADD_SUBDIRECTORY(python)
   MESSAGE(STATUS "perl5")
