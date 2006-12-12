@@ -272,6 +272,12 @@ ADD_DEPENDENCIES(pubdoc doc)
 GET_FILENAME_COMPONENT(normalize_path ${CMAKE_CURRENT_SOURCE_DIR}/SDIF ABSOLUTE)
 GET_DIRECTORY_PROPERTY(sdif_version DIRECTORY ${normalize_path} DEFINITION  SDIF_VERSION)
 
+FILE(GLOB_RECURSE configure_dependencies_am ${CMAKE_CURRENT_SOURCE_DIR}/Makefile.am) 
+FILE(GLOB_RECURSE configure_dependencies_sh ${CMAKE_CURRENT_SOURCE_DIR}/autogen.sh) 
+FILE(GLOB_RECURSE configure_dependencies_in ${CMAKE_CURRENT_SOURCE_DIR}/configure.in) 
+ADD_CUSTOM_COMMAND(OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/configure COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/autogen.sh WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} DEPENDS ${configure_dependencies_in} ${configure_dependencies_am} ${configure_dependencies_sh} )
+
+ADD_CUSTOM_TARGET(dist cpack --config ${CMAKE_CURRENT_BINARY_DIR}/CPackSourceConfig.cmake DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/configure )
 
 SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "EaSDIF/SDIF libraries and tools for handling SDIF files")
 SET(CPACK_PACKAGE_VENDOR "IRCAM")
@@ -279,11 +285,19 @@ SET(CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_CURRENT_SOURCE_DIR}/README")
 SET(CPACK_PACKAGE_VERSION_MAJOR "${EASDIF_VERSION_MAJ}")
 SET(CPACK_PACKAGE_VERSION_MINOR "${EASDIF_VERSION_MIN}")
 SET(CPACK_PACKAGE_VERSION_PATCH "${EASDIF_VERSION_RELEASE}")
-SET(CPACK_SOURCE_IGNORE_FILES ${CPACK_SOURCE_IGNORE_FILES} "~$" \\.dsp$ ^build*)
 SET(CPACK_SOURCE_PACKAGE_FILE_NAME
-    "Easdif-${EASDIF_VERSION}_SDIF-${sdif_version}")
+    "Easdif-${EASDIF_VERSION}-SDIF-${sdif_version}-src")
 SET(CPACK_PACKAGE_FILE_NAME)
+SET(CPACK_GENERATOR "TGZ")
+SET(CPACK_SOURCE_GENERATOR "TGZ")
+
+SET(CPACK_SOURCE_IGNORE_FILES "/CVS/" "/\\\\.svn/" "\\\\.swp$" "\\\\.#" "/#" "~$"  "/build.*/" "/autom4te.cache/"   "/SDIF/others/" "/all.ircam.sh$" "/all.install$" "/SDIF/sdif/ReadFromMemory.txt$"  "/test/fall.sdif"   "/Makefile$" "sdif.sln$" "/SDIF/test/prof/" "/SDIF/test/.*src$"   "/SDIF/test/.*dsp$" "/SDIF/test/SdifTypes.STYP" "/macosxbuild/[^MS]$"  "/macosxbuild/.*plist$" "/macosxbuild/.*MacOSX.binary-distrib$" "/macosxbuild/S.*/[^Mp]" "/macosxbuild/SDIF.xcodeproj/" ".cvsignore$" "/test/ent.*cpp$" "/test/t[tryoe].*cpp$" "/SDIF/doc/pics/.*fig$" "/SDIF/doc/intern/"  "/SDIF/doc/standard/" "/SDIF/doc/index-sf.html" "/SDIF/doc/Makefile.doc" "/SDIF/doc/sdif.src" "/SDIF/doc/.*txt" "/SDIF/types/" "/SDIF/tools/main.nib/" "/SDIF/tools/.*sdef" "/SDIF/tools/.*cp$" "/SDIF/tools/.*h$" "/SDIF/tools/sdifusage.*$" "/SDIF/tools/.*vcproj$" "/SDIF/doc/download/" "compileandinstall$" "/sdifcpp/.*cpp" "/sdifcpp/.*h$" "/test/Ne*\\\\.sdif$"   "/test/tut[mn].*\\\\.cpp$"   "/test/es.*cpp$" "/test/[cmvnrs].*cpp$" )
+MESSAGE("CPACK_SOURCE_IGNORE_FILES  ${CPACK_SOURCE_IGNORE_FILES}")
 INCLUDE(CPack)
+
+
+
+
 
 
 MESSAGE("===================================================================")
