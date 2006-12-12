@@ -1,10 +1,13 @@
-# $Id: Makefile.am,v 1.10 2006-12-10 17:34:46 roebel Exp $
+# $Id: Makefile.am,v 1.11 2006-12-12 16:29:11 roebel Exp $
 #
 # eaSDIF - swig/Makefile.am
 #
 # Main makefile for swig wrapper generation for eaSDIF C++ library.
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.10  2006/12/10 17:34:46  roebel
+# Added swig sources into distribution.
+#
 # Revision 1.9  2006/11/26 22:49:24  roebel
 # Fixed to use local m4 directory.
 #
@@ -36,7 +39,7 @@ endif
 
 SUBDIRS = python perl5 $(JAVADIR)  
 DIST_SUBDIRS = python perl5 java   m4
-EXTRA_DIST = CMakeLists.txt  easdif-common.i  easdif-common.i.in  easdif-common-init.i  easdif-defines.i  README  sdif-common.i  sdif-common.i.in
+EXTRA_DIST = CMakeLists.txt    easdif-common.i.in  easdif-common-init.i  easdif-defines.i  README   sdif-common.i.in
 
 
 $(SUBDIRS):
