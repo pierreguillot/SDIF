@@ -15,9 +15,12 @@
 # special flags to all swig calls.
 # Another special variable is CMAKE_SWIG_OUTDIR, it allows one to specify 
 # where to write all the swig generated module (swig -outdir option)
+# The name-specific variable SWIG_MODULE_<name>_EXTRA_DEPS may be used
+# to specify extra dependencies for the generated modules.
 
 SET(SWIG_CXX_EXTENSION "cxx")
 SET(SWIG_EXTRA_LIBRARIES "")
+
 SET(SWIG_PYTHON_EXTRA_FILE_EXTENSION "py")
 
 #
@@ -43,14 +46,14 @@ MACRO(SWIG_GET_WRAPPER_DEPENDENCIES swigFile genWrapper language DEST_VARIABLE)
   ENDFOREACH(it)
   EXECUTE_PROCESS(
     COMMAND ${SWIG_EXECUTABLE}
-    -MM -MF ${swig_getdeps_depsfile} ${swig_getdeps_extra_flags} -${language}
-    ${CMAKE_SWIG_FLAGS}
+    -MM -MF ${swig_getdeps_depsfile} ${swig_getdeps_extra_flags}
+    ${CMAKE_SWIG_FLAGS} -${language}
     -o ${genWrapper} ${swig_getdeps_include_dirs} ${swigFile}
     RESULT_VARIABLE swig_getdeps_result
     ERROR_VARIABLE swig_getdeps_error
     OUTPUT_STRIP_TRAILING_WHITESPACE)
   IF(NOT ${swig_getdeps_error} EQUAL 0)
-    MESSAGE(SEND_ERROR "Command \"${SWIG_EXECUTABLE} -MM -MF ${swig_getdeps_depsfile} ${swig_getdeps_extra_flags}  ${CMAKE_SWIG_FLAGS}  -${language} -o ${genWrapper} ${swig_getdeps_include_dirs} ${swigFile}\" failed with output:\n${swig_getdeps_error}")
+    MESSAGE(SEND_ERROR "Command \"${SWIG_EXECUTABLE} -MM -MF ${swig_getdeps_depsfile} ${swig_getdeps_extra_flags} ${CMAKE_SWIG_FLAGS} -${language} -o ${genWrapper} ${swig_getdeps_include_dirs} ${swigFile}\" failed with output:\n${swig_getdeps_error}")
     SET(swig_getdeps_dependencies "")
   ELSE(NOT ${swig_getdeps_error} EQUAL 0)
     FILE(READ ${swig_getdeps_depsfile} ${DEST_VARIABLE})
@@ -188,7 +191,6 @@ MACRO(SWIG_ADD_SOURCE_TO_MODULE name outfiles infile)
     "${swig_generated_file_fullname}" ${SWIG_MODULE_${name}_SWIG_LANGUAGE_FLAG}
     swig_extra_dependencies)
   LIST(APPEND SWIG_MODULE_${name}_EXTRA_DEPS ${swig_extra_dependencies})
-
   # If CMAKE_SWIG_OUTDIR was specified then pass it to -outdir
   IF(CMAKE_SWIG_OUTDIR)
     ADD_CUSTOM_COMMAND(
