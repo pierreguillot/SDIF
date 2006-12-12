@@ -1,6 +1,6 @@
 dnl -*-autoconf-*-  (No, it's an autoconf file!)
 dnl -*-m4-*- (He emacs, it's a m4 file)
-dnl $Id: configure.in,v 1.62 2006-12-12 23:28:16 roebel Exp $
+dnl $Id: configure.in,v 1.63 2006-12-12 23:36:31 roebel Exp $
 dnl
 dnl configure.in		Feb 2003      Axel Roebel
 dnl
@@ -33,6 +33,9 @@ dnl
 dnl
 
 dnl $Log: not supported by cvs2svn $
+dnl Revision 1.62  2006/12/12 23:28:16  roebel
+dnl Fixed sdif version determination.
+dnl
 dnl Revision 1.61  2006/12/12 14:02:05  roebel
 dnl Added version substitutions that are compatible with the new cmake build system.
 dnl
@@ -248,9 +251,9 @@ VERSION="${EASDIF_VERSION_MAJ}.${EASDIF_VERSION_MIN}.${EASDIF_VERSION_RELEASE}"
 EASDIF_VERSION="${EASDIF_VERSION_MAJ}.${EASDIF_VERSION_MIN}.${EASDIF_VERSION_RELEASE}"
 
 # check sdif version.
-SDIF_VERSION_MAJOR=`grep SDIF_VERSION_MAJOR=      <${srcdir}/SDIF/configure.in |  sed -e "s/SDIF_VERSION_MAJOR=\(\[0-9\]*\)/\1/"`
-SDIF_VERSION_MINOR=`grep SDIF_VERSION_MINOR=      <${srcdir}/SDIF/configure.in |  sed -e "s/SDIF_VERSION_MINOR=\(\[0-9\]*\)/\1/"`
-SDIF_VERSION_RELEASE=`grep SDIF_VERSION_RELEASE=  <${srcdir}/SDIF/configure.in |  sed -e "s/SDIF_VERSION_RELEASE=\(\[0-9\]*\)/\1/"`
+SDIF_VERSION_MAJOR=`grep SDIF_VERSION_MAJOR=      <${srcdir}/SDIF/configure.in |  sed -e "s/SDIF_VERSION_MAJOR=\(@<:@0-9@:>@*\)/\1/"`
+SDIF_VERSION_MINOR=`grep SDIF_VERSION_MINOR=      <${srcdir}/SDIF/configure.in |  sed -e "s/SDIF_VERSION_MINOR=\(@<:@0-9@:>@*\)/\1/"`
+SDIF_VERSION_RELEASE=`grep SDIF_VERSION_RELEASE=  <${srcdir}/SDIF/configure.in |  sed -e "s/SDIF_VERSION_RELEASE=\(@<:@0-9@:>@*\)/\1/"`
 sdif_version="${SDIF_VERSION_MAJOR}.${SDIF_VERSION_MINOR}.${SDIF_VERSION_RELEASE}"
 AC_SUBST(sdif_version)
 
