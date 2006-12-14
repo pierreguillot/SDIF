@@ -16,4 +16,8 @@ are only supported  if the SDK MacOSX10.4u.sdk is  installed.  In this
 case  and with DOUNIVERSAL  option given  the universal  binaries that
 will be created will run on Mac OS X 10.4 or later.
 
+The command line for configuration with universal binaries is then
+
+
+cmake -GXcode path_to_easdif_src -DDOUNIVERSAL:=1
 
