@@ -232,7 +232,11 @@ CONFIGURE_FILE(Easdif.pc.in   Easdif${DEBUGEXT}.pc )
 
 OPTION(DOSWIG OFF)
 IF(DOSWIG)
-ADD_SUBDIRECTORY( swig EXCLUDE_FROM_ALL )
+IF(CMAKE_GENERATOR MATCHES "^Unix Makefiles")
+  ADD_SUBDIRECTORY( swig EXCLUDE_FROM_ALL )
+ELSE(CMAKE_GENERATOR MATCHES "^Unix Makefiles")
+  ADD_SUBDIRECTORY( swig )
+ENDIF(CMAKE_GENERATOR MATCHES "^Unix Makefiles")
 ENDIF(DOSWIG)
 
 
@@ -241,7 +245,7 @@ INSTALL(FILES  ${CMAKE_CURRENT_BINARY_DIR}/Easdif${DEBUGEXT}.pc DESTINATION ${PK
 
 GET_DIRECTORY_PROPERTY(easdifDOCFILES DIRECTORY easdif DEFINITION srcDOCFILES)
 SET(DOCFILES ${easdifDOCFILES} CACHE INTERNAL "files containing doc sources" FORCE)
-MESSAGE("doc files : ${DOCFILES}")
+#MESSAGE("doc files : ${DOCFILES}")
 
 # Documentation generation with Doxygen
 ADD_CUSTOM_TARGET(doc COMMAND  doxygen  ${CMAKE_BINARY_DIR}/Doxyfile DEPENDS CMakeLists.txt;${DOCFILES})
@@ -292,7 +296,7 @@ SET(CPACK_GENERATOR "TGZ")
 SET(CPACK_SOURCE_GENERATOR "TGZ")
 
 SET(CPACK_SOURCE_IGNORE_FILES "/CVS/" "/\\\\.svn/" "\\\\.swp$" "\\\\.#" "/#" "~$"  "/build.*/" "/autom4te.cache/"   "/SDIF/others/" "/all.ircam.sh$" "/all.install$" "/SDIF/sdif/ReadFromMemory.txt$"  "/test/fall.sdif"   "/Makefile$" "sdif.sln$" "/SDIF/test/prof/" "/SDIF/test/.*src$"   "/SDIF/test/.*dsp$" "/SDIF/test/SdifTypes.STYP" "/macosxbuild/[^MS]$"  "/macosxbuild/.*plist$" "/macosxbuild/.*MacOSX.binary-distrib$" "/macosxbuild/S.*/[^Mp]" "/macosxbuild/SDIF.xcodeproj/" ".cvsignore$" "/test/ent.*cpp$" "/test/t[tryoe].*cpp$" "/SDIF/doc/pics/.*fig$" "/SDIF/doc/intern/"  "/SDIF/doc/standard/" "/SDIF/doc/index-sf.html" "/SDIF/doc/Makefile.doc" "/SDIF/doc/sdif.src" "/SDIF/doc/.*txt" "/SDIF/types/" "/SDIF/tools/main.nib/" "/SDIF/tools/.*sdef" "/SDIF/tools/.*cp$" "/SDIF/tools/.*h$" "/SDIF/tools/sdifusage.*$" "/SDIF/tools/.*vcproj$" "/SDIF/doc/download/" "compileandinstall$" "/sdifcpp/.*cpp" "/sdifcpp/.*h$" "/test/Ne*\\\\.sdif$"   "/test/tut[mn].*\\\\.cpp$"   "/test/es.*cpp$" "/test/[cmvnrs].*cpp$" )
-MESSAGE("CPACK_SOURCE_IGNORE_FILES  ${CPACK_SOURCE_IGNORE_FILES}")
+#MESSAGE("CPACK_SOURCE_IGNORE_FILES  ${CPACK_SOURCE_IGNORE_FILES}")
 INCLUDE(CPack)
 
 
