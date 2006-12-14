@@ -145,9 +145,6 @@ ENDIF(USE_THREADS)
 ############################################################
 # Particular compiler characteristics
 MESSAGE("PARTICULAR COMPILER CHARACTERISTICS")
-#dnl Check for BigEndian (WORDS_BIGENDIAN)
-INCLUDE(TestBigEndian)
-TEST_BIG_ENDIAN(WORDS_BIGENDIAN)
 
 #dnl Check for Long 64 bits
 INCLUDE(CHECK_SIZEOF)
@@ -300,10 +297,6 @@ SET(CPACK_SOURCE_IGNORE_FILES "/CVS/" "/\\\\.svn/" "\\\\.swp$" "\\\\.#" "/#" "~$
 INCLUDE(CPack)
 
 
-
-
-
-
 MESSAGE("===================================================================")
 MESSAGE("Option summary:")
 MESSAGE("install prefix (CMAKE_INSTALL_PREFIX)         : ${CMAKE_INSTALL_PREFIX}")
@@ -311,8 +304,15 @@ MESSAGE("enable swig support (DOSWIG)                  : ${DOSWIG}")
 MESSAGE("build static Easdif lib (EASDIF_BUILD_STATIC) : ${EASDIF_BUILD_STATIC}")
 MESSAGE("build static sdif lib (SDIF_BUILD_STATIC)     : ${SDIF_BUILD_STATIC}")
 MESSAGE("enable thread support (USE_THREADS)           : ${USE_THREADS}")
+MESSAGE("enable universal (DOUNIVERSAL)                : ${DOUNIVERSAL}" )
+IF(CMAKE_OSX_SYSROOT)
+  IF(DOUNIVERSAL)
+    MESSAGE("Architectures                                 : ${CMAKE_OSX_ARCHITECTURES} ")
+  ENDIF(DOUNIVERSAL)
+ENDIF(CMAKE_OSX_SYSROOT)
+
 IF(CYGWIN)
-  MESSAGE("Use mingw (BUILD_MINGW)                : ${BUILD_MINGW}")
+  MESSAGE("Use mingw (BUILD_MINGW)                       : ${BUILD_MINGW}")
 ENDIF(CYGWIN)
 
 MESSAGE("Easdif installation summary:")

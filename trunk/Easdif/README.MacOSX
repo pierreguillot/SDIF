@@ -1,20 +1,19 @@
-Support for shared libraries
-============================
+Mac OS X
+=========
 
-The default behavior of the configure script is to enable 
-the use of shared librairies. While libtool
-exists for MacOSX some earlier versions are not working properly.
-Therefore, for versions before 10.3.9 
-we recommand to disable creation of shared libraries
-under  MacOSX  by means of adding the configure
-option --disable-shared to the configuration command line.
-So under MacOSX before 10.3.9
-the prefered configuration command line would read
+To configure your Xcode project you create a build directory BDIR
+cd into this directory and run
 
-> ./configure --disable-shared
+cmake -GXcode path_to_easdif_src
 
-while for other versions you may keep shared  libraries as
-with
+which will create the Xcode project in the current directory BDIR. You
+can then load  the project and compile with  Xcode.  The cmake project
+generator supports Mac OS X with Xcode 1.5 until Xcode 2.4.
 
-> ./configure 
+To  enable the  creation  of  universal binaries  you  should use  the
+configure option DOUNIVERSAL.   Note, however, that universal binaries
+are only supported  if the SDK MacOSX10.4u.sdk is  installed.  In this
+case  and with DOUNIVERSAL  option given  the universal  binaries that
+will be created will run on Mac OS X 10.4 or later.
+
 

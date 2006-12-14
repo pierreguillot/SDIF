@@ -1,5 +1,5 @@
 # Easdif README
-# $Id: README,v 1.5 2006-12-14 14:05:37 roebel Exp $
+# $Id: README,v 1.6 2006-12-14 17:20:56 roebel Exp $
 
 (C) Copyright Ircam 2002-2006
 
@@ -32,25 +32,23 @@ should be directly supported.
  
 
 To configure  and compile Easdif  using the cmake  build configuration
-you need at least cmake version 2.4.3. After installing cmake you need
+you need at least cmake version 2.4.5. After installing cmake you need
 to extract the Easdif distribution, and create and cd into a dedicated
-build directory.  On Linux and Mac OS X you may then call
+build directory.   To configure and  compile using Unix  makefiles you
+may then call
 
-cmake path_to_easdif_src
-make 
-make install
+$> cmake path_to_easdif_src
+$> make 
+$> make install
 
-To configure and compile using Xcode you may use the sequence
+For installation instructions on Mac OS X see README.MacOSX.
 
-cmake -GXcode path_to_easdif_src
-
-which will create the Xcode  project in the current directory. You can
-then load the project and compile  with Xcode. For windows you need to
-run  the cmake  gui.  Select  the  source directory  and the  compiler
-options  you like,  configure until  all settings  stabilize  (no read
-field appears  in the  dialog) and then  create the  selected project.
-Note, that for some IDEs the  default build style may be debug and you
-may need to explicitly select the release build.
+To configure  and compile  on window  you will need  to run  the cmake
+gui. Select  the source directory  and the compiler options  you like,
+configure until  all settings stabilize  (no red field appears  in the
+dialog) and  then create  the selected project.   Note, that  for some
+IDEs  the  default build  style  may  be debug  and  you  may need  to
+explicitly select the release build.
 
 The install target will install  shared versions of the Easdif and the
 SDIF  libraries  as well  as  the SDIF  command  line  tools that  are
