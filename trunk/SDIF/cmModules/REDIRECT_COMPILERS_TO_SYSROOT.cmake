@@ -1,6 +1,6 @@
 IF(APPLE)
   
-  IF(OPTION DOUNIVERSAL "configure for cross compilation producing universal" off )
+  OPTION(DOUNIVERSAL "configure for cross compilation producing universal" OFF )
   IF(CMAKE_OSX_SYSROOT AND DOUNIVERSAL)
     SET( CMAKE_OSX_ARCHITECTURES  "ppc i386" CACHE STRING "Build architectures for OSX" FORCE)
   ELSE(CMAKE_OSX_SYSROOT AND DOUNIVERSAL)
