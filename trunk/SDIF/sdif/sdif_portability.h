@@ -1,6 +1,6 @@
 /******************************************************************************
  *
- * $Id: sdif_portability.h,v 3.3 2006-01-16 18:33:29 muller Exp $
+ * $Id: sdif_portability.h,v 3.4 2006-12-14 17:21:57 roebel Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -33,6 +33,25 @@
  *
  * LOG
  * $Log: not supported by cvs2svn $
+ * Revision 3.3  2006/01/16 18:33:29  muller
+ * updated visual studio 7.1 projects in order to build the latest sdif version. (only tested with FTM)
+ *
+ * it only builds a static library for now.
+ * for a DLL we either need a module definition file with the list of exported symbols
+ * or something like:
+ *
+ * #ifdef WIN32
+ * #if defined(SDIFDLL_EXPORTS)
+ * #define SDIF_API __declspec(dllexport)
+ * #else
+ * #define SDIF_API __declspec(dllimport)
+ * #endif
+ * #else
+ * #define SDIF_API extern
+ * #endif
+ *
+ * and SDIF_API in front of all exported symbols
+ *
  * Revision 3.2  2004/07/22 14:47:56  bogaards
  * removed many global variables, moved some into the thread-safe SdifGlobals structure, added HAVE_PTHREAD define, reorganized the code for selection, made some arguments const, new version 3.8.6
  *
@@ -93,6 +112,17 @@
 /* ... and redefined them in "config.h"
 */
 #include "config.h"
+
+/* 
+ * for mac os x we use machine/endian.h to be able to create universal binaries in
+ * cross compilation mode.
+ */
+#ifdef HAVE_MACHINE_ENDIAN_H
+#include <machine/endian.h>
+#if  BYTE_ORDER == BIG_ENDIAN
+#define WORDS_BIGENDIAN 1
+#endif
+#endif
 
 /* HOST_ENDIAN_LITTLE/BIG defined from WORDS_BIGENDIAN
 */
