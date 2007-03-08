@@ -251,7 +251,7 @@ IF(DEFINED DOCSERVER)
   IF(NCFTPPUT_EXECUTABLE)
     ADD_CUSTOM_TARGET(install_doc  
       COMMAND chmod -R  g+w doc/html 
-      COMMAND ${NCFTPPUT_EXECUTABLE} -u $ENV{USER} ${DOCSERVER} ${DOCDIR} doc/html/* 
+      COMMAND ${NCFTPPUT_EXECUTABLE}  ${DOCSERVER} ${DOCDIR} doc/html/* 
       COMMAND chmod -R  g-w doc/html)
     ADD_DEPENDENCIES(install_doc doc)
   ELSE(NCFTPPUT_EXECUTABLE)
