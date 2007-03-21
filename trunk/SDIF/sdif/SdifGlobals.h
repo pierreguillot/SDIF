@@ -1,4 +1,4 @@
-/* $Id: SdifGlobals.h,v 3.17 2005-05-23 17:52:53 schwarz Exp $
+/* $Id: SdifGlobals.h,v 3.18 2007-03-21 19:44:15 roebel Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -31,6 +31,11 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.17  2005/05/23 17:52:53  schwarz
+ * Unified error handling:
+ * - SdifErrorEnum (global errors) integrated into SdifErrorTagET (file errors)
+ * - no more SdifError.[ch], everything done by SdifErrMess.[ch]
+ *
  * Revision 3.16  2005/04/07 15:56:47  schwarz
  * removed some now empty local include files,
  * added include of <sdif.h> and "SdifGlobals.h"
@@ -167,7 +172,7 @@
 
 
 #ifdef HAVE_PTHREAD
-extern pthread_key_t tGlobalsKey;
+void    SdifCreateThreadKeys() ;
 #endif
 
 struct SdifGlobals{

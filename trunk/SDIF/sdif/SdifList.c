@@ -35,6 +35,11 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.12  2005/05/23 17:52:53  schwarz
+ * Unified error handling:
+ * - SdifErrorEnum (global errors) integrated into SdifErrorTagET (file errors)
+ * - no more SdifError.[ch], everything done by SdifErrMess.[ch]
+ *
  * Revision 3.11  2005/04/07 15:56:47  schwarz
  * removed some now empty local include files,
  * added include of <sdif.h> and "SdifGlobals.h"
@@ -196,7 +201,7 @@ SdifListNStockMakeEmpty(SdifListNStockT *Stock)
 
 
 
-SdifListNStockT gSdifListNodeStock;
+SdifListNStockT gSdifListNodeStock = { 0, 2, 0, 0, 0};
 
 SdifListNStockT*
 SdifListNodeStock(void)

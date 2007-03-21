@@ -1,4 +1,4 @@
-/* $Id: SdifFile.c,v 3.58 2005-10-21 14:32:29 schwarz Exp $
+/* $Id: SdifFile.c,v 3.59 2007-03-21 19:44:15 roebel Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -33,6 +33,10 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.58  2005/10/21 14:32:29  schwarz
+ * protect all static buffers from overflow by using snprintf instead of sprintf
+ * move big errorMess buffers into error branch to avoid too large stack allocation
+ *
  * Revision 3.57  2005/07/05 10:44:08  roebel
  * changed to be able to compile with mingw32
  *
@@ -864,8 +868,8 @@ SdifFrameTypeT* SdifFGetFrameType(SdifFileT *file, SdifSignature sig)
 
 
 
-int        gSdifInitialised = 0;
-SdifFileT *gSdifPredefinedTypes;
+int        gSdifInitialised      = 0;
+SdifFileT *gSdifPredefinedTypes  = 0;
 
 /* _SdifTypesFileName is normaly defined
  * in the Makefile with -D_SdifTypesFileName="<FileNameWithPath>"
@@ -891,7 +895,7 @@ SdifGenInit(const char *PredefinedTypesFile)
     gSdifInitialised = 1;
     
 #ifdef HAVE_PTHREAD    
-    pthread_key_create(&tGlobalsKey,FreeGlobals);
+    SdifCreateThreadKeys();
 #endif
 
     if (SdifStdErr == NULL)
