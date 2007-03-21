@@ -1,4 +1,4 @@
-/* $Id: SdifSelect.c,v 3.24 2006-03-22 22:00:46 roebel Exp $
+/* $Id: SdifSelect.c,v 3.25 2007-03-21 19:44:15 roebel Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -96,6 +96,9 @@ TODO
 
 LOG
   $Log: not supported by cvs2svn $
+  Revision 3.24  2006/03/22 22:00:46  roebel
+  cast pointer difference to int for printf arguments
+
   Revision 3.23  2005/10/21 14:32:30  schwarz
   protect all static buffers from overflow by using snprintf instead of sprintf
   move big errorMess buffers into error branch to avoid too large stack allocation
@@ -248,8 +251,8 @@ void SdifInitIntMask (SdifSelectIntMaskP mask);
    the longer symbol must come first. */
 const char *SdifSelectSeparators   [sst_num + 1] = { "::", "#", ":", "/", ".", 
 					       "_",  "@", ",", "-", "+", "??"};
-int   SdifSelectSeparatorLen [sst_num + 1];
-char  sep_first		     [sst_num + 1]; /* first chars of all separators */
+int   SdifSelectSeparatorLen [sst_num + 1] = {0};
+char  sep_first		     [sst_num + 1] = {0}; /* first chars of all separators */
 const char *SdifSelectWhitespace = " \t\r\n";	    /* chars considered as space */
 /* todo: build charmap for first and whitespace */
 

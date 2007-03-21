@@ -36,6 +36,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.7  2001/05/02 09:34:45  tisseran
+ * Change License from GNU Public License to GNU Lesser Public License.
+ *
  * Revision 3.6  2000/11/21 14:51:50  schwarz
  * - sdif.h is now included by all sdif/Sdif*.c files.
  * - Removed all public typedefs, enums, structs, and defines from the
@@ -98,7 +101,6 @@ void        SdifListNStockMakeEmpty (SdifListNStockT *Stock);
 
 
 
-extern  SdifListNStockT gSdifListNodeStock;
 SdifListNStockT* SdifListNodeStock  (void);
 void    SdifInitListNodeStock       (unsigned int SizeOfOneStock);
 void    SdifDrainListNodeStock      (void);
