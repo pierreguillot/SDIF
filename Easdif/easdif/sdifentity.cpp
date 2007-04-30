@@ -32,9 +32,13 @@
  * 
  * 
  * 
- * $Id: sdifentity.cpp,v 1.36 2006-10-06 10:08:13 roebel Exp $ 
+ * $Id: sdifentity.cpp,v 1.37 2007-04-30 11:31:47 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.36  2006/10/06 10:08:13  roebel
+ * Completed output of PrintFrameDir.
+ * Fixed test of direction in ReadNextSelectedFrame(SDIFFrame& frame, SdifFloat8 time)
+ *
  * Revision 1.35  2005/06/06 13:54:49  roebel
  * Changed mEof for files opened for writing to false.
  *
@@ -334,7 +338,8 @@ bool SDIFEntity::EnableFrameDir() {
     // frame has yet been read from the file
     if(pos == mFirstFramePos+4){
       isFrameDirEnabled = true;    
-      mCurrDirPos       = mFrameDirectory.end();
+      mNextDirPos  = mFrameDirectory.end();
+      mLastReadPos = mFrameDirectory.end();
       if(mlFrameSelectionRead)
         msFrameSelection.clear();
       mlFrameSelectionRead   = true;
@@ -350,7 +355,10 @@ bool SDIFEntity::EnableFrameDir() {
       GetStreamSelection(msStreamSelection);    
     }
     else
-      return false;
+      throw Easdif::FrameDirError(eError,
+                                  "EnabledFrameDir can only be called at the start of the file",GetFile(),
+                                  eUnknown,
+                                  __FILE__,__LINE__);
   }
   return true;
 }
@@ -372,31 +380,32 @@ void SDIFEntity::PrintFrameDir() const {
 }
 
 // Add a new location into the directory
-SDIFLocation*
+bool
 SDIFEntity::AddFramePos(SdifUInt4 id, SdifSignature sig, 
                         SdifFloat8 time,SdifUInt4 nbmat,
-                        SdiffPosT pos) {
+                        SdiffPosT pos, Directory::iterator& it) {
 
-  if(mCurrDirPos == mFrameDirectory.end()){    
-    mFrameDirectory.push_back(SDIFLocation(pos,id,time,sig,nbmat));
-    return &(mFrameDirectory.back());
+  if(mNextDirPos == mFrameDirectory.end()){    
+    it = mFrameDirectory.insert(mFrameDirectory.end(),SDIFLocation(pos,id,time,sig,nbmat));
+    return true;
   }
-  else{
-    std::list<SDIFLocation>::iterator  start=mCurrDirPos;
-    std::list<SDIFLocation>::iterator  end  =mFrameDirectory.end();
+  
+  Directory::iterator  start=mNextDirPos;
+  Directory::iterator  end  =mFrameDirectory.end();
 
-    while(start!=end && start->LocPos() < pos) ++start;
-    // don't add duplicate entries
-    if(start==end || start->LocPos() > pos){
-      end = mFrameDirectory.insert(start,SDIFLocation(pos,id,time,sig,nbmat));
-      mCurrDirPos=start;
-      return &(*end);
-    }
-
-    mCurrDirPos=start;
+  while(start!=end && start->LocPos() > pos) --start;
+  
+  while(start!=end && start->LocPos() < pos) ++start;
+  // don't add duplicate entries
+  if(start==end || start->LocPos() > pos){
+    mNextDirPos=start;
+    it = mFrameDirectory.insert(start,SDIFLocation(pos,id,time,sig,nbmat));
+    return true;
   }
-  return 0;
 
+  it = start;
+  mNextDirPos=++start;
+  return false;
 }
 
 /* to open a file in mode Write  */
@@ -493,12 +502,6 @@ bool SDIFEntity::Rewind()
 SdifFileT* SDIFEntity::GetFile() const
 {
     return efile;
-}
-
-int SDIFEntity::SetFile(SdifFileT* SdifFile)
-{
-    efile = SdifFile;
-    return 1;
 }
 
 int SDIFEntity::GetNbNVT()const
@@ -653,10 +656,10 @@ int SDIFEntity::ReadNextSelectedFrame(SDIFFrame& frame, SdifFloat8 time)
 
     bool up = false;
     // attention creation of iterator changes current position
-    if(mCurrDirPos == mFrameDirectory.begin() 
-       ||(mCurrDirPos == mFrameDirectory.end() 
+    if(mLastReadPos == mFrameDirectory.begin() 
+       ||(mLastReadPos == mFrameDirectory.end() 
           && !mFrameDirectory.empty() &&mFrameDirectory.back().LocTime() < time )
-       ||(mCurrDirPos != mFrameDirectory.end() && mCurrDirPos->LocTime() < time )){
+       ||(mLastReadPos != mFrameDirectory.end() && mLastReadPos->LocTime() < time )){
       up =true;
     }
 
@@ -668,16 +671,18 @@ int SDIFEntity::ReadNextSelectedFrame(SDIFFrame& frame, SdifFloat8 time)
 
 
     // end works in both directions !!
-    iterator it=current(), ite=end();
+    iterator it=lastRead(), ite=end();
     if(up) {      
-      while((it!=ite) && it.mBase->LocTime() < time)       {
+      if( (it!=ite))
+        ++it;
+      while( (it!=ite) && it.mBase->LocTime() < time)  {
         ++it;      
       }
     }
     else {
-      if(it==ite) --it;
-
-      while (it!= ite && it.mBase->LocTime() > time) {
+      if( it==ite || !it.IsSelected())
+        --it;
+      while (it!= ite && it.mBase->LocTime() >= time) {
         --it;
       }
       ++it;        
@@ -763,23 +768,31 @@ bool SDIFEntity::WriteTypes()
 }
 
 
-bool SDIFEntity::ChangeSelection(const std::string& selection)
+bool SDIFEntity::ChangeSelection(const std::string& selection) 
 {
   if (!efile) return false;
  
   if(isFrameDirEnabled)
-    return false;
+    throw Easdif::FrameDirError(eError,
+                                "ChangeSelection can not be called after EnableFrameDir",GetFile(),
+                                eUnknown,
+                                  __FILE__,__LINE__);
+
 
   const char* sel = const_cast<const char*>(selection.c_str());
   SdifReplaceSelection(sel, efile->Selection);  
   return true;
 }
 
-bool SDIFEntity::MergeSelection(const std::string& selection)
+bool SDIFEntity::MergeSelection(const std::string& selection) 
 {
   if (!efile) return false;
   if(isFrameDirEnabled)
-    return false;
+    throw Easdif::FrameDirError(eError,
+                                "ChangeSelection can not be called after EnableFrameDir",GetFile(),
+                                eUnknown,
+                                __FILE__,__LINE__);
+
 
   const char* sel = const_cast<const char*>(selection.c_str());
   SdifParseSelection(efile->Selection,sel);
@@ -791,7 +804,10 @@ bool SDIFEntity::ClearSelection(Easdif::SDIFEntity::SelectionPartsE part)
   if(!efile) return false;
 
   if(isFrameDirEnabled)
-    return false;
+    throw Easdif::FrameDirError(eError,
+                                "ChangeSelection can not be called after EnableFrameDir",GetFile(),
+                                eUnknown,
+                                __FILE__,__LINE__);
 
   switch(part) {
   case eSP_Stream:    
@@ -1059,7 +1075,6 @@ bool SDIFEntity::RestrictFrameSelection(const SelectionSet<SdifSignature>& sigs)
     else{
       msHighLevelFrameSelection.insert(sigs.begin(),sigs.end());
     }
- 	
     return true;
   } 
 
@@ -1123,7 +1138,7 @@ bool SDIFEntity::RestrictMatrixSelection(const SelectionSet<SdifSignature>& sigs
     else{
       msHighLevelMatrixSelection.insert(sigs.begin(),sigs.end());
     }
- 	
+
     return true;
   } 
 
@@ -1188,7 +1203,7 @@ bool SDIFEntity::RestrictStreamSelection(const SelectionSet<unsigned int>& strea
      else{
        msHighLevelStreamSelection.insert(streamid.begin(),streamid.end());
      }
-         
+
      return true;
   } 
   

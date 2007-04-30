@@ -32,9 +32,12 @@
  * 
  * 
  * 
- * $Id: sdifentity.hpp,v 1.8 2006-04-22 11:48:09 roebel Exp $ 
+ * $Id: sdifentity.hpp,v 1.9 2007-04-30 11:31:37 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.8  2006/04/22 11:48:09  roebel
+ * Fixed left over problems from last renameing operation.
+ *
  * Revision 1.7  2006/01/05 08:52:14  roebel
  * Added mutable for internal frame store (required by gcc 4.0 linux).
  *
@@ -680,8 +683,11 @@ private:
   size_t generalHeader;
   size_t asciiChunks;
 
-  mutable Directory::iterator mCurrDirPos;
+  mutable Directory::iterator mNextDirPos;  
+  // iterator to last high level selected frame that was read 
+  mutable Directory::iterator mLastReadPos;  
   bool isFrameDirEnabled;
+
   const SDIFLocation endLoc;
   
 
@@ -689,7 +695,7 @@ private:
   SelectionSet<SdifSignature> msMatrixSelection; // matrix selection list of the initial user selection
   bool          mlFrameSelectionRead;  // true if frame signature selection list has been read form the SDifFile
   SelectionSet<SdifSignature> msFrameSelection; // frame selection list of the initial user selection
-  bool          mlStreamSelectionRead;  // true if frame signature selection list has been read form the SDifFile
+  bool          mlStreamSelectionRead;  // true if stream selection list has been read form the SDifFile
   SelectionSet<unsigned int>  msStreamSelection;
 
   SelectionSet <unsigned int>  msHighLevelStreamSelection;
@@ -763,28 +769,38 @@ public:
    */
   const SDIFLocation&
   currLoc() const {
-    if(!isFrameDirEnabled || mCurrDirPos ==  mFrameDirectory.end())
+    if(!isFrameDirEnabled || mFrameDirectory.empty() || mLastReadPos ==  mFrameDirectory.end())
       return endLoc;
-    return *mCurrDirPos;
+    return *mLastReadPos;
   }
 
   /** 
-   * \brief Get SDIFEntity::const_iterator  pointing to current file position
+   * \brief Get SDIFEntity::const_iterator  pointing to last file position
    * \ingroup directory
    * 
-   * @return A const iterator referencing the current file position
+   * Note, that the selection may have changed
+   * in the meantime such that the last position is no longer selected.
+   * You may test this by means of the method IsSelected()
+   * 
+   * @return A const iterator referencing the file position that contained the
+   *      last high level selected matrix.
    */  
   const_iterator
-  current() const;
+  lastRead() const;
 
   /** 
    * \brief Get SDIFEntity::iterator pointing to current file position
    * \ingroup directory
+   *
+   * Note, that the selection may have changed
+   * in the meantime such that the last position is no longer selected.
+   * You may test this by means of the method IsSelected()
    * 
-   * @return A  iterator referencing the current file position
+   * @return An iterator referencing the file position that contained the
+   *      last high level selected matrix. 
    */  
   iterator
-  current();
+  lastRead();
 
   /** 
    * \brief get Easdif::Directory of current SDIF File
@@ -1330,19 +1346,19 @@ private:
    * @param time 
    * @param nbMatrix 
    * @param pos 
+   * @param IPos iterator position that will always point to the
+   *  directory entry that represents the  frame that is treated
    * 
-   * \return pointer to newly inserted location that needs to be completed 
-   *     with matrix signatures. If zero is returned the location exists already
+   * 
+   * \return returns true if the entry was newly created in the frame directory
+   *     iun this case it has to be filled with the fundamentally selected 
+   *     matrix signatures.
+   *     If false is returned the location did exist already
    *     and no further action has to  be performed.
    */
-  SDIFLocation* 
+  bool
   AddFramePos(SdifUInt4 id, SdifSignature sig, SdifFloat8 time,
-              SdifUInt4 nbMatrix, SdiffPosT pos);
-private:
-  // this appears to be a remaining of the initial development 
-  // will be removed in the future
-    /*temporary SetFile*/
-    int SetFile(SdifFileT* SdifFile);
+              SdifUInt4 nbMatrix, SdiffPosT pos, Directory::iterator& IPos);
 
 public:
     SdifErrorT* LastError();
@@ -1425,7 +1441,7 @@ public:
  * 
  * @param frame to fill
  * 
- * @return number of bytes read, zero in case of end of file
+ * @return number of data bytes read for selected matrices 
  */
     int ReadNextFrame(SDIFFrame& frame);
 
@@ -1439,7 +1455,7 @@ public:
  * 
  * @param frame to fill
  * 
- * @return number of bytes read, zero in case of end of file
+ * @return  number of data bytes read for selected matrices 
  */
   int ReadNextSelectedFrame(SDIFFrame& frame);
 
@@ -1447,7 +1463,13 @@ public:
  * \brief read next selected frame from file having time equal to  or after given time
  * \ingroup rnwentity
  * read the next selected frame of the file at or after time position timePos
- * return the number of bytes read
+ * return the number of bytes read. In the case that more than a single 
+ * selected frame exists at time timePos the ReadNextSelectedFrame function
+ * will always return the first of the group of frames with the same
+ * time. Accordingly, you should be aware of the fact that you should not
+ * use  this function to parse a whole file. This function is usefull only
+ * if you want to quickly find a time location. After this you should use
+ *  ReadNextSelectedFrame(SDIFFrame& frame) to parse the file.
  *
  * Prior to calling this function the internal
  * FrameDirectory needs to be enabled.
@@ -1455,7 +1477,7 @@ public:
  * @param frame     frame to fill with data
  * @param timePos   time position to read from
  * 
- * @return  number of bytes read, zero in case of end of file
+ * @return  number of data bytes read for selected matrices 
  *
  * \see EnableFrameDir()
  */
@@ -1495,8 +1517,8 @@ public:
    //typename std::list<SDIFLocation>::iterator mBase;
     SDIFEntity   *mpEnt;      // internal pointer to entity that the iterator works on
     mutable SDIFFrame     mFrame;     // internal frame to hold the current frame
-    bool          mlEndUP;    // if true signals no further selected frame when moving to start of file
-    bool          mlEndDOWN;  // if true signals no further selected frame when moving to end of file
+    bool          mlEndUP;    // if true signals no further selected frame when moving to end of file
+    bool          mlEndDOWN;  // if true signals no further selected frame when moving to start of file
     bool          mlFrameIsLoaded;  // true if mFrame holds the frame that the iterator is pointing too.
   private:
     
@@ -1520,14 +1542,6 @@ public:
      *
      */   
     void initIterator(bool up) {
-      SdifSelectionT *sel     = mpEnt->GetFile()->Selection;
-
-      // The frame direcory is enabled so the matrix selection
-      // is either in msMatrixSelection or (if restrict selection has been used)
-      // in msHighLevelMatrixSelection.
-      bool matrixSelection    = !mpEnt->msMatrixSelection.empty(); 
-      bool hlmatrixSelection  = !mpEnt->msHighLevelMatrixSelection.empty(); 
-
       //position to next selected frame or end() if not found
       if(mBase!=
          mpEnt->mFrameDirectory.end() ||
@@ -1545,30 +1559,8 @@ public:
         while(mBase!=
               mpEnt->mFrameDirectory.end()){
 
-          if(SdifFrameIsSelected(&(mBase->mFrameHdr),sel)
-             && (mpEnt->msHighLevelFrameSelection.empty()
-                 || (mpEnt->msHighLevelFrameSelection.end()
-                     != mpEnt->msHighLevelFrameSelection.find(mBase->mFrameHdr.Signature)))) {
-            if(hlmatrixSelection) {
-              SdifUInt4 nb = mBase->LocNbMatrix();
-              for(SdifUInt4 i  = 0; i< nb;++i){
-                if(mpEnt->msHighLevelMatrixSelection.end()
-                   != mpEnt->msHighLevelMatrixSelection.find(mBase->LocMSignature(i)))
-                  return;
-              }
-            }
-            else if (matrixSelection){
-              SdifUInt4 nb = mBase->LocNbMatrix();
-              for(SdifUInt4 i  = 0; i< nb;++i){
-                if(mpEnt->msMatrixSelection.end()
-                   != mpEnt->msMatrixSelection.find(mBase->LocMSignature(i)))
-                  return;
-              }
-            }
-            else {
-              return;
-            }
-          }
+          if (IsSelected() )
+            return;
           if(up)
             ++mBase;
           else{
@@ -1598,6 +1590,29 @@ public:
       return;
     }
 
+
+    /** 
+     * \brief  assign Position to an iterator
+     * \ingroup directory
+     * 
+     * @param _ent pointer to SDIFentity
+     * \param it   directory iterator to use for initialization
+     */
+    FRIterator &assignPos(SDIFEntity *  _ent, Directory::iterator& it) {
+      mpEnt = _ent;
+      mBase = it;
+      mlEndUP    = (mBase == mpEnt->mFrameDirectory.end() && mpEnt->mEofSeen);
+      mlEndDOWN  = false;
+      return *this;
+    }
+
+    FRIterator &assignPos(const SDIFEntity *  _ent, Directory::iterator& it) {
+      mpEnt = const_cast<SDIFEntity *>(_ent);
+      mBase = it;
+      mlEndUP    = (mBase == mpEnt->mFrameDirectory.end() && mpEnt->mEofSeen);
+      mlEndDOWN  = false;
+      return *this;
+    }
 
   public:
     typedef typename basic_iterator::iterator_category  iterator_category;
@@ -1698,6 +1713,8 @@ public:
         initIterator(true);
       }      
     }
+
+
 	
     ~FRIterator ( ) {};
 	
@@ -1876,6 +1893,59 @@ public:
       return &mFrame;
     }
 
+
+    /** 
+     * \brief check whether the iterator points to a selected frame
+     *
+     * Normally, all frame iterators will contain  selected frames only.
+     * However, in case the selection have been changed a position 
+     * may no longer be selected. In these cases you can use the present function
+     * to check whether the position is still selected.
+     * 
+     * @return true if selected
+     */
+    bool IsSelected() {
+      if(mBase== mpEnt->mFrameDirectory.end() ) return false;
+
+      SdifSelectionT *sel     = mpEnt->GetFile()->Selection;
+
+      // The frame directory is enabled so the matrix selection
+      // is either in msMatrixSelection or (if restrict selection has been used)
+      // in msHighLevelMatrixSelection.
+      bool matrixSelection    = !mpEnt->msMatrixSelection.empty(); 
+      bool hlmatrixSelection  = !mpEnt->msHighLevelMatrixSelection.empty(); 
+
+      if(SdifFrameIsSelected(&(mBase->mFrameHdr),sel)
+         && (mpEnt->msHighLevelFrameSelection.empty()
+             || (mpEnt->msHighLevelFrameSelection.end()
+                 != mpEnt->msHighLevelFrameSelection.find(mBase->mFrameHdr.Signature)))) {
+        if(mpEnt->msHighLevelStreamSelection.empty()
+           || mpEnt->msHighLevelStreamSelection.end() 
+           != mpEnt->msHighLevelStreamSelection.find(mBase->mFrameHdr.NumID)){
+          if(hlmatrixSelection) {
+            SdifUInt4 nb = mBase->LocNbMatrix();
+            for(SdifUInt4 i  = 0; i< nb;++i){
+              if(mpEnt->msHighLevelMatrixSelection.end()
+                 != mpEnt->msHighLevelMatrixSelection.find(mBase->LocMSignature(i)))
+                return true;
+            }
+          }
+          else if (matrixSelection){
+            SdifUInt4 nb = mBase->LocNbMatrix();
+            for(SdifUInt4 i  = 0; i< nb;++i){
+              if(mpEnt->msMatrixSelection.end()
+                 != mpEnt->msMatrixSelection.find(mBase->LocMSignature(i)))
+                return true;
+            }
+          }
+          else {
+            return true;
+          }
+        }
+      }
+      return false;
+    }
+
     /**
      *  \ingroup directory
      *  \brief seek file read pointer position to the frame the iterator point's to
@@ -1889,7 +1959,7 @@ public:
      */
     bool GotoPos() throw(SDIFSeekError)  {
       SdiffPosT pos = mBase->LocPos();
-      mpEnt->mCurrDirPos   = mBase;
+      mpEnt->mNextDirPos   = mBase;
       mpEnt->mEof   = false;
       if(!mpEnt->GetFile()->isSeekable) 
         return false;
@@ -1976,13 +2046,15 @@ public:
   }
 
   inline SDIFEntity::const_iterator
-  SDIFEntity::current() const {
-    return const_iterator(this,mCurrDirPos,false);
+  SDIFEntity::lastRead() const {
+    SDIFEntity::const_iterator it;
+    return it.assignPos(this,mLastReadPos);
   }
 
   inline SDIFEntity::iterator
-  SDIFEntity::current()  {
-    return iterator(this,mCurrDirPos,false);
+  SDIFEntity::lastRead()  {
+    SDIFEntity::iterator it;
+    return it.assignPos(this,mLastReadPos);
   }
 
 } // end of namespace Easdif
