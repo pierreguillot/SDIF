@@ -33,9 +33,13 @@
  * 
  * 
  * 
- * $Id: sdif_matrix.hpp,v 1.3 2006-11-26 16:38:06 roebel Exp $ 
+ * $Id: sdif_matrix.hpp,v 1.4 2007-04-30 11:32:29 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.3  2006/11/26 16:38:06  roebel
+ * declared GetRow/GetCol  to be void to improve efficiency of
+ * swig interface.
+ *
  * Revision 1.2  2006/04/22 11:48:09  roebel
  * Fixed left over problems from last renameing operation.
  *
@@ -314,44 +318,46 @@ public:
 
 
 
-/*************************************************************************/
-/* To see a SDIFMatrix */
-/**
-* \defgroup print SDIFMatrix - Print
-*/
+  /*************************************************************************/
+  /* To see a SDIFMatrix */
+  /**
+   * \defgroup print SDIFMatrix - Print
+   */
+  
+  /** 
+   * \ingroup print
+   * print matrix values
+   */
+  void Print();
 
-/** 
- * \ingroup print
- * print matrix values
- */
-    void Print();
+  /*************************************************************************/
+  /* Read and write a SDIFMatrix */
+  /**
+   * \defgroup rwmat SDIFMatrix - Read and write and create a SDIFMatrix
+   */
+  
+  /** 
+   * \ingroup rwmat
+   * write the matrix in the file
+   * @return the size in bytes of the matrix writing
+   */
+  int Write(SdifFileT* file);
 
-/*************************************************************************/
-/* Read and write a SDIFMatrix */
-/**
-* \defgroup rwmat SDIFMatrix - Read and write and create a SDIFMatrix
-*/
-
-/** 
- * \ingroup rwmat
- * write the matrix in the file
- * @return the size in bytes of the matrix writing
- */
-    int Write(SdifFileT* file);
-
-/**
- * \ingroup rwmat 
- * \brief read a matrix
- * filter only matrices that match the set given in hlsel
- * \param file sdiffeil 
- * \param hlsel pointer std::set<SsdifSignature> containing the signatures 
- *          that should be read, this is the signature restriction on Easdif level
- *          that filters the existing sdif selection (for efficient implementation
- *          it is assumed that hlsel contains a subset of the sdif file selection
- *          which is not used if hlsel != 0 && !hlsel->empty() )
- * @return the count of bytes and create a matrix which keep the values
- */
-    int Read(SdifFileT* file,const std::set<SdifSignature> *hlsel=0);
+  /**
+   * \ingroup rwmat 
+   * \brief read a matrix
+   * filter only matrices that match the set given in hlsel
+   * \param file sdiffeil 
+   * \param hlsel pointer std::set<SsdifSignature> containing the signatures 
+   *          that should be read, this is the signature restriction on Easdif level
+   *          that filters the existing sdif selection (for efficient implementation
+   *          it is assumed that hlsel contains a subset of the sdif file selection
+   *          which is not used if hlsel != 0 && !hlsel->empty() )
+   *
+   * @return the complete count of bytes for the selected matrices including header
+   * 
+   */
+  int Read(SdifFileT* file,const std::set<SdifSignature> *hlsel=0);
 
 /** 
  * \ingroup create
