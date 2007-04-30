@@ -34,9 +34,14 @@
  * 
  * 
  * 
- * $Id: sdifexception.hpp,v 1.1 2005-05-30 21:43:01 roebel Exp $ 
+ * $Id: sdifexception.hpp,v 1.2 2007-04-30 11:34:26 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.1  2005/05/30 21:43:01  roebel
+ * Changed all include files from .h into .hpp to prevent name clash between
+ * sdifmatix.h and SDIF/sdifcpp/SdifMatrix.h on MacOSX where filenames are
+ * case insensitive.
+ *
  * Revision 1.12  2005/05/24 09:55:03  roebel
  * modified for new interface to SdifErrorFunction handlers.
  *
@@ -449,6 +454,11 @@ public:
 class SDIFMatrixNotAvailable : public SDIFException{  
 public:
   constructor(SDIFMatrixNotAvailable,SDIFException)
+};
+
+class FrameDirError : public SDIFException{  
+public:
+  constructor(FrameDirError,SDIFException)
 };
 
 
