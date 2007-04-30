@@ -34,9 +34,12 @@
  * sdifframe.h is composed of the different methods which are using to 
  * manipulate the frame.
  * 
- * $Id: sdif_frame.hpp,v 1.2 2006-04-22 11:48:09 roebel Exp $ 
+ * $Id: sdif_frame.hpp,v 1.3 2007-04-30 11:33:08 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  2006/04/22 11:48:09  roebel
+ * Fixed left over problems from last renameing operation.
+ *
  * Revision 1.1  2006/04/22 08:57:24  roebel
  * Renamed some files to prevent name clash of object files on macosx
  *
@@ -176,6 +179,7 @@ private:
     std::vector<SDIFMatrix> mv_Matrix;
     //SDIFMatrix matrix;
 
+    // number of selected matrix bytes read for the frame (excluding frame header)
     size_t  mFrameBytesRead;
     //int mSelected;// if is selected = 1 else = 0
 
@@ -224,7 +228,7 @@ public:
 /** 
  * \ingroup rnw
  * read entirely a frame : the header and the data
- * @return number of bytes read
+ * @return number of bytes read for selected matrices
  *
  * Attention: using this function bypasses the update of the FrameDirectory
  * in the SDIFEntity! 
@@ -241,14 +245,14 @@ public:
    *              If hlsig is not 0 it is used to select matrices
    *              instead of thesdif internal selection mechanism
    *              if hlsig is 0 the sdif internal mechanism is used
-   * @return number of bytes read
+   * @return number of bytes read for selected matrices
    */
   int  ReadData(SdifFileT* file,const std::set<SdifSignature>*hlsig=0);
 
 /** 
  * \ingroup rnw
  * read only the data of a frame (used by Read)
- * @return number of bytes read
+ * @return number of bytes read or zero if frame is not selected
  */
     int  ReadHeader(SdifFileT* file);
 
@@ -273,13 +277,13 @@ public:
    * \ingroup rnw
    * \brief read a frame
    * \param entity file to read from
-   * @return number of bytes read
+   * @return number of bytes read for selected matrices
    */
   int  Read(SDIFEntity& entity);
-    int  ReadData(const SDIFEntity& entity);
-    int  ReadHeader(const SDIFEntity& entity);
-    int  Write(const SDIFEntity& entity);
-    int  WriteHeader(const SDIFEntity& entity);
+  int  ReadData(const SDIFEntity& entity);
+  int  ReadHeader(const SDIFEntity& entity);
+  int  Write(const SDIFEntity& entity);
+  int  WriteHeader(const SDIFEntity& entity);
 
 
 /*************************************************************************/

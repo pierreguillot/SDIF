@@ -32,9 +32,12 @@
  * 
  * 
  * 
- * $Id: sdif_frame.cpp,v 1.2 2006-04-22 11:48:09 roebel Exp $ 
+ * $Id: sdif_frame.cpp,v 1.3 2007-04-30 11:33:17 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  2006/04/22 11:48:09  roebel
+ * Fixed left over problems from last renameing operation.
+ *
  * Revision 1.1  2006/04/22 08:57:24  roebel
  * Renamed some files to prevent name clash of object files on macosx
  *
@@ -177,9 +180,8 @@ int SDIFFrame::Read(SdifFileT* file, bool &eof)
     mFrameBytesRead = 0;
     ClearData();
 
-    mFrameBytesRead += ReadHeader(file);
     /* for selection */
-    if (mFrameBytesRead == 0)
+    if (!ReadHeader(file))
     {
       SdifFSkipFrameData (file);
       //to have exception
@@ -188,7 +190,7 @@ int SDIFFrame::Read(SdifFileT* file, bool &eof)
     }
 
     Resize(mNbMatrix);
-    mFrameBytesRead += ReadData(file);
+    mFrameBytesRead = ReadData(file);
 
     /* to have exception */
     eof = (SdifFGetSignature (file, &mFrameBytesRead) == eEof);
@@ -201,7 +203,8 @@ int SDIFFrame::Read(SdifFileT* file, bool &eof)
 //int SDIFFrame::Read(const SDIFEntity& entity)
 int SDIFFrame::Read(SDIFEntity& entity)
 {
-  mFrameBytesRead = 0;
+  mFrameBytesRead  = 0;
+  size_t sigBytesRead = 0;
   SdifFileT* file = entity.GetFile();
 
     if(entity.eof()) {
@@ -212,62 +215,53 @@ int SDIFFrame::Read(SDIFEntity& entity)
     if(entity.IsFrameDir()){
 
       ClearData();
-      mFrameBytesRead += ReadHeader(file);
-      if(!mFrameBytesRead ) {
+      if(!ReadHeader(file)) {
         SdifFSkipFrameData (file);
         //to have exception
-        entity.mEof = (SdifFGetSignature (file, &mFrameBytesRead) == eEof);
-        if(entity.mEof)
-          entity.mEofSeen = true;
-        return 0;        
       }
       else {
-        SDIFLocation *loc=
-          entity.AddFramePos(SdifFCurrID(file),SdifFCurrFrameSignature(file),
-                             SdifFCurrTime(file),SdifFCurrNbMatrix(file),
-                             file->StartChunkPos);
+        Directory::iterator it;
+        bool isnew =  entity.AddFramePos(SdifFCurrID(file),SdifFCurrFrameSignature(file),
+                                         SdifFCurrTime(file),SdifFCurrNbMatrix(file),
+                                         file->StartChunkPos,it);
         
         Resize(mNbMatrix);
-        if(!loc ) {
-          if(entity.isFrameHLSelected(SdifFCurrID(file),SdifFCurrFrameSignature(file)))
-            mFrameBytesRead +=ReadData(entity);
+        if(!isnew) {
+          if(entity.isFrameHLSelected(SdifFCurrID(file),SdifFCurrFrameSignature(file))){
+            mFrameBytesRead = ReadData(entity);
+
+            if(mFrameBytesRead){
+              entity.mLastReadPos = it; 
+            }
+          }
           else {
             SdifFSkipFrameData (file);
-            mFrameBytesRead  = 0;
-            /* to have exception */
-            entity.mEof = (SdifFGetSignature (file, &mFrameBytesRead) == eEof);
-            if(entity.mEof)
-              entity.mEofSeen = true;
-            return 0;    
           }
         }
         else{
-          SdifUInt4 nb = loc->LocNbMatrix();
+          SdifUInt4 nb = it->LocNbMatrix();
           int ir = 0;
           for(SdifUInt4 i=0 ; i< nb;++i){
             int ret =0;
             if((ret=mv_Matrix[ir].Read(file,&entity.msHighLevelMatrixSelection)))
               ++ir;
             mFrameBytesRead +=ret;
-            loc->SetMSignature(i,file->CurrMtrxH->Signature);
+            it->SetMSignature(i,file->CurrMtrxH->Signature);
           }
 
-          if(entity.isFrameHLSelected(SdifFCurrID(file),SdifFCurrFrameSignature(file))){
-            Resize(ir);
-          }else{
-            ClearData();
-            /* to have exception */
-            entity.mEof = (SdifFGetSignature (file, &mFrameBytesRead) == eEof);
-            if(entity.mEof)
-              entity.mEofSeen = true;
-            return 0;
+          if(ir && entity.isFrameHLSelected(SdifFCurrID(file),
+                                            SdifFCurrFrameSignature(file))){
+            Resize(ir);            
+            entity.mLastReadPos = it;
           }
+          else
+            ClearData();
         }
-       /* to have exception */
-        entity.mEof = (SdifFGetSignature (file, &mFrameBytesRead) == eEof);
-        if(entity.mEof)
-          entity.mEofSeen = true;
       }
+
+      entity.mEof = (SdifFGetSignature (file, &sigBytesRead) == eEof);
+      if(entity.mEof)
+        entity.mEofSeen = true;
     }
     else
       mFrameBytesRead = Read(file, entity.mEof);
