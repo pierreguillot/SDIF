@@ -218,9 +218,8 @@ int main(int argc, char** argv)
         std::cerr << "frameDirectory is off (== 0): "<<readentity.IsFrameDir() << " \n";
         readentity.EnableFrameDir();
         std::cerr << "frameDirectory should be on (==1):  "<<readentity.IsFrameDir()<< "\n";
-        // implicitely switched on by means of requesting to
-        // read from a selected time position (here 0)
-        SDIFEntity::iterator it = readentity.current();
+        // implicitely move to next selected frame
+        SDIFEntity::iterator it = readentity.begin();
         ff=*it;
         
         ff.GetSignature(signature);
