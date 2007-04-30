@@ -218,7 +218,7 @@ int main(int argc, char** argv)
         std::cerr << "frameDirectory is off (== 0): "<<readentity.IsFrameDir() << " \n";
         readentity.EnableFrameDir();
         std::cerr << "frameDirectory should be on (==1):  "<<readentity.IsFrameDir()<< "\n";
-        // implicitely move to next selected frame
+        // implicitely move to first selected frame
         SDIFEntity::iterator it = readentity.begin();
         ff=*it;
         
