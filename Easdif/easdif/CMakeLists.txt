@@ -1,4 +1,11 @@
 
+IF(NOT EXECUTABLE_OUTPUT_PATH)
+  SET(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin/${ARCHDIR} )
+ENDIF(NOT EXECUTABLE_OUTPUT_PATH)
+IF(NOT LIBRARY_OUTPUT_PATH)
+  SET(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/lib/${ARCHDIR} )
+ENDIF(NOT LIBRARY_OUTPUT_PATH)
+
 # easdif_version.hpp is installed as well but in ../CMakeLists.txt
 SET(noinst_HEADERS ${CMAKE_CURRENT_BINARY_DIR}/easdifintro.hpp ${CMAKE_CURRENT_BINARY_DIR}/easdif_config.hpp)
 SET(HEADERS  easdif.h  sdifentity.hpp sdifexception.hpp sdif_frame.hpp sdifinit.hpp sdifmatrixdata.hpp sdifmatrixdatainterface.hpp sdif_matrix.hpp sdifnamevaluetable.hpp ${CMAKE_CURRENT_BINARY_DIR}/easdif_version.hpp )
