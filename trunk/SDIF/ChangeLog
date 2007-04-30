@@ -1,3 +1,8 @@
+2007-04-30  axel roebel  <roebel@marl.hd.free.fr>
+
+	*  SDIF/CMakeLists.txt: 
+	Use centralized executable and library output dir.
+
 2006-12-11  axel roebel  <roebel@local>
 
 	* Makefile.am, configure.in, CMakeLists.txt :
@@ -927,4 +932,4 @@ Version 3.3:
 	  Operating System.
 
 	
-$Id: ChangeLog,v 1.53 2006-12-11 22:45:45 roebel Exp $
+$Id: ChangeLog,v 1.54 2007-04-30 11:55:09 roebel Exp $
