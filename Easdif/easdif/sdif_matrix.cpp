@@ -32,9 +32,12 @@
  * 
  * 
  * 
- * $Id: sdif_matrix.cpp,v 1.2 2006-04-22 11:48:09 roebel Exp $ 
+ * $Id: sdif_matrix.cpp,v 1.3 2007-04-30 11:32:18 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  2006/04/22 11:48:09  roebel
+ * Fixed left over problems from last renameing operation.
+ *
  * Revision 1.1  2006/04/22 08:57:24  roebel
  * Renamed some files to prevent name clash of object files on macosx
  *
@@ -329,8 +332,8 @@ int SDIFMatrix::Read(SdifFileT* file,const std::set<SdifSignature> * hlselection
   // remember file that we read from
   mFile = file;
 
+  int bytesreadheader = SdifFReadMatrixHeader(file);
   bytesread = 0;
-  bytesread += SdifFReadMatrixHeader(file);
   /* for selection */
   
   bool usehl = (hlselection && ! hlselection->empty());
@@ -355,7 +358,7 @@ int SDIFMatrix::Read(SdifFileT* file,const std::set<SdifSignature> * hlselection
 	
     Init(mSig, nrows, ncols, SdifFCurrDataType (file));
     /* add bytesread */
-    bytesread += mInter->read(file);
+    bytesread = mInter->read(file)+bytesreadheader;
     return bytesread;
 }
 
