@@ -18,6 +18,13 @@ cmake -DPKGCONFIGDIR:PATH=default -DCMAKE_INSTALL_PREFIX:PATH=$PREFIX -DCMAKE_IN
 make set_release
 make clean
 make install
+
+cmake -DEASDIF_BUILD_STATIC:BOOL=ON  ..
+make clean
+make install
+
+cmake -DEASDIF_BUILD_STATIC:BOOL=OFF  ..
+
 make set_debug
 make clean
 make install
