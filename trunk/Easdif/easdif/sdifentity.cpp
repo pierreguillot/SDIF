@@ -32,9 +32,16 @@
  * 
  * 
  * 
- * $Id: sdifentity.cpp,v 1.37 2007-04-30 11:31:47 roebel Exp $ 
+ * $Id: sdifentity.cpp,v 1.38 2007-10-25 22:31:37 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.37  2007/04/30 11:31:47  roebel
+ * Throw exception FrameDirError exception if  selection manipulation
+ * functions or framedirectory functions are called in unsuitable states.
+ * Replaced the concept of the current frame in the frame directory
+ * by the concept of the last frame read which no opnger is guaranteed
+ * to be selected.
+ *
  * Revision 1.36  2006/10/06 10:08:13  roebel
  * Completed output of PrintFrameDir.
  * Fixed test of direction in ReadNextSelectedFrame(SDIFFrame& frame, SdifFloat8 time)
@@ -515,6 +522,12 @@ bool SDIFEntity::AddNVT(const SDIFNameValueTable& nvt,
     mv_NVT.push_back(nvt);
     mv_NVT.back().SetStreamID(StreamId);
 
+    return true;
+}
+
+bool SDIFEntity::AddNVT(const SDIFNameValueTable& nvt)
+{
+    mv_NVT.push_back(nvt);
     return true;
 }
 

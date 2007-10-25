@@ -32,9 +32,16 @@
  * 
  * 
  * 
- * $Id: sdifentity.hpp,v 1.9 2007-04-30 11:31:37 roebel Exp $ 
+ * $Id: sdifentity.hpp,v 1.10 2007-10-25 22:31:20 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.9  2007/04/30 11:31:37  roebel
+ * Throw exception FrameDirError exception if  selection manipulation
+ * functions or framedirectory functions are called in unsuitable states.
+ * Replaced the concept of the current frame in the frame directory
+ * by the concept of the last frame read which no opnger is guaranteed
+ * to be selected.
+ *
  * Revision 1.8  2006/04/22 11:48:09  roebel
  * Fixed left over problems from last renameing operation.
  *
@@ -1363,134 +1370,146 @@ private:
 public:
     SdifErrorT* LastError();
 
-/*************************************************************************/
-/* Name Value Table */
-/**
-* \defgroup  nvt  SDIFEntity - Name Value Table
-*/
-
-/** 
- * \ingroup nvt
- * to see all the Name Values Tables
- */
+  /*************************************************************************/
+  /* Name Value Table */
+  /**
+   * \defgroup  nvt  SDIFEntity - Name Value Table
+   */
+  
+  /** 
+   * \ingroup nvt
+   * to see all the Name Values Tables
+   */
     void PrintAllNVTs();
 
-/**
- * \ingroup nvt 
- * take a Name Values Table of a file. (for internal used in opening)
- * @return SDIFNameValueTable of the file
- */
- private:
-    SDIFNameValueTable TakeNVT();
-
- public:
-/** 
- * \ingroup nvt
- * insert a SDIFNameValueTable in the vector of Name Value Table
- * 
- * @param nvt Name Value Table to insert in the vector
- * @param StreamID StreamId of the Name Value Table 
- *
- * \return true if ok/false if error.
- */
-
-  bool AddNVT(const SDIFNameValueTable &nvt, SdifUInt4 StreamID=0);
-
-
-/** 
- * \ingroup nvt
- * write the vector of Name Value Table in the file when opening a file 
- * for writing (for internal use only)
- *
- * \return true if ok/false if error.
- */
+  /**
+   * \ingroup nvt 
+   * take a Name Values Table of a file. (for internal used in opening)
+   * @return SDIFNameValueTable of the file
+   */
 private:
-    bool WriteNVTs();
+  SDIFNameValueTable TakeNVT();
+
 public:
+  /** 
+   * \ingroup nvt
+   * insert a SDIFNameValueTable in the vector of Name Value Table
+   * overwrite the streamid of the given NVT with the argument provided.
+   *
+   * @param nvt Name Value Table to insert in the vector
+   * @param StreamID StreamId of the Name Value Table 
+   *
+   * \return true if ok/false if error.
+   */
+  
+  bool AddNVT(const SDIFNameValueTable &nvt, SdifUInt4 StreamID);
 
-/**
- * \ingroup nvt 
- * get the number of Name Value Tables  stored in entity
- * 
- * \return number of Name Value Tables
- */
-    int GetNbNVT() const;
+  /** 
+   * \ingroup nvt
+   * insert a SDIFNameValueTable in the vector of Name Value Table
+   *
+   * The streamid that will be used is the streamid of the SDIFNameValueTable.
+   * 
+   * @param nvt Name Value Table to insert in the vector
+   *
+   * \return true if ok/false if error.
+   */
 
-/** 
- * \ingroup nvt
- * get the i-th Name Value Table
- */
-    SDIFNameValueTable& GetNVT(unsigned int i);
-
-
-
-
-/******************/
-/*************************************************************************/
-/* Read and Write */
-/**
-* \defgroup  rnwentity  SDIFEntity - Read and Write
-*/
-
-/**
- * \ingroup rnwentity 
- * \brief read next frame from file
- *
- * read the next frame of the file
- * return the number of bytes read
- * 
- * @param frame to fill
- * 
- * @return number of data bytes read for selected matrices 
- */
-    int ReadNextFrame(SDIFFrame& frame);
+  bool AddNVT(const SDIFNameValueTable &nvt);
 
 
-/**
- * \brief read next selected frame from file
- * \ingroup rnwentity
- *
- * read the next selected frame of the file
- * return the number of bytes read
- * 
- * @param frame to fill
- * 
- * @return  number of data bytes read for selected matrices 
- */
+  /** 
+   * \ingroup nvt
+   * write the vector of Name Value Table in the file when opening a file 
+   * for writing (for internal use only)
+   *
+   * \return true if ok/false if error.
+   */
+private:
+  bool WriteNVTs();
+public:
+  
+  /**
+   * \ingroup nvt 
+   * get the number of Name Value Tables  stored in entity
+   * 
+   * \return number of Name Value Tables
+   */
+  int GetNbNVT() const;
+  
+  /** 
+   * \ingroup nvt
+   * get the i-th Name Value Table
+   */
+  SDIFNameValueTable& GetNVT(unsigned int i);
+  
+
+  /******************/
+  /*************************************************************************/
+  /* Read and Write */
+  /**
+   * \defgroup  rnwentity  SDIFEntity - Read and Write
+   */
+
+  /**
+   * \ingroup rnwentity 
+   * \brief read next frame from file
+   *
+   * read the next frame of the file
+   * return the number of bytes read
+   * 
+   * @param frame to fill
+   * 
+   * @return number of data bytes read for selected matrices 
+   */
+  int ReadNextFrame(SDIFFrame& frame);
+
+
+  /**
+   * \brief read next selected frame from file
+   * \ingroup rnwentity
+   *
+   * read the next selected frame of the file
+   * return the number of bytes read
+   * 
+   * @param frame to fill
+   * 
+   * @return  number of data bytes read for selected matrices 
+   */
   int ReadNextSelectedFrame(SDIFFrame& frame);
-
-/**
- * \brief read next selected frame from file having time equal to  or after given time
- * \ingroup rnwentity
- * read the next selected frame of the file at or after time position timePos
- * return the number of bytes read. In the case that more than a single 
- * selected frame exists at time timePos the ReadNextSelectedFrame function
- * will always return the first of the group of frames with the same
- * time. Accordingly, you should be aware of the fact that you should not
- * use  this function to parse a whole file. This function is usefull only
- * if you want to quickly find a time location. After this you should use
- *  ReadNextSelectedFrame(SDIFFrame& frame) to parse the file.
- *
- * Prior to calling this function the internal
- * FrameDirectory needs to be enabled.
- *
- * @param frame     frame to fill with data
- * @param timePos   time position to read from
- * 
- * @return  number of data bytes read for selected matrices 
- *
- * \see EnableFrameDir()
- */
+  
+  /**
+   * \brief read next selected frame from file having time equal to  or after given time
+   * \ingroup rnwentity
+   * read the next selected frame of the file at or after time position timePos
+   * return the number of bytes read. In the case that more than a single 
+   * selected frame exists at time timePos the ReadNextSelectedFrame function
+   * will always return the first of the group of frames with the same
+   * time. Accordingly, you should be aware of the fact that you should not
+   * use  this function to parse a whole file. This function is usefull only
+   * if you want to quickly find a time location. After this you should use
+   *  ReadNextSelectedFrame(SDIFFrame& frame) to parse the file.
+   *
+   * Prior to calling this function the internal
+   * FrameDirectory needs to be enabled.
+   *
+   * @param frame     frame to fill with data
+   * @param timePos   time position to read from
+   * 
+   * @return  number of data bytes read for selected matrices 
+   *
+   * \see EnableFrameDir()
+   */
   int ReadNextSelectedFrame(SDIFFrame& frame,SdifFloat8 timePos);
 
 
-/** 
- * \ingroup rnwentity
- * write the next frame of the file
- * return the size of the frame write
- */
+  /** 
+   * \ingroup rnwentity
+   * write the next frame of the file
+   * return the size of the frame write
+   */
   int WriteFrame(SDIFFrame& frame);
-    
+  
 };
 
 
