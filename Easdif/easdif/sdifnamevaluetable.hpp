@@ -33,9 +33,14 @@
  * 
  *
  * 
- * $Id: sdifnamevaluetable.hpp,v 1.1 2005-05-30 21:43:00 roebel Exp $ 
+ * $Id: sdifnamevaluetable.hpp,v 1.2 2007-10-25 22:31:08 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.1  2005/05/30 21:43:00  roebel
+ * Changed all include files from .h into .hpp to prevent name clash between
+ * sdifmatix.h and SDIF/sdifcpp/SdifMatrix.h on MacOSX where filenames are
+ * case insensitive.
+ *
  * Revision 1.9  2004/07/27 17:40:19  roebel
  * Changed include directive to use user path and not system path for sdif.h
  *
@@ -123,10 +128,10 @@ class SDIFNameValueTable : public std::map<std::string,std::string>
 
 public:
 
-    /* construct a NameValueTable*/
-    SDIFNameValueTable()  {};
-
-    ~SDIFNameValueTable() {};
+  /* construct a NameValueTable, use StreamID with value NVID as default */
+  SDIFNameValueTable() : mStreamID(SdifStringToSignature("NVID"))  {};
+  
+  ~SDIFNameValueTable() {};
 
   /** 
    *  \brief iterator types for iterating over the internal map
