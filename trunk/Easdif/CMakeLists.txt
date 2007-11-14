@@ -75,6 +75,10 @@ IF (WIN32)
       LINK_LIBRARIES(-mno-cygwin)
     ENDIF(BUILD_MINGW)
   ENDIF(CYGWIN AND NOT MINGW)
+  IF(MSVC)
+    # for visual c++ 2005, don't show deprecated function warnings
+    ADD_DEFINITIONS(-D_CRT_SECURE_NO_DEPRECATE=1)
+  ENDIF(MSVC)
 ENDIF(WIN32)
 
 # set default values for build type and install prefix
@@ -191,10 +195,8 @@ INCLUDE_DIRECTORIES( ${CMAKE_CURRENT_BINARY_DIR}/SDIF/sdifconfig ${CMAKE_CURRENT
 ADD_SUBDIRECTORY( easdif ) 
 ADD_SUBDIRECTORY( test ) 
 
-IF(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
-  ADD_CUSTOM_TARGET(lib)
-  ADD_DEPENDENCIES(lib Easdif${DEBUGEXT})
-ENDIF(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
+ADD_CUSTOM_TARGET(libeasdif_lib)
+ADD_DEPENDENCIES(libeasdif_lib Easdif${DEBUGEXT})
 
 
 ########### install files ###############
@@ -247,11 +249,11 @@ SET(DOCFILES ${easdifDOCFILES} CACHE INTERNAL "files containing doc sources" FOR
 #MESSAGE("doc files : ${DOCFILES}")
 
 # Documentation generation with Doxygen
-ADD_CUSTOM_TARGET(doc COMMAND  doxygen  ${CMAKE_BINARY_DIR}/Doxyfile DEPENDS CMakeLists.txt;${DOCFILES})
+ADD_CUSTOM_TARGET(libeasdif_doc COMMAND  doxygen  ${CMAKE_BINARY_DIR}/Doxyfile DEPENDS CMakeLists.txt;${DOCFILES})
 IF(DEFINED DOCSERVER)
   FIND_PROGRAM(NCFTPPUT_EXECUTABLE ncftpput)
   IF(NCFTPPUT_EXECUTABLE)
-    ADD_CUSTOM_TARGET(install_doc  
+    ADD_CUSTOM_TARGET(libeasdif_install_doc  
       COMMAND chmod -R  g+w doc/html 
       COMMAND ${NCFTPPUT_EXECUTABLE}  ${DOCSERVER} ${DOCDIR} doc/html/* 
       COMMAND chmod -R  g-w doc/html)
@@ -269,6 +271,16 @@ COMMAND	cp -r doc   Easdif-${EASDIF_VERSION}.doc
 COMMAND	tar -cvzf ${DOCTAR} Easdif-${EASDIF_VERSION}.doc
 COMMAND	rm -rf Easdif-${EASDIF_VERSION}.doc)
 ADD_DEPENDENCIES(pubdoc doc)
+
+IF(CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)
+  ADD_CUSTOM_TARGET(lib)
+  ADD_CUSTOM_TARGET(doc) 
+  ADD_CUSTOM_TARGET(install_doc) 
+ENDIF(CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)
+
+ADD_DEPENDENCIES(lib libeasdif_lib)
+ADD_DEPENDENCIES(doc libeasdif_doc)
+ADD_DEPENDENCIES(install_doc libeasdif_install_doc)
 
 
 
