@@ -257,7 +257,7 @@ IF(DEFINED DOCSERVER)
       COMMAND chmod -R  g+w doc/html 
       COMMAND ${NCFTPPUT_EXECUTABLE}  ${DOCSERVER} ${DOCDIR} doc/html/* 
       COMMAND chmod -R  g-w doc/html)
-    ADD_DEPENDENCIES(install_doc doc)
+    ADD_DEPENDENCIES(libeasdif_install_doc libeasdif_doc)
   ELSE(NCFTPPUT_EXECUTABLE)
     MESSAGE("++++++++++++++++++++++++")
     MESSAGE(STATUS "ncftpput not found! no install_doc target generated \n++++++++++++++++++++++++")
