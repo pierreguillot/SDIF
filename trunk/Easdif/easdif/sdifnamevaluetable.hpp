@@ -1,7 +1,7 @@
 /*
  * This file is part of the IRCAM EASDIF Library (http://www.ircam.fr/sdif)
  *
- * Copyright (C) 2002-2003 by IRCAM-Centre Georges Pompidou, Paris, France.
+ * Copyright (C) 2002-2007 by IRCAM-Centre Georges Pompidou, Paris, France.
  * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -33,9 +33,14 @@
  * 
  *
  * 
- * $Id: sdifnamevaluetable.hpp,v 1.2 2007-10-25 22:31:08 roebel Exp $ 
+ * $Id: sdifnamevaluetable.hpp,v 1.3 2007-11-26 19:09:18 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  2007/10/25 22:31:08  roebel
+ * Fixed constructor to initialize streamid to Signature NVID
+ * which translates in a very large value that will no longer conflict with cnmat library
+ * when 1NVT Frames and data frames stay on the same streamid.
+ *
  * Revision 1.1  2005/05/30 21:43:00  roebel
  * Changed all include files from .h into .hpp to prevent name clash between
  * sdifmatix.h and SDIF/sdifcpp/SdifMatrix.h on MacOSX where filenames are
@@ -106,116 +111,114 @@
 #include <iterator>
 #include "sdif.h"
 
+#include "easdif_exports.hpp"
 
 namespace Easdif {
 
-/** 
- * @brief class which can be associated with a Name Value Table
- *
- * SDIFNameValueTable is composed of different methods which permits to
- * manipulate a Name Value Table.
- *
- * It is derived from std::map<std::string,std::string> and provides
- * all methods of that class
- */
+  /** 
+   * @brief class which can be associated with a Name Value Table
+   *
+   * SDIFNameValueTable is composed of different methods which permits to
+   * manipulate a Name Value Table.
+   *
+   * It is derived from std::map<std::string,std::string> and provides
+   * all methods of that class
+   */
+  class EASDIF_API SDIFNameValueTable : public std::map<std::string,std::string>
+  {
+  private:
 
-class SDIFNameValueTable : public std::map<std::string,std::string>
-{
- private:
+    SdifUInt4 mStreamID;
+    typedef std::map<std::string,std::string> NVTMap;
 
-  SdifUInt4 mStreamID;
-  typedef std::map<std::string,std::string> NVTMap;
+  public:
 
-public:
-
-  /* construct a NameValueTable, use StreamID with value NVID as default */
-  SDIFNameValueTable() : mStreamID(SdifStringToSignature("NVID"))  {};
+    /* construct a NameValueTable, use StreamID with value NVID as default */
+    SDIFNameValueTable() : mStreamID(SdifStringToSignature("NVID"))  {};
   
-  ~SDIFNameValueTable() {};
+    ~SDIFNameValueTable() {};
 
-  /** 
-   *  \brief iterator types for iterating over the internal map
-   * 
-   */
-  typedef NVTMap::const_iterator const_iterator;
-  typedef NVTMap::iterator iterator;
+    /** 
+     *  \brief iterator types for iterating over the internal map
+     * 
+     */
+    typedef NVTMap::const_iterator const_iterator;
+    typedef NVTMap::iterator iterator;
 
-  /** 
-   *  \brief add a Name Value in the map
-   * 
-   * @param name 
-   * @param value 
-   * 
-   * @return  the number of Name Values in the map
-   */
-  int AddNameValue(const std::string& name, const std::string& value);
+    /** 
+     *  \brief add a Name Value in the map
+     * 
+     * @param name 
+     * @param value 
+     * 
+     * @return  the number of Name Values in the map
+     */
+    int AddNameValue(const std::string& name, const std::string& value);
 
 
-  /*************************************************************************/
-  /*
+    /*************************************************************************/
+    /*
     // FUNCTION GROUP:	set the members
-  */
+    */
   
-  /**  
-   * @brief set the streamID
-   * 
-   * @param streamid 
-   * 
-   * @return 
-   */
-  SdifUInt4 SetStreamID(const SdifUInt4& streamid);
+    /**  
+     * @brief set the streamID
+     * 
+     * @param streamid 
+     * 
+     * @return 
+     */
+    SdifUInt4 SetStreamID(const SdifUInt4& streamid);
 
-  /*************************************************************************/
-  /*
+    /*************************************************************************/
+    /*
     // FUNCTION GROUP:	to see
-  */
-  /** 
-   * @brief print a Name Value
-   * 
-   * 
-   * @param name 
-   */
-  void PrintNameValue(const std::string& name)const;
+    */
+    /** 
+     * @brief print a Name Value
+     * 
+     * 
+     * @param name 
+     */
+    void PrintNameValue(const std::string& name)const;
 
-  /** 
-   * @brief print a Name Value Table
-   */
-  void PrintNameValueTable() const;
+    /** 
+     * @brief print a Name Value Table
+     */
+    void PrintNameValueTable() const;
 
 
-  /*************************************************************************/
-  /*
+    /*************************************************************************/
+    /*
     // FUNCTION GROUP:	get the members
-  */
-  /** 
-   * @brief get the number of Name Value
-   */
-  int GetNbNameValue();
+    */
+    /** 
+     * @brief get the number of Name Value
+     */
+    int GetNbNameValue();
 
-  /** 
-   * @brief get the StreamID
-   */
-  SdifUInt4 GetStreamID();
+    /** 
+     * @brief get the StreamID
+     */
+    SdifUInt4 GetStreamID();
 
-  /** 
-   * @brief get the Value
-   * @param name string
-   * @return value string
-   */
-  std::string GetValue(const std::string& name) const;
+    /** 
+     * @brief get the Value
+     * @param name string
+     * @return value string
+     */
+    std::string GetValue(const std::string& name) const;
 
-  /** 
-   * @brief get the Value
-   * @param name  string
-   * @param value result string
-   * @return true if name was found false if not. 
-   */
-  bool GetValue(const std::string& name,std::string& value ) const;
-
-
-};
+    /** 
+     * @brief get the Value
+     * @param name  string
+     * @param value result string
+     * @return true if name was found false if not. 
+     */
+    bool GetValue(const std::string& name,std::string& value ) const;
 
 
+  };
 } // end of namespace Easdif
 
 #endif

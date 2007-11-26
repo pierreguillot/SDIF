@@ -33,9 +33,14 @@
  * 
  * 
  * 
- * $Id: easdif.h,v 1.9 2005-05-30 21:43:01 roebel Exp $ 
+ * $Id: easdif.h,v 1.10 2007-11-26 19:11:15 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.9  2005/05/30 21:43:01  roebel
+ * Changed all include files from .h into .hpp to prevent name clash between
+ * sdifmatix.h and SDIF/sdifcpp/SdifMatrix.h on MacOSX where filenames are
+ * case insensitive.
+ *
  * Revision 1.8  2004/09/10 14:44:32  roebel
  * Explicte cast to bool.
  *
@@ -96,7 +101,7 @@
  */
   inline 
   bool SdifCheckFileFormat (const std::string &name) {
-    return static_cast<bool>(SdifCheckFileFormat(name.c_str()));
+    return SdifCheckFileFormat(name.c_str())!=0;
   }
 
 

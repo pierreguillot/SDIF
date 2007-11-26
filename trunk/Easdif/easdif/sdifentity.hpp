@@ -32,9 +32,13 @@
  * 
  * 
  * 
- * $Id: sdifentity.hpp,v 1.10 2007-10-25 22:31:20 roebel Exp $ 
+ * $Id: sdifentity.hpp,v 1.11 2007-11-26 19:09:55 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.10  2007/10/25 22:31:20  roebel
+ * Changed interface to AddNVT. AddNVT without explicit StreamID now uses
+ * the streamid of the SDIFNameValueTable and no longer imposes a default value of 0.
+ *
  * Revision 1.9  2007/04/30 11:31:37  roebel
  * Throw exception FrameDirError exception if  selection manipulation
  * functions or framedirectory functions are called in unsuitable states.
@@ -247,7 +251,7 @@
 #include <set>
 #include "sdif.h"
 
-
+#include "easdif_exports.hpp"
 #include "easdif/sdif_frame.hpp"
 #include "easdif/sdifnamevaluetable.hpp"
 
@@ -315,7 +319,7 @@ namespace Easdif {
    *
    */
   template<class TYPE>
-  class SelectionSet : public std::set<TYPE> {
+  class   EASDIF_API SelectionSet : public std::set<TYPE> {
     bool mlActive;
     bool mlOpen;
   public:
@@ -478,7 +482,7 @@ namespace Easdif {
    *  
    *
    */
-  struct SDIFLocation {
+  struct EASDIF_API SDIFLocation {
 
     /// file position for this location
     SdiffPosT        mPos;   
@@ -654,9 +658,9 @@ namespace {
  * sdif-file. 
  * 
  */
-class SDIFEntity
-{
-  friend class SDIFFrame;
+  class EASDIF_API SDIFEntity
+  {
+    friend class SDIFFrame;
   
 public:
   /// The parts of a selection that can be cleared independently
@@ -1531,7 +1535,7 @@ public:
    *
    */
   template<int CONST>
-  class FRIterator {
+  class EASDIF_API FRIterator {
     typename Base_Iterator<0>::basic_iterator mBase;
    //typename std::list<SDIFLocation>::iterator mBase;
     SDIFEntity   *mpEnt;      // internal pointer to entity that the iterator works on
@@ -1863,7 +1867,7 @@ public:
      * 
      * @return reference to frame
      */
-    const reference operator*() const { 
+    typename IteratorTypes<1>::reference operator*() const { 
       if(!mlFrameIsLoaded) {
         GotoPos();
         if(mpEnt->ReadNextSelectedFrame(mFrame) ) {
@@ -1883,7 +1887,7 @@ public:
      * 
      * @return pointer to frame
      */
-    pointer operator->() const {      
+     typename IteratorTypes<1>::pointer operator->() const {      
       if(!mlFrameIsLoaded) {
         GotoPos();
         if(mpEnt->ReadNextSelectedFrame(mFrame) ) {

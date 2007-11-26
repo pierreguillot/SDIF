@@ -28,6 +28,7 @@
 #define SDIFINIT_H_ 1
 
 #include "sdif.h"
+#include "easdif_exports.hpp"
 #include "easdif/sdifexception.hpp"
 
 namespace Easdif {
@@ -51,7 +52,8 @@ namespace Easdif {
    * @return true if sdif has been initialized /false if SDIF was already initialized
    *    such that types could not be changed.
    */
-   bool EasdifInit(const std::string& PredefinedType = "");
+  EASDIF_API
+  bool EasdifInit(const std::string& PredefinedType = "");
 
   /** 
    * \ingroup initialization
@@ -62,6 +64,7 @@ namespace Easdif {
    * @return true if sdif has been initialized /false if SDIF was already initialized
    *    such that types could not be changed.
    */
+  EASDIF_API
   bool EasdifInit(const char *PredefinedType);
 
   /** 
@@ -69,6 +72,7 @@ namespace Easdif {
    * \brief deinitialize Easdif and sdif library
    * 
    */
+  EASDIF_API
   void EasdifEnd();
 
 } // end of namespace Easdif
