@@ -1,4 +1,4 @@
-/* $Id: SdifSignatureTab.c,v 3.6 2005-04-07 15:56:48 schwarz Exp $
+/* $Id: SdifSignatureTab.c,v 3.7 2007-11-26 18:50:48 roebel Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -30,6 +30,10 @@
  * Handling of a Table of Signatures
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.6  2005/04/07 15:56:48  schwarz
+ * removed some now empty local include files,
+ * added include of <sdif.h> and "SdifGlobals.h"
+ *
  * Revision 3.5  2003/11/07 21:47:18  roebel
  * removed XpGuiCalls.h and replaced preinclude.h  by local files
  *
@@ -205,7 +209,7 @@ SdifAddToSignatureTab (SdifSignatureTabT* SignTab, const SdifSignature Sign)
 SdifSignature
 SdifGetFromSignatureTab (const SdifSignatureTabT* SignTab, const int index)
 {
-    if (index >= 0  &&  index < SignTab->NbSign)
+    if (index >= 0  &&  (SdifUInt4) index < SignTab->NbSign)
 	return (SignTab->Tab[index]);
     else
 	return eEmptySignature;

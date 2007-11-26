@@ -1,4 +1,4 @@
-/* $Id: SdifFGet.c,v 3.22 2005-10-21 14:32:29 schwarz Exp $
+/* $Id: SdifFGet.c,v 3.23 2007-11-26 18:51:53 roebel Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -32,6 +32,10 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.22  2005/10/21 14:32:29  schwarz
+ * protect all static buffers from overflow by using snprintf instead of sprintf
+ * move big errorMess buffers into error branch to avoid too large stack allocation
+ *
  * Revision 3.21  2005/06/10 12:45:11  roebel
  * Fixed SdifFGetOneNameValue for the case where the file is stored in
  * ASCII with windows or macintosh line feed conventions.
@@ -302,7 +306,8 @@ SdifFGetNameValueLCurrNVT(SdifFileT *SdifF)
      else: intermediate format, read pure data in frame */
   if (SdifF->CurrFramH  &&  SdifFCurrNbMatrix (SdifF) > 0) 
     {
-      int   i, nrow;
+      SdifUInt4   i;
+      int   nrow;
       char *str;
       
       for (i = 0; i < SdifFCurrNbMatrix (SdifF); i++)
