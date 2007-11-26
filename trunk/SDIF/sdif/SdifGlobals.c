@@ -1,4 +1,4 @@
-/* $Id: SdifGlobals.c,v 3.21 2007-03-21 19:44:15 roebel Exp $
+/* $Id: SdifGlobals.c,v 3.22 2007-11-26 18:19:49 roebel Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -31,6 +31,12 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.21  2007/03/21 19:44:15  roebel
+ * Don't use global variables without initialization. These globals are treated differently
+ * on MacOSX and they are not allowed in dynamic libraries without extra flags.
+ * To simplify the situation I now initialized all global variables
+ * or make them static.
+ *
  * Revision 3.20  2005/04/07 15:56:47  schwarz
  * removed some now empty local include files,
  * added include of <sdif.h> and "SdifGlobals.h"
@@ -307,7 +313,6 @@ size_t SdifPaddingCalculate(size_t NbBytes)
 
 size_t SdifFPaddingCalculate(FILE *f, size_t NbBytes)
 {
-  size_t mod;
 
 #if defined(DEBUG)  &&  DEBUG
   if ((f != stdin) && (f != stdout) && (f != stderr))
