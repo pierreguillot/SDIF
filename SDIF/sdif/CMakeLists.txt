@@ -8,6 +8,10 @@
 # created by Axel Roebel                     7.12.2006
 #
 
+IF(WIN32)
+  ADD_DEFINITIONS(-DDO_EXPORT_SDIF=1)
+ENDIF(WIN32)
+
 SET(sdif_noinst_HEADERS 
   ${CMAKE_CURRENT_SOURCE_DIR}/SdifFGet.h 	
   ${CMAKE_CURRENT_SOURCE_DIR}/SdifErrMess.h 	
