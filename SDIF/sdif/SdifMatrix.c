@@ -1,4 +1,4 @@
-/* $Id: SdifMatrix.c,v 3.15 2005-10-21 14:32:29 schwarz Exp $
+/* $Id: SdifMatrix.c,v 3.16 2007-11-26 18:51:21 roebel Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -33,6 +33,10 @@
  *
  * author: Dominique Virolle 1997
  * $Log: not supported by cvs2svn $
+ * Revision 3.15  2005/10/21 14:32:29  schwarz
+ * protect all static buffers from overflow by using snprintf instead of sprintf
+ * move big errorMess buffers into error branch to avoid too large stack allocation
+ *
  * Revision 3.14  2005/05/24 09:36:30  roebel
  *
  * Fixed last checkin comment which turned out to be the start of
@@ -585,7 +589,7 @@ int SdifMatrixDataRealloc (SdifMatrixDataT *data, int newsize)
 {
     char *newdata;
 
-    if (data->AllocSize < newsize)
+    if (data->AllocSize < (SdifUInt4)newsize )
     {   /* grow buffer to multiple of _SdifGranule (1024 byte block) */
 	newsize = (newsize / _SdifGranule + 1) * _SdifGranule;
 	newdata = SdifRealloc(data->Data.Char, char, newsize);

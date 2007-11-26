@@ -35,6 +35,12 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.13  2007/03/21 19:44:15  roebel
+ * Don't use global variables without initialization. These globals are treated differently
+ * on MacOSX and they are not allowed in dynamic libraries without extra flags.
+ * To simplify the situation I now initialized all global variables
+ * or make them static.
+ *
  * Revision 3.12  2005/05/23 17:52:53  schwarz
  * Unified error handling:
  * - SdifErrorEnum (global errors) integrated into SdifErrorTagET (file errors)
@@ -314,7 +320,7 @@ SdifKillListCurr(SdifListT* List)
 	{
 	    if (List->Curr == List->Tail)
 	    {   /* curr is tail, find elem before curr to be new tail */
-		int i;
+		SdifUInt4 i;
 
 		List->Tail = List->Head;
 		for (i = 0; i < List->NbData - 1; i++)

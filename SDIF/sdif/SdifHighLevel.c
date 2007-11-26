@@ -24,11 +24,15 @@
  *                            sdif@ircam.fr
  */
 
-/* $Id: SdifHighLevel.c,v 3.17 2005-10-21 14:32:29 schwarz Exp $
+/* $Id: SdifHighLevel.c,v 3.18 2007-11-26 18:52:08 roebel Exp $
  *
  * SdifHighLevel.c	8.12.1999	Diemo Schwarz
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.17  2005/10/21 14:32:29  schwarz
+ * protect all static buffers from overflow by using snprintf instead of sprintf
+ * move big errorMess buffers into error branch to avoid too large stack allocation
+ *
  * Revision 3.16  2005/05/23 17:52:53  schwarz
  * Unified error handling:
  * - SdifErrorEnum (global errors) integrated into SdifErrorTagET (file errors)
@@ -186,7 +190,7 @@ size_t SdifReadFile (const char             *filename,
     SdifFileT *file = NULL;
     int	       eof  = 0, go_on = 1;
     size_t     bytesread = 0, newread;
-    int        m, wantit;
+    SdifUInt4  m, wantit;
 
     /* open input file (parses selection from filename into file->Selection) */
     file = SdifFOpen (filename, eReadFile);
@@ -359,8 +363,8 @@ static int CountFrame (SdifFileT *in, void *userdata)
     SdifQueryTreeT *tree    = (SdifQueryTreeT *) userdata;
     SdifSignature   sig	    = SdifFCurrSignature(in);
     int		    stream  = SdifFCurrID(in);
-    float	    time    = SdifFCurrTime(in); /* float is ok for minmax */
-    float	    nmatrix = SdifFCurrNbMatrix(in);   /* float for minmax */
+    SdifFloat8	    time    = SdifFCurrTime(in); /* keep double  for minmax */
+    SdifFloat8	    nmatrix = SdifFCurrNbMatrix(in);   /* double is preferred for minmax */
     int		    i       = GetSigIndex(tree, sig, -1, stream);
 
     tree->elems[i].count++;
@@ -377,8 +381,8 @@ static int CountMatrix (SdifFileT *in, int m, void *userdata)
 {
     SdifQueryTreeT *tree   = (SdifQueryTreeT *) userdata;
     SdifSignature   sig	   = SdifFCurrMatrixSignature(in);
-    int		    nrow   = SdifFCurrNbRow(in);
-    float	    ncol   = SdifFCurrNbCol(in); /* float for minmax */
+    SdifFloat8	    nrow   = SdifFCurrNbRow(in); /* double for minmax */
+    SdifFloat8	    ncol   = SdifFCurrNbCol(in); /* double for minmax */
     int		    parent = tree->current;
     int		    i	   = GetSigIndex(tree, sig, parent, -1);
 

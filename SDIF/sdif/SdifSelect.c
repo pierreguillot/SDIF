@@ -1,4 +1,4 @@
-/* $Id: SdifSelect.c,v 3.25 2007-03-21 19:44:15 roebel Exp $
+/* $Id: SdifSelect.c,v 3.26 2007-11-26 18:50:56 roebel Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -96,6 +96,12 @@ TODO
 
 LOG
   $Log: not supported by cvs2svn $
+  Revision 3.25  2007/03/21 19:44:15  roebel
+  Don't use global variables without initialization. These globals are treated differently
+  on MacOSX and they are not allowed in dynamic libraries without extra flags.
+  To simplify the situation I now initialized all global variables
+  or make them static.
+
   Revision 3.24  2006/03/22 22:00:46  roebel
   cast pointer difference to int for printf arguments
 
@@ -415,9 +421,9 @@ void SdifInitIntMask (SdifSelectIntMaskP mask)
 void SdifSelectGetIntMask (SdifListP list, SdifSelectIntMaskP mask)
 {
     SdifSelectElementIntT range;
-    int num = 0;
-    int max = 0;
-    int i;
+    SdifUInt4 num = 0;
+    SdifUInt4 max = 0;
+    SdifUInt4 i   = 0;
 
     if (SdifListIsEmpty(list))
     {
@@ -1045,7 +1051,7 @@ int SdifSelectTestIntRange (SdifSelectElementT *elem, SdifUInt4 cand)
 	    else
 	        return (elem->value.integer >= cand  &&  cand >= elem->range.integer);	    
     	case sst_delta: 
-	    return (abs (((int)elem->value.integer - (int)cand)) <= elem->range.integer);
+	    return ( ((SdifUInt4)abs (((int)elem->value.integer - (int)cand))) <= elem->range.integer);
         default:
 	    assert (!"corrupt rangetype");
 	    return (0);

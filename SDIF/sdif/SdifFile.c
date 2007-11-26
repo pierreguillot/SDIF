@@ -1,4 +1,4 @@
-/* $Id: SdifFile.c,v 3.59 2007-03-21 19:44:15 roebel Exp $
+/* $Id: SdifFile.c,v 3.60 2007-11-26 18:52:01 roebel Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -33,6 +33,12 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.59  2007/03/21 19:44:15  roebel
+ * Don't use global variables without initialization. These globals are treated differently
+ * on MacOSX and they are not allowed in dynamic libraries without extra flags.
+ * To simplify the situation I now initialized all global variables
+ * or make them static.
+ *
  * Revision 3.58  2005/10/21 14:32:29  schwarz
  * protect all static buffers from overflow by using snprintf instead of sprintf
  * move big errorMess buffers into error branch to avoid too large stack allocation
@@ -496,18 +502,18 @@ SdifFOpen(const char* Name, SdifFileModeET Mode)
       else
       {   
         /* check if we can perform seeks (with Sdiffsetpos) on this file */
-#if HAVE_SYS_STAT_H
+#if HAVE_SYS_STAT_H && ! defined( _MSC_VER)
         struct stat sb;
-	if (fstat (fileno (SdifF->Stream), &sb) == -1)
-	{	
-          /* Default to maximum safety. */
-          SdifF->isSeekable = 0 ;
-        }
+        if (fstat (fileno (SdifF->Stream), &sb) == -1)
+          {	
+            /* Default to maximum safety. */
+            SdifF->isSeekable = 0 ;
+          }
         else
 #ifndef __MINGW32__
 	  SdifF->isSeekable = !((S_ISFIFO (sb.st_mode) || S_ISSOCK (sb.st_mode)));
 #else
-	  SdifF->isSeekable = !(S_ISFIFO (sb.st_mode));
+          SdifF->isSeekable = !(S_ISFIFO (sb.st_mode));
 #endif
 #else
         SdifF->isSeekable  =  stdio == eBinaryModeUnknown;
@@ -921,8 +927,13 @@ SdifGenInit(const char *PredefinedTypesFile)
 	    use_default_file = 1;
 	}
 
+#ifdef _MSC_VER
+	copy        = _strdup(PreTypesEnvVar);
+	local_types = _strdup(SdifBaseName(copy));
+#else
 	copy        = strdup(PreTypesEnvVar);
 	local_types = strdup(SdifBaseName(copy));
+#endif
 
 #if HAVE_SYS_STAT_H
 	{   /* stat files */

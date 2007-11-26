@@ -1,4 +1,4 @@
-/* $Id: SdifPrint.c,v 3.11 2005-04-07 15:56:48 schwarz Exp $
+/* $Id: SdifPrint.c,v 3.12 2007-11-26 18:51:12 roebel Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -33,6 +33,10 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.11  2005/04/07 15:56:48  schwarz
+ * removed some now empty local include files,
+ * added include of <sdif.h> and "SdifGlobals.h"
+ *
  * Revision 3.10  2003/11/07 21:47:18  roebel
  * removed XpGuiCalls.h and replaced preinclude.h  by local files
  *
@@ -250,7 +254,7 @@ static const char *formatUInt8    = "%lu  ";
 void
 SdifPrintOneRow(FILE *f, SdifOneRowT *OneRow)
 {
-    int iCol;
+    SdifUInt4 iCol;
 
     /* case template for type from SdifDataTypeET */
 #   define printrowcase(type)						     \
