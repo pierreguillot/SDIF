@@ -1,4 +1,4 @@
-/* $Id: sdif.h,v 1.56 2006-08-03 13:51:17 borghesi Exp $
+/* $Id: sdif.h,v 1.57 2007-11-26 18:55:52 roebel Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -30,6 +30,9 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.56  2006/08/03 13:51:17  borghesi
+ * exported new symbols for windows compilation
+ *
  * Revision 1.55  2006/06/21 15:40:00  schwarz
  * LAST commit on this repository before moving to sourceforge
  * (documentation stuff)
@@ -274,7 +277,7 @@
  * Revision 1.1.2.1  2000/08/21  13:07:41  tisseran
  * *** empty log message ***
  *
- * $Date: 2006-08-03 13:51:17 $
+ * $Date: 2007-11-26 18:55:52 $
  *
  */
 
@@ -289,7 +292,7 @@ extern "C" {
 #endif
 
 
-static const char _sdif_h_cvs_revision_ [] = "$Id: sdif.h,v 1.56 2006-08-03 13:51:17 borghesi Exp $";
+static const char _sdif_h_cvs_revision_ [] = "$Id: sdif.h,v 1.57 2007-11-26 18:55:52 roebel Exp $";
 
 
 #include <stdio.h>
@@ -298,9 +301,17 @@ static const char _sdif_h_cvs_revision_ [] = "$Id: sdif.h,v 1.56 2006-08-03 13:5
 
 
 #ifdef WIN32
+# ifdef DO_EXPORT_SDIF
 #   define SDIF_API __declspec(dllexport)
+# else
+#   define SDIF_API __declspec(dllimport)
+# endif
 #else
-#   define SDIF_API extern
+#  if defined(__GNUC__) && defined( GCC_HAS_VISIBILITY)
+#    define SDIF_API __attribute__ ((visibility("default")))
+#  else
+#    define SDIF_API
+#  endif
 #endif
 
 
@@ -795,15 +806,15 @@ struct SdifTimePositionLS
 };
 
 
-SdifTimePositionT* SdifCreateTimePosition(SdifFloat8 Time, SdiffPosT Position);
-void               SdifKillTimePosition(void* TimePosition);
+SDIF_API SdifTimePositionT* SdifCreateTimePosition(SdifFloat8 Time, SdiffPosT Position);
+SDIF_API void               SdifKillTimePosition(void* TimePosition);
 
-SdifTimePositionLT* SdifCreateTimePositionL(void);
-void                SdifKillTimePositionL  (SdifTimePositionLT *TimePositionL);
+SDIF_API SdifTimePositionLT* SdifCreateTimePositionL(void);
+SDIF_API void                SdifKillTimePositionL  (SdifTimePositionLT *TimePositionL);
 
-SdifTimePositionLT* SdifTimePositionLPutTail(SdifTimePositionLT* TimePositionL,
+SDIF_API SdifTimePositionLT* SdifTimePositionLPutTail(SdifTimePositionLT* TimePositionL,
                                              SdifFloat8 Time, SdiffPosT Position);
-SdifTimePositionT*  SdifTimePositionLGetTail(SdifTimePositionLT* TimePositionL);
+SDIF_API SdifTimePositionT*  SdifTimePositionLGetTail(SdifTimePositionLT* TimePositionL);
 
 
 
@@ -1184,7 +1195,7 @@ SDIF_API SdifFileT* SdifFTryOpen (const char *Name, SdifFileModeET Mode);
   Converti un fichier texte pseudo-SDIF de nom TextStreamName en un
   fichier SDIF binaire de non SdifF->Name. Le fichier doit avoir été
   ouvert en écriture (eWriteFile).  */
-size_t SdifToText (SdifFileT *SdifF, char *TextStreamName);
+SDIF_API size_t SdifToText (SdifFileT *SdifF, char *TextStreamName);
 
 
 /*#include "SdifFile.h"
@@ -1203,10 +1214,10 @@ SDIF_API void   SdifDisableErrorOutput (void);
 
 
 /* global variables to control error output */
-extern int              gSdifErrorOutputEnabled;
-extern char            *SdifErrorFile;
-extern int              SdifErrorLine;
-extern FILE            *SdifStdErr;
+extern SDIF_API int              gSdifErrorOutputEnabled;
+extern SDIF_API char            *SdifErrorFile;
+extern SDIF_API int              SdifErrorLine;
+extern SDIF_API FILE            *SdifStdErr;
 
 
 
@@ -1243,11 +1254,11 @@ SDIF_API size_t SdifFReadMatrixHeader     (SdifFileT *SdifF);
   Cette fonction permet de lire 1 ligne de matrice. Les données lues
   sont stockées dans SdifF->CurrOneRow (jusqu'à une prochaine lecture
   d'entête de matrice qui réinitialise ses paramètres).  */
-size_t SdifFReadOneRow           (SdifFileT *SdifF);
+SDIF_API size_t SdifFReadOneRow           (SdifFileT *SdifF);
 
 /*DOC:
   skip one matrix row, when reading row by row with SdifFReadOneRow */
-size_t SdifFSkipOneRow(SdifFileT *SdifF);
+SDIF_API size_t SdifFSkipOneRow(SdifFileT *SdifF);
 
 
 /*DOC: 
@@ -1289,16 +1300,16 @@ SDIF_API size_t SdifFSkipFrameData        (SdifFileT *SdifF);
   nécessaire que SizeR soit le nombre de bytes qui s'épare la position
   actuelle dans le fichier et un byte, repère d'allignement sur 64
   bits.  */
-size_t SdifFReadPadding          (SdifFileT *SdifF, size_t Padding);
+SDIF_API size_t SdifFReadPadding          (SdifFileT *SdifF, size_t Padding);
 
 
 /* skip given number of bytes, either by seeking or by reading bytes */
-size_t SdifFSkip (SdifFileT *SdifF, size_t bytes);
+SDIF_API size_t SdifFSkip (SdifFileT *SdifF, size_t bytes);
 
 
 /*DOC:
   Read and throw away <i>num</i> bytes from the file. */
-size_t SdifFReadAndIgnore (SdifFileT *SdifF, size_t bytes);
+SDIF_API size_t SdifFReadAndIgnore (SdifFileT *SdifF, size_t bytes);
 
 
 /*DOC: 
@@ -1332,7 +1343,7 @@ SDIF_API size_t  SdifFWriteMatrixHeader    (SdifFileT *SdifF);
   que l'on possède déjà un tableau flottant ou respectivement une
   méthode pour retrouver une valeur de colonne), SdifFWriteOneRow
   écrit 1 ligne de matrice suivant les paramètres de SdifF->CurrMtrxH.  */
-size_t  SdifFWriteOneRow          (SdifFileT *SdifF);
+SDIF_API size_t  SdifFWriteOneRow          (SdifFileT *SdifF);
 
 /*DOC: 
   Write whole matrix data, (after having set the matrix header with 
@@ -1366,7 +1377,7 @@ SDIF_API size_t SdifFWriteTextMatrix (SdifFileT     *SdifF,
 /*DOC: 
   TBI: Convert ASCII C-String to UTF-8 encoded string, returning
   length (including terminating null character). */
-size_t SdifAsciiToUTF8 (char *ascii_in, char *utf8_out);
+SDIF_API size_t SdifAsciiToUTF8 (char *ascii_in, char *utf8_out);
 
 /*DOC: 
   Cette fonction permet en fin d'écriture de matrice d'ajouter le
@@ -1377,7 +1388,7 @@ size_t SdifAsciiToUTF8 (char *ascii_in, char *utf8_out);
   position actuelle d'écriture avec une position connue où le fichier
   est aligné sur 64 bits (en général, c'est la taille de la matrice en
   cours d'écriture: NbRow*NbCol*DatWitdh).  */
-size_t  SdifFWritePadding         (SdifFileT *SdifF, size_t Padding);
+SDIF_API size_t  SdifFWritePadding         (SdifFileT *SdifF, size_t Padding);
 
 
 /*
@@ -1397,12 +1408,12 @@ SDIF_API size_t  SdifFWriteFrameHeader     (SdifFileT *SdifF);
   Execute un retour fichier de ChunkSize bytes et l'écrit, donc on
   écrase la taille du chunk ou du frame.  Dans le cas où le fichier
   est stderr ou stdout, l'action n'est pas réalisée.  */
-void    SdifUpdateChunkSize       (SdifFileT *SdifF, size_t ChunkSize);
+SDIF_API void    SdifUpdateChunkSize       (SdifFileT *SdifF, size_t ChunkSize);
 
 /*DOC: 
   Rewrite given frame size and number of matrices in frame header.
   Return -1 on error or if file is not seekable (stdout or stderr). */
-int     SdifUpdateFrameHeader     (SdifFileT *SdifF, size_t ChunkSize, 
+SDIF_API int     SdifUpdateFrameHeader     (SdifFileT *SdifF, size_t ChunkSize, 
                                    SdifInt4 NumMatrix);
 
 /*DOC:
@@ -1469,20 +1480,20 @@ SDIF_API size_t SdifFWriteTextFrameSdifString(SdifFileT     *SdifF,
  */
 SDIF_API SdifFileT* SdifFOpen                   (const char *Name, SdifFileModeET Mode);
 
-SdifFileT*         SdifFOpenText                (SdifFileT *SdifF, const char* Name, SdifFileModeET Mode);
+SDIF_API SdifFileT*         SdifFOpenText                (SdifFileT *SdifF, const char* Name, SdifFileModeET Mode);
 
 /*DOC:
  */
 SDIF_API void      SdifFClose                   (SdifFileT *SdifF);
 
-SdifFrameHeaderT*  SdifFCreateCurrFramH         (SdifFileT *SdifF, SdifSignature Signature);
-SdifMatrixHeaderT* SdifFCreateCurrMtrxH         (SdifFileT *SdifF);
-FILE*              SdifFGetFILE_SwitchVerbose   (SdifFileT *SdifF, int Verbose);
-void               SdifTakeCodedPredefinedTypes (SdifFileT *SdifF);
-void               SdifFLoadPredefinedTypes     (SdifFileT *SdifF, const char *TypesFileName);
+SDIF_API SdifFrameHeaderT*  SdifFCreateCurrFramH         (SdifFileT *SdifF, SdifSignature Signature);
+SDIF_API SdifMatrixHeaderT* SdifFCreateCurrMtrxH         (SdifFileT *SdifF);
+SDIF_API FILE*              SdifFGetFILE_SwitchVerbose   (SdifFileT *SdifF, int Verbose);
+SDIF_API void               SdifTakeCodedPredefinedTypes (SdifFileT *SdifF);
+SDIF_API void               SdifFLoadPredefinedTypes     (SdifFileT *SdifF, const char *TypesFileName);
 
-extern int        gSdifInitialised;
-extern SdifFileT *gSdifPredefinedTypes;
+extern SDIF_API int        gSdifInitialised;
+extern SDIF_API SdifFileT *gSdifPredefinedTypes;
 
 
 
@@ -1586,26 +1597,25 @@ SDIF_API SdifMatrixHeaderT* SdifFSetCurrMatrixHeader (SdifFileT *SdifF,
   Sdif à un programme. Le programme Diphone Ircam a un bon exemple de
   lecture avec transposition automatique, généralisée pour tout type
   de matrice. */
-SdifOneRowT*  SdifFSetCurrOneRow       (SdifFileT *SdifF, void *Values);
+SDIF_API SdifOneRowT*  SdifFSetCurrOneRow       (SdifFileT *SdifF, void *Values);
 
 
 /*DOC: 
   Permet de donner la valeur Value dans la ligbe de matrice temporaire
   de SdifF à la colonne numCol (0<numCol<=SdifF->CurrMtrxH->NbCol).  */
-SdifOneRowT* SdifFSetCurrOneRowCol (SdifFileT *SdifF, SdifUInt4
-numCol, SdifFloat8 Value);
+SDIF_API SdifOneRowT* SdifFSetCurrOneRowCol (SdifFileT *SdifF, SdifUInt4 numCol, SdifFloat8 Value);
 
 
 /*DOC: 
   Recupère la valeur stockée à la colonne numCol de la ligne
   temporaire.  C'est un SdifFloat8 donc un double!!  */ 
-SdifFloat8 SdifFCurrOneRowCol (SdifFileT *SdifF, SdifUInt4 numCol);
+SDIF_API SdifFloat8 SdifFCurrOneRowCol (SdifFileT *SdifF, SdifUInt4 numCol);
 
 
 /*DOC: 
   Idem que la fonction précédente mais en utilisant le type de la
   matrice et le nom de la colonne.  */
-SdifFloat8    SdifFCurrOneRowColName   (SdifFileT *SdifF, 
+SDIF_API SdifFloat8    SdifFCurrOneRowColName   (SdifFileT *SdifF, 
                                         SdifMatrixTypeT *MatrixType, 
                                         char *NameCD);
 
@@ -1665,12 +1675,12 @@ SDIF_API SdifFloat8    SdifFCurrTime            (SdifFileT *SdifF);
 
 /*DOC: 
   Renvoie la ligne temporaire de SdifF.  */
-SdifOneRowT*  SdifFCurrOneRow          (SdifFileT *SdifF);
+SDIF_API SdifOneRowT*  SdifFCurrOneRow          (SdifFileT *SdifF);
 
 /*DOC:
   Returns a pointer to the data of the current matrix row.  
   According to the matrix data type, it can be a pointer to float or double. */
-void*        SdifFCurrOneRowData          (SdifFileT *SdifF);
+SDIF_API void*        SdifFCurrOneRowData          (SdifFileT *SdifF);
 
 /*DOC: 
   Return pointer to current matrix data structure, if read before with
@@ -1707,9 +1717,9 @@ SDIF_API void *SdifFGetUserData (SdifFileT *file, int index);
 
 
 
-SdifFileT*    SdifFReInitMtrxUsed (SdifFileT *SdifF);
-SdifFileT*    SdifFPutInMtrxUsed  (SdifFileT *SdifF, SdifSignature Sign);
-SdifSignature SdifFIsInMtrxUsed   (SdifFileT *SdifF, SdifSignature Sign);
+SDIF_API SdifFileT*    SdifFReInitMtrxUsed (SdifFileT *SdifF);
+SDIF_API SdifFileT*    SdifFPutInMtrxUsed  (SdifFileT *SdifF, SdifSignature Sign);
+SDIF_API SdifSignature SdifFIsInMtrxUsed   (SdifFileT *SdifF, SdifSignature Sign);
 
 
 
@@ -1731,70 +1741,70 @@ SDIF_API SdifErrorTagET  SdifFLastErrorTag (SdifFileT *SdifF);
 
 
 
-SdifFrameHeaderT* SdifCreateFrameHeader(SdifSignature Signature,
+SDIF_API SdifFrameHeaderT* SdifCreateFrameHeader(SdifSignature Signature,
                                                SdifUInt4 Size,
                                                SdifUInt4 NbMatrix,
                                                SdifUInt4 NumID,
                                                SdifFloat8 Time);
 
-SdifFrameHeaderT* SdifCreateFrameHeaderEmpty(SdifSignature Signature);
+SDIF_API SdifFrameHeaderT* SdifCreateFrameHeaderEmpty(SdifSignature Signature);
 
-void              SdifKillFrameHeader  (SdifFrameHeaderT *FrameHeader);
+SDIF_API void              SdifKillFrameHeader  (SdifFrameHeaderT *FrameHeader);
 
-SdifFrameDataT* SdifCreateFrameData(SdifHashTableT *FrameTypesTable,
+SDIF_API SdifFrameDataT* SdifCreateFrameData(SdifHashTableT *FrameTypesTable,
                                            SdifSignature FrameSignature,
                                            SdifUInt4 NumID,
                                            SdifFloat8 Time);
 
-void            SdifKillFrameData   (SdifHashTableT *FrameTypesTable, SdifFrameDataT *FrameData);
+SDIF_API void            SdifKillFrameData   (SdifHashTableT *FrameTypesTable, SdifFrameDataT *FrameData);
 
-SdifFrameDataT* SdifFrameDataPutNthMatrixData(SdifFrameDataT *FrameData, unsigned int NthMatrix,
+SDIF_API SdifFrameDataT* SdifFrameDataPutNthMatrixData(SdifFrameDataT *FrameData, unsigned int NthMatrix,
                                                      SdifMatrixDataT *MatrixData);
 
-SdifFrameDataT* SdifFrameDataPutComponentMatrixData(SdifHashTableT *FrameTypesTable,
+SDIF_API SdifFrameDataT* SdifFrameDataPutComponentMatrixData(SdifHashTableT *FrameTypesTable,
                                                            SdifFrameDataT *FrameData,
                                                            char *CompoName, SdifMatrixDataT *MatrixData);
 
-SdifMatrixDataT* SdifFrameDataGetNthMatrixData(SdifFrameDataT *FrameData, unsigned int NthMatrix);
+SDIF_API SdifMatrixDataT* SdifFrameDataGetNthMatrixData(SdifFrameDataT *FrameData, unsigned int NthMatrix);
 
-SdifMatrixDataT* SdifFrameDataGetComponentMatrixData(SdifHashTableT *FrameTypesTable,
+SDIF_API SdifMatrixDataT* SdifFrameDataGetComponentMatrixData(SdifHashTableT *FrameTypesTable,
                                                             SdifFrameDataT *FrameData,
                                                      char *CompoName);
 
 
 
-SdifComponentT* SdifCreateComponent (SdifSignature MtrxS, char *Name, SdifUInt4 Num);
-void            SdifKillComponent   (SdifComponentT *Component);
-SdifFrameTypeT* SdifCreateFrameType (SdifSignature FramS, SdifFrameTypeT *PredefinedFrameType);
+SDIF_API SdifComponentT* SdifCreateComponent (SdifSignature MtrxS, char *Name, SdifUInt4 Num);
+SDIF_API void            SdifKillComponent   (SdifComponentT *Component);
+SDIF_API SdifFrameTypeT* SdifCreateFrameType (SdifSignature FramS, SdifFrameTypeT *PredefinedFrameType);
 
-void            SdifKillFrameType               (SdifFrameTypeT *FrameType);
+SDIF_API void            SdifKillFrameType               (SdifFrameTypeT *FrameType);
 
 /** 
  * Access a frame type definition by matrix component signature 
  */
-SdifComponentT* SdifFrameTypeGetComponent_MtrxS (SdifFrameTypeT *FrameType, SdifSignature MtrxS);
+SDIF_API SdifComponentT* SdifFrameTypeGetComponent_MtrxS (SdifFrameTypeT *FrameType, SdifSignature MtrxS);
 
 /** 
  * Access a frame type definition by matrix component name 
  */
-SdifComponentT* SdifFrameTypeGetComponent       (SdifFrameTypeT *FrameType, char *NameC);
+SDIF_API SdifComponentT* SdifFrameTypeGetComponent       (SdifFrameTypeT *FrameType, char *NameC);
 
 /** 
  * Access a frame type definition by matrix component number 
  */
-SdifComponentT* SdifFrameTypeGetNthComponent    (SdifFrameTypeT *FrameType, SdifUInt4 NumC);
+SDIF_API SdifComponentT* SdifFrameTypeGetNthComponent    (SdifFrameTypeT *FrameType, SdifUInt4 NumC);
 
-SdifFrameTypeT* SdifFrameTypePutComponent       (SdifFrameTypeT *FrameType, SdifSignature MtrxS, char *NameC);
+SDIF_API SdifFrameTypeT* SdifFrameTypePutComponent       (SdifFrameTypeT *FrameType, SdifSignature MtrxS, char *NameC);
 
 
 /**
  * Get frame type pointer from signature, given a frame type hash table.
  * Use SdifFGetFrameTypesTable to get this.
  */ 
-SdifFrameTypeT* SdifGetFrameType       (SdifHashTableT *FrameTypeHT, SdifSignature FramS);
+SDIF_API SdifFrameTypeT* SdifGetFrameType       (SdifHashTableT *FrameTypeHT, SdifSignature FramS);
 
-void            SdifPutFrameType       (SdifHashTableT *FrameTypeHT, SdifFrameTypeT *FrameType);
-SdifUInt2       SdifExistUserFrameType (SdifHashTableT *FrameTypeHT);
+SDIF_API void            SdifPutFrameType       (SdifHashTableT *FrameTypeHT, SdifFrameTypeT *FrameType);
+SDIF_API SdifUInt2       SdifExistUserFrameType (SdifHashTableT *FrameTypeHT);
 
 
 
@@ -1896,13 +1906,13 @@ SdifUInt2       SdifExistUserFrameType (SdifHashTableT *FrameTypeHT);
 
 #define _SdifStringLen 1024
 
-extern char gSdifString[_SdifStringLen];
-extern char gSdifString2[_SdifStringLen];
-extern char gSdifErrorMess[_SdifStringLen];
+extern SDIF_API char gSdifString[_SdifStringLen];
+extern SDIF_API char gSdifString2[_SdifStringLen];
+extern SDIF_API char gSdifErrorMess[_SdifStringLen];
 
 #define _SdifNbMaxPrintSignature 8
-extern char gSdifStringSignature[_SdifNbMaxPrintSignature][5];
-extern int  CurrStringPosSignature;
+extern SDIF_API char gSdifStringSignature[_SdifNbMaxPrintSignature][5];
+extern SDIF_API int  CurrStringPosSignature;
 
 
 /*
@@ -1918,7 +1928,7 @@ SDIF_API char*     SdifSignatureToString(SdifSignature Signature);
   encodes the type version.  Note that comparison of full signatures
   can be done simply with '=='. 
 */
-int     SdifSignatureCmpNoVersion(SdifSignature Signature1, SdifSignature Signature2);
+SDIF_API int     SdifSignatureCmpNoVersion(SdifSignature Signature1, SdifSignature Signature2);
 
 /*DOC: 
   Returns size of SDIF data type in bytes
@@ -1929,18 +1939,18 @@ SDIF_API SdifUInt4 SdifSizeofDataType (SdifDataTypeET DataType);
 /*DOC: 
   Returns true if DataType is in the list of known data types.
 */
-int SdifDataTypeKnown (SdifDataTypeET DataType);
+SDIF_API int SdifDataTypeKnown (SdifDataTypeET DataType);
 
 /*DOC:
 */
-size_t    SdifPaddingCalculate  (size_t NbBytes);
+SDIF_API size_t    SdifPaddingCalculate  (size_t NbBytes);
 
 /*DOC:
 */
-size_t    SdifFPaddingCalculate (FILE *f, size_t NbBytes);
+SDIF_API size_t    SdifFPaddingCalculate (FILE *f, size_t NbBytes);
 
 /* (double f1) == (double f2) with _SdifFloatEps for error */
-int SdifFloat8Equ(SdifFloat8 f1, SdifFloat8 f2);
+SDIF_API int SdifFloat8Equ(SdifFloat8 f1, SdifFloat8 f2);
 
 
 #ifndef MIN
@@ -1961,52 +1971,52 @@ int SdifFloat8Equ(SdifFloat8 f1, SdifFloat8 f2);
 #define _Sdif_MIN_DOUBLE_ (- DBL_MAX)
 
 
-int       SdifStrLen  (const char *s);
+SDIF_API int       SdifStrLen  (const char *s);
 
 /* returns 0 if strings are equal */
-int       SdifStrCmp  (const char *s1, const char *s2);
+SDIF_API int       SdifStrCmp  (const char *s1, const char *s2);
 
 /* returns true if strings are equal */
-int       SdifStrEq(const char *s1, const char *s2);
-int       SdifStrNCmp (const char *s1, const char *s2, unsigned int n);
-char*     SdifStrNCpy (char *s1, const char *s2, unsigned int n);
-char*     SdifCreateStrNCpy (const char* Source, size_t Size);
-void      SdifKillStr (char* String);
+SDIF_API int       SdifStrEq(const char *s1, const char *s2);
+SDIF_API int       SdifStrNCmp (const char *s1, const char *s2, unsigned int n);
+SDIF_API char*     SdifStrNCpy (char *s1, const char *s2, unsigned int n);
+SDIF_API char*     SdifCreateStrNCpy (const char* Source, size_t Size);
+SDIF_API void      SdifKillStr (char* String);
 
 
-void     SdifSetStdIOBinary (void);
-FILE*    SdiffBinOpen       (const char * Name, SdifBinaryModeET Mode);
-SdifInt4 SdiffBinClose      (FILE *f);
+SDIF_API void     SdifSetStdIOBinary (void);
+SDIF_API FILE*    SdiffBinOpen       (const char * Name, SdifBinaryModeET Mode);
+SDIF_API SdifInt4 SdiffBinClose      (FILE *f);
 
 
 
-SdifHashTableT* SdifCreateHashTable(unsigned int HashSize, SdifHashIndexTypeET IndexType, void (*Killer)(void *));
+SDIF_API SdifHashTableT* SdifCreateHashTable(unsigned int HashSize, SdifHashIndexTypeET IndexType, void (*Killer)(void *));
 
-void SdifMakeEmptyHashTable (SdifHashTableT* HTable);
-void SdifKillHashTable      (SdifHashTableT* HTable);
+SDIF_API void SdifMakeEmptyHashTable (SdifHashTableT* HTable);
+SDIF_API void SdifKillHashTable      (SdifHashTableT* HTable);
 
 
 
 /******************  eHashChar ****************/
 
-unsigned int SdifHashChar(const char* s, unsigned int nchar, unsigned int HashSize);
+SDIF_API unsigned int SdifHashChar(const char* s, unsigned int nchar, unsigned int HashSize);
 
-void*           SdifHashTableSearchChar(SdifHashTableT* HTable, const char *s, unsigned int nchar);
-SdifHashTableT* SdifHashTablePutChar   (SdifHashTableT* HTable, const char *s, unsigned int nchar, void* Data);
+SDIF_API void*           SdifHashTableSearchChar(SdifHashTableT* HTable, const char *s, unsigned int nchar);
+SDIF_API SdifHashTableT* SdifHashTablePutChar   (SdifHashTableT* HTable, const char *s, unsigned int nchar, void* Data);
 
 
 /***************** eHashInt4 **********************/
 
-unsigned int SdifHashInt4(unsigned int i, unsigned int HashSize);
+SDIF_API unsigned int SdifHashInt4(unsigned int i, unsigned int HashSize);
 
-void*           SdifHashTableSearchInt4(SdifHashTableT* HTable, unsigned int i);
-SdifHashTableT* SdifHashTablePutInt4   (SdifHashTableT* HTable, const unsigned int i, void* Data);
+SDIF_API void*           SdifHashTableSearchInt4(SdifHashTableT* HTable, unsigned int i);
+SDIF_API SdifHashTableT* SdifHashTablePutInt4   (SdifHashTableT* HTable, const unsigned int i, void* Data);
 
 
 /*************************** for all ***********************/
 
-void*           SdifHashTableSearch (SdifHashTableT* HTable, void *ptr, unsigned int nobj);
-SdifHashTableT* SdifHashTablePut    (SdifHashTableT* HTable, const void *ptr, unsigned int nobj, void* Data);
+SDIF_API void*           SdifHashTableSearch (SdifHashTableT* HTable, void *ptr, unsigned int nobj);
+SDIF_API SdifHashTableT* SdifHashTablePut    (SdifHashTableT* HTable, const void *ptr, unsigned int nobj, void* Data);
 
 
 
@@ -2189,39 +2199,37 @@ int /*bool*/ SdifFCheckStatusPrint (SdifFileT *file)
 
 /* stocks management */
 
-void        SdifInitListNStock      (SdifListNStockT *Stock, unsigned int SizeOfOneStock);
-void        SdifNewStock            (SdifListNStockT *Stock);
-SdifListNT* SdifGetNewNodeFromTrash (SdifListNStockT *Stock);
-SdifListNT* SdifGetNewNodeFromStock (SdifListNStockT *Stock);
-SdifListNT* SdifGetNewNode          (SdifListNStockT *Stock);
-void        SdifPutNodeInTrash      (SdifListNStockT *Stock, SdifListNT* OldNode);
-SdifListNT* SdifKillListNStock      (SdifListNT* OldStock);
-void        SdifListNStockMakeEmpty (SdifListNStockT *Stock);
+SDIF_API void        SdifInitListNStock      (SdifListNStockT *Stock, unsigned int SizeOfOneStock);
+SDIF_API void        SdifNewStock            (SdifListNStockT *Stock);
+SDIF_API SdifListNT* SdifGetNewNodeFromTrash (SdifListNStockT *Stock);
+SDIF_API SdifListNT* SdifGetNewNodeFromStock (SdifListNStockT *Stock);
+SDIF_API SdifListNT* SdifGetNewNode          (SdifListNStockT *Stock);
+SDIF_API void        SdifPutNodeInTrash      (SdifListNStockT *Stock, SdifListNT* OldNode);
+SDIF_API SdifListNT* SdifKillListNStock      (SdifListNT* OldStock);
+SDIF_API void        SdifListNStockMakeEmpty (SdifListNStockT *Stock);
 
 /* global variable gSdifListNodeStock */
 
-
-
-extern  SdifListNStockT gSdifListNodeStock;
-SdifListNStockT* SdifListNodeStock  (void);
-void    SdifInitListNodeStock       (unsigned int SizeOfOneStock);
-void    SdifDrainListNodeStock      (void);
+extern SDIF_API SdifListNStockT gSdifListNodeStock;
+SDIF_API SdifListNStockT* SdifListNodeStock  (void);
+SDIF_API void    SdifInitListNodeStock       (unsigned int SizeOfOneStock);
+SDIF_API void    SdifDrainListNodeStock      (void);
 
 
 /* nodes management */
 
-SdifListNT* SdifCreateListNode  (SdifListNT *Next, void *Data);
-SdifListNT* SdifKillListNode    (SdifListNT *Node, KillerFT Killer);
+SDIF_API SdifListNT* SdifCreateListNode  (SdifListNT *Next, void *Data);
+SDIF_API SdifListNT* SdifKillListNode    (SdifListNT *Node, KillerFT Killer);
 
 
 
 /* lists management */
 
-SdifListT*  SdifCreateList      (KillerFT Killer);
-SdifListT*  SdifKillListHead    (SdifListT* List);
-SdifListT*  SdifKillListCurr    (SdifListT* List);
-SdifListT*  SdifMakeEmptyList   (SdifListT* List);
-void        SdifKillList        (SdifListT* List);
+SDIF_API SdifListT*  SdifCreateList      (KillerFT Killer);
+SDIF_API SdifListT*  SdifKillListHead    (SdifListT* List);
+SDIF_API SdifListT*  SdifKillListCurr    (SdifListT* List);
+SDIF_API SdifListT*  SdifMakeEmptyList   (SdifListT* List);
+SDIF_API void        SdifKillList        (SdifListT* List);
 
 /*DOC:
   Init the function SdifListGetNext. 
@@ -2246,77 +2254,77 @@ SDIF_API void*       SdifListGetNext     (SdifListT* List);
   Only return Curr->Data. */
 SDIF_API void*       SdifListGetCurr     (SdifListT* List);
 
-SdifListT*  SdifListPutTail     (SdifListT* List, void *pData);
-SdifListT*  SdifListPutHead     (SdifListT* List, void *pData);
+SDIF_API SdifListT*  SdifListPutTail     (SdifListT* List, void *pData);
+SDIF_API SdifListT*  SdifListPutHead     (SdifListT* List, void *pData);
 
 /*DOC:
   append list b to list a 
 
   WARNING: This creates double references to the data! */
-SdifListT *SdifListConcat(SdifListT *a, SdifListT *b);
+SDIF_API SdifListT *SdifListConcat(SdifListT *a, SdifListT *b);
 
 
 
 
-SdifMatrixHeaderT* SdifCreateMatrixHeader    (SdifSignature Signature, 
+SDIF_API SdifMatrixHeaderT* SdifCreateMatrixHeader    (SdifSignature Signature, 
                                               SdifDataTypeET DataType,
                                               SdifUInt4 NbRow, 
                                               SdifUInt4 NbCol);
 
-SdifMatrixHeaderT* SdifCreateMatrixHeaderEmpty (void);
-void               SdifKillMatrixHeader        (SdifMatrixHeaderT *MatrixHeader);
+SDIF_API SdifMatrixHeaderT* SdifCreateMatrixHeaderEmpty (void);
+SDIF_API void               SdifKillMatrixHeader        (SdifMatrixHeaderT *MatrixHeader);
 
 
 /*
  * OneRow class
  */
 
-SdifOneRowT*       SdifCreateOneRow          (SdifDataTypeET DataType, SdifUInt4  NbGranuleAlloc);
-SdifOneRowT*       SdifReInitOneRow          (SdifOneRowT *OneRow, SdifDataTypeET DataType, SdifUInt4 NbData);
-void               SdifKillOneRow            (SdifOneRowT *OneRow);
+SDIF_API SdifOneRowT*       SdifCreateOneRow          (SdifDataTypeET DataType, SdifUInt4  NbGranuleAlloc);
+SDIF_API SdifOneRowT*       SdifReInitOneRow          (SdifOneRowT *OneRow, SdifDataTypeET DataType, SdifUInt4 NbData);
+SDIF_API void               SdifKillOneRow            (SdifOneRowT *OneRow);
 
 /* row element access */
 
-SdifOneRowT*       SdifOneRowPutValue        (SdifOneRowT *OneRow, SdifUInt4 numCol, SdifFloat8 Value);
-SdifFloat8         SdifOneRowGetValue        (SdifOneRowT *OneRow, SdifUInt4 numCol);
-SdifFloat8         SdifOneRowGetValueColName (SdifOneRowT *OneRow, SdifMatrixTypeT *MatrixType, char * NameCD);
+SDIF_API SdifOneRowT*       SdifOneRowPutValue        (SdifOneRowT *OneRow, SdifUInt4 numCol, SdifFloat8 Value);
+SDIF_API SdifFloat8         SdifOneRowGetValue        (SdifOneRowT *OneRow, SdifUInt4 numCol);
+SDIF_API SdifFloat8         SdifOneRowGetValueColName (SdifOneRowT *OneRow, SdifMatrixTypeT *MatrixType, char * NameCD);
 
 
 /*
  * matrix data class 
  */
 
-SdifMatrixDataT*   SdifCreateMatrixData      (SdifSignature Signature, 
+SDIF_API SdifMatrixDataT*   SdifCreateMatrixData      (SdifSignature Signature, 
                                               SdifDataTypeET DataType,
                                               SdifUInt4 NbRow, 
                                               SdifUInt4 NbCol);
 
-void               SdifKillMatrixData        (SdifMatrixDataT *MatrixData);
+SDIF_API void               SdifKillMatrixData        (SdifMatrixDataT *MatrixData);
 
 /* see if there's enough space for data, if not, grow buffer */
-int                SdifMatrixDataRealloc     (SdifMatrixDataT *data, 
+SDIF_API int                SdifMatrixDataRealloc     (SdifMatrixDataT *data, 
                                               int newsize);
 
 /* matrix data element access by index (starting from 1!) */
 
-SdifMatrixDataT*   SdifMatrixDataPutValue    (SdifMatrixDataT *MatrixData,
+SDIF_API SdifMatrixDataT*   SdifMatrixDataPutValue    (SdifMatrixDataT *MatrixData,
                                               SdifUInt4  numRow, 
                                               SdifUInt4  numCol, 
                                               SdifFloat8 Value);
 
-SdifFloat8         SdifMatrixDataGetValue    (SdifMatrixDataT *MatrixData,
+SDIF_API SdifFloat8         SdifMatrixDataGetValue    (SdifMatrixDataT *MatrixData,
                                               SdifUInt4  numRow, 
                                               SdifUInt4  numCol);
 
 /* matrix data element access by column name */
 
-SdifMatrixDataT *  SdifMatrixDataColNamePutValue (SdifHashTableT *MatrixTypesTable,
+SDIF_API SdifMatrixDataT *  SdifMatrixDataColNamePutValue (SdifHashTableT *MatrixTypesTable,
                                                   SdifMatrixDataT *MatrixData,
                                                   SdifUInt4  numRow,
                                                   char *ColName,
                                                   SdifFloat8 Value);
 
-SdifFloat8         SdifMatrixDataColNameGetValue (SdifHashTableT *MatrixTypesTable,
+SDIF_API SdifFloat8         SdifMatrixDataColNameGetValue (SdifHashTableT *MatrixTypesTable,
                                                   SdifMatrixDataT *MatrixData,
                                                   SdifUInt4  numRow,
                                                   char *ColName);
@@ -2325,8 +2333,8 @@ SDIF_API void      SdifCopyMatrixDataToFloat4    (SdifMatrixDataT *data,
                                                   SdifFloat4      *dest);
 
 
-SdifColumnDefT*  SdifCreateColumnDef (char *Name,  unsigned int Num);
-void             SdifKillColumnDef   (void *ColumnDef);
+SDIF_API SdifColumnDefT*  SdifCreateColumnDef (char *Name,  unsigned int Num);
+SDIF_API void             SdifKillColumnDef   (void *ColumnDef);
 
 /*DOC: 
   premet de créer un objet 'type de matrice'. Le premier argument
@@ -2340,34 +2348,34 @@ void             SdifKillColumnDef   (void *ColumnDef);
   fonctions SdifFReadMatrixHeader et SdifFReadFrameHeader, cette mise
   à jour se fait automatiquement à l'aide des fonctions
   SdifTestMatrixType et SdifTestFrameType. */
-SdifMatrixTypeT* SdifCreateMatrixType              (SdifSignature Signature,
+SDIF_API SdifMatrixTypeT* SdifCreateMatrixType              (SdifSignature Signature,
                                                                            SdifMatrixTypeT *PredefinedMatrixType);
-void             SdifKillMatrixType                (SdifMatrixTypeT *MatrixType);
+SDIF_API void             SdifKillMatrixType                (SdifMatrixTypeT *MatrixType);
 
 /*DOC: 
   permet d'ajouter une colonne à un type (toujours la dernière
   colonne).  */
-SdifMatrixTypeT* SdifMatrixTypeInsertTailColumnDef (SdifMatrixTypeT *MatrixType, char *NameCD);
+SDIF_API SdifMatrixTypeT* SdifMatrixTypeInsertTailColumnDef (SdifMatrixTypeT *MatrixType, char *NameCD);
 
 /*DOC: 
   renvoie la position de la colonne de nom NameCD.  (0 si elle
   n'existe pas) */
-SdifUInt4        SdifMatrixTypeGetNumColumnDef     (SdifMatrixTypeT *MatrixType, char *NameCD);
+SDIF_API SdifUInt4        SdifMatrixTypeGetNumColumnDef     (SdifMatrixTypeT *MatrixType, char *NameCD);
 
 /*DOC: 
   renvoie la définition de la colonne (numéro, nom) en fonction
   du nom.(NULL si introuvable) */
-SdifColumnDefT*  SdifMatrixTypeGetColumnDef        (SdifMatrixTypeT *MatrixType, char *NameCD);
+SDIF_API SdifColumnDefT*  SdifMatrixTypeGetColumnDef        (SdifMatrixTypeT *MatrixType, char *NameCD);
 
 /*DOC: 
   renvoie la définition de la colonne (numéro, nom) en fonction
   du numero.(NULL si introuvable) */
-SdifColumnDefT*  SdifMatrixTypeGetNthColumnDef     (SdifMatrixTypeT *MatrixType, SdifUInt4 NumCD);
+SDIF_API SdifColumnDefT*  SdifMatrixTypeGetNthColumnDef     (SdifMatrixTypeT *MatrixType, SdifUInt4 NumCD);
 
 
 /*DOC: 
   Return pointer to name of column at index, NULL if it doesn't exist. */
-const char*  SdifMatrixTypeGetColumnName           (SdifMatrixTypeT *MatrixType, int index);
+SDIF_API const char*  SdifMatrixTypeGetColumnName           (SdifMatrixTypeT *MatrixType, int index);
 
 
 /*DOC: 
@@ -2380,13 +2388,13 @@ const char*  SdifMatrixTypeGetColumnName           (SdifMatrixTypeT *MatrixType,
 
   Tip: use SdifFGetMatrixTypesTable to obtain the matrix types hash table.
 */
-SdifMatrixTypeT* SdifGetMatrixType                 (SdifHashTableT *MatrixTypesTable, 
+SDIF_API SdifMatrixTypeT* SdifGetMatrixType                 (SdifHashTableT *MatrixTypesTable, 
                                                     SdifSignature Signature);
 
 /*DOC: 
   permet d'ajouter un type de matrice dans une table.  */
-void             SdifPutMatrixType(SdifHashTableT *MatrixTypesTable, SdifMatrixTypeT* MatrixType);
-SdifUInt2        SdifExistUserMatrixType(SdifHashTableT *MatrixTypesTable);
+SDIF_API void             SdifPutMatrixType(SdifHashTableT *MatrixTypesTable, SdifMatrixTypeT* MatrixType);
+SDIF_API SdifUInt2        SdifExistUserMatrixType(SdifHashTableT *MatrixTypesTable);
 
 /*DOC:
   Remark:
@@ -2409,7 +2417,7 @@ SDIF_API size_t SdifFGetAllTypefromSdifString (SdifFileT *SdifF,
  *
  * @ingroup types
  */
-SdifHashTableT *SdifFGetMatrixTypesTable(SdifFileT *file);
+SDIF_API SdifHashTableT *SdifFGetMatrixTypesTable(SdifFileT *file);
 
 /**
  * Get table of frame type definitions declare in this file's header only, 
@@ -2417,7 +2425,7 @@ SdifHashTableT *SdifFGetMatrixTypesTable(SdifFileT *file);
  *
  * @ingroup types
  */
-SdifHashTableT *SdifFGetFrameTypesTable(SdifFileT *file);
+SDIF_API SdifHashTableT *SdifFGetFrameTypesTable(SdifFileT *file);
 
 
 
@@ -2441,8 +2449,8 @@ SdifHashTableT *SdifFGetFrameTypesTable(SdifFileT *file);
  */
 
 
-SdifNameValueT* SdifCreateNameValue(const char *Name,  const char *Value);
-void            SdifKillNameValue(SdifNameValueT *NameValue);
+SDIF_API SdifNameValueT* SdifCreateNameValue(const char *Name,  const char *Value);
+SDIF_API void            SdifKillNameValue(SdifNameValueT *NameValue);
 
 
 
@@ -2451,15 +2459,15 @@ void            SdifKillNameValue(SdifNameValueT *NameValue);
  * NameValueTable
  */
 
-SdifNameValueTableT* SdifCreateNameValueTable(  SdifUInt4 StreamID, 
+SDIF_API SdifNameValueTableT* SdifCreateNameValueTable(  SdifUInt4 StreamID, 
                                                 SdifUInt4 HashSize, 
                                                 SdifUInt4 NumTable);
-void            SdifKillNameValueTable          (void* NVTable);
-SdifNameValueT* SdifNameValueTableGetNV         (SdifNameValueTableT* NVTable, const char *Name);
-SdifNameValueT* SdifNameValueTablePutNV         (SdifNameValueTableT* NVTable, const char *Name,  const char *Value);
-SdifFloat8      SdifNameValueTableGetTime       (SdifNameValueTableT* NVTable);
-SdifUInt4       SdifNameValueTableGetNumTable   (SdifNameValueTableT* NVTable);
-SdifUInt4       SdifNameValueTableGetStreamID  (SdifNameValueTableT* NVTable);
+SDIF_API void            SdifKillNameValueTable          (void* NVTable);
+SDIF_API SdifNameValueT* SdifNameValueTableGetNV         (SdifNameValueTableT* NVTable, const char *Name);
+SDIF_API SdifNameValueT* SdifNameValueTablePutNV         (SdifNameValueTableT* NVTable, const char *Name,  const char *Value);
+SDIF_API SdifFloat8      SdifNameValueTableGetTime       (SdifNameValueTableT* NVTable);
+SDIF_API SdifUInt4       SdifNameValueTableGetNumTable   (SdifNameValueTableT* NVTable);
+SDIF_API SdifUInt4       SdifNameValueTableGetStreamID  (SdifNameValueTableT* NVTable);
 
 
 
@@ -2467,8 +2475,8 @@ SdifUInt4       SdifNameValueTableGetStreamID  (SdifNameValueTableT* NVTable);
  * NameValueTableList
  */
 
-SdifNameValuesLT*   SdifCreateNameValuesL       (SdifUInt4  HashSize);
-void                SdifKillNameValuesL         (SdifNameValuesLT *NameValuesL);
+SDIF_API SdifNameValuesLT*   SdifCreateNameValuesL       (SdifUInt4  HashSize);
+SDIF_API void                SdifKillNameValuesL         (SdifNameValuesLT *NameValuesL);
 
 /*DOC: 
   Cette fonction permet d'ajouter une nouvelle NVT dans la liste
@@ -2482,14 +2490,14 @@ SDIF_API SdifNameValuesLT*   SdifNameValuesLNewTable     (SdifNameValuesLT *Name
 /*DOC: 
   Cette fonction permet de définir la nième NVT de la liste des
   tables comme NVT courante.  */
-SdifNameValueTableT*SdifNameValuesLSetCurrNVT   (SdifNameValuesLT *NameValuesL, SdifUInt4 NumCurrNVT);
+SDIF_API SdifNameValueTableT*SdifNameValuesLSetCurrNVT   (SdifNameValuesLT *NameValuesL, SdifUInt4 NumCurrNVT);
 
 
 /*DOC:
   Kill current NVT from list of NVTs.  
   Warning: current nvt is no longer valid afterwards. 
            call SdifNameValuesLSetCurrNVT again */
-void SdifNameValuesLKillCurrNVT(SdifNameValuesLT *NameValuesL);
+SDIF_API void SdifNameValuesLKillCurrNVT(SdifNameValuesLT *NameValuesL);
 
 
 /*DOC: 
@@ -2498,19 +2506,19 @@ void SdifNameValuesLKillCurrNVT(SdifNameValuesLT *NameValuesL);
   référencé dans plusieurs NVT, alors c'est la première NVT le
   contenant qui sera prise en compte.  Le pointeur retourné est de
   type SdifNameValueT qui contient deux champs: Name et Value.  */
-SdifNameValueT*     SdifNameValuesLGet          (SdifNameValuesLT *NameValuesL, char *Name);
+SDIF_API SdifNameValueT*     SdifNameValuesLGet          (SdifNameValuesLT *NameValuesL, char *Name);
 
 /*DOC: 
   Cette fonction réalise aussi une requête en fonction de Name
   mais uniquement dans la NVT courante.  */
-SdifNameValueT*     SdifNameValuesLGetCurrNVT   (SdifNameValuesLT *NameValuesL, const char *Name);
+SDIF_API SdifNameValueT*     SdifNameValuesLGetCurrNVT   (SdifNameValuesLT *NameValuesL, const char *Name);
 
 /*DOC: 
   Cette fonction permet d'ajouter une NameValue à table courante
   qui est la dernière table créée ou celle définie en tant que table
   courante. Name et Value doivent être des chaines caractères ASCII
   sans espacements.  */
-SdifNameValueT*     SdifNameValuesLPutCurrNVT   (SdifNameValuesLT *NameValuesL, const char *Name,  const char *Value);
+SDIF_API SdifNameValueT*     SdifNameValuesLPutCurrNVT   (SdifNameValuesLT *NameValuesL, const char *Name,  const char *Value);
 
 /*DOC: 
   Add a Name-Value pair to the current Name-Value Table, while
@@ -2549,10 +2557,10 @@ SDIF_API SdifUInt2           SdifNameValuesLIsNotEmpty   (SdifNameValuesLT *Name
 #define   M_1DIS_Distribution    "Distribution"
 #define   M_1DIS_Amplitude  "Amplitude"
 
-SdifFrameTypeT* CreateF_1FOB(void);
-SdifFrameTypeT* CreateF_1REB(void);
-SdifFrameTypeT* CreateF_1NOI(void);
-void SdifCreatePredefinedTypes(SdifHashTableT *MatrixTypesHT,
+SDIF_API SdifFrameTypeT* CreateF_1FOB(void);
+SDIF_API SdifFrameTypeT* CreateF_1REB(void);
+SDIF_API SdifFrameTypeT* CreateF_1NOI(void);
+SDIF_API void SdifCreatePredefinedTypes(SdifHashTableT *MatrixTypesHT,
                                       SdifHashTableT *FrameTypesHT);
 
 
@@ -2561,27 +2569,27 @@ void SdifCreatePredefinedTypes(SdifHashTableT *MatrixTypesHT,
 
 /*************** Matrix Type ***************/
 
-void SdifPrintMatrixType(FILE *fw, SdifMatrixTypeT *MatrixType);
-void SdifPrintAllMatrixType(FILE *fw, SdifFileT *SdifF);
+SDIF_API void SdifPrintMatrixType(FILE *fw, SdifMatrixTypeT *MatrixType);
+SDIF_API void SdifPrintAllMatrixType(FILE *fw, SdifFileT *SdifF);
 
 /*************** Frame Type ***************/
 
-void SdifPrintFrameType(FILE *fw, SdifFrameTypeT *FrameType);
-void SdifPrintAllFrameType(FILE *fw, SdifFileT *SdifF);
+SDIF_API void SdifPrintFrameType(FILE *fw, SdifFrameTypeT *FrameType);
+SDIF_API void SdifPrintAllFrameType(FILE *fw, SdifFileT *SdifF);
 
 /********** Matrix **********/
 
-void SdifPrintMatrixHeader(FILE *f, SdifMatrixHeaderT *MatrixHeader);
-void SdifPrintOneRow(FILE *f, SdifOneRowT *OneRow);
-void SdifPrintMatrixRows(FILE* f, SdifMatrixDataT *MatrixData);
+SDIF_API void SdifPrintMatrixHeader(FILE *f, SdifMatrixHeaderT *MatrixHeader);
+SDIF_API void SdifPrintOneRow(FILE *f, SdifOneRowT *OneRow);
+SDIF_API void SdifPrintMatrixRows(FILE* f, SdifMatrixDataT *MatrixData);
 
 /********** Frame ***********/
 
-void SdifPrintFrameHeader(FILE *f, SdifFrameHeaderT* FrameHeader);
+SDIF_API void SdifPrintFrameHeader(FILE *f, SdifFrameHeaderT* FrameHeader);
 
 /************ High ***********/
 
-void SdifPrintAllType(FILE *fw, SdifFileT *SdifF);
+SDIF_API void SdifPrintAllType(FILE *fw, SdifFileT *SdifF);
 
 
 
@@ -2589,7 +2597,7 @@ void SdifPrintAllType(FILE *fw, SdifFileT *SdifF);
 /*DOC:
   Return true if c is a reserved char. 
 */
-int SdifIsAReservedChar (char c);
+SDIF_API int SdifIsAReservedChar (char c);
 
 /*DOC: 
   Convert str <strong>in place</strong> so that it doesn't
@@ -2607,37 +2615,37 @@ SDIF_API char *SdifStringToNV (/*in out*/ char *str);
    non-reseve est lu apres un caractere espacement.  ncMax est
    typiquement strlen(s)+1.  
 */
-int SdiffGetString      (FILE* fr, char* s, size_t ncMax, size_t *NbCharRead);
+SDIF_API int SdiffGetString      (FILE* fr, char* s, size_t ncMax, size_t *NbCharRead);
 
 /* retourne le caractere d'erreur */
-int SdiffGetSignature   (FILE* fr, SdifSignature *Signature, size_t *NbCharRead);
+SDIF_API int SdiffGetSignature   (FILE* fr, SdifSignature *Signature, size_t *NbCharRead);
 /*DOC:
   Function return the signature in a SdifStringT
 */
-int SdiffGetSignaturefromSdifString(SdifStringT *SdifString, SdifSignature *Signature);
+SDIF_API int SdiffGetSignaturefromSdifString(SdifStringT *SdifString, SdifSignature *Signature);
 
-int SdiffGetWordUntil   (FILE* fr, char* s, size_t ncMax, size_t *NbCharRead, const char *CharsEnd);
+SDIF_API int SdiffGetWordUntil   (FILE* fr, char* s, size_t ncMax, size_t *NbCharRead, const char *CharsEnd);
 /*DOC:
   Function return the word until in a SdifStringT
 */
-int SdiffGetWordUntilfromSdifString(SdifStringT *SdifString, char* s, size_t ncMax,const char *CharsEnd);
+SDIF_API int SdiffGetWordUntilfromSdifString(SdifStringT *SdifString, char* s, size_t ncMax,const char *CharsEnd);
 
-int SdiffGetStringUntil (FILE* fr, char* s, size_t ncMax, size_t *NbCharRead, const char *CharsEnd);
+SDIF_API int SdiffGetStringUntil (FILE* fr, char* s, size_t ncMax, size_t *NbCharRead, const char *CharsEnd);
 /*DOC:
   Function return the string until in a SdifStringT
  */
-int SdiffGetStringUntilfromSdifString(SdifStringT *SdifString, char *s, size_t ncMax,
+SDIF_API int SdiffGetStringUntilfromSdifString(SdifStringT *SdifString, char *s, size_t ncMax,
                                      const char *CharsEnd);
 
-int SdiffGetStringWeakUntil(FILE* fr, char* s, size_t ncMax, size_t *NbCharRead, const char *CharsEnd);
+SDIF_API int SdiffGetStringWeakUntil(FILE* fr, char* s, size_t ncMax, size_t *NbCharRead, const char *CharsEnd);
 /*DOC:
   Return the weak string until in a SdifStringT
 */
-int SdiffGetStringWeakUntilfromSdifString(SdifStringT *SdifString, char* s,
+SDIF_API int SdiffGetStringWeakUntilfromSdifString(SdifStringT *SdifString, char* s,
                                           size_t ncMax, const char *CharsEnd);
 
-int SdifSkipASCIIUntil  (FILE* fr, size_t *NbCharRead, char *CharsEnd);
-int SdifSkipASCIIUntilfromSdifString  (SdifStringT *SdifString, size_t *NbCharRead, char *CharsEnd);
+SDIF_API int SdifSkipASCIIUntil  (FILE* fr, size_t *NbCharRead, char *CharsEnd);
+SDIF_API int SdifSkipASCIIUntilfromSdifString  (SdifStringT *SdifString, size_t *NbCharRead, char *CharsEnd);
 
 
 #if 0   /* for cocoon's eyes only */
@@ -2653,7 +2661,7 @@ size_t SdiffScanFloat8  (FILE *stream, SdifFloat8 *ptr, size_t nobj);
    SdiffScan<TYPE> functions */
 
 #define sdif_scanproto(type) \
-size_t SdiffScan##type (FILE *stream, Sdif##type *ptr, size_t nobj)
+SDIF_API size_t SdiffScan##type (FILE *stream, Sdif##type *ptr, size_t nobj)
 
 sdif_proto_foralltypes (sdif_scanproto)
 
@@ -2664,13 +2672,13 @@ sdif_proto_foralltypes (sdif_scanproto)
    Exactly 4 chars are considered, so make sure *str has at least that many! 
    The str pointer MUST be word (at least 4 byte or so) aligned.
 */
-SdifSignature _SdifStringToSignature (char *str);
+SDIF_API SdifSignature _SdifStringToSignature (char *str);
 
 /*DOC:
   Convert a string to an SDIF signature (in proper endianness).
   str can point to any string position of any length.  
 */
-SdifSignature SdifStringToSignature (const char *str);
+SDIF_API SdifSignature SdifStringToSignature (const char *str);
 
 
 
@@ -2680,7 +2688,7 @@ SdifSignature SdifStringToSignature (const char *str);
 /*DOC:
   Return pointer to start of filename component in path inPathFileName.
  */
-char *SdifBaseName (const char* inPathFileName);
+SDIF_API char *SdifBaseName (const char* inPathFileName);
 
 
 /* 
@@ -2688,25 +2696,25 @@ char *SdifBaseName (const char* inPathFileName);
  */
 
 /* init module, called by SdifGenInit */
-int SdifInitSelect (void);
+SDIF_API int SdifInitSelect (void);
 
 /*DOC: 
   Allocate space for an sdif selection.
 */
-SdifSelectionT *SdifCreateSelection (void);
+SDIF_API SdifSelectionT *SdifCreateSelection (void);
 
 /*DOC: 
 */
-int SdifInitSelection (SdifSelectionT *sel, const char *filename, int namelen);
+SDIF_API int SdifInitSelection (SdifSelectionT *sel, const char *filename, int namelen);
 
 /*DOC: 
 */
-int SdifFreeSelection (SdifSelectionT *sel);
+SDIF_API int SdifFreeSelection (SdifSelectionT *sel);
 
 /*DOC:
   Killer function for SdifKillList: free one SdifSelectElement 
 */
-void SdifKillSelectElement (/*SdifSelectionT*/ void *victim);
+SDIF_API void SdifKillSelectElement (/*SdifSelectionT*/ void *victim);
 
 
 
@@ -2719,7 +2727,7 @@ void SdifKillSelectElement (/*SdifSelectionT*/ void *victim);
   Returns pointer to first char of select spec (starting with ::), 
   or NULL if not found.
 */
-char *SdifSelectFindSelection (const char *filename);
+SDIF_API char *SdifSelectFindSelection (const char *filename);
 
 
 /*DOC: 
@@ -2732,13 +2740,13 @@ SDIF_API char *SdifGetFilenameAndSelection (/*in*/  const char *filename,
   The selection specification may contain all the parts of a filename
   based selection after the  selection indicator :: .
 */
-void SdifReplaceSelection (/*in*/ const char* selectionstr,
+SDIF_API void SdifReplaceSelection (/*in*/ const char* selectionstr,
                            /*out*/ SdifSelectionT *sel);
 
 
 /*DOC: 
 */
-void SdifPrintSelection (FILE *out, SdifSelectionT *sel, int options);
+SDIF_API void SdifPrintSelection (FILE *out, SdifSelectionT *sel, int options);
 
 
 
@@ -2749,7 +2757,7 @@ void SdifPrintSelection (FILE *out, SdifSelectionT *sel, int options);
   List has to be created before with
         list = SdifCreateList (SdifKillSelectElement)
 */
-int SdifParseSignatureList (SdifListT *list, const char *str);
+SDIF_API int SdifParseSignatureList (SdifListT *list, const char *str);
 
 
 
@@ -2790,11 +2798,11 @@ void SdifSelectAdd_TYPE_Range (SdifListT *list,
 
 
 #define _addrangeproto(name, type, field) \
-void SdifSelectAdd##name##Range (SdifListT *list, \
+SDIF_API void SdifSelectAdd##name##Range (SdifListT *list, \
                                  type value, SdifSelectTokens rt, type range)
 
 #define _addsimpleproto(name, type, field) \
-void SdifSelectAdd##name (SdifListT *list, type value)
+SDIF_API void SdifSelectAdd##name (SdifListT *list, type value)
 
 #define _addproto(name, type, field) \
 _addsimpleproto (name, type, field); \
@@ -2812,7 +2820,7 @@ _addproto (String,    char *,           string)
 
   @return dest
 */
-SdifListT *SdifSelectAppendList (SdifListT *dest, SdifListT *source);
+SDIF_API SdifListT *SdifSelectAppendList (SdifListT *dest, SdifListT *source);
 
 /*DOC:
   convert list of int selections to mask 
@@ -2841,14 +2849,14 @@ SDIF_API void SdifSelectGetIntMask (SdifListP list, SdifSelectIntMaskP mask);
   If force_range is 1, the out value is converted to a range in any
   case, with value <= range guaranteed.  
 */
-int SdifSelectGetNextIntRange  (/*in*/  SdifListP list, 
+SDIF_API int SdifSelectGetNextIntRange  (/*in*/  SdifListP list, 
                                 /*out*/ SdifSelectElementIntT  *range, 
                                 /*in*/  int force_range);
 
 /*DOC: 
   See SdifSelectGetNextInt.
 */
-int SdifSelectGetNextRealRange (/*in*/  SdifListP list, 
+SDIF_API int SdifSelectGetNextRealRange (/*in*/  SdifListP list, 
                                 /*out*/ SdifSelectElementRealT *range, 
                                 /*in*/  int force_range);
 
@@ -2860,20 +2868,20 @@ int SdifSelectGetNextRealRange (/*in*/  SdifListP list,
 
   See also SdifSelectGetNextInt.  
 */
-SdifSignature  SdifSelectGetNextSignature (/*in*/  SdifListP list);
+SDIF_API SdifSignature  SdifSelectGetNextSignature (/*in*/  SdifListP list);
 
 /*DOC: 
   See SdifSelectGetNextSignature.
 */
-char          *SdifSelectGetNextString    (/*in*/  SdifListP list);
+SDIF_API char          *SdifSelectGetNextString    (/*in*/  SdifListP list);
 
 
 /*DOC: 
   Return value of first selection (ignoring range).
 */
-int            SdifSelectGetFirstInt       (SdifListP l, int defval);
-double         SdifSelectGetFirstReal      (SdifListP l, double defval);
-char          *SdifSelectGetFirstString    (SdifListP l, char *defval);
+SDIF_API int            SdifSelectGetFirstInt       (SdifListP l, int defval);
+SDIF_API double         SdifSelectGetFirstReal      (SdifListP l, double defval);
+SDIF_API char          *SdifSelectGetFirstString    (SdifListP l, char *defval);
 SDIF_API SdifSignature  SdifSelectGetFirstSignature (SdifListP l, SdifSignature defval);
 
 
@@ -2884,15 +2892,15 @@ SDIF_API SdifSignature  SdifSelectGetFirstSignature (SdifListP l, SdifSignature 
 // FUNCTION GROUP:      Selection Testing Functions
 */
 
-int SdifSelectTestIntMask (SdifSelectIntMaskT *mask, SdifUInt4 cand);
+SDIF_API int SdifSelectTestIntMask (SdifSelectIntMaskT *mask, SdifUInt4 cand);
 
-int SdifSelectTestIntRange  (SdifSelectElementT *elem, SdifUInt4 cand);
-int SdifSelectTestRealRange (SdifSelectElementT *elem, double cand);
+SDIF_API int SdifSelectTestIntRange  (SdifSelectElementT *elem, SdifUInt4 cand);
+SDIF_API int SdifSelectTestRealRange (SdifSelectElementT *elem, double cand);
 
-int SdifSelectTestInt (SdifListT *list, SdifUInt4 cand);
-int SdifSelectTestReal (SdifListT *list, double cand);
-int SdifSelectTestSignature (SdifListT *list, const SdifSignature cand);
-int SdifSelectTestString (SdifListT *list, const char *cand);
+SDIF_API int SdifSelectTestInt (SdifListT *list, SdifUInt4 cand);
+SDIF_API int SdifSelectTestReal (SdifListT *list, double cand);
+SDIF_API int SdifSelectTestSignature (SdifListT *list, const SdifSignature cand);
+SDIF_API int SdifSelectTestString (SdifListT *list, const char *cand);
 
 
 
@@ -2903,59 +2911,59 @@ int SdifSelectTestString (SdifListT *list, const char *cand);
 
 /*DOC:
   Get number of selected streams in file selection, 0 for all  */
-int SdifFNumStreamsSelected (SdifFileT *file);
+SDIF_API int SdifFNumStreamsSelected (SdifFileT *file);
 
 /*DOC: 
   Get number of selected rows in file selection, or num rows in
   current matrix when all are selected.
   SdifFReadMatrixHeader must have been called before! */
-int SdifFNumRowsSelected (SdifFileT *file);
+SDIF_API int SdifFNumRowsSelected (SdifFileT *file);
 
 /*DOC:
   Get number of selected columns in file selection, or num columns in
   current matrix when all are selected  
   SdifFReadMatrixHeader must have been called before! */
-int SdifFNumColumnsSelected (SdifFileT *file);
+SDIF_API int SdifFNumColumnsSelected (SdifFileT *file);
 
 /*DOC: 
   Read frame headers until a frame matching the file selection
   has been found or the end of the file has been reached.
 
   [Return] false if end of file was reached, true if data has been read. */
-int SdifFReadNextSelectedFrameHeader (SdifFileT *f);
+SDIF_API int SdifFReadNextSelectedFrameHeader (SdifFileT *f);
 
 
 
 /*DOC: 
   Test the selection elements from sel applicable to frame FramH:
   time, stream, frame type. */
-int SdifFrameIsSelected (SdifFrameHeaderT *FramH, SdifSelectionT *sel);
+SDIF_API int SdifFrameIsSelected (SdifFrameHeaderT *FramH, SdifSelectionT *sel);
 
 /*DOC:
   Test the selection elements from sel applicable to matrix MtrxH: 
   the matrix signature. */
-int SdifMatrixIsSelected (SdifMatrixHeaderT *MtrxH, SdifSelectionT *sel);
+SDIF_API int SdifMatrixIsSelected (SdifMatrixHeaderT *MtrxH, SdifSelectionT *sel);
 
 
 /*DOC: 
   Test if the current frame header is in the file selection
   (automatically parsed from the filename).  
   Can be called after SdifFReadFrameHeader(). */
-int SdifFCurrFrameIsSelected (SdifFileT *file);
+SDIF_API int SdifFCurrFrameIsSelected (SdifFileT *file);
 
 /*DOC:
   Test if the current matrix header is in the file selection
   (automatically parsed from the filename).  
   Can be called after SdifFReadMatrixHeader(). */
-int SdifFCurrMatrixIsSelected (SdifFileT *file);
+SDIF_API int SdifFCurrMatrixIsSelected (SdifFileT *file);
 
 /*DOC:
   Test file selection if a given row (starting from 1) is selected */
-int SdifFRowIsSelected (SdifFileT *file, int row);
+SDIF_API int SdifFRowIsSelected (SdifFileT *file, int row);
 
 /*DOC:
   Test file selection if a given column (starting from 1) is selected */
-int SdifFColumnIsSelected (SdifFileT *file, int col);
+SDIF_API int SdifFColumnIsSelected (SdifFileT *file, int col);
 
 
 
@@ -2966,48 +2974,48 @@ int SdifFColumnIsSelected (SdifFileT *file, int col);
 
 /*DOC:
   Create table for initially NbSignMax signatures. */
-SdifSignatureTabT* SdifCreateSignatureTab (const SdifUInt4 NbSignMax);
+SDIF_API SdifSignatureTabT* SdifCreateSignatureTab (const SdifUInt4 NbSignMax);
 
 /*DOC:
   Free signature table. */
-void               SdifKillSignatureTab   (SdifSignatureTabT *SignTab);
+SDIF_API void               SdifKillSignatureTab   (SdifSignatureTabT *SignTab);
 
 /*DOC:
   Reallocate table to hold NewNbSignMax signatures. */
-SdifSignatureTabT* SdifReAllocSignatureTab(SdifSignatureTabT *SignTab, 
+SDIF_API SdifSignatureTabT* SdifReAllocSignatureTab(SdifSignatureTabT *SignTab, 
                                            const SdifUInt4 NewNbSignMax);
 
 /*DOC:
   Reallocate table to hold NewNbSignMax signatures and clear signatures. */
-SdifSignatureTabT* SdifReInitSignatureTab (SdifSignatureTabT *SignTab, 
+SDIF_API SdifSignatureTabT* SdifReInitSignatureTab (SdifSignatureTabT *SignTab, 
                                            const SdifUInt4 NewNbSignMax);
 
 /*DOC:
   Add signature Sign, no overflow check. */
-SdifSignatureTabT* SdifPutInSignatureTab  (SdifSignatureTabT *SignTab, 
+SDIF_API SdifSignatureTabT* SdifPutInSignatureTab  (SdifSignatureTabT *SignTab, 
                                            const SdifSignature Sign);
 
 /*DOC:
   Add signature Sign, reallocate table if necessary. */
-SdifSignatureTabT* SdifAddToSignatureTab  (SdifSignatureTabT *SignTab, 
+SDIF_API SdifSignatureTabT* SdifAddToSignatureTab  (SdifSignatureTabT *SignTab, 
                                            const SdifSignature Sign);
 
 /*DOC:
   Get signature at position index.  
   Returns eEmptySignature if index out of bounds. */
-SdifSignature      SdifGetFromSignatureTab(const SdifSignatureTabT* SignTab, 
+SDIF_API SdifSignature      SdifGetFromSignatureTab(const SdifSignatureTabT* SignTab, 
                                            const int index);
 
 /*DOC:
   Test if signature Sign is in table SignTab. 
   [] Returns Sign if yes, 0 (== eEmptySignature) if no. */
-SdifSignature      SdifIsInSignatureTab   (const SdifSignatureTabT *SignTab, 
+SDIF_API SdifSignature      SdifIsInSignatureTab   (const SdifSignatureTabT *SignTab, 
                                            const SdifSignature Sign);
 
 /*DOC:
   Test if signature Sign is in table SignTab. 
   [] Returns index of Sign if yes, -1 if no. */
-int                SdifFindInSignatureTab (const SdifSignatureTabT* SignTab, 
+SDIF_API int                SdifFindInSignatureTab (const SdifSignatureTabT* SignTab, 
                                            const SdifSignature Sign);
 
 
@@ -3020,21 +3028,21 @@ int                SdifFindInSignatureTab (const SdifSignatureTabT* SignTab,
 */
 
 
-SdifStreamIDT* SdifCreateStreamID(SdifUInt4 NumID, char *Source, char *TreeWay);
-void           SdifKillStreamID(SdifStreamIDT *StreamID);
+SDIF_API SdifStreamIDT* SdifCreateStreamID(SdifUInt4 NumID, char *Source, char *TreeWay);
+SDIF_API void           SdifKillStreamID(SdifStreamIDT *StreamID);
 
 
 /*DOC:
   Create a stream ID table.  <strong>The stream ID table of the SDIF
   file structure is created automatically by SdifFOpen().</strong> 
   It can be obtained by SdifFStreamIDTable(). */
-SdifStreamIDTableT* SdifCreateStreamIDTable     (SdifUInt4 HashSize);
+SDIF_API SdifStreamIDTableT* SdifCreateStreamIDTable     (SdifUInt4 HashSize);
 
 /*DOC:
   Deallocate a stream ID table.  <strong>The stream ID table of the SDIF
   file structure is killed automatically by SdifFClose.</strong>  
   It can be obtained by SdifFStreamIDTable. */
-void                SdifKillStreamIDTable       (SdifStreamIDTableT *SIDTable);
+SDIF_API void                SdifKillStreamIDTable       (SdifStreamIDTableT *SIDTable);
 
 /*DOC:
   Add an entry to a stream ID table.  The table will be written by
@@ -3045,7 +3053,7 @@ void                SdifKillStreamIDTable       (SdifStreamIDTableT *SIDTable);
   [in]  TreeWay Routing and parameters, separated by slashes
   [return]
                 The stream ID table entry just created and added */
-SdifStreamIDT*      SdifStreamIDTablePutSID     (SdifStreamIDTableT *SIDTable,
+SDIF_API SdifStreamIDT*      SdifStreamIDTablePutSID     (SdifStreamIDTableT *SIDTable,
                                                  SdifUInt4           NumID, 
                                                  char               *Source, 
                                                  char               *TreeWay);
@@ -3060,25 +3068,25 @@ SdifStreamIDT*      SdifStreamIDTablePutSID     (SdifStreamIDTableT *SIDTable,
   [return]
                  pointer to stream ID table entry, or NULL if no entry for 
                  stream ID NumID exists. */
-SdifStreamIDT*      SdifStreamIDTableGetSID     (SdifStreamIDTableT *SIDTable, 
+SDIF_API SdifStreamIDT*      SdifStreamIDTableGetSID     (SdifStreamIDTableT *SIDTable, 
                                                  SdifUInt4           NumID);
 
 /*DOC:
   Return number of entries in stream ID table SIDTable */
-SdifUInt4           SdifStreamIDTableGetNbData  (SdifStreamIDTableT *SIDTable);
+SDIF_API SdifUInt4           SdifStreamIDTableGetNbData  (SdifStreamIDTableT *SIDTable);
 
 
 /*DOC:
   Return stream ID field in stream ID table entry SID */
-SdifUInt4           SdifStreamIDEntryGetSID     (SdifStreamIDT *SID);
+SDIF_API SdifUInt4           SdifStreamIDEntryGetSID     (SdifStreamIDT *SID);
 
 /*DOC:
   Return source field in stream ID table entry SID */
-char               *SdifStreamIDEntryGetSource  (SdifStreamIDT *SID);
+SDIF_API char               *SdifStreamIDEntryGetSource  (SdifStreamIDT *SID);
 
 /*DOC:
   Return "treeway" field in stream ID table entry SID */
-char               *SdifStreamIDEntryGetTreeWay (SdifStreamIDT *SID);
+SDIF_API char               *SdifStreamIDEntryGetTreeWay (SdifStreamIDT *SID);
 
 
 
@@ -3094,13 +3102,13 @@ char               *SdifStreamIDEntryGetTreeWay (SdifStreamIDT *SID);
 /*DOC:
   Make a memory allocation for a SdifStringT structure.
 */
-SdifStringT * SdifStringNew(void);
+SDIF_API SdifStringT * SdifStringNew(void);
 
 
 /*DOC:
   Free memory allocated for SdifString.
 */
-void SdifStringFree(SdifStringT * SdifString);
+SDIF_API void SdifStringFree(SdifStringT * SdifString);
 
 
 /*DOC:
@@ -3108,25 +3116,25 @@ void SdifStringFree(SdifStringT * SdifString);
   Manage memory reallocation.
   [Return] a boolean for the succes of the function's call.
 */
-int SdifStringAppend(SdifStringT * SdifString, const char *strToAppend);
+SDIF_API int SdifStringAppend(SdifStringT * SdifString, const char *strToAppend);
 
 
 /*DOC:
   Read the current char (= fgetc).
 */
-int SdifStringGetC(SdifStringT * SdifString);
+SDIF_API int SdifStringGetC(SdifStringT * SdifString);
 
 
 /*DOC:
   Equivalent of ungetc: put one character back into string, clear EOS condition
 */
-int SdifStringUngetC(SdifStringT * SdifString);
+SDIF_API int SdifStringUngetC(SdifStringT * SdifString);
 
 
 /*DOC:
   Test the end of the string (= feof)
 */
-int SdifStringIsEOS(SdifStringT *SdifString);
+SDIF_API int SdifStringIsEOS(SdifStringT *SdifString);
 
 
 
@@ -3169,70 +3177,70 @@ SdifInterpretationError(SdifInterpretationErrorET Error, SdifFileT* SdifF, const
   type prédéfinis. S'il est prédéfini, elle crée le lien de SdifF vers
   le type prédéfini. Sinon, elle envoie un message sur l'erreur
   standart.  */
-SdifMatrixTypeT* SdifTestMatrixType (SdifFileT *SdifF, SdifSignature Signature);
-SdifFrameTypeT*  SdifTestFrameType  (SdifFileT *SdifF, SdifSignature Signature);
+SDIF_API SdifMatrixTypeT* SdifTestMatrixType (SdifFileT *SdifF, SdifSignature Signature);
+SDIF_API SdifFrameTypeT*  SdifTestFrameType  (SdifFileT *SdifF, SdifSignature Signature);
 
 
 
-int SdifFTestMatrixWithFrameHeader (SdifFileT* SdifF);
-int SdifFTestDataType              (SdifFileT* SdifF);
-int SdifFTestNbColumns             (SdifFileT* SdifF);
-int SdifFTestNotEmptyMatrix        (SdifFileT* SdifF);
-int SdifFTestMatrixHeader          (SdifFileT* SdifF);
+SDIF_API int SdifFTestMatrixWithFrameHeader (SdifFileT* SdifF);
+SDIF_API int SdifFTestDataType              (SdifFileT* SdifF);
+SDIF_API int SdifFTestNbColumns             (SdifFileT* SdifF);
+SDIF_API int SdifFTestNotEmptyMatrix        (SdifFileT* SdifF);
+SDIF_API int SdifFTestMatrixHeader          (SdifFileT* SdifF);
 
 
 
-SdifColumnDefT*  SdifTestColumnDef (SdifFileT *SdifF, SdifMatrixTypeT *MtrxT, char *NameCD);
-SdifComponentT*  SdifTestComponent (SdifFileT* SdifF, SdifFrameTypeT *FramT, char *NameCD);
+SDIF_API SdifColumnDefT*  SdifTestColumnDef (SdifFileT *SdifF, SdifMatrixTypeT *MtrxT, char *NameCD);
+SDIF_API SdifComponentT*  SdifTestComponent (SdifFileT* SdifF, SdifFrameTypeT *FramT, char *NameCD);
 
-int SdifTestSignature            (SdifFileT *SdifF, int CharEnd, SdifSignature Signature, char *Mess);
-int SdifTestCharEnd              (SdifFileT *SdifF, int CharEnd, char MustBe,
+SDIF_API int SdifTestSignature            (SdifFileT *SdifF, int CharEnd, SdifSignature Signature, char *Mess);
+SDIF_API int SdifTestCharEnd              (SdifFileT *SdifF, int CharEnd, char MustBe,
                                            char *StringRead, int ErrCondition, char *Mess);
 
 
-int SdifTestMatrixTypeModifMode  (SdifFileT *SdifF, SdifMatrixTypeT *MatrixType);
-int SdifTestFrameTypeModifMode   (SdifFileT *SdifF, SdifFrameTypeT *FrameType);
+SDIF_API int SdifTestMatrixTypeModifMode  (SdifFileT *SdifF, SdifMatrixTypeT *MatrixType);
+SDIF_API int SdifTestFrameTypeModifMode   (SdifFileT *SdifF, SdifFrameTypeT *FrameType);
 
 
 
-size_t SdifFTextConvMatrixData     (SdifFileT *SdifF);
-size_t SdifFTextConvMatrix         (SdifFileT *SdifF);
-size_t SdifFTextConvFrameData      (SdifFileT *SdifF);
-size_t SdifFTextConvFrameHeader    (SdifFileT *SdifF);
-size_t SdifFTextConvFrame          (SdifFileT *SdifF);
-size_t SdifFTextConvAllFrame       (SdifFileT *SdifF);
-size_t SdifFTextConvFramesChunk    (SdifFileT *SdifF);
-size_t SdifFTextConv               (SdifFileT *SdifF);
+SDIF_API size_t SdifFTextConvMatrixData     (SdifFileT *SdifF);
+SDIF_API size_t SdifFTextConvMatrix         (SdifFileT *SdifF);
+SDIF_API size_t SdifFTextConvFrameData      (SdifFileT *SdifF);
+SDIF_API size_t SdifFTextConvFrameHeader    (SdifFileT *SdifF);
+SDIF_API size_t SdifFTextConvFrame          (SdifFileT *SdifF);
+SDIF_API size_t SdifFTextConvAllFrame       (SdifFileT *SdifF);
+SDIF_API size_t SdifFTextConvFramesChunk    (SdifFileT *SdifF);
+SDIF_API size_t SdifFTextConv               (SdifFileT *SdifF);
 
 /* upper level : open the text in read mode */
 
 /*DOC: 
   Converti un fichier SDIF ouvert en lecture (eReadFile) en un fichier
   texte pseudo-SDIF de nom TextStreamName.  */
-size_t SdifTextToSdif (SdifFileT *SdifF, char *TextStreamName);
+SDIF_API size_t SdifTextToSdif (SdifFileT *SdifF, char *TextStreamName);
 
 
 
 
 /* SdifFPrint */
 
-size_t SdifFPrintGeneralHeader      (SdifFileT *SdifF);
-size_t SdifFPrintNameValueLCurrNVT  (SdifFileT *SdifF);
-size_t SdifFPrintAllNameValueNVT    (SdifFileT *SdifF);
-size_t SdifFPrintAllType            (SdifFileT *SdifF);
-size_t SdifFPrintAllStreamID        (SdifFileT *SdifF);
-size_t SdifFPrintAllASCIIChunks     (SdifFileT *SdifF);
-size_t SdifFPrintMatrixHeader       (SdifFileT *SdifF);
-size_t SdifFPrintFrameHeader        (SdifFileT *SdifF);
-size_t SdifFPrintOneRow             (SdifFileT *SdifF);
+SDIF_API size_t SdifFPrintGeneralHeader      (SdifFileT *SdifF);
+SDIF_API size_t SdifFPrintNameValueLCurrNVT  (SdifFileT *SdifF);
+SDIF_API size_t SdifFPrintAllNameValueNVT    (SdifFileT *SdifF);
+SDIF_API size_t SdifFPrintAllType            (SdifFileT *SdifF);
+SDIF_API size_t SdifFPrintAllStreamID        (SdifFileT *SdifF);
+SDIF_API size_t SdifFPrintAllASCIIChunks     (SdifFileT *SdifF);
+SDIF_API size_t SdifFPrintMatrixHeader       (SdifFileT *SdifF);
+SDIF_API size_t SdifFPrintFrameHeader        (SdifFileT *SdifF);
+SDIF_API size_t SdifFPrintOneRow             (SdifFileT *SdifF);
 
-size_t SdifFPrintMatrixType         (SdifFileT *SdifF, SdifMatrixTypeT *MatrixType);
-size_t SdifFPrintFrameType          (SdifFileT *SdifF, SdifFrameTypeT  *FrameType);
+SDIF_API size_t SdifFPrintMatrixType         (SdifFileT *SdifF, SdifMatrixTypeT *MatrixType);
+SDIF_API size_t SdifFPrintFrameType          (SdifFileT *SdifF, SdifFrameTypeT  *FrameType);
 
 /* SdifFPut */
 
-int SdifFAllFrameTypeToSdifString   (SdifFileT *SdifF, SdifStringT *SdifString);
-int SdifFAllMatrixTypeToSdifString  (SdifFileT *SdifF, SdifStringT *SdifSTring);
+SDIF_API int SdifFAllFrameTypeToSdifString   (SdifFileT *SdifF, SdifStringT *SdifString);
+SDIF_API int SdifFAllMatrixTypeToSdifString  (SdifFileT *SdifF, SdifStringT *SdifSTring);
 
 #ifdef __cplusplus
 }
