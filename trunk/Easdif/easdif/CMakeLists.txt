@@ -6,9 +6,13 @@ IF(NOT LIBRARY_OUTPUT_PATH)
   SET(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/lib/${ARCHDIR} )
 ENDIF(NOT LIBRARY_OUTPUT_PATH)
 
+IF(WIN32)
+  ADD_DEFINITIONS(-DDO_EXPORT_SDIF=1)
+ENDIF(WIN32)
+
 # easdif_version.hpp is installed as well but in ../CMakeLists.txt
 SET(noinst_HEADERS ${CMAKE_CURRENT_BINARY_DIR}/easdifintro.hpp ${CMAKE_CURRENT_BINARY_DIR}/easdif_config.hpp)
-SET(HEADERS  easdif.h  sdifentity.hpp sdifexception.hpp sdif_frame.hpp sdifinit.hpp sdifmatrixdata.hpp sdifmatrixdatainterface.hpp sdif_matrix.hpp sdifnamevaluetable.hpp ${CMAKE_CURRENT_BINARY_DIR}/easdif_version.hpp )
+SET(HEADERS  easdif.h easdif_exports.hpp  sdifentity.hpp sdifexception.hpp sdif_frame.hpp sdifinit.hpp sdifmatrixdata.hpp sdifmatrixdatainterface.hpp sdif_matrix.hpp sdifnamevaluetable.hpp ${CMAKE_CURRENT_BINARY_DIR}/easdif_version.hpp )
 
 GET_FILENAME_COMPONENT(normalize_path ${CMAKE_CURRENT_SOURCE_DIR}/../SDIF/sdif ABSOLUTE)
 GET_DIRECTORY_PROPERTY(sdif_C_SOURCES DIRECTORY ${normalize_path} DEFINITION sdif_SOURCES)
