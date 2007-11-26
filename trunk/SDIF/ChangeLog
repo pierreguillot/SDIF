@@ -1,3 +1,25 @@
+2007-11-26  U-REC-1320-ROEBEL\Axel Roebel  <Axel.Roebel@ircam.fr>
+Version 3.10.7
+	
+	* sdif/SdifSignatureTab.c, sdif/SdifSelect.c, sdif/SdifPrint.c, sdif/SdifMatrix.c,
+	* sdif/SdifHighLevel.c, sdif/SdifFile.c, sdif/SdifFGet.c, sdif/SdifList.c
+	Changed data types to have less casts and
+	less compilation warnings with MSVC.
+	renamed some functions that are deprecated in MSVC.
+	
+	* sdif/CMakeLists.txt : 
+	Moved DLL export/import handling here where we deal with  
+	library only settings.
+	
+	* CMakeLists.txt :
+	Support gcc visibility flag.
+
+	* include/sdif.h :
+	Finished DLL export/import handling, support gcc visibility as well.
+
+	* tools/CMakeLists.txt :
+	Changed for MSVC.
+
 2007-04-30  axel roebel  <roebel@marl.hd.free.fr>
 
 	*  SDIF/CMakeLists.txt: 
@@ -932,4 +954,4 @@ Version 3.3:
 	  Operating System.
 
 	
-$Id: ChangeLog,v 1.54 2007-04-30 11:55:09 roebel Exp $
+$Id: ChangeLog,v 1.55 2007-11-26 18:55:26 roebel Exp $
