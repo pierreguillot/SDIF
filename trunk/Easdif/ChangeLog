@@ -1,3 +1,19 @@
+2007-11-26  U-REC-1320-ROEBEL\Axel Roebel  <Axel.Roebel@ircam.fr>
+Version 1.3.3
+
+	* easdif/sdifnamevaluetable.hpp, easdif/sdifinit.hpp, easdif/sdifexception.cpp, easdif/sdifexception.hpp,
+	* easdif/sdifentity.hpp, easdif/sdifentity.cpp, easdif/sdif_matrix.hpp, easdif/sdif_frame.hpp, 
+	* easdif/easdif_config.hpp.in, easdif/easdif.h : 
+	Fixed to avoid compiler warnings in MSVC. 
+	Little problem is the export of std::containers that should be defined as export
+	which is not possible due to the given STL include files.
+	For the moment it seems these warnings are not important, because all these functions
+	are inlined as templates in the STL anyway. Has to be handled with care !!!!
+	Added support for dll exports/imports macros and gcc visibility flag.
+	
+	* easdif/easdif_exports.hpp :
+	Added support for dll exports/imports macros and gcc visibility flag.
+
 2007-10-26  Axel Roebel  <roebel@sam>
 Version 1.3.2
 
@@ -985,4 +1001,4 @@ Version 0.21
 	* ChangeLog: Added changelog to repository.
 
 
-$Id: ChangeLog,v 1.62 2007-10-25 22:32:21 roebel Exp $
+$Id: ChangeLog,v 1.63 2007-11-26 19:12:10 roebel Exp $
