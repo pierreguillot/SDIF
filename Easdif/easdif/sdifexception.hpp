@@ -34,9 +34,12 @@
  * 
  * 
  * 
- * $Id: sdifexception.hpp,v 1.2 2007-04-30 11:34:26 roebel Exp $ 
+ * $Id: sdifexception.hpp,v 1.3 2007-11-26 19:09:38 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  2007/04/30 11:34:26  roebel
+ * Added new exception to signal frame directory errors.
+ *
  * Revision 1.1  2005/05/30 21:43:01  roebel
  * Changed all include files from .h into .hpp to prevent name clash between
  * sdifmatix.h and SDIF/sdifcpp/SdifMatrix.h on MacOSX where filenames are
@@ -96,6 +99,8 @@
 #include <stdexcept>
 #include "sdif.h"
 
+#include "easdif_exports.hpp"
+
 namespace Easdif {
 
   /*************************************************************************/
@@ -117,7 +122,7 @@ namespace Easdif {
    * classes are derived from here.
    *
    */
-  class SDIFException : public std::exception
+  class EASDIF_API SDIFException : public std::exception
   {
   public:    
 
@@ -171,17 +176,17 @@ namespace Easdif {
      *  via  cerr.
      */
     void ErrorMessage()
-	{
+    {
 
-	  std::cerr << "Exception: " << what() << std::endl;
+      std::cerr << "Exception: " << what() << std::endl;
 	    
-	  if (mSourceFileName != "")
-	    std::cerr << "Source file : "
-		      << mSourceFileName 
-		      << "\nat line : "
-		      << mSourceFileLine
-		      << std::endl;
-	}
+      if (mSourceFileName != "")
+        std::cerr << "Source file : "
+                  << mSourceFileName 
+                  << "\nat line : "
+                  << mSourceFileLine
+                  << std::endl;
+    }
 
     
     
@@ -213,17 +218,17 @@ namespace Easdif {
      */
     const std::string& getsourcename() const { return mSourceFileName;}
 
-     /** 
+    /** 
      * \ingroup exception 
      * \brief get SDIF error tag / SdifErrorNumber
      * 
      * @return error number
      */
-     int getenum() const { 
-       return mError;
-     }
+    int getenum() const { 
+      return mError;
+    }
    
-protected:
+  protected:
     int mSourceFileLine;
     std::string mSourceFileName;
     std::string mMessage;
@@ -232,7 +237,7 @@ protected:
 
     SdifErrorLevelET mLevel;
 
-};
+  };
 
 
 #define constructor(class1,class2) class1(SdifErrorLevelET level,  const char* message, \
@@ -240,239 +245,241 @@ protected:
 					 const char* sourceFileName, int sourceFileLine) \
   : class2(level,message,_sdifFile,error,sourceFileName,sourceFileLine){}
 
-/****************** FILE ERRORS  *************************/
+  /****************** FILE ERRORS  *************************/
 
-/// \ingroup exception 
-/// \brief SDIFFileError  error during file operations
-class SDIFFileError : public SDIFException
-{
-public:
-  constructor(SDIFFileError,SDIFException)
-};
+  /// \ingroup exception 
+  /// \brief SDIFFileError  error during file operations
+  class SDIFFileError : public SDIFException
+  {
+  public:
+    constructor(SDIFFileError,SDIFException)
+      };
 
-/// \ingroup exception 
-/// \brief SDIFOpeningError error when opening a file 
-class SDIFOpeningError : public SDIFFileError
-{
-public:
-  constructor(SDIFOpeningError,SDIFFileError)
-};
+  /// \ingroup exception 
+  /// \brief SDIFOpeningError error when opening a file 
+  class SDIFOpeningError : public SDIFFileError
+  {
+  public:
+    constructor(SDIFOpeningError,SDIFFileError)
+      };
 
-/// \ingroup exception 
-/// \brief ReadWriteOnSameFile
-class SDIFReadWriteOnSameFile : public SDIFOpeningError
-{
-public:
-  constructor(SDIFReadWriteOnSameFile,SDIFOpeningError)
-};
+  /// \ingroup exception 
+  /// \brief ReadWriteOnSameFile
+  class SDIFReadWriteOnSameFile : public SDIFOpeningError
+  {
+  public:
+    constructor(SDIFReadWriteOnSameFile,SDIFOpeningError)
+      };
 
-/// \ingroup exception 
-/// \brief SDIFBadStdFile
-class SDIFBadStdFile : public SDIFOpeningError
-{
-public:
-  constructor(SDIFBadStdFile,SDIFOpeningError)
-};
+  /// \ingroup exception 
+  /// \brief SDIFBadStdFile
+  class SDIFBadStdFile : public SDIFOpeningError
+  {
+  public:
+    constructor(SDIFBadStdFile,SDIFOpeningError)
+      };
 
-/// \ingroup exception 
-/// \brief SDIFBadMode bad mode when opening file
-class SDIFBadMode  : public SDIFOpeningError
-{
-public:
-  constructor(SDIFBadMode,SDIFOpeningError)
-};
+  /// \ingroup exception 
+  /// \brief SDIFBadMode bad mode when opening file
+  class SDIFBadMode  : public SDIFOpeningError
+  {
+  public:
+    constructor(SDIFBadMode,SDIFOpeningError)
+      };
 
-/// \ingroup exception 
-/// \brief SDIFHeaderError Frame/Matrix/File Header Errors 
-class SDIFHeaderError : public SDIFFileError
-{
-public:
-  constructor(SDIFHeaderError,SDIFFileError)
-};
+  /// \ingroup exception 
+  /// \brief SDIFHeaderError Frame/Matrix/File Header Errors 
+  class SDIFHeaderError : public SDIFFileError
+  {
+  public:
+    constructor(SDIFHeaderError,SDIFFileError)
+      };
 
-/// \ingroup exception 
-/// \brief SDIFFrameHeaderSizeError 
-class SDIFFrameHeaderSizeError : public SDIFFileError
-{
-public:
-  constructor(SDIFFrameHeaderSizeError,SDIFFileError)
-};
+  /// \ingroup exception 
+  /// \brief SDIFFrameHeaderSizeError 
+  class SDIFFrameHeaderSizeError : public SDIFFileError
+  {
+  public:
+    constructor(SDIFFrameHeaderSizeError,SDIFFileError)
+      };
 
-/// \ingroup exception 
-/// \brief SDIFDirError: Indicates error when creating the SDIF Frame directory
-class SDIFDirError : public SDIFFileError
-{
-public:
-  constructor(SDIFDirError,SDIFFileError)
-};
+  /// \ingroup exception 
+  /// \brief SDIFDirError: Indicates error when creating the SDIF Frame directory
+  class SDIFDirError : public SDIFFileError
+  {
+  public:
+    constructor(SDIFDirError,SDIFFileError)
+      };
 
-/**
- * \brief SDIFNoSeekError: Indicates error while seeking
- * \ingroup exception
- *  may happen either because given position cannot be reached or because te file  is a pipe
- */
-class SDIFSeekError : public SDIFFileError
-{
-public:
-  constructor(SDIFSeekError,SDIFFileError)
-};
-
-
-/// \ingroup exception 
-/// \brief SDIFBadFormatVersion
-class SDIFBadFormatVersion : public SDIFHeaderError
-{
-public:
-  constructor(SDIFBadFormatVersion,SDIFHeaderError)
-};
-
-/// \ingroup exception 
-/// \brief SDIFBadHeader
-class SDIFBadHeader : public SDIFHeaderError
-{
-public:
-  constructor(SDIFBadHeader,SDIFHeaderError)
-};
-
-/// \ingroup exception 
-/// \brief ASCII Chunk Errors 
-class SDIFAsciiChunkError : public SDIFFileError
-{
-public:
-  constructor(SDIFAsciiChunkError,SDIFFileError)
-};
-
-/// \ingroup exception 
-/// \brief SDIFReDefined
-class SDIFReDefined : public SDIFAsciiChunkError
-{
-public:
-  constructor(SDIFReDefined,SDIFAsciiChunkError)
-};
-
-/// \ingroup exception 
-/// \brief SDIFUnDefined
-class SDIFUnDefined  : public SDIFAsciiChunkError
-{
-public:
-  constructor(SDIFUnDefined,SDIFAsciiChunkError)
-};
-
-/// \ingroup exception 
-/// \brief SDIFReading error during read
-class SDIFReading : public SDIFFileError
-{
-public:
-  constructor(SDIFReading,SDIFFileError)
-};
-
-/// \ingroup exception 
-/// \brief SDIFEof: eof of sdif file reached
-class SDIFEof : public SDIFReading
-{
-public:
-  constructor(SDIFEof,SDIFReading)
-};
-
-/****************** DESCRIPTION TYPE CHECKING ************/
-
-/// \ingroup exception 
-/// \brief SDIFDescriptionTypeError 
-class SDIFDescriptionTypeError : public SDIFException{
-public:
-  constructor(SDIFDescriptionTypeError,SDIFException)
-};
+  /**
+   * \brief SDIFNoSeekError: Indicates error while seeking
+   * \ingroup exception
+   *  may happen either because given position cannot be reached or because te file  is a pipe
+   */
+  class SDIFSeekError : public SDIFFileError
+  {
+  public:
+    constructor(SDIFSeekError,SDIFFileError)
+      };
 
 
-/****************** MATRIX DATA ELEMENT TYPE CHECKING ****/
-/// \ingroup exception 
-/// \brief SDIFMatrixDataError
-class SDIFMatrixDataError : public SDIFException{
-public:
-  constructor(SDIFMatrixDataError,SDIFException)
-};
+  /// \ingroup exception 
+  /// \brief SDIFBadFormatVersion
+  class SDIFBadFormatVersion : public SDIFHeaderError
+  {
+  public:
+    constructor(SDIFBadFormatVersion,SDIFHeaderError)
+      };
 
-/// \ingroup exception 
-/// \brief SDIFNotInDataTypeUnion
-class SDIFNotInDataTypeUnion  : public SDIFMatrixDataError
-{
-public:
-  constructor(SDIFNotInDataTypeUnion,SDIFMatrixDataError)
-};
+  /// \ingroup exception 
+  /// \brief SDIFBadHeader
+  class SDIFBadHeader : public SDIFHeaderError
+  {
+  public:
+    constructor(SDIFBadHeader,SDIFHeaderError)
+      };
 
-/// \ingroup exception 
-/// \brief SDIFArrayPosition
-class SDIFArrayPosition  : public SDIFMatrixDataError
-{
-public:
-  constructor(SDIFArrayPosition,SDIFMatrixDataError)
-};
+  /// \ingroup exception 
+  /// \brief ASCII Chunk Errors 
+  class SDIFAsciiChunkError : public SDIFFileError
+  {
+  public:
+    constructor(SDIFAsciiChunkError,SDIFFileError)
+      };
 
-/****************** MEMORY MANAGEMENT ********************/
-/// \ingroup exception 
-/// \brief SDIFMemoryError memory problems
-class SDIFMemoryError : public SDIFException{
-public:
-  constructor(SDIFMemoryError,SDIFException)
-};
+  /// \ingroup exception 
+  /// \brief SDIFReDefined
+  class SDIFReDefined : public SDIFAsciiChunkError
+  {
+  public:
+    constructor(SDIFReDefined,SDIFAsciiChunkError)
+      };
 
-/// \ingroup exception 
-/// \brief SDIFFreeNull  mem pointer is zero
-class SDIFFreeNull : public SDIFMemoryError
-{
-public:
-  constructor(SDIFFreeNull,SDIFMemoryError)
-};
+  /// \ingroup exception 
+  /// \brief SDIFUnDefined
+  class SDIFUnDefined  : public SDIFAsciiChunkError
+  {
+  public:
+    constructor(SDIFUnDefined,SDIFAsciiChunkError)
+      };
 
-/// \ingroup exception  
-/// \brief SDIFAllocFail memory allocation failed
-class SDIFAllocFail : public SDIFMemoryError
-{
-public:
-  constructor(SDIFAllocFail,SDIFMemoryError)
-};
+  /// \ingroup exception 
+  /// \brief SDIFReading error during read
+  class SDIFReading : public SDIFFileError
+  {
+  public:
+    constructor(SDIFReading,SDIFFileError)
+      };
 
-/****************** SDIF-Text Reading ********************/
-/// \ingroup exception  
-/// \brief SDIFTextReadingError  error reading text section
-class SDIFTextReadingError : public SDIFException{
-public:
-  constructor(SDIFTextReadingError,SDIFException)
-};
+  /// \ingroup exception 
+  /// \brief SDIFEof: eof of sdif file reached
+  class SDIFEof : public SDIFReading
+  {
+  public:
+    constructor(SDIFEof,SDIFReading)
+      };
 
-/// \ingroup exception    
-/// \brief SDIFTokenLength
-class SDIFTokenLength : public SDIFTextReadingError
-{
-public:
-  constructor(SDIFTokenLength,SDIFTextReadingError)
-};
+  /****************** DESCRIPTION TYPE CHECKING ************/
 
-/****************** Frame Contents ****/
-/// \ingroup exception    
-/// \brief SDIFMatrixNotAvailable requested matrix not in frame
-class SDIFMatrixNotAvailable : public SDIFException{  
-public:
-  constructor(SDIFMatrixNotAvailable,SDIFException)
-};
-
-class FrameDirError : public SDIFException{  
-public:
-  constructor(FrameDirError,SDIFException)
-};
+  /// \ingroup exception 
+  /// \brief SDIFDescriptionTypeError 
+  class SDIFDescriptionTypeError : public SDIFException{
+  public:
+    constructor(SDIFDescriptionTypeError,SDIFException)
+      };
 
 
-extern "C"
-{
-void
-ExceptionThrower(SdifErrorTagET errnum, 
-		 SdifErrorLevelET errlev, 
-		 char* msg, 
-		 SdifFileT* file, 
-		 SdifErrorT* error, 
-		 char* sourcefilename, 
-		 int sourcefileline);
+  /****************** MATRIX DATA ELEMENT TYPE CHECKING ****/
+  /// \ingroup exception 
+  /// \brief SDIFMatrixDataError
+  class SDIFMatrixDataError : public SDIFException{
+  public:
+    constructor(SDIFMatrixDataError,SDIFException)
+      };
 
-}
+  /// \ingroup exception 
+  /// \brief SDIFNotInDataTypeUnion
+  class SDIFNotInDataTypeUnion  : public SDIFMatrixDataError
+  {
+  public:
+    constructor(SDIFNotInDataTypeUnion,SDIFMatrixDataError)
+      };
+
+  /// \ingroup exception 
+  /// \brief SDIFArrayPosition
+  class SDIFArrayPosition  : public SDIFMatrixDataError
+  {
+  public:
+    constructor(SDIFArrayPosition,SDIFMatrixDataError)
+      };
+
+  /****************** MEMORY MANAGEMENT ********************/
+  /// \ingroup exception 
+  /// \brief SDIFMemoryError memory problems
+  class SDIFMemoryError : public SDIFException{
+  public:
+    constructor(SDIFMemoryError,SDIFException)
+      };
+
+  /// \ingroup exception 
+  /// \brief SDIFFreeNull  mem pointer is zero
+  class SDIFFreeNull : public SDIFMemoryError
+  {
+  public:
+    constructor(SDIFFreeNull,SDIFMemoryError)
+      };
+
+  /// \ingroup exception  
+  /// \brief SDIFAllocFail memory allocation failed
+  class SDIFAllocFail : public SDIFMemoryError
+  {
+  public:
+    constructor(SDIFAllocFail,SDIFMemoryError)
+      };
+
+  /****************** SDIF-Text Reading ********************/
+  /// \ingroup exception  
+  /// \brief SDIFTextReadingError  error reading text section
+  class SDIFTextReadingError : public SDIFException{
+  public:
+    constructor(SDIFTextReadingError,SDIFException)
+      };
+
+  /// \ingroup exception    
+  /// \brief SDIFTokenLength
+  class SDIFTokenLength : public SDIFTextReadingError
+  {
+  public:
+    constructor(SDIFTokenLength,SDIFTextReadingError)
+      };
+
+  /****************** Frame Contents ****/
+  /// \ingroup exception    
+  /// \brief SDIFMatrixNotAvailable requested matrix not in frame
+  class SDIFMatrixNotAvailable : public SDIFException{  
+  public:
+    constructor(SDIFMatrixNotAvailable,SDIFException)
+      };
+
+  
+  class FrameDirError : public SDIFException{  
+  public:
+    constructor(FrameDirError,SDIFException)
+      };
+
+
+  extern "C"
+  {
+    EASDIF_API
+    void
+    ExceptionThrower(SdifErrorTagET errnum, 
+                     SdifErrorLevelET errlev, 
+                     char* msg, 
+                     SdifFileT* file, 
+                     SdifErrorT* error, 
+                     char* sourcefilename, 
+                     int sourcefileline) throw(SDIFException);
+
+  }
 } // end of namespace Easdif
 #endif

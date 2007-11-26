@@ -33,9 +33,12 @@
  * 
  * 
  * 
- * $Id: sdif_matrix.hpp,v 1.4 2007-04-30 11:32:29 roebel Exp $ 
+ * $Id: sdif_matrix.hpp,v 1.5 2007-11-26 19:10:23 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.4  2007/04/30 11:32:29  roebel
+ * Matrix reading routine returns bytecount read for selected matrices only.
+ *
  * Revision 1.3  2006/11/26 16:38:06  roebel
  * declared GetRow/GetCol  to be void to improve efficiency of
  * swig interface.
@@ -192,6 +195,7 @@
 #include <string>
 #include <set>
 #include "sdif.h"
+#include "easdif_exports.hpp"
 #include "easdif/sdifexception.hpp"
 #include "easdif/sdifmatrixdatainterface.hpp"
 #include "easdif/sdifmatrixdata.hpp"
@@ -199,551 +203,546 @@
 
 namespace Easdif {
 
-/** 
- * @brief class which can be associated with a matrix
- *
- * SDIFMatrix is composed of different methods which permits to manipulate a
- * matrix.
- */
-
-
-class SDIFMatrix
-{
-private:
-  SDIFMatrixDataInterface* mInter;
-  
-  int bytesread;
-  SdifSignature mSig;
-  SdifDataTypeET mType;
-  // file matrix was read from
-  SdifFileT * mFile;
-
-public:
-  /**
-   * \defgroup create SDIFMatrix - Construction
-   */
-
   /** 
-   * \ingroup create
-   * \brief default constructor
-   * 
-   * Constructs matrix without allocating memory. However, the type
-   * for internal data representation is fixed.
+   * @brief class which can be associated with a matrix
    *
-   * @param _type data type for internal representation
-   *  defaults to: eFloat <br>
-   *  supported types: eChar, eInt2, eUInt2, eInt4, eUInt4, eFloat4 , eFloat8.<br>
-   *  type extensions: eInt1, eUInt1.<br> Attention the types eInt1 and eUInt1
-   *  are not yet
-   *  in the sdif standard and if you use them only the IRCAM sdif library will
-   *  be able to read your data.
+   * SDIFMatrix is composed of different methods which permits to manipulate a
+   * matrix.
    */
+  class EASDIF_API SDIFMatrix
+  {
+  private:
+    SDIFMatrixDataInterface* mInter;
+  
+    int bytesread;
+    SdifSignature mSig;
+    SdifDataTypeET mType;
+    // file matrix was read from
+    SdifFileT * mFile;
+
+  public:
+    /**
+     * \defgroup create SDIFMatrix - Construction
+     */
+
+    /** 
+     * \ingroup create
+     * \brief default constructor
+     * 
+     * Constructs matrix without allocating memory. However, the type
+     * for internal data representation is fixed.
+     *
+     * @param _type data type for internal representation
+     *  defaults to: eFloat <br>
+     *  supported types: eChar, eInt2, eUInt2, eInt4, eUInt4, eFloat4 , eFloat8.<br>
+     *  type extensions: eInt1, eUInt1.<br> Attention the types eInt1 and eUInt1
+     *  are not yet
+     *  in the sdif standard and if you use them only the IRCAM sdif library will
+     *  be able to read your data.
+     */
     SDIFMatrix(const SdifDataTypeET _type=eFloat4);
 
 
-  /** 
-   * \ingroup create
-   * \brief assignment operator
-   *
-   * does a deep copy of the data
-   * 
-   *\param aMatrix matrix to copy
-   *
-   */
-  SDIFMatrix & operator=(const SDIFMatrix& aMatrix);
+    /** 
+     * \ingroup create
+     * \brief assignment operator
+     *
+     * does a deep copy of the data
+     * 
+     *\param aMatrix matrix to copy
+     *
+     */
+    SDIFMatrix & operator=(const SDIFMatrix& aMatrix);
 
 
-  /** 
-   * \ingroup create
-   * \brief copy constrctor
-   *
-   * does a deep copy of the data
-   * 
-   *\param aMatrix
-   *
-   */
-  SDIFMatrix(const SDIFMatrix& aMatrix);
+    /** 
+     * \ingroup create
+     * \brief copy constrctor
+     *
+     * does a deep copy of the data
+     * 
+     *\param aMatrix
+     *
+     */
+    SDIFMatrix(const SDIFMatrix& aMatrix);
 
 
-  /** 
-   * \ingroup create
-   * \brief constructor that allocates internal memory
-   * 
-   * Constructs matrix with given signature
-   * to hold given number of rows and columns. The type
-   * for internal data representation is fixed.
-   *
-   * \param sig     Matrix signature
-   * \param nrows   number of rows allocated
-   * \param ncols   number of cols allocated
-   * \param type data type for internal representation
-   *  defaults to: eFloat <br>
-   *  supported types: eChar, eInt2, eUInt2, eInt4, eUInt4, eFloat4 , eFloat8.<br>
-   *  type extensions: eInt1, eUInt1.<br> Attention the types eInt1 and eUInt1
-   *  are not yet
-   *  in the sdif standard and if you use them only the IRCAM sdif library will
-   *  be able to read your data.
-   */
-  SDIFMatrix(SdifSignature sig, int nrows = 1, int ncols = 1, 
-	     SdifDataTypeET type = eFloat4);
+    /** 
+     * \ingroup create
+     * \brief constructor that allocates internal memory
+     * 
+     * Constructs matrix with given signature
+     * to hold given number of rows and columns. The type
+     * for internal data representation is fixed.
+     *
+     * \param sig     Matrix signature
+     * \param nrows   number of rows allocated
+     * \param ncols   number of cols allocated
+     * \param type data type for internal representation
+     *  defaults to: eFloat <br>
+     *  supported types: eChar, eInt2, eUInt2, eInt4, eUInt4, eFloat4 , eFloat8.<br>
+     *  type extensions: eInt1, eUInt1.<br> Attention the types eInt1 and eUInt1
+     *  are not yet
+     *  in the sdif standard and if you use them only the IRCAM sdif library will
+     *  be able to read your data.
+     */
+    SDIFMatrix(SdifSignature sig, int nrows = 1, int ncols = 1, 
+               SdifDataTypeET type = eFloat4);
 
-  /** 
-   * \ingroup create
-   * \brief constructor that allocates internal memory
-   * 
-   * Constructs matrix with given signature
-   * to hold given number of rows and columns. The type
-   * for internal data representation is fixed.
-   *
-   * \param sig     4 element string specifying Matrix signature
-   * \param nrows   number of rows allocated
-   * \param ncols   number of cols allocated
-   * \param type data type for internal representation
-   *  defaults to: eFloat <br>
-   *  supported types: eChar, eInt2, eUInt2, eInt4, eUInt4, eFloat4 , eFloat8.<br>
-   *  type extensions: eInt1, eUInt1.<br> Attention the types eInt1 and eUInt1
-   *  are not yet
-   *  in the sdif standard and if you use them only the IRCAM sdif library will
-   *  be able to read your data.
-   */
-  SDIFMatrix(const std::string& sig, int nrows = 1, int ncols = 1, 
-	     SdifDataTypeET type = eFloat4);
+    /** 
+     * \ingroup create
+     * \brief constructor that allocates internal memory
+     * 
+     * Constructs matrix with given signature
+     * to hold given number of rows and columns. The type
+     * for internal data representation is fixed.
+     *
+     * \param sig     4 element string specifying Matrix signature
+     * \param nrows   number of rows allocated
+     * \param ncols   number of cols allocated
+     * \param type data type for internal representation
+     *  defaults to: eFloat <br>
+     *  supported types: eChar, eInt2, eUInt2, eInt4, eUInt4, eFloat4 , eFloat8.<br>
+     *  type extensions: eInt1, eUInt1.<br> Attention the types eInt1 and eUInt1
+     *  are not yet
+     *  in the sdif standard and if you use them only the IRCAM sdif library will
+     *  be able to read your data.
+     */
+    SDIFMatrix(const std::string& sig, int nrows = 1, int ncols = 1, 
+               SdifDataTypeET type = eFloat4);
 
     ~SDIFMatrix(){
-	if(mInter) {
-	    delete mInter;
-	    mInter =0;
-	}
+      if(mInter) {
+        delete mInter;
+        mInter =0;
+      }
     };
 
 
 
-  /*************************************************************************/
-  /* To see a SDIFMatrix */
-  /**
-   * \defgroup print SDIFMatrix - Print
-   */
+    /*************************************************************************/
+    /* To see a SDIFMatrix */
+    /**
+     * \defgroup print SDIFMatrix - Print
+     */
   
-  /** 
-   * \ingroup print
-   * print matrix values
-   */
-  void Print();
+    /** 
+     * \ingroup print
+     * print matrix values
+     */
+    void Print();
 
-  /*************************************************************************/
-  /* Read and write a SDIFMatrix */
-  /**
-   * \defgroup rwmat SDIFMatrix - Read and write and create a SDIFMatrix
-   */
+    /*************************************************************************/
+    /* Read and write a SDIFMatrix */
+    /**
+     * \defgroup rwmat SDIFMatrix - Read and write and create a SDIFMatrix
+     */
   
-  /** 
-   * \ingroup rwmat
-   * write the matrix in the file
-   * @return the size in bytes of the matrix writing
-   */
-  int Write(SdifFileT* file);
+    /** 
+     * \ingroup rwmat
+     * write the matrix in the file
+     * @return the size in bytes of the matrix writing
+     */
+    int Write(SdifFileT* file);
 
-  /**
-   * \ingroup rwmat 
-   * \brief read a matrix
-   * filter only matrices that match the set given in hlsel
-   * \param file sdiffeil 
-   * \param hlsel pointer std::set<SsdifSignature> containing the signatures 
-   *          that should be read, this is the signature restriction on Easdif level
-   *          that filters the existing sdif selection (for efficient implementation
-   *          it is assumed that hlsel contains a subset of the sdif file selection
-   *          which is not used if hlsel != 0 && !hlsel->empty() )
-   *
-   * @return the complete count of bytes for the selected matrices including header
-   * 
-   */
-  int Read(SdifFileT* file,const std::set<SdifSignature> *hlsel=0);
+    /**
+     * \ingroup rwmat 
+     * \brief read a matrix
+     * filter only matrices that match the set given in hlsel
+     * \param file sdiffeil 
+     * \param hlsel pointer std::set<SsdifSignature> containing the signatures 
+     *          that should be read, this is the signature restriction on Easdif level
+     *          that filters the existing sdif selection (for efficient implementation
+     *          it is assumed that hlsel contains a subset of the sdif file selection
+     *          which is not used if hlsel != 0 && !hlsel->empty() )
+     *
+     * @return the complete count of bytes for the selected matrices including header
+     * 
+     */
+    int Read(SdifFileT* file,const std::set<SdifSignature> *hlsel=0);
 
-/** 
- * \ingroup create
- * \brief Re-Initialize matrix to hold data
- * 
- * @param sig    SDIFMatrix Signature
- * @param nrows  Number of rows fo the matrix
- * @param ncols  Number of columns of the matrix
- * @param type   SDIFDataType = type of internal representation of the matrix
- */
-  void Init(SdifSignature sig, 
+    /** 
+     * \ingroup create
+     * \brief Re-Initialize matrix to hold data
+     * 
+     * @param sig    SDIFMatrix Signature
+     * @param nrows  Number of rows fo the matrix
+     * @param ncols  Number of columns of the matrix
+     * @param type   SDIFDataType = type of internal representation of the matrix
+     */
+    void Init(SdifSignature sig, 
 	      int nrows, int ncols, SdifDataTypeET  type)   
-    throw(SDIFMatrixDataError,std::bad_alloc);
+      throw(SDIFMatrixDataError,std::bad_alloc);
 
-/** 
- * \ingroup create
- * \brief Re-Initialize matrix to hold data
- * 
- * @param sig    SDIFMatrix Signature
- * @param nrows  Number of rows fo the matrix
- * @param ncols  Number of columns of the matrix
- * @param type   SDIFDataType = type of internal representation of the matrix
- */
-  void Init(const std::string &sig, 
+    /** 
+     * \ingroup create
+     * \brief Re-Initialize matrix to hold data
+     * 
+     * @param sig    SDIFMatrix Signature
+     * @param nrows  Number of rows fo the matrix
+     * @param ncols  Number of columns of the matrix
+     * @param type   SDIFDataType = type of internal representation of the matrix
+     */
+    void Init(const std::string &sig, 
 	      int nrows, int ncols, SdifDataTypeET  type)
-    throw(SDIFMatrixDataError,std::bad_alloc);
+      throw(SDIFMatrixDataError,std::bad_alloc);
 
 
-/** 
- * \ingroup create
- * \brief Resize matrix to hold rowsxcolumns
- * 
- *  Existing data is preserved in the correct locations
- *  newly initilized data is set to zero
- *
- * @param nrows  Number of rows fo the matrix
- * @param ncols  Number of columns of the matrix
- *
- * \return true if successful/false if matrix has not yet been initialized to a signature/data type
- *       
- */
-  bool Resize(int nrows, int ncols);
+    /** 
+     * \ingroup create
+     * \brief Resize matrix to hold rowsxcolumns
+     * 
+     *  Existing data is preserved in the correct locations
+     *  newly initilized data is set to zero
+     *
+     * @param nrows  Number of rows fo the matrix
+     * @param ncols  Number of columns of the matrix
+     *
+     * \return true if successful/false if matrix has not yet been initialized to a signature/data type
+     *       
+     */
+    bool Resize(int nrows, int ncols);
 
-  /** 
-   * \ingroup create
-   * \brief clear matrix 
-   *
-   *  all data entries are set to zero.
-   * \return true if successful/false if matrix has not yet been initialized to a signature/data type
-   *       
-   */
-  bool  Clear();
+    /** 
+     * \ingroup create
+     * \brief clear matrix 
+     *
+     *  all data entries are set to zero.
+     * \return true if successful/false if matrix has not yet been initialized to a signature/data type
+     *       
+     */
+    bool  Clear();
 
-/*************************************************************************/
-/* Get the members of the matrix */
-/**
-* \defgroup membmat SDIFMatrix - Get members of the SDIFMatrix 
-*/
+    /*************************************************************************/
+    /* Get the members of the matrix */
+    /**
+     * \defgroup membmat SDIFMatrix - Get members of the SDIFMatrix 
+     */
 
-/** 
- * \ingroup membmat
- * get the size of matrix occupied in SdifFile (including padding)!!
- */
+    /** 
+     * \ingroup membmat
+     * get the size of matrix occupied in SdifFile (including padding)!!
+     */
     int GetSize() const;
 
-/**
- * \ingroup membmat 
- * get the number of rows of the matrix
- */
-  int GetNbRows() const {return mInter->GetNbRows();};
+    /**
+     * \ingroup membmat 
+     * get the number of rows of the matrix
+     */
+    int GetNbRows() const {return mInter->GetNbRows();};
 
-/** 
- * \ingroup membmat
- * get the number of columns of the matrix
- */
+    /** 
+     * \ingroup membmat
+     * get the number of columns of the matrix
+     */
     int GetNbCols() const {return mInter->GetNbCols();};
 
-  /**
-   * \ingroup membmat 
-   * get the matrix SdifSignature
-   */
+    /**
+     * \ingroup membmat 
+     * get the matrix SdifSignature
+     */
     SdifSignature GetSignature() const;
 
-  /** 
-   * \ingroup membmat
-   * get the matrix string Signature
-   */
+    /** 
+     * \ingroup membmat
+     * get the matrix string Signature
+     */
     std::string GetStringSignature() const;
 
-  /** 
-   * \ingroup membmat
-   * get the matrix type of data
-   */
+    /** 
+     * \ingroup membmat
+     * get the matrix type of data
+     */
     SdifDataTypeET GetType() const;
 
-  /** 
-   * \ingroup membmat
-   * get name of column or empty string if unknown
-   */
-  std::string GetColName(int i) const;
+    /** 
+     * \ingroup membmat
+     * get name of column or empty string if unknown
+     */
+    std::string GetColName(int i) const;
 
 
 
-  /** 
-   * \ingroup membmat
-   * @brief Set one element of the matrix header : the signature
-   */
-  void SetSignature(SdifSignature sig) {  mSig = sig;}
+    /** 
+     * \ingroup membmat
+     * @brief Set one element of the matrix header : the signature
+     */
+    void SetSignature(SdifSignature sig) {  mSig = sig;}
 
-  /** 
-   * \ingroup membmat
-   * @brief Set one element of the matrix header : the signature with a string
-   */
-  void SetSignature(const std::string& signature){
-    mSig = SdifStringToSignature(const_cast<char*>(signature.c_str()));
-  }
-
-
+    /** 
+     * \ingroup membmat
+     * @brief Set one element of the matrix header : the signature with a string
+     */
+    void SetSignature(const std::string& signature){
+      mSig = SdifStringToSignature(const_cast<char*>(signature.c_str()));
+    }
 
 
-/*************************************************************************/
-/* Get the values of the matrix */
-/**
-* \defgroup valmat SDIFMatrix - Get values of the SDIFMatrix 
-*/
 
-/**
- * \ingroup valmat 
- * get a value in : unsigned char
- * @param i row index
- * @param j column index
- * 
- * @return the value
- */
+
+    /*************************************************************************/
+    /* Get the values of the matrix */
+    /**
+     * \defgroup valmat SDIFMatrix - Get values of the SDIFMatrix 
+     */
+
+    /**
+     * \ingroup valmat 
+     * get a value in : unsigned char
+     * @param i row index
+     * @param j column index
+     * 
+     * @return the value
+     */
     int GetUChar(int i, int j) const {return mInter->GetUChar(i, j);};
 
-/**
- * \ingroup valmat 
- * get a value in : int
- * @param i row index
- * @param j column index
- * 
- * @return the value
- */
+    /**
+     * \ingroup valmat 
+     * get a value in : int
+     * @param i row index
+     * @param j column index
+     * 
+     * @return the value
+     */
     int GetInt(int i, int j) const {return mInter->GetInt(i, j);};
 
 
-/**
- * \ingroup valmat  
- * get a value in : float
- * @param i row index
- * @param j column index
- * 
- * @return the value
- */
-  float GetFloat(int i, int j)const {    return mInter->GetFloat(i, j);}
+    /**
+     * \ingroup valmat  
+     * get a value in : float
+     * @param i row index
+     * @param j column index
+     * 
+     * @return the value
+     */
+    float GetFloat(int i, int j)const {    return mInter->GetFloat(i, j);}
 
-/**
- * \ingroup valmat  
- * get the value in double
- * 
- * @param i row index
- * @param j column index
- * 
- * @return the value
- */
-  double GetDouble(int i, int j) const {   return mInter->GetDouble(i, j);}
+    /**
+     * \ingroup valmat  
+     * get the value in double
+     * 
+     * @param i row index
+     * @param j column index
+     * 
+     * @return the value
+     */
+    double GetDouble(int i, int j) const {   return mInter->GetDouble(i, j);}
 
 
-  /** 
-   * \ingroup valmat 
-   * \brief get a value in form of given type
-   * 
-   * @param i row    index
-   * @param j column index
-   * @param value reference of variable to store value in 
-   * 
-   */
-  template<typename Tout>
-  void Get(int i, int j, Tout& value)
-  {
-    value = static_cast<Tout>(mInter->GetDouble(i, j));
-  }
+    /** 
+     * \ingroup valmat 
+     * \brief get a value in form of given type
+     * 
+     * @param i row    index
+     * @param j column index
+     * @param value reference of variable to store value in 
+     * 
+     */
+    template<typename Tout>
+    void Get(int i, int j, Tout& value)
+    {
+      value = static_cast<Tout>(mInter->GetDouble(i, j));
+    }
 
-  // specialization for float that does not use cast
-  void Get(int i, int j, float& value)
-  {
-    value = mInter->GetFloat(i, j);
-  }
+    // specialization for float that does not use cast
+    void Get(int i, int j, float& value)
+    {
+      value = mInter->GetFloat(i, j);
+    }
   
-  // specialization for int that does not use cast
-  void Get(int i, int j, int& value)
-  {
-    value = mInter->GetInt(i, j);
-  }
+    // specialization for int that does not use cast
+    void Get(int i, int j, int& value)
+    {
+      value = mInter->GetInt(i, j);
+    }
 
 
 
-  // std::string Get() ??? exception when not string matrix?
-  void Get(std::string& value)
-    throw(SDIFMatrixDataError)
-  {
+    // std::string Get() ??? exception when not string matrix?
+    void Get(std::string& value)
+      throw(SDIFMatrixDataError)
+    {
 
-    if (mType != eText)
-      throw SDIFMatrixDataError(eError,
-				"Error in  SDIFMatrix::!!! string matrix access to matrix containing binary data !!!",
-				0,eUnknown,0,0); 
+      if (mType != eText)
+        throw SDIFMatrixDataError(eError,
+                                  "Error in  SDIFMatrix::!!! string matrix access to matrix containing binary data !!!",
+                                  0,eUnknown,0,0); 
 
-    for(int ii=0;ii<GetNbRows();++ii)
-      value.append(1,static_cast<char>(GetInt(ii,0)));
+      for(int ii=0;ii<GetNbRows();++ii)
+        value.append(1,static_cast<char>(GetInt(ii,0)));
 
-  }
+    }
 
 
-  /**
-   * \ingroup valmat
-   * getting an entire row 
-   * 
-   * @param out  pointer to memory holding at least GetNbCols() elements
-   * @param irow row index
-   * 
-   */
+    /**
+     * \ingroup valmat
+     * getting an entire row 
+     * 
+     * @param out  pointer to memory holding at least GetNbCols() elements
+     * @param irow row index
+     * 
+     */
 
-  template <class TT>
-  void GetRow(TT* out,int irow) const throw (SDIFArrayPosition) {
-    mInter->GetRow(out,irow);
-    return;
-  }
+    template <class TT>
+    void GetRow(TT* out,int irow) const throw (SDIFArrayPosition) {
+      mInter->GetRow(out,irow);
+      return;
+    }
 
-  /**
-   * \ingroup valmat
-   * getting an entire row
-   * 
-   * @param out std::vector will be resized to hold the row
-   * @param irow row index
-   * 
-   */
-  void
-  GetRow(std::vector<double> &out,int irow) const throw (SDIFArrayPosition) {
-    out.resize(GetNbCols());
-    mInter->GetRow(&(out[0]),irow);
-  }
+    /**
+     * \ingroup valmat
+     * getting an entire row
+     * 
+     * @param out std::vector will be resized to hold the row
+     * @param irow row index
+     * 
+     */
+    void
+    GetRow(std::vector<double> &out,int irow) const throw (SDIFArrayPosition) {
+      out.resize(GetNbCols());
+      mInter->GetRow(&(out[0]),irow);
+    }
 
-  /**
-   * \ingroup valmat
-   * getting an entire column
-   * 
-   * @param out  pointer to memory holding at least GetNbRows() elements
-   * @param icol row index
-   * 
-   */
-  template <class TT>
-  void GetCol(TT* out,int icol) const throw (SDIFArrayPosition){
-    mInter->GetCol(out,icol);
-    return;
-  }
+    /**
+     * \ingroup valmat
+     * getting an entire column
+     * 
+     * @param out  pointer to memory holding at least GetNbRows() elements
+     * @param icol row index
+     * 
+     */
+    template <class TT>
+    void GetCol(TT* out,int icol) const throw (SDIFArrayPosition){
+      mInter->GetCol(out,icol);
+      return;
+    }
 
-  /**
-   * \ingroup valmat
-   * getting an entire column
-   * 
-   * @param out std::vector will be resized to hold the column
-   * @param icol column index
-   * 
-   */
-  void
-  GetCol(std::vector<double> &out,int icol) const throw (SDIFArrayPosition) {
-    out.resize(GetNbRows());
-    mInter->GetCol(&(out[0]),icol);
-  }
+    /**
+     * \ingroup valmat
+     * getting an entire column
+     * 
+     * @param out std::vector will be resized to hold the column
+     * @param icol column index
+     * 
+     */
+    void
+    GetCol(std::vector<double> &out,int icol) const throw (SDIFArrayPosition) {
+      out.resize(GetNbRows());
+      mInter->GetCol(&(out[0]),icol);
+    }
 
-/*************************************************************************
- * Set the values of the matrix  
- */
+    /*************************************************************************
+     * Set the values of the matrix  
+     */
 
-/**
- * \defgroup setmat SDIFMatrix - Set values of the SDIFMatrix 
- */
+    /**
+     * \defgroup setmat SDIFMatrix - Set values of the SDIFMatrix 
+     */
 
-  /** 
-   * \ingroup setmat
-   * \brief set a value using arbitrary input type
-   * 
-   * @param i    row    index (C-notation: first row has index 0)
-   * @param j    column index (C-notation: first col has index 0)
-   * @param value 
-   * 
-   */
-  template<typename Tin>
-  void Set(int i, int j, const Tin& value)
-  {
-    mInter->Set(i, j, static_cast<double>(value) );
-  }
+    /** 
+     * \ingroup setmat
+     * \brief set a value using arbitrary input type
+     * 
+     * @param i    row    index (C-notation: first row has index 0)
+     * @param j    column index (C-notation: first col has index 0)
+     * @param value 
+     * 
+     */
+    template<typename Tin>
+    void Set(int i, int j, const Tin& value)
+    {
+      mInter->Set(i, j, static_cast<double>(value) );
+    }
   
-  void Set(int i, int j, const float value)
-  {
-    mInter->Set(i, j, value);
-  }
+    void Set(int i, int j, const float value)
+    {
+      mInter->Set(i, j, value);
+    }
   
-  void Set(int i, int j, const int value)
-  {
-    mInter->Set(i, j, value);
-  }
+    void Set(int i, int j, const int value)
+    {
+      mInter->Set(i, j, value);
+    }
 
-  void Set(int i, int j, const unsigned char value)
-  {
-    mInter->Set(i, j, value);
-  }
+    void Set(int i, int j, const unsigned char value)
+    {
+      mInter->Set(i, j, value);
+    }
 
 
 
-  /** 
-   * Set matrix type to eText, change matrix size to num. of bytes in
-   * string and set string data
-   */
-  void Set(const std::string& str)
-  {
+    /** 
+     * Set matrix type to eText, change matrix size to num. of bytes in
+     * string and set string data
+     */
+    void Set(const std::string& str)
+    {
       int i;
 
       Init(mSig, static_cast<int>(str.length()), 1, eText);
 
       for (i = 0; i < static_cast<int>(str.length()); i++)
-	  mInter->Set(i, 0, static_cast<int>(str[i]));
-  }
+        mInter->Set(i, 0, static_cast<int>(str[i]));
+    }
 
 
 
-  /**
-   * \ingroup setmat
-   * setting an entire row 
-   * 
-   * @param out  pointer to memory holding at least GetNbCols() elements
-   * @param irow row index
-   * 
-   */
+    /**
+     * \ingroup setmat
+     * setting an entire row 
+     * 
+     * @param out  pointer to memory holding at least GetNbCols() elements
+     * @param irow row index
+     * 
+     */
 
-  template <class TT>
-  void SetRow(const TT* out,int irow)  throw (SDIFArrayPosition) {
-    mInter->SetRow(out,irow);
-    return;
-  }
+    template <class TT>
+    void SetRow(const TT* out,int irow)  throw (SDIFArrayPosition) {
+      mInter->SetRow(out,irow);
+      return;
+    }
 
-  /**
-   * \ingroup valmat
-   * setting an entire row
-   * 
-   * @param in std::vector containing row
-   * @param irow row index
-   * 
-   */
-  void
-  SetRow(const std::vector<double> &in,int irow) const throw (SDIFArrayPosition) {
-    mInter->SetRow(&(in[0]),irow);
-    return;
-  }
+    /**
+     * \ingroup valmat
+     * setting an entire row
+     * 
+     * @param in std::vector containing row
+     * @param irow row index
+     * 
+     */
+    void
+    SetRow(const std::vector<double> &in,int irow) const throw (SDIFArrayPosition) {
+      mInter->SetRow(&(in[0]),irow);
+      return;
+    }
 
-  /**
-   * \ingroup setmat
-   * setting an entire column
-   * 
-   * @param out  pointer to memory holding at least GetNbRows() elements
-   * @param icol row index
-   * 
-   */
-  template <class TT>
-  void SetCol(const TT* out,int icol)  throw (SDIFArrayPosition){
-    mInter->SetCol(out,icol);
-    return;
-  }
+    /**
+     * \ingroup setmat
+     * setting an entire column
+     * 
+     * @param out  pointer to memory holding at least GetNbRows() elements
+     * @param icol row index
+     * 
+     */
+    template <class TT>
+    void SetCol(const TT* out,int icol)  throw (SDIFArrayPosition){
+      mInter->SetCol(out,icol);
+      return;
+    }
   
-  /**
-   * \ingroup valmat
-   * setting an entire column
-   * 
-   * @param in std::vector holding the column
-   * @param icol col index
-   * 
-   */
-  void
-  SetCol(const std::vector<double> &in,int icol) const throw (SDIFArrayPosition) {
-    mInter->SetCol(&(in[0]),icol);
-  }
-
-
-};
-
+    /**
+     * \ingroup valmat
+     * setting an entire column
+     * 
+     * @param in std::vector holding the column
+     * @param icol col index
+     * 
+     */
+    void
+    SetCol(const std::vector<double> &in,int icol) const throw (SDIFArrayPosition) {
+      mInter->SetCol(&(in[0]),icol);
+    }
+  };
 } // end of namespace Easdif
 
 #endif

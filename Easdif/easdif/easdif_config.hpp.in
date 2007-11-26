@@ -66,3 +66,8 @@
 
 /* Version number of package */
 #undef VERSION
+
+#ifdef _MSC_VER
+#pragma warning(disable:4290)        
+#pragma warning(disable:4251)        
+#endif

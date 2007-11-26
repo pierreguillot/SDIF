@@ -32,9 +32,13 @@
  * 
  * 
  * 
- * $Id: sdifentity.cpp,v 1.38 2007-10-25 22:31:37 roebel Exp $ 
+ * $Id: sdifentity.cpp,v 1.39 2007-11-26 19:10:08 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.38  2007/10/25 22:31:37  roebel
+ * Changed interface to AddNVT. AddNVT without explicit StreamID now uses
+ * the streamid of the SDIFNameValueTable and no longer imposes a default value of 0.
+ *
  * Revision 1.37  2007/04/30 11:31:47  roebel
  * Throw exception FrameDirError exception if  selection manipulation
  * functions or framedirectory functions are called in unsuitable states.
@@ -993,7 +997,7 @@ bool SDIFEntity::TestStreamSelection(unsigned int streamid) const
   if(efile ==0) return false;
 
   if(!isFrameDirEnabled || !msHighLevelStreamSelection.isActive() ) {
-    return SdifSelectTestIntMask(&efile->Selection->streammask,streamid);
+    return SdifSelectTestIntMask(&efile->Selection->streammask,streamid)!=0;
   }
 
   // we have an active highlevel selection

@@ -39,7 +39,7 @@ namespace Easdif {
 		     SdifFileT* file, 
 		     SdifErrorT* error, 
 		     char* sourcefilename, 
-		     int sourcefileline)
+		     int sourcefileline) throw(SDIFException)
     {   
       switch(errnum)
 	{
