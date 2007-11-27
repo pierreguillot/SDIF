@@ -1,4 +1,4 @@
-/* $Id: SdifMatrix.c,v 3.16 2007-11-26 18:51:21 roebel Exp $
+/* $Id: SdifMatrix.c,v 3.17 2007-11-27 12:12:22 roebel Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -33,6 +33,11 @@
  *
  * author: Dominique Virolle 1997
  * $Log: not supported by cvs2svn $
+ * Revision 3.16  2007/11/26 18:51:21  roebel
+ * Changed data types to have less casts and
+ * less compilation warnings with MSVC.
+ * renamed some functions that are deprecated in MSVC.
+ *
  * Revision 3.15  2005/10/21 14:32:29  schwarz
  * protect all static buffers from overflow by using snprintf instead of sprintf
  * move big errorMess buffers into error branch to avoid too large stack allocation
@@ -489,15 +494,13 @@ SdifOneRowGetValue(SdifOneRowT *OneRow, SdifUInt4 numCol)
       default :
 	return (SdifFloat8) OneRow->Data.Float4[numCol-1];
       }
-  else
-    {
-      char errorMess [_SdifStringLen];
-
-      snprintf(errorMess, sizeof(errorMess), 
-	       "OneRow Get Value Col : %d ", numCol);
-      _SdifError(eArrayPosition, errorMess);
-      return _SdifFloat8Error;
-    }
+  
+  char errorMess [_SdifStringLen];
+  
+  snprintf(errorMess, sizeof(errorMess), 
+           "OneRow Get Value Col : %d ", numCol);
+  _SdifError(eArrayPosition, errorMess);
+  return _SdifFloat8Error;
 }
 
 
@@ -686,16 +689,14 @@ SdifMatrixDataGetValue(SdifMatrixDataT *data,
 		return (SdifFloat8) data->Data.Float4[index];
 	}
     }
-  else
-    {
-	char errorMess [_SdifStringLen];
+
+    char errorMess [_SdifStringLen];
     
-	snprintf(errorMess, sizeof(errorMess), 
-		 "SdifMatrixDataGetValue:  row %d, col %d", numRow, numCol);
-	_SdifError(eArrayPosition, errorMess);
-	
-      return _SdifFloat8Error;
-    }
+    snprintf(errorMess, sizeof(errorMess), 
+             "SdifMatrixDataGetValue:  row %d, col %d", numRow, numCol);
+    _SdifError(eArrayPosition, errorMess);
+    
+    return _SdifFloat8Error;
 }
 
 
