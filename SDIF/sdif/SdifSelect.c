@@ -1,4 +1,4 @@
-/* $Id: SdifSelect.c,v 3.26 2007-11-26 18:50:56 roebel Exp $
+/* $Id: SdifSelect.c,v 3.27 2007-11-27 12:09:44 roebel Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -96,6 +96,11 @@ TODO
 
 LOG
   $Log: not supported by cvs2svn $
+  Revision 3.26  2007/11/26 18:50:56  roebel
+  Changed data types to have less casts and
+  less compilation warnings with MSVC.
+  renamed some functions that are deprecated in MSVC.
+
   Revision 3.25  2007/03/21 19:44:15  roebel
   Don't use global variables without initialization. These globals are treated differently
   on MacOSX and they are not allowed in dynamic libraries without extra flags.
@@ -275,12 +280,12 @@ static int parsesig	  (SdifSelectValueT *valu,SdifSelectContext *context);
 static int parsecol	  (SdifSelectValueT *valu,SdifSelectContext *context);
 static int parse	  (int (*parseval) (SdifSelectValueT *valu, SdifSelectContext *context),
 			   SdifListP list, int range_allowed, char *name,SdifSelectContext *context);
-
+/*
 static int getint (SdifSelectValueT val);
 static double getreal (SdifSelectValueT val);
 static SdifSignature getsignature (SdifSelectValueT val);
 static char *getstring (SdifSelectValueT val);
-
+*/
 
 
 
@@ -846,7 +851,7 @@ void SdifPrintSelection (FILE *out, SdifSelectionT *sel, int options)
 /*
 // FUNCTION GROUP:	Access functions for SdifSelectValueT
 */
-
+/* seem to be unused
 static int	      getint	   (SdifSelectValueT val)
 { return (val.integer);   }
 
@@ -859,6 +864,7 @@ static SdifSignature  getsignature (SdifSelectValueT val)
 static char	     *getstring	   (SdifSelectValueT val)
 { return (val.string);    }
 
+*/
 
 /*
 // FUNCTION GROUP:	Add Selections to Element Lists
