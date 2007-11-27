@@ -1,4 +1,4 @@
-/* $Id: SdifRWLowLevel.c,v 3.36 2006-03-22 22:00:41 roebel Exp $
+/* $Id: SdifRWLowLevel.c,v 3.37 2007-11-27 12:10:44 roebel Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -33,6 +33,10 @@
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 3.36  2006/03/22 22:00:41  roebel
+ * Fixed wrong sizeof which would work only if
+ * sizeof(pointer)  == sizeof(int)
+ *
  * Revision 3.35  2005/10/21 14:32:30  schwarz
  * protect all static buffers from overflow by using snprintf instead of sprintf
  * move big errorMess buffers into error branch to avoid too large stack allocation
@@ -1230,7 +1234,8 @@ SdiffGetStringWeakUntilfromSdifString(SdifStringT *SdifString, char* s,
 /* read ASCII */
 
 /* static const char *formatText	  = "%c";   todo */
-static const char *formatChar     = "%c";
+/* 
+   static const char *formatChar     = "%c"; usused therefore commented */
 static const char *formatFloat4   = "%f";
 static const char *formatFloat8   = "%lf";
 static const char *formatInt1     = "%hhi";
