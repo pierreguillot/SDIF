@@ -69,7 +69,7 @@ main(void)
     fprintf(stderr,"NUMBER OF BYTES WRITTEN AND READ ARE THE SAME\n");
   else
     {
-      fprintf(stderr,"Difference (written-read): %d\n",(bytesWritten-bytesRead));
+      fprintf(stderr,"Difference (written-read): %u\n",(bytesWritten-bytesRead));
       SdifGenKill();
       fprintf(stderr,"\n");      
       return 1;
