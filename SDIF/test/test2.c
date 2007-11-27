@@ -1,5 +1,8 @@
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.5  2004/10/07 15:37:30  roebel
+ * Fixed for new SdifStringToNV.
+ *
  * Revision 1.4  2002/05/24 19:41:34  ftissera
  * Change code to be compatible with C++
  *
@@ -22,7 +25,7 @@
  * This program test the matrix and frame type declaration in SDIF file.
  * 
  *
- * $Id: test2.c,v 1.5 2004-10-07 15:37:30 roebel Exp $
+ * $Id: test2.c,v 1.6 2007-11-27 12:19:16 roebel Exp $
  *
  */
 #include <stdlib.h>
@@ -109,7 +112,7 @@ main(void)
 
   bytesWritten += writeFileASCIIChunks(MySdifFileToWrite);
 
-  fprintf(stderr,"Number of bytes written: %d\n",bytesWritten);
+  fprintf(stderr,"Number of bytes written: %u\n",(unsigned int)bytesWritten);
   fprintf(stderr,"File closing... (SdifFClose(SdifFileT *)\n");
   SdifFClose(MySdifFileToWrite);
 
@@ -135,7 +138,7 @@ main(void)
   else
       fprintf(stderr, "OK\n\n");
 
-  fprintf(stderr,"Total number of bytes read: %d \n",bytesRead);
+  fprintf(stderr,"Total number of bytes read: %u \n",(unsigned int)bytesRead);
   fprintf(stderr,"File closing...\n");
   SdifFClose(MySdifFileToRead);
 
@@ -145,7 +148,7 @@ main(void)
     fprintf(stderr,"NUMBER OF BYTES WRITTEN AND READ ARE THE SAME\n");
   else
     {
-      fprintf(stderr,"Difference (written-read): %d\n",(bytesWritten-bytesRead));
+      fprintf(stderr,"Difference (written-read): %u\n",(unsigned int)(bytesWritten-bytesRead));
       SdifGenKill();
       fprintf(stderr,"\n");
       return 1;
