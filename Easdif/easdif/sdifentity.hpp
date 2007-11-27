@@ -32,9 +32,16 @@
  * 
  * 
  * 
- * $Id: sdifentity.hpp,v 1.11 2007-11-26 19:09:55 roebel Exp $ 
+ * $Id: sdifentity.hpp,v 1.12 2007-11-27 17:36:22 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.11  2007/11/26 19:09:55  roebel
+ * Fixed to avoid compiler warnings in MSVC.
+ * Little problem is the export of std::containers that should be defined as export
+ * which is not possible due to the given STL include files.
+ * For the moment it seems these warnings are not important, because all these functions
+ * are inlined as templates in the STL anyway. Has to be handled with care !!!!
+ *
  * Revision 1.10  2007/10/25 22:31:20  roebel
  * Changed interface to AddNVT. AddNVT without explicit StreamID now uses
  * the streamid of the SDIFNameValueTable and no longer imposes a default value of 0.
@@ -1280,6 +1287,8 @@ public:
    */  
   bool Rewind();
 
+
+
   /** 
    * \ingroup  file
    * \brief examine seekability of current file
@@ -1370,6 +1379,21 @@ private:
   bool
   AddFramePos(SdifUInt4 id, SdifSignature sig, SdifFloat8 time,
               SdifUInt4 nbMatrix, SdiffPosT pos, Directory::iterator& IPos);
+
+
+
+    bool GetLowLevelFilePos(SdiffPosT &pos) {
+      pos = -1;
+      if(efile) 
+        pos = ftell(efile->Stream);
+      return pos != -1;
+    }
+
+    bool SetLowLevelFilePos(SdiffPosT pos) {
+      if(efile) 
+        return 0==fseek(efile->Stream,pos, SEEK_SET);
+      return false;
+    }
 
 public:
     SdifErrorT* LastError();
