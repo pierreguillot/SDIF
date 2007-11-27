@@ -1,4 +1,4 @@
-/* $Id: querysdif.c,v 1.12 2006-12-08 18:11:49 roebel Exp $
+/* $Id: querysdif.c,v 1.13 2007-11-27 12:21:02 roebel Exp $
  
                 Copyright (c) 1998 by IRCAM - Centre Pompidou
                            All rights reserved.
@@ -14,6 +14,9 @@
    
 
    $Log: not supported by cvs2svn $
+   Revision 1.12  2006/12/08 18:11:49  roebel
+   Use configured version instead of compiler command line switch.
+
    Revision 1.11  2006/05/05 10:31:40  schwarz
    exit on invalid sdif header
 
@@ -233,12 +236,14 @@ int main(int argc, char** argv)
     int		vall	  = 1,
  		vascii	  = 0,
 		vdata	  = 0,
-		vbrief	  = 0,
+                vbrief	  = 0;
+#if 0
+      /* todo */
 		vnvt	  = 0,
 		vtypes	  = 0,
 		valltypes = 0,
-		vstream	  = 0;
-
+		vstream	  = 0; 
+#endif
 
     SdifStdErr = stderr;
     for (i = 1; i < argc; i++)
@@ -330,8 +335,6 @@ int main(int argc, char** argv)
 	    /* for matrices loop */
 	    for (m = 0; m < SdifFCurrNbMatrix (in); m++)
 	    {
-		int nbrows, nbcols;
-
 		/* Read matrix header */
 		bytesread += SdifFReadMatrixHeader (in);
 
@@ -372,7 +375,7 @@ int main(int argc, char** argv)
 	}
 	else
 	{
-	    printf ("Data in file %s (%d bytes):\n", infile, bytesread);
+	    printf ("Data in file %s (%u bytes):\n", infile, (unsigned int) bytesread);
 
 	    for (i = 0; i < nsig; i++)
 	    {
