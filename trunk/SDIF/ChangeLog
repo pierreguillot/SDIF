@@ -1,5 +1,13 @@
-2007-11-26  U-REC-1320-ROEBEL\Axel Roebel  <Axel.Roebel@ircam.fr>
+2007-11-27  Axel Roebel  <Axel.Roebel@ircam.fr>
 Version 3.10.7
+
+	* sdif/SdifMatrix.c :
+	Fixed warning due to missing return value.
+
+	* tools/querysdif.c, test/utils.c, test/test2.c, test/test1.c :
+	prevent compiler warnings.
+
+2007-11-26  U-REC-1320-ROEBEL\Axel Roebel  <Axel.Roebel@ircam.fr>
 	
 	* sdif/SdifSignatureTab.c, sdif/SdifSelect.c, sdif/SdifPrint.c, sdif/SdifMatrix.c,
 	* sdif/SdifHighLevel.c, sdif/SdifFile.c, sdif/SdifFGet.c, sdif/SdifList.c
@@ -954,4 +962,4 @@ Version 3.3:
 	  Operating System.
 
 	
-$Id: ChangeLog,v 1.55 2007-11-26 18:55:26 roebel Exp $
+$Id: ChangeLog,v 1.56 2007-11-27 12:23:22 roebel Exp $
