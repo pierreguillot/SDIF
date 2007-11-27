@@ -106,6 +106,19 @@ ENDIF( "$ENV{SYS}" STREQUAL "" )
 SET(INSTALL_INC_DIR include)
 
 
+IF(NOT EXECUTABLE_OUTPUT_PATH)
+  SET(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin/${ARCHDIR} )
+ENDIF(NOT EXECUTABLE_OUTPUT_PATH)
+IF(NOT LIBRARY_OUTPUT_PATH)
+  IF(WIN32)
+    # dlls are libraries and need to be present in the bin dir
+    # so we merge library and bin output 
+    SET(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin/${ARCHDIR})
+  ELSE(WIN32)
+    SET(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/lib/${ARCHDIR})
+  ENDIF(WIN32)
+ENDIF(NOT LIBRARY_OUTPUT_PATH)
+
 ############################################################
 # Checks for programs.
 
