@@ -32,9 +32,16 @@
  * 
  * 
  * 
- * $Id: sdifentity.cpp,v 1.39 2007-11-26 19:10:08 roebel Exp $ 
+ * $Id: sdifentity.cpp,v 1.40 2007-11-27 17:36:29 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.39  2007/11/26 19:10:08  roebel
+ * Fixed to avoid compiler warnings in MSVC.
+ * Little problem is the export of std::containers that should be defined as export
+ * which is not possible due to the given STL include files.
+ * For the moment it seems these warnings are not important, because all these functions
+ * are inlined as templates in the STL anyway. Has to be handled with care !!!!
+ *
  * Revision 1.38  2007/10/25 22:31:37  roebel
  * Changed interface to AddNVT. AddNVT without explicit StreamID now uses
  * the streamid of the SDIFNameValueTable and no longer imposes a default value of 0.
@@ -322,7 +329,7 @@ bool SDIFEntity::ReOpenRead(const char* filename)
 
     mOpen = 2;
 
-    SdiffGetPos(GetFile()->Stream,&mFirstFramePos);
+    GetLowLevelFilePos(mFirstFramePos);
     mFirstFramePos -= 4;	// subtract the first 4 read chars of the already read signature
 
     // reestablish selection state
@@ -344,7 +351,7 @@ bool SDIFEntity::EnableFrameDir() {
 
   if(!isFrameDirEnabled){
     SdiffPosT pos;
-    SdiffGetPos(GetFile()->Stream,&pos);
+    GetLowLevelFilePos(pos);
     // this will be true for pipes or if no
     // frame has yet been read from the file
     if(pos == mFirstFramePos+4){
@@ -447,7 +454,7 @@ bool SDIFEntity::OpenWrite(const char* filename)
     asciiChunks = SdifFWriteAllASCIIChunks(efile);
     mOpen = 1; 
  
-    SdiffGetPos(GetFile()->Stream,&mFirstFramePos);
+    GetLowLevelFilePos(mFirstFramePos);
     mEofSeen = mEof = false;
 
     return true; 
@@ -492,7 +499,8 @@ bool SDIFEntity::Rewind()
   }
   
   if(-1 == SdiffSetPos(GetFile()->Stream,&mFirstFramePos)) return false;
-  SdiffGetPos(GetFile()->Stream,&readpos);
+  if(! GetLowLevelFilePos(readpos))
+    return false;
 
   if(readpos != mFirstFramePos)
     return false;
