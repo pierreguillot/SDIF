@@ -33,9 +33,14 @@
  * 
  * 
  * 
- * $Id: sdifmatrixdata.hpp,v 1.1 2005-05-30 21:43:00 roebel Exp $ 
+ * $Id: sdifmatrixdata.hpp,v 1.2 2007-11-27 16:41:19 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.1  2005/05/30 21:43:00  roebel
+ * Changed all include files from .h into .hpp to prevent name clash between
+ * sdifmatix.h and SDIF/sdifcpp/SdifMatrix.h on MacOSX where filenames are
+ * case insensitive.
+ *
  * Revision 1.17  2005/05/24 09:53:51  roebel
  * Changed selection management in Easdif:
  * Before EnableDirectory has been called selection
@@ -299,8 +304,8 @@ public:
 
     }
     
-    const T* start = &m_Data[irow*m_Ncols];
-    const T* end   = &m_Data[(irow+1)*m_Ncols];
+    const T* start = &m_Data[0]+irow*m_Ncols;
+    const T* end   = &m_Data[0]+(irow+1)*m_Ncols;
     while(start !=end)    *out++ = static_cast<TT>(*start++);
 
     return;
@@ -324,7 +329,7 @@ public:
     }
 
     const T* start = &m_Data[icol];
-    const T* end   = &m_Data[icol+m_Nrows*m_Ncols];
+    const T* end   = start+m_Nrows*m_Ncols;
     for(;start !=end;start += m_Ncols)    *out++ = static_cast<TT>(*start);
 
     return;
@@ -647,7 +652,7 @@ public:
    *  all data entries are set to zero.
    */
   void Clear() {
-    std::fill(&m_Data[0],&m_Data[m_Data.size()],T(0));
+    std::fill(&m_Data[0],&m_Data[0]+m_Data.size(),T(0));
   }
 
   /** 
@@ -823,8 +828,8 @@ public:
 
     }
     
-    T* start = &m_Data[irow*m_Ncols];
-    T* end   = &m_Data[(irow+1)*m_Ncols];
+    T* start = &m_Data[0]+irow*m_Ncols;
+    T* end   = &m_Data[0]+(irow+1)*m_Ncols;
     while(start !=end)    *start++ =  static_cast<T>(*in++) ;
 
     return;
@@ -848,7 +853,7 @@ public:
     }
 
     T* start = &m_Data[icol];
-    T* end   = &m_Data[icol+m_Nrows*m_Ncols];
+    T* end   = &m_Data[icol]+m_Nrows*m_Ncols;
     for(;start !=end;start += m_Ncols)   *start =  static_cast<T>(*in++) ;
 
     return;
