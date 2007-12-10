@@ -1,4 +1,4 @@
-/* $Id: SdifMatrixType.c,v 3.11 2005-10-21 14:32:30 schwarz Exp $
+/* $Id: SdifMatrixType.c,v 3.12 2007-12-10 10:46:20 roebel Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -37,6 +37,10 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.11  2005/10/21 14:32:30  schwarz
+ * protect all static buffers from overflow by using snprintf instead of sprintf
+ * move big errorMess buffers into error branch to avoid too large stack allocation
+ *
  * Revision 3.10  2004/07/22 14:47:56  bogaards
  * removed many global variables, moved some into the thread-safe SdifGlobals structure, added HAVE_PTHREAD define, reorganized the code for selection, made some arguments const, new version 3.8.6
  *
@@ -97,7 +101,7 @@
 
 
 SdifColumnDefT*
-SdifCreateColumnDef(char *Name, SdifUInt4 Num)
+SdifCreateColumnDef(const char *Name, SdifUInt4 Num)
 {
   SdifColumnDefT *NewColumnDef = NULL;
   
@@ -211,7 +215,7 @@ SdifKillMatrixType(SdifMatrixTypeT *MatrixType)
 
 
 SdifUInt4
-SdifMatrixTypeGetNumColumnDef(SdifMatrixTypeT *MatrixType, char *NameCD)
+SdifMatrixTypeGetNumColumnDef(SdifMatrixTypeT *MatrixType, const char *NameCD)
 {
     int Num = 0;
     SdifColumnDefT* CurrColumnDef = NULL;
@@ -246,7 +250,7 @@ SdifMatrixTypeGetNumColumnDef(SdifMatrixTypeT *MatrixType, char *NameCD)
 
 
 SdifColumnDefT*
-SdifMatrixTypeGetColumnDef(SdifMatrixTypeT *MatrixType, char *NameCD)
+SdifMatrixTypeGetColumnDef(SdifMatrixTypeT *MatrixType, const char *NameCD)
 {
   SdifColumnDefT *ColumnDef = NULL;
   SdifColumnDefT *CurrColumnDef = NULL;
@@ -322,7 +326,7 @@ const char* SdifMatrixTypeGetColumnName (SdifMatrixTypeT *mtype, int index)
 
 
 SdifMatrixTypeT*
-SdifMatrixTypeInsertTailColumnDef(SdifMatrixTypeT *MatrixType, char *NameCD)
+SdifMatrixTypeInsertTailColumnDef(SdifMatrixTypeT *MatrixType, const char *NameCD)
 {
   
   if (SdifMatrixTypeGetColumnDef(MatrixType, NameCD))

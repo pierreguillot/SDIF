@@ -1,4 +1,4 @@
-/* $Id: SdifFile.c,v 3.60 2007-11-26 18:52:01 roebel Exp $
+/* $Id: SdifFile.c,v 3.61 2007-12-10 10:47:08 roebel Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -33,6 +33,11 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.60  2007/11/26 18:52:01  roebel
+ * Changed data types to have less casts and
+ * less compilation warnings with MSVC.
+ * renamed some functions that are deprecated in MSVC.
+ *
  * Revision 3.59  2007/03/21 19:44:15  roebel
  * Don't use global variables without initialization. These globals are treated differently
  * on MacOSX and they are not allowed in dynamic libraries without extra flags.
@@ -1130,7 +1135,7 @@ SdifFCurrOneRowCol(SdifFileT *SdifF, SdifUInt4 numCol)
 }
 
 SdifFloat8
-SdifFCurrOneRowColName(SdifFileT *SdifF, SdifMatrixTypeT *MatrixType, char *NameCD)
+SdifFCurrOneRowColName(SdifFileT *SdifF, SdifMatrixTypeT *MatrixType, const char *NameCD)
 {
   return SdifOneRowGetValue(SdifF->CurrOneRow,
 			    SdifMatrixTypeGetNumColumnDef(MatrixType, NameCD));

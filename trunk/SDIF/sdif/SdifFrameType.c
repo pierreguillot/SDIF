@@ -1,4 +1,4 @@
-/* $Id: SdifFrameType.c,v 3.9 2005-10-21 14:32:29 schwarz Exp $
+/* $Id: SdifFrameType.c,v 3.10 2007-12-10 10:46:42 roebel Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -37,6 +37,10 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.9  2005/10/21 14:32:29  schwarz
+ * protect all static buffers from overflow by using snprintf instead of sprintf
+ * move big errorMess buffers into error branch to avoid too large stack allocation
+ *
  * Revision 3.8  2004/07/22 14:47:56  bogaards
  * removed many global variables, moved some into the thread-safe SdifGlobals structure, added HAVE_PTHREAD define, reorganized the code for selection, made some arguments const, new version 3.8.6
  *
@@ -221,7 +225,7 @@ SdifFrameTypeGetComponent_MtrxS(SdifFrameTypeT *FrameType, SdifSignature MtrxS)
 
 
 SdifComponentT*
-SdifFrameTypeGetComponent(SdifFrameTypeT *FrameType, char *NameC)
+SdifFrameTypeGetComponent(SdifFrameTypeT *FrameType, const char *NameC)
 {
   unsigned int     iHTN;
   SdifHashNT*      pHTN;

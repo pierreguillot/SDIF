@@ -1,4 +1,4 @@
-/* $Id: sdif.h,v 1.57 2007-11-26 18:55:52 roebel Exp $
+/* $Id: sdif.h,v 1.58 2007-12-10 10:45:33 roebel Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -30,6 +30,9 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.57  2007/11/26 18:55:52  roebel
+ * Finished DLL export/import handling, support gcc visibility as well.
+ *
  * Revision 1.56  2006/08/03 13:51:17  borghesi
  * exported new symbols for windows compilation
  *
@@ -277,7 +280,7 @@
  * Revision 1.1.2.1  2000/08/21  13:07:41  tisseran
  * *** empty log message ***
  *
- * $Date: 2007-11-26 18:55:52 $
+ * $Date: 2007-12-10 10:45:33 $
  *
  */
 
@@ -292,7 +295,7 @@ extern "C" {
 #endif
 
 
-static const char _sdif_h_cvs_revision_ [] = "$Id: sdif.h,v 1.57 2007-11-26 18:55:52 roebel Exp $";
+static const char _sdif_h_cvs_revision_ [] = "$Id: sdif.h,v 1.58 2007-12-10 10:45:33 roebel Exp $";
 
 
 #include <stdio.h>
@@ -1617,7 +1620,7 @@ SDIF_API SdifFloat8 SdifFCurrOneRowCol (SdifFileT *SdifF, SdifUInt4 numCol);
   matrice et le nom de la colonne.  */
 SDIF_API SdifFloat8    SdifFCurrOneRowColName   (SdifFileT *SdifF, 
                                         SdifMatrixTypeT *MatrixType, 
-                                        char *NameCD);
+                                        const char *NameCD);
 
 
 /*DOC: 
@@ -1787,7 +1790,7 @@ SDIF_API SdifComponentT* SdifFrameTypeGetComponent_MtrxS (SdifFrameTypeT *FrameT
 /** 
  * Access a frame type definition by matrix component name 
  */
-SDIF_API SdifComponentT* SdifFrameTypeGetComponent       (SdifFrameTypeT *FrameType, char *NameC);
+SDIF_API SdifComponentT* SdifFrameTypeGetComponent       (SdifFrameTypeT *FrameType, const char *NameC);
 
 /** 
  * Access a frame type definition by matrix component number 
@@ -2333,7 +2336,7 @@ SDIF_API void      SdifCopyMatrixDataToFloat4    (SdifMatrixDataT *data,
                                                   SdifFloat4      *dest);
 
 
-SDIF_API SdifColumnDefT*  SdifCreateColumnDef (char *Name,  unsigned int Num);
+SDIF_API SdifColumnDefT*  SdifCreateColumnDef (const char *Name,  unsigned int Num);
 SDIF_API void             SdifKillColumnDef   (void *ColumnDef);
 
 /*DOC: 
@@ -2355,17 +2358,17 @@ SDIF_API void             SdifKillMatrixType                (SdifMatrixTypeT *Ma
 /*DOC: 
   permet d'ajouter une colonne à un type (toujours la dernière
   colonne).  */
-SDIF_API SdifMatrixTypeT* SdifMatrixTypeInsertTailColumnDef (SdifMatrixTypeT *MatrixType, char *NameCD);
+SDIF_API SdifMatrixTypeT* SdifMatrixTypeInsertTailColumnDef (SdifMatrixTypeT *MatrixType, const char *NameCD);
 
 /*DOC: 
   renvoie la position de la colonne de nom NameCD.  (0 si elle
   n'existe pas) */
-SDIF_API SdifUInt4        SdifMatrixTypeGetNumColumnDef     (SdifMatrixTypeT *MatrixType, char *NameCD);
+SDIF_API SdifUInt4        SdifMatrixTypeGetNumColumnDef     (SdifMatrixTypeT *MatrixType, const char *NameCD);
 
 /*DOC: 
   renvoie la définition de la colonne (numéro, nom) en fonction
   du nom.(NULL si introuvable) */
-SDIF_API SdifColumnDefT*  SdifMatrixTypeGetColumnDef        (SdifMatrixTypeT *MatrixType, char *NameCD);
+SDIF_API SdifColumnDefT*  SdifMatrixTypeGetColumnDef        (SdifMatrixTypeT *MatrixType, const char *NameCD);
 
 /*DOC: 
   renvoie la définition de la colonne (numéro, nom) en fonction
@@ -3190,12 +3193,12 @@ SDIF_API int SdifFTestMatrixHeader          (SdifFileT* SdifF);
 
 
 
-SDIF_API SdifColumnDefT*  SdifTestColumnDef (SdifFileT *SdifF, SdifMatrixTypeT *MtrxT, char *NameCD);
-SDIF_API SdifComponentT*  SdifTestComponent (SdifFileT* SdifF, SdifFrameTypeT *FramT, char *NameCD);
+SDIF_API SdifColumnDefT*  SdifTestColumnDef (SdifFileT *SdifF, SdifMatrixTypeT *MtrxT, const char *NameCD);
+SDIF_API SdifComponentT*  SdifTestComponent (SdifFileT* SdifF, SdifFrameTypeT *FramT, const char *NameCD);
 
-SDIF_API int SdifTestSignature            (SdifFileT *SdifF, int CharEnd, SdifSignature Signature, char *Mess);
+SDIF_API int SdifTestSignature            (SdifFileT *SdifF, int CharEnd, SdifSignature Signature, const char *Mess);
 SDIF_API int SdifTestCharEnd              (SdifFileT *SdifF, int CharEnd, char MustBe,
-                                           char *StringRead, int ErrCondition, char *Mess);
+                                           char *StringRead, int ErrCondition, const char *Mess);
 
 
 SDIF_API int SdifTestMatrixTypeModifMode  (SdifFileT *SdifF, SdifMatrixTypeT *MatrixType);

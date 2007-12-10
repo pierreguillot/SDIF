@@ -1,4 +1,4 @@
-/* $Id: SdifFrameType.h,v 3.4 2001-05-02 09:34:43 tisseran Exp $
+/* $Id: SdifFrameType.h,v 3.5 2007-12-10 10:46:31 roebel Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -32,6 +32,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.4  2001/05/02 09:34:43  tisseran
+ * Change License from GNU Public License to GNU Lesser Public License.
+ *
  * Revision 3.3  2000/11/21 14:51:49  schwarz
  * - sdif.h is now included by all sdif/Sdif*.c files.
  * - Removed all public typedefs, enums, structs, and defines from the
@@ -89,7 +92,7 @@ SdifFrameTypeT* SdifCreateFrameType (SdifSignature FramS, SdifFrameTypeT *Predef
 
 void            SdifKillFrameType               (SdifFrameTypeT *FrameType);
 SdifComponentT* SdifFrameTypeGetComponent_MtrxS (SdifFrameTypeT *FrameType, SdifSignature MtrxS);
-SdifComponentT* SdifFrameTypeGetComponent       (SdifFrameTypeT *FrameType, char *NameC);
+SdifComponentT* SdifFrameTypeGetComponent       (SdifFrameTypeT *FrameType, const char *NameC);
 SdifComponentT* SdifFrameTypeGetNthComponent    (SdifFrameTypeT *FrameType, SdifUInt4 NumC);
 SdifFrameTypeT* SdifFrameTypePutComponent       (SdifFrameTypeT *FrameType, SdifSignature MtrxS, char *NameC);
 

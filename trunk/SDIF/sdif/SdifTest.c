@@ -1,4 +1,4 @@
-/* $Id: SdifTest.c,v 3.17 2005-10-21 14:32:30 schwarz Exp $
+/* $Id: SdifTest.c,v 3.18 2007-12-10 10:46:12 roebel Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -33,6 +33,10 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.17  2005/10/21 14:32:30  schwarz
+ * protect all static buffers from overflow by using snprintf instead of sprintf
+ * move big errorMess buffers into error branch to avoid too large stack allocation
+ *
  * Revision 3.16  2005/05/24 09:36:02  roebel
  *
  * Fixed last checkin comment which turned out to be the start of
@@ -281,7 +285,7 @@ SdifFTestMatrixHeader(SdifFileT* SdifF)
 
 
 SdifColumnDefT*
-SdifTestColumnDef(SdifFileT *SdifF, SdifMatrixTypeT *MtrxT, char *NameCD)
+SdifTestColumnDef(SdifFileT *SdifF, SdifMatrixTypeT *MtrxT, const char *NameCD)
 {
   SdifColumnDefT* CD;
 
@@ -335,7 +339,7 @@ SdifTestFrameType(SdifFileT *SdifF, SdifSignature Signature)
 
 
 SdifComponentT*
-SdifTestComponent(SdifFileT* SdifF, SdifFrameTypeT *FramT, char *NameCD)
+SdifTestComponent(SdifFileT* SdifF, SdifFrameTypeT *FramT, const char *NameCD)
 {
   SdifComponentT* CD;
 
@@ -357,7 +361,7 @@ SdifTestComponent(SdifFileT* SdifF, SdifFrameTypeT *FramT, char *NameCD)
 
 
 int
-SdifTestSignature(SdifFileT *SdifF, int CharEnd, SdifSignature Signature, char *Mess)
+SdifTestSignature(SdifFileT *SdifF, int CharEnd, SdifSignature Signature, const char *Mess)
 {
   if (SdifIsAReservedChar(CharEnd)  ||  isspace(CharEnd))
     {
@@ -377,7 +381,7 @@ SdifTestSignature(SdifFileT *SdifF, int CharEnd, SdifSignature Signature, char *
 
 int
 SdifTestCharEnd(SdifFileT *SdifF, int CharEnd, char MustBe, char *StringRead,
-		int ErrCondition, char *Mess)
+		int ErrCondition, const char *Mess)
 {
     if ((unsigned) CharEnd != (unsigned) MustBe  ||  ErrCondition)
     {
