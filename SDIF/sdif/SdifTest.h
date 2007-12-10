@@ -1,4 +1,4 @@
-/* $Id: SdifTest.h,v 3.8 2005-05-23 17:52:53 schwarz Exp $
+/* $Id: SdifTest.h,v 3.9 2007-12-10 10:45:54 roebel Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -36,6 +36,11 @@ LIBRARY
  *
 LOG
  * $Log: not supported by cvs2svn $
+ * Revision 3.8  2005/05/23 17:52:53  schwarz
+ * Unified error handling:
+ * - SdifErrorEnum (global errors) integrated into SdifErrorTagET (file errors)
+ * - no more SdifError.[ch], everything done by SdifErrMess.[ch]
+ *
  * Revision 3.7  2001/05/02 09:34:48  tisseran
  * Change License from GNU Public License to GNU Lesser Public License.
  *
@@ -118,16 +123,6 @@ int SdifFTestDataType              (SdifFileT* SdifF);
 int SdifFTestNbColumns             (SdifFileT* SdifF);
 int SdifFTestNotEmptyMatrix        (SdifFileT* SdifF);
 int SdifFTestMatrixHeader          (SdifFileT* SdifF);
-
-
-
-SdifColumnDefT*  SdifTestColumnDef (SdifFileT *SdifF, SdifMatrixTypeT *MtrxT, char *NameCD);
-SdifComponentT*  SdifTestComponent (SdifFileT* SdifF, SdifFrameTypeT *FramT, char *NameCD);
-
-int SdifTestSignature            (SdifFileT *SdifF, int CharEnd, SdifSignature Signature, char *Mess);
-int SdifTestCharEnd              (SdifFileT *SdifF, int CharEnd, char MustBe,
-					   char *StringRead, int ErrCondition, char *Mess);
-
 
 int SdifTestMatrixTypeModifMode  (SdifFileT *SdifF, SdifMatrixTypeT *MatrixType);
 int SdifTestFrameTypeModifMode   (SdifFileT *SdifF, SdifFrameTypeT *FrameType);

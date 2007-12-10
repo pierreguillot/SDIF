@@ -1,4 +1,4 @@
-/* $Id: SdifMatrixType.h,v 3.8 2001-05-02 09:34:46 tisseran Exp $
+/* $Id: SdifMatrixType.h,v 3.9 2007-12-10 10:46:02 roebel Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -65,6 +65,9 @@ EXAMPLE
 
 LOG
  * $Log: not supported by cvs2svn $
+ * Revision 3.8  2001/05/02 09:34:46  tisseran
+ * Change License from GNU Public License to GNU Lesser Public License.
+ *
  * Revision 3.7  2000/11/21 14:51:50  schwarz
  * - sdif.h is now included by all sdif/Sdif*.c files.
  * - Removed all public typedefs, enums, structs, and defines from the
@@ -145,7 +148,6 @@ LOG
 #include "SdifHash.h"
 
 
-SdifColumnDefT*  SdifCreateColumnDef (char *Name,  unsigned int Num);
 void             SdifKillColumnDef   (void *ColumnDef);
 
 /*DOC: 
@@ -164,20 +166,6 @@ SdifMatrixTypeT* SdifCreateMatrixType              (SdifSignature Signature,
                     							   SdifMatrixTypeT *PredefinedMatrixType);
 void             SdifKillMatrixType                (SdifMatrixTypeT *MatrixType);
 
-/*DOC: 
-  permet d'ajouter une colonne à un type (toujours la dernière
-  colonne).  */
-SdifMatrixTypeT* SdifMatrixTypeInsertTailColumnDef (SdifMatrixTypeT *MatrixType, char *NameCD);
-
-/*DOC: 
-  renvoie la position de la colonne de nom NameCD.  (0 si elle
-  n'existe pas) */
-SdifUInt4        SdifMatrixTypeGetNumColumnDef     (SdifMatrixTypeT *MatrixType, char *NameCD);
-
-/*DOC: 
-  renvoie la définition de la colonne (numéro, nom) en fonction
-  du nom.(NULL si introuvable) */
-SdifColumnDefT*  SdifMatrixTypeGetColumnDef        (SdifMatrixTypeT *MatrixType, char *NameCD);
 
 /*DOC: 
   renvoie la définition de la colonne (numéro, nom) en fonction
