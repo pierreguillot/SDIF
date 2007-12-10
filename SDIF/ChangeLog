@@ -1,3 +1,14 @@
+2007-12-10  Axel Roebel  <roebel@sam.localdomain>
+
+	* sdif/SdifTest.h, sdif/SdifMatrixType.h :
+	Removed redundant function declarations.
+
+	* sdif/SdifFRead.c :
+	Properly cast printf arguments.
+
+	* sdif/SdifTest.c, sdif/SdifMatrixType.c, sdif/SdifFrameType.h, sdif/SdifFrameType.c, sdif/SdifFile.c, include/sdif.h : 
+	Use const char* for read only function arguments.
+
 2007-11-27  Axel Roebel  <Axel.Roebel@ircam.fr>
 Version 3.10.7
 
@@ -962,4 +973,4 @@ Version 3.3:
 	  Operating System.
 
 	
-$Id: ChangeLog,v 1.56 2007-11-27 12:23:22 roebel Exp $
+$Id: ChangeLog,v 1.57 2007-12-10 10:47:23 roebel Exp $
