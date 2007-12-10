@@ -1,0 +1,36 @@
+SDIF_TYPES_DIR  :=  /u/formes/share/share
+SDIF_TYPES_FILE := SdifTypes.STYP
+
+ifeq ($(ARCH),i686)
+ MEXCMD = /usr/local/bin/mex 
+ LINKFLAGS = "LDFLAGS=-shared -nodefaultlibs"
+endif
+
+ifeq ($(ARCH),x86_64)
+ MEXCMD = mex
+ LINKFLAGS = "LDFLAGS=-shared -nodefaultlibs"
+# static library does not link with option shared therfore we use shared library here.
+SDIF_LIB  = /u/formes/share/lib/$(SYS)/libsdif.so
+endif
+
+ifeq ($(ARCH),sgi)
+ MEXCMD = /usr/LOCAL/matlab/bin/mex
+endif
+
+
+# use local sdif directories 
+ifeq ($(USER),schwarz)
+# The path to sdif.h 
+SDIF_INCL  = $(HOME)/include
+
+# The path of the sdif library 
+SDIF_LIB  = $(HOME)/lib/$(SYS)/libsdif.a
+else
+#ifeq ($(USER),tisseran)
+# The path to sdif.h 
+#SDIF_INCL  = $(HOME)/include
+
+# The path of the sdif library 
+#SDIF_LIB  = $(HOME)/lib/$(SYS)/libsdif.a
+#endif
+endif
