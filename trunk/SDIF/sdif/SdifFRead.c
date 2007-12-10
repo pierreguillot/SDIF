@@ -1,4 +1,4 @@
-/* $Id: SdifFRead.c,v 3.32 2006-03-22 22:00:25 roebel Exp $
+/* $Id: SdifFRead.c,v 3.33 2007-12-10 10:45:43 roebel Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -31,6 +31,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.32  2006/03/22 22:00:25  roebel
+ * use correct format specifier for long int arguments.
+ *
  * Revision 3.31  2005/10/21 14:32:29  schwarz
  * protect all static buffers from overflow by using snprintf instead of sprintf
  * move big errorMess buffers into error branch to avoid too large stack allocation
@@ -308,7 +311,7 @@ SdifFReadNameValueLCurrNVT(SdifFileT *SdifF)
 
       snprintf(errorMess, sizeof(errorMess),
 	       "erreur size 1NVT: lu: %lu  Attendu: %lu\n",
-	       SizeR - sizeof(SdifInt4), SdifF->ChunkSize);
+	       (long unsigned int)SizeR - sizeof(SdifInt4), (long unsigned int)SdifF->ChunkSize);
       _SdifRemark(errorMess);
   }
 
@@ -372,7 +375,7 @@ SdifFReadAllType(SdifFileT *SdifF)
 
       snprintf(errorMess, sizeof(errorMess),
 	       "erreur size 1TYP: lu: %lu  Attendu: %lu\n",
-	       SizeR - sizeof(SdifInt4), SdifF->ChunkSize);
+	       (long unsigned int)SizeR - sizeof(SdifInt4), (long unsigned int)SdifF->ChunkSize);
       _SdifRemark(errorMess);
     }
   
@@ -424,7 +427,7 @@ SdifFReadAllStreamID(SdifFileT *SdifF)
 
       snprintf(errorMess, sizeof(errorMess),
 	       "erreur size 1IDS: lu: %lu  Attendu: %lu\n",
-	       SizeR - sizeof(SdifInt4), SdifF->ChunkSize);
+	       (long unsigned int)SizeR - sizeof(SdifInt4),(long unsigned int) SdifF->ChunkSize);
       _SdifRemark(errorMess);
     }
 
