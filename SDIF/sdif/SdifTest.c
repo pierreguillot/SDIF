@@ -1,4 +1,4 @@
-/* $Id: SdifTest.c,v 3.18 2007-12-10 10:46:12 roebel Exp $
+/* $Id: SdifTest.c,v 3.19 2008-01-09 16:13:48 bogaards Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -33,6 +33,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.18  2007/12/10 10:46:12  roebel
+ * Use const char* for read only function arguments.
+ *
  * Revision 3.17  2005/10/21 14:32:30  schwarz
  * protect all static buffers from overflow by using snprintf instead of sprintf
  * move big errorMess buffers into error branch to avoid too large stack allocation
@@ -140,6 +143,11 @@ SdifTestMatrixType(SdifFileT *SdifF, SdifSignature Signature)
 {
   SdifMatrixTypeT* MtrxT;
   SdifMatrixTypeT* PredefinedMtrxT;
+
+	if(!Signature){
+		_SdifFError(SdifF, eUnDefined, "Empty Signature for Matrix Type");
+        return NULL;
+	}
 
   MtrxT = SdifGetMatrixType(SdifF->MatrixTypesTable, Signature);
   if (MtrxT)
@@ -363,19 +371,19 @@ SdifTestComponent(SdifFileT* SdifF, SdifFrameTypeT *FramT, const char *NameCD)
 int
 SdifTestSignature(SdifFileT *SdifF, int CharEnd, SdifSignature Signature, const char *Mess)
 {
-  if (SdifIsAReservedChar(CharEnd)  ||  isspace(CharEnd))
-    {
-      char errorMess[_SdifStringLen];
+	if(!Signature){
+		_SdifFError(SdifF, eNameLength, "Empty Signature (probably there are two consecutive reserved characters ,;{}: )");
+		return eFalse;
+	}else if (SdifIsAReservedChar(CharEnd)  ||  isspace(CharEnd)){
+		char errorMess[_SdifStringLen];
 
-      snprintf(errorMess, sizeof(errorMess),
-	      "%s Name not correctly read : '%s'. Last char read : '%d'",
-	      Mess, SdifSignatureToString(Signature),
-	      (char) CharEnd);
-      _SdifFError(SdifF, eNameLength, errorMess);
-      return eFalse;
-    }
-  else
-    return eTrue;
+		snprintf(errorMess, sizeof(errorMess), "%s Invalid character in signature : '%s'. Last char read : '%c' (hex: %x)",
+			Mess, SdifSignatureToString(Signature),	(char) CharEnd, CharEnd);		
+		_SdifFError(SdifF, eNameLength, errorMess);
+		return eFalse;
+	}else{
+		return eTrue;
+	}
 }
 
 
