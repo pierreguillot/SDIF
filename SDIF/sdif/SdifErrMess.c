@@ -1,4 +1,4 @@
-/* $Id: SdifErrMess.c,v 3.25 2006-02-03 11:36:45 roebel Exp $
+/* $Id: SdifErrMess.c,v 3.26 2008-01-09 16:09:16 bogaards Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -31,6 +31,11 @@
  * author: Dominique Virolle 1998
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.25  2006/02/03 11:36:45  roebel
+ * Fixed SdifFsPrintError which now creates a proper
+ * error message. Before the error messages were
+ * limited to 4 characters!
+ *
  * Revision 3.24  2005/10/21 14:32:29  schwarz
  * protect all static buffers from overflow by using snprintf instead of sprintf
  * move big errorMess buffers into error branch to avoid too large stack allocation
@@ -178,7 +183,7 @@ const SdifErrorT gSdifErrMessFormat[] = {
 { eUnknown,		 eNoLevel, "Warning unknown"},
 { eNoError,		 eNoLevel, "No Error"},
 { eTypeDataNotSupported, eWarning, "Type of data not actualy supported : %s\n"},
-{ eNameLength,		 eWarning, "Bad UserMess : '%s'\n"},
+{ eNameLength,		 eWarning, "Badly formatted string : '%s'\n"},
 { eEof,			 eFatal,   "End of file : %s\n" },
 { eReDefined,		 eError,   "%s redefined\n"},
 { eUnDefined,		 eError,   "%s undefined\n"},
