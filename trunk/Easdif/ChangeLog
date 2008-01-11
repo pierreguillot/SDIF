@@ -1,3 +1,11 @@
+2008-01-11  Axel Roebel  <Axel.Roebel@ircam.fr>
+Version 1.3.4
+
+	* easdif/sdifentity.cpp, easdif/sdifentity.hpp, easdif/sdifexception.hpp :
+	Added new class MatrixType, FrameType, and the realted function for
+	adding types to entity or retrieving types from an entity in terms of these
+	clases.
+
 2007-11-27  Axel Roebel  <Axel.Roebel@ircam.fr>
 Version 1.3.3
 
@@ -1006,4 +1014,4 @@ Version 0.21
 	* ChangeLog: Added changelog to repository.
 
 
-$Id: ChangeLog,v 1.64 2007-11-27 17:36:46 roebel Exp $
+$Id: ChangeLog,v 1.65 2008-01-11 16:03:02 roebel Exp $
