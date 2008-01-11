@@ -32,9 +32,12 @@
  * 
  * 
  * 
- * $Id: sdifentity.hpp,v 1.12 2007-11-27 17:36:22 roebel Exp $ 
+ * $Id: sdifentity.hpp,v 1.13 2008-01-11 15:58:49 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.12  2007/11/27 17:36:22  roebel
+ * Replaced sdif macro by inline member function.
+ *
  * Revision 1.11  2007/11/26 19:09:55  roebel
  * Fixed to avoid compiler warnings in MSVC.
  * Little problem is the export of std::containers that should be defined as export
@@ -477,6 +480,170 @@ namespace Easdif {
   };
 
   /** 
+   * \ingroup description
+   * \brief matrix type descriptor
+   * 
+   */
+  struct MatrixType {
+    SdifSignature mSig;
+    std::vector<std::string> mvColumnNames;
+    MatrixType() :mSig(eEmptySignature) {}
+    MatrixType(SdifSignature sig) :mSig(sig) {}
+
+    /** 
+     * \ingroup description
+     * \brief add new column to matrix type 
+     * 
+     * @param column_name 
+     */
+    void AddColumn(const char *column_name) {
+      
+      if(!column_name || !*column_name) 
+        throw  TypeError(eError,"Error in MatrixType::AddColumn:: empty column",0,eUnknown,0,0);
+
+      const char *ic = column_name;
+      const char *ie = column_name+strlen(column_name);
+      while(ic != ie) {
+        if(*ic == ' ' ||*ic == ';' || *ic == ',')
+          throw TypeError(eError,"Error in MatrixType::AddColumn:: invalid character in column_name",0,eUnknown,0,0);
+        ++ic;
+      }
+      mvColumnNames.push_back(column_name);
+    }
+
+    /** 
+     * \ingroup description
+     * \brief set signature
+     * 
+     * @param sig 
+     */
+    void SetSignature(SdifSignature sig) {
+      mSig = sig;
+    }
+
+    /** 
+     * \ingroup description
+     * \brief reset matrix type 
+     * 
+     */
+    void Clear() {
+      mSig = eEmptySignature;
+      mvColumnNames.clear();
+    }
+
+    /** 
+     * \ingroup description
+     * \brief get number of columns in the matrix type
+     * 
+     * @return number of columns in current frame type (does not include columns in predefined matrix type 
+     * of the same signature)
+     */
+    int GetNbCols() const {return mvColumnNames.size();};
+
+    /** 
+     * \ingroup description
+     * \brief get signature related to MatrixType
+     * @return signature
+     */
+    SdifSignature GetSignature() const { return mSig;}
+ };
+
+  /** 
+   * \ingroup description
+   * \brief frame type descriptor
+   * 
+   */
+  struct FrameType {
+    SdifSignature mSig;
+    std::vector<std::string> mvMatrixNames;
+    std::vector<MatrixType>  mvMatrixTypes;
+
+    FrameType(SdifSignature sig) :mSig(sig) {}
+    FrameType()                  : mSig(eEmptySignature) {}
+
+    struct equal_mat : std::equal_to<SdifSignature> {
+      typedef MatrixType second_argument_type;
+#if 1
+      typedef MatrixType first_argument_type;
+      bool operator()(const MatrixType&mat, const MatrixType&mat2) const{
+        return std::equal_to<SdifSignature>::operator()(mat.GetSignature(),mat2.GetSignature());
+      }
+#else
+      typedef SdifSignature first_argument_type;
+      bool operator()(const MatrixType&mat, SdifSignature mat2) const{
+        return std::equal_to<SdifSignature>::operator()(mat.GetSignature(),mat2);
+      }
+#endif
+    };
+    /**
+     * \ingroup description
+     * \brief add matrix type to frame type
+     * 
+     * @param mat 
+     * @param matrix_name 
+     */
+    void AddMatrixType(const MatrixType& mat, const char *matrix_name) {
+
+      if(mat.mSig == eEmptySignature) 
+        throw  TypeError(eError,"Error in FrameType::AddMatrixType::uninitialized matrix ",0,eUnknown,0,0);
+      
+      if(!matrix_name || !*matrix_name) 
+        throw  TypeError(eError,"Error in FrameType::AddMatrixType:: empty column",0,eUnknown,0,0);
+
+      if(std::find_if(mvMatrixTypes.begin(),mvMatrixTypes.end(),std::bind2nd(equal_mat(),mat)) != mvMatrixTypes.end())
+        throw  TypeError(eError,"Error in FrameType::AddMatrixType:: matrix type exists.",0,eUnknown,0,0);
+
+      const char *ic = matrix_name;
+      const char *ie = matrix_name+strlen(matrix_name);
+      while(ic != ie) {
+        if(*ic == ' ' ||*ic == ';' || *ic == ',')
+          throw TypeError(eError,"Error in FrameType::AddMatrixType:: invalid character in matrix_name",0,eUnknown,0,0);
+        ++ic;
+      }
+      mvMatrixNames.push_back(matrix_name);
+      mvMatrixTypes.push_back(mat);
+    }
+
+    /** 
+     * \ingroup description
+     * \brief set signature
+     * 
+     * @param sig 
+     */
+    void SetSignature(SdifSignature sig) {
+      mSig = sig;
+    }
+
+    /** 
+     * \ingroup description
+     * \brief reset frame type 
+     * 
+     */
+    void Clear() {
+      mSig = eEmptySignature;     
+      mvMatrixTypes.clear();
+      mvMatrixNames.clear();
+    }
+
+    /** 
+     * \ingroup description
+     * \brief get number of matrices in the frame type
+     * 
+     * @return number of matrices in current frame type (does not include matrices in predefined frame type 
+     * of the same signature)
+     */
+    int GetNbMatrices() const {return mvMatrixTypes.size();};
+
+    /** 
+     * \ingroup description
+     * \brief get signature related to FrameType
+     * @return signature
+     */
+    SdifSignature GetSignature() const { return mSig;}
+  };
+
+
+  /** 
    * \brief SDIF Frame Directory tpye describing the contents of an SDIF File
    * \ingroup directory
    * 
@@ -658,13 +825,13 @@ namespace {
 
 
 
-/** 
- * @brief class holding all information concerned with a single sdif file.
- *
- * SDIFEntity is composed of different methods that allow the handling of an 
- * sdif-file. 
- * 
- */
+  /** 
+   * @brief class holding all information concerned with a single sdif file.
+   *
+   * SDIFEntity is composed of different methods that allow the handling of an 
+   * sdif-file. 
+   * 
+   */
   class EASDIF_API SDIFEntity
   {
     friend class SDIFFrame;
@@ -849,80 +1016,137 @@ public:
     //int AddDescriptionType();
 
  public:
-/** 
- * \ingroup description
- *
- * \brief add new frame type  or change existing  frame type  of the entity
- *
- * the description is added to the file with WriteTypes()
- * when the entity is opened for wrinting.Therefore, 
- * type descriptors  have to be added
- * to the entity before the file is opened.
- *
- * AddFrameType() must be used after Easdif::SDIFEntity::AddMatrixType()
- *
- * @param frametype string that identifies the  new frame type,
- *  the identifier will use  at most 4 characters
- * @param matrix string that defines the matrix elements that may be part  
- * of the frame
- *
- * Example: 
- * 
- *  entity.AddFrameType("1NEW", "1NEW NewMatrix; 1FQ0 New1FQ0");
- *
- */
-    bool AddFrameType(const std::string& frametype, 
-		      const std::string& matrix);
 
-/** 
- * \ingroup description
- * 
- * \brief define a new or redefine an existing matrix type for  the entity.
- *
- * The type description is added to the entity when the entity is
- * opened for writing. Therefore, type descriptors  have to be added
- * to the entity before the file is opened.
- *
- * AddMatrixType() must be used before Easdif::SDIFEntity::AddFrameType()
- *
- * @param matrixtype string for define a new matrix type 
- * or redefined a matrix type 
- * @param colnames string to defined the differents parameters of 
- * the matrix type
- *
- * Example: 
- * 
- *  entity.AddMatrixType("1NEW", "amplitude, phase");
- *
- */
+    /** 
+     * \ingroup description
+     *
+     * \brief add new frame type  (or extend existing)  frame type for the  entity
+     *
+     * ATTENTION: AddFrameType(const std::string&,const std::string&) is a deprecated function,
+     * use  AddFrameType(const MatrixType&) instead.
+     *
+     * the description is added into the local file type descrption for the entity.
+     * It is written  to the file when the entity is opened for wrinting. Therefore, 
+     * type descriptors  have to be added to the entity before the file is opened.
+     *
+     * AddFrameType() must be used after Easdif::SDIFEntity::AddMatrixType()
+     *
+     * @param frametype string that identifies the  new frame type,
+     *  the identifier will use  at most 4 characters
+     * @param matrix_description string that defines the matrix elements that may be part  
+     * of the frame. Each matrix is descriped by a non empty test of two elements
+     * separated by a single space. The desritoins are separated by semicolon and no semicolon
+     * should be present at the end of the matrix_description.
+     *
+     * Example: 
+     * 
+     *  entity.AddFrameType("1NEW", "1NEW NewMatrix; 1FQ0 New1FQ0");
+     *
+     */
+    bool AddFrameType(const std::string& frametype, 
+		      const std::string& matrix_description);
+
+    /** 
+     * \ingroup description
+     *
+     * \brief add new frame type  or extend existing  frame type  of the entity
+     *
+     * the description is added into the local file type descrption for the entity.
+     * It is written  to the file when the entity is opened for wrinting. Therefore, 
+     * type descriptors  have to be added to the entity before the file is opened.
+     *
+     * AddFrameType() must be used after Easdif::SDIFEntity::AddMatrixType()
+     *
+     * @param frametype frametype to include into type description
+     *
+     */
+    bool AddFrameType(const FrameType& frameType);
+
+    /** 
+     * \ingroup description
+     * 
+     * \brief define a new (or extend an existing) matrix type for  the entity.
+     *
+     * ATTENTION: AddMatrixType(const std::string&,const std::string&) is a deprecated function,
+     * use  AddMatrixType(const MatrixType&) instead.
+     * 
+     * The type description is added into the local type description and written into the entity after
+     * opening it for writing. Therefore, type descriptors  have to be added
+     * to the entity before the file is opened.
+     *
+     * AddMatrixType() must be used before Easdif::SDIFEntity::AddFrameType()
+     *
+     * @param matrixtype string for define a new matrix type 
+     * or redefined a matrix type 
+     * @param colnames string to defined the differents parameters of 
+     * the matrix type
+     *
+     * Example: 
+     * 
+     *  entity.AddMatrixType("1NEW", "amplitude, phase");
+     *
+     */
     bool AddMatrixType(const std::string& matrixtype, 
 		       const std::string& colnames);
 
-/** 
- * \ingroup description
- * Print the SdifStringT* which have the types definitions of the frames
- * and matrix
- */
+
+    /** 
+     * \ingroup description
+     * 
+     * \brief define a new (or extend an existing) matrix type for  the entity.
+     *
+     * The type description is added into the local type description and written into the entity after
+     * opening it for writing. Therefore, type descriptors  have to be added
+     * to the entity before the file is opened.
+     *
+     * AddMatrixType() must be used before Easdif::SDIFEntity::AddFrameType()
+     *
+     * @param matrixtype string for define a new matrix type 
+     * or redefined a matrix type 
+     *
+     */
+    bool AddMatrixType(const MatrixType& matrixtype);
+   
+    /** 
+     * \ingroup description
+     * Print the SdifStringT* which have the types definitions of the frames
+     * and matrix
+     */
     int PrintTypes();
 
-/** 
- * \ingroup description
- * return a string  containing the user defined types of the
- * file that is stored in the frame "1TYP".
- *
- *  \return Type string
- */
-  const std::string& GetTypeString() const;
+    /** 
+     * \ingroup description
+     * \brief get vector of FrameType objects that describe the type string of the file
+     * 
+     * @param frametypes io vector
+     */    
+    void GetTypes(std::vector<FrameType>& frametypes) const ;
+    /** 
+     * \ingroup description
+     * \brief get vector of MatrixType objects that describe the type string of the file
+     * 
+     * @param matrixtypes io vector
+     */    
+    void GetTypes(std::vector<MatrixType>& matrixtypes) const ;
 
-/** 
- * \ingroup description
- * Set the user defined frame types in the frame "1TYP" for the current file to
- * the argument string 
- * 
- * \param TypeString
- * \return  true if success
- */
-  bool SetTypeString(const std::string& TypeString);
+    /** 
+     * \ingroup description
+     * return a string  containing the user defined types of the
+     * file that is stored in the frame "1TYP".
+     *
+     *  \return Type string
+     */
+    const std::string& GetTypeString() const;
+    
+    /** 
+     * \ingroup description
+     * Set the user defined frame types in the frame "1TYP" for the current file to
+     * the argument string 
+     * 
+     * \param TypeString
+     * \return  true if success
+     */
+    bool SetTypeString(const std::string& TypeString);
 
 /*************************************************************************/
 /* Change the selection */
