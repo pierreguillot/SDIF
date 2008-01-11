@@ -32,9 +32,12 @@
  * 
  * 
  * 
- * $Id: sdifentity.cpp,v 1.40 2007-11-27 17:36:29 roebel Exp $ 
+ * $Id: sdifentity.cpp,v 1.41 2008-01-11 15:58:38 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.40  2007/11/27 17:36:29  roebel
+ * Replaced sdif macro by inline member function.
+ *
  * Revision 1.39  2007/11/26 19:10:08  roebel
  * Fixed to avoid compiler warnings in MSVC.
  * Little problem is the export of std::containers that should be defined as export
@@ -765,16 +768,121 @@ int SDIFEntity::PrintTypes()
 bool SDIFEntity::AddFrameType(const std::string& frametype, 
 			     const std::string& matrixtype)
 {
-    mDescription += "1FTD"+frametype + " { " + matrixtype + ";  }\n";
+    mDescription += "1FTD "+frametype + " { " + matrixtype + ";  }\n";
     return true;
+}
+
+/* for adding a frame type */
+bool SDIFEntity::AddFrameType(const FrameType& frametype) 
+{
+  if(frametype.GetSignature()== eEmptySignature ||
+     frametype.GetNbMatrices() == 0 ) {
+    throw TypeError(eError,"Error in SDIFEntity::AddFrameType::uninitialized frametype ",0,eUnknown,0,0);
+  }
+  mDescription += "1FTD ";
+  mDescription += SdifSignatureToString(frametype.GetSignature());
+  mDescription += " { ";
+  for(int ii=0; ii < frametype.GetNbMatrices();++ii) {
+    mDescription += SdifSignatureToString(frametype.mvMatrixTypes[ii].GetSignature());
+    mDescription += " ";
+    mDescription += frametype.mvMatrixNames[ii];
+    mDescription += ";";
+  }
+  mDescription += " }\n";
+  return true;
 }
 
 /* for adding a matrix type */
 bool SDIFEntity::AddMatrixType(const std::string& matrixtype, 
 			      const std::string& colnames)
 {
-    mDescription += "1MTD"+matrixtype + " { " + colnames + " }\n";
+    mDescription += "1MTD "+matrixtype + " { " + colnames + " }\n";
     return true;
+}
+
+/* for adding a frame type */
+bool SDIFEntity::AddMatrixType(const MatrixType& matrixtype)
+{
+  if(matrixtype.GetSignature()== eEmptySignature ||
+     matrixtype.GetNbCols() ==0 ) {
+    throw TypeError(eError,"Error in SDIFEntity::AddMatrixType::uninitialized matrixtype ",0,eUnknown,0,0);
+  }
+  mDescription += "1MTD ";
+  mDescription += SdifSignatureToString(matrixtype.GetSignature());
+  mDescription += " { ";
+  for(int ii=0; ii < matrixtype.GetNbCols();++ii) {
+    mDescription += matrixtype.mvColumnNames[ii];
+    if(ii < matrixtype.GetNbCols() - 1)
+      mDescription += ", ";      
+  }
+  mDescription += " }\n";
+  return true;
+}
+
+void SDIFEntity::GetTypes(std::vector<FrameType>& frametypes) const {
+  frametypes.clear();
+  std::string::size_type pos =0;
+  std::string tmpStr;
+  const char* str = mDescription.c_str();
+  FrameType frty;
+  while((pos = mDescription.find("1FTD",pos) ) !=  std::string::npos) {
+    pos += 4;    
+    std::string::size_type pose = mDescription.find("}",pos);
+    if(pose == std::string::npos)
+      throw TypeError(eError,"Error in SDIFEntity::GetTypes::uncomplete frametype ",0,eUnknown,0,0);
+    std::string framestring = mDescription.substr(pos,pose+1);
+    std::string::size_type startsigpos = mDescription.find_first_not_of(" \n\t",pos);
+    std::string::size_type endsigpos   = mDescription.find_first_of(" {\n\t",startsigpos);
+    if(endsigpos - startsigpos != 4) 
+      throw TypeError(eError,"Error in SDIFEntity::GetTypes::invalid frame signature",0,eUnknown,0,0);
+    frty.Clear();
+    frty.SetSignature(_SdifStringToSignature(str+startsigpos));
+    std::string::size_type startMatPos, endMatPos, startCommentPos, endCommentPos = endsigpos;
+    while((startMatPos = mDescription.find_first_not_of("{ \t\n,;",endCommentPos)) != pose) {
+      endMatPos = mDescription.find_first_of(" \n\t,;",startMatPos);
+      if(endMatPos - startMatPos != 4) 
+        throw TypeError(eError,"Error in SDIFEntity::GetTypes::invalid frame signature",0,eUnknown,0,0);
+      startCommentPos = mDescription.find_first_not_of(" \n\t,;",endMatPos);
+      endCommentPos = mDescription.find_first_of(" \n\t,;}",startCommentPos);
+      if(endCommentPos - startCommentPos == 0) 
+        throw TypeError(eError,"Error in SDIFEntity::GetTypes::invalid frame signature",0,eUnknown,0,0);
+      tmpStr = str+startCommentPos;
+      tmpStr.resize(endCommentPos - startCommentPos);
+      frty.AddMatrixType(MatrixType(_SdifStringToSignature(str+startMatPos)),tmpStr.c_str());      
+    }
+    frametypes.push_back(frty);
+  }
+}
+
+void SDIFEntity::GetTypes(std::vector<MatrixType>& matrixtypes) const {
+  matrixtypes.clear();
+  std::string::size_type pos = 0;
+  std::string tmpStr;
+  const char* str = mDescription.c_str();
+  MatrixType maty;
+  while((pos = mDescription.find("1MTD",pos) ) !=  std::string::npos) {
+    pos += 4;
+    std::string::size_type pose = mDescription.find("}",pos);
+    if(pose == std::string::npos)
+      throw TypeError(eError,"Error in SDIFEntity::GetTypes::uncomplete matrixtype ",0,eUnknown,0,0);
+    std::string matrixstring = mDescription.substr(pos,pose+1);
+    std::string::size_type startsigpos = mDescription.find_first_not_of(" \n\t",pos);
+    std::string::size_type endsigpos   = mDescription.find_first_of(" {\n\t",startsigpos);
+    if(endsigpos - startsigpos != 4) 
+      throw TypeError(eError,"Error in SDIFEntity::GetTypes::invalid matrix signature",0,eUnknown,0,0);
+    maty.Clear();
+    maty.SetSignature(_SdifStringToSignature(str+startsigpos));
+    std::string::size_type  startCommentPos, endCommentPos = endsigpos;
+    while((startCommentPos = mDescription.find_first_not_of("{ \t\n,;",endCommentPos)) != pose) {
+      endCommentPos = mDescription.find_first_of(" \n\t,;}",startCommentPos);
+      if(endCommentPos - startCommentPos == 0) 
+        throw TypeError(eError,"Error in SDIFEntity::GetTypes::invalid matrix signature",0,eUnknown,0,0);
+      tmpStr = str+startCommentPos;
+      tmpStr.resize(endCommentPos - startCommentPos);
+      maty.AddColumn(tmpStr.c_str());      
+    }
+    matrixtypes.push_back(maty);
+  }
 }
 
 /* for adding the description types when opening in mode "eWriteFile" */

@@ -34,9 +34,16 @@
  * 
  * 
  * 
- * $Id: sdifexception.hpp,v 1.3 2007-11-26 19:09:38 roebel Exp $ 
+ * $Id: sdifexception.hpp,v 1.4 2008-01-11 15:58:59 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.3  2007/11/26 19:09:38  roebel
+ * Fixed to avoid compiler warnings in MSVC.
+ * Little problem is the export of std::containers that should be defined as export
+ * which is not possible due to the given STL include files.
+ * For the moment it seems these warnings are not important, because all these functions
+ * are inlined as templates in the STL anyway. Has to be handled with care !!!!
+ *
  * Revision 1.2  2007/04/30 11:34:26  roebel
  * Added new exception to signal frame directory errors.
  *
@@ -461,10 +468,16 @@ namespace Easdif {
     constructor(SDIFMatrixNotAvailable,SDIFException)
       };
 
-  
+  /// \brief Error in frame directory 
   class FrameDirError : public SDIFException{  
   public:
     constructor(FrameDirError,SDIFException)
+      };
+
+  /// \brief Error in construction or handling of MatrixTypes and FrameTypes 
+  class TypeError : public SDIFException{  
+  public:
+    constructor(TypeError,SDIFException)
       };
 
 
