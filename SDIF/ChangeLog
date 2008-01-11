@@ -1,3 +1,8 @@
+2008-01-11  Axel Roebel  <Axel.Roebel@ircam.fr>
+
+	* sdif/SdifRWLowLevel.c, include/sdif.h : 
+	Use const char* for read only function arguments.
+
 2007-12-10  Axel Roebel  <roebel@sam.localdomain>
 
 	* sdif/SdifTest.h, sdif/SdifMatrixType.h :
@@ -973,4 +978,4 @@ Version 3.3:
 	  Operating System.
 
 	
-$Id: ChangeLog,v 1.57 2007-12-10 10:47:23 roebel Exp $
+$Id: ChangeLog,v 1.58 2008-01-11 15:51:46 roebel Exp $
