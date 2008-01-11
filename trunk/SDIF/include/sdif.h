@@ -1,4 +1,4 @@
-/* $Id: sdif.h,v 1.58 2007-12-10 10:45:33 roebel Exp $
+/* $Id: sdif.h,v 1.59 2008-01-11 15:51:26 roebel Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -30,6 +30,9 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.58  2007/12/10 10:45:33  roebel
+ * Use const char* for read only function arguments.
+ *
  * Revision 1.57  2007/11/26 18:55:52  roebel
  * Finished DLL export/import handling, support gcc visibility as well.
  *
@@ -280,7 +283,7 @@
  * Revision 1.1.2.1  2000/08/21  13:07:41  tisseran
  * *** empty log message ***
  *
- * $Date: 2007-12-10 10:45:33 $
+ * $Date: 2008-01-11 15:51:26 $
  *
  */
 
@@ -295,7 +298,7 @@ extern "C" {
 #endif
 
 
-static const char _sdif_h_cvs_revision_ [] = "$Id: sdif.h,v 1.58 2007-12-10 10:45:33 roebel Exp $";
+static const char _sdif_h_cvs_revision_ [] = "$Id: sdif.h,v 1.59 2008-01-11 15:51:26 roebel Exp $";
 
 
 #include <stdio.h>
@@ -2675,7 +2678,7 @@ sdif_proto_foralltypes (sdif_scanproto)
    Exactly 4 chars are considered, so make sure *str has at least that many! 
    The str pointer MUST be word (at least 4 byte or so) aligned.
 */
-SDIF_API SdifSignature _SdifStringToSignature (char *str);
+SDIF_API SdifSignature _SdifStringToSignature (const char *str);
 
 /*DOC:
   Convert a string to an SDIF signature (in proper endianness).
