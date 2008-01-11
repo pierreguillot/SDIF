@@ -1,4 +1,4 @@
-/* $Id: SdifRWLowLevel.c,v 3.37 2007-11-27 12:10:44 roebel Exp $
+/* $Id: SdifRWLowLevel.c,v 3.38 2008-01-11 15:48:29 roebel Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -33,6 +33,9 @@
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 3.37  2007/11/27 12:10:44  roebel
+ * Removed unused variables.
+ *
  * Revision 3.36  2006/03/22 22:00:41  roebel
  * Fixed wrong sizeof which would work only if
  * sizeof(pointer)  == sizeof(int)
@@ -808,7 +811,7 @@ SdiffGetString(FILE* fr, char* s, size_t ncMax, size_t *NbCharRead)
    The str pointer MUST be longword aligned (to the nearest 4 byte boundary).
 */
 SdifSignature
-_SdifStringToSignature (char *str)
+_SdifStringToSignature (const char *str)
 {
   assert (gSdifInitialised  &&  "SDIF library not initialised!");
 
