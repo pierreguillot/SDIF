@@ -1,3 +1,10 @@
+2008-01-12  Axel Roebel  <roebel@sam.localdomain>
+Version 1.3.5
+
+	* easdif/sdifentity.hpp : 
+	Added '{' and '}' as forbidden characters when creating comments
+	for Matrix- and FrameType.
+	
 2008-01-11  Axel Roebel  <Axel.Roebel@ircam.fr>
 Version 1.3.4
 
@@ -1014,4 +1021,4 @@ Version 0.21
 	* ChangeLog: Added changelog to repository.
 
 
-$Id: ChangeLog,v 1.65 2008-01-11 16:03:02 roebel Exp $
+$Id: ChangeLog,v 1.66 2008-01-12 11:58:51 roebel Exp $
