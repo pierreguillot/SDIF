@@ -32,9 +32,14 @@
  * 
  * 
  * 
- * $Id: sdifentity.hpp,v 1.13 2008-01-11 15:58:49 roebel Exp $ 
+ * $Id: sdifentity.hpp,v 1.14 2008-01-12 11:58:33 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.13  2008/01/11 15:58:49  roebel
+ * Added new class MatrixType, FrameType, and the realted function for
+ * adding types to entity or retrieving types from an entity in terms of these
+ * clases.
+ *
  * Revision 1.12  2007/11/27 17:36:22  roebel
  * Replaced sdif macro by inline member function.
  *
@@ -504,7 +509,7 @@ namespace Easdif {
       const char *ic = column_name;
       const char *ie = column_name+strlen(column_name);
       while(ic != ie) {
-        if(*ic == ' ' ||*ic == ';' || *ic == ',')
+        if(*ic == ' ' ||*ic == ';' || *ic == ','|| *ic == '}'|| *ic == '{')
           throw TypeError(eError,"Error in MatrixType::AddColumn:: invalid character in column_name",0,eUnknown,0,0);
         ++ic;
       }
@@ -596,7 +601,7 @@ namespace Easdif {
       const char *ic = matrix_name;
       const char *ie = matrix_name+strlen(matrix_name);
       while(ic != ie) {
-        if(*ic == ' ' ||*ic == ';' || *ic == ',')
+        if(*ic == ' ' ||*ic == ';' || *ic == ','|| *ic == '}'|| *ic == '{')
           throw TypeError(eError,"Error in FrameType::AddMatrixType:: invalid character in matrix_name",0,eUnknown,0,0);
         ++ic;
       }
