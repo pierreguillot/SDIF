@@ -1,6 +1,13 @@
+/* $Id: sdif.css,v 1.2 2008-01-21 18:27:24 diemo Exp $
+
+   CSS style sheet for SDIF pages at sourceforge
+
+   $Log: not supported by cvs2svn $
+*/
 body {
        padding-left: 1em;
        font-family: Helvetica, Geneva, Arial, SunSans-Regular, sans-serif;
+       }
 ul.navbar {
             list-style-type: none;
             padding: 0;
@@ -11,12 +18,16 @@ ul.navbar {
             width: 9em }
 h1 {
      font-family: Helvetica, Geneva, Arial, SunSans-Regular, sans-serif;
-     margin-top: 1em;
+     margin-top: 6pt;
      padding-top: 1em;
      border-bottom: solid thick
      }
 h2 {
      font-family: Helvetica, Geneva, Arial, SunSans-Regular, sans-serif;
+     color: gray;
      border-bottom: dotted thin
      }
-h3 { font-style: italic }
+h3 { /* font-style: italic; */ 
+     color: #a0a0a0;
+     margin-top: 0pt
+     }
