@@ -1,0 +1,22 @@
+body {
+       padding-left: 1em;
+       font-family: Helvetica, Geneva, Arial, SunSans-Regular, sans-serif;
+ul.navbar {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            position: absolute;
+            top: 2em;
+            left: 1em;
+            width: 9em }
+h1 {
+     font-family: Helvetica, Geneva, Arial, SunSans-Regular, sans-serif;
+     margin-top: 1em;
+     padding-top: 1em;
+     border-bottom: solid thick
+     }
+h2 {
+     font-family: Helvetica, Geneva, Arial, SunSans-Regular, sans-serif;
+     border-bottom: dotted thin
+     }
+h3 { font-style: italic }
