@@ -1,3 +1,19 @@
+2008-01-22  Axel Roebel  <roebel@sam.localdomain>
+Version 1.4.0
+
+	* easdif/sdifnamevaluetable.hpp :
+	Changed default streamid for NVT tables to be the one defined
+	in the SDIF library.
+
+	* easdif/sdifmatrixdatainterface.hpp, easdif/sdifmatrixdata.hpp :
+	Completed support for all sdif integer types.
+
+	* matlab/CMakeLists.txt, matlab/FSdifexist.m, matlab/Fsdif_read_handler.cpp,
+	* matlab/Fsdif_read_handler.m, matlab/Fsdif_write_handler.cpp, matlab/Fsdif_write_handler.m, 
+	* matlab/Fsdifclose.m, matlab/Fsdifexist.m, matlab/Fsdifloadfile.m, matlab/Fsdifopen.m, 
+	* matlab/Fsdifread.m, matlab/Fsdifwrite.m, matlab/fieldnames.hpp :
+	Added matlab mex functions to Easdif.
+
 2008-01-12  Axel Roebel  <roebel@sam.localdomain>
 Version 1.3.5
 
@@ -1021,4 +1037,4 @@ Version 0.21
 	* ChangeLog: Added changelog to repository.
 
 
-$Id: ChangeLog,v 1.66 2008-01-12 11:58:51 roebel Exp $
+$Id: ChangeLog,v 1.67 2008-01-22 00:56:16 roebel Exp $
