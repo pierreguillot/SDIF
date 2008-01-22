@@ -32,9 +32,14 @@
  * 
  * 
  * 
- * $Id: sdifentity.cpp,v 1.41 2008-01-11 15:58:38 roebel Exp $ 
+ * $Id: sdifentity.cpp,v 1.42 2008-01-22 00:49:25 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.41  2008/01/11 15:58:38  roebel
+ * Added new class MatrixType, FrameType, and the realted function for
+ * adding types to entity or retrieving types from an entity in terms of these
+ * clases.
+ *
  * Revision 1.40  2007/11/27 17:36:29  roebel
  * Replaced sdif macro by inline member function.
  *
@@ -308,9 +313,7 @@ bool SDIFEntity::ReOpenRead(const char* filename)
     mDescription = _tmp->str;
 
     n = SdifFNameValueNum(efile);
-    /* initialisation of the vector */
-    mv_NVT.clear();
-
+ 
     if( n != 0)
     {
 	/* used in the loop for getting the next NVT  */	
@@ -320,7 +323,7 @@ bool SDIFEntity::ReOpenRead(const char* filename)
 	for (int i = 1 ; i <= n ; i++)
 	{	 
 	  SdifNameValuesLSetCurrNVT(NVlist, i);
-	  AddNVT(TakeNVT(), _SdifNVTStreamID);
+	  AddNVT(TakeNVT(), efile->NameValues->CurrNVT->StreamID );
 	}
     }  
 
@@ -616,7 +619,8 @@ bool SDIFEntity::Close()
       msHighLevelMatrixSelection.clear();
       msHighLevelFrameSelection.clear();
       msHighLevelStreamSelection.clear();
-
+      clearAllNVT();
+      clearTypes();
       SdifFClose(efile);
       efile=0;
       mSize=0;
