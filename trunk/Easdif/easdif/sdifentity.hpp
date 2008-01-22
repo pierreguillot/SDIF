@@ -32,9 +32,13 @@
  * 
  * 
  * 
- * $Id: sdifentity.hpp,v 1.14 2008-01-12 11:58:33 roebel Exp $ 
+ * $Id: sdifentity.hpp,v 1.15 2008-01-22 00:50:17 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.14  2008/01/12 11:58:33  roebel
+ * Added '{' and '}' as forbidden characters when creating comments
+ * for Matrix- and FrameType.
+ *
  * Revision 1.13  2008/01/11 15:58:49  roebel
  * Added new class MatrixType, FrameType, and the realted function for
  * adding types to entity or retrieving types from an entity in terms of these
@@ -1144,6 +1148,14 @@ public:
     const std::string& GetTypeString() const;
     
     /** 
+     *   \ingroup description
+     *  clear all description types
+     */
+    void clearTypes() {
+      mDescription.clear();
+    }
+
+    /** 
      * \ingroup description
      * Set the user defined frame types in the frame "1TYP" for the current file to
      * the argument string 
@@ -1351,7 +1363,7 @@ public:
    * As long as EnableFrameDir() has not been called this function works on
    * the low level SDIF selection, otherwise it establishes a high level selection
    * that can be savely used used with the Directory. The directory will still contain all
-   * frames and matrices that are selected accoring to the low level selection. 
+   * frames and matrices that are selected according to the low level selection. 
    * 
    *
    * @param sigs    set of signatures that should remain selected, this set is intersected
@@ -1447,31 +1459,31 @@ public:
    */
   bool ReestablishStreamSelection();
 
-/*************************************************************************/
-/* Operation with a file */
-/**
-* \defgroup  file  SDIFEntity - Operations with file
-*/
-
-/** 
- * \ingroup  file
- * \brief open the file of the entity in reading or writing mode
- * 
- * @param filename 
- * @param Mode can be "eReadFile" or "eWriteFile"
- *
- * @return true if opened/false if error
- */
-    bool Open(const char* filename, SdifFileModeET Mode);
-
-/** 
- * \ingroup  file
- * \brief open a file in reading mode
- * @param filename 
- *               
- * @return true if opened/false if error
- */
-    bool OpenRead(const char* filename);
+  /*************************************************************************/
+  /* Operation with a file */
+  /**
+   * \defgroup  file  SDIFEntity - Operations with file
+   */
+  
+  /** 
+   * \ingroup  file
+   * \brief open the file of the entity in reading or writing mode
+   * 
+   * @param filename 
+   * @param Mode can be "eReadFile" or "eWriteFile"
+   *
+   * @return true if opened/false if error
+   */
+  bool Open(const char* filename, SdifFileModeET Mode);
+  
+  /** 
+   * \ingroup  file
+   * \brief open a file in reading mode
+   * @param filename 
+   *               
+   * @return true if opened/false if error
+   */
+  bool OpenRead(const char* filename);
   
   /** 
    * \ingroup  file
@@ -1483,7 +1495,7 @@ public:
    * that have been established either by the user in the file name
    * or by calling selection modifications before calling EnableFrameDir().
    * 
-   *     Attention reusing a directory is only reasonable if the
+   *  Attention reusing a directory is only reasonable if the
    *       same file is.
    * 
    * If there is no directory information, either if the SDIFEntity
@@ -1493,31 +1505,33 @@ public:
    * @return true if opened/false if error
    */
   bool ReOpenRead(const char* filename);
-
-/** 
- * \ingroup  file
- * open a file in writing mode
- * @param filename 
- * @return true if opened/false if error
-*/
-    bool OpenWrite(const char* filename);
-    
-/** 
- * \ingroup  file
- * \brief close a file 
- * @return true if closed / false if file was not opened
- */
-    bool Close();
-
+  
+  /** 
+   * \ingroup  file
+   * open a file in writing mode
+   * @param filename 
+   * @return true if opened/false if error
+   */
+  bool OpenWrite(const char* filename);
+  
+  /** 
+   * \ingroup  file
+   * \brief close a file
+   *
+   * All internal states (types, nvts, selections ) are reset 
+   * Directory information is kept.
+   *
+   * @return true if closed / false if file was not opened
+   */
+  bool Close();
+  
   /** 
    * \ingroup  file
    * \brief rewind a file to first non-ascii frame after the file header
    * @return true if positioning was successful
    */  
   bool Rewind();
-
-
-
+  
   /** 
    * \ingroup  file
    * \brief examine seekability of current file
@@ -1525,14 +1539,24 @@ public:
    * @return true if file can be seeked which is the case if it is not a pipe
    */    
   bool isSeekable() {if(efile)return efile->isSeekable != 0; return false; };
-
-
+  
   /** 
    * \ingroup file
    * get the SdifFileT* file
    * \return SdifFile pointer related to Entity
    */
   SdifFileT* GetFile() const;
+  
+  /** 
+   * \ingroup file
+   *
+   * test file state
+   *
+   * \return true if file is opened 
+   */
+  bool IsOpen() const {
+    return (efile && mOpen);
+  }
 
   /** 
    * \ingroup file
@@ -1700,6 +1724,13 @@ public:
    */
   SDIFNameValueTable& GetNVT(unsigned int i);
   
+
+  /** 
+   * \ingroup nvt
+   * clear NVT tables
+   */
+  void clearAllNVT() { mv_NVT.clear(); }
+
 
   /******************/
   /*************************************************************************/
