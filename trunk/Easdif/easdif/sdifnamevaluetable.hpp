@@ -33,9 +33,16 @@
  * 
  *
  * 
- * $Id: sdifnamevaluetable.hpp,v 1.3 2007-11-26 19:09:18 roebel Exp $ 
+ * $Id: sdifnamevaluetable.hpp,v 1.4 2008-01-22 00:52:25 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.3  2007/11/26 19:09:18  roebel
+ * Fixed to avoid compiler warnings in MSVC.
+ * Little problem is the export of std::containers that should be defined as export
+ * which is not possible due to the given STL include files.
+ * For the moment it seems these warnings are not important, because all these functions
+ * are inlined as templates in the STL anyway. Has to be handled with care !!!!
+ *
  * Revision 1.2  2007/10/25 22:31:08  roebel
  * Fixed constructor to initialize streamid to Signature NVID
  * which translates in a very large value that will no longer conflict with cnmat library
@@ -134,7 +141,7 @@ namespace Easdif {
   public:
 
     /* construct a NameValueTable, use StreamID with value NVID as default */
-    SDIFNameValueTable() : mStreamID(SdifStringToSignature("NVID"))  {};
+    SDIFNameValueTable() : mStreamID( _SdifNVTStreamID )  {};
   
     ~SDIFNameValueTable() {};
 
