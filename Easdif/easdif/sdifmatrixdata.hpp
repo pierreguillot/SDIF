@@ -33,9 +33,12 @@
  * 
  * 
  * 
- * $Id: sdifmatrixdata.hpp,v 1.2 2007-11-27 16:41:19 roebel Exp $ 
+ * $Id: sdifmatrixdata.hpp,v 1.3 2008-01-22 00:51:28 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  2007/11/27 16:41:19  roebel
+ * Prevent dereferencing vectors outside the range.
+ *
  * Revision 1.1  2005/05/30 21:43:00  roebel
  * Changed all include files from .h into .hpp to prevent name clash between
  * sdifmatix.h and SDIF/sdifcpp/SdifMatrix.h on MacOSX where filenames are
@@ -174,22 +177,22 @@ namespace {
   inline size_t SdiffReadMatrix(float *outbuf,size_t nobjs, SdifFileT * stream) {
     return     SdiffReadFloat4(outbuf,nobjs,stream)*sizeof(float);
   }
-  inline size_t SdiffReadMatrix(unsigned char *outbuf,size_t nobjs, SdifFileT * stream) {
+  inline size_t SdiffReadMatrix(SdifUInt1 *outbuf,size_t nobjs, SdifFileT * stream) {
     return     SdiffReadUInt1(outbuf,nobjs,stream)*sizeof(unsigned char);
   }
-  inline size_t SdiffReadMatrix(unsigned short int *outbuf,size_t nobjs, SdifFileT * stream) {
+  inline size_t SdiffReadMatrix(SdifUInt2 *outbuf,size_t nobjs, SdifFileT * stream) {
     return     SdiffReadUInt2(outbuf,nobjs,stream)*sizeof(unsigned short int);
   }
-  inline size_t SdiffReadMatrix(unsigned int *outbuf,size_t nobjs, SdifFileT * stream) {
+  inline size_t SdiffReadMatrix(SdifUInt4 *outbuf,size_t nobjs, SdifFileT * stream) {
     return     SdiffReadUInt4(outbuf,nobjs,stream)*sizeof(unsigned int);
   }
   inline size_t SdiffReadMatrix(char *outbuf,size_t nobjs, SdifFileT * stream) {
     return     SdiffReadInt1(outbuf,nobjs,stream)*sizeof(char);
   }
-  inline size_t SdiffReadMatrix(short int *outbuf,size_t nobjs, SdifFileT * stream) {
+  inline size_t SdiffReadMatrix(SdifInt2 *outbuf,size_t nobjs, SdifFileT * stream) {
     return     SdiffReadInt2(outbuf,nobjs,stream)*sizeof(short int);
   }
-  inline size_t SdiffReadMatrix(int *outbuf,size_t nobjs, SdifFileT * stream) {
+  inline size_t SdiffReadMatrix(SdifInt4 *outbuf,size_t nobjs, SdifFileT * stream) {
     return     SdiffReadInt4(outbuf,nobjs,stream)*sizeof(int);
   }
 
@@ -200,22 +203,22 @@ namespace {
   inline size_t SdiffWriteMatrix(float *outbuf,size_t nobjs, SdifFileT * stream) {
     return     SdiffWriteFloat4(outbuf,nobjs,stream)*sizeof(float);
   }
-  inline size_t SdiffWriteMatrix(unsigned char *outbuf,size_t nobjs, SdifFileT * stream) {
+  inline size_t SdiffWriteMatrix(SdifUInt1 *outbuf,size_t nobjs, SdifFileT * stream) {
     return     SdiffWriteUInt1(outbuf,nobjs,stream)*sizeof(unsigned char);
   }
-  inline size_t SdiffWriteMatrix(unsigned short int *outbuf,size_t nobjs, SdifFileT * stream) {
+  inline size_t SdiffWriteMatrix(SdifUInt2 *outbuf,size_t nobjs, SdifFileT * stream) {
     return     SdiffWriteUInt2(outbuf,nobjs,stream)*sizeof(unsigned short int);
   }
-  inline size_t SdiffWriteMatrix(unsigned int *outbuf,size_t nobjs, SdifFileT * stream) {
+  inline size_t SdiffWriteMatrix(SdifUInt4 *outbuf,size_t nobjs, SdifFileT * stream) {
     return     SdiffWriteUInt4(outbuf,nobjs,stream)*sizeof(unsigned int);
   }
-  inline size_t SdiffWriteMatrix(char *outbuf,size_t nobjs, SdifFileT * stream) {
+  inline size_t SdiffWriteMatrix(SdifInt1 *outbuf,size_t nobjs, SdifFileT * stream) {
     return     SdiffWriteInt1(outbuf,nobjs,stream)*sizeof(char);
   }
-  inline size_t SdiffWriteMatrix(short int *outbuf,size_t nobjs, SdifFileT * stream) {
+  inline size_t SdiffWriteMatrix(SdifInt2 *outbuf,size_t nobjs, SdifFileT * stream) {
     return     SdiffWriteInt2(outbuf,nobjs,stream)*sizeof(short int);
   }
-  inline size_t SdiffWriteMatrix(int *outbuf,size_t nobjs, SdifFileT * stream) {
+  inline size_t SdiffWriteMatrix(SdifInt4 *outbuf,size_t nobjs, SdifFileT * stream) {
     return     SdiffWriteInt4(outbuf,nobjs,stream)*sizeof(int);
   }
  
@@ -364,17 +367,67 @@ public:
 
   /**
    * \ingroup getdata
-   * getting an entire column as int
+   * getting an entire column as 32-bit int
    * 
    * @param out  pointer to memory holding at least GetNbRows() elements
    * @param icol column index [0,m_Ncols[
    * 
    */
-  void GetCol(int* out,int icol) const throw (SDIFArrayPosition){
+  void GetCol(SdifInt4* out,int icol) const throw (SDIFArrayPosition){
     _GetCol(out,icol);
     return;
   }
 
+  /**
+   * \ingroup getdata
+   * getting an entire column as 32-bit unsigned int
+   * 
+   * @param out  pointer to memory holding at least GetNbRows() elements
+   * @param icol column index [0,m_Ncols[
+   * 
+   */
+  void GetCol(SdifUInt4* out,int icol) const throw (SDIFArrayPosition){
+    _GetCol(out,icol);
+    return;
+  }
+
+  /**
+   * \ingroup getdata
+   * getting an entire column as 16-bit int
+   * 
+   * @param out  pointer to memory holding at least GetNbRows() elements
+   * @param icol column index [0,m_Ncols[
+   * 
+   */
+  void GetCol(SdifInt2* out,int icol) const throw (SDIFArrayPosition){
+    _GetCol(out,icol);
+    return;
+  }
+  /**
+   * \ingroup getdata
+   * getting an entire column as 16-bit unsigned int
+   * 
+   * @param out  pointer to memory holding at least GetNbRows() elements
+   * @param icol column index [0,m_Ncols[
+   * 
+   */
+  void GetCol(SdifUInt2* out,int icol) const throw (SDIFArrayPosition){
+    _GetCol(out,icol);
+    return;
+  }
+
+  /**
+   * \ingroup getdata
+   * getting an entire column as char
+   * 
+   * @param out  pointer to memory holding at least GetNbRows() elements
+   * @param icol column index [0,m_Ncols[
+   * 
+   */
+  void GetCol(SdifInt1* out,int icol) const throw (SDIFArrayPosition){
+    _GetCol(out,icol);
+    return;
+  }
   /**
    * \ingroup getdata
    * getting an entire column as unsigned char
@@ -383,7 +436,7 @@ public:
    * @param icol column index [0,m_Ncols[
    * 
    */
-  void GetCol(unsigned char* out,int icol) const throw (SDIFArrayPosition){
+  void GetCol(SdifUInt1* out,int icol) const throw (SDIFArrayPosition){
     _GetCol(out,icol);
     return;
   }
@@ -417,26 +470,77 @@ public:
 
   /**
    * \ingroup getdata
-   * getting an entire row as int
+   * getting an entire row as 32-bit int
    * 
    * @param out  pointer to memory holding at least GetNbRows() elements
    * @param irow row index [0,m_Nrows[
    * 
    */
-  void GetRow(int* out,int irow) const throw (SDIFArrayPosition){
+  void GetRow(SdifInt4 * out,int irow) const throw (SDIFArrayPosition){
     _GetRow(out,irow);
     return;
   }
 
   /**
    * \ingroup getdata
-   * getting an entire row as unsigned char
+   * getting an entire row as 32-bit unsigned int
    * 
    * @param out  pointer to memory holding at least GetNbRows() elements
    * @param irow row index [0,m_Nrows[
    * 
    */
-  void GetRow(unsigned char* out,int irow) const throw (SDIFArrayPosition){
+  void GetRow(SdifUInt4* out,int irow) const throw (SDIFArrayPosition){
+    _GetRow(out,irow);
+    return;
+  }
+
+  /**
+   * \ingroup getdata
+   * getting an entire row as 16-bit int
+   * 
+   * @param out  pointer to memory holding at least GetNbRows() elements
+   * @param irow row index [0,m_Nrows[
+   * 
+   */
+  void GetRow(SdifInt2* out,int irow) const throw (SDIFArrayPosition){
+    _GetRow(out,irow);
+    return;
+  }
+  /**
+   * \ingroup getdata
+   * getting an entire row as 16-bit unsigned int
+   * 
+   * @param out  pointer to memory holding at least GetNbRows() elements
+   * @param irow row index [0,m_Nrows[
+   * 
+   */
+  void GetRow(SdifUInt2* out,int irow) const throw (SDIFArrayPosition){
+    _GetRow(out,irow);
+    return;
+  }
+
+  /**
+   * \ingroup getdata
+   * getting an entire row as 8-bit int (char)
+   * 
+   * @param out  pointer to memory holding at least GetNbRows() elements
+   * @param irow row index [0,m_Nrows[
+   * 
+   */
+  void GetRow(SdifInt1* out,int irow) const throw (SDIFArrayPosition){
+    _GetRow(out,irow);
+    return;
+  }
+
+  /**
+   * \ingroup getdata
+   * getting an entire row as 8-bit unsigned int (unsigned char)
+   * 
+   * @param out  pointer to memory holding at least GetNbRows() elements
+   * @param irow row index [0,m_Nrows[
+   * 
+   */
+  void GetRow(SdifUInt1* out,int irow) const throw (SDIFArrayPosition){
     _GetRow(out,irow);
     return;
   }
@@ -888,13 +992,63 @@ public:
 
   /**
    * \ingroup setdata
-   * setting an entire column as int
+   * setting an entire column as 32-bit int
    * 
    * @param out  pointer to memory holding at least GetNbRows() elements
    * @param icol column index [0,m_Ncols[
    * 
    */
-  void SetCol(const int* out,int icol)  throw (SDIFArrayPosition){
+  void SetCol(const SdifInt4* out,int icol)  throw (SDIFArrayPosition){
+    _SetCol(out,icol);
+    return;
+  }
+  /**
+   * \ingroup setdata
+   * setting an entire column as 32-bit unsigned int
+   * 
+   * @param out  pointer to memory holding at least GetNbRows() elements
+   * @param icol column index [0,m_Ncols[
+   * 
+   */
+  void SetCol(const SdifUInt4* out,int icol)  throw (SDIFArrayPosition){
+    _SetCol(out,icol);
+    return;
+  }
+
+  /**
+   * \ingroup setdata
+   * setting an entire column as 16-bit int
+   * 
+   * @param out  pointer to memory holding at least GetNbRows() elements
+   * @param icol column index [0,m_Ncols[
+   * 
+   */
+  void SetCol(const SdifInt2* out,int icol)  throw (SDIFArrayPosition){
+    _SetCol(out,icol);
+    return;
+  }
+  /**
+   * \ingroup setdata
+   * setting an entire column as 16-bit unsigned int
+   * 
+   * @param out  pointer to memory holding at least GetNbRows() elements
+   * @param icol column index [0,m_Ncols[
+   * 
+   */
+  void SetCol(const SdifUInt2* out,int icol)  throw (SDIFArrayPosition){
+    _SetCol(out,icol);
+    return;
+  }
+
+  /**
+   * \ingroup setdata
+   * setting an entire column as  char
+   * 
+   * @param out  pointer to memory holding at least GetNbRows() elements
+   * @param icol column index [0,m_Ncols[
+   * 
+   */
+  void SetCol(const SdifInt1* out,int icol)  throw (SDIFArrayPosition){
     _SetCol(out,icol);
     return;
   }
@@ -907,7 +1061,7 @@ public:
    * @param icol column index [0,m_Ncols[
    * 
    */
-  void SetCol(const unsigned char* out,int icol)  throw (SDIFArrayPosition){
+  void SetCol(const SdifUInt1* out,int icol)  throw (SDIFArrayPosition){
     _SetCol(out,icol);
     return;
   }
@@ -941,13 +1095,49 @@ public:
 
   /**
    * \ingroup setdata
-   * setting an entire row as int
+   * setting an entire row as 32-bit int
    * 
    * @param out  pointer to memory holding at least GetNbRows() elements
    * @param irow row index [0,m_Nrows[
    * 
    */
-  void SetRow(const int* out,int irow)  throw (SDIFArrayPosition){
+  void SetRow(const SdifInt4* out,int irow)  throw (SDIFArrayPosition){
+    _SetRow(out,irow);
+    return;
+  }
+  /**
+   * \ingroup setdata
+   * setting an entire row as 32-bit unsigned int
+   * 
+   * @param out  pointer to memory holding at least GetNbRows() elements
+   * @param irow row index [0,m_Nrows[
+   * 
+   */
+  void SetRow(const SdifUInt4* out,int irow)  throw (SDIFArrayPosition){
+    _SetRow(out,irow);
+    return;
+  }
+  /**
+   * \ingroup setdata
+   * setting an entire row as 16-bit int
+   * 
+   * @param out  pointer to memory holding at least GetNbRows() elements
+   * @param irow row index [0,m_Nrows[
+   * 
+   */
+  void SetRow(const SdifInt2* out,int irow)  throw (SDIFArrayPosition){
+    _SetRow(out,irow);
+    return;
+  }
+  /**
+   * \ingroup setdata
+   * setting an entire row as 16-bit unsigned int
+   * 
+   * @param out  pointer to memory holding at least GetNbRows() elements
+   * @param irow row index [0,m_Nrows[
+   * 
+   */
+  void SetRow(const SdifUInt2* out,int irow)  throw (SDIFArrayPosition){
     _SetRow(out,irow);
     return;
   }
@@ -960,7 +1150,19 @@ public:
    * @param irow row index [0,m_Nrows[
    * 
    */
-  void SetRow(const unsigned char* out,int irow)  throw (SDIFArrayPosition){
+  void SetRow(const SdifInt1* out,int irow)  throw (SDIFArrayPosition){
+    _SetRow(out,irow);
+    return;
+  }
+  /**
+   * \ingroup setdata
+   * setting an entire row as unsigned char
+   * 
+   * @param out  pointer to memory holding at least GetNbRows() elements
+   * @param irow row index [0,m_Nrows[
+   * 
+   */
+  void SetRow(const SdifUInt1* out,int irow)  throw (SDIFArrayPosition){
     _SetRow(out,irow);
     return;
   }

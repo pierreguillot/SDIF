@@ -33,9 +33,14 @@
  * 
  * 
  * 
- * $Id: sdifmatrixdatainterface.hpp,v 1.1 2005-05-30 21:43:00 roebel Exp $ 
+ * $Id: sdifmatrixdatainterface.hpp,v 1.2 2008-01-22 00:51:36 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.1  2005/05/30 21:43:00  roebel
+ * Changed all include files from .h into .hpp to prevent name clash between
+ * sdifmatix.h and SDIF/sdifcpp/SdifMatrix.h on MacOSX where filenames are
+ * case insensitive.
+ *
  * Revision 1.7  2004/07/28 14:57:34  roebel
  * Added support for accessing data as unsigned char.
  * Added SetRow and SetCol functions.
@@ -108,12 +113,20 @@ public:
 
   virtual void   GetRow(double *,int i)const=0;
   virtual void   GetRow(float *,int i)const=0;
-  virtual void   GetRow(int *,int i)const=0;
-  virtual void   GetRow(unsigned char *,int i)const=0;
+  virtual void   GetRow(SdifInt4 *,int i)const=0;
+  virtual void   GetRow(SdifInt2 *,int i)const=0;
+  virtual void   GetRow(SdifInt1 *,int i)const=0;
+  virtual void   GetRow(SdifUInt4 *,int i)const=0;
+  virtual void   GetRow(SdifUInt2 *,int i)const=0;
+  virtual void   GetRow(SdifUInt1 *,int i)const=0;
   virtual void   GetCol(double *,int i)const=0;
   virtual void   GetCol(float *,int i)const=0;
-  virtual void   GetCol(int *,int i)const=0;
-  virtual void   GetCol(unsigned char *,int i)const=0;
+  virtual void   GetCol(SdifInt4 *,int i)const=0;
+  virtual void   GetCol(SdifInt2*,int i)const=0;
+  virtual void   GetCol(SdifInt1 *,int i)const=0;
+  virtual void   GetCol(SdifUInt4 *,int i)const=0;
+  virtual void   GetCol(SdifUInt2*,int i)const=0;
+  virtual void   GetCol(SdifUInt1 *,int i)const=0;
 
   virtual int    GetNbRows()const=0;
   virtual int    GetNbCols()const=0;
@@ -130,13 +143,20 @@ public:
 
   virtual void   SetRow(const double *,int i)=0;
   virtual void   SetRow(const float *,int i)=0;
-  virtual void   SetRow(const int *,int i)=0;
-  virtual void   SetRow(const unsigned char *,int i)=0;
+  virtual void   SetRow(const SdifInt4 *,int i)=0;
+  virtual void   SetRow(const SdifInt2 *,int i)=0;
+  virtual void   SetRow(const SdifInt1 *,int i)=0;
+  virtual void   SetRow(const SdifUInt4 *,int i)=0;
+  virtual void   SetRow(const SdifUInt2 *,int i)=0;
+  virtual void   SetRow(const SdifUInt1 *,int i)=0;
   virtual void   SetCol(const double *,int i)=0;
   virtual void   SetCol(const float *,int i)=0;
-  virtual void   SetCol(const int *,int i)=0;
-  virtual void   SetCol(const unsigned char *,int i)=0;
-
+  virtual void   SetCol(const SdifInt4 *,int i)=0;
+  virtual void   SetCol(const SdifInt2 *,int i)=0;
+  virtual void   SetCol(const SdifInt1 *,int i)=0;
+  virtual void   SetCol(const SdifUInt4 *,int i)=0;
+  virtual void   SetCol(const SdifUInt2 *,int i)=0;
+  virtual void   SetCol(const SdifUInt1 *,int i)=0;
   
   virtual SDIFMatrixDataInterface * clone()=0;
 
