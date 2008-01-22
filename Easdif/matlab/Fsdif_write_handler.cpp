@@ -1,11 +1,14 @@
 /**
- * @file   sdif_io_read.cpp
+ * @file   Fsdif_write_handler.cpp
  * @author Axel Roebel
  * @date   Sat Jan 19 15:05:41 2008
  * 
- * @brief  hand read file io in matlab
+ * @brief  handle write file io in matlab
  * 
- * 
+ *
+ * $Revision: 1.2 $   last changed on $Date: 2008-01-22 23:35:27 $
+ *
+ *                                 Copyright (c) 2008 by IRCAM
  */
 
 #include <mex.h>
@@ -219,7 +222,7 @@ void addNVTs(Easdif::SDIFEntity* p, const mxArray *pNVT) {
         }
       }
       else {
-        if(mxGetNumberOfElements(mxGetCell(pNVT,ir)) > maxStoreLen){
+        if(mxGetNumberOfElements(mxGetCell(pNVT,ir)) + 1 > maxStoreLen){
           maxStoreLen= mxGetNumberOfElements(mxGetCell(pNVT,ir)) + 1;
           store = reinterpret_cast<char*>(realloc(store, maxStoreLen));
         }
@@ -228,7 +231,7 @@ void addNVTs(Easdif::SDIFEntity* p, const mxArray *pNVT) {
         
         stringsName =  store;
         
-        if(mxGetNumberOfElements(mxGetCell(pNVT,ir+nrows)) > maxStoreLen){
+        if(mxGetNumberOfElements(mxGetCell(pNVT,ir+nrows)) + 1  > maxStoreLen){
           maxStoreLen = mxGetNumberOfElements(mxGetCell(pNVT,ir+nrows)) + 1;
           store = reinterpret_cast<char*>(realloc(store, maxStoreLen));
         }
@@ -276,7 +279,7 @@ void addTYPs(Easdif::SDIFEntity* p, const mxArray *pTYP) {
               mexErrMsgTxt("Fsdif_write_handler :: cname has to be cellarrays o strings or individual strings if the matrix contains a single colmun");
 
             }
-            if(mxGetNumberOfElements(mxGetCell(mcol,ir)) > maxStoreLen){
+            if(mxGetNumberOfElements(mxGetCell(mcol,ir)) + 1  > maxStoreLen){
               maxStoreLen= mxGetNumberOfElements(mxGetCell(mcol,ir)) + 1;
               store = reinterpret_cast<char*>(realloc(store, maxStoreLen));
             }
@@ -287,7 +290,7 @@ void addTYPs(Easdif::SDIFEntity* p, const mxArray *pTYP) {
           }
         }
         else {
-          if(mxGetNumberOfElements(mcol) > maxStoreLen){
+          if(mxGetNumberOfElements(mcol)  + 1 > maxStoreLen){
             maxStoreLen= mxGetNumberOfElements(mcol) + 1;
             store = reinterpret_cast<char*>(realloc(store, maxStoreLen));
           }
@@ -342,7 +345,7 @@ void addTYPs(Easdif::SDIFEntity* p, const mxArray *pTYP) {
           sigstr[2]= static_cast<char>(*(pd + 2*nbMTyp + im)); 
           sigstr[3]= static_cast<char>(*(pd + 3*nbMTyp + im)); 
       
-          if(mxGetNumberOfElements(mxGetCell(mname,im)) > maxStoreLen){
+          if(mxGetNumberOfElements(mxGetCell(mname,im))  + 1 > maxStoreLen){
             maxStoreLen= mxGetNumberOfElements(mxGetCell(mname,im)) + 1;
             store = reinterpret_cast<char*>(realloc(store, maxStoreLen));
           }
