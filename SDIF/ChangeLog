@@ -1,3 +1,8 @@
+2008-01-22  Axel Roebel  <roebel@sam.localdomain>
+
+	* include/sdif.h :
+	Use stdint.h defined types if this header is available.
+
 2008-01-11  Axel Roebel  <Axel.Roebel@ircam.fr>
 
 	* sdif/SdifRWLowLevel.c, include/sdif.h : 
@@ -978,4 +983,4 @@ Version 3.3:
 	  Operating System.
 
 	
-$Id: ChangeLog,v 1.58 2008-01-11 15:51:46 roebel Exp $
+$Id: ChangeLog,v 1.59 2008-01-22 00:55:15 roebel Exp $
