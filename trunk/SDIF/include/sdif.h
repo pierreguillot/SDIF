@@ -1,4 +1,4 @@
-/* $Id: sdif.h,v 1.59 2008-01-11 15:51:26 roebel Exp $
+/* $Id: sdif.h,v 1.60 2008-01-22 00:54:53 roebel Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -30,6 +30,9 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.59  2008/01/11 15:51:26  roebel
+ * Use const char* for read only function arguments.
+ *
  * Revision 1.58  2007/12/10 10:45:33  roebel
  * Use const char* for read only function arguments.
  *
@@ -283,7 +286,7 @@
  * Revision 1.1.2.1  2000/08/21  13:07:41  tisseran
  * *** empty log message ***
  *
- * $Date: 2008-01-11 15:51:26 $
+ * $Date: 2008-01-22 00:54:53 $
  *
  */
 
@@ -298,9 +301,11 @@ extern "C" {
 #endif
 
 
-static const char _sdif_h_cvs_revision_ [] = "$Id: sdif.h,v 1.59 2008-01-11 15:51:26 roebel Exp $";
+static const char _sdif_h_cvs_revision_ [] = "$Id: sdif.h,v 1.60 2008-01-22 00:54:53 roebel Exp $";
 
-
+#ifdef HAVE_STDINT_H
+#include <stdint.h>
+#endif
 #include <stdio.h>
 #include <stdlib.h>
 #include <float.h>
@@ -466,7 +471,15 @@ SDIF_API int SdifFSetPos(SdifFileT *file, SdiffPosT *pos);
 
 
 /* SdifHard_OS.h */
-
+#ifdef HAVE_STDINT_H
+typedef char           SdifChar;
+typedef char           SdifInt1;
+typedef int16_t        SdifInt2;
+typedef int32_t        SdifInt4;
+typedef unsigned char  SdifUInt1;
+typedef uint16_t       SdifUInt2;
+typedef uint32_t       SdifUInt4;
+#else
 typedef char           SdifChar;
 typedef char           SdifInt1;
 typedef short          SdifInt2;
@@ -474,10 +487,11 @@ typedef unsigned char  SdifUInt1;
 typedef unsigned short SdifUInt2;
 typedef int            SdifInt4;
 typedef unsigned int   SdifUInt4;
+#endif
+
+typedef SdifUInt4      SdifSignature;
 typedef float          SdifFloat4;
 typedef double         SdifFloat8;
-typedef unsigned int   SdifSignature;
-
 
 typedef enum SdifMachineE
 {
