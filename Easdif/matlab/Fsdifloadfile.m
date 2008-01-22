@@ -16,13 +16,13 @@
 %     Axel Roebel (roebel(at)ircam.fr) 21. January 2008
 % 
 % CVS REVISION
-%     $Id: Fsdifloadfile.m,v 1.1 2008-01-22 00:52:56 roebel Exp $
+%     $Id: Fsdifloadfile.m,v 1.2 2008-01-22 01:10:44 roebel Exp $
 %
 %                                         Copyright (c) 2008 by IRCAM
 %
 function [ data, header, frame, matrix, dims ] = Fsdifloadfile (name, types) 
 
-  if( ~Fsdiftest(name))
+  if( ~Fsdifexist(name))
     error(sprintf('%s is no sdif file \n',name))
   end
 
