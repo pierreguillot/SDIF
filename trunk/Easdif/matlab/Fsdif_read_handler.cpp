@@ -1,10 +1,14 @@
 /**
- * @file   sdif_io_read.cpp
+ * @file   Fsdif_read_handler.cpp
  * @author Axel Roebel
  * @date   Sat Jan 19 15:05:41 2008
  * 
- * @brief  hand read file io in matlab
+ * @brief  handle read file io in matlab
  * 
+ *
+ * $Revision: 1.2 $   last changed on $Date: 2008-01-22 23:34:59 $
+ *
+ *                                    Copyright (c) 2008 by IRCAM
  * 
  */
 
@@ -371,7 +375,7 @@ mexFunction (int nlhs, mxArray *plhs [], int nrhs, const mxArray *prhs [])
         it = --pList.end();
       }
       else {
-        mexErrMsgTxt("Failed allocating Easdif file");      
+        mexErrMsgTxt("Fsdif_read_handler :: Failed allocating Easdif file");      
       }
     }
 
@@ -379,13 +383,13 @@ mexFunction (int nlhs, mxArray *plhs [], int nrhs, const mxArray *prhs [])
     try{
       if(!it->first->OpenRead(filename)){
         char errMess [PATH_MAX+50];
-        sprintf(errMess,"Cannot open file %s",filename);
+        sprintf(errMess,"Fsdif_read_handler :: Cannot open file %s",filename);
         mexErrMsgTxt(errMess);      
       }      
     }
     catch(const Easdif::SDIFException&ex ) {
       char errMess [PATH_MAX+50];
-      sprintf(errMess,"Cannot open file %s\nsystem message is :: %s",filename,ex.what());
+      sprintf(errMess,"Fsdif_read_handler :: Cannot open file %s\nsystem message is :: %s",filename,ex.what());
       mexErrMsgTxt(errMess);      
     }
 
