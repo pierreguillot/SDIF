@@ -13,23 +13,12 @@ cd  build_$SYS
 # cleanup existing config.
 rm -f CMakeCache.txt
 # cmake may need to run twice such that all variables stabilize
-cmake -DPKGCONFIGDIR:PATH=default -DCMAKE_INSTALL_PREFIX:PATH=$PREFIX -DCMAKE_INSTALL_PREFIX_DEFAULTS_INIT:BOOL=1 ..
-cmake -DPKGCONFIGDIR:PATH=default -DCMAKE_INSTALL_PREFIX:PATH=$PREFIX -DCMAKE_INSTALL_PREFIX_DEFAULTS_INIT:BOOL=1 ..
+cmake -DPKGCONFIGDIR:PATH=default -DCMAKE_INSTALL_PREFIX:PATH=$PREFIX -DCMAKE_INSTALL_PREFIX_DEFAULTS_INIT:BOOL=1 cmake -DEASDIF_BUILD_MEX:BOOL=ON  ..
+cmake -DPKGCONFIGDIR:PATH=default -DCMAKE_INSTALL_PREFIX:PATH=$PREFIX -DCMAKE_INSTALL_PREFIX_DEFAULTS_INIT:BOOL=1 cmake -DEASDIF_BUILD_MEX:BOOL=ON  ..
 make set_release
 make clean
 make install
 
-cmake -DEASDIF_BUILD_STATIC:BOOL=ON  ..
-make clean
-make install
-
-cmake -DEASDIF_BUILD_STATIC:BOOL=OFF  ..
-
-make set_debug
-make clean
-make install
-
- 
 # if [ "$1" = "" ]; then 
 # echo "usage:   $0 target-root-dir [debug]"
 # echo "example: $0 /u/formes/share "
