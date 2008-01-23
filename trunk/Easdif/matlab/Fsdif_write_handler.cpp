@@ -6,7 +6,7 @@
  * @brief  handle write file io in matlab
  * 
  *
- * $Revision: 1.2 $   last changed on $Date: 2008-01-22 23:35:27 $
+ * $Revision: 1.3 $   last changed on $Date: 2008-01-23 12:13:07 $
  *
  *                                 Copyright (c) 2008 by IRCAM
  */
@@ -46,52 +46,6 @@ bool CheckList(Easdif::SDIFEntity *p) {
   return false;
 }
 
-// cast and copy data 
-template<class REALIN, class REAL>
-inline
-void copyData(const void *p, REAL* d ,int n) {
-  const REALIN *pd  = reinterpret_cast<const REALIN *>(p);
-  const REALIN *pde = pd+n;
-  while(pd!=pde)
-    *d++ = static_cast<REAL>(*pd++);
-}
-
-
-// transfer data from a matrix array int a memory array
-template<class DATA>
-inline
-DATA* readData(const mxArray* toRead, DATA*d) {
-  
-  int n = mxGetNumberOfElements(toRead);
-  if(mxIsDouble(toRead)){
-    copyData<double,DATA>(mxGetData(toRead),d,n);
-  }
-  else if(mxIsSingle(toRead)){
-    copyData<float,DATA>(mxGetData(toRead),d,n);
-  }
-  else if(mxIsUint8(toRead)){
-    copyData<SdifUInt1,DATA>(mxGetData(toRead),d,n);
-  }
-  else if(mxIsInt8(toRead)){
-    copyData<SdifInt1,DATA>(mxGetData(toRead),d,n);
-  }
-  else if(mxIsUint16(toRead)){
-    copyData<SdifUInt2,DATA>(mxGetData(toRead),d,n);
-  }
-  else if(mxIsInt16(toRead)){
-    copyData<SdifInt2,DATA>(mxGetData(toRead),d,n);
-  }
-  else if(mxIsUint32(toRead)){
-    copyData<SdifUInt4,DATA>(mxGetData(toRead),d,n);
-  }
-  else if(mxIsInt32(toRead)){
-    copyData<SdifInt4,DATA>(mxGetData(toRead),d,n);
-  }
-  else {
-    mexErrMsgTxt("Fsdif_write_handler :: cannot write frame, unsupported data type");
-  }
-  return d;
-}
 
 char errMess [512];
 
