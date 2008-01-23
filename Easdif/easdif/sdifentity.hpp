@@ -32,9 +32,12 @@
  * 
  * 
  * 
- * $Id: sdifentity.hpp,v 1.15 2008-01-22 00:50:17 roebel Exp $ 
+ * $Id: sdifentity.hpp,v 1.16 2008-01-23 12:11:23 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.15  2008/01/22 00:50:17  roebel
+ * Added methods to ask for open state and to clear NVTs and Types.
+ *
  * Revision 1.14  2008/01/12 11:58:33  roebel
  * Added '{' and '}' as forbidden characters when creating comments
  * for Matrix- and FrameType.
@@ -330,12 +333,13 @@ namespace Easdif {
    * \brief A class describing the SDIF selections
    * \ingroup selection
    *
-   * This class contains aset of selected entities and a boolean. It is necessary due to
-   * the fact that a secltion resulting from the SDIFEntity::RestrictMatrixSelection()
+   * This class contains a set of selected entities and a boolean. The boolean  is necessary due to
+   * the fact that a selection resulting from the SDIFEntity::RestrictMatrixSelection()
    * SDIFEntity::RestrictFrameSelection(), or SDIFEntity::RestrictStramSelection() calls
    * may be an empty selection, while an empty selection in SDIF means nothing
    * is selected.
    *
+   * The SelectionSet is derived from a std::set and all methods of the std::set<TYPE> can be applied.
    */
   template<class TYPE>
   class   EASDIF_API SelectionSet : public std::set<TYPE> {
@@ -358,7 +362,8 @@ namespace Easdif {
      *  after the last element will be included in the set.
      * 
      * @return 
-     */    SelectionSet(std::set<TYPE> &inset,bool _open=false) 
+     */
+    SelectionSet(std::set<TYPE> &inset,bool _open=false) 
       :  std::set<TYPE>(inset),mlActive(false),mlOpen(false)  { 
        if (!std::set<TYPE>::empty())
          mlActive=true;
@@ -422,7 +427,7 @@ namespace Easdif {
      * \brief add an element into the selection set
      * \ingroup selection
      *
-     * the lement will be added into the selection an the selection will be 
+     * the element will be added into the selection an the selection will be 
      * automatically enabled
      * 
      * @param __x element to select
