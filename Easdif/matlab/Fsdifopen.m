@@ -50,20 +50,29 @@
 %                                of all matrix types allowed in the frame
 %                FTD matrixname= nx1 or 1xn cell array of strings each of
 %                                which determines a colmun name of the matrix
-
-%              If the dir variable is present it will contain a directory 
+%
+% dir       :  If the dir variable is present it will contain a directory 
 %              of the SDIF file content holding all header frame/matrix header         
-%                informations but no data.
-%              dir is an array of structs describing frames. Each frame contains f
+%              informations but no data.
+%              dir is an array of structs describing frames. Each frame contains 
 % 
-%                frame.sig      = (int) SdifSignature 
-%              frame.streamid = (int) indicating streamid of the frame
-%                frame.time     = time position of the frame
-%              frame.matrix   = array of selected matrix signatures (int)
-%                                 present in the frame
+%              frame.sig      = 4 dobles representnig the SdifSignature
+%                                (see as char(frame.sig)) 
+%              frame.streamid = (unsigned int32) indicating streamid of the frame
+%              frame.time     = time position of the frame
+%              frame.matrix   = nx4 matrix of selected matrix signatures 
+%                                 present in the frame. (display with char(frame.matrix)
 % 
-%       Example:  head = loadSDIF('xylo.sdif')
+%
+% Example:  [file,head,dir] = Fsdifopen('xylo.sdif','r') or shorter
+%           [file,head,dir] = Fsdifopen('xylo.sdif')
+%
+% Opens file for reading and provides file handle, header infos and directory.
 %  
+%
+% $Revision: 1.2 $    last changed $Date: 2008-01-23 20:15:33 $
+%
+%                                                       Copyright (c) 2008 by  IRCAM 
 
 function [file,head,dir]=Fsdifopen(filename,iomode,head)
 
