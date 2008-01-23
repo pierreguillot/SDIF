@@ -6,7 +6,7 @@
  * @brief  handle read file io in matlab
  * 
  *
- * $Revision: 1.2 $   last changed on $Date: 2008-01-22 23:34:59 $
+ * $Revision: 1.3 $   last changed on $Date: 2008-01-23 12:12:25 $
  *
  *                                    Copyright (c) 2008 by IRCAM
  * 
@@ -46,6 +46,8 @@ bool CheckList(Easdif::SDIFEntity *p, EASDList::iterator&it) {
   }
   return false;
 }
+
+char errMess [PATH_MAX+50];
 
 // create frame struct
 void
@@ -337,7 +339,7 @@ mexFunction (int nlhs, mxArray *plhs [], int nrhs, const mxArray *prhs [])
     mxGetString (prhs [1], filename, PATH_MAX);
     if(nlhs>0) {
       plhs[0] = mxCreateDoubleMatrix (1, 1, mxREAL);
-      if(SdifCheckFileFormat(filename))
+     if(SdifCheckFileFormat(filename))
         *mxGetPr(plhs[0]) = 1.;	
       else
         *mxGetPr(plhs[0]) = 0.;
@@ -382,13 +384,11 @@ mexFunction (int nlhs, mxArray *plhs [], int nrhs, const mxArray *prhs [])
     // open the file
     try{
       if(!it->first->OpenRead(filename)){
-        char errMess [PATH_MAX+50];
         sprintf(errMess,"Fsdif_read_handler :: Cannot open file %s",filename);
         mexErrMsgTxt(errMess);      
       }      
     }
     catch(const Easdif::SDIFException&ex ) {
-      char errMess [PATH_MAX+50];
       sprintf(errMess,"Fsdif_read_handler :: Cannot open file %s\nsystem message is :: %s",filename,ex.what());
       mexErrMsgTxt(errMess);      
     }
@@ -671,13 +671,151 @@ mexFunction (int nlhs, mxArray *plhs [], int nrhs, const mxArray *prhs [])
           }
         }
         else if (nrhs == 3){
+          mexPrintf("using temp selection\n");
           int ret = 0;
+          std::vector<double> timeSel;
+          double startTime = 0;
+          double endTime   = -1;
+          
+          // remove all high level selections 
+          // == ( temporary selections working above the file name selections)
+          p->ReestablishStreamSelection();
+          p->ReestablishFrameSelection();
+          p->ReestablishMatrixSelection();
+            
+          // establish temporary selection 
+          mexPrintf("using temp selection istr %d\n",mxIsStruct(prhs[2]));
+          if(mxIsStruct(prhs[2])){
+            mexPrintf("reading temp selection\n");
+            int numStructs = mxGetNumberOfElements(prhs[2]);
+            char sigstr[5] = {0};
+            
+            for(int ii=0; ii!= numStructs; ++ii){
+              const mxArray* fsig      = mxGetField(prhs[2],ii,frameFrameSig_fieldString);      
+              const mxArray* streamid  = mxGetField(prhs[2],ii,frameStreamID_fieldString);      
+              const mxArray* ftime     = mxGetField(prhs[2],ii,frameTime_fieldString);      
+              const mxArray* msig      = mxGetField(prhs[2],ii,frameMatrixSig_fieldString);      
+        
+              if(fsig){
+                if( !mxIsNumeric(fsig) || !mxIsDouble(fsig) || mxIsComplex(fsig) || mxGetN(fsig) != 4 ){
+                  sprintf(errMess,"Fsdif_read_handler :: frame signature selection .%s  has to be matrix of doubles with 4 columns !",frameFrameSig_fieldString);
+                  mexErrMsgTxt(errMess);
+                }
+                int numSel = mxGetM(fsig);
+                
+                double *pd = reinterpret_cast<double*>(mxGetData(fsig));
+                Easdif::SelectionSet<SdifSignature>  frameSel;
+                for(int isel = 0; isel != numSel; ++isel){
+                  sigstr[0]= static_cast<char>(*(pd + 0*numSel + isel)); 
+                  sigstr[1]= static_cast<char>(*(pd + 1*numSel + isel)); 
+                  sigstr[2]= static_cast<char>(*(pd + 2*numSel + isel)); 
+                  sigstr[3]= static_cast<char>(*(pd + 3*numSel + isel)); 
+  
+                  frameSel.insert(SdifStringToSignature(sigstr));    
+                  mexPrintf("add temp selection frame %s\n",sigstr);
+                }
+                p->RestrictFrameSelection(frameSel);
+              }
+
+              if(msig){
+                if( !mxIsNumeric(msig) || !mxIsDouble(msig) || mxIsComplex(msig) || mxGetN(msig) != 4 ){
+                  sprintf(errMess,"Fsdif_read_handler :: matrix signature selection .%s  has to be matrix of doubles with 4 columns !",frameMatrixSig_fieldString);
+                  mexErrMsgTxt(errMess);
+                }
+                int numSel = mxGetM(msig);
+                
+                double *pd = reinterpret_cast<double*>(mxGetData(msig));
+                Easdif::SelectionSet<SdifSignature>  matrixSel;
+                for(int isel = 0; isel != numSel; ++isel){
+                  sigstr[0]= static_cast<char>(*(pd + 0*numSel + isel)); 
+                  sigstr[1]= static_cast<char>(*(pd + 1*numSel + isel)); 
+                  sigstr[2]= static_cast<char>(*(pd + 2*numSel + isel)); 
+                  sigstr[3]= static_cast<char>(*(pd + 3*numSel + isel)); 
+  
+                  mexPrintf("add temp selection matrix %s\n",sigstr);
+                  matrixSel.insert(SdifStringToSignature(sigstr));    
+                }
+                p->RestrictMatrixSelection(matrixSel);
+              }
+
+              if(streamid){
+                if(!mxIsNumeric(streamid) || mxIsComplex(streamid)){
+                  sprintf(errMess,"Fsdif_read_handler :: streamid selection .%s field has to be a real matrix !",frameStreamID_fieldString);
+                  mexErrMsgTxt(errMess);
+                }
+
+                int numSel = mxGetNumberOfElements(streamid);
+                if(numSel>0){
+                  std::vector<unsigned int> tempStr(numSel);
+                  Easdif::SelectionSet<unsigned int>  streamIDSel;
+                  
+                  readData(streamid,&tempStr[0]);
+                  streamIDSel.insert(tempStr.begin(),tempStr.end());
+                  mexPrintf("add temp selection stream %d\n",tempStr[0]);
+                  p->RestrictStreamSelection(streamIDSel);
+                }                
+              }
+
+              if(ftime) {
+                int numSel = mxGetNumberOfElements(ftime);
+                if(numStructs !=1 && numSel == 2){
+                  sprintf(errMess,"Fsdif_read_handler :: more than a single selection with time range  is not supported !",frameTime_fieldString);
+                  mexErrMsgTxt(errMess);
+                }
+                if( !mxIsNumeric(ftime) || !mxIsDouble(ftime)|| mxIsComplex(ftime) || numSel > 2 ){
+                  sprintf(errMess,"Fsdif_read_handler :: time selection .%s field has to be a real matrix with no more than two elements !",frameTime_fieldString);
+                  mexErrMsgTxt(errMess);
+                }
+
+                if(numSel>0){                  
+                  double *pd = reinterpret_cast<double*>(mxGetData(ftime));
+                  if(numSel == 1) {
+                    if(endTime > startTime){
+                      endTime   = std::max(endTime,  *pd);
+                      startTime = std::max(startTime,*pd);
+                    }
+                    else {
+                      endTime = startTime = *pd;
+                    }
+                  }
+                  else{
+                    startTime = *pd;
+                    endTime   = *(pd+1);
+                  }                  
+                }                
+              }            
+            }
+          }
 
           itl->second = itl->first->begin();
           int numFR = 0;
-          while(itl->second != ite){
-            ++numFR;
-            ++(itl->second);
+          if(startTime<=endTime){
+            if(timeSel.empty()){
+              while(itl->second != ite){
+                double locTime = itl->second.GetLoc().LocTime();
+                if(locTime >=  startTime && locTime <= endTime)
+                  ++numFR;
+                ++(itl->second);
+              }
+            }
+            else{
+              std::sort(timeSel.begin(),timeSel.end());
+              std::vector<double>::const_iterator tit   = timeSel.begin();
+              std::vector<double>::const_iterator tit_e = timeSel.end();
+              while(tit != tit_e && itl->second != ite){
+                double locTime = itl->second.GetLoc().LocTime();
+                while(tit != tit_e && *tit <locTime) ++tit;
+                if(tit != tit_e && *tit == locTime)
+                  ++numFR;
+                ++(itl->second);
+              }
+            }
+          }
+          else {
+            while(itl->second != ite){
+              ++numFR;
+              ++(itl->second);
+            }
           }
           itl->second = itl->first->begin();
 
@@ -688,10 +826,37 @@ mexFunction (int nlhs, mxArray *plhs [], int nrhs, const mxArray *prhs [])
             dfields[2] = frameTime_fieldString; 
             dfields[3] = frameMatrixSig_fieldString; 
             dfields[4] = frameData_fieldString; 
+
             plhs[0] = mxCreateStructMatrix(numFR,1,5,dfields);
-            
-            for(int ir=0;itl->second != ite; ++(itl->second),++ir)
-              createFrame(itl->second, ir, plhs[0],5, dfields);
+            if(startTime<=endTime){
+              if(timeSel.empty()){
+                for(int ir=0;itl->second != ite; ++(itl->second)){
+                  double locTime = itl->second.GetLoc().LocTime();
+                  if(locTime >=  startTime && locTime <= endTime){
+                    createFrame(itl->second, ir, plhs[0],5, dfields);
+                    ++ir;
+                  }
+                }
+              }
+              else{
+                std::vector<double>::const_iterator tit   = timeSel.begin();
+                std::vector<double>::const_iterator tit_e = timeSel.end();
+
+                for(int ir=0;tit!=tit_e && itl->second != ite; ++(itl->second)){
+                  double locTime = itl->second.GetLoc().LocTime();
+                  while(tit != tit_e && *tit <locTime) ++tit;
+                  if(tit != tit_e && *tit == locTime){
+                    createFrame(itl->second, ir, plhs[0],5, dfields);
+                    ++ir;
+                  }                    
+                }
+              }
+            }
+            // no time selection
+            else{
+              for(int ir=0;itl->second != ite; ++(itl->second),++ir)
+                createFrame(itl->second, ir, plhs[0],5, dfields);
+            }
           }
           else {
             plhs[0] = mxCreateNumericMatrix(0,0,mxDOUBLE_CLASS,mxREAL);
