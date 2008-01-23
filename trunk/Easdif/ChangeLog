@@ -1,3 +1,10 @@
+2008-01-23  Axel Roebel  <Axel.Roebel@ircam.fr>
+Version 1.4.1
+
+	* matlab/Fsdif_read_handler.cpp, matlab/fieldnames.hpp : 
+	Add selection mechanism for all fields present in the directory
+	struct.	Add range selection for time and streamid.
+	
 2008-01-22  Axel Roebel  <roebel@sam.localdomain>
 Version 1.4.0
 
@@ -1037,4 +1044,4 @@ Version 0.21
 	* ChangeLog: Added changelog to repository.
 
 
-$Id: ChangeLog,v 1.67 2008-01-22 00:56:16 roebel Exp $
+$Id: ChangeLog,v 1.68 2008-01-23 20:24:13 roebel Exp $
