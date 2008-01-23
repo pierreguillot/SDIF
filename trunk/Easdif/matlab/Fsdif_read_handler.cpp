@@ -6,7 +6,7 @@
  * @brief  handle read file io in matlab
  * 
  *
- * $Revision: 1.3 $   last changed on $Date: 2008-01-23 12:12:25 $
+ * $Revision: 1.4 $   last changed on $Date: 2008-01-23 20:23:53 $
  *
  *                                    Copyright (c) 2008 by IRCAM
  * 
@@ -671,12 +671,13 @@ mexFunction (int nlhs, mxArray *plhs [], int nrhs, const mxArray *prhs [])
           }
         }
         else if (nrhs == 3){
-          mexPrintf("using temp selection\n");
           int ret = 0;
           std::vector<double> timeSel;
           double startTime = 0;
           double endTime   = -1;
-          
+          unsigned int start_id = 0;
+          unsigned int end_id   = static_cast<unsigned int>(-1);
+
           // remove all high level selections 
           // == ( temporary selections working above the file name selections)
           p->ReestablishStreamSelection();
@@ -684,9 +685,7 @@ mexFunction (int nlhs, mxArray *plhs [], int nrhs, const mxArray *prhs [])
           p->ReestablishMatrixSelection();
             
           // establish temporary selection 
-          mexPrintf("using temp selection istr %d\n",mxIsStruct(prhs[2]));
           if(mxIsStruct(prhs[2])){
-            mexPrintf("reading temp selection\n");
             int numStructs = mxGetNumberOfElements(prhs[2]);
             char sigstr[5] = {0};
             
@@ -695,6 +694,9 @@ mexFunction (int nlhs, mxArray *plhs [], int nrhs, const mxArray *prhs [])
               const mxArray* streamid  = mxGetField(prhs[2],ii,frameStreamID_fieldString);      
               const mxArray* ftime     = mxGetField(prhs[2],ii,frameTime_fieldString);      
               const mxArray* msig      = mxGetField(prhs[2],ii,frameMatrixSig_fieldString);      
+
+              const mxArray* streamid_range  = mxGetField(prhs[2],ii,frameStreamIDRange_fieldString);      
+              const mxArray* ftime_range     = mxGetField(prhs[2],ii,frameTimeRange_fieldString);      
         
               if(fsig){
                 if( !mxIsNumeric(fsig) || !mxIsDouble(fsig) || mxIsComplex(fsig) || mxGetN(fsig) != 4 ){
@@ -712,7 +714,6 @@ mexFunction (int nlhs, mxArray *plhs [], int nrhs, const mxArray *prhs [])
                   sigstr[3]= static_cast<char>(*(pd + 3*numSel + isel)); 
   
                   frameSel.insert(SdifStringToSignature(sigstr));    
-                  mexPrintf("add temp selection frame %s\n",sigstr);
                 }
                 p->RestrictFrameSelection(frameSel);
               }
@@ -731,8 +732,6 @@ mexFunction (int nlhs, mxArray *plhs [], int nrhs, const mxArray *prhs [])
                   sigstr[1]= static_cast<char>(*(pd + 1*numSel + isel)); 
                   sigstr[2]= static_cast<char>(*(pd + 2*numSel + isel)); 
                   sigstr[3]= static_cast<char>(*(pd + 3*numSel + isel)); 
-  
-                  mexPrintf("add temp selection matrix %s\n",sigstr);
                   matrixSel.insert(SdifStringToSignature(sigstr));    
                 }
                 p->RestrictMatrixSelection(matrixSel);
@@ -751,40 +750,72 @@ mexFunction (int nlhs, mxArray *plhs [], int nrhs, const mxArray *prhs [])
                   
                   readData(streamid,&tempStr[0]);
                   streamIDSel.insert(tempStr.begin(),tempStr.end());
-                  mexPrintf("add temp selection stream %d\n",tempStr[0]);
                   p->RestrictStreamSelection(streamIDSel);
                 }                
               }
+              if(streamid_range){
+                int numSel = mxGetNumberOfElements(streamid_range);
+                if(numStructs >1 && numSel  ){
+                  sprintf(errMess,"Fsdif_read_handler :: more than a single selection with streamid range range  is not supported !");
+                  mexErrMsgTxt(errMess);
+                }
+                if(!mxIsNumeric(streamid_range) || mxIsComplex(streamid_range) || numSel != 2){
+                  sprintf(errMess,"Fsdif_read_handler :: streamidrange selection .%s field has to be a real matrix with exactly 2 elements !",frameStreamIDRange_fieldString);
+                  mexErrMsgTxt(errMess);
+                }
 
+                if(numSel){
+                  unsigned int tmpStr[2];
+                  readData(streamid_range,tmpStr);
+                  if(start_id < tmpStr[0])
+                    start_id = tmpStr[0];
+                  if(end_id > tmpStr[1])
+                    end_id = tmpStr[1];
+                }
+              }
+
+              if(ftime && ftime_range){
+                sprintf(errMess,"Fsdif_read_handler :: cannot handle time and time range selection at the same time !",frameTime_fieldString);
+                mexErrMsgTxt(errMess);
+              }
+                
               if(ftime) {
                 int numSel = mxGetNumberOfElements(ftime);
-                if(numStructs !=1 && numSel == 2){
-                  sprintf(errMess,"Fsdif_read_handler :: more than a single selection with time range  is not supported !",frameTime_fieldString);
-                  mexErrMsgTxt(errMess);
-                }
-                if( !mxIsNumeric(ftime) || !mxIsDouble(ftime)|| mxIsComplex(ftime) || numSel > 2 ){
-                  sprintf(errMess,"Fsdif_read_handler :: time selection .%s field has to be a real matrix with no more than two elements !",frameTime_fieldString);
+                if( !mxIsNumeric(ftime) || !mxIsDouble(ftime)|| mxIsComplex(ftime) ){
+                  sprintf(errMess,"Fsdif_read_handler :: time selection .%s field has to be a real matrix  !",frameTime_fieldString);
                   mexErrMsgTxt(errMess);
                 }
 
-                if(numSel>0){                  
-                  double *pd = reinterpret_cast<double*>(mxGetData(ftime));
-                  if(numSel == 1) {
-                    if(endTime > startTime){
-                      endTime   = std::max(endTime,  *pd);
-                      startTime = std::max(startTime,*pd);
-                    }
-                    else {
-                      endTime = startTime = *pd;
-                    }
-                  }
-                  else{
-                    startTime = *pd;
-                    endTime   = *(pd+1);
-                  }                  
+                if(numSel>0){     
+                  int oldSize = timeSel.size();
+                  timeSel.resize(numSel+timeSel.size());
+                  readData(ftime,&timeSel[oldSize]); 
                 }                
-              }            
+              }
+              if(ftime_range) {                
+                int numSel = mxGetNumberOfElements(ftime_range);
+                if(numSel){
+                  if(numStructs >1 && numSel){
+                    sprintf(errMess,"Fsdif_read_handler :: more than a single selection with time range  is not supported !");
+                    mexErrMsgTxt(errMess);
+                  }
+                  if( !mxIsNumeric(ftime_range) || !mxIsDouble(ftime_range)|| mxIsComplex(ftime_range) 
+                      || numSel != 2 ){
+                    sprintf(errMess,"Fsdif_read_handler :: time selection .%s field has to be a real matrix with no more than two elements !",frameTimeRange_fieldString);
+                    mexErrMsgTxt(errMess);
+                  }
+                  
+                  double *pd = reinterpret_cast<double*>(mxGetData(ftime_range));
+                  startTime = *pd;
+                  endTime   = *(pd+1);
+                }                
+              }    
             }
+          }
+          if(!timeSel.empty()) {
+            std::sort(timeSel.begin(),timeSel.end());
+            startTime = timeSel.front();
+            endTime   = timeSel.back();
           }
 
           itl->second = itl->first->begin();
@@ -793,7 +824,9 @@ mexFunction (int nlhs, mxArray *plhs [], int nrhs, const mxArray *prhs [])
             if(timeSel.empty()){
               while(itl->second != ite){
                 double locTime = itl->second.GetLoc().LocTime();
-                if(locTime >=  startTime && locTime <= endTime)
+                unsigned int locStreamID = itl->second.GetLoc().LocStreamID();
+                if(start_id <= locStreamID && end_id >=locStreamID&&
+                   locTime >=  startTime && locTime <= endTime)
                   ++numFR;
                 ++(itl->second);
               }
@@ -804,8 +837,10 @@ mexFunction (int nlhs, mxArray *plhs [], int nrhs, const mxArray *prhs [])
               std::vector<double>::const_iterator tit_e = timeSel.end();
               while(tit != tit_e && itl->second != ite){
                 double locTime = itl->second.GetLoc().LocTime();
+                unsigned int locStreamID = itl->second.GetLoc().LocStreamID();
                 while(tit != tit_e && *tit <locTime) ++tit;
-                if(tit != tit_e && *tit == locTime)
+                if(tit != tit_e && *tit == locTime
+                   && start_id <= locStreamID && end_id >=locStreamID)
                   ++numFR;
                 ++(itl->second);
               }
@@ -813,7 +848,9 @@ mexFunction (int nlhs, mxArray *plhs [], int nrhs, const mxArray *prhs [])
           }
           else {
             while(itl->second != ite){
-              ++numFR;
+              unsigned int locStreamID = itl->second.GetLoc().LocStreamID();
+              if(start_id <= locStreamID && end_id >= locStreamID)
+                ++numFR;
               ++(itl->second);
             }
           }
@@ -832,7 +869,9 @@ mexFunction (int nlhs, mxArray *plhs [], int nrhs, const mxArray *prhs [])
               if(timeSel.empty()){
                 for(int ir=0;itl->second != ite; ++(itl->second)){
                   double locTime = itl->second.GetLoc().LocTime();
-                  if(locTime >=  startTime && locTime <= endTime){
+                  unsigned int locStreamID = itl->second.GetLoc().LocStreamID();
+                  if(locTime >=  startTime && locTime <= endTime
+                     && start_id <= locStreamID && end_id >=locStreamID){
                     createFrame(itl->second, ir, plhs[0],5, dfields);
                     ++ir;
                   }
@@ -843,9 +882,11 @@ mexFunction (int nlhs, mxArray *plhs [], int nrhs, const mxArray *prhs [])
                 std::vector<double>::const_iterator tit_e = timeSel.end();
 
                 for(int ir=0;tit!=tit_e && itl->second != ite; ++(itl->second)){
-                  double locTime = itl->second.GetLoc().LocTime();
+                  double locTime        = itl->second.GetLoc().LocTime();
+                  unsigned int locStreamID = itl->second.GetLoc().LocStreamID();
                   while(tit != tit_e && *tit <locTime) ++tit;
-                  if(tit != tit_e && *tit == locTime){
+                  if(tit != tit_e && *tit == locTime
+                     && start_id <= locStreamID && end_id >=locStreamID){
                     createFrame(itl->second, ir, plhs[0],5, dfields);
                     ++ir;
                   }                    
@@ -854,8 +895,11 @@ mexFunction (int nlhs, mxArray *plhs [], int nrhs, const mxArray *prhs [])
             }
             // no time selection
             else{
-              for(int ir=0;itl->second != ite; ++(itl->second),++ir)
-                createFrame(itl->second, ir, plhs[0],5, dfields);
+              for(int ir=0;itl->second != ite; ++(itl->second),++ir){
+                unsigned int locStreamID = itl->second.GetLoc().LocStreamID();
+                if ( start_id <= locStreamID && end_id >=locStreamID)
+                  createFrame(itl->second, ir, plhs[0],5, dfields);
+              }
             }
           }
           else {

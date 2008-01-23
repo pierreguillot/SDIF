@@ -64,6 +64,10 @@
   const char *frameTime_fieldString      = "time";
   const char *frameMatrixSig_fieldString = "msig";
   const char *frameData_fieldString      = "data";
+
+  // only for selection 
+  const char *frameStreamIDRange_fieldString  = "streamRange";
+  const char *frameTimeRange_fieldString      = "timeRange";
   
   // header description struct
   const char *headNVT_fieldString =  "NVT";
