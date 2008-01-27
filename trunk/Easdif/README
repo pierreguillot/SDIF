@@ -1,5 +1,5 @@
 # Easdif README
-# $Id: README,v 1.8 2008-01-27 11:26:18 roebel Exp $
+# $Id: README,v 1.9 2008-01-27 11:32:30 roebel Exp $
 #
 # Copyright (C) Ircam 2002-2008
 
@@ -101,12 +101,21 @@ untested for all the IDEs like Xcode and MSVC).
 
 To configure for comilation of the mex interface use
 
-$> cmake path_to_easdif_src -DEASDIF_BUILD_MEX:BOOL=on
+$> cmake -DEASDIF_BUILD_MEX:BOOL=on path_to_easdif_src
 $> make 
 $> make install
 
+If the mex compile script is not found by cmake you can select it by 
+manually as follows
+
+$> cmake -DMEX:STRING=/path_to_mex_script -DEASDIF_BUILD_MEX:BOOL=on path_to_easdif_src 
+$> make 
+$> make install
+
+
 Mex wrappers and m-files  will be installed in 
 ${CMAKE_INSTALL_PREFIX}/lib/matlab.
+
 
 
 # SWIG Wrappers
