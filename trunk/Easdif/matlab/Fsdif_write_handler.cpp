@@ -6,7 +6,7 @@
  * @brief  handle write file io in matlab
  * 
  *
- * $Revision: 1.3 $   last changed on $Date: 2008-01-23 12:13:07 $
+ * $Revision: 1.4 $   last changed on $Date: 2008-01-30 01:59:19 $
  *
  *                                 Copyright (c) 2008 by IRCAM
  */
@@ -90,22 +90,21 @@ writeData(Easdif::SDIFEntity *p, const mxArray *toWrite) {
     for (int im = 0; im != nMatrix; ++ im) {
       Easdif::SDIFMatrix mat;
       const char* msig = mxGetFieldNameByNumber(mdata,im);
-      if(strlen(msig) != 7){
+      if(!msig||strlen(msig) != 7){
         sprintf(errMess,"Fsdif_write_handler :: can not use data field name <%s> to derive matrix signature\n field name has to be of size 7 starting with MD_",msig);
         mexErrMsgTxt(errMess);
       }
 
       const mxArray* data =  mxGetFieldByNumber(mdata,0,im);
-      if(mxIsComplex(data) || !(mxIsNumeric(data) || mxIsChar(data))){
+      if(!data || mxIsComplex(data) || !(mxIsNumeric(data) || mxIsChar(data))){
         mexErrMsgTxt("Fsdif_write_handler :: can only write real valued numeric or char data");
       }
       
       if(mxIsChar(data)){
-        mat.Init(SdifStringToSignature(msig+3), mxGetM(data), mxGetN(data), eText);        
+        mat.Init(SdifStringToSignature(msig+3), mxGetNumberOfElements(data), 1, eText);        
         char* str = reinterpret_cast<char*>(calloc(mxGetNumberOfElements(data)+1,1));        
         mxGetString(data,str,mxGetNumberOfElements(data)+1);
-        mat.SetRow(str,0);
-        break;
+        mat.SetCol(str,0);
       }
       else if(mxIsDouble(data)){
         mat.Init(SdifStringToSignature(msig+3), mxGetM(data), mxGetN(data), eFloat8);        
@@ -169,7 +168,7 @@ void addNVTs(Easdif::SDIFEntity* p, const mxArray *pNVT) {
     Easdif::SDIFNameValueTable nvt;
     int nrows = mxGetM(pNVT);
     for(int ir = 0; ir != nrows; ++ ir) {      
-      if(!mxIsChar(mxGetCell(pNVT,ir))){
+      if(!mxGetCell(pNVT,ir) || !mxGetCell(pNVT,ir+nrows) || !mxIsChar(mxGetCell(pNVT,ir))){
         if(nvt.GetNbNameValue()){
           p->AddNVT(nvt,_SdifNVTStreamID);
           nvt.clear();
@@ -220,24 +219,25 @@ void addTYPs(Easdif::SDIFEntity* p, const mxArray *pTYP) {
       for(int ii=0; ii!= numMTD;++ii){
         mtd.Clear();
         const mxArray* msig      = mxGetFieldByNumber(pMTD,ii,sigfield);      
-        if(!mxIsNumeric(msig) || mxIsComplex(msig) || mxGetNumberOfElements(msig) != 4 )
+        if(!msig || !mxIsNumeric(msig) || mxIsComplex(msig) || mxGetNumberOfElements(msig) != 4 )
           mexErrMsgTxt("Fsdif_write_handler :: cannot write MTD Type :: msig entries have to be matrices with 4 elements !");
         mtd.SetSignature(SdifStringToSignature(readData(msig,sigstr)));    
         const mxArray* mcol      = mxGetFieldByNumber(pMTD,ii,colfield);      
-        if(!mxIsCell(mcol) && !mxIsChar(mcol))
+        if(!mcol|| (!mxIsCell(mcol) && !mxIsChar(mcol)))
           mexErrMsgTxt("Fsdif_write_handler :: cname has to be cellarrays o strings or individual strings if the matrix contains a single colmun");
         if(mxIsCell(mcol)){
           int nel = mxGetNumberOfElements(mcol);
           for(int ir = 0; ir != nel; ++ ir) {
-            if(!mxIsChar(mxGetCell(mcol,ir))){
-              mexErrMsgTxt("Fsdif_write_handler :: cname has to be cellarrays o strings or individual strings if the matrix contains a single colmun");
+            mxArray *pCell = mxGetCell(mcol,ir) ;
+            if(!pCell || !mxIsChar(pCell)){
+              mexErrMsgTxt("Fsdif_write_handler :: cname has to be cellarrays of strings or individual strings if the matrix contains a single colmun");
 
             }
-            if(mxGetNumberOfElements(mxGetCell(mcol,ir)) + 1  > maxStoreLen){
-              maxStoreLen= mxGetNumberOfElements(mxGetCell(mcol,ir)) + 1;
+            if(mxGetNumberOfElements(pCell) + 1  > maxStoreLen){
+              maxStoreLen= mxGetNumberOfElements(pCell) + 1;
               store = reinterpret_cast<char*>(realloc(store, maxStoreLen));
             }
-            if(mxGetString(mxGetCell(mcol,ir),store,maxStoreLen) )
+            if(mxGetString(pCell,store,maxStoreLen) )
               mexErrMsgTxt("Fsdif_write_handler :: Failed to read TYP cname");
 
             mtd.AddColumn(store);
@@ -256,8 +256,8 @@ void addTYPs(Easdif::SDIFEntity* p, const mxArray *pTYP) {
         p->AddMatrixType(mtd);
       }
     }
-    else if (sigfield>=0 || colfield >=0 )  {
-      sprintf(errMess,"Fsdif_write_handler :: MTD type description field %s or %s or %s is missing",mtdMatrixSig_fieldString,mtdColName_fieldString);
+    else   {
+      sprintf(errMess,"Fsdif_write_handler :: MTD type description fields \"%s\" or \"%s\" are missing",mtdMatrixSig_fieldString,mtdColName_fieldString);
       mexErrMsgTxt(errMess);
     }
   }
@@ -278,17 +278,17 @@ void addTYPs(Easdif::SDIFEntity* p, const mxArray *pTYP) {
         ftd.Clear();
         
         const mxArray* fsig      = mxGetFieldByNumber(pFTD,ii,sigfield);      
-        if(!mxIsNumeric(fsig) || mxIsComplex(fsig) || mxGetNumberOfElements(fsig) != 4 )
+        if(!fsig || !mxIsNumeric(fsig) || mxIsComplex(fsig) || mxGetNumberOfElements(fsig) != 4 )
           mexErrMsgTxt("cannot write FTD Type :: sig entries have to be matrices with 4 elements !");
         ftd.SetSignature(SdifStringToSignature(readData(fsig,sigstr)));    
 
         const mxArray* msig  = mxGetFieldByNumber(pFTD,ii,msigfield);      
         const mxArray* mname = mxGetFieldByNumber(pFTD,ii,mnamefield);      
-        if(!mxIsNumeric(msig) || !mxIsDouble(msig) )
+        if(!msig|| !mxIsNumeric(msig) || !mxIsDouble(msig) )
           mexErrMsgTxt("Fsdif_write_handler :: matrixsig has to be a numeric array of type double");
         if(mxGetN(msig) != 4 )
           mexErrMsgTxt("Fsdif_write_handler :: matrixsig has to be a nx4 array");
-        if(! mxIsCell(mname) || (mxGetM(mname) !=1 && mxGetN(mname) != 1 ))
+        if(!mname || ! mxIsCell(mname) || (mxGetM(mname) !=1 && mxGetN(mname) != 1 ))
           mexErrMsgTxt("Fsdif_write_handler :: matrixname  has to be a 1-d cell array of strings");
         double *pd = reinterpret_cast<double*>(mxGetData(msig));
         int nbMTyp = mxGetM(msig);
@@ -298,22 +298,26 @@ void addTYPs(Easdif::SDIFEntity* p, const mxArray *pTYP) {
           sigstr[1]= static_cast<char>(*(pd + 1*nbMTyp + im)); 
           sigstr[2]= static_cast<char>(*(pd + 2*nbMTyp + im)); 
           sigstr[3]= static_cast<char>(*(pd + 3*nbMTyp + im)); 
-      
-          if(mxGetNumberOfElements(mxGetCell(mname,im))  + 1 > maxStoreLen){
-            maxStoreLen= mxGetNumberOfElements(mxGetCell(mname,im)) + 1;
-            store = reinterpret_cast<char*>(realloc(store, maxStoreLen));
+          mxArray *pCell = mxGetCell(mname,im);
+          if(pCell) {
+            if(mxGetNumberOfElements(pCell)  + 1 > maxStoreLen){
+              maxStoreLen= mxGetNumberOfElements(mxGetCell(mname,im)) + 1;
+              store = reinterpret_cast<char*>(realloc(store, maxStoreLen));
+            }
+            if(mxGetString(mxGetCell(mname,im),store,maxStoreLen) )
+              mexErrMsgTxt("Fsdif_write_handler :: Failed to store matrixName of FTD cell array has to contain only strings");
           }
-          if(mxGetString(mxGetCell(mname,im),store,maxStoreLen) )
-            mexErrMsgTxt("Fsdif_write_handler :: Failed to store matrixName of FTD cell array has to contain only strings");
-          
+          else
+            mexErrMsgTxt("Fsdif_write_handler :: Failed to store matrixName in FTD cell array has to contain  strings of size larger than 0.");
+
           ftd.AddMatrixType(Easdif::MatrixType(SdifStringToSignature(sigstr)),store);
         }          
 
         p->AddFrameType(ftd);
       }
     }
-    else if (sigfield>=0 || mnamefield >=0 || msigfield >=0){
-      sprintf(errMess,"Fsdif_write_handler :: FTD type description field %s or %s or %s is missing",ftdFrameSig_fieldString,ftdMatrixSig_fieldString,ftdMatrixName_fieldString);
+    else {
+      sprintf(errMess,"Fsdif_write_handler :: FTD type description fields \"%s\" or \"%s\" or \"%s\" are missing",ftdFrameSig_fieldString,ftdMatrixSig_fieldString,ftdMatrixName_fieldString);
       mexErrMsgTxt(errMess);
     }
   }
