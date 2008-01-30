@@ -41,8 +41,8 @@
 %
 %
 % frame format :
-%    frames.sig      = 1x4 double array indicating the matrix signature
-%    frames.streamid = real scalar of arbitrary type holding the
+%    frames.fsig     = 1x4 double array indicating the matrix signature
+%    frames.stream   = real scalar of arbitrary type holding the
 %                      streamid
 %    frames.time     = real double indicating frame time
 %    frames.data     = struct with fields named MD_XXXX
@@ -54,8 +54,8 @@
 %
 % frames(1)
 %
-%         sig: [73 71 66 71] ==  double('IGBG')
-%    streamid: 0
+%        fsig: [73 71 66 71] ==  double('IGBG')
+%      stream: 0
 %        time: 1.3
 %        msig: [73 71 66 71] ==  double('IGBG')
 %        data: [1x1 struct]
@@ -90,7 +90,7 @@
 % AUTHOR : Axel Roebel
 % DATE   : 21.01.2008
 %
-% $Revision: 1.2 $    last changed $Date: 2008-01-23 20:22:29 $
+% $Revision: 1.3 $    last changed $Date: 2008-01-30 02:11:32 $
 %
 %                                                       Copyright (c) 2008 by  IRCAM 
 

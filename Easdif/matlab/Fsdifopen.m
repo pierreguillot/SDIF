@@ -37,31 +37,31 @@
 % 
 %     Matrix types are declared in the MTD struct
 %  
-%                MTD.sig  = 1x4 double Matrix holding the SdifSignature (4 char sequence)
-%                           of the matrix type
-%                MTD.name = nx1 or 1xn cell array of strings each of
-%                           which determines a colmun name of the matrix
+%                MTD.msig   = 1x4 double Matrix holding the SdifSignature (4 char sequence)
+%                             of the matrix type
+%                MTD.cname  = nx1 or 1xn cell array of strings each of
+%                             which determines a colmun name of the matrix
 %  
 %     Frame types are declared in the FTD struct
 %  
-%                FTD.sig       = 1x4 double Matrix holding the
-%                                SdifSignature (4 char sequence) of the frame type
-%                FTD.matrixsig = nx4 double matrix holding the 4 char sequence 
-%                                of all matrix types allowed in the frame
-%                FTD matrixname= nx1 or 1xn cell array of strings each of
-%                                which determines a colmun name of the matrix
+%                FTD.fsig   = 1x4 double Matrix holding the
+%                             SdifSignature (4 char sequence) of the frame type
+%                FTD.msig   = nx4 double matrix holding the 4 char sequence 
+%                             of all matrix types allowed in the frame
+%                FTD.mname  = nx1 or 1xn cell array of strings each of
+%                             which determines a colmun name of the matrix
 %
 % dir       :  If the dir variable is present it will contain a directory 
 %              of the SDIF file content holding all header frame/matrix header         
 %              informations but no data.
 %              dir is an array of structs describing frames. Each frame contains 
 % 
-%              frame.sig      = 4 dobles representnig the SdifSignature
-%                                (see as char(frame.sig)) 
-%              frame.streamid = (unsigned int32) indicating streamid of the frame
-%              frame.time     = time position of the frame
-%              frame.matrix   = nx4 matrix of selected matrix signatures 
-%                                 present in the frame. (display with char(frame.matrix)
+%              frame.fsig    = 4 doubles representing the SdifSignature
+%                                (display with char(frame.fsig)) 
+%              frame.stream  = (unsigned int32) indicating streamid of the frame
+%              frame.time    = time position of the frame
+%              frame.msig    = nx4 matrix of selected matrix signatures 
+%                               present in the frame. (display with char(frame.msig)
 % 
 %
 % Example:  [file,head,dir] = Fsdifopen('xylo.sdif','r') or shorter
@@ -70,7 +70,7 @@
 % Opens file for reading and provides file handle, header infos and directory.
 %  
 %
-% $Revision: 1.2 $    last changed $Date: 2008-01-23 20:15:33 $
+% $Revision: 1.3 $    last changed $Date: 2008-01-30 02:10:51 $
 %
 %                                                       Copyright (c) 2008 by  IRCAM 
 

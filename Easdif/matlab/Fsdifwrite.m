@@ -10,8 +10,8 @@
 %          decreasing times
 %
 % frame format :
-%    frames.sig      = 1x4 double array indicating the matrix signature
-%    frames.streamid = real scalar of arbitrary type holding the
+%    frames.fsig     = 1x4 double array indicating the matrix signature
+%    frames.stream   = real scalar of arbitrary type holding the
 %                      streamid
 %    frames.time     = real double indicating frame time
 %    frames.data     = struct with fields named MD_XXXX
@@ -23,15 +23,19 @@
 %
 % frames(1)
 %
-%         sig: [73 71 66 71] == > double('IGBG')
-%    streamid: 0
+%        fsig: [73 71 66 71] == > double('IGBG')
+%      stream: 0
 %        time: 1.3
-%        msig: [73 71 66 71] == > double('IGBG')
 %        data: [1x1 struct]
+%
 %
 % frames(1).data
 % 
 %  MD_IGBG: [1 44100 1 1024 185]
+%
+% Remark :  frames.msig filed of the directory/reading format is redundant with
+%           the last 4 characters of the data.MD_XXXX field, accordingly the 
+%           frames.msig field is not used when writing data.
 %
 % OUTPUT :
 %
@@ -44,7 +48,7 @@
 % AUTHOR : Axel Roebel
 % DATE   : 21.01.2008
 %
-% $Revision: 1.1 $    last changed $Date: 2008-01-22 00:52:56 $
+% $Revision: 1.2 $    last changed $Date: 2008-01-30 02:12:34 $
 %
 %                                                         Copyright (c)
 %                                                         2008 by  IRCAM 
