@@ -33,9 +33,16 @@
  * 
  * 
  * 
- * $Id: sdif_matrix.hpp,v 1.5 2007-11-26 19:10:23 roebel Exp $ 
+ * $Id: sdif_matrix.hpp,v 1.6 2008-02-14 12:18:17 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.5  2007/11/26 19:10:23  roebel
+ * Fixed to avoid compiler warnings in MSVC.
+ * Little problem is the export of std::containers that should be defined as export
+ * which is not possible due to the given STL include files.
+ * For the moment it seems these warnings are not important, because all these functions
+ * are inlined as templates in the STL anyway. Has to be handled with care !!!!
+ *
  * Revision 1.4  2007/04/30 11:32:29  roebel
  * Matrix reading routine returns bytecount read for selected matrices only.
  *
@@ -597,10 +604,12 @@ namespace Easdif {
      * @param irow row index
      * 
      */
+    template<class VEC_REAL>
     void
-    GetRow(std::vector<double> &out,int irow) const throw (SDIFArrayPosition) {
+    GetRow(std::vector<VEC_REAL> &out,int irow) const throw (SDIFArrayPosition) {
       out.resize(GetNbCols());
-      mInter->GetRow(&(out[0]),irow);
+      if(!out.empty())
+        mInter->GetRow(&(out[0]),irow);
     }
 
     /**
@@ -625,10 +634,12 @@ namespace Easdif {
      * @param icol column index
      * 
      */
+    template<class VEC_REAL>
     void
-    GetCol(std::vector<double> &out,int icol) const throw (SDIFArrayPosition) {
+    GetCol(std::vector<VEC_REAL> &out,int icol) const throw (SDIFArrayPosition) {
       out.resize(GetNbRows());
-      mInter->GetCol(&(out[0]),icol);
+      if(!out.empty())
+        mInter->GetCol(&(out[0]),icol);
     }
 
     /*************************************************************************
