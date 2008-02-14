@@ -32,9 +32,12 @@
  * 
  * 
  * 
- * $Id: sdifentity.hpp,v 1.16 2008-01-23 12:11:23 roebel Exp $ 
+ * $Id: sdifentity.hpp,v 1.17 2008-02-14 00:42:31 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.16  2008/01/23 12:11:23  roebel
+ * Fixed typos in doc.
+ *
  * Revision 1.15  2008/01/22 00:50:17  roebel
  * Added methods to ask for open state and to clear NVTs and Types.
  *
@@ -797,17 +800,17 @@ namespace Easdif {
 
 namespace {
   // inversion of const tag for elem_iterator classes
-  template<int CONST>
+  template<int EASDIF_SC_CONST_FLAG>
   struct swap_const {
-    enum {CONSTINV=1};
+    enum {INVERTED_CONST_FLAG=1};
   };
   
   template<>
   struct swap_const<1> {
-    enum {CONSTINV=0};
+    enum {INVERTED_CONST_FLAG=0};
   };
 
-  template<int CONST>
+  template<int EASDIF_SC_CONST_FLAG>
   struct Base_Iterator {
     typedef  std::list<Easdif::SDIFLocation>::iterator basic_iterator;
   };
@@ -817,7 +820,7 @@ namespace {
     typedef std::list<Easdif::SDIFLocation>::const_iterator basic_iterator;
   };
 
-  template<int CONST>
+  template<int EASDIF_SC_CONST_FLAG>
   struct IteratorTypes {
     typedef Easdif::SDIFFrame    value_type;
     typedef Easdif::SDIFFrame   *pointer;
@@ -833,7 +836,7 @@ namespace {
 }
 
   // forward declaration
-  template<int CONST>
+  template<int EASDIF_FR_CONST_FLAG>
   class FRIterator;
 
 
@@ -1823,7 +1826,7 @@ public:
    * an iterator matching FRIterator::end(); 
    *
    */
-  template<int CONST>
+  template<int EASDIF_FR_CONST_FLAG>
   class EASDIF_API FRIterator {
     typename Base_Iterator<0>::basic_iterator mBase;
    //typename std::list<SDIFLocation>::iterator mBase;
@@ -1835,9 +1838,9 @@ public:
   private:
     
     
-    friend class FRIterator<swap_const<CONST>::CONSTINV>;
+    friend class FRIterator<swap_const<EASDIF_FR_CONST_FLAG>::INVERTED_CONST_FLAG>;
     friend class SDIFEntity;
-    typedef typename Base_Iterator<CONST>::basic_iterator basic_iterator;
+    typedef typename Base_Iterator<EASDIF_FR_CONST_FLAG>::basic_iterator basic_iterator;
     //typedef std::list<SDIFLocation>::iterator basic_iterator;
 
     /**
@@ -1930,8 +1933,8 @@ public:
     typedef typename basic_iterator::iterator_category  iterator_category;
     typedef SDIFFrame        value_type;
     typedef typename basic_iterator::difference_type   difference_type;
-    typedef typename IteratorTypes<CONST>::pointer       pointer;
-    typedef typename IteratorTypes<CONST>::reference     reference;
+    typedef typename IteratorTypes<EASDIF_FR_CONST_FLAG>::pointer       pointer;
+    typedef typename IteratorTypes<EASDIF_FR_CONST_FLAG>::reference     reference;
 
      
     /// \ingroup directory
@@ -1959,14 +1962,14 @@ public:
 
     /// \ingroup directory
     /// copy constructor
-    FRIterator (const FRIterator<CONST> & in) : 
+    FRIterator (const FRIterator<EASDIF_FR_CONST_FLAG> & in) : 
       mBase(in.mBase),mpEnt(in.mpEnt), 
       mlEndUP(in.mlEndUP),mlEndDOWN(in.mlEndDOWN),mlFrameIsLoaded(false)
     {    };
 
     /// \ingroup directory
     /// copy constructor
-    FRIterator (const FRIterator<swap_const<CONST>::CONSTINV> & in) : 
+    FRIterator (const FRIterator<swap_const<EASDIF_FR_CONST_FLAG>::INVERTED_CONST_FLAG> & in) : 
       mBase(in.mBase), mpEnt(in.mpEnt), 
       mlEndUP(in.mlEndUP), mlEndDOWN(in.mlEndDOWN), mlFrameIsLoaded(false)     
     {    };
@@ -2294,9 +2297,9 @@ public:
 
     
     /// equal  between SDIFEntity::iterator 
-    template<int CCONST>
+    template<int LOCAL_CONST_FLAG>
     FRIterator&
-    operator=(const FRIterator<CCONST>& i) {
+    operator=(const FRIterator<LOCAL_CONST_FLAG>& i) {
       mBase           = i.mBase;
       mpEnt           = i.mpEnt;
       mFrame          = i.mFrame;
@@ -2319,14 +2322,14 @@ public:
 
 
     /// equal comparision between SDIFEntity::iterator 
-    template<int OC>
-    bool operator==(const FRIterator<OC>& i)const {
+    template<int LOCAL_CONST_FLAG>
+    bool operator==(const FRIterator<LOCAL_CONST_FLAG>& i)const {
       return((i.mlEndUP  ||i.mlEndDOWN) == (mlEndUP || mlEndDOWN)  && i.mBase == mBase);
     }
 
     /// not equal comparision between SDIFEntity::iterator 
-    template<int OC>
-    bool operator!=(const  FRIterator<OC>& i)const {
+    template<int LOCAL_CONST_FLAG>
+    bool operator!=(const  FRIterator<LOCAL_CONST_FLAG>& i)const {
       return !operator==(i);
     }
 
