@@ -1,3 +1,13 @@
+2008-02-14  Axel Roebel  <roebel@sam.localdomain>
+Version 1.4.2
+
+	* easdif/sdif_matrix.hpp : 
+	Extended the GetRow/GetCol functions ability to read into  std::vector
+	containing arbitrary types.
+	
+	* easdif/easdifintro.hpp.in, test/tutofini.cpp  : 
+	use std::vector to hold row and column storage space.
+
 2008-02-14  Axel Roebel  <Axel.Roebel@ircam.fr>
 
 	* easdif/sdifentity.hpp : 
@@ -1050,4 +1060,4 @@ Version 0.21
 	* ChangeLog: Added changelog to repository.
 
 
-$Id: ChangeLog,v 1.69 2008-02-14 00:42:31 roebel Exp $
+$Id: ChangeLog,v 1.70 2008-02-14 12:19:04 roebel Exp $
