@@ -118,7 +118,7 @@ int main(int argc, char** argv)
 
 	/* reading the next frame of the EntityRead, return the number of
 	 * bytes read, return 0 if the frame is not selected 
-	 * and produces an exceptio n if eof is reached */
+	 * and produces an exception if eof is reached */
 	if(!readentity.ReadNextFrame(frame))	    
 	  continue;
 	
@@ -239,18 +239,18 @@ int main(int argc, char** argv)
           SDIFMatrix &mat = ff.GetMatrix(0);
           
           // read first column
-          int col[mat.GetNbRows()];
+          std::vector<int> col;
           mat.GetCol(col,0);
           std::cerr << "1st column read as int\n";
           for(int iii=0;iii<mat.GetNbRows(); ++iii)
             std::cerr << "row "<< iii << " val " << col[iii] <<"\n";
-          
-          double row[mat.GetNbCols()];
+
+          // read first row
+          std::vector<double> row;
           mat.GetRow(row,0);
           std::cerr << "1st row read as double\n";
           for(int iii=0;iii<mat.GetNbCols(); ++iii)
             std::cerr << "col "<< iii << " val " << row[iii] <<"\n";
-	  
         }
         
         std::cerr << "frameDirectory extended up to current frame \n ";
