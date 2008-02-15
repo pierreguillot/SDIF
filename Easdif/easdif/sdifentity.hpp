@@ -32,9 +32,13 @@
  * 
  * 
  * 
- * $Id: sdifentity.hpp,v 1.17 2008-02-14 00:42:31 roebel Exp $ 
+ * $Id: sdifentity.hpp,v 1.18 2008-02-15 19:09:58 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.17  2008/02/14 00:42:31  roebel
+ * Renamed template parameter arguments that where likely to collide
+ * with macro names.
+ *
  * Revision 1.16  2008/01/23 12:11:23  roebel
  * Fixed typos in doc.
  *
@@ -274,6 +278,7 @@
 #include <string>
 #include <list>
 #include <set>
+#include <algorithm>
 #include "sdif.h"
 
 #include "easdif_exports.hpp"
