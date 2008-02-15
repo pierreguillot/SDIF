@@ -1,3 +1,13 @@
+2008-02-15  U-REC-1320-ROEBEL\Axel Roebel  <Axel.Roebel@ircam.fr>
+Version 1.4.3
+
+	* easdif/sdifentity.hpp :
+	Added missing include file that defines std::find_if.
+
+	* test/CMakeLists.txt :
+	Removed libm for MSVC projects.
+
+	
 2008-02-14  Axel Roebel  <roebel@sam.localdomain>
 Version 1.4.2
 
@@ -1060,4 +1070,4 @@ Version 0.21
 	* ChangeLog: Added changelog to repository.
 
 
-$Id: ChangeLog,v 1.70 2008-02-14 12:19:04 roebel Exp $
+$Id: ChangeLog,v 1.71 2008-02-15 19:11:53 roebel Exp $
