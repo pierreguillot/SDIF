@@ -1,10 +1,13 @@
-// $Id: easdif-defines.i,v 1.1 2003-04-29 16:29:09 schwarz Exp $ -*-c-*-
+// $Id: easdif-defines.i,v 1.2 2008-03-04 02:08:39 roebel Exp $ -*-c-*-
 //
 // sdif_basics.h		16.04.2003		Diemo Schwarz
 //
 // define only the basic SDIF stuff for easdif swig from sdif.h
 //
 // $Log: not supported by cvs2svn $
+// Revision 1.1  2003/04/29 16:29:09  schwarz
+// renamed sdifdefines.i to easdif-defines.i
+//
 // Revision 1.1  2003/04/18 15:41:18  schwarz
 // Don't include all definitions from sdif.h, only the ones needed by
 // easdif, defined in sdifdefine.i.  -> smaller wrapper size:
@@ -14,6 +17,8 @@
 
 
 /* SdifHard_OS.h */
+
+#define EASDIF_API
 
 typedef char           SdifChar;
 typedef short          SdifInt2;
