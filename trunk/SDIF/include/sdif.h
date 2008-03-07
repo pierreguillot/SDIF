@@ -1,4 +1,4 @@
-/* $Id: sdif.h,v 1.60 2008-01-22 00:54:53 roebel Exp $
+/* $Id: sdif.h,v 1.61 2008-03-07 19:18:30 roebel Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -30,6 +30,9 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.60  2008/01/22 00:54:53  roebel
+ * Use stdint.h defined types if this header is available.
+ *
  * Revision 1.59  2008/01/11 15:51:26  roebel
  * Use const char* for read only function arguments.
  *
@@ -286,7 +289,7 @@
  * Revision 1.1.2.1  2000/08/21  13:07:41  tisseran
  * *** empty log message ***
  *
- * $Date: 2008-01-22 00:54:53 $
+ * $Date: 2008-03-07 19:18:30 $
  *
  */
 
@@ -301,7 +304,7 @@ extern "C" {
 #endif
 
 
-static const char _sdif_h_cvs_revision_ [] = "$Id: sdif.h,v 1.60 2008-01-22 00:54:53 roebel Exp $";
+static const char _sdif_h_cvs_revision_ [] = "$Id: sdif.h,v 1.61 2008-03-07 19:18:30 roebel Exp $";
 
 #ifdef HAVE_STDINT_H
 #include <stdint.h>
@@ -310,18 +313,21 @@ static const char _sdif_h_cvs_revision_ [] = "$Id: sdif.h,v 1.60 2008-01-22 00:5
 #include <stdlib.h>
 #include <float.h>
 
-
-#ifdef WIN32
-# ifdef DO_EXPORT_SDIF
-#   define SDIF_API __declspec(dllexport)
-# else
-#   define SDIF_API __declspec(dllimport)
-# endif
-#else
-#  if defined(__GNUC__) && defined( GCC_HAS_VISIBILITY)
-#    define SDIF_API __attribute__ ((visibility("default")))
+#if defined (SDIF_IS_STATIC) || defined(EASDIF_IS_STATIC)
+#  define SDIF_API
+#else 
+# ifdef WIN32
+#   ifdef DO_EXPORT_SDIF
+#     define SDIF_API __declspec(dllexport)
+#   else
+#     define SDIF_API __declspec(dllimport)
+#   endif
 #  else
-#    define SDIF_API
+#    if defined(__GNUC__) && defined( GCC_HAS_VISIBILITY)
+#      define SDIF_API __attribute__ ((visibility("default")))
+#    else
+#      define SDIF_API
+#    endif
 #  endif
 #endif
 

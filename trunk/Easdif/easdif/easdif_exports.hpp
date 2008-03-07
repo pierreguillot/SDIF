@@ -27,20 +27,23 @@
 #ifndef EASDIF_EXPORTS_H
 #define EASDIF_EXPORTS_H
 
-#ifdef WIN32
-#  ifdef DO_EXPORT_SDIF
-#    define EASDIF_API __declspec(dllexport)
-#  else
-#    define EASDIF_API __declspec(dllimport)
-#  endif
+#if defined( EASDIF_IS_STATIC) || defined(SDIF_IS_STATIC)
+#  define EASDIF_API
 #else
-#  if defined(__GNUC__) && defined( GCC_HAS_VISIBILITY)
-#    define EASDIF_API __attribute__ ((visibility("default")))
+#  ifdef WIN32
+#    ifdef DO_EXPORT_SDIF
+#      define EASDIF_API __declspec(dllexport)
+#    else
+#      define EASDIF_API __declspec(dllimport)
+#    endif
 #  else
-#    define EASDIF_API
+#    if defined(__GNUC__) && defined( GCC_HAS_VISIBILITY)
+#      define EASDIF_API __attribute__ ((visibility("default")))
+#    else
+#      define EASDIF_API
+#    endif
 #  endif
 #endif
-
 
 #endif
 
