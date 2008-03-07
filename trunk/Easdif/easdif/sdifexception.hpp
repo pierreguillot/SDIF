@@ -34,9 +34,14 @@
  * 
  * 
  * 
- * $Id: sdifexception.hpp,v 1.4 2008-01-11 15:58:59 roebel Exp $ 
+ * $Id: sdifexception.hpp,v 1.5 2008-03-07 19:20:28 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.4  2008/01/11 15:58:59  roebel
+ * Added new class MatrixType, FrameType, and the realted function for
+ * adding types to entity or retrieving types from an entity in terms of these
+ * clases.
+ *
  * Revision 1.3  2007/11/26 19:09:38  roebel
  * Fixed to avoid compiler warnings in MSVC.
  * Little problem is the export of std::containers that should be defined as export
@@ -250,7 +255,8 @@ namespace Easdif {
 #define constructor(class1,class2) class1(SdifErrorLevelET level,  const char* message, \
 					 SdifFileT* _sdifFile,   int error, \
 					 const char* sourceFileName, int sourceFileLine) \
-  : class2(level,message,_sdifFile,error,sourceFileName,sourceFileLine){}
+  : class2(level,message,_sdifFile,error,sourceFileName,sourceFileLine){} \
+    ~class1() throw() {}
 
   /****************** FILE ERRORS  *************************/
 
