@@ -1,5 +1,5 @@
 # Easdif README
-# $Id: README,v 1.9 2008-01-27 11:32:30 roebel Exp $
+# $Id: README,v 1.10 2008-03-11 15:24:18 roebel Exp $
 #
 # Copyright (C) Ircam 2002-2008
 
@@ -18,6 +18,17 @@ to  facilitate error  handling  by  means of  exceptions.  Due to  the
 complete availability of  SDIF in Easdif it can be  used as a complete
 SDIF replacement library.
 
+Due  to time constraints  there have  been no  releases since  quite a
+while.   The sourceforge  cvs, however,  is constantly  maintained and
+should give  you a clean build.  To get the proper  source layout from
+cvs check out the cvs module EASDIF_SDIF as below :
+
+cvs -d:pserver:anonymous@sdif.cvs.sourceforge.net:/cvsroot/sdif login  
+cvs -z3 -d:pserver:anonymous@sdif.cvs.sourceforge.net:/cvsroot/sdif co -P EASDIF_SDIF
+
+This  creates a directory  EASDIF_SDIF with  a subdirectory  SDIF. The
+directory ESDIF_SDIF  should be used  as source root dircetry  for the
+cmake configuration (see below) and the build.
 
 # Installation and compilation
 ==============================
@@ -72,9 +83,13 @@ will be created will run on Mac OS X 10.4 or later.
 
 The command line for configuration with universal binaries is then
 
-
 cmake -GXcode path_to_easdif_src -DDOUNIVERSAL:=1
 
+Warning :  With some versions of  Xcode the build button  in the tools
+menu does not  build the selected tartget. Better  ritght click on the
+target you want to build and  select build from there.  Note, that you
+should never  use the ALL  target because not  all of the  targets are
+supported in Xcode.
 
 # Windows 
 ---------
@@ -88,8 +103,10 @@ compiler  options you  like,  and  run the  configure  pass until  all
 settings  stabilize (no  red field  appears  in the  dialog) and  then
 create the  selected project.   Note, that for  some IDEs  the default
 build style  may be debug  and you may  need to explicitly  select the
-release build.
-
+release build.  Note,  as well that the ALL target  will fail for most
+IDEs  because  not  all  of  the  targets  are  supported  in  an  IDE
+environment. Therefore you better work wirh the individual library and
+program targets. 
 
 # Matlab mex interface
 ======================
@@ -102,21 +119,24 @@ untested for all the IDEs like Xcode and MSVC).
 To configure for comilation of the mex interface use
 
 $> cmake -DEASDIF_BUILD_MEX:BOOL=on path_to_easdif_src
-$> make 
+$> make mex
 $> make install
 
+This  installs  the mex  and  matlab m-files  as  well  as the  Easdif
+library.  If  you want to copy  only the the matlab  support files you
+can copy the  content of the m-files in the  matlab source root folder
+and the generated mex files in the directory bin/{arch}/ in your build
+folder.
+ 
 If the mex compile script is not found by cmake you can select it by 
 manually as follows
 
 $> cmake -DMEX:STRING=/path_to_mex_script -DEASDIF_BUILD_MEX:BOOL=on path_to_easdif_src 
-$> make 
+$> make mex
 $> make install
-
 
 Mex wrappers and m-files  will be installed in 
 ${CMAKE_INSTALL_PREFIX}/lib/matlab.
-
-
 
 # SWIG Wrappers
 ===============
