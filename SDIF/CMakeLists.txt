@@ -99,27 +99,34 @@ IF("${CMAKE_SOURCE_DIR}" STREQUAL "${CMAKE_CURRENT_SOURCE_DIR}")
 ENDIF("${CMAKE_SOURCE_DIR}" STREQUAL "${CMAKE_CURRENT_SOURCE_DIR}")
 
 IF   ( "$ENV{SYS}" STREQUAL "" )
-  SET(ARCHDIR ${ARCH})
+  # if you set archdir then it needs to include a leading directory divider like "/i386"
+  # otherwise the install_name tool on mac will not manage to fix the install_name of dynamique libraries
+  SET(ARCHDIR)
   SET(INSTALL_LIB_DIR  lib)
   SET(INSTALL_BIN_DIR  bin)
 ELSE ( "$ENV{SYS}" STREQUAL "" )
-  SET(ARCHDIR $ENV{SYS})
+  # if you set archdir then it needs to include a leading directory divider like "/i386"
+  # otherwise the install_name tool on mac will not manage to fix the install_name of dynamique libraries
+  SET(ARCHDIR)
   SET(INSTALL_LIB_DIR lib/$ENV{SYS})
   SET(INSTALL_BIN_DIR bin/$ENV{SYS})
 ENDIF( "$ENV{SYS}" STREQUAL "" )
 
 SET(INSTALL_INC_DIR include)
 
+SET(CMAKE_INSTALL_RPATH ${CMAKE_INSTALL_PREFIX}/${INSTALL_LIB_DIR})
+SET(CMAKE_INSTALL_NAME_DIR ${CMAKE_INSTALL_PREFIX}/${INSTALL_LIB_DIR})
+
 IF(NOT EXECUTABLE_OUTPUT_PATH)
-  SET(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin/${ARCHDIR} )
+  SET(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin${ARCHDIR} )
 ENDIF(NOT EXECUTABLE_OUTPUT_PATH)
 IF(NOT LIBRARY_OUTPUT_PATH)
   IF(WIN32)
     # dlls are libraries and need to be present in the bin dir
     # so we merge library and bin output 
-    SET(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin/${ARCHDIR})
+    SET(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin${ARCHDIR})
   ELSE(WIN32)
-    SET(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/lib/${ARCHDIR})
+    SET(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/lib${ARCHDIR})
   ENDIF(WIN32)
 ENDIF(NOT LIBRARY_OUTPUT_PATH)
 
