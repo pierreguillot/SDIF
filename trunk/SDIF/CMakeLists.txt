@@ -136,7 +136,7 @@ ENDIF(NOT LIBRARY_OUTPUT_PATH)
 
 FIND_PROGRAM(HAVEDOT NAMES dot )
 
-
+OPTION(SDIF_BUILD_STATIC "build static versions of the library" off)
 
 ## Configure SDIF
 
