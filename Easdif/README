@@ -1,5 +1,5 @@
 # Easdif README
-# $Id: README,v 1.10 2008-03-11 15:24:18 roebel Exp $
+# $Id: README,v 1.11 2008-04-02 12:02:55 roebel Exp $
 #
 # Copyright (C) Ircam 2002-2008
 
@@ -108,8 +108,8 @@ IDEs  because  not  all  of  the  targets  are  supported  in  an  IDE
 environment. Therefore you better work wirh the individual library and
 program targets. 
 
-# Matlab mex interface
-======================
+# Matlab/Octave mex interface
+==============================
 
 Since  1.4.0  of the  library  a matlab  mex  interface  to easdif  is
 available.   Currently the mex  configuration is  only tested  for the
@@ -119,13 +119,21 @@ untested for all the IDEs like Xcode and MSVC).
 To configure for comilation of the mex interface use
 
 $> cmake -DEASDIF_BUILD_MEX:BOOL=on path_to_easdif_src
+
+To build for use in  matlab do
+
 $> make mex
+$> make install
+
+To build for use in  octave do
+
+$> make oct
 $> make install
 
 This  installs  the mex  and  matlab m-files  as  well  as the  Easdif
 library.  If  you want to copy  only the the matlab  support files you
 can copy the  content of the m-files in the  matlab source root folder
-and the generated mex files in the directory bin/{arch}/ in your build
+and  the generated  mex  files in  the  directory bin/  in your  build
 folder.
  
 If the mex compile script is not found by cmake you can select it by 
