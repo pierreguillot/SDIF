@@ -33,7 +33,7 @@ PROJECT(EaSDIF)
 
 SET(EASDIF_VERSION_MAJ 1)
 SET(EASDIF_VERSION_MIN 4)
-SET(EASDIF_VERSION_RELEASE 4)
+SET(EASDIF_VERSION_RELEASE 5)
 SET(EASDIF_VERSION  "${EASDIF_VERSION_MAJ}.${EASDIF_VERSION_MIN}.${EASDIF_VERSION_RELEASE}")
 
 MESSAGE(STATUS "===============================================================")
@@ -356,7 +356,7 @@ SET(CPACK_PACKAGE_FILE_NAME)
 SET(CPACK_GENERATOR "TGZ")
 SET(CPACK_SOURCE_GENERATOR "TGZ")
 
-SET(CPACK_SOURCE_IGNORE_FILES "/CVS/" "/\\\\.svn/" "\\\\.swp$" "\\\\.#" "/#" "~$"  "/build.*/" "/autom4te.cache/"   "/SDIF/others/" "/all.ircam.sh$" "/all.install$" "/SDIF/sdif/ReadFromMemory.txt$"  "/test/fall.sdif"   "/Makefile$" "sdif.sln$" "/SDIF/test/prof/" "/SDIF/test/.*src$"   "/SDIF/test/.*dsp$" "/SDIF/test/SdifTypes.STYP" "/macosxbuild/[^MS]$"  "/macosxbuild/.*plist$" "/macosxbuild/.*MacOSX.binary-distrib$" "/macosxbuild/S.*/[^Mp]" "/macosxbuild/SDIF.xcodeproj/" ".cvsignore$" "/test/ent.*cpp$" "/test/t[tryoe].*cpp$" "/SDIF/doc/pics/.*fig$" "/SDIF/doc/intern/"  "/SDIF/doc/standard/" "/SDIF/doc/index-sf.html" "/SDIF/doc/Makefile.doc" "/SDIF/doc/sdif.src" "/SDIF/doc/.*txt" "/SDIF/types/" "/SDIF/tools/main.nib/" "/SDIF/tools/.*sdef" "/SDIF/tools/.*cp$" "/SDIF/tools/.*h$" "/SDIF/tools/sdifusage.*$" "/SDIF/tools/.*vcproj$" "/SDIF/doc/download/" "compileandinstall$" "/sdifcpp/.*cpp" "/sdifcpp/.*h$" "/test/Ne*\\\\.sdif$"   "/test/tut[mn].*\\\\.cpp$"   "/test/es.*cpp$" "/test/[cmvnrs].*cpp$" )
+SET(CPACK_SOURCE_IGNORE_FILES "/CVS/" "/\\\\.svn/" "\\\\.swp$" "\\\\.#" "/#" "~$"  "/build.*/" "/autom4te.cache/"   "/SDIF/others/" "/all.ircam.sh$" "/all.install$" "/SDIF/sdif/ReadFromMemory.txt$"  "/test/fall.sdif"   "/Makefile$" "sdif.sln$" "/SDIF/test/prof/" "/SDIF/test/.*src$"   "/SDIF/test/.*dsp$" "/SDIF/test/SdifTypes.STYP" "/macosxbuild/[^MS]$"  "/macosxbuild/.*plist$" "/macosxbuild/.*MacOSX.binary-distrib$" "/macosxbuild/S.*/[^Mp]" "/macosxbuild/SDIF.xcodeproj/" ".cvsignore$" "/test/ent.*cpp$" "/test/t[tryoe].*cpp$" "/SDIF/doc/pics/.*fig$" "/SDIF/doc/intern/"  "/SDIF/doc/standard/" "/SDIF/doc/index-sf.html" "/SDIF/doc/Makefile.doc"  "/SDIF/doc/sdif.src" "/SDIF/doc/.*txt" "/SDIF/types/" "/SDIF/tools/main.nib/" "/SDIF/tools/.*sdef" "/SDIF/tools/.*cp$" "/SDIF/tools/.*h$" "/SDIF/tools/sdifusage.*$" "/SDIF/tools/.*vcproj$" "/SDIF/doc/download/" "compileandinstall$" "/sdifcpp/.*cpp" "/sdifcpp/.*h$" "/test/Ne*\\\\.sdif$"   "/test/tut[mn].*\\\\.cpp$"   "/test/es.*cpp$" "/test/[cmvnrs].*cpp$" )
 #MESSAGE("CPACK_SOURCE_IGNORE_FILES  ${CPACK_SOURCE_IGNORE_FILES}")
 INCLUDE(CPack)
 

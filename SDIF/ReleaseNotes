@@ -1,3 +1,9 @@
+Version 3.10.7  2008-04-07  Axel Roebel
+
+        * add support for gcc visibility (cmake configuration only)
+
+        * use stdint.h to determine integer types if this file is available
+
 Version 3.10.6  2006-12-11  Axel Roebel
 
         * added support for cmake project configuration system

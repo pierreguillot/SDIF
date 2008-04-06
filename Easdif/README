@@ -1,5 +1,5 @@
 # Easdif README
-# $Id: README,v 1.11 2008-04-02 12:02:55 roebel Exp $
+# $Id: README,v 1.12 2008-04-06 20:42:39 roebel Exp $
 #
 # Copyright (C) Ircam 2002-2008
 
@@ -18,10 +18,10 @@ to  facilitate error  handling  by  means of  exceptions.  Due to  the
 complete availability of  SDIF in Easdif it can be  used as a complete
 SDIF replacement library.
 
-Due  to time constraints  there have  been no  releases since  quite a
-while.   The sourceforge  cvs, however,  is constantly  maintained and
-should give  you a clean build.  To get the proper  source layout from
-cvs check out the cvs module EASDIF_SDIF as below :
+Due to time constraints releases  of the Essdif library are rare.  The
+sourceforge cvs, however, is constantly maintained and should give you
+a clean build.  To get the proper source layout from cvs check out the
+cvs module EASDIF_SDIF as below :
 
 cvs -d:pserver:anonymous@sdif.cvs.sourceforge.net:/cvsroot/sdif login  
 cvs -z3 -d:pserver:anonymous@sdif.cvs.sourceforge.net:/cvsroot/sdif co -P EASDIF_SDIF
@@ -136,11 +136,17 @@ can copy the  content of the m-files in the  matlab source root folder
 and  the generated  mex  files in  the  directory bin/  in your  build
 folder.
  
-If the mex compile script is not found by cmake you can select it by 
+If the mex compile script is not found by cmake you can select it  
 manually as follows
 
 $> cmake -DMEX:STRING=/path_to_mex_script -DEASDIF_BUILD_MEX:BOOL=on path_to_easdif_src 
 $> make mex
+$> make install
+
+For the octave compile script mkoctfile  there exists a similar syntax
+
+$> cmake -DOCT:STRING=/path_to_mkoctfile -DEASDIF_BUILD_MEX:BOOL=on path_to_easdif_src 
+$> make oct
 $> make install
 
 Mex wrappers and m-files  will be installed in 
@@ -179,6 +185,7 @@ General Public License. See the file COPYING for further information.
 # Contact
 =========
 
-SDIF home page: http://www.ircam.fr/sdif
-sourceforge home page: http://sourceforge.net/projects/sdif
+SDIF home page: http://sdif.sourceforge.net/
+SDIF wiki http://sdif.wiki.sourceforge.net/
+sourceforge project page: http://sourceforge.net/projects/sdif
 
