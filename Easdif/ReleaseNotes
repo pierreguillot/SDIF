@@ -1,16 +1,18 @@
 Version 1.4.5  2008-04-07  Axel Roebel
 
         * added support for cmake project configuration system,
-        autotools are still available but will no longer be actively supported.
+        autotools are still available but will no longer be actively supported,
 
-        * first release with swig support (cmake configuration only)
+        * first release with swig support,
 
-        * added support for matlab mex wrapper       
+        * added support for matlab mex wrapper,       
         
-        * added support for octave mex wrapper
+        * added support for octave mex wrapper,
 
-        * improved support for MSVC, and intel compiler
+        * improved support for MSVC, and intel compiler,
 
-        * new interface for handling of MatrixTypes and FrameTypes 
+        * add support for gcc visibility,
+        
+        * new interface for handling of MatrixTypes and FrameTypes, 
 
-        * many fixes 
+        * more info available via the ChangeLog. 
