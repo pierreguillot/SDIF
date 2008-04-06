@@ -1,7 +1,7 @@
 Version 1.4.5  2008-04-07  Axel Roebel
 
         * added support for cmake project configuration system (www.cmake.org)
-        supported operatings systems now inlcude (Linux, MacOS X, Windows),
+        supported operatings systems now include (Linux, MacOS X, Windows),
         supported compilers include (gcc, MSVC, Intel)
           (autotools are still available but will no longer be actively supported),
 
