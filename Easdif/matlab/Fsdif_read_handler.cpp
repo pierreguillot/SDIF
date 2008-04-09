@@ -6,7 +6,7 @@
  * @brief  handle read file io in matlab
  * 
  *
- * $Revision: 1.4 $   last changed on $Date: 2008-01-23 20:23:53 $
+ * $Revision: 1.5 $   last changed on $Date: 2008-04-09 22:07:12 $
  *
  *                                    Copyright (c) 2008 by IRCAM
  * 
@@ -449,17 +449,15 @@ mexFunction (int nlhs, mxArray *plhs [], int nrhs, const mxArray *prhs [])
       
       //      IDS
       {
-        int count=0,numstreamid;
+        int numstreamid;
         SdifStringT *string;
-        char *localstr;
-        SdifHashNT     *pNV;
         char idnumasstring[30];
         SdifFileT *input = p->GetFile();       
         
         string = SdifStringNew();
         
         if((numstreamid=SdifStreamIDTableGetNbData(input->StreamIDsTable)) > 0){
-          int iID;
+          unsigned int iID;
           SdifHashNT* pID;
           SdifStreamIDT *sd;
           
@@ -504,7 +502,7 @@ mexFunction (int nlhs, mxArray *plhs [], int nrhs, const mxArray *prhs [])
           mxArray *mtyp = mxCreateStructMatrix(matrixtypes.size(),1,2,mfields);
           mxSetField(typ,0,tfields[0], mtyp);      
           
-          for(int ii=0;ii!=matrixtypes.size();++ii){
+          for(unsigned int ii=0;ii!=matrixtypes.size();++ii){
             Easdif::MatrixType &mat = matrixtypes[ii];
           
             mxArray *mtypsig = mxCreateNumericMatrix(1,4,mxDOUBLE_CLASS,mxREAL);
@@ -519,7 +517,7 @@ mexFunction (int nlhs, mxArray *plhs [], int nrhs, const mxArray *prhs [])
             *(pd+2) = sigstr[2];
             *(pd+3) = sigstr[3];
             
-            for(int ic=0;ic!=mat.mvColumnNames.size();++ic){            
+            for(unsigned int ic=0;ic!=mat.mvColumnNames.size();++ic){            
               mxSetCell(mtypcol,ic,mxCreateString(mat.mvColumnNames[ic].c_str()));        
             }
           }
@@ -537,7 +535,7 @@ mexFunction (int nlhs, mxArray *plhs [], int nrhs, const mxArray *prhs [])
           mxArray *ftyp = mxCreateStructMatrix(frametypes.size(),1,3,ffields);
           mxSetField(typ,0,tfields[1], ftyp);      
         
-          for(int ii=0;ii!=frametypes.size();++ii){
+          for(unsigned int ii=0;ii!=frametypes.size();++ii){
             Easdif::FrameType &frm = frametypes[ii];
             
             mxArray *ftypsig  = mxCreateNumericMatrix(1,4,mxDOUBLE_CLASS,mxREAL);
@@ -558,7 +556,7 @@ mexFunction (int nlhs, mxArray *plhs [], int nrhs, const mxArray *prhs [])
             
             int off   = frm.mvMatrixNames.size();
             pd= reinterpret_cast<double*>( mxGetData(ftypmsig));
-            for(int im=0;im!=frm.mvMatrixTypes.size();++im){          
+            for(unsigned int im=0;im!=frm.mvMatrixTypes.size();++im){          
               sigstr = SdifSignatureToString(frm.mvMatrixTypes[im].GetSignature());
               *pd         = sigstr[0];
               *(pd+off)   = sigstr[1];
@@ -589,7 +587,6 @@ mexFunction (int nlhs, mxArray *plhs [], int nrhs, const mxArray *prhs [])
        
         it      = p->begin();
         plhs[2] = mxCreateStructMatrix(dir.size(),1,4,dfields);
-        int ii = 0;
         for(int ii=0; it !=ite; ++it,++ii) {
           createFrame(it, ii, plhs[2], 4, dfields);
         }
@@ -650,7 +647,6 @@ mexFunction (int nlhs, mxArray *plhs [], int nrhs, const mxArray *prhs [])
       if(CheckList(p,itl) && p->IsOpen()){
         Easdif::SDIFEntity::const_iterator ite = p->end();        
         if(nrhs == 2){
-          int ret = 0;          
           if(itl->second != ite && !itl->second.IsSelected())
             ++(itl->second);
 
@@ -671,7 +667,6 @@ mexFunction (int nlhs, mxArray *plhs [], int nrhs, const mxArray *prhs [])
           }
         }
         else if (nrhs == 3){
-          int ret = 0;
           std::vector<double> timeSel;
           double startTime = 0;
           double endTime   = -1;
@@ -775,7 +770,7 @@ mexFunction (int nlhs, mxArray *plhs [], int nrhs, const mxArray *prhs [])
               }
 
               if(ftime && ftime_range){
-                sprintf(errMess,"Fsdif_read_handler :: cannot handle time and time range selection at the same time !",frameTime_fieldString);
+                sprintf(errMess,"Fsdif_read_handler :: cannot handle time and time range selection at the same time !");
                 mexErrMsgTxt(errMess);
               }
                 
@@ -932,9 +927,7 @@ mexFunction (int nlhs, mxArray *plhs [], int nrhs, const mxArray *prhs [])
 
       // validate pointer
       if(CheckList(p,itl) && p->IsOpen()){
-        Easdif::SDIFEntity::const_iterator ite = p->end();        
-       
-        int ret = 0;
+        Easdif::SDIFEntity::const_iterator ite = p->end();               
         
         itl->second = itl->first->begin();
         int numFR = 0;
