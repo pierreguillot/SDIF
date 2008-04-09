@@ -1,10 +1,10 @@
 # Swig configuration
 
-MESSAGE("-------------------------------------------------")
-MESSAGE("Configuring SWIG wrappers")
+MESSAGE(STATUS "-------------------------------------------------")
+MESSAGE(STATUS "Configuring SWIG wrappers")
 FIND_PACKAGE(SWIG REQUIRED)
 IF(SWIG_FOUND)
-  MESSAGE("-- using swig installation in ${SWIG_DIR}")
+  MESSAGE(STATUS "using swig installation in ${SWIG_DIR}")
   IF(SWIG_FOUND)
     INCLUDE(UseSWIG)
   ENDIF(SWIG_FOUND)
