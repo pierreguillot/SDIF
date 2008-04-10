@@ -1,4 +1,4 @@
-/* $Id: SdifMatrix.c,v 3.17 2007-11-27 12:12:22 roebel Exp $
+/* $Id: SdifMatrix.c,v 3.18 2008-04-10 14:12:25 roebel Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -33,6 +33,9 @@
  *
  * author: Dominique Virolle 1997
  * $Log: not supported by cvs2svn $
+ * Revision 3.17  2007/11/27 12:12:22  roebel
+ * Fixed warning due to missing return value.
+ *
  * Revision 3.16  2007/11/26 18:51:21  roebel
  * Changed data types to have less casts and
  * less compilation warnings with MSVC.
@@ -495,11 +498,13 @@ SdifOneRowGetValue(SdifOneRowT *OneRow, SdifUInt4 numCol)
 	return (SdifFloat8) OneRow->Data.Float4[numCol-1];
       }
   
-  char errorMess [_SdifStringLen];
-  
-  snprintf(errorMess, sizeof(errorMess), 
-           "OneRow Get Value Col : %d ", numCol);
-  _SdifError(eArrayPosition, errorMess);
+  {
+    char errorMess [_SdifStringLen];
+    
+    snprintf(errorMess, sizeof(errorMess), 
+             "OneRow Get Value Col : %d ", numCol);
+    _SdifError(eArrayPosition, errorMess);
+  }
   return _SdifFloat8Error;
 }
 
@@ -690,12 +695,14 @@ SdifMatrixDataGetValue(SdifMatrixDataT *data,
 	}
     }
 
-    char errorMess [_SdifStringLen];
+    { 
+      char errorMess [_SdifStringLen];
     
-    snprintf(errorMess, sizeof(errorMess), 
-             "SdifMatrixDataGetValue:  row %d, col %d", numRow, numCol);
-    _SdifError(eArrayPosition, errorMess);
-    
+      snprintf(errorMess, sizeof(errorMess), 
+               "SdifMatrixDataGetValue:  row %d, col %d", numRow, numCol);
+      _SdifError(eArrayPosition, errorMess);
+    }
+
     return _SdifFloat8Error;
 }
 
