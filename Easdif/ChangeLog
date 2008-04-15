@@ -4,6 +4,10 @@ Version 1.4.5
 	* CMakeLists.txt :
 	fixed last issues in cpack system.
 
+	* matlab/Fsdif_read_handler.cpp, matlab/CMakeLists.txt :
+	fixed compiler warnings. Reorganized mex variable query
+	to be compatible with cmake version 2.4.7.
+	
 2008-03-07  Axel Roebel  <roebel>
 Version 1.4.4
 
@@ -1085,4 +1089,4 @@ Version 0.21
 	* ChangeLog: Added changelog to repository.
 
 
-$Id: ChangeLog,v 1.74 2008-04-15 11:51:50 roebel Exp $
+$Id: ChangeLog,v 1.75 2008-04-15 11:54:00 roebel Exp $
