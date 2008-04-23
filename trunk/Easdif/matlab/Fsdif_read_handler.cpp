@@ -6,7 +6,7 @@
  * @brief  handle read file io in matlab
  * 
  *
- * $Revision: 1.5 $   last changed on $Date: 2008-04-09 22:07:12 $
+ * $Revision: 1.6 $   last changed on $Date: 2008-04-23 13:09:58 $
  *
  *                                    Copyright (c) 2008 by IRCAM
  * 
@@ -952,7 +952,7 @@ mexFunction (int nlhs, mxArray *plhs [], int nrhs, const mxArray *prhs [])
         if(nlhs > 3 )
           mxMatrix = plhs[3] = mxCreateNumericMatrix(numMat,4,mxDOUBLE_CLASS,mxREAL);
         if(nlhs > 4 )
-          mxMatrix = plhs[4] = mxCreateNumericMatrix(numMat,2,mxDOUBLE_CLASS,mxREAL);
+          mxDims = plhs[4] = mxCreateNumericMatrix(numMat,2,mxDOUBLE_CLASS,mxREAL);
         
         for(int iMat=0; itl->second != ite; ++(itl->second)){
           createMData(itl->second, iMat, mxData, mxHead, mxFrame, mxMatrix, mxDims);
