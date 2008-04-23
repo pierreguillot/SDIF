@@ -21,7 +21,10 @@ ENDIF(NOT MEX AND APPLE)
 
 IF(MEX) 
   MESSAGE(STATUS "matlab mex wrapper :: using mex -> ${MEX}")
-  SET(SOURCE "#include<mex.h> void mexFunction (int nlhs, mxArray *plhs [], int nrhs, const mxArray *prhs []){}")
+  # Attention the line breaks are required for mac ppc
+  SET(SOURCE "#include<mex.h> 
+void mexFunction (int nlhs, mxArray *plhs [], int nrhs, const mxArray *prhs []){
+}")
   CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/SDIF/cmModules/trycompile.c.in  ${CMAKE_CURRENT_BINARY_DIR}/cmake_tmp.cxx)
   EXECUTE_PROCESS(COMMAND ${MEX}  ${CMAKE_CURRENT_BINARY_DIR}/cmake_tmp.cxx -v RESULT_VARIABLE res OUTPUT_VARIABLE out ERROR_VARIABLE err)
   

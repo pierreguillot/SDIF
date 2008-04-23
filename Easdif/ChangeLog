@@ -1,3 +1,13 @@
+2008-04-23  Axel Roebel  <Axel.Roebel@ircam.fr>
+Version 1.4.6
+
+	* matlab/Fsdif_read_handler.cpp :
+	Fixed loadfile command that would crash whenever the 5th
+	output argument was required.
+
+	* matlab/CMakeLists.txt :
+	Fixed mex configuration query for macos ppc.
+
 2008-04-07  Axel Roebel  <roebel@sam.localdomain>
 Version 1.4.5 
 
@@ -1089,4 +1099,4 @@ Version 0.21
 	* ChangeLog: Added changelog to repository.
 
 
-$Id: ChangeLog,v 1.75 2008-04-15 11:54:00 roebel Exp $
+$Id: ChangeLog,v 1.76 2008-04-23 13:09:58 roebel Exp $
