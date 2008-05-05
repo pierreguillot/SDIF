@@ -31,6 +31,13 @@
 #  BUILD_MING:BOOL=ON/OFF  if cygwin add -mno-cygwin to compiler commands
 
 PROJECT(SDIF)
+CMAKE_MINIMUM_REQUIRED(VERSION 2.4.7)
+
+# for cmake 2.6
+IF(COMMAND cmake_policy)
+  CMAKE_POLICY(SET CMP0003 NEW)
+ENDIF(COMMAND cmake_policy)
+
 
 FILE(READ ${PROJECT_SOURCE_DIR}/configure.in CONFIGIN)
 STRING(REGEX REPLACE ".*SDIF_VERSION_MAJOR=\([0-9]+\).*" "\\1" SDIF_VERSION_MAJOR ${CONFIGIN})
