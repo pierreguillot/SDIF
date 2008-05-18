@@ -1,5 +1,5 @@
 # Easdif README
-# $Id: README,v 1.13 2008-04-09 22:09:30 roebel Exp $
+# $Id: README,v 1.14 2008-05-18 18:18:19 roebel Exp $
 #
 # Copyright (C) Ircam 2002-2008
 
@@ -48,7 +48,7 @@ extract the  Easdif distribution, and  create and cd into  a dedicated
 build directory.   To configure and  compile using Unix  makefiles you
 may then call
 
-$> cmake path_to_easdif_src
+$> cmake path_to_top_level_easdif_dir
 $> make 
 $> make install
 
@@ -58,7 +58,7 @@ included in the Easdif  distribution. The default install directory is
 /usr/local.  The   install  directory   can  be  modified   using  the
 CMAKE_INSTALL_PREFIX variable as follows
 
-$> cmake -DCMAKE_INSTALL_PREFIX:STRING=/my/install/dir  path_to_easdif_src 
+$> cmake -DCMAKE_INSTALL_PREFIX:STRING=/my/install/dir  path_to_top_level_easdif_dir 
 $> make 
 $> make install
 
@@ -70,7 +70,7 @@ For installation on  Mac OS X you can use the  same procedure as above
 or you  can use Xcode.  To configure your  Xcode project you  create a
 build directory BDIR cd into this directory and run
 
-cmake -GXcode path_to_easdif_src
+cmake -GXcode path_to_top_level_easdif_dir
 
 which will create the Xcode project in the current directory BDIR. You
 can then load  the project and compile with  Xcode.  The cmake project
@@ -84,7 +84,7 @@ will be created will run on Mac OS X 10.4 or later.
 
 The command line for configuration with universal binaries is then
 
-cmake -GXcode path_to_easdif_src -DDOUNIVERSAL:=1
+cmake -GXcode path_to_top_level_easdif_dir -DDOUNIVERSAL:=1
 
 Warning :  With some versions of  Xcode the build button  in the tools
 menu does not  build the selected tartget. Better  ritght click on the
@@ -119,7 +119,7 @@ untested for all the IDEs like Xcode and MSVC).
 
 To configure for comilation of the mex interface use
 
-$> cmake -DEASDIF_BUILD_MEX:BOOL=on path_to_easdif_src
+$> cmake -DEASDIF_BUILD_MEX:BOOL=on path_to_top_level_easdif_dir
 
 To build for use in  matlab do
 
@@ -140,13 +140,13 @@ folder.
 If the mex compile script is not found by cmake you can select it  
 manually as follows
 
-$> cmake -DMEX:STRING=/path_to_mex_script -DEASDIF_BUILD_MEX:BOOL=on path_to_easdif_src 
+$> cmake -DMEX:STRING=/path_to_mex_script -DEASDIF_BUILD_MEX:BOOL=on path_to_top_level_easdif_dir 
 $> make mex
 $> make install
 
 For the octave compile script mkoctfile  there exists a similar syntax
 
-$> cmake -DOCT:STRING=/path_to_mkoctfile -DEASDIF_BUILD_MEX:BOOL=on path_to_easdif_src 
+$> cmake -DOCT:STRING=/path_to_mkoctfile -DEASDIF_BUILD_MEX:BOOL=on path_to_top_level_easdif_dir 
 $> make oct
 $> make install
 
