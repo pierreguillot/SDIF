@@ -1,4 +1,4 @@
-/* $Id: sdif.h,v 1.61 2008-03-07 19:18:30 roebel Exp $
+/* $Id: sdif.h,v 1.62 2008-05-22 11:57:32 roebel Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -30,6 +30,9 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.61  2008/03/07 19:18:30  roebel
+ * Support compilation as static library on windows
+ *
  * Revision 1.60  2008/01/22 00:54:53  roebel
  * Use stdint.h defined types if this header is available.
  *
@@ -289,7 +292,7 @@
  * Revision 1.1.2.1  2000/08/21  13:07:41  tisseran
  * *** empty log message ***
  *
- * $Date: 2008-03-07 19:18:30 $
+ * $Date: 2008-05-22 11:57:32 $
  *
  */
 
@@ -304,7 +307,7 @@ extern "C" {
 #endif
 
 
-static const char _sdif_h_cvs_revision_ [] = "$Id: sdif.h,v 1.61 2008-03-07 19:18:30 roebel Exp $";
+static const char _sdif_h_cvs_revision_ [] = "$Id: sdif.h,v 1.62 2008-05-22 11:57:32 roebel Exp $";
 
 #ifdef HAVE_STDINT_H
 #include <stdint.h>
@@ -1653,7 +1656,7 @@ SDIF_API SdifSignature SdifFCurrSignature       (SdifFileT *SdifF);
 
 /*DOC: 
   Met à 0 tous les bits de la signature temporaire.  */
-SdifSignature SdifFCleanCurrSignature  (SdifFileT *SdifF);
+SDIF_API SdifSignature SdifFCleanCurrSignature  (SdifFileT *SdifF);
 
 /*DOC: 
   Renvoie la signature temporaire du dernier Frame lu ou du prochain à
