@@ -1,3 +1,9 @@
+2008-05-22  Axel Roebel  <Axel.Roebel@ircam.fr>
+Version 3.10.8
+
+	* include/sdif.h :
+	added SDIF_API to SdifFCleanCurrSignature.
+
 2008-01-22  Axel Roebel  <roebel@sam.localdomain>
 
 	* include/sdif.h :
@@ -983,4 +989,4 @@ Version 3.3:
 	  Operating System.
 
 	
-$Id: ChangeLog,v 1.59 2008-01-22 00:55:15 roebel Exp $
+$Id: ChangeLog,v 1.60 2008-05-22 11:57:32 roebel Exp $
