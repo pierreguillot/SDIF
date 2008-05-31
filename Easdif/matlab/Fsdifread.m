@@ -1,7 +1,10 @@
 % function frames=Fsdifread(file,select)
 %
-% read 1-d array of structured sdif frames into file related to
-% filehandle file
+% read 1-d array of structured sdif frames from file related to
+% filehandle file. Note that data types in the returned matrix
+% will reflect the data types used to store the data in the file.
+% If you want double format you need to explcitely transform the 
+% fields of the frames struct.
 %
 % INPUT :
 %
@@ -90,7 +93,7 @@
 % AUTHOR : Axel Roebel
 % DATE   : 21.01.2008
 %
-% $Revision: 1.3 $    last changed $Date: 2008-01-30 02:11:32 $
+% $Revision: 1.4 $    last changed $Date: 2008-05-31 22:52:29 $
 %
 %                                                       Copyright (c) 2008 by  IRCAM 
 
