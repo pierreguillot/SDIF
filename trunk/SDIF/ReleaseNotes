@@ -1,3 +1,7 @@
+Version 3.10.8   2008-05-22  Axel Roebel
+
+	* added SDIF_API to SdifFCleanCurrSignature.
+
 Version 3.10.7  2008-04-07  Axel Roebel
 
         * add support for gcc visibility (cmake configuration only)
