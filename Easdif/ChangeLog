@@ -1,4 +1,20 @@
-2008-04-23  Axel Roebel  <Axel.Roebel@ircam.fr>
+2008-05-31  Axel Roebel  <roebel>
+Version 1.4.7
+
+	* easdif/sdifentity.cpp:
+	Fixed TestFrameSelection and TestMatrixSelection in case no high-level selection is active.
+
+	* matlab/Fsdif_read_handler.cpp:
+	Fixed problem when loading complete file with matrix selection enabled.
+	Properly reflect mattrix slection in file directory returned by Fsdifopen.
+	
+	* easdif/sdifentity.hpp: 
+	Improved doc with respect to selection.
+
+	* matlab/Fsdifread.m: 
+	Improved doc. Discuss data types to be used.
+
+2008-04-23  Axel Roebel  <Axel.Roebel>
 Version 1.4.6
 
 	* matlab/Fsdif_read_handler.cpp :
@@ -124,7 +140,7 @@ Version 1.3.2
 	which translates in a very large value that will no longer conflict with cnmat library
 	when 1NVT Frames and data frames stay on the same streamid.
 
-2007-04-30  axel roebel  <roebel@marl.hd.free.fr>
+2007-04-30  axel roebel  <roebel>
 Version 1.3.1
 
 	* easdif/sdifentity.hpp, easdif/sdifentity.cpp : 
@@ -1099,4 +1115,4 @@ Version 0.21
 	* ChangeLog: Added changelog to repository.
 
 
-$Id: ChangeLog,v 1.76 2008-04-23 13:09:58 roebel Exp $
+$Id: ChangeLog,v 1.77 2008-05-31 23:10:46 roebel Exp $
