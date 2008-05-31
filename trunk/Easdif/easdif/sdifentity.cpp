@@ -32,9 +32,12 @@
  * 
  * 
  * 
- * $Id: sdifentity.cpp,v 1.42 2008-01-22 00:49:25 roebel Exp $ 
+ * $Id: sdifentity.cpp,v 1.43 2008-05-31 22:54:15 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.42  2008/01/22 00:49:25  roebel
+ * Clear NVTs and Types when closing the file.
+ *
  * Revision 1.41  2008/01/11 15:58:38  roebel
  * Added new class MatrixType, FrameType, and the realted function for
  * adding types to entity or retrieving types from an entity in terms of these
@@ -1065,16 +1068,14 @@ bool SDIFEntity::TestMatrixSelection(SdifSignature sig) const
 
   if(!isFrameDirEnabled || !msHighLevelMatrixSelection.isActive() ) {
     SdifListT* listsel;    
-    SdifSignature sig = eEmptySignature;
     listsel = efile->Selection->matrix;
     SdifListInitLoop (listsel);
     int cnt = 0;
-    while (SdifListIsNext (listsel))
-      {
-        if(sig == ((SdifSelectElementT *) SdifListGetNext(listsel))->value.signature)
-          return true;      
-        ++ cnt;
-      }
+    while (SdifListIsNext (listsel))      {
+      if(sig == ((SdifSelectElementT *) SdifListGetNext(listsel))->value.signature)
+        return true;      
+      ++ cnt;
+    }
     if(cnt) 
       return false;
     return true;
@@ -1091,7 +1092,6 @@ bool SDIFEntity::TestFrameSelection(SdifSignature sig) const
 
   if(!isFrameDirEnabled || !msHighLevelFrameSelection.isActive() ) {
     SdifListT* listsel;    
-    SdifSignature sig = eEmptySignature;
     listsel = efile->Selection->frame;
     SdifListInitLoop (listsel);
     int cnt = 0;
