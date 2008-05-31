@@ -32,9 +32,12 @@
  * 
  * 
  * 
- * $Id: sdifentity.hpp,v 1.18 2008-02-15 19:09:58 roebel Exp $ 
+ * $Id: sdifentity.hpp,v 1.19 2008-05-31 22:53:13 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.18  2008/02/15 19:09:58  roebel
+ * Added missing include file that defines std::find_if.
+ *
  * Revision 1.17  2008/02/14 00:42:31  roebel
  * Renamed template parameter arguments that where likely to collide
  * with macro names.
@@ -383,7 +386,7 @@ namespace Easdif {
      * If the selection has been established (function returns true)
      * the entities in the set are used to filter 
      * the sdif data. The data returned by ReadNextSelectedFrame
-     * wil contain only those elements that match the values in the selected set. 
+     * will contain only those elements that match the values in the selected set. 
      * If no selection has been established the set is not used to filter data.
      *
      * The test for an empty selection (which will not pass any data is)
@@ -676,6 +679,9 @@ namespace Easdif {
    * \brief  A class that hold information about a single frame  in an SDIF File
    * \ingroup directory
    *  
+   * The SDIFLocation class describes the frame in the file. 
+   * It does not take into account
+   * any selection.
    *
    */
   struct EASDIF_API SDIFLocation {
@@ -720,7 +726,7 @@ namespace Easdif {
 
     /// Get StreamID of current location
     SdifUInt4      LocStreamID()  const { return mFrameHdr.NumID;}
-    /// Get Number of Matrices of current location
+    /// Get Number of Matrices of current frame, this is the number of matrices in the file independent of any high or low level selection
     SdifUInt4      LocNbMatrix()  const { return mFrameHdr.NbMatrix;}
     /// Get Time of current location
     SdifFloat8     LocTime()      const { return mFrameHdr.Time; }
@@ -897,16 +903,51 @@ private:
 
   const SDIFLocation endLoc;
   
+  // initial  matrix selection list 
+  // before EnableFrameDir has been given this list
+  // contains the selection that was part of the filename
+  // after EnableFrameDir has been called 
+  // this selection list contains the selection state
+  // at the moment when the FrameDirectory has been enabled
+  // used only as backup storage
+  SelectionSet<SdifSignature> msMatrixSelection; 
 
-  bool          mlMatrixSelectionRead; // true if matrix signature selection list has been read form the SDifFile
-  SelectionSet<SdifSignature> msMatrixSelection; // matrix selection list of the initial user selection
-  bool          mlFrameSelectionRead;  // true if frame signature selection list has been read form the SDifFile
-  SelectionSet<SdifSignature> msFrameSelection; // frame selection list of the initial user selection
-  bool          mlStreamSelectionRead;  // true if stream selection list has been read form the SDifFile
+  // true if matrix signature selection list has been read form the SDifFile
+  bool          mlMatrixSelectionRead; 
+
+  // initial frame selection list 
+  // before EnableFrameDir has been given this list
+  // contains the selection that was part of the filename
+  // after EnableFrameDir has been called 
+  // this selection list contains the selection state
+  // at the moment when the FrameDirectory has been enabled
+  // used only as backup storage
+  SelectionSet<SdifSignature> msFrameSelection; 
+  // true if frame signature selection list has been read form the SDifFile
+  bool          mlFrameSelectionRead;  
+
+  // initial stream selection list 
+  // before EnableFrameDir has been given this list
+  // contains the selection that was part of the filename
+  // after EnableFrameDir has been called 
+  // this selection list contains the selection state
+  // at the moment when the FrameDirectory has been enabled
+  // used only as backup storage
   SelectionSet<unsigned int>  msStreamSelection;
+  // true if stream selection list has been read form the SDifFile
+  bool          mlStreamSelectionRead; 
 
+  // high level stream selection
+  // contains the additonam selection that has been
+  // applied after the frame directory has been enabled
   SelectionSet <unsigned int>  msHighLevelStreamSelection;
+  // high level matrix selection
+  // contains the additonam selection that has been
+  // applied after the frame directory has been enabled
   SelectionSet <SdifSignature> msHighLevelMatrixSelection;
+  // high level frame selection
+  // contains the additonam selection that has been
+  // applied after the frame directory has been enabled
   SelectionSet <SdifSignature> msHighLevelFrameSelection;
 
 public: 
@@ -1391,7 +1432,7 @@ public:
    * \brief reestablish a previous state of frame signature selection
    *
    * This function can either be called before or after EnableFrameDir() has been called.
-   * In the first case it wil reestablish the frame selection that was initially given 
+   * In the first case it will reestablish the frame selection that was initially given 
    * as part opf the filename.
    * In the second case it will reestablish the selection that was valid at the time
    * when EnableFrameDir() has been called.
@@ -1413,7 +1454,7 @@ public:
    * As long as EnableFrameDir() has not been called this function works on
    * the low level SDIF selection, otherwise it establishes a high level selection
    * that can be savely used used with the Directory. The directory will still contain all
-   * frames and matrices that are selected accoring to the low level selection. 
+   * frames and matrices that are selected according to the low level selection. 
    * 
    * @param sigs    set of signatures that should remain selected and that will be intersected
    *                with the existing matrix selection.
@@ -1427,7 +1468,7 @@ public:
    * \brief reestablish a previous state of matrix signature selection
    * 
    * This function can either be called before or after EnableFrameDir() has been called.
-   * In the first case it wil reestablish the frame selection that was initially given 
+   * In the first case it will reestablish the matrix selection that was initially given 
    * as part opf the filename.
    * In the second case it will reestablish the selection that was valid at the time
    * when EnableFrameDir() has been called.
@@ -1463,7 +1504,7 @@ public:
    * \brief reestablish a previous state of stream signature selection
    * 
    * This function can either be called before or after EnableFrameDir() has been called.
-   * In the first case it wil reestablish the frame selection that was initially given 
+   * In the first case it will reestablish the frame selection that was initially given 
    * as part opf the filename.
    * In the second case it will reestablish the selection that was valid at the time
    * when EnableFrameDir() has been called.
