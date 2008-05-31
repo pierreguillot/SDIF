@@ -6,7 +6,7 @@
  * @brief  handle read file io in matlab
  * 
  *
- * $Revision: 1.6 $   last changed on $Date: 2008-04-23 13:09:58 $
+ * $Revision: 1.7 $   last changed on $Date: 2008-05-31 22:51:56 $
  *
  *                                    Copyright (c) 2008 by IRCAM
  * 
@@ -49,13 +49,35 @@ bool CheckList(Easdif::SDIFEntity *p, EASDList::iterator&it) {
 
 char errMess [PATH_MAX+50];
 
+
+inline
+int
+nbSelectedMatricesInFrame(Easdif::SDIFEntity*p, Easdif::SDIFEntity::const_iterator& it) {
+  
+  int nbAllMatrix = it.GetLoc().LocNbMatrix();
+  int nbMatrix    = 0;
+  
+  for(int im=0;im!=nbAllMatrix;++im){          
+    mexPrintf("matrix sig  %s ", SdifSignatureToString(it.GetLoc().LocMSignature(im)));
+    if(p->TestMatrixSelection(it.GetLoc().LocMSignature(im))){
+      mexPrintf("selected \n");
+      ++nbMatrix;
+    }
+      else
+        mexPrintf("not selected \n");
+  }          
+  return nbMatrix;
+}
+
 // create frame struct
+// either only meta data if nFields == 4
+// or meat and matrix data if nFields == 5
 void
-createFrame(Easdif::SDIFEntity::const_iterator& it, int ii, mxArray *out,int nFields, 
+createFrame(Easdif::SDIFEntity*p, Easdif::SDIFEntity::const_iterator& it, int ii, mxArray *out,int nFields, 
            const char **dfields) {
   if(nFields ==4 ) {
-    int nbMatrix = it.GetLoc().LocNbMatrix();
-    
+    int nbMatrix = nbSelectedMatricesInFrame(p, it);
+    int nbAllMatrix =  it.GetLoc().LocNbMatrix();
     mxArray *ftypsig    = mxCreateNumericMatrix(1,4,mxDOUBLE_CLASS,mxREAL);
     mxArray *ftypstrid  = mxCreateNumericMatrix(1,1,mxDOUBLE_CLASS,mxREAL);
     mxArray *ftyptime   = mxCreateNumericMatrix(1,1,mxDOUBLE_CLASS,mxREAL);
@@ -78,14 +100,16 @@ createFrame(Easdif::SDIFEntity::const_iterator& it, int ii, mxArray *out,int nFi
     *reinterpret_cast<double*>( mxGetData(ftyptime))  = it.GetLoc().LocTime();
     
     pd= reinterpret_cast<double*>( mxGetData(ftypmsig));
-    for(int im=0;im!=nbMatrix;++im){          
-      sigstr = SdifSignatureToString(it.GetLoc().LocMSignature(im));
-      *pd              = sigstr[0];
-      *(pd+nbMatrix)   = sigstr[1];
-      *(pd+2*nbMatrix) = sigstr[2];
-      *(pd+3*nbMatrix) = sigstr[3];
-      ++pd;        
-    }          
+    for(int im=0;im!=nbAllMatrix;++im){          
+      if(p->TestMatrixSelection(it.GetLoc().LocMSignature(im))){
+        sigstr = SdifSignatureToString(it.GetLoc().LocMSignature(im));
+        *pd              = sigstr[0];
+        *(pd+nbMatrix)   = sigstr[1];
+        *(pd+2*nbMatrix) = sigstr[2];
+        *(pd+3*nbMatrix) = sigstr[3];
+        ++pd;        
+      }          
+    }
   }
   else if(nFields ==5){
     Easdif::SDIFFrame frame;
@@ -212,10 +236,11 @@ createMData(Easdif::SDIFEntity::const_iterator& it, int& ii, mxArray *mxData,
     char *sigstr;
     int totNum         = mxGetNumberOfElements(mxData);
     SdifSignature frameSig = it.GetLoc().LocSignature();
-    int nbMatrix       = it.GetLoc().LocNbMatrix();
+    int nbMatrix       =frame.GetNbMatrix();
     double ftime       = it.GetLoc().LocTime();
     SdifUInt4 streamId = it.GetLoc().LocStreamID();
     double *pd = 0;
+
     for (int im= 0;im != nbMatrix; ++im) {
       Easdif::SDIFMatrix &mat = frame.GetMatrix(im);
       if(mxDims){
@@ -588,7 +613,7 @@ mexFunction (int nlhs, mxArray *plhs [], int nrhs, const mxArray *prhs [])
         it      = p->begin();
         plhs[2] = mxCreateStructMatrix(dir.size(),1,4,dfields);
         for(int ii=0; it !=ite; ++it,++ii) {
-          createFrame(it, ii, plhs[2], 4, dfields);
+          createFrame(p, it, ii, plhs[2], 4, dfields);
         }
       }
     }
@@ -659,7 +684,7 @@ mexFunction (int nlhs, mxArray *plhs [], int nrhs, const mxArray *prhs [])
             dfields[4] = frameData_fieldString; 
             
             plhs[0] = mxCreateStructMatrix(1,1,5,dfields);
-            createFrame(itl->second, 0, plhs[0],5, dfields);
+            createFrame(p, itl->second, 0, plhs[0],5, dfields);
             ++(itl->second);
           }
           else {
@@ -867,7 +892,7 @@ mexFunction (int nlhs, mxArray *plhs [], int nrhs, const mxArray *prhs [])
                   unsigned int locStreamID = itl->second.GetLoc().LocStreamID();
                   if(locTime >=  startTime && locTime <= endTime
                      && start_id <= locStreamID && end_id >=locStreamID){
-                    createFrame(itl->second, ir, plhs[0],5, dfields);
+                    createFrame(p, itl->second, ir, plhs[0],5, dfields);
                     ++ir;
                   }
                 }
@@ -882,7 +907,7 @@ mexFunction (int nlhs, mxArray *plhs [], int nrhs, const mxArray *prhs [])
                   while(tit != tit_e && *tit <locTime) ++tit;
                   if(tit != tit_e && *tit == locTime
                      && start_id <= locStreamID && end_id >=locStreamID){
-                    createFrame(itl->second, ir, plhs[0],5, dfields);
+                    createFrame(p, itl->second, ir, plhs[0],5, dfields);
                     ++ir;
                   }                    
                 }
@@ -893,7 +918,7 @@ mexFunction (int nlhs, mxArray *plhs [], int nrhs, const mxArray *prhs [])
               for(int ir=0;itl->second != ite; ++(itl->second),++ir){
                 unsigned int locStreamID = itl->second.GetLoc().LocStreamID();
                 if ( start_id <= locStreamID && end_id >=locStreamID)
-                  createFrame(itl->second, ir, plhs[0],5, dfields);
+                  createFrame(p, itl->second, ir, plhs[0],5, dfields);
               }
             }
           }
@@ -930,10 +955,8 @@ mexFunction (int nlhs, mxArray *plhs [], int nrhs, const mxArray *prhs [])
         Easdif::SDIFEntity::const_iterator ite = p->end();               
         
         itl->second = itl->first->begin();
-        int numFR = 0;
         int numMat= 0;
         while(itl->second != ite){
-          ++numFR;
           numMat += itl->second.GetLoc().LocNbMatrix();
           ++(itl->second);
         }
