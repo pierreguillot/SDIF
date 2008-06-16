@@ -32,9 +32,12 @@
  * 
  * 
  * 
- * $Id: sdifentity.hpp,v 1.19 2008-05-31 22:53:13 roebel Exp $ 
+ * $Id: sdifentity.hpp,v 1.20 2008-06-16 08:53:44 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.19  2008/05/31 22:53:13  roebel
+ * Improved doc with respect to selection.
+ *
  * Revision 1.18  2008/02/15 19:09:58  roebel
  * Added missing include file that defines std::find_if.
  *
@@ -278,6 +281,7 @@
 #ifndef SDIFENTITY_H_
 #define SDIFENTITY_H_ 1
 
+#include <string.h>
 #include <string>
 #include <list>
 #include <set>
