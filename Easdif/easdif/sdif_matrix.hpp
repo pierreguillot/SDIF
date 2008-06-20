@@ -33,9 +33,13 @@
  * 
  * 
  * 
- * $Id: sdif_matrix.hpp,v 1.6 2008-02-14 12:18:17 roebel Exp $ 
+ * $Id: sdif_matrix.hpp,v 1.7 2008-06-20 17:07:02 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.6  2008/02/14 12:18:17  roebel
+ * Extended the GetRow/GetCol functions ability to read into  std::vector
+ * containing arbitrary types.
+ *
  * Revision 1.5  2007/11/26 19:10:23  roebel
  * Fixed to avoid compiler warnings in MSVC.
  * Little problem is the export of std::containers that should be defined as export
@@ -337,7 +341,7 @@ namespace Easdif {
      * \ingroup print
      * print matrix values
      */
-    void Print();
+    void Print() const;
 
     /*************************************************************************/
     /* Read and write a SDIFMatrix */

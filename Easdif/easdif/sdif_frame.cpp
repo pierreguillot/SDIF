@@ -32,9 +32,14 @@
  * 
  * 
  * 
- * $Id: sdif_frame.cpp,v 1.3 2007-04-30 11:33:17 roebel Exp $ 
+ * $Id: sdif_frame.cpp,v 1.4 2008-06-20 17:07:02 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.3  2007/04/30 11:33:17  roebel
+ * Frame reading methods return the number of bytes read for all selected matrices.
+ * Accordingly the return value can be used to decide whether anything was selected in
+ * the frame.
+ *
  * Revision 1.2  2006/04/22 11:48:09  roebel
  * Fixed left over problems from last renameing operation.
  *
@@ -365,7 +370,7 @@ int SDIFFrame::WriteHeader(const SDIFEntity& entity)
 }
 
 /* to see */
-void SDIFFrame::PrintHeader()
+void SDIFFrame::PrintHeader() const
 {
     std::cout << "\nFrame signature : " << SdifSignatureToString(mSig)
 	      << std::endl;
@@ -374,7 +379,7 @@ void SDIFFrame::PrintHeader()
     std::cout << " number of Matrix in current Frame : " << mNbMatrix << std::endl; 
 }
 
-void SDIFFrame::Print()
+void SDIFFrame::Print() const
 {
     SdifUInt4 index;
     PrintHeader();
