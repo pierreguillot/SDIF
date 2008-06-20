@@ -32,9 +32,12 @@
  * 
  * 
  * 
- * $Id: sdif_matrix.cpp,v 1.3 2007-04-30 11:32:18 roebel Exp $ 
+ * $Id: sdif_matrix.cpp,v 1.4 2008-06-20 17:07:02 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.3  2007/04/30 11:32:18  roebel
+ * Matrix reading routine returns bytecount read for selected matrices only.
+ *
  * Revision 1.2  2006/04/22 11:48:09  roebel
  * Fixed left over problems from last renameing operation.
  *
@@ -364,7 +367,7 @@ int SDIFMatrix::Read(SdifFileT* file,const std::set<SdifSignature> * hlselection
 
 
 /* to see the matrix */
-void SDIFMatrix::Print()
+void SDIFMatrix::Print() const
 {
    std::cout << " Signature : " << SdifSignatureToString(mSig) << std::endl;
    mInter->print();

@@ -34,9 +34,16 @@
  * sdifframe.h is composed of the different methods which are using to 
  * manipulate the frame.
  * 
- * $Id: sdif_frame.hpp,v 1.4 2007-11-26 19:10:34 roebel Exp $ 
+ * $Id: sdif_frame.hpp,v 1.5 2008-06-20 17:07:02 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.4  2007/11/26 19:10:34  roebel
+ * Fixed to avoid compiler warnings in MSVC.
+ * Little problem is the export of std::containers that should be defined as export
+ * which is not possible due to the given STL include files.
+ * For the moment it seems these warnings are not important, because all these functions
+ * are inlined as templates in the STL anyway. Has to be handled with care !!!!
+ *
  * Revision 1.3  2007/04/30 11:33:08  roebel
  * Frame reading methods return the number of bytes read for all selected matrices.
  * Accordingly the return value can be used to decide whether anything was selected in
@@ -324,13 +331,13 @@ namespace Easdif {
      * \ingroup otherframe
      * @brief see the content of a frame
      */
-    void Print();
+    void Print() const;
 
     /**
      * \ingroup otherframe 
      * @brief see the frame header
      */
-    void PrintHeader();
+    void PrintHeader() const;
 
     /**
      * \ingroup otherframe
