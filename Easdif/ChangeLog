@@ -1,3 +1,10 @@
+2008-06-20  Axel Roebel  <Axel.Roebel@ircam.fr>
+Version 1.4.8
+
+	* easdif/sdif_frame.cpp, easdif/sdif_frame.hpp, easdif/sdif_matrix.cpp,
+	* easdif/sdif_matrix.hpp :
+	Changed Print methods to be const.
+	
 2008-05-31  Axel Roebel  <roebel>
 Version 1.4.7
 
@@ -1115,4 +1122,4 @@ Version 0.21
 	* ChangeLog: Added changelog to repository.
 
 
-$Id: ChangeLog,v 1.77 2008-05-31 23:10:46 roebel Exp $
+$Id: ChangeLog,v 1.78 2008-06-20 17:08:39 roebel Exp $
