@@ -34,9 +34,12 @@
  * 
  * 
  * 
- * $Id: sdifexception.hpp,v 1.5 2008-03-07 19:20:28 roebel Exp $ 
+ * $Id: sdifexception.hpp,v 1.6 2008-07-28 16:19:57 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.5  2008/03/07 19:20:28  roebel
+ * consistently define destructor of derived classes
+ *
  * Revision 1.4  2008/01/11 15:58:59  roebel
  * Added new class MatrixType, FrameType, and the realted function for
  * adding types to entity or retrieving types from an entity in terms of these
@@ -262,7 +265,7 @@ namespace Easdif {
 
   /// \ingroup exception 
   /// \brief SDIFFileError  error during file operations
-  class SDIFFileError : public SDIFException
+  class EASDIF_API SDIFFileError : public SDIFException
   {
   public:
     constructor(SDIFFileError,SDIFException)
@@ -270,7 +273,7 @@ namespace Easdif {
 
   /// \ingroup exception 
   /// \brief SDIFOpeningError error when opening a file 
-  class SDIFOpeningError : public SDIFFileError
+  class EASDIF_API SDIFOpeningError : public SDIFFileError
   {
   public:
     constructor(SDIFOpeningError,SDIFFileError)
@@ -278,7 +281,7 @@ namespace Easdif {
 
   /// \ingroup exception 
   /// \brief ReadWriteOnSameFile
-  class SDIFReadWriteOnSameFile : public SDIFOpeningError
+  class EASDIF_API SDIFReadWriteOnSameFile : public SDIFOpeningError
   {
   public:
     constructor(SDIFReadWriteOnSameFile,SDIFOpeningError)
@@ -286,7 +289,7 @@ namespace Easdif {
 
   /// \ingroup exception 
   /// \brief SDIFBadStdFile
-  class SDIFBadStdFile : public SDIFOpeningError
+  class EASDIF_API SDIFBadStdFile : public SDIFOpeningError
   {
   public:
     constructor(SDIFBadStdFile,SDIFOpeningError)
@@ -294,7 +297,7 @@ namespace Easdif {
 
   /// \ingroup exception 
   /// \brief SDIFBadMode bad mode when opening file
-  class SDIFBadMode  : public SDIFOpeningError
+  class EASDIF_API SDIFBadMode  : public SDIFOpeningError
   {
   public:
     constructor(SDIFBadMode,SDIFOpeningError)
@@ -302,7 +305,7 @@ namespace Easdif {
 
   /// \ingroup exception 
   /// \brief SDIFHeaderError Frame/Matrix/File Header Errors 
-  class SDIFHeaderError : public SDIFFileError
+  class EASDIF_API SDIFHeaderError : public SDIFFileError
   {
   public:
     constructor(SDIFHeaderError,SDIFFileError)
@@ -310,7 +313,7 @@ namespace Easdif {
 
   /// \ingroup exception 
   /// \brief SDIFFrameHeaderSizeError 
-  class SDIFFrameHeaderSizeError : public SDIFFileError
+  class EASDIF_API SDIFFrameHeaderSizeError : public SDIFFileError
   {
   public:
     constructor(SDIFFrameHeaderSizeError,SDIFFileError)
@@ -318,7 +321,7 @@ namespace Easdif {
 
   /// \ingroup exception 
   /// \brief SDIFDirError: Indicates error when creating the SDIF Frame directory
-  class SDIFDirError : public SDIFFileError
+  class EASDIF_API SDIFDirError : public SDIFFileError
   {
   public:
     constructor(SDIFDirError,SDIFFileError)
@@ -329,7 +332,7 @@ namespace Easdif {
    * \ingroup exception
    *  may happen either because given position cannot be reached or because te file  is a pipe
    */
-  class SDIFSeekError : public SDIFFileError
+  class EASDIF_API SDIFSeekError : public SDIFFileError
   {
   public:
     constructor(SDIFSeekError,SDIFFileError)
@@ -338,7 +341,7 @@ namespace Easdif {
 
   /// \ingroup exception 
   /// \brief SDIFBadFormatVersion
-  class SDIFBadFormatVersion : public SDIFHeaderError
+  class EASDIF_API SDIFBadFormatVersion : public SDIFHeaderError
   {
   public:
     constructor(SDIFBadFormatVersion,SDIFHeaderError)
@@ -346,7 +349,7 @@ namespace Easdif {
 
   /// \ingroup exception 
   /// \brief SDIFBadHeader
-  class SDIFBadHeader : public SDIFHeaderError
+  class EASDIF_API SDIFBadHeader : public SDIFHeaderError
   {
   public:
     constructor(SDIFBadHeader,SDIFHeaderError)
@@ -354,7 +357,7 @@ namespace Easdif {
 
   /// \ingroup exception 
   /// \brief ASCII Chunk Errors 
-  class SDIFAsciiChunkError : public SDIFFileError
+  class EASDIF_API SDIFAsciiChunkError : public SDIFFileError
   {
   public:
     constructor(SDIFAsciiChunkError,SDIFFileError)
@@ -362,7 +365,7 @@ namespace Easdif {
 
   /// \ingroup exception 
   /// \brief SDIFReDefined
-  class SDIFReDefined : public SDIFAsciiChunkError
+  class EASDIF_API SDIFReDefined : public SDIFAsciiChunkError
   {
   public:
     constructor(SDIFReDefined,SDIFAsciiChunkError)
@@ -370,7 +373,7 @@ namespace Easdif {
 
   /// \ingroup exception 
   /// \brief SDIFUnDefined
-  class SDIFUnDefined  : public SDIFAsciiChunkError
+  class EASDIF_API SDIFUnDefined  : public SDIFAsciiChunkError
   {
   public:
     constructor(SDIFUnDefined,SDIFAsciiChunkError)
@@ -378,7 +381,7 @@ namespace Easdif {
 
   /// \ingroup exception 
   /// \brief SDIFReading error during read
-  class SDIFReading : public SDIFFileError
+  class EASDIF_API SDIFReading : public SDIFFileError
   {
   public:
     constructor(SDIFReading,SDIFFileError)
@@ -386,7 +389,7 @@ namespace Easdif {
 
   /// \ingroup exception 
   /// \brief SDIFEof: eof of sdif file reached
-  class SDIFEof : public SDIFReading
+  class EASDIF_API SDIFEof : public SDIFReading
   {
   public:
     constructor(SDIFEof,SDIFReading)
@@ -396,7 +399,7 @@ namespace Easdif {
 
   /// \ingroup exception 
   /// \brief SDIFDescriptionTypeError 
-  class SDIFDescriptionTypeError : public SDIFException{
+  class EASDIF_API SDIFDescriptionTypeError : public SDIFException{
   public:
     constructor(SDIFDescriptionTypeError,SDIFException)
       };
@@ -405,14 +408,14 @@ namespace Easdif {
   /****************** MATRIX DATA ELEMENT TYPE CHECKING ****/
   /// \ingroup exception 
   /// \brief SDIFMatrixDataError
-  class SDIFMatrixDataError : public SDIFException{
+  class EASDIF_API SDIFMatrixDataError : public SDIFException{
   public:
     constructor(SDIFMatrixDataError,SDIFException)
       };
 
   /// \ingroup exception 
   /// \brief SDIFNotInDataTypeUnion
-  class SDIFNotInDataTypeUnion  : public SDIFMatrixDataError
+  class EASDIF_API SDIFNotInDataTypeUnion  : public SDIFMatrixDataError
   {
   public:
     constructor(SDIFNotInDataTypeUnion,SDIFMatrixDataError)
@@ -420,7 +423,7 @@ namespace Easdif {
 
   /// \ingroup exception 
   /// \brief SDIFArrayPosition
-  class SDIFArrayPosition  : public SDIFMatrixDataError
+  class EASDIF_API SDIFArrayPosition  : public SDIFMatrixDataError
   {
   public:
     constructor(SDIFArrayPosition,SDIFMatrixDataError)
@@ -429,14 +432,14 @@ namespace Easdif {
   /****************** MEMORY MANAGEMENT ********************/
   /// \ingroup exception 
   /// \brief SDIFMemoryError memory problems
-  class SDIFMemoryError : public SDIFException{
+  class EASDIF_API SDIFMemoryError : public SDIFException{
   public:
     constructor(SDIFMemoryError,SDIFException)
       };
 
   /// \ingroup exception 
   /// \brief SDIFFreeNull  mem pointer is zero
-  class SDIFFreeNull : public SDIFMemoryError
+  class EASDIF_API SDIFFreeNull : public SDIFMemoryError
   {
   public:
     constructor(SDIFFreeNull,SDIFMemoryError)
@@ -444,7 +447,7 @@ namespace Easdif {
 
   /// \ingroup exception  
   /// \brief SDIFAllocFail memory allocation failed
-  class SDIFAllocFail : public SDIFMemoryError
+  class EASDIF_API SDIFAllocFail : public SDIFMemoryError
   {
   public:
     constructor(SDIFAllocFail,SDIFMemoryError)
@@ -453,14 +456,14 @@ namespace Easdif {
   /****************** SDIF-Text Reading ********************/
   /// \ingroup exception  
   /// \brief SDIFTextReadingError  error reading text section
-  class SDIFTextReadingError : public SDIFException{
+  class EASDIF_API SDIFTextReadingError : public SDIFException{
   public:
     constructor(SDIFTextReadingError,SDIFException)
       };
 
   /// \ingroup exception    
   /// \brief SDIFTokenLength
-  class SDIFTokenLength : public SDIFTextReadingError
+  class EASDIF_API SDIFTokenLength : public SDIFTextReadingError
   {
   public:
     constructor(SDIFTokenLength,SDIFTextReadingError)
@@ -469,19 +472,19 @@ namespace Easdif {
   /****************** Frame Contents ****/
   /// \ingroup exception    
   /// \brief SDIFMatrixNotAvailable requested matrix not in frame
-  class SDIFMatrixNotAvailable : public SDIFException{  
+  class EASDIF_API SDIFMatrixNotAvailable : public SDIFException{  
   public:
     constructor(SDIFMatrixNotAvailable,SDIFException)
       };
 
   /// \brief Error in frame directory 
-  class FrameDirError : public SDIFException{  
+  class EASDIF_API FrameDirError : public SDIFException{  
   public:
     constructor(FrameDirError,SDIFException)
       };
 
   /// \brief Error in construction or handling of MatrixTypes and FrameTypes 
-  class TypeError : public SDIFException{  
+  class EASDIF_API TypeError : public SDIFException{  
   public:
     constructor(TypeError,SDIFException)
       };
