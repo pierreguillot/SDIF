@@ -1,6 +1,11 @@
-2008-07-28  Axel Roebel  <Axel.Roebel@ircam.fr>
+2008-07-31  Axel Roebel  <Axel.Roebel@ircam.fr>
 Version 1.4.9
 
+	* matlab/Fsdif_read_handler.cpp:
+	Removed debug output.
+	
+2008-07-28  Axel Roebel  <Axel.Roebel@ircam.fr>
+	
 	* easdif/sdifexception.hpp : 
 	Added all derived exceptions to the public API
 	of the library.
@@ -1129,4 +1134,4 @@ Version 0.21
 	* ChangeLog: Added changelog to repository.
 
 
-$Id: ChangeLog,v 1.79 2008-07-28 16:20:32 roebel Exp $
+$Id: ChangeLog,v 1.80 2008-07-31 18:15:37 roebel Exp $
