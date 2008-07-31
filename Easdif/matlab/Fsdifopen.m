@@ -32,8 +32,8 @@
 %     empty matrices.
 %
 %   head.TYP : Contains the file extensions of the file.
-%     The local type declarations will be stored in a type struct having MTD   
-%     and FTD sub-structs :
+%     The local type declarations will be stored in the struct TYP.
+%     that holds vectors of MTD and FTD sub-structs :
 % 
 %     Matrix types are declared in the MTD struct
 %  
@@ -70,7 +70,7 @@
 % Opens file for reading and provides file handle, header infos and directory.
 %  
 %
-% $Revision: 1.3 $    last changed $Date: 2008-01-30 02:10:51 $
+% $Revision: 1.4 $    last changed $Date: 2008-07-31 18:11:56 $
 %
 %                                                       Copyright (c) 2008 by  IRCAM 
 
