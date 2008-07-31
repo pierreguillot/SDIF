@@ -6,7 +6,7 @@
  * @brief  handle read file io in matlab
  * 
  *
- * $Revision: 1.7 $   last changed on $Date: 2008-05-31 22:51:56 $
+ * $Revision: 1.8 $   last changed on $Date: 2008-07-31 18:14:05 $
  *
  *                                    Copyright (c) 2008 by IRCAM
  * 
@@ -52,19 +52,20 @@ char errMess [PATH_MAX+50];
 
 inline
 int
-nbSelectedMatricesInFrame(Easdif::SDIFEntity*p, Easdif::SDIFEntity::const_iterator& it) {
+nbSelectedMatricesInFrame(Easdif::SDIFEntity*p, 
+                          Easdif::SDIFEntity::const_iterator& it) {
   
   int nbAllMatrix = it.GetLoc().LocNbMatrix();
   int nbMatrix    = 0;
   
   for(int im=0;im!=nbAllMatrix;++im){          
-    mexPrintf("matrix sig  %s ", SdifSignatureToString(it.GetLoc().LocMSignature(im)));
+    //mexPrintf("matrix sig  %s ", SdifSignatureToString(it.GetLoc().LocMSignature(im)));
     if(p->TestMatrixSelection(it.GetLoc().LocMSignature(im))){
-      mexPrintf("selected \n");
+      //      mexPrintf("selected \n");
       ++nbMatrix;
     }
-      else
-        mexPrintf("not selected \n");
+    //    else
+    //        mexPrintf("not selected \n");
   }          
   return nbMatrix;
 }
