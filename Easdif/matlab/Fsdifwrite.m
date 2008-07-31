@@ -10,7 +10,7 @@
 %          decreasing times
 %
 % frame format :
-%    frames.fsig     = 1x4 double array indicating the matrix signature
+%    frames.fsig     = 1x4 double array indicating the frame signature
 %    frames.stream   = real scalar of arbitrary type holding the
 %                      streamid
 %    frames.time     = real double indicating frame time
@@ -48,7 +48,7 @@
 % AUTHOR : Axel Roebel
 % DATE   : 21.01.2008
 %
-% $Revision: 1.2 $    last changed $Date: 2008-01-30 02:12:34 $
+% $Revision: 1.3 $    last changed $Date: 2008-07-31 18:10:31 $
 %
 %                                                         Copyright (c)
 %                                                         2008 by  IRCAM 
