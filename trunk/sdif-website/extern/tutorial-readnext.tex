@@ -1,0 +1,143 @@
+\documentclass{article}
+
+\usepackage{hevea}
+\usepackage{tabularx}
+
+
+%
+% commands
+%
+
+\ifhevea
+
+% web only
+\renewcommand{\url}     [1]   {\ahrefurl{#1}}
+\newcommand{\link}      [2]   {\ahref{#1}{#2}}
+\newcommand{\sel}       [1]   {\textcolor{red}{\code{\textbf{#1}}}}
+\newcommand{\slabel}    [2]   {\label{sec:#1}#2}
+\newcommand{\tocitem}   [2]   {\item\ahrefloc{sec:#1}{#2}}
+\newcommand{\index}     [1]   {}  % hevea doesn't know \index
+
+\else
+
+% latex only
+\let\realurl=\url
+\renewcommand{\url}     [1]   {{\small\realurl{#1}}}
+\newcommand{\link}      [2]   {#2}
+
+\fi
+
+\renewcommand{\code}         [1] {{\upshape\texttt{#1}}}
+\newcommand{\selectspecurl}      {http://www.ircam.fr/anasyn/sdif/extern/utilities-doc.html#selectspec} 
+\newcommand{\selectspeclink} [1] {\link{\selectspecurl}{#1}} 
+\newcommand{\commentp}       [1] {%
+	\begin{rawhtml}<table><tr valign=top><td>/* <td>\end{rawhtml}
+ 	\textit{#1}~*/
+	\begin{rawhtml}</table>\end{rawhtml}}
+%\newcommand{\commentp}       [1] {\begin{tabular}{lp{}}
+%				  /* & \textit{#1}~*/\\
+%				  \end{tabular}}
+\newcommand{\commentl}       [1] {/* \textit{#1} */}
+\renewcommand{\@bodyargs}{TEXT=black BGCOLOR=white}
+
+%
+% title and abstract
+%
+
+\title  {IRCAM SDIF Library Tutorial}
+\author {\link{mailto:schwarz@ircam.fr}{Diemo Schwarz}}
+\date   {\today}
+
+
+\begin{document}
+\maketitle
+
+
+
+\section {Introduction}
+
+A little note on the \key{naming convention} of SDIF funtions: All functions
+starting with \code{SdifF}... work on an open SDIF file.  They all take an
+\code{SdifFileT *} as first argument.
+
+The library is initialised by calling
+
+\begin{alltt}
+SdifGetInit ("");
+\end{alltt}
+
+giving an optional \code{.styp} file with description of type definitions.  An
+empty string \code{""} means take the file at the standard place, or use the
+file given by the environment variable \code{SDIFTYPES}, if it exists.
+
+
+\section {Reading}
+
+%\subsection {Making Your Own Loop}
+
+\begin{alltt}
+
+\commentp{Open file for reading and parse selection.  (See
+	  \selectspeclink{Utilities} for selection syntax.)}
+SdifFileT *file = SdifFOpen ("filename::\selectspeclink{\var{selection}}", eRead);
+SdifFReadGeneralHeader  (file); \commentl{Read header}
+SdifFReadAllASCIIChunks (file); \commentl{Read header info}
+if (SdifFLastError (file))	\commentl{Check for errors}
+\{ 
+    exit (1);
+\}
+
+\commentp{Read all frames matching the file selection.}  
+while (SdifFReadNextSelectedFrameHeader (file))
+\{
+	SdifFloat8	time 	 = SdifFCurrTime (file);
+	SdifSignature	sig  	 = SdifFCurrFrameSignature (file);
+	SdifUInt4	streamid = SdifFCurrID (file);
+	SdifUInt4	nmatrix  = SdifFCurrNbMatrix (file);
+
+	/* Read all matrices in this frame matching the selection.
+           Specific rows and columns can be selected.  If it is not
+           NULL, the matrix selection msel is added to the file
+           selection, given with SdifFOpen, and can be differnt for
+           each call. */
+SdifFCurrMatrixIsSelected
+	while (SdifFReadNextMatrix (file, msel))
+	\{
+ 		SdifSignature	sig   = SdifFCurrMatrixSignature (file);
+		SdifInt4	nrows = SdifFCurrNbRow (file);
+		SdifInt4	ncols = SdifFCurrNbCol (file);
+
+		SdifDataTypeET	type  = SdifFCurrDataType (file);
+		void*		data  = SdifFCurrMatrixData (file);
+
+		/* do something with data pointer directly (data is
+                   stored in row-major order), or access values by
+                   indices (1 <= row <= nrows, 1 <= col <= ncols): */
+		SdifFloat8 	value = SdifFCurrDataValue (file, row, col);
+	\}
+\}
+
+if (SdifFCheckError (file))   
+{ /* complain about error */
+  char errmsg [SdifMaxErrMsg];
+  SdifFGetErrorMsg (file, errmsg);
+  /* print it and exit or return */
+}
+
+SdifFClose (file);
+
+SdifGenKill ();
+\end{alltt}
+
+
+\subsection {Let the Lib Loop}
+
+SdifFReadFileSimple ("filename::selection", MatrixFunction);
+
+SdifFReadFileSimple ("filename::selection", MatrixFunction);
+
+\section {Writing}
+
+
+\end{document}
+% --> cocoon anchor
