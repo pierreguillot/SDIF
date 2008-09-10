@@ -1,8 +1,11 @@
-/* $Id: sdif-main-page.css,v 1.1 2008-09-10 09:06:43 diemo Exp $
+/* $Id: sdif-main-page.css,v 1.2 2008-09-10 16:54:01 diemo Exp $
 
    CSS style sheet for SDIF pages at sourceforge
 
    $Log: not supported by cvs2svn $
+   Revision 1.1  2008/09/10 09:06:43  diemo
+   special style for main page only: squeeze headings
+
    Revision 1.2  2008/01/21 18:27:24  diemo
    slighly less shitty...
 */
@@ -35,6 +38,12 @@ h2 {
 h3 { /* font-style: italic; */ 
      color: #a0a0a0;
      margin-top: 0pt;
-     border-bottom: 5px solid white;
+     border-bottom: 0px solid white;
+     text-decoration: none
+     }
+sdif_link {
+     color: gray;
+     border-bottom: 0px;
+     margin-bottom: 0pt;
      text-decoration: none
      }
