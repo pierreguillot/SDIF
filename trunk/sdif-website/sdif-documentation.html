@@ -17,10 +17,10 @@ established standard for the well-defined and extensible interchange
 of a variety of sound descriptions including representations of the
 signal for analysis-synthesis like spectral, sinusoidal, time-domain,
 or higher-level models, sound descriptors like loudness or fundamental
-frequency ,markers, labels, and statistical models.  SDIF consists of a basic
-data format framework and an
-extensible <a href="standard/types-main.html">set of standard sound
-descriptions</a>.
+frequency ,markers, labels, and statistical models.  SDIF consists of
+a <a href="standard/sdif-standard.html">basic data format
+framework</a> and an extensible <a href="standard/types-main.html">set
+of standard sound descriptions</a>.
 
 <p>The SDIF standard has been created in collaboration
 by <a href="http://www.ircam.fr">Ircam-Centre Pompidou</a>, Paris,
@@ -28,6 +28,29 @@ France, <a href="http://cnmat.berkeley.edu/">CNMAT</a>, University of
 Berkeley, USA, and the <a href="http://mtg.upf.edu/">Music
 Technology Group (MTG)</a> of the Universitat Pompeu Fabra, Barcelona,
 Spain.
+
+There are many references on how to use it from C, Matlab, command
+line, etc. This is a rapid top-down introduction to the concept for
+the beginner. It is also useful to refer to the more detailed
+bottom-up introduction of the
+the <a href="standard/sdif-standard.html">SDIF standard definition</a>.
+
+SDIF is a standard format for storage of sound descriptors, e.g., F0, frequencies, amplitudes, and phases of the partials, spectral envelope, or even time markers and time selections. A simple SDIF file contains a collection of frames, organised into one or more parallel streams. There are a few special frames (file header, information, type definition etc), and data frames.
+
+Frames are distinguished by means of their time position, their stream-id and their type. The sequence of frames in an SDIF file has to be sorted such that frame time is never decreasing. There may exist multiple frames for the same time - however you should never store two frames with the same time, type and streamid into the same file. Streams can be used to group frames at different time instances together. They may be used as well to distinguish frames at the same time position. IRCAM programs will often use streams to group data of the different channels of a multi channel file. In this case the first channel is usually stored in stream 0. Note, however, that the connection of streams and channels is not defined by the SDIF standard.
+
+For each frame, the data is then stored as one or several matrices of arbitrary size and type depending on the data stored. The matrix types that are allowed in a frame are defined here. Note that this document reflects IRCAM's notion of the standard, which is a superset of the types agreed upon with other institutions (CNMAT). Frame and matrix types are distinguished by a sequence of 4 characters -- the type signatures. The signature for the frame that contains information about fundamental frequency is 1FQ0. This frame contains 1FQ0 matrices, which in turn are used to describe the fundamental frequency. We see that frame signatures and matrix signatures can be the same. For each frame there exists required and optional matrices. Matrices in turn contain columns of data. Again there exist required and optional columns in the matrices. The 1FQ0 matrix contains the required column for the F0 value and 3 optional columns for additional information. The IRCAM standard frame types are known to the SDIF library. If you want to store additional matrix or frame types in an SDIF file, the extended frame and matrix definitions have to be added to the SDIF file header. If you define new frame or matrix types you should start their signature with an X such that extensions and standard types are easy to distinguish (AudioSculpt/supervp for example use the XTRD matrix signature to store an extended transient description). Note, that you are not allowed to store more than one matrix of the same type in a single frame!
+
+<h3>Frame type examples</h3>
+<ul>
+    <li> As described above, the 1FQ0 frame used to store F0 information contains only only one matrix. This matrix contains only one required column: the F0 at this time.
+    <li> To store partials, each frame may contain an Nx4 matrix with one row for each partial, and the columns containing the index, the frequency, the amplitude, and the phase for each partial at this time instant.
+    <li> And time markers are simply stored as frames with 1x1 matrix that identifies the marker. Additional information may be added using the frame definition mechanism described above. One may for example add a matrix describing this mark, e.g., current F0.
+</ul>
+
+As described above, all these data may be stored in the same SDIF file, using the stream indices to regroup the information.
+
+This storage may of course be done in break-point function (bpf) files, as text or binary, but the benefit of the SDIF format is that the file contains the 4-character identifiers describing the frames and matrices together with matrix and column names that describe the contents.
 
 
 <h2 id=Documentation>Documentation</h2>
@@ -68,7 +91,7 @@ There are three C/C++ libraries out there, with many bindings to script language
 
   <li> Ircam EaSDIF Library in C++
     <ul> 
-      <li> <a href="http://sourceforge.net/project/sdif">SourceForge project page</a>
+      <li> <a href="http://sourceforge.net/projects/sdif">SourceForge project page</a>
     </ul>
 
   <li> <a href=http://www.cnmat.berkeley.edu/SDIF>CNMAT SDIF Library in C</a> 
@@ -80,8 +103,8 @@ There are three C/C++ libraries out there, with many bindings to script language
 <h3 id=Tools>SDIF Tools</h3>
 
 <ul>
-  <li> <a href="http://www.ircam.fr/sdif/extern/utilities-main.html">Ircam Library Commandline Tools</a>
-  <li> <a href="http://sdif.wiki.sourceforge.net/SDIF+Tools">More SDIF Tools</a> and
+  <li> <a href="extern/utilities-main.html">Ircam Library Commandline Tools</a>
+  <li> <a href="http://sdif.wiki.sourceforge.net/Sdif+Tools">More SDIF Tools</a> and
   <li> <a href="http://sdif.wiki.sourceforge.net/Applications">Applications</a>
     page on the <a href="http://sdif.wiki.sourceforge.net/">SDIF Wiki</a>
 </ul>
