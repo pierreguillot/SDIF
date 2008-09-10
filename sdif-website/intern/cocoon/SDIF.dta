@@ -1,0 +1,111 @@
+<tr><td align=right valign=top>typedef struct SdifFileS </td><td><a href="#typedef_struct_SdifFileS_SdifFileT$"><font color=green>SdifFileT</font></a>;</td></tr>
+<tr><td></td></tr><tr><td></td><td><strong>// 	Error Handling</strong></td></tr>
+<tr><td align=right valign=top>typedef enum SdifErrorTagE </td><td><a href="#typedef_enum_SdifErrorTagE_SdifErrorTagET$"><font color=green>SdifErrorTagET</font></a>;</td></tr>
+<tr><td align=right valign=top>typedef enum SdifErrorLevelE </td><td><a href="#typedef_enum_SdifErrorLevelE_SdifErrorLevelET$"><font color=green>SdifErrorLevelET</font></a>;</td></tr>
+<tr><td align=right valign=top>typedef struct SdifErrorS </td><td><a href="#typedef_struct_SdifErrorS_SdifErrorT$"><font color=green>SdifErrorT</font></a>;</td></tr>
+<tr><td align=right valign=top>struct </td><td><a href="#struct_SdifErrorS_$"><font color=green>SdifErrorS</font></a> ;</td></tr>
+<tr><td align=right valign=top>typedef struct SdifErrorLS </td><td><a href="#typedef_struct_SdifErrorLS_SdifErrorLT$"><font color=green>SdifErrorLT</font></a>;</td></tr>
+<tr><td align=right valign=top>struct </td><td><a href="#struct_SdifErrorLS_$"><font color=green>SdifErrorLS</font></a> ;</td></tr>
+<tr><td align=right valign=top>typedef enum SdifErrorE </td><td><a href="#typedef_enum_SdifErrorE_SdifErrorEnum$"><font color=green>SdifErrorEnum</font></a>;</td></tr>
+<tr><td align=right valign=top>typedef void (*</td><td><a href="#typedef_void_(*SdifExitFuncT)_(void)$"><font color=green>SdifExitFuncT</font></a>) (void);</td></tr>
+<tr><td></td></tr><tr><td></td><td><strong>// 	SDIF File Structure</strong></td></tr>
+<tr><td align=right valign=top>typedef enum SdifFileModeE </td><td><a href="#typedef_enum_SdifFileModeE_SdifFileModeET_$"><font color=green>SdifFileModeET</font></a> ;</td></tr>
+<tr><td align=right valign=top>enum </td><td><a href="#enum_SdifPassE_$"><font color=green>SdifPassE</font></a> ;</td></tr>
+<tr><td align=right valign=top>typedef struct SdifFileS </td><td><a href="#typedef_struct_SdifFileS_SdifFileT$"><font color=green>SdifFileT</font></a>;</td></tr>
+<tr><td align=right valign=top>struct </td><td><a href="#struct_SdifFileS_$"><font color=green>SdifFileS</font></a> ;</td></tr>
+<tr><td align=right valign=top>typedef struct SdifFrameHeaderS </td><td><a href="#typedef_struct_SdifFrameHeaderS_SdifFrameHeaderT$"><font color=green>SdifFrameHeaderT</font></a>;</td></tr>
+<tr><td align=right valign=top>struct </td><td><a href="#struct_SdifFrameHeaderS_$"><font color=green>SdifFrameHeaderS</font></a> ;</td></tr>
+<tr><td align=right valign=top>typedef struct SdifFrameDataS </td><td><a href="#typedef_struct_SdifFrameDataS_SdifFrameDataT$"><font color=green>SdifFrameDataT</font></a>;</td></tr>
+<tr><td align=right valign=top>struct </td><td><a href="#struct_SdifFrameDataS_$"><font color=green>SdifFrameDataS</font></a> ;</td></tr>
+<tr><td align=right valign=top>typedef struct SdifComponentS </td><td><a href="#typedef_struct_SdifComponentS_SdifComponentT$"><font color=green>SdifComponentT</font></a>;</td></tr>
+<tr><td align=right valign=top>struct </td><td><a href="#struct_SdifComponentS_$"><font color=green>SdifComponentS</font></a> ;</td></tr>
+<tr><td align=right valign=top>typedef struct SdifFrameTypeS </td><td><a href="#typedef_struct_SdifFrameTypeS_SdifFrameTypeT$"><font color=green>SdifFrameTypeT</font></a>;</td></tr>
+<tr><td align=right valign=top>struct </td><td><a href="#struct_SdifFrameTypeS_$"><font color=green>SdifFrameTypeS</font></a> ;</td></tr>
+<tr><td align=right valign=top>typedef enum SdifSignatureE </td><td><a href="#typedef_enum_SdifSignatureE_SdifSignatureET$"><font color=green>SdifSignatureET</font></a>;</td></tr>
+<tr><td align=right valign=top>typedef enum SdifModifModeE </td><td><a href="#typedef_enum_SdifModifModeE_SdifModifModeET$"><font color=green>SdifModifModeET</font></a>;</td></tr>
+<tr><td align=right valign=top>typedef enum SdifDataTypeE </td><td><a href="#typedef_enum_SdifDataTypeE_SdifDataTypeET$"><font color=green>SdifDataTypeET</font></a>;</td></tr>
+<tr><td align=right valign=top>typedef enum SdifDataTypeE </td><td><a href="#typedef_enum_SdifDataTypeE_SdifDataTypeET$"><font color=green>SdifDataTypeET</font></a>;</td></tr>
+<tr><td align=right valign=top>typedef char </td><td><a href="#typedef_char_SdifChar$"><font color=green>SdifChar</font></a>;</td></tr>
+<tr><td align=right valign=top>typedef short </td><td><a href="#typedef_short_SdifInt2$"><font color=green>SdifInt2</font></a>;</td></tr>
+<tr><td align=right valign=top>typedef unsigned short </td><td><a href="#typedef_unsigned_short_SdifUInt2$"><font color=green>SdifUInt2</font></a>;</td></tr>
+<tr><td align=right valign=top>typedef int </td><td><a href="#typedef_int_SdifInt4$"><font color=green>SdifInt4</font></a>;</td></tr>
+<tr><td align=right valign=top>typedef unsigned int </td><td><a href="#typedef_unsigned_int_SdifUInt4$"><font color=green>SdifUInt4</font></a>;</td></tr>
+<tr><td align=right valign=top>typedef float </td><td><a href="#typedef_float_SdifFloat4$"><font color=green>SdifFloat4</font></a>;</td></tr>
+<tr><td align=right valign=top>typedef double </td><td><a href="#typedef_double_SdifFloat8$"><font color=green>SdifFloat8</font></a>;</td></tr>
+<tr><td align=right valign=top>typedef unsigned int </td><td><a href="#typedef_unsigned_int_SdifSignature$"><font color=green>SdifSignature</font></a>;</td></tr>
+<tr><td align=right valign=top>typedef enum SdifMachineE </td><td><a href="#typedef_enum_SdifMachineE_SdifMachineET$"><font color=green>SdifMachineET</font></a>;</td></tr>
+<tr><td align=right valign=top>typedef enum SdifBinaryMode </td><td><a href="#typedef_enum_SdifBinaryMode_SdifBinaryModeET_$"><font color=green>SdifBinaryModeET</font></a> ;</td></tr>
+<tr><td align=right valign=top>typedef enum SdifHashIndexTypeE </td><td><a href="#typedef_enum_SdifHashIndexTypeE_SdifHashIndexTypeET$"><font color=green>SdifHashIndexTypeET</font></a>;</td></tr>
+<tr><td align=right valign=top>typedef union SdifHashIndexU </td><td><a href="#typedef_union_SdifHashIndexU_SdifHashIndexUT$"><font color=green>SdifHashIndexUT</font></a>;</td></tr>
+<tr><td align=right valign=top>char* </td><td><a href="#char*_Char[1]$"><font color=green>Char</font></a>[1];</td></tr>
+<tr><td align=right valign=top>unsigned int </td><td><a href="#unsigned_int_Int4$"><font color=green>Int4</font></a>;</td></tr>
+<tr><td align=right valign=top>typedef struct SdifHashNS </td><td><a href="#typedef_struct_SdifHashNS_SdifHashNT$"><font color=green>SdifHashNT</font></a>;</td></tr>
+<tr><td align=right valign=top>struct </td><td><a href="#struct_SdifHashNS_$"><font color=green>SdifHashNS</font></a> ;</td></tr>
+<tr><td align=right valign=top>typedef struct SdifHashTableS </td><td><a href="#typedef_struct_SdifHashTableS_SdifHashTableT$"><font color=green>SdifHashTableT</font></a>;</td></tr>
+<tr><td align=right valign=top>struct </td><td><a href="#struct_SdifHashTableS_$"><font color=green>SdifHashTableS</font></a> ;</td></tr>
+<tr><td align=right valign=top>typedef int (*</td><td><a href="#typedef_int_(*SdifMatrixCallbackT)_(SdifFileT_*file,_int_nummatrix,_void_*userdata)$"><font color=green>SdifMatrixCallbackT</font></a>) (SdifFileT *file, int nummatrix, void *userdata);</td></tr>
+<tr><td align=right valign=top>typedef void (*</td><td><a href="#typedef_void_(*KillerFT)_(void_*)$"><font color=green>KillerFT</font></a>) (void *);</td></tr>
+<tr><td align=right valign=top>typedef struct SdifListNS </td><td><a href="#typedef_struct_SdifListNS_SdifListNT$"><font color=green>SdifListNT</font></a>;</td></tr>
+<tr><td align=right valign=top>struct </td><td><a href="#struct_SdifListNS_$"><font color=green>SdifListNS</font></a> ;</td></tr>
+<tr><td align=right valign=top>typedef struct SdifListNStockS </td><td><a href="#typedef_struct_SdifListNStockS_SdifListNStockT$"><font color=green>SdifListNStockT</font></a>;</td></tr>
+<tr><td align=right valign=top>struct </td><td><a href="#struct_SdifListNStockS_$"><font color=green>SdifListNStockS</font></a> ;</td></tr>
+<tr><td></td></tr><tr><td></td><td><strong>// lists management</strong></td></tr>
+<tr><td align=right valign=top>typedef struct SdifListS </td><td><a href="#typedef_struct_SdifListS_SdifListT$"><font color=green>SdifListT</font></a>;</td></tr>
+<tr><td align=right valign=top>typedef SdifListT *</td><td><a href="#typedef_SdifListT_*SdifListP$"><font color=green>SdifListP</font></a>;</td></tr>
+<tr><td align=right valign=top>struct </td><td><a href="#struct_SdifListS_$"><font color=green>SdifListS</font></a> ;</td></tr>
+<tr><td align=right valign=top>typedef struct SdifMatrixHeaderS </td><td><a href="#typedef_struct_SdifMatrixHeaderS_SdifMatrixHeaderT$"><font color=green>SdifMatrixHeaderT</font></a>;</td></tr>
+<tr><td align=right valign=top>struct </td><td><a href="#struct_SdifMatrixHeaderS_$"><font color=green>SdifMatrixHeaderS</font></a> ;</td></tr>
+<tr><td align=right valign=top>typedef union DataTypeU </td><td><a href="#typedef_union_DataTypeU_DataTypeUT$"><font color=green>DataTypeUT</font></a>;</td></tr>
+<tr><td align=right valign=top>SdifFloat4 *</td><td><a href="#SdifFloat4_*Float4$"><font color=green>Float4</font></a>;</td></tr>
+<tr><td align=right valign=top>SdifFloat8 *</td><td><a href="#SdifFloat8_*Float8$"><font color=green>Float8</font></a>;</td></tr>
+<tr><td align=right valign=top>SdifInt2 *</td><td><a href="#SdifInt2_*Int2_$"><font color=green>Int2</font></a> ;</td></tr>
+<tr><td align=right valign=top>SdifInt4 *</td><td><a href="#SdifInt4_*Int4_$"><font color=green>Int4</font></a> ;</td></tr>
+<tr><td></td></tr><tr><td></td><td><strong>// SdifInt8 *Int8 ;</strong></td></tr>
+<tr><td align=right valign=top>SdifUInt2 *</td><td><a href="#SdifUInt2_*UInt2_$"><font color=green>UInt2</font></a> ;</td></tr>
+<tr><td align=right valign=top>SdifUInt4 *</td><td><a href="#SdifUInt4_*UInt4_$"><font color=green>UInt4</font></a> ;</td></tr>
+<tr><td></td></tr><tr><td></td><td><strong>// SdifUInt8 *UInt8 ;</strong></td></tr>
+<tr><td align=right valign=top>SdifChar *</td><td><a href="#SdifChar_*Char_$"><font color=green>Char</font></a> ;</td></tr>
+<tr><td align=right valign=top>void *</td><td><a href="#void_*Void_$"><font color=green>Void</font></a> ;</td></tr>
+<tr><td align=right valign=top>typedef struct SdifOneRowS </td><td><a href="#typedef_struct_SdifOneRowS_SdifOneRowT$"><font color=green>SdifOneRowT</font></a>;</td></tr>
+<tr><td align=right valign=top>struct </td><td><a href="#struct_SdifOneRowS_$"><font color=green>SdifOneRowS</font></a> ;</td></tr>
+<tr><td align=right valign=top>typedef struct SdifMatrixDataS </td><td><a href="#typedef_struct_SdifMatrixDataS_SdifMatrixDataT$"><font color=green>SdifMatrixDataT</font></a>;</td></tr>
+<tr><td align=right valign=top>struct </td><td><a href="#struct_SdifMatrixDataS_$"><font color=green>SdifMatrixDataS</font></a> ;</td></tr>
+<tr><td align=right valign=top>typedef struct SdifColumnDefS </td><td><a href="#typedef_struct_SdifColumnDefS_SdifColumnDefT$"><font color=green>SdifColumnDefT</font></a>;</td></tr>
+<tr><td align=right valign=top>struct </td><td><a href="#struct_SdifColumnDefS_$"><font color=green>SdifColumnDefS</font></a> ;</td></tr>
+<tr><td align=right valign=top>typedef struct SdifMatrixTypeS </td><td><a href="#typedef_struct_SdifMatrixTypeS_SdifMatrixTypeT$"><font color=green>SdifMatrixTypeT</font></a>;</td></tr>
+<tr><td align=right valign=top>struct </td><td><a href="#struct_SdifMatrixTypeS_$"><font color=green>SdifMatrixTypeS</font></a> ;</td></tr>
+<tr><td align=right valign=top>typedef struct SdifBlockNodeS </td><td><a href="#typedef_struct_SdifBlockNodeS_SdifBlockNodeT$"><font color=green>SdifBlockNodeT</font></a>;</td></tr>
+<tr><td align=right valign=top>struct </td><td><a href="#struct_SdifBlockNodeS_$"><font color=green>SdifBlockNodeS</font></a> ;</td></tr>
+<tr><td align=right valign=top>typedef struct SdifBlockListS </td><td><a href="#typedef_struct_SdifBlockListS_SdifBlockListT$"><font color=green>SdifBlockListT</font></a>;</td></tr>
+<tr><td align=right valign=top>struct </td><td><a href="#struct_SdifBlockListS_$"><font color=green>SdifBlockListS</font></a> ;</td></tr>
+<tr><td align=right valign=top>char *</td><td><a href="#char_*SdifMrType$"><font color=green>SdifMrType</font></a>;</td></tr>
+<tr><td></td></tr><tr><td></td><td><strong>// <p> * NameValue <p></strong></td></tr>
+<tr><td align=right valign=top>typedef struct SdifNameValueS </td><td><a href="#typedef_struct_SdifNameValueS_SdifNameValueT$"><font color=green>SdifNameValueT</font></a>;</td></tr>
+<tr><td align=right valign=top>struct </td><td><a href="#struct_SdifNameValueS_$"><font color=green>SdifNameValueS</font></a> ;</td></tr>
+<tr><td></td></tr><tr><td></td><td><strong>// <p> * NameValueTable <p></strong></td></tr>
+<tr><td align=right valign=top>typedef struct SdifNameValueTableS </td><td><a href="#typedef_struct_SdifNameValueTableS_SdifNameValueTableT$"><font color=green>SdifNameValueTableT</font></a>;</td></tr>
+<tr><td align=right valign=top>struct </td><td><a href="#struct_SdifNameValueTableS_$"><font color=green>SdifNameValueTableS</font></a> ;</td></tr>
+<tr><td></td></tr><tr><td></td><td><strong>// <p> * NameValueTableList <p></strong></td></tr>
+<tr><td align=right valign=top>typedef struct SdifNameValuesLS </td><td><a href="#typedef_struct_SdifNameValuesLS_SdifNameValuesLT$"><font color=green>SdifNameValuesLT</font></a>;</td></tr>
+<tr><td align=right valign=top>struct </td><td><a href="#struct_SdifNameValuesLS_$"><font color=green>SdifNameValuesLS</font></a> ;</td></tr>
+<tr><td align=right valign=top>typedef enum </td><td><a href="#typedef_enum_SdifSelectTokens$"><font color=green>SdifSelectTokens</font></a>;</td></tr>
+<tr><td align=right valign=top>typedef struct </td><td><a href="#typedef_struct_SdifSelectElementIntT$"><font color=green>SdifSelectElementIntT</font></a>;</td></tr>
+<tr><td align=right valign=top>typedef struct </td><td><a href="#typedef_struct_SdifSelectElementRealT$"><font color=green>SdifSelectElementRealT</font></a>;</td></tr>
+<tr><td align=right valign=top>typedef union SdifSelectValueS </td><td><a href="#typedef_union_SdifSelectValueS_SdifSelectValueT$"><font color=green>SdifSelectValueT</font></a>;</td></tr>
+<tr><td align=right valign=top>typedef struct SdifSelectElementS SdifSelectElementT, *</td><td><a href="#typedef_struct_SdifSelectElementS_SdifSelectElementT,_*SdifSelectElementP$"><font color=green>SdifSelectElementP</font></a>;</td></tr>
+<tr><td align=right valign=top>typedef struct </td><td><a href="#typedef_struct_SdifSelectionT$"><font color=green>SdifSelectionT</font></a>;</td></tr>
+<tr><td align=right valign=top>typedef struct SdifFileS </td><td><a href="#typedef_struct_SdifFileS_SdifFileT$"><font color=green>SdifFileT</font></a>;</td></tr>
+<tr><td align=right valign=top>typedef struct SdifSignatureTabS </td><td><a href="#typedef_struct_SdifSignatureTabS_SdifSignatureTabT$"><font color=green>SdifSignatureTabT</font></a>;</td></tr>
+<tr><td align=right valign=top>struct </td><td><a href="#struct_SdifSignatureTabS_$"><font color=green>SdifSignatureTabS</font></a> ;</td></tr>
+<tr><td></td></tr><tr><td></td><td><strong>// 		Stream ID Table and Entries for 1IDS ASCII chunk</strong></td></tr>
+<tr><td align=right valign=top>typedef struct SdifStreamIDS </td><td><a href="#typedef_struct_SdifStreamIDS_SdifStreamIDT$"><font color=green>SdifStreamIDT</font></a>;</td></tr>
+<tr><td align=right valign=top>struct </td><td><a href="#struct_SdifStreamIDS_$"><font color=green>SdifStreamIDS</font></a> ;</td></tr>
+<tr><td align=right valign=top>typedef struct SdifStreamIDTableS </td><td><a href="#typedef_struct_SdifStreamIDTableS_SdifStreamIDTableT$"><font color=green>SdifStreamIDTableT</font></a>;</td></tr>
+<tr><td align=right valign=top>struct </td><td><a href="#struct_SdifStreamIDTableS_$"><font color=green>SdifStreamIDTableS</font></a> ;</td></tr>
+<tr><td></td></tr><tr><td></td><td><strong>// Structure declaration</strong></td></tr>
+<tr><td align=right valign=top>typedef struct SdifStringS </td><td><a href="#typedef_struct_SdifStringS_SdifStringT$"><font color=green>SdifStringT</font></a>;</td></tr>
+<tr><td align=right valign=top>struct </td><td><a href="#struct_SdifStringS_$"><font color=green>SdifStringS</font></a> ;</td></tr>
+<tr><td align=right valign=top>typedef struct SdifTimePositionS </td><td><a href="#typedef_struct_SdifTimePositionS_SdifTimePositionT$"><font color=green>SdifTimePositionT</font></a>;</td></tr>
+<tr><td align=right valign=top>struct </td><td><a href="#struct_SdifTimePositionS_$"><font color=green>SdifTimePositionS</font></a> ;</td></tr>
+<tr><td align=right valign=top>typedef struct SdifTimePositionLS </td><td><a href="#typedef_struct_SdifTimePositionLS_SdifTimePositionLT$"><font color=green>SdifTimePositionLT</font></a>;</td></tr>
+<tr><td align=right valign=top>struct </td><td><a href="#struct_SdifTimePositionLS_$"><font color=green>SdifTimePositionLS</font></a> ;</td></tr>

@@ -1,0 +1,2011 @@
+<html><head><title>Library SDIF</title></head>
+<body BGCOLOR=#FFFFFF ><h1>
+cocooninclude(SDIF.lgo)
+<a name="topofdoc">Library SDIF</a></h1>
+<hr><p></p></a>
+<p><strong>[
+<a href="file:///u/formes/schwarz/src/SDIF/doc/extern/cocoon/keyweb.html">Keywords</a> | 
+<a href="#classes">Classes</a> | 
+<a href="#data">Data</a> | 
+<a href="#functions">Functions</a>
+ ]</strong><p>
+<h2>Quick Index</h2>
+<dl>
+cocooninclude(SDIF.ind)
+</dl>
+<p><br><p><a name="classes"><hr><p></p></a><h2>Classes</h2>
+<dl><dl>
+cocooninclude(SDIF.cls)
+</dl></dl>
+<p>Back to the <a href="#topofdoc">top</a> of  <i>SDIF</i><p>
+<a name="data"><hr><p></p></a><h2>Data</h2>
+<table>
+cocooninclude(SDIF.dta)
+</table>
+<p>Back to the <a href="#topofdoc">top</a> of  <i>SDIF</i><p>
+<a name="functions"><hr><p></p></a><h2>Global Functions</h2>
+<table>
+cocooninclude(SDIF.fnc)
+</table>
+<p>Back to the <a href="#topofdoc">top</a> of  <i>SDIF</i><p>
+<a name="SdifCheckXhXmemberX1"><hr><p></p><h3>SdifCheckXhXmemberX1_2</h3></a>
+<strong>#include "<a href="SdifCheck.h">SdifCheck.h</a>"</strong><p>
+  Test if file is an SDIF file.
+<p>
+<dl><dl>
+<dt><i></i><strong> Returns:</strong>
+<dd>0 if not an SDIF file (the first 4 chars are not "SDIF"),
+		or file can not be opened, else 1.  
+<p>
+</dl></dl>
+  Warning: This function doesn't work with stdio. 
+<p><pre>
+int SdifCheckFileFormat (const char *name);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifCheckXhXmemberX2"><hr><p></p><h3>SdifCheckXhXmemberX2_2</h3></a>
+<strong>#include "<a href="SdifCheck.h">SdifCheck.h</a>"</strong><p>
+  Test if file contains frames of certain types.
+<p>
+<dl><dl>
+<dt><i>in</i><strong>  name</strong>
+<dd>Filename + selection
+	frames  Table of frame signatures to look for
+<dt><i></i><strong>	return</strong>
+<dd>The first signature from frames found, or eEmptySignature if 
+		no frames could be found (or if file is not SDIF).
+<p>
+</dl></dl>
+  Warning: This function doesn't work with stdio. 
+<p><pre>
+SdifSignature SdifCheckFileFramesTab   (const char		*name, 
+					const SdifSignatureTabT *frames);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifCheckXhXmemberX3"><hr><p></p><h3>SdifCheckXhXmemberX3_2</h3></a>
+<strong>#include "<a href="SdifCheck.h">SdifCheck.h</a>"</strong><p>
+  Test if file contains frames of certain types.
+<p>
+<dl><dl>
+<dt><i>in</i><strong>  name</strong>
+<dd>Filename + selection
+	frames  Array of frame signatures to look for, terminated with 
+		eEmptySignature.
+<dt><i></i><strong>	return</strong>
+<dd>The index in frames of the first signature found, or -1
+		if no frames could be found (or if file is not SDIF).
+<p>
+</dl></dl>
+  Warning: This function doesn't work with stdio. 
+<p><pre>
+int	      SdifCheckFileFramesIndex (const char	        *name, 
+					const SdifSignature     *frames);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifCheckXhXmemberX4"><hr><p></p><h3>SdifCheckXhXmemberX4_2</h3></a>
+<strong>#include "<a href="SdifCheck.h">SdifCheck.h</a>"</strong><p>
+  Test if file contains frames of certain types.
+<p>
+<dl><dl>
+<dt><i>in</i><strong>  in</strong>
+<dd>open SDIF file
+	frames  Table of frame signatures to look for
+<dt><i>out</i><strong> index</strong>
+<dd>If the int pointer index is not NULL, it will receive
+		the index in frames of the first signature found, or -1
+		if no frames could be found (or if file is not SDIF).
+<dt><i></i><strong>	return</strong>
+<dd>The first signature from frames found, or eEmptySignature if 
+		no frames could be found (or if file is not SDIF).
+<p>
+</dl></dl>
+  Warning: This function doesn't work with stdio. 
+<p><pre>
+SdifSignature SdifCheckNextFrame       (SdifFileT		*in, 
+					const SdifSignatureTabT *frames,
+					int			*index);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifCheckXhXmemberX5"><hr><p></p><h3>SdifCheckXhXmemberX5_2</h3></a>
+<strong>#include "<a href="SdifCheck.h">SdifCheck.h</a>"</strong><p>
+  TODO: Test if file is an SDIF file (only when opening for read or
+  append) and open it.
+<p>
+<dl><dl>
+<dt><i>Return</i><strong> NULL</strong>
+<dd>if not an SDIF file (the first 4 chars are not "SDIF"),
+  or file can not be opened.  
+</dl></dl>
+<p><pre>
+SdifFileT*	   SdifFTryOpen			(const char *Name, SdifFileModeET Mode);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifConvToTextXhXmemberX1"><hr><p></p><h3>SdifConvToTextXhXmemberX1_2</h3></a>
+<strong>#include "<a href="SdifConvToText.h">SdifConvToText.h</a>"</strong><p>
+  Converti un fichier texte pseudo-SDIF de nom TextStreamName en un
+  fichier SDIF binaire de non SdifF->Name. Le fichier doit avoir t
+  ouvert en criture (eWriteFile).  
+<p><pre>
+size_t SdifToText (SdifFileT *SdifF, char *TextStreamName);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifErrMessXhXmemberX1"><hr><p></p><h3>SdifErrMessXhXmemberX1_2</h3></a>
+<strong>#include "<a href="SdifErrMess.h">SdifErrMess.h</a>"</strong><p>
+  Switch output of error messages on stderr by _SdifFError on. 
+<p>
+<p><pre>
+void	SdifEnableErrorOutput  (void);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifErrMessXhXmemberX2"><hr><p></p><h3>SdifErrMessXhXmemberX2_2</h3></a>
+<strong>#include "<a href="SdifErrMess.h">SdifErrMess.h</a>"</strong><p>
+  Switch output of error messages on stderr by _SdifFError off. 
+<p>
+<p><pre>
+void	SdifDisableErrorOutput (void);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifFGetXhXmemberX1"><hr><p></p><h3>SdifFGetXhXmemberX1_2</h3></a>
+<strong>#include "<a href="SdifFGet.h">SdifFGet.h</a>"</strong><p>
+  Lit 4 bytes, les considre comme une signature qui est place dans
+  SdifF->CurrSignature, incrmente NbCharRead du nombre de bytes lus
+  et renvoie le dernier caractre lu convert en int (-1 si erreur).  
+<p><pre>
+int    SdifFGetSignature	(SdifFileT *SdifF, size_t *NbCharRead);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifFGetXhXmemberX2"><hr><p></p><h3>SdifFGetXhXmemberX2_2</h3></a>
+<strong>#include "<a href="SdifFGet.h">SdifFGet.h</a>"</strong><p>
+  Remark:
+         This function implements the old SDIF Specification (before June 1999)
+  Get the current matrix type from a file
+<p>
+<p><pre>
+size_t SdifFGetOneMatrixType    (SdifFileT *SdifF, int Verbose);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifFGetXhXmemberX3"><hr><p></p><h3>SdifFGetXhXmemberX3_2</h3></a>
+<strong>#include "<a href="SdifFGet.h">SdifFGet.h</a>"</strong><p>
+  Remark:
+         This function implements the new SDIF Specification (June 1999):
+	 Name Value Table, Matrix and Frame Type declaration, Stream ID declaration are
+	 defined in text matrix:
+	 1NVT 1NVT
+	 1TYP 1TYP
+	 1IDS 1IDS
+  Return the current matrix type from a SdifStringT
+<p>
+<p><pre>
+size_t SdifFGetOneMatrixTypefromSdifString(SdifFileT *SdifF, SdifStringT *SdifString);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifFGetXhXmemberX4"><hr><p></p><h3>SdifFGetXhXmemberX4_2</h3></a>
+<strong>#include "<a href="SdifFGet.h">SdifFGet.h</a>"</strong><p>
+  Remark:
+         This function implements the old SDIF Specification (before June 1999)
+  Get the current component from a file
+<p>
+<p><pre>
+int    SdifFGetOneComponent     (SdifFileT *SdifF, int Verbose,
+				 SdifSignature *MatrixSignature,
+				 char *ComponentName,
+				 size_t *NbCharRead);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifFGetXhXmemberX5"><hr><p></p><h3>SdifFGetXhXmemberX5_2</h3></a>
+<strong>#include "<a href="SdifFGet.h">SdifFGet.h</a>"</strong><p>
+  Remark:
+         This function implements the new SDIF Specification (June 1999):
+	 Name Value Table, Matrix and Frame Type declaration, Stream ID declaration are
+	 defined in text matrix:
+	 1NVT 1NVT
+	 1TYP 1TYP
+	 1IDS 1IDS
+  Return the current component from a SdifStringT
+<p>
+<p><pre>
+int    SdifFGetOneComponentfromSdifString(SdifFileT *SdifF,
+					  SdifStringT *SdifString,
+					  SdifSignature *MatrixSignature,
+					  char *ComponentName);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifFGetXhXmemberX6"><hr><p></p><h3>SdifFGetXhXmemberX6_2</h3></a>
+<strong>#include "<a href="SdifFGet.h">SdifFGet.h</a>"</strong><p>
+  Remark:
+         This function implements the old SDIF Specification (before June 1999)
+  Get the current Frame type from a file
+<p>
+<p><pre>
+size_t SdifFGetOneFrameType     (SdifFileT *SdifF, int Verbose);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifFGetXhXmemberX7"><hr><p></p><h3>SdifFGetXhXmemberX7_2</h3></a>
+<strong>#include "<a href="SdifFGet.h">SdifFGet.h</a>"</strong><p>
+  Remark:
+         This function implements the new SDIF Specification (June 1999):
+	 Name Value Table, Matrix and Frame Type declaration, Stream ID declaration are
+	 defined in text matrix:
+	 1NVT 1NVT
+	 1TYP 1TYP
+	 1IDS 1IDS
+  Return the current frame type from a SdifStringT
+<p>
+<p><pre>
+size_t SdifFGetOneFrameTypefromSdifString(SdifFileT *SdifF, SdifStringT *SdifString);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifFGetXhXmemberX8"><hr><p></p><h3>SdifFGetXhXmemberX8_2</h3></a>
+<strong>#include "<a href="SdifFGet.h">SdifFGet.h</a>"</strong><p>
+  Remark:
+         This function implements the old SDIF Specification (before June 1999)
+  Get all types from a file
+<p>
+<p><pre>
+size_t SdifFGetAllType          (SdifFileT *SdifF, int Verbose);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifFGetXhXmemberX9"><hr><p></p><h3>SdifFGetXhXmemberX9_2</h3></a>
+<strong>#include "<a href="SdifFGet.h">SdifFGet.h</a>"</strong><p>
+  Remark:
+         This function implements the new SDIF Specification (June 1999):
+	 Name Value Table, Matrix and Frame Type declaration, Stream ID declaration are
+	 defined in text matrix:
+	 1NVT 1NVT
+	 1TYP 1TYP
+	 1IDS 1IDS
+  Get all types from a SdifStringT
+<p>
+<p><pre>
+size_t    SdifFGetAllTypefromSdifString   (SdifFileT *SdifF, SdifStringT *SdifString);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifFGetXhXmemberX10"><hr><p></p><h3>SdifFGetXhXmemberX10_2</h3></a>
+<strong>#include "<a href="SdifFGet.h">SdifFGet.h</a>"</strong><p>
+  Remark:
+         This function implements the old SDIF Specification (before June 1999)
+  Get the current Stream ID from a file
+<p>
+<p><pre>
+int    SdifFGetOneStreamID      (SdifFileT *SdifF, int Verbose, size_t *NbBytesRead);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifFGetXhXmemberX11"><hr><p></p><h3>SdifFGetXhXmemberX11_2</h3></a>
+<strong>#include "<a href="SdifFGet.h">SdifFGet.h</a>"</strong><p>
+  Remark:
+         This function is implements the new SDIF Specification (June 1999):
+	 Name Value Table, Matrix and Frame Type declaration, Stream ID declaration are
+	 defined in text matrix:
+	 1NVT 1NVT
+	 1TYP 1TYP
+	 1IDS 1IDS
+  Get the current Stream ID from a SdifStringT
+<p>
+<p><pre>
+int SdifFgetOneStreamIDfromSdifString(SdifFileT *SdifF, SdifStringT *SdifString);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifFGetXhXmemberX12"><hr><p></p><h3>SdifFGetXhXmemberX12_2</h3></a>
+<strong>#include "<a href="SdifFGet.h">SdifFGet.h</a>"</strong><p>
+  Remark:
+         This function implements the old SDIF Specification (before June 1999)
+  Get all Stream ID from a file
+<p>
+<p><pre>
+size_t SdifFGetAllStreamID      (SdifFileT *SdifF, int Verbose);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifFGetXhXmemberX13"><hr><p></p><h3>SdifFGetXhXmemberX13_2</h3></a>
+<strong>#include "<a href="SdifFGet.h">SdifFGet.h</a>"</strong><p>
+  Remark:
+         This function implements the new SDIF Specification (June 1999):
+	 Name Value Table, Matrix and Frame Type declaration, Stream ID declaration are
+	 defined in text matrix:
+	 1NVT 1NVT
+	 1TYP 1TYP
+	 1IDS 1IDS
+  Get the current Stream ID from a SdifStringT
+<p>
+<p><pre>
+size_t SdifFGetAllStreamIDfromSdifString(SdifFileT *SdifF, SdifStringT *SdifString);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifFPutXhXmemberX1"><hr><p></p><h3>SdifFPutXhXmemberX1_2</h3></a>
+<strong>#include "<a href="SdifFPut.h">SdifFPut.h</a>"</strong><p>
+  Remark:
+         This function implements the new SDIF Specification (June 1999):
+	 Name Value Table, Matrix and Frame Type declaration, Stream ID declaration are
+	 defined in text matrix:
+	 1NVT 1NVT
+	 1TYP 1TYP
+	 1IDS 1IDS
+  This function put NameValue to SdifString
+<p>
+<p><pre>
+int SdifFNameValueLCurrNVTtoSdifString(SdifFileT *SdifF, SdifStringT *SdifString);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifFPutXhXmemberX2"><hr><p></p><h3>SdifFPutXhXmemberX2_2</h3></a>
+<strong>#include "<a href="SdifFPut.h">SdifFPut.h</a>"</strong><p>
+  Remark:
+         This function implements the new SDIF Specification (June 1999):
+	 Name Value Table, Matrix and Frame Type declaration, Stream ID declaration are
+	 defined in text matrix:
+	 1NVT 1NVT
+	 1TYP 1TYP
+	 1IDS 1IDS
+  Append matrix type declaration in SdifString
+<p>
+<p><pre>
+int SdifFOneMatrixTypeToSdifString(SdifMatrixTypeT *MatrixType, SdifStringT *SdifString);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifFPutXhXmemberX3"><hr><p></p><h3>SdifFPutXhXmemberX3_2</h3></a>
+<strong>#include "<a href="SdifFPut.h">SdifFPut.h</a>"</strong><p>
+  Remark:
+         This function implements the new SDIF Specification (June 1999):
+	 Name Value Table, Matrix and Frame Type declaration, Stream ID declaration are
+	 defined in text matrix:
+	 1NVT 1NVT
+	 1TYP 1TYP
+	 1IDS 1IDS
+  Write all Matrix type in SdifString
+<p>
+<p><pre>
+int SdifFAllMatrixTypeToSdifString(SdifFileT *SdifF, SdifStringT *SdifSTring);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifFPutXhXmemberX4"><hr><p></p><h3>SdifFPutXhXmemberX4_2</h3></a>
+<strong>#include "<a href="SdifFPut.h">SdifFPut.h</a>"</strong><p>
+  Remark:
+         This function implements the new SDIF Specification (June 1999):
+	 Name Value Table, Matrix and Frame Type declaration, Stream ID declaration are
+	 defined in text matrix:
+	 1NVT 1NVT
+	 1TYP 1TYP
+	 1IDS 1IDS
+  Append one Component to SdifString
+<p>
+<p><pre>
+int SdifFOneComponentToSdifString(SdifComponentT *Component, SdifStringT *SdifString);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifFPutXhXmemberX5"><hr><p></p><h3>SdifFPutXhXmemberX5_2</h3></a>
+<strong>#include "<a href="SdifFPut.h">SdifFPut.h</a>"</strong><p>
+  Remark:
+         This function implements the new SDIF Specification (June 1999):
+	 Name Value Table, Matrix and Frame Type declaration, Stream ID declaration are
+	 defined in text matrix:
+	 1NVT 1NVT
+	 1TYP 1TYP
+	 1IDS 1IDS
+  Append one frame type to SdifString
+<p>
+<p><pre>
+int SdifFOneFrameTypeToSdifString(SdifFrameTypeT *FrameType, SdifStringT *SdifString);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifFPutXhXmemberX6"><hr><p></p><h3>SdifFPutXhXmemberX6_2</h3></a>
+<strong>#include "<a href="SdifFPut.h">SdifFPut.h</a>"</strong><p>
+  Remark:
+         This function implements the new SDIF Specification (June 1999):
+	 Name Value Table, Matrix and Frame Type declaration, Stream ID declaration are
+	 defined in text matrix:
+	 1NVT 1NVT
+	 1TYP 1TYP
+	 1IDS 1IDS
+  Write all frame type in SdifString
+<p>
+<p><pre>
+int SdifFAllFrameTypeToSdifString   (SdifFileT *SdifF, SdifStringT *SdifString);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifFPutXhXmemberX7"><hr><p></p><h3>SdifFPutXhXmemberX7_2</h3></a>
+<strong>#include "<a href="SdifFPut.h">SdifFPut.h</a>"</strong><p>
+  Remark:
+         This function implements the new SDIF Specification (June 1999):
+	 Name Value Table, Matrix and Frame Type declaration, Stream ID declaration are
+	 defined in text matrix:
+	 1NVT 1NVT
+	 1TYP 1TYP
+	 1IDS 1IDS
+  Append one StreamID to SdifString
+<p>
+<p><pre>
+int SdifFOneStreamIDToSDifString (SdifStringT *SdifString, SdifStreamIDT *StreamID);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifFPutXhXmemberX8"><hr><p></p><h3>SdifFPutXhXmemberX8_2</h3></a>
+<strong>#include "<a href="SdifFPut.h">SdifFPut.h</a>"</strong><p>
+  Remark:
+         This function implements the new SDIF Specification (June 1999):
+	 Name Value Table, Matrix and Frame Type declaration, Stream ID declaration are
+	 defined in text matrix:
+	 1NVT 1NVT
+	 1TYP 1TYP
+	 1IDS 1IDS
+  Write all StreamID in SdifString
+<p>
+<p><pre>
+int SdifFAllStreamIDToSdifString (SdifFileT *SdifF, SdifStringT *SdifString);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifFReadXhXmemberX1"><hr><p></p><h3>SdifFReadXhXmemberX1_2</h3></a>
+<strong>#include "<a href="SdifFRead.h">SdifFRead.h</a>"</strong><p>
+  Lit l'entte du fichier, c'est  dire 'SDIF' puis 4 bytes.  affiche
+  un message en cas de non reconnaissance du format.  
+<p><pre>
+size_t SdifFReadGeneralHeader    (SdifFileT *SdifF);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifFReadXhXmemberX2"><hr><p></p><h3>SdifFReadXhXmemberX2_2</h3></a>
+<strong>#include "<a href="SdifFRead.h">SdifFRead.h</a>"</strong><p>
+  Cette fonction permet de lire tous les Chunk ASCII qui se
+  trouveraient en dbut de fichier juste aprs l'entte gnrale. Elle
+  s'arrte lorsqu'elle ne reconnat pas la signature de chunk comme un
+  ASCII Chunk. Cette signature est donc normalement celle d'un
+  frame. Elle est stocke dans SdifF->CurrSignature. <strong>Il n'est
+  donc pas ncessaire de la relire</strong>.  
+<p><pre>
+size_t SdifFReadAllASCIIChunks   (SdifFileT *SdifF);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifFReadXhXmemberX3"><hr><p></p><h3>SdifFReadXhXmemberX3_2</h3></a>
+<strong>#include "<a href="SdifFRead.h">SdifFRead.h</a>"</strong><p>
+  Cette fonction lit une entte de matrice <strong>signature
+  incluse</strong>.  Elle vrifie le type de matrice, le champ
+  DataType. Toute les donnes se trouvent stockes dans
+  SdifF->CurrMtrxH. La plupart de ses champs sont directement
+  accessible par les fonctions indpendantes du mode d'ouverture du
+  fichier.  <strong>Elle effectue une mise  jour de l'allocation
+  mmoire de SdifF->CurrOneRow en fonction des paramtres de l'entte
+  de matrice.</strong> Ainsi, on est normalement prs pour lire chaque
+  ligne de la matrice courrante.  
+<p><pre>
+size_t SdifFReadMatrixHeader     (SdifFileT *SdifF);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifFReadXhXmemberX4"><hr><p></p><h3>SdifFReadXhXmemberX4_2</h3></a>
+<strong>#include "<a href="SdifFRead.h">SdifFRead.h</a>"</strong><p>
+  Cette fonction permet de lire 1 ligne de matrice. Les donnes lues
+  sont stockes dans SdifF->CurrOneRow (jusqu' une prochaine lecture
+  d'entte de matrice qui rinitialise ses paramtres).  
+<p><pre>
+size_t SdifFReadOneRow           (SdifFileT *SdifF);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifFReadXhXmemberX5"><hr><p></p><h3>SdifFReadXhXmemberX5_2</h3></a>
+<strong>#include "<a href="SdifFRead.h">SdifFRead.h</a>"</strong><p>
+  Cette fonction lit l'entte d'un frame  partir de la taille et
+  jusqu'au temps. Donc <strong>elle ne lit pas la signature</strong>
+  mais donne  SdifF->CurrFramH->Signature la valeur de
+  SdifF->CurrSignature.  La lecture doit se faire avant, avec
+  SdifFGetSignature.  
+<p><pre>
+size_t SdifFReadFrameHeader      (SdifFileT *SdifF);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifFReadXhXmemberX6"><hr><p></p><h3>SdifFReadXhXmemberX6_2</h3></a>
+<strong>#include "<a href="SdifFRead.h">SdifFRead.h</a>"</strong><p>
+  Cette fonction permet de passer une matrice toute entire entte
+  incluse. Elle est utile lorsque qu'un frame contient plus de
+  matrices que le programme lecteur n'en connat. Il peut ainsi les
+  passer pour retomber sur un autre frame.  
+<p><pre>
+size_t SdifFSkipMatrix            (SdifFileT *SdifF);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifFReadXhXmemberX7"><hr><p></p><h3>SdifFReadXhXmemberX7_2</h3></a>
+<strong>#include "<a href="SdifFRead.h">SdifFRead.h</a>"</strong><p>
+  Cette fonction permet de passer une matrice mais aprs la lecture de
+  l'entte. On s'en sert lorsque le type de matrice est mauvais,
+  inconnu, non interprtable par le programme lecteur.
+<p>
+  Note:  The matrix padding is skipped also. 
+<p><pre>
+size_t SdifFSkipMatrixData        (SdifFileT *SdifF);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifFReadXhXmemberX8"><hr><p></p><h3>SdifFReadXhXmemberX8_2</h3></a>
+<strong>#include "<a href="SdifFRead.h">SdifFRead.h</a>"</strong><p>
+  Cette fonction  le mme sens que SdifSkipMatrixData mais pour les
+  frames. Il faut donc pour l'utiliser avoir au pralable lu la
+  signature et l'entte.  
+<p><pre>
+size_t SdifFSkipFrameData         (SdifFileT *SdifF);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifFReadXhXmemberX9"><hr><p></p><h3>SdifFReadXhXmemberX9_2</h3></a>
+<strong>#include "<a href="SdifFRead.h">SdifFRead.h</a>"</strong><p>
+  Cette fonction permet de lire le Padding en fin de matrice.
+  l'utilisation classique de cette fonctin est:<br> 
+  <code> SizeR =  SdifFReadPadding(SdifF, SdifFPaddingCalculate(SdifF->Stream, SizeR));</code><br> 
+  o SizeR est la taille en bytes lue depuis le
+  dbut de la matrice, c'est  dire NbRow*NbCol*DataWith. En ralit,
+  pour que SdifFPaddingCalculate fonctionne, il est seulement
+  ncessaire que SizeR soit le nombre de bytes qui s'pare la position
+  actuelle dans le fichier et un byte, repre d'allignement sur 64
+  bits.  
+<p><pre>
+size_t SdifFReadPadding          (SdifFileT *SdifF, size_t Padding);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifFReadXhXmemberX10"><hr><p></p><h3>SdifFReadXhXmemberX10_2</h3></a>
+<strong>#include "<a href="SdifFRead.h">SdifFRead.h</a>"</strong><p>
+  Read and throw away <i>num</i> bytes from the file. 
+<p><pre>
+size_t SdifFReadAndIgnore (SdifFileT *SdifF, size_t bytes);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifFReadXhXmemberX11"><hr><p></p><h3>SdifFReadXhXmemberX11_2</h3></a>
+<strong>#include "<a href="SdifFRead.h">SdifFRead.h</a>"</strong><p>
+  Function to read text matrix.
+  Read header.
+  Read data.
+  Read padding.
+<p>
+<p><pre>
+size_t SdifFReadTextMatrix(SdifFileT *SdifF, SdifStringT *SdifString);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifFReadXhXmemberX12"><hr><p></p><h3>SdifFReadXhXmemberX12_2</h3></a>
+<strong>#include "<a href="SdifFRead.h">SdifFRead.h</a>"</strong><p>
+  Function to read text matrix data.
+  Make reallocation.
+  Read data.
+  Read padding.
+<p>
+<p><pre>
+size_t SdifFReadTextMatrixData(SdifFileT *SdifF, SdifStringT *SdifString);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifFWriteXhXmemberX1"><hr><p></p><h3>SdifFWriteXhXmemberX1_2</h3></a>
+<strong>#include "<a href="SdifFWrite.h">SdifFWrite.h</a>"</strong><p>
+  crit sur le fichier 'SDIF' puis 4 bytes chunk size.  
+<p><pre>
+size_t  SdifFWriteGeneralHeader   (SdifFileT *SdifF);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifFWriteXhXmemberX2"><hr><p></p><h3>SdifFWriteXhXmemberX2_2</h3></a>
+<strong>#include "<a href="SdifFWrite.h">SdifFWrite.h</a>"</strong><p>
+  Remark:
+         This function implements the new SDIF Specification (June 1999):
+	 Name Value Table, Matrix and Frame Type declaration, Stream ID declaration are
+	 defined in text matrix:
+	 1NVT 1NVT
+	 1TYP 1TYP
+	 1IDS 1IDS
+  Removed test for _SdifFormatVersion
+  Now we write type in 1IDS frame which contains a 1IDS matrix
+<p>
+<p><pre>
+size_t  SdifFWriteAllStreamID     (SdifFileT *SdifF);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifFWriteXhXmemberX3"><hr><p></p><h3>SdifFWriteXhXmemberX3_2</h3></a>
+<strong>#include "<a href="SdifFWrite.h">SdifFWrite.h</a>"</strong><p>
+  crit tous les chunks ASCII. C'est  dire: les tables de names
+  values, les types crs ou complts, et les Stream ID. Il faut donc
+  au pralable avoir rempli compltement les tables avant de la
+  lancer. Cette fonction de peut donc pas tre executer une 2nd fois
+  durant une criture.  
+<p><pre>
+size_t  SdifFWriteAllASCIIChunks  (SdifFileT *SdifF);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifFWriteXhXmemberX4"><hr><p></p><h3>SdifFWriteXhXmemberX4_2</h3></a>
+<strong>#include "<a href="SdifFWrite.h">SdifFWrite.h</a>"</strong><p>
+  Aprs avoir donner une valeur  chaque champ de SdifF->CurrMtrxH
+  grce  la fonction SdifFSetCurrMatrixHeader, SdifFWriteMatrixHeader
+  crit toute l'entte de la matrice.  Cette fonction ralise aussi
+  une mise  jour de SdifF->CurrOneRow, tant au niveau de l'allocation
+  mmoire que du type de donnes.  
+<p><pre>
+size_t  SdifFWriteMatrixHeader    (SdifFileT *SdifF);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifFWriteXhXmemberX5"><hr><p></p><h3>SdifFWriteXhXmemberX5_2</h3></a>
+<strong>#include "<a href="SdifFWrite.h">SdifFWrite.h</a>"</strong><p>
+  Aprs avoir donner les valeurs  chaque case de SdifF->CurrOneRow 
+  l'aide de SdifFSetCurrOneRow ou de SdifFSetCurrOneRowCol (suivant
+  que l'on possde dj un tableau flottant ou respectivement une
+  mthode pour retrouver une valeur de colonne), SdifFWriteOneRow
+  crit 1 ligne de matrice suivant les paramtres de SdifF->CurrMtrxH.  
+<p><pre>
+size_t  SdifFWriteOneRow          (SdifFileT *SdifF);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifFWriteXhXmemberX6"><hr><p></p><h3>SdifFWriteXhXmemberX6_2</h3></a>
+<strong>#include "<a href="SdifFWrite.h">SdifFWrite.h</a>"</strong><p>
+  Write whole matrix data, (after having set the matrix header with 
+  SdifFSetCurrMatrixHeader (file, matrixsig, datatype, nrow, ncol).
+  Data points to nbrow * nbcol * SdifSizeofDataType (datatype) bytes in 
+  row-major order.  Padding still has to be written.  
+<p><pre>
+size_t SdifFWriteMatrixData (SdifFileT *SdifF, void *Data);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifFWriteXhXmemberX7"><hr><p></p><h3>SdifFWriteXhXmemberX7_2</h3></a>
+<strong>#include "<a href="SdifFWrite.h">SdifFWrite.h</a>"</strong><p>
+  Write whole matrix: header, data, and padding.
+  Data points to NbRow * NbCol * SdifSizeofDataType (DataType) bytes in
+  row-major order. 
+<p><pre>
+size_t SdifFWriteMatrix (SdifFileT     *SdifF,
+			 SdifSignature  Signature,
+			 SdifDataTypeET DataType,
+			 SdifUInt4      NbRow,
+			 SdifUInt4      NbCol,
+			 void	       *Data);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifFWriteXhXmemberX8"><hr><p></p><h3>SdifFWriteXhXmemberX8_2</h3></a>
+<strong>#include "<a href="SdifFWrite.h">SdifFWrite.h</a>"</strong><p>
+  Write a matrix with datatype text (header, data, and padding).
+  Data points to Length bytes(!) of UTF-8 encoded text.  Length
+  includes the terminating '\0' character!!!  That is, to write a
+  C-String, use SdifFWriteTextMatrix (f, sig, strlen (str) + 1, str);
+  to include it. 
+<p><pre>
+size_t SdifFWriteTextMatrix (SdifFileT     *SdifF,
+			     SdifSignature  Signature,
+			     SdifUInt4      Length,
+			     char	   *Data);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifFWriteXhXmemberX9"><hr><p></p><h3>SdifFWriteXhXmemberX9_2</h3></a>
+<strong>#include "<a href="SdifFWrite.h">SdifFWrite.h</a>"</strong><p>
+  TBI: Convert ASCII C-String to UTF-8 encoded string, returning
+  length (including terminating null character). 
+<p><pre>
+size_t SdifAsciiToUTF8 (char *ascii_in, char *utf8_out);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifFWriteXhXmemberX10"><hr><p></p><h3>SdifFWriteXhXmemberX10_2</h3></a>
+<strong>#include "<a href="SdifFWrite.h">SdifFWrite.h</a>"</strong><p>
+  Cette fonction permet en fin d'criture de matrice d'ajouter le
+  Padding ncessaire. Il faut cependant avoir la taille de ce
+  Padding. On utilise SdifFPaddingCalculate(SdifF->Stream,
+  SizeSinceAlignement) o SizeSinceAllignement est un
+  <code>size_t</code> dsignant le nombre de bytes qui spare la
+  position actuelle d'criture avec une position connue o le fichier
+  est align sur 64 bits (en gnral, c'est la taille de la matrice en
+  cours d'criture: NbRow*NbCol*DatWitdh).  
+<p><pre>
+size_t  SdifFWritePadding         (SdifFileT *SdifF, size_t Padding);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifFWriteXhXmemberX11"><hr><p></p><h3>SdifFWriteXhXmemberX11_2</h3></a>
+<strong>#include "<a href="SdifFWrite.h">SdifFWrite.h</a>"</strong><p>
+  Aprs avoir donner une valueur  chaque champ de SdifF->CurrFramH
+  grce  la fonction SdifFSetCurrFrameHeader, SdifFWriteFrameHeader
+  crit toute l'entte de frame.  Lorsque la taille est inconnue au
+  moment de l'criture, donner la valeur _SdifUnknownSize. Ensuite,
+  compter le nombre de bytes crit dans le frame et raliser un
+  SdifUpdateChunkSize avec la taille calcule.  
+<p><pre>
+size_t  SdifFWriteFrameHeader     (SdifFileT *SdifF);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifFWriteXhXmemberX12"><hr><p></p><h3>SdifFWriteXhXmemberX12_2</h3></a>
+<strong>#include "<a href="SdifFWrite.h">SdifFWrite.h</a>"</strong><p>
+  Execute un retour fichier de ChunkSize bytes et l'crit, donc on
+  crase la taille du chunk ou du frame.  Dans le cas o le fichier
+  est stderr ou stdout, l'action n'est pas ralise.  
+<p><pre>
+void    SdifUpdateChunkSize       (SdifFileT *SdifF, size_t ChunkSize);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifFWriteXhXmemberX13"><hr><p></p><h3>SdifFWriteXhXmemberX13_2</h3></a>
+<strong>#include "<a href="SdifFWrite.h">SdifFWrite.h</a>"</strong><p>
+  Rewrite given frame size and number of matrices in frame header.
+  Return -1 on error or if file is not seekable (stdout or stderr). 
+<p><pre>
+int     SdifUpdateFrameHeader	  (SdifFileT *SdifF, size_t ChunkSize, 
+				   SdifInt4 NumMatrix);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifFWriteXhXmemberX14"><hr><p></p><h3>SdifFWriteXhXmemberX14_2</h3></a>
+<strong>#include "<a href="SdifFWrite.h">SdifFWrite.h</a>"</strong><p>
+  Write a whole frame containing one matrix: 
+  frame header, matrix header, matrix data, and padding.
+  Data points to NbRow * NbCol * SdifSizeofDataType (DataType) bytes in
+  row-major order. 
+<p>
+  This function has the big advantage that the frame size is known in
+  advance, so there's no need to rewind and update after the matrix
+  has been written.  
+<p><pre>
+size_t  SdifFWriteFrameAndOneMatrix (SdifFileT	    *SdifF,
+				     SdifSignature  FrameSignature,
+				     SdifUInt4      NumID,
+				     SdifFloat8     Time,
+				     SdifSignature  MatrixSignature,
+				     SdifDataTypeET DataType,
+				     SdifUInt4      NbRow,
+				     SdifUInt4      NbCol,
+				     void	    *Data);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifFWriteXhXmemberX15"><hr><p></p><h3>SdifFWriteXhXmemberX15_2</h3></a>
+<strong>#include "<a href="SdifFWrite.h">SdifFWrite.h</a>"</strong><p>
+  Return (constant) size of frame header after signature and size field. 
+  Use this to calculate the Size argument for SdifFSetCurrFrameHeader. 
+<p><pre>
+size_t SdifSizeOfFrameHeader (void);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifFWriteXhXmemberX16"><hr><p></p><h3>SdifFWriteXhXmemberX16_2</h3></a>
+<strong>#include "<a href="SdifFWrite.h">SdifFWrite.h</a>"</strong><p>
+  Return size of matrix (header, data, padding).
+  Use this to calculate the Size argument for SdifFSetCurrFrameHeader. 
+<p><pre>
+size_t SdifSizeOfMatrix (SdifDataTypeET DataType,
+			 SdifUInt4      NbRow,
+			 SdifUInt4      NbCol);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifFWriteXhXmemberX17"><hr><p></p><h3>SdifFWriteXhXmemberX17_2</h3></a>
+<strong>#include "<a href="SdifFWrite.h">SdifFWrite.h</a>"</strong><p>
+  Write a text matrix using a string.
+  Return number of bytes written.
+<p>
+<p><pre>
+size_t SdifFWriteTextFrame(SdifFileT     *SdifF,
+			   SdifSignature FrameSignature,
+			   SdifUInt4     NumID,
+			   SdifFloat8    Time,
+			   SdifSignature MatrixSignature,
+			   char          *str,
+			   size_t        length);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifFWriteXhXmemberX18"><hr><p></p><h3>SdifFWriteXhXmemberX18_2</h3></a>
+<strong>#include "<a href="SdifFWrite.h">SdifFWrite.h</a>"</strong><p>
+  Write a text matrix using a SdifString.
+  Return number of bytes written.
+<p>
+<p><pre>
+size_t SdifFWriteTextFrameSdifString(SdifFileT     *SdifF,
+				     SdifSignature FrameSignature,
+				     SdifUInt4     NumID,
+				     SdifFloat8    Time,
+				     SdifSignature MatrixSignature,
+				     SdifStringT   *SdifString);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifFileXhXmemberX1"><hr><p></p><h3>SdifFileXhXmemberX1_2</h3></a>
+<strong>#include "<a href="SdifFile.h">SdifFile.h</a>"</strong><p>
+<p>
+<p><pre>
+SdifFileT*         SdifFOpen                    (const char *Name, SdifFileModeET Mode);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifFileXhXmemberX2"><hr><p></p><h3>SdifFileXhXmemberX2_2</h3></a>
+<strong>#include "<a href="SdifFile.h">SdifFile.h</a>"</strong><p>
+<p>
+<p><pre>
+void               SdifFClose                   (SdifFileT *SdifF);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifFileXhXmemberX3"><hr><p></p><h3>SdifFileXhXmemberX3_2</h3></a>
+<strong>#include "<a href="SdifFile.h">SdifFile.h</a>"</strong><p>
+  Initialise the SDIF library, providing a name for an optional additional
+  file with type definitions or "".
+  <b>This function has to be called once and only once per process 
+  before any other call to the SDIF library.</b> 
+<p><pre>
+void SdifGenInit (char *PredefinedTypesFile); 
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifFileXhXmemberX4"><hr><p></p><h3>SdifFileXhXmemberX4_2</h3></a>
+<strong>#include "<a href="SdifFile.h">SdifFile.h</a>"</strong><p>
+  Initialise the SDIF library if it has not been initialised before.
+  This function has to be called at least once, but can be called as
+  many times as desired.  Especially useful for dynamic libraries.
+<p>
+<dl><dl>
+<dt><i>in</i><strong> PredefinedTypesFile:</strong>
+<dd>	name for an optional additional file with type definitions or "". 
+</dl></dl>
+<p><pre>
+void SdifGenInitCond (char *PredefinedTypesFile);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifFileXhXmemberX5"><hr><p></p><h3>SdifFileXhXmemberX5_2</h3></a>
+<strong>#include "<a href="SdifFile.h">SdifFile.h</a>"</strong><p>
+  Deinitialise the SDIF library 
+<p><pre>
+void SdifGenKill (void); 
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifFileXhXmemberX6"><hr><p></p><h3>SdifFileXhXmemberX6_2</h3></a>
+<strong>#include "<a href="SdifFile.h">SdifFile.h</a>"</strong><p>
+  Print version information to standard error. 
+<p><pre>
+void SdifPrintVersion(void);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifFileXhXmemberX7"><hr><p></p><h3>SdifFileXhXmemberX7_2</h3></a>
+<strong>#include "<a href="SdifFile.h">SdifFile.h</a>"</strong><p>
+  Permet de donner des valeurs  chaque champ de l'entte de frame
+  temporaire de SdifF.<p> 
+<p>
+  Exemple:
+  <code>SdifSetCurrFrameHeader(SdifF, '1FOB', _SdifUnknownSize, 3, streamid, 1.0);</code> 
+<p><pre>
+SdifFrameHeaderT* SdifFSetCurrFrameHeader (SdifFileT *SdifF, 
+					   SdifSignature Signature, 
+					   SdifUInt4 Size,
+					   SdifUInt4 NbMatrix, 
+					   SdifUInt4 NumID, 
+					   SdifFloat8 Time);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifFileXhXmemberX8"><hr><p></p><h3>SdifFileXhXmemberX8_2</h3></a>
+<strong>#include "<a href="SdifFile.h">SdifFile.h</a>"</strong><p>
+  Permet de donner des valeurs  chaque champ de l'entte de matice
+  temporaire de SdifF.<p>
+<p>
+  Exemple:
+  <code>SdifSetCurrMatrixHeader(SdifF, '1FOF', eFloat4, NbFofs, 7);</code> 
+<p><pre>
+SdifMatrixHeaderT* SdifFSetCurrMatrixHeader (SdifFileT *SdifF, 
+					     SdifSignature Signature,
+					     SdifDataTypeET DataType, 
+					     SdifUInt4 NbRow, SdifUInt4 NbCol);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifFileXhXmemberX9"><hr><p></p><h3>SdifFileXhXmemberX9_2</h3></a>
+<strong>#include "<a href="SdifFile.h">SdifFile.h</a>"</strong><p>
+  Recopie la mmoire pointe par Values en fonction de l'entte de
+  matrice courante.<p> 
+<p>
+  Exemple:<br>
+<pre>
+  #define NbCols = 10;<br>
+
+  float t[NbCols] = { 1., 2., 3., 4., 5., 6., 7., 8., 9., 0.};<br>
+
+  SdifFSetCurrMatrixHeader(SdifF, 'mtrx', eFloat4, 1, NbCols);<br>
+  SdifFSetCurrOneRow      (SdifF, (void*) t);<br>
+</pre>
+<p>
+  On connait la taille de la mmoire  recopier par le type de donne
+  (ici: eFloat4) et le nombre de colonnes (ici: NbCols). Il faut que
+  le type de donne de la matrice courante corresponde avec la taille
+  d'un lment de t. Si t est compos de float sur 4 bytes, alors on
+  doit avoir eFloat4. Si t est compos de double float sur 8 bytes,
+  alors c'est eFloat8.<br>
+<p>
+  En gnral, les donnes d'un programme ne se prsente pas sous cette
+  forme et il faut raliser une transposition lors des transfert de
+  Sdif  un programme. Le programme Diphone Ircam a un bon exemple de
+  lecture avec transposition automatique, gnralise pour tout type
+  de matrice. 
+<p><pre>
+SdifOneRowT*  SdifFSetCurrOneRow       (SdifFileT *SdifF, void *Values);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifFileXhXmemberX10"><hr><p></p><h3>SdifFileXhXmemberX10_2</h3></a>
+<strong>#include "<a href="SdifFile.h">SdifFile.h</a>"</strong><p>
+  Permet de donner la valeur Value dans la ligbe de matrice temporaire
+  de SdifF  la colonne numCol (0<numCol<=SdifF->CurrMtrxH->NbCol).  
+<p><pre>
+SdifOneRowT* SdifFSetCurrOneRowCol (SdifFileT *SdifF, SdifUInt4
+numCol, SdifFloat8 Value);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifFileXhXmemberX11"><hr><p></p><h3>SdifFileXhXmemberX11_2</h3></a>
+<strong>#include "<a href="SdifFile.h">SdifFile.h</a>"</strong><p>
+  Recupre la valeur stocke  la colonne numCol de la ligne
+  temporaire.  C'est un SdifFloat8 donc un double!!  
+<p><pre>
+SdifFloat8 SdifFCurrOneRowCol (SdifFileT *SdifF, SdifUInt4 numCol);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifFileXhXmemberX12"><hr><p></p><h3>SdifFileXhXmemberX12_2</h3></a>
+<strong>#include "<a href="SdifFile.h">SdifFile.h</a>"</strong><p>
+  Idem que la fonction prcdente mais en utilisant le type de la
+  matrice et le nom de la colonne.  
+<p><pre>
+SdifFloat8    SdifFCurrOneRowColName   (SdifFileT *SdifF, 
+					SdifMatrixTypeT *MatrixType, 
+					char *NameCD);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifFileXhXmemberX13"><hr><p></p><h3>SdifFileXhXmemberX13_2</h3></a>
+<strong>#include "<a href="SdifFile.h">SdifFile.h</a>"</strong><p>
+  Renvoie la signature temporaire de Chunk ou de Frame.  
+<p><pre>
+SdifSignature SdifFCurrSignature       (SdifFileT *SdifF);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifFileXhXmemberX14"><hr><p></p><h3>SdifFileXhXmemberX14_2</h3></a>
+<strong>#include "<a href="SdifFile.h">SdifFile.h</a>"</strong><p>
+  Met  0 tous les bits de la signature temporaire.  
+<p><pre>
+SdifSignature SdifFCleanCurrSignature  (SdifFileT *SdifF);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifFileXhXmemberX15"><hr><p></p><h3>SdifFileXhXmemberX15_2</h3></a>
+<strong>#include "<a href="SdifFile.h">SdifFile.h</a>"</strong><p>
+  Renvoie la signature temporaire du dernier Frame lu ou du prochain 
+  crire.  
+<p><pre>
+SdifSignature SdifFCurrFrameSignature  (SdifFileT *SdifF);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifFileXhXmemberX16"><hr><p></p><h3>SdifFileXhXmemberX16_2</h3></a>
+<strong>#include "<a href="SdifFile.h">SdifFile.h</a>"</strong><p>
+  Renvoie la signature temporaire de la dernier matrice lue ou de la
+  prochaine  crire.  
+<p><pre>
+SdifSignature SdifFCurrMatrixSignature (SdifFileT *SdifF);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifFileXhXmemberX17"><hr><p></p><h3>SdifFileXhXmemberX17_2</h3></a>
+<strong>#include "<a href="SdifFile.h">SdifFile.h</a>"</strong><p>
+  Renvoie la ligne temporaire de SdifF.  
+<p><pre>
+SdifOneRowT*  SdifFCurrOneRow          (SdifFileT *SdifF);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifFileXhXmemberX18"><hr><p></p><h3>SdifFileXhXmemberX18_2</h3></a>
+<strong>#include "<a href="SdifFile.h">SdifFile.h</a>"</strong><p>
+  Returns a pointer to the data of the current matrix row.  According to the matrix data type, it can be a pointer to float or double. 
+<p><pre>
+void*	     SdifFCurrOneRowData	  (SdifFileT *SdifF);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifFileXhXmemberX19"><hr><p></p><h3>SdifFileXhXmemberX19_2</h3></a>
+<strong>#include "<a href="SdifFile.h">SdifFile.h</a>"</strong><p>
+  Renvoie SdifF->CurrMtrx->NbCol, nombre de colonnes de la matrice en
+  cours de traitement.  
+<p><pre>
+SdifUInt4     SdifFCurrNbCol           (SdifFileT *SdifF);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifFileXhXmemberX20"><hr><p></p><h3>SdifFileXhXmemberX20_2</h3></a>
+<strong>#include "<a href="SdifFile.h">SdifFile.h</a>"</strong><p>
+  Renvoie SdifF->CurrMtrx->NbRow, nombre de lignes de la matrice en
+  cours de traitement.  
+<p><pre>
+SdifUInt4     SdifFCurrNbRow           (SdifFileT *SdifF);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifFileXhXmemberX21"><hr><p></p><h3>SdifFileXhXmemberX21_2</h3></a>
+<strong>#include "<a href="SdifFile.h">SdifFile.h</a>"</strong><p>
+  Returns the data type of the current matrix. 
+<p><pre>
+SdifDataTypeET SdifFCurrDataType (SdifFileT *SdifF);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifFileXhXmemberX22"><hr><p></p><h3>SdifFileXhXmemberX22_2</h3></a>
+<strong>#include "<a href="SdifFile.h">SdifFile.h</a>"</strong><p>
+  Renvoie SdifF->CurrFramH->NbMatrix, mombre de matrices du frame
+  courant.  
+<p><pre>
+SdifUInt4     SdifFCurrNbMatrix        (SdifFileT *SdifF);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifFileXhXmemberX23"><hr><p></p><h3>SdifFileXhXmemberX23_2</h3></a>
+<strong>#include "<a href="SdifFile.h">SdifFile.h</a>"</strong><p>
+  Renvoie SdifF->CurrFramH->NumID, index de l'objet du frame courant.  
+<p><pre>
+SdifUInt4     SdifFCurrID              (SdifFileT *SdifF);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifFileXhXmemberX24"><hr><p></p><h3>SdifFileXhXmemberX24_2</h3></a>
+<strong>#include "<a href="SdifFile.h">SdifFile.h</a>"</strong><p>
+  Renvoie SdifF->CurrFramH->Time.  
+<p><pre>
+SdifFloat8    SdifFCurrTime            (SdifFileT *SdifF);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifFileXhXmemberX25"><hr><p></p><h3>SdifFileXhXmemberX25_2</h3></a>
+<strong>#include "<a href="SdifFile.h">SdifFile.h</a>"</strong><p>
+  Return list of NVTs for querying. 
+<dl><dl>
+<dt><i></i><strong> precondition</strong>
+<dd>NVTs have been read with SdifFReadAllASCIIChunks. 
+</dl></dl>
+<p><pre>
+SdifNameValuesLT *SdifFNameValueList (SdifFileT *file);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifFileXhXmemberX26"><hr><p></p><h3>SdifFileXhXmemberX26_2</h3></a>
+<strong>#include "<a href="SdifFile.h">SdifFile.h</a>"</strong><p>
+  Return number of NVTs present.
+<dl><dl>
+<dt><i></i><strong> precondition</strong>
+<dd>NVTs have been read with SdifFReadAllASCIIChunks. 
+</dl></dl>
+<p><pre>
+int SdifFNameValueNum (SdifFileT *file);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifFileXhXmemberX27"><hr><p></p><h3>SdifFileXhXmemberX27_2</h3></a>
+<strong>#include "<a href="SdifFile.h">SdifFile.h</a>"</strong><p>
+  Return the file's stream ID table, created automatically by SdifFOpen. 
+<p><pre>
+SdifStreamIDTableT *SdifFStreamIDTable (SdifFileT *file);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifFileXhXmemberX28"><hr><p></p><h3>SdifFileXhXmemberX28_2</h3></a>
+<strong>#include "<a href="SdifFile.h">SdifFile.h</a>"</strong><p>
+  Add user data, return index added 
+<p><pre>
+int SdifFAddUserData (SdifFileT *file, void *data);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifFileXhXmemberX29"><hr><p></p><h3>SdifFileXhXmemberX29_2</h3></a>
+<strong>#include "<a href="SdifFile.h">SdifFile.h</a>"</strong><p>
+  Get user data by index 
+<p><pre>
+void *SdifFGetUserData (SdifFileT *file, int index);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifFileXhXmemberX30"><hr><p></p><h3>SdifFileXhXmemberX30_2</h3></a>
+<strong>#include "<a href="SdifFile.h">SdifFile.h</a>"</strong><p>
+  Return number of errors present for file of level upto or more
+  severe.  Example: SdifFNumErrors(f, eError) is true if an error or a
+  fatal error occurred since opening the file, false if there were
+  only warnings or remarks. 
+<p><pre>
+int SdifFNumErrors (SdifFileT *SdifF, SdifErrorLevelET upto);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifFileXhXmemberX31"><hr><p></p><h3>SdifFileXhXmemberX31_2</h3></a>
+<strong>#include "<a href="SdifFile.h">SdifFile.h</a>"</strong><p>
+  Return pointer to last error struct or NULL if no error present
+  for this file. 
+<p><pre>
+SdifErrorT*     SdifFLastError    (SdifFileT *SdifF);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifFileXhXmemberX32"><hr><p></p><h3>SdifFileXhXmemberX32_2</h3></a>
+<strong>#include "<a href="SdifFile.h">SdifFile.h</a>"</strong><p>
+  Return tag of last error or eNoError if no error present for this file. 
+<p><pre>
+SdifErrorTagET  SdifFLastErrorTag (SdifFileT *SdifF);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifFileStructXhXmemberX1"><hr><p></p><h3>SdifFileStructXhXmemberX1_2</h3></a>
+<strong>#include "<a href="SdifFileStruct.h">SdifFileStruct.h</a>"</strong><p>
+  File mode argument for SdifFOpen.
+<p>
+<p><pre>
+typedef enum SdifFileModeE
+{
+  eUnknownFileMode,	/* 0 */
+  eWriteFile,
+  eReadFile,
+  ePredefinedTypes,	/* 3 */
+
+  eModeMask = 7,	/* get rid of flags */
+
+  /* from here on we have flags that can be or'ed with the previous modes */
+  eParseSelection = 8
+} SdifFileModeET ;
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifGlobalsXhXmemberX1"><hr><p></p><h3>SdifGlobalsXhXmemberX1_2</h3></a>
+<strong>#include "<a href="SdifGlobals.h">SdifGlobals.h</a>"</strong><p>
+  Macro to generate proper-endianed 4 char SDIF signature from 
+  something like 'ABCD'.
+<p>
+<p><pre>
+SdifUInt4 SdifSignatureConst (SdifUInt4 four_char_code);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifGlobalsXhXmemberX2"><hr><p></p><h3>SdifGlobalsXhXmemberX2_2</h3></a>
+<strong>#include "<a href="SdifGlobals.h">SdifGlobals.h</a>"</strong><p>
+<p>
+<p><pre>
+char*     SdifSignatureToString(SdifSignature Signature);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifGlobalsXhXmemberX3"><hr><p></p><h3>SdifGlobalsXhXmemberX3_2</h3></a>
+<strong>#include "<a href="SdifGlobals.h">SdifGlobals.h</a>"</strong><p>
+  Compare two signatures, ignoring the first character which
+  encodes the type version.  Note that comparison of full signatures
+  can be done simply with '=='. 
+<p>
+<p><pre>
+short     SdifSignatureCmpNoVersion(SdifSignature Signature1, SdifSignature Signature2);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifGlobalsXhXmemberX4"><hr><p></p><h3>SdifGlobalsXhXmemberX4_2</h3></a>
+<strong>#include "<a href="SdifGlobals.h">SdifGlobals.h</a>"</strong><p>
+  Returns size of SDIF data type in bytes
+  (which is always the low-order byte).  
+<p>
+<p><pre>
+SdifUInt4 SdifSizeofDataType (SdifDataTypeET DataType);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifGlobalsXhXmemberX5"><hr><p></p><h3>SdifGlobalsXhXmemberX5_2</h3></a>
+<strong>#include "<a href="SdifGlobals.h">SdifGlobals.h</a>"</strong><p>
+  Returns true if DataType is in the list of known data types.
+<p>
+<p><pre>
+int SdifDataTypeKnown (SdifDataTypeET DataType);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifGlobalsXhXmemberX6"><hr><p></p><h3>SdifGlobalsXhXmemberX6_2</h3></a>
+<strong>#include "<a href="SdifGlobals.h">SdifGlobals.h</a>"</strong><p>
+<p>
+<p><pre>
+size_t    SdifPaddingCalculate  (size_t NbBytes);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifGlobalsXhXmemberX7"><hr><p></p><h3>SdifGlobalsXhXmemberX7_2</h3></a>
+<strong>#include "<a href="SdifGlobals.h">SdifGlobals.h</a>"</strong><p>
+<p>
+<p><pre>
+size_t    SdifFPaddingCalculate (FILE *f, size_t NbBytes);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifHighLevelXhXmemberX1"><hr><p></p><h3>SdifHighLevelXhXmemberX1_2</h3></a>
+<strong>#include "<a href="SdifHighLevel.h">SdifHighLevel.h</a>"</strong><p>
+  Read frame headers until a frame matching the file selection
+  has been found or the end of the file has been reached.
+<p>
+<dl><dl>
+<dt><i></i><strong> Return</strong>
+<dd>false if end of file was reached, true if data has been read. 
+</dl></dl>
+<p><pre>
+int SdifFReadNextSelectedFrameHeader (SdifFileT *file);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifHighLevelXhXmemberX2"><hr><p></p><h3>SdifHighLevelXhXmemberX2_2</h3></a>
+<strong>#include "<a href="SdifHighLevel.h">SdifHighLevel.h</a>"</strong><p>
+  Write whole matrix, given as separate columns in array "columns" of
+  pointer to "DataType".  Each columns [i], i = 0..NbCol-1, points to 
+  NbRow * SdifSizeofDataType (DataType) bytes.  
+  TBI 
+<p>
+<p><pre>
+SdifFWriteMatrixColumns (SdifFileT     *file,
+			 SdifSignature  Signature,
+			 SdifDataTypeET DataType,
+			 SdifUInt4      NbRow,
+			 SdifUInt4      NbCol,
+			 void	       *columns []);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifHighLevelXhXmemberX3"><hr><p></p><h3>SdifHighLevelXhXmemberX3_2</h3></a>
+<strong>#include "<a href="SdifHighLevel.h">SdifHighLevel.h</a>"</strong><p>
+  Definition of the matrix callback function type, used for SdifReadSimple. 
+  TBI 
+<p>
+<p><pre>
+typedef int (*SdifMatrixCallbackT) (SdifFileT *file, 
+				    int nummatrix, 
+				    void *userdata);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifHighLevelXhXmemberX4"><hr><p></p><h3>SdifHighLevelXhXmemberX4_2</h3></a>
+<strong>#include "<a href="SdifHighLevel.h">SdifHighLevel.h</a>"</strong><p>
+  Reads an entire SDIF file, calling matrixfunc for each matrix in the
+  SDIF selection taken from the filename.  Matrixfunc is called with
+  the SDIF file pointer, the matrix count within the current frame,
+  and the userdata unchanged. 
+  TBI 
+<p>
+<p><pre>
+SdifReadSimple (char		    *filename, 
+		SdifMatrixCallbackT matrixfunc,
+		void		    *userdata);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifHighLevelXhXmemberX5"><hr><p></p><h3>SdifHighLevelXhXmemberX5_2</h3></a>
+<strong>#include "<a href="SdifHighLevel.h">SdifHighLevel.h</a>"</strong><p>
+  Reads matrix header and data into memory allocated by the library,
+  accessible by SdifFCurrMatrixData (). 
+<p><pre>
+int SdifFReadMatrix (SdifFileT *file);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifHighLevelXhXmemberX6"><hr><p></p><h3>SdifHighLevelXhXmemberX6_2</h3></a>
+<strong>#include "<a href="SdifHighLevel.h">SdifHighLevel.h</a>"</strong><p>
+  Reads matrix data into memory pointed to by target, which must point
+  to at least nbrow * nbcol * size of datatype bytes of memory.  If
+  target is NULL, the library will allocate enough space for the data
+  of one matrix, accessible by SdifFCurrMatrixData ().
+<p>
+<dl><dl>
+<dt><i>Precondition:</i><strong> </strong>
+<dd>  Matrix header must have been read with SdifFReadMatrixHeader.  
+</dl></dl>
+<p><pre>
+int SdifFReadMatrixData   (SdifFileT *file, void *target);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifListXhXmemberX1"><hr><p></p><h3>SdifListXhXmemberX1_2</h3></a>
+<strong>#include "<a href="SdifList.h">SdifList.h</a>"</strong><p>
+  Init the function SdifListGetNext. 
+<dl><dl>
+<dt><i>Return</i><strong> head</strong>
+<dd>of List. 
+</dl></dl>
+<p><pre>
+void*       SdifListGetHead     (SdifListT* List); 
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifListXhXmemberX2"><hr><p></p><h3>SdifListXhXmemberX2_2</h3></a>
+<strong>#include "<a href="SdifList.h">SdifList.h</a>"</strong><p>
+  Init for function SdifListGetNext.
+<dl><dl>
+<dt><i>Returns</i><strong> true</strong>
+<dd>if List has elements. 
+</dl></dl>
+<p><pre>
+int         SdifListInitLoop    (SdifListT* List);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifListXhXmemberX3"><hr><p></p><h3>SdifListXhXmemberX3_2</h3></a>
+<strong>#include "<a href="SdifList.h">SdifList.h</a>"</strong><p>
+  Set Curr to Curr->Next and after return Curr->Data 
+<p><pre>
+void*       SdifListGetNext     (SdifListT* List);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifListXhXmemberX4"><hr><p></p><h3>SdifListXhXmemberX4_2</h3></a>
+<strong>#include "<a href="SdifList.h">SdifList.h</a>"</strong><p>
+  Only return Curr->Data. 
+<p><pre>
+void*       SdifListGetCurr     (SdifListT* List);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifMatrixTypeXhXmemberX1"><hr><p></p><h3>SdifMatrixTypeXhXmemberX1_2</h3></a>
+<strong>#include "<a href="SdifMatrixType.h">SdifMatrixType.h</a>"</strong><p>
+  premet de crer un objet 'type de matrice'. Le premier argument
+  est la signature de ce type. Le second est l'objet 'type de matrice'
+  prdfini dans SDIF.<p>
+<p>
+  <strong>Important: Tous les types de matrices ou de frames utiliss
+  dans une instance de SdifFileT doivent tre ajouts aux tables de
+  cette instance, de faon a crer le lien avec les types
+  prdfinis.</strong> L'hors de la lecture des enttes avec les
+  fonctions SdifFReadMatrixHeader et SdifFReadFrameHeader, cette mise
+   jour se fait automatiquement  l'aide des fonctions
+  SdifTestMatrixType et SdifTestFrameType. 
+<p><pre>
+SdifMatrixTypeT* SdifCreateMatrixType              (SdifSignature Signature,
+                    							   SdifMatrixTypeT *PredefinedMatrixType);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifMatrixTypeXhXmemberX2"><hr><p></p><h3>SdifMatrixTypeXhXmemberX2_2</h3></a>
+<strong>#include "<a href="SdifMatrixType.h">SdifMatrixType.h</a>"</strong><p>
+  permet d'ajouter une colonne  un type (toujours la dernire
+  colonne).  
+<p><pre>
+SdifMatrixTypeT* SdifMatrixTypeInsertTailColumnDef (SdifMatrixTypeT *MatrixType, char *NameCD);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifMatrixTypeXhXmemberX3"><hr><p></p><h3>SdifMatrixTypeXhXmemberX3_2</h3></a>
+<strong>#include "<a href="SdifMatrixType.h">SdifMatrixType.h</a>"</strong><p>
+  renvoie la position de la colonne de nom NameCD.  (0 si elle
+  n'existe pas) 
+<p><pre>
+SdifUInt4        SdifMatrixTypeGetNumColumnDef     (SdifMatrixTypeT *MatrixType, char *NameCD);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifMatrixTypeXhXmemberX4"><hr><p></p><h3>SdifMatrixTypeXhXmemberX4_2</h3></a>
+<strong>#include "<a href="SdifMatrixType.h">SdifMatrixType.h</a>"</strong><p>
+  renvoie la dfinition de la colonne (numro, nom) en fonction
+  du nom.(NULL si introuvable) 
+<p><pre>
+SdifColumnDefT*  SdifMatrixTypeGetColumnDef        (SdifMatrixTypeT *MatrixType, char *NameCD);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifMatrixTypeXhXmemberX5"><hr><p></p><h3>SdifMatrixTypeXhXmemberX5_2</h3></a>
+<strong>#include "<a href="SdifMatrixType.h">SdifMatrixType.h</a>"</strong><p>
+  renvoie la dfinition de la colonne (numro, nom) en fonction
+  du numero.(NULL si introuvable) 
+<p><pre>
+SdifColumnDefT*  SdifMatrixTypeGetNthColumnDef     (SdifMatrixTypeT *MatrixType, SdifUInt4 NumCD);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifMatrixTypeXhXmemberX6"><hr><p></p><h3>SdifMatrixTypeXhXmemberX6_2</h3></a>
+<strong>#include "<a href="SdifMatrixType.h">SdifMatrixType.h</a>"</strong><p>
+  renvoie le type de matrice en fonction de la Signature. Renvoie
+  NULL si le type est introuvable. Attention, si Signature est la
+  signature d'un type prdfini,
+  SdifGetMatrixType(SdifF->MatrixTypeTable,Signature) renvoie NULL si
+  le lien avec entre SdifF et gSdifPredefinedType n'a pas t mis 
+  jour.  
+<p><pre>
+SdifMatrixTypeT* SdifGetMatrixType		   (SdifHashTableT *MatrixTypesTable, 
+						    SdifSignature Signature);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifMatrixTypeXhXmemberX7"><hr><p></p><h3>SdifMatrixTypeXhXmemberX7_2</h3></a>
+<strong>#include "<a href="SdifMatrixType.h">SdifMatrixType.h</a>"</strong><p>
+  permet d'ajouter un type de matrice dans une table.  
+<p><pre>
+void             SdifPutMatrixType(SdifHashTableT *MatrixTypesTable, SdifMatrixTypeT* MatrixType);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifNameValueXhXmemberX1"><hr><p></p><h3>SdifNameValueXhXmemberX1_2</h3></a>
+<strong>#include "<a href="SdifNameValue.h">SdifNameValue.h</a>"</strong><p>
+  Cette fonction permet d'ajouter une nouvelle NVT dans la liste
+  de tables passe par argument:
+  <code>SdifNameValuesLNewHT(SdifF->NamefValues);</code><br>
+  Attention,  l'ouverture de SdifF, il n'y a aucune table dans
+  SdifF->NamefValues. Il faudra donc au moins en ajouter une pour
+  pouvoir y mettre des NameValue.  
+<p><pre>
+SdifNameValuesLT*   SdifNameValuesLNewTable     (SdifNameValuesLT *NameValuesL, SdifUInt4 StreamID);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifNameValueXhXmemberX2"><hr><p></p><h3>SdifNameValueXhXmemberX2_2</h3></a>
+<strong>#include "<a href="SdifNameValue.h">SdifNameValue.h</a>"</strong><p>
+  Cette fonction permet de dfinir la nime NVT de la liste des
+  tables comme NVT courante.  
+<p><pre>
+SdifNameValueTableT*SdifNameValuesLSetCurrNVT   (SdifNameValuesLT *NameValuesL, SdifUInt4 NumCurrNVT);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifNameValueXhXmemberX3"><hr><p></p><h3>SdifNameValueXhXmemberX3_2</h3></a>
+<strong>#include "<a href="SdifNameValue.h">SdifNameValue.h</a>"</strong><p>
+  Cette fonction permet de rcuprer une Name-Value de la liste
+  des NVTs en passant le Name en argument.  Dans le cas ou Name est
+  rfrenc dans plusieurs NVT, alors c'est la premire NVT le
+  contenant qui sera prise en compte.  Le pointeur retourn est de
+  type SdifNameValueT qui contient deux champs: Name et Value.  
+<p><pre>
+SdifNameValueT*     SdifNameValuesLGet          (SdifNameValuesLT *NameValuesL, char *Name);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifNameValueXhXmemberX4"><hr><p></p><h3>SdifNameValueXhXmemberX4_2</h3></a>
+<strong>#include "<a href="SdifNameValue.h">SdifNameValue.h</a>"</strong><p>
+  Cette fonction ralise aussi une requte en fonction de Name
+  mais uniquement dans la NVT courante.  
+<p><pre>
+SdifNameValueT*     SdifNameValuesLGetCurrNVT   (SdifNameValuesLT *NameValuesL, const char *Name);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifNameValueXhXmemberX5"><hr><p></p><h3>SdifNameValueXhXmemberX5_2</h3></a>
+<strong>#include "<a href="SdifNameValue.h">SdifNameValue.h</a>"</strong><p>
+  Cette fonction permet d'ajouter une NameValue  table courante
+  qui est la dernire table cre ou celle dfinie en tant que table
+  courante. Name et Value doivent tre des chaines caractres ASCII
+  sans espacements.  
+<p><pre>
+SdifNameValueT*     SdifNameValuesLPutCurrNVT   (SdifNameValuesLT *NameValuesL, const char *Name,  const char *Value);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifRWLowLevelXhXmemberX1"><hr><p></p><h3>SdifRWLowLevelXhXmemberX1_2</h3></a>
+<strong>#include "<a href="SdifRWLowLevel.h">SdifRWLowLevel.h</a>"</strong><p>
+  Return c if it is a reserved char, -1 otherwise.
+<p>
+<p><pre>
+int SdifIsAReservedChar (char c);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifRWLowLevelXhXmemberX2"><hr><p></p><h3>SdifRWLowLevelXhXmemberX2_2</h3></a>
+<strong>#include "<a href="SdifRWLowLevel.h">SdifRWLowLevel.h</a>"</strong><p>
+  Convert str <strong>in place</strong> so that it doesn't
+  contain any reserved chars (these become '.') or spaces (these
+  become '_').
+<p>
+<dl><dl>
+<dt><i></i><strong> returns</strong>
+<dd>str
+<p>
+</dl></dl>
+<p><pre>
+char *SdifStringToNV (/*in out*/ char *str);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifRWLowLevelXhXmemberX3"><hr><p></p><h3>SdifRWLowLevelXhXmemberX3_2</h3></a>
+<strong>#include "<a href="SdifRWLowLevel.h">SdifRWLowLevel.h</a>"</strong><p>
+  Function return the signature in a SdifStringT
+<p>
+<p><pre>
+int SdiffGetSignaturefromSdifString(SdifStringT *SdifString, SdifSignature *Signature);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifRWLowLevelXhXmemberX4"><hr><p></p><h3>SdifRWLowLevelXhXmemberX4_2</h3></a>
+<strong>#include "<a href="SdifRWLowLevel.h">SdifRWLowLevel.h</a>"</strong><p>
+  Function return the word until in a SdifStringT
+<p>
+<p><pre>
+int SdiffGetWordUntilfromSdifString(SdifStringT *SdifString, char* s, size_t ncMax,char *CharsEnd);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifRWLowLevelXhXmemberX5"><hr><p></p><h3>SdifRWLowLevelXhXmemberX5_2</h3></a>
+<strong>#include "<a href="SdifRWLowLevel.h">SdifRWLowLevel.h</a>"</strong><p>
+  Function return the string until in a SdifStringT
+<p>
+<p><pre>
+int SdiffGetStringUntilfromSdifString(SdifStringT *SdifString, char *s, size_t ncMax,
+				      char *CharsEnd);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifRWLowLevelXhXmemberX6"><hr><p></p><h3>SdifRWLowLevelXhXmemberX6_2</h3></a>
+<strong>#include "<a href="SdifRWLowLevel.h">SdifRWLowLevel.h</a>"</strong><p>
+  Return the weak string until in a SdifStringT
+<p>
+<p><pre>
+int SdiffGetStringWeakUntilfromSdifString(SdifStringT *SdifString, char* s,
+					  size_t ncMax, char *CharsEnd);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifRWLowLevelXhXmemberX7"><hr><p></p><h3>SdifRWLowLevelXhXmemberX7_2</h3></a>
+<strong>#include "<a href="SdifRWLowLevel.h">SdifRWLowLevel.h</a>"</strong><p>
+  Convert a string to an SDIF signature (in proper endianness).
+  str can point to any string position of any length.  
+<p>
+<p><pre>
+SdifSignature SdifStringToSignature (char *str);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifSelectXhXmemberX1"><hr><p></p><h3>SdifSelectXhXmemberX1_2</h3></a>
+<strong>#include "<a href="SdifSelect.h">SdifSelect.h</a>"</strong><p>
+  Selection element interface (returned by SdifGetNextSelection*):
+  One basic data element value, with optional range.  
+  The meaning of range is determined by rangetype: 
+<p>
+<dl><dl>
+<dt><i></i><strong> 0</strong>
+<dd>no range
+<dt><i></i><strong> sst_range</strong>
+<dd>range is value..range
+<dt><i></i><strong> sst_delta</strong>
+<dd>range is value-range..value+range
+<p>
+</dl></dl>
+<p><pre>
+
+typedef struct 
+{
+    int		       value, range;
+    SdifSelectTokens   rangetype; /* 0 for not present, sst_range, sst_delta */
+} SdifSelectElementIntT;
+</pre>
+<p><em>Function is currently defined <strong>inline</strong>.</em></p>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifSelectXhXmemberX2"><hr><p></p><h3>SdifSelectXhXmemberX2_2</h3></a>
+<strong>#include "<a href="SdifSelect.h">SdifSelect.h</a>"</strong><p>
+  Internal: one value of different possible types in a selection
+  element (the element list determines which type is actually used).  
+<p>
+<p><pre>
+typedef union SdifSelectValueS 
+{
+    int            integer;
+    double         real;
+    char	   *string;
+    SdifSignature  signature;
+} SdifSelectValueT;
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifSelectXhXmemberX3"><hr><p></p><h3>SdifSelectXhXmemberX3_2</h3></a>
+<strong>#include "<a href="SdifSelect.h">SdifSelect.h</a>"</strong><p>
+  Selection element internal data structure:
+  One basic data element, with optional <ul>
+  <li> range (value is lower, range is upper bound) or 
+  <li> delta (value-range is lower, value+range is upper bound)
+  </ul>
+<p>
+<p><pre>
+typedef struct SdifSelectElementS
+{
+    SdifSelectValueT value;
+    SdifSelectValueT range;
+    SdifSelectTokens rangetype; /* 0 for not present, sst_range, sst_delta */
+} SdifSelectElementT, *SdifSelectElementP;
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifSelectXhXmemberX4"><hr><p></p><h3>SdifSelectXhXmemberX4_2</h3></a>
+<strong>#include "<a href="SdifSelect.h">SdifSelect.h</a>"</strong><p>
+  Holds a selection of what data to access in an SDIF file,
+  parsed from a simple regular expression.  
+<p>
+<p><pre>
+typedef struct
+{
+    char	*filename,	/* allocated / freed by 
+				   SdifInitSelection / SdifFreeSelection */
+		*basename;	/* points into filename */
+    SdifListP	stream, frame, matrix, column, row, time;
+} SdifSelectionT;
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifSelectXhXmemberX5"><hr><p></p><h3>SdifSelectXhXmemberX5_2</h3></a>
+<strong>#include "<a href="SdifSelect.h">SdifSelect.h</a>"</strong><p>
+  Return pointer to start of filename component in path inPathFileName.
+<p>
+<p><pre>
+char *SdifBaseName (const char* inPathFileName);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifSelectXhXmemberX6"><hr><p></p><h3>SdifSelectXhXmemberX6_2</h3></a>
+<strong>#include "<a href="SdifSelect.h">SdifSelect.h</a>"</strong><p>
+  Allocate space for an sdif selection.
+<p>
+<p><pre>
+SdifSelectionT *SdifCreateSelection (void);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifSelectXhXmemberX7"><hr><p></p><h3>SdifSelectXhXmemberX7_2</h3></a>
+<strong>#include "<a href="SdifSelect.h">SdifSelect.h</a>"</strong><p>
+<p>
+<p><pre>
+int SdifInitSelection (SdifSelectionT *sel, const char *filename, int namelen);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifSelectXhXmemberX8"><hr><p></p><h3>SdifSelectXhXmemberX8_2</h3></a>
+<strong>#include "<a href="SdifSelect.h">SdifSelect.h</a>"</strong><p>
+<p>
+<p><pre>
+int SdifFreeSelection (SdifSelectionT *sel);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifSelectXhXmemberX9"><hr><p></p><h3>SdifSelectXhXmemberX9_2</h3></a>
+<strong>#include "<a href="SdifSelect.h">SdifSelect.h</a>"</strong><p>
+  Returns pointer to first char of select spec (starting with ::), 
+  or NULL if not found.
+<p>
+<dl><dl>
+<dt><i>in</i><strong> filename</strong>
+<dd>can be NULL
+<p>
+</dl></dl>
+<p><pre>
+char *SdifSelectFindSelection (const char *filename);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifSelectXhXmemberX10"><hr><p></p><h3>SdifSelectXhXmemberX10_2</h3></a>
+<strong>#include "<a href="SdifSelect.h">SdifSelect.h</a>"</strong><p>
+  SdifGetFilenameAndSelection parses
+<p>
+<dl><dl>
+<dt><i>in</i><strong>  filename</strong>
+<dd>(can be NULL) into
+<dt><i>out</i><strong> sel</strong>
+<dd>which must point to an SdifSelectionT structure.
+<dt><i>return</i><strong> </strong>
+<dd>		a pointer to a copy of the filename part of filename
+<p>
+</dl></dl>
+<p><pre>
+char *SdifGetFilenameAndSelection (/*in*/  const char *filename, 
+				   /*out*/ SdifSelectionT *sel);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifSelectXhXmemberX11"><hr><p></p><h3>SdifSelectXhXmemberX11_2</h3></a>
+<strong>#include "<a href="SdifSelect.h">SdifSelect.h</a>"</strong><p>
+<p>
+<p><pre>
+void SdifPrintSelection (FILE *out, SdifSelectionT *sel, int options);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifSelectXhXmemberX12"><hr><p></p><h3>SdifSelectXhXmemberX12_2</h3></a>
+<strong>#include "<a href="SdifSelect.h">SdifSelect.h</a>"</strong><p>
+  Create and add one value to selection element list.  There are four 
+  functions generated automatically, with the meta type-variables _type_ and 
+  _datatype_:
+<dl><dl>
+<dt><i></i><strong> _type_</strong>
+<dd>is one of:  <br> Int, Real,   Signature,     String, for
+<dt><i></i><strong> _datatype_</strong>
+<dd>of:	<br> int, double, SdifSignature, char *, respectively.
+<p>
+</dl></dl>
+<p><pre>
+void SdifSelectAdd_TYPE_ (SdifListT *list, _datatype_ value);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifSelectXhXmemberX13"><hr><p></p><h3>SdifSelectXhXmemberX13_2</h3></a>
+<strong>#include "<a href="SdifSelect.h">SdifSelect.h</a>"</strong><p>
+  Create and add one range to selection element list.  There are four 
+  functions generated automatically, with the meta type-variables _type_ and 
+  _datatype_:
+<dl><dl>
+<dt><i></i><strong> _type_</strong>
+<dd>is one of:  <br> Int, Real,   Signature,     String, for
+<dt><i></i><strong> _datatype_</strong>
+<dd>of:	<br> int, double, SdifSignature, char *, respectively.
+<p>
+</dl></dl>
+<p><pre>
+void SdifSelectAdd_TYPE_Range (SdifListT *list, 
+			       _datatype_ value, 
+			       SdifSelectTokens rt, 
+			       _datatype_ range);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifSelectXhXmemberX14"><hr><p></p><h3>SdifSelectXhXmemberX14_2</h3></a>
+<strong>#include "<a href="SdifSelect.h">SdifSelect.h</a>"</strong><p>
+  Query parsed ranges (list of ranges) for a selection element (one of
+  the SdifListP lists in SdifSelectionT).  Init list traversal with
+  SdifListInitLoop, then call SdifSelectGetNext<type>(list) until it
+  returns 0.
+<p>
+  The number of selections in the list is SdifListGetNbData(list), if
+  it is 0, or SdifListIsEmpty(list) is true, then there was no
+  selection for that element.
+<p>
+  If force_range is 1, the out value is converted to a range in any
+  case, with value <= range guaranteed.  
+<p>
+<p><pre>
+int SdifSelectGetNextIntRange  (/*in*/  SdifListP list, 
+				/*out*/ SdifSelectElementIntT  *range, 
+				/*in*/  int force_range);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifSelectXhXmemberX15"><hr><p></p><h3>SdifSelectXhXmemberX15_2</h3></a>
+<strong>#include "<a href="SdifSelect.h">SdifSelect.h</a>"</strong><p>
+  See SdifSelectGetNextInt.
+<p>
+<p><pre>
+int SdifSelectGetNextRealRange (/*in*/  SdifListP list, 
+				/*out*/ SdifSelectElementRealT *range, 
+				/*in*/  int force_range);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifSelectXhXmemberX16"><hr><p></p><h3>SdifSelectXhXmemberX16_2</h3></a>
+<strong>#include "<a href="SdifSelect.h">SdifSelect.h</a>"</strong><p>
+  Query list of parsed selection elements (one of the SdifListP
+  lists in SdifSelectionT).  Init list traversal with
+  SdifListInitLoop, then call SdifSelectGetNext<type>(list) until it
+  returns 0.
+<p>
+  See also SdifSelectGetNextInt.  
+<p>
+<p><pre>
+SdifSignature  SdifSelectGetNextSignature (/*in*/  SdifListP list);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifSelectXhXmemberX17"><hr><p></p><h3>SdifSelectXhXmemberX17_2</h3></a>
+<strong>#include "<a href="SdifSelect.h">SdifSelect.h</a>"</strong><p>
+  See SdifSelectGetNextSignature.
+<p>
+<p><pre>
+char	      *SdifSelectGetNextString    (/*in*/  SdifListP list);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifSelectXhXmemberX18"><hr><p></p><h3>SdifSelectXhXmemberX18_2</h3></a>
+<strong>#include "<a href="SdifSelect.h">SdifSelect.h</a>"</strong><p>
+  Return value of first selection (ignoring range).
+<p>
+<p><pre>
+int	       SdifSelectGetFirstInt       (SdifListP l, int defval);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifSelectXhXmemberX19"><hr><p></p><h3>SdifSelectXhXmemberX19_2</h3></a>
+<strong>#include "<a href="SdifSelect.h">SdifSelect.h</a>"</strong><p>
+  Test the selection elements from sel applicable to frame FramH:
+  time, stream, frame type. 
+<p><pre>
+int SdifFrameIsSelected (SdifFrameHeaderT *FramH, SdifSelectionT *sel);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifSelectXhXmemberX20"><hr><p></p><h3>SdifSelectXhXmemberX20_2</h3></a>
+<strong>#include "<a href="SdifSelect.h">SdifSelect.h</a>"</strong><p>
+  Test the selection elements from sel applicable to matrix MtrxH: 
+  the matrix signature. 
+<p><pre>
+int SdifMatrixIsSelected (SdifMatrixHeaderT *MtrxH, SdifSelectionT *sel);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifSelectXhXmemberX21"><hr><p></p><h3>SdifSelectXhXmemberX21_2</h3></a>
+<strong>#include "<a href="SdifSelect.h">SdifSelect.h</a>"</strong><p>
+  Test if the current frame header is in the file selection
+  (automatically parsed from the filename).  
+  Can be called after SdifFReadFrameHeader(). 
+<p><pre>
+int SdifFCurrFrameIsSelected (SdifFileT *file);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifSelectXhXmemberX22"><hr><p></p><h3>SdifSelectXhXmemberX22_2</h3></a>
+<strong>#include "<a href="SdifSelect.h">SdifSelect.h</a>"</strong><p>
+  Test if the current matrix header is in the file selection
+  (automatically parsed from the filename).  
+  Can be called after SdifFReadMatrixHeader(). 
+<p><pre>
+int SdifFCurrMatrixIsSelected (SdifFileT *file);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifSignatureTabXhXmemberX1"><hr><p></p><h3>SdifSignatureTabXhXmemberX1_2</h3></a>
+<strong>#include "<a href="SdifSignatureTab.h">SdifSignatureTab.h</a>"</strong><p>
+  Create table for initially NbSignMax signatures. 
+<p><pre>
+SdifSignatureTabT* SdifCreateSignatureTab (const SdifUInt4 NbSignMax);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifSignatureTabXhXmemberX2"><hr><p></p><h3>SdifSignatureTabXhXmemberX2_2</h3></a>
+<strong>#include "<a href="SdifSignatureTab.h">SdifSignatureTab.h</a>"</strong><p>
+  Free signature table. 
+<p><pre>
+void		   SdifKillSignatureTab   (SdifSignatureTabT *SignTab);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifSignatureTabXhXmemberX3"><hr><p></p><h3>SdifSignatureTabXhXmemberX3_2</h3></a>
+<strong>#include "<a href="SdifSignatureTab.h">SdifSignatureTab.h</a>"</strong><p>
+  Reallocate table to hold NewNbSignMax signatures. 
+<p><pre>
+SdifSignatureTabT* SdifReAllocSignatureTab(SdifSignatureTabT *SignTab, 
+					   const SdifUInt4 NewNbSignMax);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifSignatureTabXhXmemberX4"><hr><p></p><h3>SdifSignatureTabXhXmemberX4_2</h3></a>
+<strong>#include "<a href="SdifSignatureTab.h">SdifSignatureTab.h</a>"</strong><p>
+  Reallocate table to hold NewNbSignMax signatures and clear signatures. 
+<p><pre>
+SdifSignatureTabT* SdifReInitSignatureTab (SdifSignatureTabT *SignTab, 
+					   const SdifUInt4 NewNbSignMax);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifSignatureTabXhXmemberX5"><hr><p></p><h3>SdifSignatureTabXhXmemberX5_2</h3></a>
+<strong>#include "<a href="SdifSignatureTab.h">SdifSignatureTab.h</a>"</strong><p>
+  Add signature Sign, no overflow check. 
+<p><pre>
+SdifSignatureTabT* SdifPutInSignatureTab  (SdifSignatureTabT *SignTab, 
+					   const SdifSignature Sign);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifSignatureTabXhXmemberX6"><hr><p></p><h3>SdifSignatureTabXhXmemberX6_2</h3></a>
+<strong>#include "<a href="SdifSignatureTab.h">SdifSignatureTab.h</a>"</strong><p>
+  Add signature Sign, reallocate table if necessary. 
+<p><pre>
+SdifSignatureTabT* SdifAddToSignatureTab  (SdifSignatureTabT *SignTab, 
+					   const SdifSignature Sign);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifSignatureTabXhXmemberX7"><hr><p></p><h3>SdifSignatureTabXhXmemberX7_2</h3></a>
+<strong>#include "<a href="SdifSignatureTab.h">SdifSignatureTab.h</a>"</strong><p>
+  Get signature at position index.  
+  Returns eEmptySignature if index out of bounds. 
+<p><pre>
+SdifSignature      SdifGetFromSignatureTab(const SdifSignatureTabT* SignTab, 
+					   const int index);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifSignatureTabXhXmemberX8"><hr><p></p><h3>SdifSignatureTabXhXmemberX8_2</h3></a>
+<strong>#include "<a href="SdifSignatureTab.h">SdifSignatureTab.h</a>"</strong><p>
+  Test if signature Sign is in table SignTab. 
+<dl><dl>
+<dt><i></i><strong> Returns</strong>
+<dd>Sign if yes, 0 (== eEmptySignature) if no. 
+</dl></dl>
+<p><pre>
+SdifSignature      SdifIsInSignatureTab   (const SdifSignatureTabT *SignTab, 
+					   const SdifSignature Sign);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifSignatureTabXhXmemberX9"><hr><p></p><h3>SdifSignatureTabXhXmemberX9_2</h3></a>
+<strong>#include "<a href="SdifSignatureTab.h">SdifSignatureTab.h</a>"</strong><p>
+  Test if signature Sign is in table SignTab. 
+<dl><dl>
+<dt><i></i><strong> Returns</strong>
+<dd>index of Sign if yes, -1 if no. 
+</dl></dl>
+<p><pre>
+int		   SdifFindInSignatureTab (const SdifSignatureTabT* SignTab, 
+					   const SdifSignature Sign);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifStreamIDXhXmemberX1"><hr><p></p><h3>SdifStreamIDXhXmemberX1_2</h3></a>
+<strong>#include "<a href="SdifStreamID.h">SdifStreamID.h</a>"</strong><p>
+  Stream ID Table Entry 
+<p><pre>
+typedef struct SdifStreamIDS SdifStreamIDT;
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifStreamIDXhXmemberX2"><hr><p></p><h3>SdifStreamIDXhXmemberX2_2</h3></a>
+<strong>#include "<a href="SdifStreamID.h">SdifStreamID.h</a>"</strong><p>
+  Stream ID Table, holds SdifStreamIDT stream ID table entries 
+<p><pre>
+typedef struct SdifStreamIDTableS SdifStreamIDTableT;
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifStreamIDXhXmemberX3"><hr><p></p><h3>SdifStreamIDXhXmemberX3_2</h3></a>
+<strong>#include "<a href="SdifStreamID.h">SdifStreamID.h</a>"</strong><p>
+  Permet de crer un pointeur sur un objet de type StreamIDT.  
+<p>
+<p>Exemple dans le cas d'un TreeWay pour chant (non fichier):
+<p>
+<pre>
+void ConsOneStreamID(SdifFileT *SdifF,
+		     int        NumID,
+		     char      *PatchType,
+		     int        NumPatch,
+		     char      *ObjType,
+		     int        NumObj,
+		     int        NbSubObj,
+		     float      StartTime,
+		     float      EndTime)
+{
+  SdifStreamIDT* StreamID;
+  char TreeWay[512];
+
+  sprintf(TreeWay, "%s/%d/%s/%d/%d/%s/%f", PatchType, NumPatch, ObjType,
+		    NumObj, NbSubObj, StartTime, EndTime);
+  StreamID = SdifCreateStreamID(NumID, "Chant", TreeWay);
+
+  SdifHashTablePut(SdifF->StreamIDsTable, &(StreamID->NumID), 1, StreamID);
+}
+</pre>
+<p>
+Pour recuperer un StreamID il faut utiliser la fonction SdifHashTableGet
+<pre>
+  SdifStreamIDT *StreamID = (SdifStreamIDT*) SdifHashTableGet (SdifF->StreamIDsTable, &NumID, 0);
+</pre>
+Le troisime argument n'est pas utilis, car la table est indexe directement
+par des entiers (cration de la table avec l'option eInt4). 
+<p>
+<p><pre>
+SdifStreamIDT* SdifCreateStreamID(SdifUInt4 NumID, char *Source, char *TreeWay);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifStreamIDXhXmemberX4"><hr><p></p><h3>SdifStreamIDXhXmemberX4_2</h3></a>
+<strong>#include "<a href="SdifStreamID.h">SdifStreamID.h</a>"</strong><p>
+  Create a stream ID table.  <strong>The stream ID table of the SDIF
+  file structure is created automatically by SdifFOpen().</strong> 
+  It can be obtained by SdifFStreamIDTable(). 
+<p><pre>
+SdifStreamIDTableT* SdifCreateStreamIDTable     (SdifUInt4 HashSize);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifStreamIDXhXmemberX5"><hr><p></p><h3>SdifStreamIDXhXmemberX5_2</h3></a>
+<strong>#include "<a href="SdifStreamID.h">SdifStreamID.h</a>"</strong><p>
+  Deallocate a stream ID table.  <strong>The stream ID table of the SDIF
+  file structure is killed automatically by SdifFClose.</strong>  
+  It can be obtained by SdifFStreamIDTable. 
+<p><pre>
+void                SdifKillStreamIDTable       (SdifStreamIDTableT *SIDTable);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifStreamIDXhXmemberX6"><hr><p></p><h3>SdifStreamIDXhXmemberX6_2</h3></a>
+<strong>#include "<a href="SdifStreamID.h">SdifStreamID.h</a>"</strong><p>
+  Add an entry to a stream ID table.  The table will be written by
+  SdifFWriteAllASCIIChunks.
+<dl><dl>
+<dt><i>in</i><strong>  SIDTable</strong>
+<dd>pointer to stream ID table, e.g. obtained by SdifFStreamIDTable
+<dt><i>in</i><strong>	NumID</strong>
+<dd>stream ID of the frames the stream ID table describes
+<dt><i>in</i><strong>	Source</strong>
+<dd>Source identifier for the table (ex. "Chant")
+<dt><i>in</i><strong>	TreeWay</strong>
+<dd>Routing and parameters, separated by slashes
+<dt><i>return</i><strong></strong>
+<dd>		The stream ID table entry just created and added 
+</dl></dl>
+<p><pre>
+SdifStreamIDT*      SdifStreamIDTablePutSID     (SdifStreamIDTableT *SIDTable,
+						 SdifUInt4	     NumID, 
+						 char 		    *Source, 
+						 char 		    *TreeWay);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifStreamIDXhXmemberX7"><hr><p></p><h3>SdifStreamIDXhXmemberX7_2</h3></a>
+<strong>#include "<a href="SdifStreamID.h">SdifStreamID.h</a>"</strong><p>
+  Retrieve an entry to a stream ID table.  The table has to have been
+  read by SdifFReadAllASCIIChunks.
+<p>
+<dl><dl>
+<dt><i>in</i><strong>  SIDTable</strong>
+<dd>pointer to stream ID table, e.g. obtained by 
+		 SdifFStreamIDTable
+<dt><i>in</i><strong>	NumID</strong>
+<dd>stream ID of the frames the stream ID table describes
+<dt><i>return</i><strong></strong>
+<dd>		 pointer to stream ID table entry, or NULL if no entry for 
+		 stream ID NumID exists. 
+</dl></dl>
+<p><pre>
+SdifStreamIDT*      SdifStreamIDTableGetSID     (SdifStreamIDTableT *SIDTable, 
+						 SdifUInt4	     NumID);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifStreamIDXhXmemberX8"><hr><p></p><h3>SdifStreamIDXhXmemberX8_2</h3></a>
+<strong>#include "<a href="SdifStreamID.h">SdifStreamID.h</a>"</strong><p>
+  Return number of entries in stream ID table SIDTable 
+<p><pre>
+SdifUInt4           SdifStreamIDTableGetNbData  (SdifStreamIDTableT *SIDTable);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifStreamIDXhXmemberX9"><hr><p></p><h3>SdifStreamIDXhXmemberX9_2</h3></a>
+<strong>#include "<a href="SdifStreamID.h">SdifStreamID.h</a>"</strong><p>
+  Return stream ID field in stream ID table entry SID 
+<p><pre>
+SdifUInt4	    SdifStreamIDEntryGetSID	(SdifStreamIDT *SID);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifStreamIDXhXmemberX10"><hr><p></p><h3>SdifStreamIDXhXmemberX10_2</h3></a>
+<strong>#include "<a href="SdifStreamID.h">SdifStreamID.h</a>"</strong><p>
+  Return source field in stream ID table entry SID 
+<p><pre>
+char		   *SdifStreamIDEntryGetSource	(SdifStreamIDT *SID);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifStreamIDXhXmemberX11"><hr><p></p><h3>SdifStreamIDXhXmemberX11_2</h3></a>
+<strong>#include "<a href="SdifStreamID.h">SdifStreamID.h</a>"</strong><p>
+  Return "treeway" field in stream ID table entry SID 
+<p><pre>
+char		   *SdifStreamIDEntryGetTreeWay	(SdifStreamIDT *SID);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifStringXhXmemberX1"><hr><p></p><h3>SdifStringXhXmemberX1_2</h3></a>
+<strong>#include "<a href="SdifString.h">SdifString.h</a>"</strong><p>
+  Make a memory allocation for a SdifStringT structure.
+  The size for the string is defined in SdifString.h; define _SdifStringGranule 128.
+<p>
+<p><pre>
+SdifStringT * SdifStringNew(void);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifStringXhXmemberX2"><hr><p></p><h3>SdifStringXhXmemberX2_2</h3></a>
+<strong>#include "<a href="SdifString.h">SdifString.h</a>"</strong><p>
+  Free memory allocated for SdifString.
+<p>
+<p><pre>
+void SdifStringFree(SdifStringT * SdifString);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifStringXhXmemberX3"><hr><p></p><h3>SdifStringXhXmemberX3_2</h3></a>
+<strong>#include "<a href="SdifString.h">SdifString.h</a>"</strong><p>
+  Append a string to another one.
+  Manage memory reallocation.
+  Return a boolean for the succes of the function's call.
+<p>
+<p><pre>
+int SdifStringAppend(SdifStringT * SdifString ,char *strToAppend);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifStringXhXmemberX4"><hr><p></p><h3>SdifStringXhXmemberX4_2</h3></a>
+<strong>#include "<a href="SdifString.h">SdifString.h</a>"</strong><p>
+  Read the current char (= fgetc).
+<p>
+<p><pre>
+int SdifStringGetC(SdifStringT * SdifString);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifStringXhXmemberX5"><hr><p></p><h3>SdifStringXhXmemberX5_2</h3></a>
+<strong>#include "<a href="SdifString.h">SdifString.h</a>"</strong><p>
+  Equivalent of ungetc
+<p>
+<p><pre>
+int SdifStringUngetC(SdifStringT * SdifString);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifStringXhXmemberX6"><hr><p></p><h3>SdifStringXhXmemberX6_2</h3></a>
+<strong>#include "<a href="SdifString.h">SdifString.h</a>"</strong><p>
+  Test the end of the string (= feof)
+<p>
+<p><pre>
+int SdifStringIsEOS(SdifStringT *SdifString);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifTestXhXmemberX1"><hr><p></p><h3>SdifTestXhXmemberX1_2</h3></a>
+<strong>#include "<a href="SdifTest.h">SdifTest.h</a>"</strong><p>
+  Cette fonction vrifie si le type de matrice est rpertori
+  dans SdifF.<br> S'il ne l'est pas, alors elle vrifie si c'est un
+  type prdfinis. S'il est prdfini, elle cre le lien de SdifF vers
+  le type prdfini. Sinon, elle envoie un message sur l'erreur
+  standart.  
+<p><pre>
+SdifMatrixTypeT* SdifTestMatrixType (SdifFileT *SdifF, SdifSignature Signature);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<a name="SdifTextConvXhXmemberX1"><hr><p></p><h3>SdifTextConvXhXmemberX1_2</h3></a>
+<strong>#include "<a href="SdifTextConv.h">SdifTextConv.h</a>"</strong><p>
+  Converti un fichier SDIF ouvert en lecture (eReadFile) en un fichier
+  texte pseudo-SDIF de nom TextStreamName.  
+<p><pre>
+size_t SdifTextToSdif (SdifFileT *SdifF, char *TextStreamName);
+</pre>
+<br><p>Back to the <a href="#topofdoc">top</a> of  <i> SDIF </i> <p>
+<hr><p></p>
+Generated from source by the <i><a href="http://www.stratasys.com/software/cocoon/index.htm">Cocoon</a></i> utilities on Tue Aug 22 21:54:33 2000
+.<p>
+<address>Report <a href="mailto:jkotula@stratasys.com">problems</a> to jkotula@stratasys.com</address>

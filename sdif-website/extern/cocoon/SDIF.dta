@@ -1,0 +1,11 @@
+<tr><td></td></tr><tr><td></td><td><strong>// 	Error Handling</strong></td></tr>
+<tr><td></td></tr><tr><td></td><td><strong>// 	SDIF File Structure</strong></td></tr>
+<tr><td align=right valign=top>typedef enum SdifFileModeE </td><td><a href="#typedef_enum_SdifFileModeE_SdifFileModeET_$"><font color=green>SdifFileModeET</font></a> ;</td></tr>
+<tr><td align=right valign=top>typedef int (*</td><td><a href="#typedef_int_(*SdifMatrixCallbackT)_(SdifFileT_*file,_int_nummatrix,_void_*userdata)$"><font color=green>SdifMatrixCallbackT</font></a>) (SdifFileT *file, int nummatrix, void *userdata);</td></tr>
+<tr><td align=right valign=top>typedef struct </td><td><a href="#typedef_struct_SdifSelectElementIntT$$"><font color=green>SdifSelectElementIntT;</font></a>;</td></tr>
+<tr><td align=right valign=top>typedef union SdifSelectValueS </td><td><a href="#typedef_union_SdifSelectValueS_SdifSelectValueT$"><font color=green>SdifSelectValueT</font></a>;</td></tr>
+<tr><td align=right valign=top>typedef struct SdifSelectElementS SdifSelectElementT, *</td><td><a href="#typedef_struct_SdifSelectElementS_SdifSelectElementT,_*SdifSelectElementP$"><font color=green>SdifSelectElementP</font></a>;</td></tr>
+<tr><td align=right valign=top>typedef struct </td><td><a href="#typedef_struct_SdifSelectionT$"><font color=green>SdifSelectionT</font></a>;</td></tr>
+<tr><td></td></tr><tr><td></td><td><strong>// 		Stream ID Table and Entries for 1IDS ASCII chunk</strong></td></tr>
+<tr><td align=right valign=top>typedef struct SdifStreamIDS </td><td><a href="#typedef_struct_SdifStreamIDS_SdifStreamIDT$"><font color=green>SdifStreamIDT</font></a>;</td></tr>
+<tr><td align=right valign=top>typedef struct SdifStreamIDTableS </td><td><a href="#typedef_struct_SdifStreamIDTableS_SdifStreamIDTableT$"><font color=green>SdifStreamIDTableT</font></a>;</td></tr>
