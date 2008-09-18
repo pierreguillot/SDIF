@@ -12,18 +12,6 @@
 			buildConfigurationList = 21AFA3B20907D5740018539F /* Build configuration list for PBXAggregateTarget "all" */;
 			buildPhases = (
 			);
-			buildSettings = {
-				OTHER_CFLAGS = "";
-				OTHER_LDFLAGS = "";
-				OTHER_REZFLAGS = "";
-				PRODUCT_NAME = all;
-				SECTORDER_FLAGS = "";
-				WARNING_CFLAGS = (
-					"-Wmost",
-					"-Wno-four-char-constants",
-					"-Wno-unknown-pragmas",
-				);
-			};
 			dependencies = (
 				F4A410B2079BCC7A00ADEFEF /* PBXTargetDependency */,
 				F446F775071AF3FC00117647 /* PBXTargetDependency */,
@@ -38,18 +26,6 @@
 			buildPhases = (
 				F4A4105C079BCB8E00ADEFEF /* ShellScript */,
 			);
-			buildSettings = {
-				OTHER_CFLAGS = "";
-				OTHER_LDFLAGS = "";
-				OTHER_REZFLAGS = "";
-				PRODUCT_NAME = Install;
-				SECTORDER_FLAGS = "";
-				WARNING_CFLAGS = (
-					"-Wmost",
-					"-Wno-four-char-constants",
-					"-Wno-unknown-pragmas",
-				);
-			};
 			dependencies = (
 			);
 			name = Install;
@@ -173,34 +149,6 @@
 		F4A410A5079BCB8E00ADEFEF /* SdifTimePosition.c in Sources */ = {isa = PBXBuildFile; fileRef = F70D0C230496241101664058 /* SdifTimePosition.c */; };
 		F4A410AC079BCB8E00ADEFEF /* libsdif.a in Resources */ = {isa = PBXBuildFile; fileRef = F4A410A7079BCB8E00ADEFEF /* libsdif.a */; };
 /* End PBXBuildFile section */
-
-/* Begin PBXBuildStyle section */
-		0F5C28A7047E732E006640BC /* Development */ = {
-			isa = PBXBuildStyle;
-			buildSettings = {
-				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 3.9.2;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				ZERO_LINK = YES;
-			};
-			name = Development;
-		};
-		0F5C28A8047E732E006640BC /* Deployment */ = {
-			isa = PBXBuildStyle;
-			buildSettings = {
-				COPY_PHASE_STRIP = YES;
-				CURRENT_PROJECT_VERSION = 3.9.2;
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				GCC_OPTIMIZATION_LEVEL = 3;
-				ZERO_LINK = NO;
-			};
-			name = Deployment;
-		};
-/* End PBXBuildStyle section */
 
 /* Begin PBXContainerItemProxy section */
 		F446F774071AF3FC00117647 /* PBXContainerItemProxy */ = {
@@ -488,31 +436,6 @@
 			);
 			buildRules = (
 			);
-			buildSettings = {
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				FRAMEWORK_VERSION = "$(VERSION_MAJOR).$(VERSION_MINOR).$(VERSION_RELEASE)";
-				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				GCC_OPTIMIZATION_LEVEL = 3;
-				INFOPLIST_FILE = Info.plist;
-				OTHER_CFLAGS = "";
-				OTHER_LDFLAGS = "";
-				OTHER_LIBTOOL_FLAGS = "";
-				OTHER_REZFLAGS = "";
-				PREBINDING = YES;
-				PRINCIPAL_CLASS = "";
-				PRODUCT_NAME = SDIF;
-				SECTORDER_FLAGS = "";
-				VERSION_MAJOR = 3;
-				VERSION_MINOR = 10;
-				VERSION_RELEASE = 1;
-				WARNING_CFLAGS = (
-					"-Wmost",
-					"-Wno-four-char-constants",
-					"-Wno-unknown-pragmas",
-				);
-				WRAPPER_EXTENSION = framework;
-			};
 			dependencies = (
 			);
 			name = SDIF;
@@ -530,27 +453,6 @@
 			);
 			buildRules = (
 			);
-			buildSettings = {
-				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				GCC_OPTIMIZATION_LEVEL = 3;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Carbon.framework/Headers/Carbon.h";
-				INSTALL_PATH = /usr/local/lib;
-				LIBRARY_STYLE = STATIC;
-				OTHER_CFLAGS = "";
-				OTHER_LDFLAGS = (
-					"-framework",
-					Carbon,
-				);
-				OTHER_REZFLAGS = "";
-				PRODUCT_NAME = sdif;
-				SECTORDER_FLAGS = "";
-				WARNING_CFLAGS = (
-					"-Wmost",
-					"-Wno-four-char-constants",
-					"-Wno-unknown-pragmas",
-				);
-			};
 			dependencies = (
 			);
 			name = "SDIF lib static";
@@ -564,12 +466,6 @@
 		0F5C28A9047E732E006640BC /* Project object */ = {
 			isa = PBXProject;
 			buildConfigurationList = 21AFA3B60907D5740018539F /* Build configuration list for PBXProject "SDIF" */;
-			buildSettings = {
-			};
-			buildStyles = (
-				0F5C28A7047E732E006640BC /* Development */,
-				0F5C28A8047E732E006640BC /* Deployment */,
-			);
 			hasScannedForEncodings = 1;
 			mainGroup = 0F5C28A5047E732E006640BC;
 			projectDirPath = "";
@@ -1022,14 +918,19 @@
 		21AFA3B70907D5740018539F /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				FRAMEWORK_VERSION = 3.10.5;
+				FRAMEWORK_VERSION = 3.10.8;
 			};
 			name = Development;
 		};
 		21AFA3B80907D5740018539F /* Deployment */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = (
+					ppc,
+					i386,
+				);
 				FRAMEWORK_VERSION = 3.10.5;
+				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
 			};
 			name = Deployment;
 		};
