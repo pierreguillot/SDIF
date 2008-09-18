@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.7 2003-03-18 14:22:52 roebel Exp $
+# $Id: Makefile.am,v 1.8 2008-09-18 14:04:48 diemo Exp $
 #
 # ./doc/Makefile.am             September 2000          Patrice Tisserand
 #
@@ -36,6 +36,9 @@
 
 
 # $Log: not supported by cvs2svn $
+# Revision 1.7  2003/03/18 14:22:52  roebel
+# Fixed trailing backslash before empty line
+#
 # Revision 1.6  2003/03/07 17:33:00  roebel
 # Removed wildcard by explicite list of files. Automake does not handle
 # wildcards correctly.
@@ -349,6 +352,12 @@ postinst-%:
 
 #$(matlabdlarch): download $(matlabdlfiles:%=$(matlabdldir)/%)
 #		tar cvf - -C $(matlabdldir) $(matlabdlfiles) | gzip -9 >$@
+
+# publish doc on sourceforge
+pub-sf:
+		scp index-sf.html diemo@shell.sourceforge.net:/home/groups/s/sd/sdif/htdocs/index.html
+# cvs -z3 -d:ext:developername@sdif.cvs.sourceforge.net:/cvsroot/sdif co -P -d cvsroot-sdif CVSROOT
+# cvs -z3 -d:ext:diemo@sdif.cvs.sourceforge.net:/cvsroot/sdif co -P -d cvsroot-sdif CVSROOT
 
 #
 # Misc
