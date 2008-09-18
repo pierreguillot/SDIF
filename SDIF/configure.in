@@ -1,5 +1,5 @@
 dnl -*-autoconf-*-  (Tell emacs it's an autoconf file!)
-dnl $Id: configure.in,v 1.73 2008-05-22 11:57:32 roebel Exp $
+dnl $Id: configure.in,v 1.74 2008-09-18 15:19:50 diemo Exp $
 dnl
 dnl configure.in		September 2000		Patrice Tisserand
 dnl
@@ -31,6 +31,9 @@ dnl send email to:  sdif@ircam.fr
 
 
 dnl $Log: not supported by cvs2svn $
+dnl Revision 1.73  2008/05/22 11:57:32  roebel
+dnl Added missing SDIF_API to function declaration in sdif.h.
+dnl
 dnl Revision 1.72  2007/11/26 18:54:29  roebel
 dnl Updated version to 3.10.7.
 dnl
@@ -530,9 +533,8 @@ test/files/txtw/Makefile
 test/files/sdifw/Makefile 
 test/files/sdifref/Makefile
 macosxbuild/Makefile
+macosxbuild/SDIF.xcodeproj/Makefile
 cmModules/Makefile
-macosxbuild/SDIF.pbproj/Makefile
-macosxbuild/SDIF.xcode/Makefile
 sdif.pc 
 sdif.spec)
 

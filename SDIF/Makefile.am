@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.32 2008-09-18 14:03:53 diemo Exp $
+# $Id: Makefile.am,v 1.33 2008-09-18 15:19:50 diemo Exp $
 #
 # ./Makefile.am		September 2000			Patrice Tisserand
 #
@@ -30,6 +30,9 @@
 
 
 # $Log: not supported by cvs2svn $
+# Revision 1.32  2008/09/18 14:03:53  diemo
+# adapt to sf frs, publish src and mac ub framework only
+#
 # Revision 1.31  2006/12/10 17:13:40  roebel
 # Added cmake e.support
 #
@@ -190,8 +193,7 @@ test:	check
 #
 
 # more files to include in dist
-EXTRA_DIST	  = ReleaseNotes sdif.vcproj sdif.dsw CMakeLists.txt
-
+EXTRA_DIST	  = ReleaseNotes sdif.vcproj sdif.dsw CMakeLists.txt 
 
 
 # base name of distribution (override automake generated variable to make source distribution!)
@@ -205,8 +207,9 @@ PUBLISH_SRPM	  = $(distbase)-1.src.rpm
 # build optimised for these platforms:
 PUBLISH_ARCH	  = i386,i486,i586,i686,athlon
 
-$(PUBLISH_DIST):	$(distdir)
-		zip -r $@ $^
+
+$(PUBLISH_DIST):  $(distdir)
+		  -zip -r $@ $^
 
 # this is where the xcode project leaves the framework
 MAC_BUILD_DIR	  = macosxbuild/build/Deployment
@@ -238,7 +241,7 @@ $(rpmdir):
 
 # use this to check if the distribution works, tag the cvs project, 
 # make a source distribution and rpm, and copy it to the web server
-pub:		cvstag publish-sf
+pub:		dist  publish-sf
 publish pub-src: distcheck cvstag dist publish-sf
 publish-rpm:	distcheck cvstag dist rpm publish-sf
 
@@ -259,7 +262,7 @@ PUBLISH_HOST      = frs.sourceforge.net:uploads
 
 # upload only source dist to sourceforge file release system
 publish-sf:	$(PUBLISH_DIST) $(PUBLISH_FRAMEWORK)
-		rsync $^ $(PUBLISH_USER)@$(PUBLISH_HOST)
+		rsync -auv $^ $(PUBLISH_USER)@$(PUBLISH_HOST)
 
 # tag the cvsrepository with the current version 
 # (to exactly reconstitute a published version)
@@ -269,3 +272,4 @@ cvstag:
 
 
 .PHONY:		grep doc ircam_deps test publish publish-ftp rpm cvstag
+.PRECIOUS:	$(distdir)

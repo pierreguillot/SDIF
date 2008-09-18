@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.3 2004-01-29 13:36:27 schwarz Exp $
+# $Id: Makefile.am,v 1.4 2008-09-18 15:19:51 diemo Exp $
 #
 # SDIF/macosxbuild/Makefile.am	
 #
@@ -6,6 +6,10 @@
 # distribution
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.3  2004/01/29 13:36:27  schwarz
+# add xcode to dist
+# redefinition of distdir seems no longer necessary
+#
 # Revision 1.2  2003/07/08 14:54:14  schwarz
 # seemed to need an all: target
 #
@@ -15,7 +19,7 @@
 # to avoid confusion.
 
 
-SUBDIRS		= SDIF.pbproj SDIF.xcode
+SUBDIRS		=  SDIF.xcodeproj
 
 # distdir		= $(PACKAGE)-$(VERSION)-src
 
