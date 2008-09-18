@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.33 2008-09-18 15:19:50 diemo Exp $
+# $Id: Makefile.am,v 1.34 2008-09-18 15:29:37 diemo Exp $
 #
 # ./Makefile.am		September 2000			Patrice Tisserand
 #
@@ -30,6 +30,12 @@
 
 
 # $Log: not supported by cvs2svn $
+# Revision 1.33  2008/09/18 15:19:50  diemo
+# include current updated SDIF.xcodeproj, generated sdif_version.h for mac building out of the box
+# TO MAKE A FILE RELEASE ON SOURCEFORGE, DO:
+#
+#    make -k pub
+#
 # Revision 1.32  2008/09/18 14:03:53  diemo
 # adapt to sf frs, publish src and mac ub framework only
 #
@@ -241,7 +247,7 @@ $(rpmdir):
 
 # use this to check if the distribution works, tag the cvs project, 
 # make a source distribution and rpm, and copy it to the web server
-pub:		dist  publish-sf
+pub:		distdir publish-sf
 publish pub-src: distcheck cvstag dist publish-sf
 publish-rpm:	distcheck cvstag dist rpm publish-sf
 
