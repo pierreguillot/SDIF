@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.31 2006-12-10 17:13:40 roebel Exp $
+# $Id: Makefile.am,v 1.32 2008-09-18 14:03:53 diemo Exp $
 #
 # ./Makefile.am		September 2000			Patrice Tisserand
 #
@@ -30,6 +30,9 @@
 
 
 # $Log: not supported by cvs2svn $
+# Revision 1.31  2006/12/10 17:13:40  roebel
+# Added cmake e.support
+#
 # Revision 1.30  2006/05/11 16:39:13  schwarz
 # publish standard
 #
@@ -192,14 +195,28 @@ EXTRA_DIST	  = ReleaseNotes sdif.vcproj sdif.dsw CMakeLists.txt
 
 
 # base name of distribution (override automake generated variable to make source distribution!)
-distdir		  = $(PACKAGE)-$(VERSION)-src
-PUBLISH_DIST      = $(distdir).tar.gz
-PUBLISH_RPM	  = $(PACKAGE)-$(VERSION)-1.*.rpm
-PUBLISH_SRPM	  = $(PACKAGE)-$(VERSION)-1.src.rpm
+distbase	  = $(PACKAGE)-$(VERSION)
+distdir		  = $(distbase)-src
+PUBLISH_DIST      = $(distdir).zip
+PUBLISH_FRAMEWORK = $(distbase)-MacOSX-framework-ub.zip
+PUBLISH_RPM	  = $(distbase)-1.*.rpm
+PUBLISH_SRPM	  = $(distbase)-1.src.rpm
 
 # build optimised for these platforms:
 PUBLISH_ARCH	  = i386,i486,i586,i686,athlon
 
+$(PUBLISH_DIST):	$(distdir)
+		zip -r $@ $^
+
+# this is where the xcode project leaves the framework
+MAC_BUILD_DIR	  = macosxbuild/build/Deployment
+MAC_FRAMEWORK	  = SDIF.framework
+
+framework:	$(PUBLISH_FRAMEWORK)	
+$(PUBLISH_FRAMEWORK): $(MAC_BUILD_DIR)/$(MAC_FRAMEWORK)
+		cd $(MAC_BUILD_DIR); \
+		zip -r $@ $(MAC_FRAMEWORK)
+		mv $(MAC_BUILD_DIR)/$@ .
 
 # make a binary rpm (experimental)
 rpm:		$(rpmdir) sdif.spec dist
@@ -221,7 +238,9 @@ $(rpmdir):
 
 # use this to check if the distribution works, tag the cvs project, 
 # make a source distribution and rpm, and copy it to the web server
-publish:	distcheck cvstag dist rpm publish-ftp
+pub:		cvstag publish-sf
+publish pub-src: distcheck cvstag dist publish-sf
+publish-rpm:	distcheck cvstag dist rpm publish-sf
 
 # more files to publish (on server)
 EXTRA_PUBLISH     = README COPYING AUTHORS INSTALL ChangeLog ReleaseNotes # doc
@@ -231,18 +250,16 @@ EXTRA_PUBLISH     = README COPYING AUTHORS INSTALL ChangeLog ReleaseNotes # doc
 # this might work differently for other places
 # todo: configure PUBLISH_HOST
 PUBLISH_ROOT      = sdif
-PUBLISH_FILES_R   = doc/index.html
-PUBLISH_FILES_S	  = doc/standard/sdif-standard.html \
-		    doc/standard/sdif-standard.pdf
-PUBLISH_FILES_DL  = doc/download/index.html $(EXTRA_PUBLISH) \
+PUBLISH_FILES_DL  = $(EXTRA_PUBLISH) \
 		    $(PUBLISH_DIST) $(PUBLISH_RPM) $(PUBLISH_SRPM) 
-PUBLISH_HOST      = recherche.ircam.fr
-PUBLISH_USER      = wwwas
 
-publish-ftp:	# (experimental)
-	echo put $(PUBLISH_FILES_DL) | ncftp -u$(PUBLISH_USER) -p$(PW) ftp://$(PUBLISH_HOST)/$(PUBLISH_ROOT)/download
-	echo put $(PUBLISH_FILES_S)  | ncftp -u$(PUBLISH_USER) -p$(PW) ftp://$(PUBLISH_HOST)/$(PUBLISH_ROOT)/standard
-	echo put $(PUBLISH_FILES_R)  | ncftp -u$(PUBLISH_USER) -p$(PW) ftp://$(PUBLISH_HOST)/$(PUBLISH_ROOT)
+# sourceforge user name!
+PUBLISH_USER      = diemo
+PUBLISH_HOST      = frs.sourceforge.net:uploads
+
+# upload only source dist to sourceforge file release system
+publish-sf:	$(PUBLISH_DIST) $(PUBLISH_FRAMEWORK)
+		rsync $^ $(PUBLISH_USER)@$(PUBLISH_HOST)
 
 # tag the cvsrepository with the current version 
 # (to exactly reconstitute a published version)
