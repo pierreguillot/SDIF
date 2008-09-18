@@ -59,7 +59,6 @@
 		F4A4102B079BCB8D00ADEFEF /* SdifStreamID.h in Headers */ = {isa = PBXBuildFile; fileRef = F70D0C1C0496241101664058 /* SdifStreamID.h */; };
 		F4A4102D079BCB8D00ADEFEF /* SdifTest.h in Headers */ = {isa = PBXBuildFile; fileRef = F70D0C200496241101664058 /* SdifTest.h */; };
 		F4A41030079BCB8D00ADEFEF /* sdiftypes.h in Headers */ = {isa = PBXBuildFile; fileRef = F70D0C250496241101664058 /* sdiftypes.h */; };
-		F4A41031079BCB8D00ADEFEF /* SdifVersion.h in Headers */ = {isa = PBXBuildFile; fileRef = F70D0C260496241101664058 /* SdifVersion.h */; };
 		F4A41032079BCB8D00ADEFEF /* sdif_version.h in Headers */ = {isa = PBXBuildFile; fileRef = F70D0C760496243D01664058 /* sdif_version.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		F4A41033079BCB8D00ADEFEF /* sdif.h in Headers */ = {isa = PBXBuildFile; fileRef = F70D0C770496243D01664058 /* sdif.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		F4A41037079BCB8D00ADEFEF /* SdifCheck.c in Sources */ = {isa = PBXBuildFile; fileRef = F70D0BE50496241101664058 /* SdifCheck.c */; };
@@ -114,7 +113,6 @@
 		F4A4107C079BCB8E00ADEFEF /* SdifStreamID.h in Headers */ = {isa = PBXBuildFile; fileRef = F70D0C1C0496241101664058 /* SdifStreamID.h */; };
 		F4A4107E079BCB8E00ADEFEF /* SdifTest.h in Headers */ = {isa = PBXBuildFile; fileRef = F70D0C200496241101664058 /* SdifTest.h */; };
 		F4A41081079BCB8E00ADEFEF /* sdiftypes.h in Headers */ = {isa = PBXBuildFile; fileRef = F70D0C250496241101664058 /* sdiftypes.h */; };
-		F4A41082079BCB8E00ADEFEF /* SdifVersion.h in Headers */ = {isa = PBXBuildFile; fileRef = F70D0C260496241101664058 /* SdifVersion.h */; };
 		F4A41083079BCB8E00ADEFEF /* sdif_version.h in Headers */ = {isa = PBXBuildFile; fileRef = F70D0C760496243D01664058 /* sdif_version.h */; };
 		F4A41084079BCB8E00ADEFEF /* sdif.h in Headers */ = {isa = PBXBuildFile; fileRef = F70D0C770496243D01664058 /* sdif.h */; };
 		F4A41086079BCB8E00ADEFEF /* SdifCheck.c in Sources */ = {isa = PBXBuildFile; fileRef = F70D0BE50496241101664058 /* SdifCheck.c */; };
@@ -231,7 +229,6 @@
 		F70D0C210496241101664058 /* SdifTextConv.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = SdifTextConv.c; path = ../sdif/SdifTextConv.c; sourceTree = SOURCE_ROOT; };
 		F70D0C230496241101664058 /* SdifTimePosition.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = SdifTimePosition.c; path = ../sdif/SdifTimePosition.c; sourceTree = SOURCE_ROOT; };
 		F70D0C250496241101664058 /* sdiftypes.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = sdiftypes.h; path = ../sdif/sdiftypes.h; sourceTree = SOURCE_ROOT; };
-		F70D0C260496241101664058 /* SdifVersion.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = file; name = SdifVersion.h; path = ../sdif/SdifVersion.h; sourceTree = SOURCE_ROOT; };
 		F70D0C760496243D01664058 /* sdif_version.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = sdif_version.h; path = ../include/sdif_version.h; sourceTree = SOURCE_ROOT; };
 		F70D0C770496243D01664058 /* sdif.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = sdif.h; path = ../include/sdif.h; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
@@ -319,7 +316,6 @@
 				F70D0C210496241101664058 /* SdifTextConv.c */,
 				F70D0C230496241101664058 /* SdifTimePosition.c */,
 				F70D0C250496241101664058 /* sdiftypes.h */,
-				F70D0C260496241101664058 /* SdifVersion.h */,
 				0F5C2947047E7471006640BC /* include */,
 			);
 			name = Sources;
@@ -349,8 +345,9 @@
 				F70D0C760496243D01664058 /* sdif_version.h */,
 				F70D0C770496243D01664058 /* sdif.h */,
 			);
-			path = include;
-			sourceTree = "<group>";
+			name = include;
+			path = ../include;
+			sourceTree = SOURCE_ROOT;
 		};
 /* End PBXGroup section */
 
@@ -382,7 +379,6 @@
 				F4A4102B079BCB8D00ADEFEF /* SdifStreamID.h in Headers */,
 				F4A4102D079BCB8D00ADEFEF /* SdifTest.h in Headers */,
 				F4A41030079BCB8D00ADEFEF /* sdiftypes.h in Headers */,
-				F4A41031079BCB8D00ADEFEF /* SdifVersion.h in Headers */,
 				F4A41032079BCB8D00ADEFEF /* sdif_version.h in Headers */,
 				F4A41033079BCB8D00ADEFEF /* sdif.h in Headers */,
 			);
@@ -414,7 +410,6 @@
 				F4A4107C079BCB8E00ADEFEF /* SdifStreamID.h in Headers */,
 				F4A4107E079BCB8E00ADEFEF /* SdifTest.h in Headers */,
 				F4A41081079BCB8E00ADEFEF /* sdiftypes.h in Headers */,
-				F4A41082079BCB8E00ADEFEF /* SdifVersion.h in Headers */,
 				F4A41083079BCB8E00ADEFEF /* sdif_version.h in Headers */,
 				F4A41084079BCB8E00ADEFEF /* sdif.h in Headers */,
 				6C639A7008460E9100D1DBE2 /* SdifRWLowLevel.h in Headers */,

@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.34 2008-09-18 15:29:37 diemo Exp $
+# $Id: Makefile.am,v 1.35 2008-09-18 16:08:35 diemo Exp $
 #
 # ./Makefile.am		September 2000			Patrice Tisserand
 #
@@ -30,6 +30,13 @@
 
 
 # $Log: not supported by cvs2svn $
+# Revision 1.34  2008/09/18 15:29:37  diemo
+# clarified last misunderstanding between autotools and me:
+#
+# TO MAKE A FILE RELEASE ON SOURCEFORGE, DO:
+#
+#    make pub
+#
 # Revision 1.33  2008/09/18 15:19:50  diemo
 # include current updated SDIF.xcodeproj, generated sdif_version.h for mac building out of the box
 # TO MAKE A FILE RELEASE ON SOURCEFORGE, DO:
@@ -215,6 +222,7 @@ PUBLISH_ARCH	  = i386,i486,i586,i686,athlon
 
 
 $(PUBLISH_DIST):  $(distdir)
+		  -rm $@
 		  -zip -r $@ $^
 
 # this is where the xcode project leaves the framework

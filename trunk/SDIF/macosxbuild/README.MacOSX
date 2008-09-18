@@ -1,22 +1,12 @@
-$Id: README.MacOSX,v 1.2 2004-01-14 11:34:32 schwarz Exp $
+$Id: README.MacOSX,v 1.3 2008-09-18 16:08:35 diemo Exp $
 
-[Remark: SDIF.xcode and SDIF.pbproj are actually directories on Unix,
-but appear as files on Mac.]
-
+[Remark: SDIF.xcodeproj is actually a directory but appears as a file on Mac.]
 
 
 Building on Mac OS-X 10.3 or higher with XCODE
 ==============================================
 
-The file macosxbuild/SDIF.xcode builds a framework containing the
-SDIF library and exported header files.
-
-
-
-Building on Mac OS-X with Project Builder
-=========================================
-
-The file macosxbuild/SDIF.pbproj builds a framework containing the
+The file macosxbuild/SDIF.xcodeproj builds a universal binary framework containing the
 SDIF library and exported header files.
 
 
@@ -24,7 +14,7 @@ SDIF library and exported header files.
 Building on Mac OS-X with gcc and the automake/autoconf system
 ==============================================================
 
-You can also build from a terminal in the usual way (see file INSTALL).
+You can also build from a terminal in the usual way to obtain the static library libsdif.a (see file INSTALL).
 
 
 Support for shared libraries
