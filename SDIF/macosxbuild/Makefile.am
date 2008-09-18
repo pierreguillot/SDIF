@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.4 2008-09-18 15:19:51 diemo Exp $
+# $Id: Makefile.am,v 1.5 2008-09-18 16:08:35 diemo Exp $
 #
 # SDIF/macosxbuild/Makefile.am	
 #
@@ -6,6 +6,12 @@
 # distribution
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.4  2008/09/18 15:19:51  diemo
+# include current updated SDIF.xcodeproj, generated sdif_version.h for mac building out of the box
+# TO MAKE A FILE RELEASE ON SOURCEFORGE, DO:
+#
+#    make -k pub
+#
 # Revision 1.3  2004/01/29 13:36:27  schwarz
 # add xcode to dist
 # redefinition of distdir seems no longer necessary
@@ -24,7 +30,7 @@ SUBDIRS		=  SDIF.xcodeproj
 # distdir		= $(PACKAGE)-$(VERSION)-src
 
 # more files to include in dist
-EXTRA_DIST 	= README.MacOSX
+EXTRA_DIST 	= README.MacOSX Info.plist
 
 all:
 		echo "Use Apple build tools to build for Mac OS X"
