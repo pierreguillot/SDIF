@@ -147,7 +147,6 @@
 		F4A410A3079BCB8E00ADEFEF /* SdifTest.c in Sources */ = {isa = PBXBuildFile; fileRef = F70D0C1F0496241101664058 /* SdifTest.c */; };
 		F4A410A4079BCB8E00ADEFEF /* SdifTextConv.c in Sources */ = {isa = PBXBuildFile; fileRef = F70D0C210496241101664058 /* SdifTextConv.c */; };
 		F4A410A5079BCB8E00ADEFEF /* SdifTimePosition.c in Sources */ = {isa = PBXBuildFile; fileRef = F70D0C230496241101664058 /* SdifTimePosition.c */; };
-		F4A410AC079BCB8E00ADEFEF /* libsdif.a in Resources */ = {isa = PBXBuildFile; fileRef = F4A410A7079BCB8E00ADEFEF /* libsdif.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -483,7 +482,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F4A410AC079BCB8E00ADEFEF /* libsdif.a in Resources */,
 				6C8EEA16084602CE00972C15 /* Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
