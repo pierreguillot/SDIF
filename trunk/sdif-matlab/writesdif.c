@@ -1,4 +1,4 @@
-/* $Id: writesdif.c,v 1.5 2003-04-22 16:08:56 roebel Exp $
+/* $Id: writesdif.c,v 1.6 2008-09-18 13:18:29 diemo Exp $
 
    writesdif.c       12. May 2000      Patrice Tisserand
 
@@ -6,6 +6,10 @@
    No SDIF depencies here! (-->writesdif-subs.c)
    
    $Log: not supported by cvs2svn $
+   Revision 1.5  2003/04/22 16:08:56  roebel
+   Added possibility for writing local type declaration to
+   sdif file.
+
    Revision 1.4  2001/05/29 10:02:26  roebel
    Added cleanup rountine that close the sdif file in case of
    matlab clear function commands. Added automatic file closing in case
@@ -59,7 +63,7 @@ void cleanup(void) {
     return;
 }
 
-#define LOCALTYPEMAX 4096
+#define LOCALTYPEMAX 65536
 
 void
 mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
