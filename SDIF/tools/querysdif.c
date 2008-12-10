@@ -1,4 +1,4 @@
-/* $Id: querysdif.c,v 1.13 2007-11-27 12:21:02 roebel Exp $
+/* $Id: querysdif.c,v 1.14 2008-12-10 19:22:45 bogaards Exp $
  
                 Copyright (c) 1998 by IRCAM - Centre Pompidou
                            All rights reserved.
@@ -14,6 +14,9 @@
    
 
    $Log: not supported by cvs2svn $
+   Revision 1.13  2007/11/27 12:21:02  roebel
+   prevent compiler warnings.
+
    Revision 1.12  2006/12/08 18:11:49  roebel
    Use configured version instead of compiler command line switch.
 
@@ -358,19 +361,30 @@ int main(int argc, char** argv)
 	{   /* brief selection-syntax output without counts */
 	    for (i = 0; i < nsig; i++)
 	    {
-		if (sigs[i].parent == -1)
-		{   /* search children matrices of this frame */
-		    for (m = 0; m < nsig; m++)
-		    {
-			if (sigs[m].parent == i)
-			    printf ("#%d:%s/%s@%f-%f\n", 
-				    sigs[i].stream,
-				    SdifSignatureToString (sigs[i].sig),
-				    SdifSignatureToString (sigs[m].sig),
-				    sigs[i].time.min,
-				    sigs[i].time.max);
-		    }
-		} 
+			if (sigs[i].parent == -1)
+			{   /* search children matrices of this frame */
+				int numChildMatrices = 0;
+				for (m = 0; m < nsig; m++)
+				{
+					if (sigs[m].parent == i){
+						printf ("#%d:%s/%s@%f-%f\n", 
+								sigs[i].stream,
+								SdifSignatureToString (sigs[i].sig),
+								SdifSignatureToString (sigs[m].sig),
+								sigs[i].time.min,
+								sigs[i].time.max);
+						numChildMatrices++;
+					}
+				}
+				if(numChildMatrices == 0){
+					// frame had no child matrix. This can be the case for 1MRK frames that consist of only a time
+					printf ("#%d:%s@%f-%f\n", 
+							sigs[i].stream,
+							SdifSignatureToString (sigs[i].sig),
+							sigs[i].time.min,
+							sigs[i].time.max);
+				}
+			} 
 	    }
 	}
 	else
