@@ -1,19 +1,23 @@
-/* $Id: list-types.c,v 1.2 2008-12-18 11:07:25 diemo Exp $
+/* $Id: list-types.c,v 1.3 2008-12-18 11:20:25 diemo Exp $
 
    example code list-types.c: given an SDIF file and a frame signature as
    arguments, get matrices and matrix column names
 
-   compile as:	gcc -I../include -g list-types.c -lsdif -olist-types
+   compile as:	gcc -I../include -g  -o list-types list-types.c -lsdif
 
    run as:	./list-types <testfile.sdif> 1REB ; echo $?
 
    $Log: not supported by cvs2svn $
+   Revision 1.2  2008/12/18 11:07:25  diemo
+   read headers
+
    Revision 1.1  2008/12/18 10:59:16  diemo
    simple example showing SdifTestFrameType and direct access to struct elements
-
 */
 
+
 #include "sdif.h"
+
 
 /* open file and read header */
 SdifFileT *open_file (char *infile)
@@ -55,24 +59,10 @@ void matrixinfo_from_signature (SdifFileT *file, SdifSignature msig)
    }
 }
 
-int main (int argc, char *argv[])
+void frameinfo_from_signature (SdifFileT *file, SdifSignature fsig)
 {
-    char *filename = argc > 1 ? argv[1] : "-";
-    char *fsigstr  = argc > 2 ? argv[2] : "1TYP";
-
-    SdifFileT      *file   = open_file(filename);
-    SdifSignature   fsig   = SdifStringToSignature(fsigstr);
-
-    /* frame and matrix types tables in sdif file struct store only
-       the file-defined types! */
-    SdifHashTableT *ftable = SdifFGetFrameTypesTable(file);
-    SdifHashTableT *mtable = SdifFGetMatrixTypesTable(file);
-    if (!ftable || !mtable)	exit(2);
-
-    printf("Found %d user-defined frame types, %d matrix types SDIF file %s.\n", 
-	   ftable->NbOfData, mtable->NbOfData, filename);
-
     SdifFrameTypeT *ftype = SdifTestFrameType(file, fsig);
+
     if (!ftype)	
     {
 	printf("error: frame type %s not found!\n", SdifSignatureToString(fsig));
@@ -96,6 +86,29 @@ int main (int argc, char *argv[])
 	       i, SdifSignatureToString(msig), fcomp->Name);
 	matrixinfo_from_signature(file, msig);
     }
+
+}
+
+int main (int argc, char *argv[])
+{
+    char *filename = argc > 1 ? argv[1] : "-";
+    char *fsigstr  = argc > 2 ? argv[2] : "1TYP";
+
+    SdifFileT      *file   = open_file(filename);
+    SdifSignature   fsig   = SdifStringToSignature(fsigstr);
+
+    /* frame and matrix types tables in sdif file struct store only
+       the file-defined types! */
+    SdifHashTableT *ftable = SdifFGetFrameTypesTable(file);
+    SdifHashTableT *mtable = SdifFGetMatrixTypesTable(file);
+
+    if (!ftable || !mtable)	exit(2);
+    printf("Found %d user-defined frame types, %d matrix types SDIF file %s.\n", 
+	   ftable->NbOfData, mtable->NbOfData, filename);
+
+    /* print information about the definition of the given frame and
+       matrices therein */
+    frameinfo_from_signature(file, fsig);
 
     SdifFClose(file);
 }
