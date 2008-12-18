@@ -1,4 +1,4 @@
-/* $Id: list-types.c,v 1.1 2008-12-18 10:59:16 diemo Exp $
+/* $Id: list-types.c,v 1.2 2008-12-18 11:07:25 diemo Exp $
 
    example code list-types.c: given an SDIF file and a frame signature as
    arguments, get matrices and matrix column names
@@ -8,6 +8,9 @@
    run as:	./list-types <testfile.sdif> 1REB ; echo $?
 
    $Log: not supported by cvs2svn $
+   Revision 1.1  2008/12/18 10:59:16  diemo
+   simple example showing SdifTestFrameType and direct access to struct elements
+
 */
 
 #include "sdif.h"
@@ -26,7 +29,8 @@ SdifFileT *open_file (char *infile)
     }
 
     /* read header */
-    if (SdifFReadGeneralHeader(file) != 0)
+    if (SdifFReadGeneralHeader(file) == 0  ||
+	SdifFReadAllASCIIChunks(file) == 0)
     {
 	fprintf (SdifStdErr, "Can't read header of input file '%s'.\n", infile);
 	SdifFClose(file);
