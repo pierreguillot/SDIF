@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.5 2008-09-18 16:08:35 diemo Exp $
+# $Id: Makefile.am,v 1.6 2008-12-18 11:56:37 diemo Exp $
 #
 # SDIF/macosxbuild/Makefile.am	
 #
@@ -6,6 +6,9 @@
 # distribution
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.5  2008/09/18 16:08:35  diemo
+# include Info.plist, update readme, remove zip before uploading, remove SdifVersion.h
+#
 # Revision 1.4  2008/09/18 15:19:51  diemo
 # include current updated SDIF.xcodeproj, generated sdif_version.h for mac building out of the box
 # TO MAKE A FILE RELEASE ON SOURCEFORGE, DO:
@@ -30,7 +33,7 @@ SUBDIRS		=  SDIF.xcodeproj
 # distdir		= $(PACKAGE)-$(VERSION)-src
 
 # more files to include in dist
-EXTRA_DIST 	= README.MacOSX Info.plist
+EXTRA_DIST 	= README.MacOSX Info.plist texttosdif-Info.plist sdiftotext-Info.plist
 
 all:
 		echo "Use Apple build tools to build for Mac OS X"
