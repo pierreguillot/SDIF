@@ -1,4 +1,4 @@
-/* $Id: SdifFrameType.c,v 3.10 2007-12-10 10:46:42 roebel Exp $
+/* $Id: SdifFrameType.c,v 3.11 2008-12-18 11:42:19 diemo Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -37,6 +37,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.10  2007/12/10 10:46:42  roebel
+ * Use const char* for read only function arguments.
+ *
  * Revision 3.9  2005/10/21 14:32:29  schwarz
  * protect all static buffers from overflow by using snprintf instead of sprintf
  * move big errorMess buffers into error branch to avoid too large stack allocation
@@ -177,12 +180,6 @@ SdifCreateFrameType(SdifSignature FramS, SdifFrameTypeT *PredefinedFrameType)
 }
 
 
-
-
-
-
-
-
 void
 SdifKillFrameType(SdifFrameTypeT *FrameType)
 {
@@ -196,7 +193,25 @@ SdifKillFrameType(SdifFrameTypeT *FrameType)
 }
 
 
+SdifSignature 
+SdifFrameTypeGetComponentSignature (SdifComponentT *comp)
+{
+    return comp->MtrxS;
+}
 
+
+char *
+SdifFrameTypeGetComponentName (SdifComponentT *comp)
+{
+    return comp->Name;
+}
+
+
+SdifUInt4
+SdifFrameTypeGetNbComponents (SdifFrameTypeT *FrameType)
+{
+    return FrameType->NbComponent;
+}
 
 
 SdifComponentT*
@@ -217,11 +232,6 @@ SdifFrameTypeGetComponent_MtrxS(SdifFrameTypeT *FrameType, SdifSignature MtrxS)
 
   return Component;
 }
-
-
-
-
-
 
 
 SdifComponentT*
