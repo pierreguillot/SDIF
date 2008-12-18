@@ -1,5 +1,5 @@
 dnl -*-autoconf-*-  (Tell emacs it's an autoconf file!)
-dnl $Id: configure.in,v 1.74 2008-09-18 15:19:50 diemo Exp $
+dnl $Id: configure.in,v 1.75 2008-12-18 11:53:16 diemo Exp $
 dnl
 dnl configure.in		September 2000		Patrice Tisserand
 dnl
@@ -31,6 +31,12 @@ dnl send email to:  sdif@ircam.fr
 
 
 dnl $Log: not supported by cvs2svn $
+dnl Revision 1.74  2008/09/18 15:19:50  diemo
+dnl include current updated SDIF.xcodeproj, generated sdif_version.h for mac building out of the box
+dnl TO MAKE A FILE RELEASE ON SOURCEFORGE, DO:
+dnl
+dnl    make -k pub
+dnl
 dnl Revision 1.73  2008/05/22 11:57:32  roebel
 dnl Added missing SDIF_API to function declaration in sdif.h.
 dnl
@@ -310,8 +316,8 @@ AC_MSG_RESULT(PACKAGE NAME AND VERSION)
 PACKAGE=SDIF
 
 SDIF_VERSION_MAJOR=3
-SDIF_VERSION_MINOR=10
-SDIF_VERSION_RELEASE=8
+SDIF_VERSION_MINOR=11
+SDIF_VERSION_RELEASE=0
 
 VERSION=$SDIF_VERSION_MAJOR.$SDIF_VERSION_MINOR.$SDIF_VERSION_RELEASE
 
@@ -525,6 +531,7 @@ doc/Makefile
 doc/pics/Makefile 
 doc/extern/Makefile 
 doc/extern/cocoon/Makefile 
+examples/Makefile 
 test/Makefile 
 test/files/Makefile 
 test/files/txt/Makefile 
