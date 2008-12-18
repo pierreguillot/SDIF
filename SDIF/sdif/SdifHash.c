@@ -1,4 +1,4 @@
-/* $Id: SdifHash.c,v 3.10 2005-05-23 17:52:53 schwarz Exp $
+/* $Id: SdifHash.c,v 3.11 2008-12-18 11:42:19 diemo Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -35,6 +35,11 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.10  2005/05/23 17:52:53  schwarz
+ * Unified error handling:
+ * - SdifErrorEnum (global errors) integrated into SdifErrorTagET (file errors)
+ * - no more SdifError.[ch], everything done by SdifErrMess.[ch]
+ *
  * Revision 3.9  2005/04/07 15:56:47  schwarz
  * removed some now empty local include files,
  * added include of <sdif.h> and "SdifGlobals.h"
@@ -148,8 +153,11 @@ SdifCreateHashTable(unsigned int HashSize,
 }
 
 
-
-
+unsigned int 
+SdifHashTableGetNbData  (SdifHashTableT* HTable)
+{
+    return HTable->NbOfData;
+}
 
 
 void

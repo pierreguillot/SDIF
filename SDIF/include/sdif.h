@@ -1,4 +1,4 @@
-/* $Id: sdif.h,v 1.62 2008-05-22 11:57:32 roebel Exp $
+/* $Id: sdif.h,v 1.63 2008-12-18 11:42:19 diemo Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -30,6 +30,9 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.62  2008/05/22 11:57:32  roebel
+ * Added missing SDIF_API to function declaration in sdif.h.
+ *
  * Revision 1.61  2008/03/07 19:18:30  roebel
  * Support compilation as static library on windows
  *
@@ -292,7 +295,7 @@
  * Revision 1.1.2.1  2000/08/21  13:07:41  tisseran
  * *** empty log message ***
  *
- * $Date: 2008-05-22 11:57:32 $
+ * $Date: 2008-12-18 11:42:19 $
  *
  */
 
@@ -307,7 +310,7 @@ extern "C" {
 #endif
 
 
-static const char _sdif_h_cvs_revision_ [] = "$Id: sdif.h,v 1.62 2008-05-22 11:57:32 roebel Exp $";
+static const char _sdif_h_cvs_revision_ [] = "$Id: sdif.h,v 1.63 2008-12-18 11:42:19 diemo Exp $";
 
 #ifdef HAVE_STDINT_H
 #include <stdint.h>
@@ -1808,22 +1811,34 @@ SDIF_API SdifFrameTypeT* SdifCreateFrameType (SdifSignature FramS, SdifFrameType
 
 SDIF_API void            SdifKillFrameType               (SdifFrameTypeT *FrameType);
 
+/**
+ * Get number of matrix components defined in frame type. 
+ */
+SdifUInt4 SdifFrameTypeGetNbComponents (SdifFrameTypeT *FrameType);
+
 /** 
- * Access a frame type definition by matrix component signature 
+ * Access a frame type component definition by matrix component number (starting from 1).
+ */
+SDIF_API SdifComponentT* SdifFrameTypeGetNthComponent    (SdifFrameTypeT *FrameType, SdifUInt4 NumC);
+
+/** 
+ * Access a frame type component definition by matrix component signature 
  */
 SDIF_API SdifComponentT* SdifFrameTypeGetComponent_MtrxS (SdifFrameTypeT *FrameType, SdifSignature MtrxS);
 
 /** 
- * Access a frame type definition by matrix component name 
+ * Access a frame type component definition by matrix component name 
  */
 SDIF_API SdifComponentT* SdifFrameTypeGetComponent       (SdifFrameTypeT *FrameType, const char *NameC);
 
-/** 
- * Access a frame type definition by matrix component number 
- */
-SDIF_API SdifComponentT* SdifFrameTypeGetNthComponent    (SdifFrameTypeT *FrameType, SdifUInt4 NumC);
-
 SDIF_API SdifFrameTypeT* SdifFrameTypePutComponent       (SdifFrameTypeT *FrameType, SdifSignature MtrxS, char *NameC);
+
+
+/** Get matrix signature of frame component definition */
+SdifSignature SdifFrameTypeGetComponentSignature (SdifComponentT *comp);
+
+/** Get matrix role of frame component definition */
+char *SdifFrameTypeGetComponentName (SdifComponentT *comp);
 
 
 /**
@@ -2023,6 +2038,7 @@ SDIF_API SdifHashTableT* SdifCreateHashTable(unsigned int HashSize, SdifHashInde
 
 SDIF_API void SdifMakeEmptyHashTable (SdifHashTableT* HTable);
 SDIF_API void SdifKillHashTable      (SdifHashTableT* HTable);
+SDIF_API unsigned int SdifHashTableGetNbData  (SdifHashTableT* HTable);
 
 
 
@@ -2387,20 +2403,20 @@ SDIF_API void             SdifKillMatrixType                (SdifMatrixTypeT *Ma
 SDIF_API SdifMatrixTypeT* SdifMatrixTypeInsertTailColumnDef (SdifMatrixTypeT *MatrixType, const char *NameCD);
 
 /*DOC: 
-  renvoie la position de la colonne de nom NameCD.  (0 si elle
-  n'existe pas) */
+  Return number of columns defined for given matrix type. */
+SdifUInt4 SdifMatrixTypeGetNbColumns (SdifMatrixTypeT *mtype);
+
+/*DOC: 
+  Get index (starting from 1) of the column given by NameCD (0 if not found) */
 SDIF_API SdifUInt4        SdifMatrixTypeGetNumColumnDef     (SdifMatrixTypeT *MatrixType, const char *NameCD);
 
 /*DOC: 
-  renvoie la définition de la colonne (numéro, nom) en fonction
-  du nom.(NULL si introuvable) */
+  Get definition of column from NameCD (NULL if not found) */
 SDIF_API SdifColumnDefT*  SdifMatrixTypeGetColumnDef        (SdifMatrixTypeT *MatrixType, const char *NameCD);
 
 /*DOC: 
-  renvoie la définition de la colonne (numéro, nom) en fonction
-  du numero.(NULL si introuvable) */
+  Get definition of column from index (starting from 1) (NULL if not found) */
 SDIF_API SdifColumnDefT*  SdifMatrixTypeGetNthColumnDef     (SdifMatrixTypeT *MatrixType, SdifUInt4 NumCD);
-
 
 /*DOC: 
   Return pointer to name of column at index, NULL if it doesn't exist. */

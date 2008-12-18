@@ -1,4 +1,4 @@
-/* $Id: SdifMatrixType.c,v 3.12 2007-12-10 10:46:20 roebel Exp $
+/* $Id: SdifMatrixType.c,v 3.13 2008-12-18 11:42:19 diemo Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -37,6 +37,9 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.12  2007/12/10 10:46:20  roebel
+ * Use const char* for read only function arguments.
+ *
  * Revision 3.11  2005/10/21 14:32:30  schwarz
  * protect all static buffers from overflow by using snprintf instead of sprintf
  * move big errorMess buffers into error branch to avoid too large stack allocation
@@ -321,6 +324,12 @@ const char* SdifMatrixTypeGetColumnName (SdifMatrixTypeT *mtype, int index)
 	return NULL;
 }
 
+
+SdifUInt4
+SdifMatrixTypeGetNbColumns(SdifMatrixTypeT *mtype)
+{
+    return mtype->NbColumnDef;
+}
 
 
 
