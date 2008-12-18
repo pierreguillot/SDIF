@@ -1,4 +1,4 @@
-/* $Id: list-types.c,v 1.3 2008-12-18 11:20:25 diemo Exp $
+/* $Id: list-types.c,v 1.4 2008-12-18 11:42:58 diemo Exp $
 
    example code list-types.c: given an SDIF file and a frame signature as
    arguments, get matrices and matrix column names
@@ -8,6 +8,9 @@
    run as:	./list-types <testfile.sdif> 1REB ; echo $?
 
    $Log: not supported by cvs2svn $
+   Revision 1.3  2008/12/18 11:20:25  diemo
+   separate frameinfo_from_signature function
+
    Revision 1.2  2008/12/18 11:07:25  diemo
    read headers
 
@@ -48,7 +51,7 @@ SdifFileT *open_file (char *infile)
 void matrixinfo_from_signature (SdifFileT *file, SdifSignature msig)
 {
     SdifMatrixTypeT *mtype   = SdifTestMatrixType(file, msig);
-    int		     mnumcol = mtype->NbColumnDef;
+    int		     mnumcol = SdifMatrixTypeGetNbColumns(mtype);
     int i;
 
     for (i = 1; i <= mnumcol; i++)
@@ -69,7 +72,7 @@ void frameinfo_from_signature (SdifFileT *file, SdifSignature fsig)
 	exit(3);
     }
 
-    int fnumcomp = ftype->NbComponent;
+    int fnumcomp = SdifFrameTypeGetNbComponents(ftype);
     int i;
 
     printf("Frame type %s, %d components:\n", 
@@ -80,10 +83,12 @@ void frameinfo_from_signature (SdifFileT *file, SdifSignature fsig)
 	SdifComponentT  *fcomp = SdifFrameTypeGetNthComponent(ftype, i);
 	if (!fcomp)	exit(4);
 
-	SdifSignature    msig  = fcomp->MtrxS;
+	SdifSignature    msig  = SdifFrameTypeGetComponentSignature(fcomp);
 
 	printf("  component %d: matrix %s %s\n", 
-	       i, SdifSignatureToString(msig), fcomp->Name);
+	       i, SdifSignatureToString(msig), 
+	       SdifFrameTypeGetComponentName(fcomp));
+
 	matrixinfo_from_signature(file, msig);
     }
 
@@ -104,7 +109,8 @@ int main (int argc, char *argv[])
 
     if (!ftable || !mtable)	exit(2);
     printf("Found %d user-defined frame types, %d matrix types SDIF file %s.\n", 
-	   ftable->NbOfData, mtable->NbOfData, filename);
+	   SdifHashTableGetNbData(ftable), SdifHashTableGetNbData(mtable), 
+	   filename);
 
     /* print information about the definition of the given frame and
        matrices therein */
