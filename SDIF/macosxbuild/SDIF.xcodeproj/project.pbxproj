@@ -460,9 +460,11 @@
 		0F5C28A9047E732E006640BC /* Project object */ = {
 			isa = PBXProject;
 			buildConfigurationList = 21AFA3B60907D5740018539F /* Build configuration list for PBXProject "SDIF" */;
+			compatibilityVersion = "Xcode 2.4";
 			hasScannedForEncodings = 1;
 			mainGroup = 0F5C28A5047E732E006640BC;
 			projectDirPath = "";
+			projectRoot = "";
 			targets = (
 				F4A4100C079BCB8D00ADEFEF /* SDIF */,
 				F4A4105D079BCB8E00ADEFEF /* SDIF lib static */,
@@ -644,10 +646,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				COPY_PHASE_STRIP = YES;
-				CURRENT_PROJECT_VERSION = 3.9.2;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
-				FRAMEWORK_VERSION = "$(VERSION_MAJOR).$(VERSION_MINOR).$(VERSION_RELEASE)";
 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_OPTIMIZATION_LEVEL = 3;
@@ -660,9 +660,6 @@
 				PRINCIPAL_CLASS = "";
 				PRODUCT_NAME = SDIF;
 				SECTORDER_FLAGS = "";
-				VERSION_MAJOR = 3;
-				VERSION_MINOR = 10;
-				VERSION_RELEASE = 5;
 				WARNING_CFLAGS = (
 					"-Wmost",
 					"-Wno-four-char-constants",
@@ -911,7 +908,11 @@
 		21AFA3B70907D5740018539F /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				FRAMEWORK_VERSION = 3.10.8;
+				CURRENT_PROJECT_VERSION = "$(VERSION_MAJOR).$(VERSION_MINOR).$(VERSION_RELEASE)";
+				FRAMEWORK_VERSION = "$(VERSION_MAJOR).$(VERSION_MINOR)";
+				VERSION_MAJOR = 3;
+				VERSION_MINOR = 11;
+				VERSION_RELEASE = 0;
 			};
 			name = Development;
 		};
@@ -922,15 +923,23 @@
 					ppc,
 					i386,
 				);
-				FRAMEWORK_VERSION = 3.10.5;
+				CURRENT_PROJECT_VERSION = "$(VERSION_MAJOR).$(VERSION_MINOR).$(VERSION_RELEASE)";
+				FRAMEWORK_VERSION = "$(VERSION_MAJOR).$(VERSION_MINOR)";
 				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
+				VERSION_MAJOR = 3;
+				VERSION_MINOR = 11;
+				VERSION_RELEASE = 0;
 			};
 			name = Deployment;
 		};
 		21AFA3B90907D5740018539F /* Default */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				FRAMEWORK_VERSION = 3.10.5;
+				CURRENT_PROJECT_VERSION = "$(VERSION_MAJOR).$(VERSION_MINOR).$(VERSION_RELEASE)";
+				FRAMEWORK_VERSION = "$(VERSION_MAJOR).$(VERSION_MINOR)";
+				VERSION_MAJOR = 3;
+				VERSION_MINOR = 11;
+				VERSION_RELEASE = 0;
 			};
 			name = Default;
 		};
