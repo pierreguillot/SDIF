@@ -1,3 +1,100 @@
+2009-01-05  diemo  <diemo@here>
+Version 3.11.0-pre1
+
+	* ReleaseNotes: notes for 3.11.0
+
+	* macosxbuild/SDIF.xcodeproj/project.pbxproj:
+	move version definition up to project settings, base framework and project version on the three custom definitions in xcode project:
+	VERSION_MAJOR = 3
+	VERSION_MINOR = 11
+	VERSION_RELEASE = 0
+
+2008-12-18  diemo  <diemo@here>
+
+	* macosxbuild/Makefile.am: add some plist files to distribution
+
+	* examples/Makefile.am: makefile to build example programs
+
+	* configure.in:
+	Changed minor release number to 3.11 because of API change by new
+	access methods to struct elements of type definition.
+
+	* examples/list-types.c:
+	Use new access methods to struct elements of type definitions.
+
+	* include/sdif.h, sdif/SdifFrameType.c, sdif/SdifHash.c, sdif/SdifMatrixType.c:
+	Improvements of the public API for scripting languages binding to libSDIF:
+	- added SdifHashTableGetNbData
+	- added access methods to struct elements of type definitions.
+
+	* examples/list-types.c: separate frameinfo_from_signature function
+
+	* examples/list-types.c: read headers
+
+	* examples/list-types.c:
+	simple example showing SdifTestFrameType and direct access to struct elements
+
+2008-12-10  bogaards  <bogaards@here>
+
+	* tools/querysdif.c: support for frames that do not contain any matrix
+
+2008-10-06  diemo  <diemo@here>
+
+	* sdif/config.h.in:
+	revert erroneous commit back to rev 1.8, sorry for the inconvenience
+
+2008-09-18  diemo  <diemo@here>
+
+	* Makefile.am, macosxbuild/Makefile.am, macosxbuild/README.MacOSX, macosxbuild/SDIF.xcodeproj/project.pbxproj:
+	include Info.plist, update readme, remove zip before uploading, remove SdifVersion.h
+
+	* Makefile.am:
+	clarified last misunderstanding between autotools and me:
+
+	TO MAKE A FILE RELEASE ON SOURCEFORGE, DO:
+
+	   make pub
+
+	* include/Makefile.am, macosxbuild/Makefile.am, macosxbuild/SDIF.xcodeproj/project.pbxproj, sdif/config.h.in, Makefile.am, configure.in:
+	include current updated SDIF.xcodeproj, generated sdif_version.h for mac building out of the box
+	TO MAKE A FILE RELEASE ON SOURCEFORGE, DO:
+
+	   make -k pub
+
+	* macosxbuild/SDIF.xcodeproj/project.pbxproj:
+	activate UB framework building, with help from Niels
+
+	* doc/Makefile.am: publish doc on sourceforge
+	N.B.: DON'T USE THIS, BUT USE THE SDIF-WEBSITE MODULE
+
+	* Makefile.am: adapt to sf frs, publish src and mac ub framework only
+
+2008-09-10  diemo  <diemo@here>
+
+	* doc/index.html: ahem...
+
+	* doc/index.html:
+	replaced by redirection to new sdif main page on sourceforge
+
+2008-06-05  roebel  <roebel@here>
+
+	* cmModules/REDIRECT_COMPILERS_TO_SYSROOT.cmake:
+	simplified sysroot handling, rely on cmake to put -isysroot flag when necessary
+
+2008-06-03  roebel  <roebel@here>
+
+	* cmModules/REDIRECT_COMPILERS_TO_SYSROOT.cmake:
+	Added protection to sysroot flag in case cross compilation is active.
+
+2008-05-31  roebel  <roebel@here>
+
+	* ReleaseNotes: Prepared for new release.
+
+2008-05-22  roebel  <roebel@here>
+
+	* ChangeLog, configure.in, include/sdif.h:
+	Added missing SDIF_API to function declaration in sdif.h.
+
 2008-05-22  Axel Roebel  <Axel.Roebel@ircam.fr>
 Version 3.10.8
 
@@ -989,4 +1086,4 @@ Version 3.3:
 	  Operating System.
 
 	
-$Id: ChangeLog,v 1.60 2008-05-22 11:57:32 roebel Exp $
+$Id: ChangeLog,v 1.61 2009-01-05 15:33:08 diemo Exp $
