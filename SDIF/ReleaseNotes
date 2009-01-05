@@ -1,3 +1,16 @@
+Version 3.11.0   2009-01-05  Diemo Schwarz
+
+	* Improvements of the public API for scripting languages binding 
+	  to libSDIF:
+	  - added SdifHashTableGetNbData
+	  - added access methods to struct elements of type definitions.
+	* examples/list-types.c: simple example showing
+          SdifTestFrameType and direct access to struct elements
+	* tools/querysdif.c: support for frames that do not contain any matrix
+	* macosxbuild/SDIF.xcodeproj: builds Mac UB framework, include
+          current updated SDIF.xcodeproj, generated sdif_version.h for
+          mac building out of the box
+
 Version 3.10.8   2008-05-22  Axel Roebel
 
 	* added SDIF_API to SdifFCleanCurrSignature.
