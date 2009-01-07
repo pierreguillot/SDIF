@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.35 2008-09-18 16:08:35 diemo Exp $
+# $Id: Makefile.am,v 1.36 2009-01-07 16:10:27 diemo Exp $
 #
 # ./Makefile.am		September 2000			Patrice Tisserand
 #
@@ -30,6 +30,9 @@
 
 
 # $Log: not supported by cvs2svn $
+# Revision 1.35  2008/09/18 16:08:35  diemo
+# include Info.plist, update readme, remove zip before uploading, remove SdifVersion.h
+#
 # Revision 1.34  2008/09/18 15:29:37  diemo
 # clarified last misunderstanding between autotools and me:
 #
@@ -179,9 +182,9 @@ else
 SDIF_CPP_DIR=
 endif
 
-SUBDIRS = sdif include tools data test $(SDIF_CPP_DIR) macosxbuild $(DOC_SRC_DIR)
+SUBDIRS = sdif include tools data examples test $(SDIF_CPP_DIR) macosxbuild $(DOC_SRC_DIR)
 
-DIST_SUBDIRS = sdif include tools data test  macosxbuild doc sdifcpp cmModules
+DIST_SUBDIRS = sdif include tools data examples test  macosxbuild doc sdifcpp cmModules
 
 sdifincdir = @top_srcdir@/include
 
