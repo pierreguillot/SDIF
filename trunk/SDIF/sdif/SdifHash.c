@@ -1,4 +1,4 @@
-/* $Id: SdifHash.c,v 3.11 2008-12-18 11:42:19 diemo Exp $
+/* $Id: SdifHash.c,v 3.12 2009-01-07 16:24:01 diemo Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -35,6 +35,11 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.11  2008/12/18 11:42:19  diemo
+ * Improvements of the public API for scripting languages binding to libSDIF:
+ * - added SdifHashTableGetNbData
+ * - added access methods to struct elements of type definitions.
+ *
  * Revision 3.10  2005/05/23 17:52:53  schwarz
  * Unified error handling:
  * - SdifErrorEnum (global errors) integrated into SdifErrorTagET (file errors)
@@ -154,9 +159,15 @@ SdifCreateHashTable(unsigned int HashSize,
 
 
 unsigned int 
-SdifHashTableGetNbData  (SdifHashTableT* HTable)
+SdifHashTableGetNbData (SdifHashTableT* HTable)
 {
     return HTable->NbOfData;
+}
+
+void *
+SdifHashTableGetData (SdifHashTableT* HTable, int i)
+{
+    return HTable->Table[i]->Data;
 }
 
 
@@ -404,3 +415,67 @@ SdifHashTablePut(SdifHashTableT* HTable, const void *ptr, unsigned int nobj, voi
       return NULL;
     }
 }
+
+
+/*********** Iteration over all hash table elements ***************/
+
+/* Allocate and initialise hash table iterator from given hash table or NULL,
+   return pointer to it */
+SdifHashTableIteratorT* SdifCreateHashTableIterator (SdifHashTableT *HTable)
+{
+    SdifHashTableIteratorT *iter = SdifMalloc(SdifHashTableIteratorT);
+    SdifHashTableIteratorInitLoop(iter, HTable);
+    return iter;
+}
+
+/* Deallocate hash table iterator created with SdifCreateHashTableIterator */
+void SdifKillHashTableIterator (SdifHashTableIteratorT *iter)
+{
+    SdifFree(iter);
+}
+
+/* Initialise hash table iterator given by pointer (or NULL) */
+int  SdifHashTableIteratorInitLoop (SdifHashTableIteratorT *iter, 
+				    SdifHashTableT *hash)
+{
+    iter->HTable   = hash;
+    iter->BinIndex = 0;
+    iter->Entry    = NULL;
+
+    if (hash)
+    {
+	while (iter->BinIndex < hash->HashSize)
+	{
+	    iter->Entry = hash->Table[iter->BinIndex];
+	    if (iter->Entry != NULL)
+		break;
+
+	    iter->BinIndex++;
+	}
+    }
+    return iter->Entry != NULL;
+}
+
+/* Test if iterator has more elements */
+int  SdifHashTableIteratorIsNext (SdifHashTableIteratorT *iter)
+{
+    return iter->Entry != NULL;
+}
+
+/* Return current Data pointer and advance iterator */
+void* SdifHashTableIteratorGetNext (SdifHashTableIteratorT *iter)
+{
+    void *curr = iter->Entry->Data;
+
+    iter->Entry = iter->Entry->Next;
+
+    if (iter->Entry == NULL)
+    {
+	/* end of this bin list, search next bin with non-empty list */
+	while (++(iter->BinIndex) < iter->HTable->HashSize  &&
+	       (iter->Entry = iter->HTable->Table[iter->BinIndex]) == NULL)
+	    ;
+    }
+    return curr;
+}
+
