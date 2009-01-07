@@ -1,4 +1,4 @@
-/* $Id: sdif.h,v 1.63 2008-12-18 11:42:19 diemo Exp $
+/* $Id: sdif.h,v 1.64 2009-01-07 16:31:55 diemo Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -30,6 +30,11 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.63  2008/12/18 11:42:19  diemo
+ * Improvements of the public API for scripting languages binding to libSDIF:
+ * - added SdifHashTableGetNbData
+ * - added access methods to struct elements of type definitions.
+ *
  * Revision 1.62  2008/05/22 11:57:32  roebel
  * Added missing SDIF_API to function declaration in sdif.h.
  *
@@ -295,7 +300,7 @@
  * Revision 1.1.2.1  2000/08/21  13:07:41  tisseran
  * *** empty log message ***
  *
- * $Date: 2008-12-18 11:42:19 $
+ * $Date: 2009-01-07 16:31:55 $
  *
  */
 
@@ -310,7 +315,7 @@ extern "C" {
 #endif
 
 
-static const char _sdif_h_cvs_revision_ [] = "$Id: sdif.h,v 1.63 2008-12-18 11:42:19 diemo Exp $";
+static const char _sdif_h_cvs_revision_ [] = "$Id: sdif.h,v 1.64 2009-01-07 16:31:55 diemo Exp $";
 
 #ifdef HAVE_STDINT_H
 #include <stdint.h>
@@ -338,6 +343,10 @@ static const char _sdif_h_cvs_revision_ [] = "$Id: sdif.h,v 1.63 2008-12-18 11:4
 #endif
 
 
+/* forward declaration of big SDIF file struct type */
+typedef struct SdifFileS SdifFileT;
+
+
 /* SdifHash.h */
 typedef enum SdifHashIndexTypeE
 {
@@ -354,13 +363,12 @@ union SdifHashIndexU
   unsigned int  Int4;
 } ;
 
-
 typedef struct SdifHashNS SdifHashNT;
-typedef struct SdifFileS SdifFileT;
 
+/* hash bin struct, containing linked list of entries */
 struct SdifHashNS 
 {
-  SdifHashNT *Next;
+  SdifHashNT *Next;	/* pointer to next entry */
   SdifHashIndexUT Index;
   void* Data;
 };
@@ -370,13 +378,22 @@ typedef struct SdifHashTableS SdifHashTableT;
 
 struct SdifHashTableS
 {
-  SdifHashNT* *Table;
-  unsigned int HashSize;
+  SdifHashNT* *Table;		/* table of pointers to hash bins */
+  unsigned int HashSize;	/* number of hash bins */
   SdifHashIndexTypeET IndexType;
   void (*Killer)(void *); 
-  unsigned int NbOfData;
+  unsigned int NbOfData;	/* total number of entries */
 } ;
 
+
+typedef struct SdifHashTableIteratorS SdifHashTableIteratorT;
+
+struct SdifHashTableIteratorS
+{
+  SdifHashTableT *HTable;	/* pointer to hash table		 */
+  unsigned int    BinIndex;	/* index of current hash bin		 */
+  SdifHashNT     *Entry;	/* pointer to current hash entry in list */
+};
 
 
 
@@ -661,7 +678,7 @@ struct SdifNameValueTableS
 typedef struct SdifNameValuesLS SdifNameValuesLT;
 struct SdifNameValuesLS
 {
-    SdifListT*              NVTList;
+    SdifListT*              NVTList;  /* list of SdifNameValueTableT */
     SdifNameValueTableT*    CurrNVT;
     SdifUInt4               HashSize;
 };
@@ -2040,6 +2057,26 @@ SDIF_API void SdifMakeEmptyHashTable (SdifHashTableT* HTable);
 SDIF_API void SdifKillHashTable      (SdifHashTableT* HTable);
 SDIF_API unsigned int SdifHashTableGetNbData  (SdifHashTableT* HTable);
 
+/*DOC:
+  Allocate and initialise hash table iterator, return pointer to it */
+SDIF_API SdifHashTableIteratorT* SdifCreateHashTableIterator (SdifHashTableT *HTable);
+/*DOC:
+  Deallocate hash table iterator created with SdifCreateHashTableIterator */
+SDIF_API void SdifKillHashTableIterator (SdifHashTableIteratorT *iter);
+/*DOC:
+  Initialise hash table iterator given by pointer.
+  [Returns] true if hash table has elements. */
+SDIF_API int  SdifHashTableIteratorInitLoop (SdifHashTableIteratorT *iter, 
+					     SdifHashTableT *HTable);
+
+/*DOC:
+  Test if iterator has more elements */
+SDIF_API int  SdifHashTableIteratorIsNext (SdifHashTableIteratorT *iter);
+
+/*DOC:
+  Return current Data pointer and advance iterator */
+SDIF_API void* SdifHashTableIteratorGetNext (SdifHashTableIteratorT *iter);
+
 
 
 /******************  eHashChar ****************/
@@ -2573,6 +2610,13 @@ SDIF_API SdifNameValueT*     SdifNameValuesLPutCurrNVTTranslate(SdifNameValuesLT
 
 SDIF_API SdifUInt2           SdifNameValuesLIsNotEmpty   (SdifNameValuesLT *NameValuesL);
 
+/*DOC:
+  Get generic SDIF list with SdifNameValueTableT nvt elements from nvt container struct nvtl */
+SDIF_API SdifListT *         SdifNameValueTableList (SdifNameValuesLT *nvtl);
+
+/*DOC:
+  Get pointer to hash table of one nvt */
+SDIF_API SdifHashTableT*     SdifNameValueTableGetHashTable (SdifNameValueTableT* NVTable);
 
 
 
