@@ -1,4 +1,4 @@
-/* $Id: list-nvt.c,v 1.1 2009-01-07 11:39:13 diemo Exp $
+/* $Id: list-nvt.c,v 1.2 2009-01-07 16:13:00 diemo Exp $
 
    example code list-nvt.c: given an SDIF file, print name-value
    tables, or optionally the value of one name-key, found in any nvt
@@ -6,6 +6,9 @@
    run as:	./list-nvt <testfile.sdif> [<name to query>]
 
    $Log: not supported by cvs2svn $
+   Revision 1.1  2009/01/07 11:39:13  diemo
+   nvt listing example for library version <= 3.10
+
 */
 
 
@@ -54,7 +57,8 @@ int main (int argc, char *argv[])
 	SdifNameValueT *nv = SdifNameValuesLGet(nvtlist, nvtnamestr);
 	    
 	if (nv)
-	    printf("Name %s:\n%s\n", nv->Name, nv->Value);
+	    printf("Name %s:\n%s\n", 
+		   SdifNameValueGetName(nv), SdifNameValueGetValue(nv));
 	else
 	{
 	    printf("Name %s not found!\n", nvtnamestr);
@@ -64,33 +68,36 @@ int main (int argc, char *argv[])
     }
     else
     {   /* print nvts */
-	SdifListT *nvtl   = nvtlist->NVTList; //SdifNameValueTableList(nvtlist);
+	SdifListT *nvtl   = SdifNameValueTableList(nvtlist);
 	int	   numnvt = SdifListGetNbData(nvtl);
+	SdifHashTableIteratorT *nvtiter = SdifCreateHashTableIterator(NULL);
 	
 	printf("Number of NVTs in file %s: %d\n", filename, numnvt);
 
 	SdifListInitLoop(nvtl);
 	while (SdifListIsNext(nvtl))
 	{   /* print one NVT */
-	    SdifNameValueTableT *currnvt = (SdifNameValueTableT *)
-		SdifListGetNext(nvtl);
-	    SdifHashTableT      *nvht = currnvt->NVHT;
-	    SdifHashNT          *pNV;
+	    SdifNameValueTableT *currnvt = 
+		(SdifNameValueTableT *) SdifListGetNext(nvtl);
+	    SdifHashTableT      *nvht = SdifNameValueTableGetHashTable(currnvt);
 	    unsigned int	i;
 
-	    printf("\nNameValueTable Number %d Stream %d:\n", 
+	    printf("\nNameValueTable Number %d Stream %d Size %d:\n", 
 		   SdifNameValueTableGetNumTable(currnvt), 
-		   SdifNameValueTableGetStreamID(currnvt));
+		   SdifNameValueTableGetStreamID(currnvt),
+		   SdifHashTableGetNbData(nvht));
 
-	    for (i = 0; i < nvht->HashSize; i++)
+	    SdifHashTableIteratorInitLoop(nvtiter, nvht);
+	    while (SdifHashTableIteratorIsNext(nvtiter))
 	    {
-		for (pNV = nvht->Table[i]; pNV; pNV = pNV->Next)
-		{
-		    SdifNameValueT *NameValue = (SdifNameValueT *) pNV->Data;
-		    printf("%s\t%s;\n", NameValue->Name, NameValue->Value);
-		}
+		SdifNameValueT *nv = (SdifNameValueT *) 
+		    SdifHashTableIteratorGetNext(nvtiter);
+		printf("%s\t%s;\n", SdifNameValueGetName(nv), 
+		                    SdifNameValueGetValue(nv));
 	    }
 	}
+
+	SdifKillHashTableIterator(nvtiter);
     }
     
     SdifFClose(file);
