@@ -1,3 +1,13 @@
+Version 3.11.1   2009-01-07  Diemo Schwarz
+
+	* Further Improvements of the public API for scripting
+	  languages binding to libSDIF:
+          - access functions for integration in script languages for
+	    all fields of: name-value table list, name-value table,
+	    name-value entry
+	  - iterator to iterate over all entries in hash table
+	* examples/list-nvt.c: nvt listing example
+
 Version 3.11.0   2009-01-05  Diemo Schwarz
 
 	* Improvements of the public API for scripting languages binding 
