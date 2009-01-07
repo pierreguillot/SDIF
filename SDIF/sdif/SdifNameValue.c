@@ -1,4 +1,4 @@
-/* $Id: SdifNameValue.c,v 3.17 2005-04-07 15:56:47 schwarz Exp $
+/* $Id: SdifNameValue.c,v 3.18 2009-01-07 16:23:27 diemo Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -34,6 +34,10 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.17  2005/04/07 15:56:47  schwarz
+ * removed some now empty local include files,
+ * added include of <sdif.h> and "SdifGlobals.h"
+ *
  * Revision 3.16  2003/12/15 13:15:40  schwarz
  * SdifNameValuesLKillCurrNVT, untested
  *
@@ -154,9 +158,6 @@ SdifCreateNameValue(const char *Name,  const char *Value)
 
 
 
-
-
-
 void
 SdifKillNameValue(SdifNameValueT *NameValue)
 {
@@ -171,6 +172,15 @@ SdifKillNameValue(SdifNameValueT *NameValue)
 }
 
 
+char *SdifNameValueGetName (SdifNameValueT *nv)
+{
+    return nv->Name;
+}
+
+char *SdifNameValueGetValue (SdifNameValueT *nv)
+{
+    return nv->Value;
+}
 
 
 
@@ -258,6 +268,11 @@ SdifNameValueTableGetStreamID(SdifNameValueTableT* NVTable)
 }
 
 
+SdifHashTableT *
+SdifNameValueTableGetHashTable (SdifNameValueTableT* NVTable)
+{
+    return NVTable->NVHT;
+}
 
 
 
@@ -394,6 +409,7 @@ void SdifNameValuesLKillCurrNVT(SdifNameValuesLT *NameValuesL)
 
 
 
+/* Return nvt for key Name found in first NVT */
 SdifNameValueT*
 SdifNameValuesLGet(SdifNameValuesLT *NameValuesL, char *Name)
 {
@@ -472,4 +488,12 @@ SdifNameValuesLIsNotEmpty(SdifNameValuesLT *NameValuesL)
         }
     }
   return 0;
+}
+
+
+/* get generic sdif list with nvts from nvt container struct nvtl */
+SdifListT *
+SdifNameValueTableList (SdifNameValuesLT *nvtl)
+{
+    return nvtl->NVTList;
 }
