@@ -305,7 +305,7 @@ SET(DOCFILES ${easdifDOCFILES} CACHE INTERNAL "files containing doc sources" FOR
 #MESSAGE(STATUS "doc files : ${DOCFILES}")
 
 # Documentation generation with Doxygen
-ADD_CUSTOM_TARGET(libeasdif_doc COMMAND  doxygen  ${CMAKE_BINARY_DIR}/Doxyfile DEPENDS CMakeLists.txt;${DOCFILES})
+ADD_CUSTOM_TARGET(libeasdif_doc COMMAND  doxygen  ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile DEPENDS CMakeLists.txt;${DOCFILES})
 IF(DEFINED DOCSERVER)
   FIND_PROGRAM(NCFTPPUT_EXECUTABLE ncftpput)
   IF(NCFTPPUT_EXECUTABLE)
