@@ -31,7 +31,7 @@
 #  BUILD_MING:BOOL=ON/OFF  if cygwin add -mno-cygwin to compiler commands
 
 PROJECT(SDIF)
-CMAKE_MINIMUM_REQUIRED(VERSION 2.4.7)
+CMAKE_MINIMUM_REQUIRED(VERSION 2.6.0)
 
 # for cmake 2.6
 IF(COMMAND cmake_policy)
