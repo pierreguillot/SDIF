@@ -1,3 +1,9 @@
+2009-02-18  Axel Roebel  <Axel.Roebel@ircam.fr>
+Version 1.4.10
+
+	* SDIF/cmModules/GET_GCC_VERSION.cmake, SDIF/cmModules/REDIRECT_COMPILERS_TO_SYSROOT.cmake:
+	Fixed support for non default sysroot, properly set deployment target.
+
 2008-07-31  Axel Roebel  <Axel.Roebel@ircam.fr>
 Version 1.4.9
 
@@ -1134,4 +1140,4 @@ Version 0.21
 	* ChangeLog: Added changelog to repository.
 
 
-$Id: ChangeLog,v 1.80 2008-07-31 18:15:37 roebel Exp $
+$Id: ChangeLog,v 1.81 2009-02-18 17:08:15 roebel Exp $
