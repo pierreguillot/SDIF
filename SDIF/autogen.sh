@@ -9,7 +9,7 @@ export PERLLIB PERL5LIB PERLSITE PERLARCH
 
 # display versions
 echo "[auto-tools versions in your path on $HOST]"
-for f in aclocal automake autoconf autoheader autom4te libtoolize libtool; do
+for f in aclocal automake autoconf autoheader autom4te libtoolize; do
     echo -n `$f --version | head -1` ": "
     ls -lFgG `which $f`
 done
@@ -20,7 +20,7 @@ set -x
 
 aclocal
 # On Mac OS X, libtoolize is glibtoolize
-libtoolize --force --automake --copy || glibtoolize --force --automake --copy
+glibtoolize --force --automake --copy || libtoolize --force --automake --copy
 autoheader
 autoconf
 automake --foreign --add-missing --copy
