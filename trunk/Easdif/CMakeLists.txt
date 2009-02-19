@@ -48,6 +48,9 @@ MESSAGE(STATUS "==============================================================="
 
 SET(PACKAGE "\"Easdif\"")
 
+IF(NOT EXISTS  ${CMAKE_CURRENT_SOURCE_DIR}/SDIF)
+  MESSAGE(FATAL_ERROR "You are missing the SDIF source directory!!! Please check the way how you obtained the sources.\nIf you have obtained them via CVS you probably used the wrong module. Try again checking out the EASDIF_SDIF module that contains all the necessary sources for compilation. \n\nuse: cvs -z3 -d:pserver:anonymous@sdif.cvs.sourceforge.net:/cvsroot/sdif co -P EASDIF_SDIF\n")  
+ENDIF(NOT EXISTS  ${CMAKE_CURRENT_SOURCE_DIR}/SDIF)
 
 SET(CMAKE_VERBOSE_MAKEFILE false)
 SET(CMAKE_SKIP_BUILD_RPATH OFF)
