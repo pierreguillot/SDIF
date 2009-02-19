@@ -1,5 +1,5 @@
 # Easdif README
-# $Id: README,v 1.14 2008-05-18 18:18:19 roebel Exp $
+# $Id: README,v 1.15 2009-02-19 16:57:35 roebel Exp $
 #
 # Copyright (C) Ircam 2002-2008
 
@@ -27,7 +27,7 @@ cvs -d:pserver:anonymous@sdif.cvs.sourceforge.net:/cvsroot/sdif login  
 cvs -z3 -d:pserver:anonymous@sdif.cvs.sourceforge.net:/cvsroot/sdif co -P EASDIF_SDIF
 
 This  creates a directory  EASDIF_SDIF with  a subdirectory  SDIF. The
-directory ESDIF_SDIF  should be used  as source root dircetry  for the
+directory ESDIF_SDIF should  be used as source root  directory for the
 cmake configuration (see below) and the build.
 
 # Installation and compilation
