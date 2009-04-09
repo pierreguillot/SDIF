@@ -24,11 +24,16 @@
  *                            sdif@ircam.fr
  */
 
-/* $Id: SdifHighLevel.c,v 3.18 2007-11-26 18:52:08 roebel Exp $
+/* $Id: SdifHighLevel.c,v 3.19 2009-04-09 09:54:43 diemo Exp $
  *
  * SdifHighLevel.c	8.12.1999	Diemo Schwarz
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.18  2007/11/26 18:52:08  roebel
+ * Changed data types to have less casts and
+ * less compilation warnings with MSVC.
+ * renamed some functions that are deprecated in MSVC.
+ *
  * Revision 3.17  2005/10/21 14:32:29  schwarz
  * protect all static buffers from overflow by using snprintf instead of sprintf
  * move big errorMess buffers into error branch to avoid too large stack allocation
@@ -405,7 +410,7 @@ SdifQueryTreeT *SdifCreateQueryTree(int max)
     return (SdifInitQueryTree(newtree));
 }
 
-
+/* reset to zero */
 SdifQueryTreeT *SdifInitQueryTree(SdifQueryTreeT *tree)
 {
     tree->num       = 0;
