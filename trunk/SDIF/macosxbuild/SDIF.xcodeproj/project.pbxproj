@@ -912,7 +912,7 @@
 				FRAMEWORK_VERSION = "$(VERSION_MAJOR).$(VERSION_MINOR)";
 				VERSION_MAJOR = 3;
 				VERSION_MINOR = 11;
-				VERSION_RELEASE = 0;
+				VERSION_RELEASE = 1;
 			};
 			name = Development;
 		};
@@ -928,7 +928,7 @@
 				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
 				VERSION_MAJOR = 3;
 				VERSION_MINOR = 11;
-				VERSION_RELEASE = 0;
+				VERSION_RELEASE = 1;
 			};
 			name = Deployment;
 		};
@@ -939,7 +939,7 @@
 				FRAMEWORK_VERSION = "$(VERSION_MAJOR).$(VERSION_MINOR)";
 				VERSION_MAJOR = 3;
 				VERSION_MINOR = 11;
-				VERSION_RELEASE = 0;
+				VERSION_RELEASE = 1;
 			};
 			name = Default;
 		};
