@@ -1,4 +1,4 @@
-/* $Id: list-nvt.c,v 1.2 2009-01-07 16:13:00 diemo Exp $
+/* $Id: list-nvt.c,v 1.3 2009-04-09 09:34:04 diemo Exp $
 
    example code list-nvt.c: given an SDIF file, print name-value
    tables, or optionally the value of one name-key, found in any nvt
@@ -6,6 +6,9 @@
    run as:	./list-nvt <testfile.sdif> [<name to query>]
 
    $Log: not supported by cvs2svn $
+   Revision 1.2  2009/01/07 16:13:00  diemo
+   use new nvt access functions and hash table iterator
+
    Revision 1.1  2009/01/07 11:39:13  diemo
    nvt listing example for library version <= 3.10
 
@@ -80,7 +83,6 @@ int main (int argc, char *argv[])
 	    SdifNameValueTableT *currnvt = 
 		(SdifNameValueTableT *) SdifListGetNext(nvtl);
 	    SdifHashTableT      *nvht = SdifNameValueTableGetHashTable(currnvt);
-	    unsigned int	i;
 
 	    printf("\nNameValueTable Number %d Stream %d Size %d:\n", 
 		   SdifNameValueTableGetNumTable(currnvt), 
