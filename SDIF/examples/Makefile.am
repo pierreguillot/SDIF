@@ -1,10 +1,13 @@
-# $Id: Makefile.am,v 1.4 2009-01-07 16:12:14 diemo Exp $
+# $Id: Makefile.am,v 1.5 2009-04-09 09:54:11 diemo Exp $
 #
 # examples/Makefile.am             December 2008          Diemo Schwarz
 #
 # build and distribute example source code
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.4  2009/01/07 16:12:14  diemo
+# link list-nvt example with freshly built lib
+#
 # Revision 1.3  2009/01/07 11:40:04  diemo
 # added nvt listing example
 #
@@ -15,13 +18,15 @@
 INCLUDES  = -I../include -I$(top_srcdir)/include -I$(top_srcdir)/sdif
 CFLAGS   = @CFLAGS@ '-DVERSION="$(VERSION)"'
 
+libsdif = $(top_srcdir)/sdif/.libs/libsdif.a
+
 # this is for automake
 EXTRA_DIST = list-types.c list-nvt.c
 
 all:		list-types list-nvt
 
-list-types: 	list-types.c
-		gcc -I../include -g  -o list-types list-types.c -lsdif
+list-types: 	list-types.c $(libsdif)
+		gcc -I../include -g  -o $@ $^
 
-list-nvt: 	list-nvt.c  $(top_srcdir)/sdif/.libs/libsdif.a
-		gcc -I../include -g  -o $@ $^ # -lsdif
+list-nvt: 	list-nvt.c  $(libsdif)
+		gcc $(LDFLAGS) -I../include -g  -o $@ $^
