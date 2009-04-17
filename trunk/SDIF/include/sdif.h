@@ -1,4 +1,4 @@
-/* $Id: sdif.h,v 1.64 2009-01-07 16:31:55 diemo Exp $
+/* $Id: sdif.h,v 1.65 2009-04-17 16:51:10 diemo Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -30,6 +30,13 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.64  2009/01/07 16:31:55  diemo
+ * access functions for integration in script languages for all fields of:
+ * - name-value table list global struct SdifNameValuesLT (-> list of tables),
+ * - name-value table SdifNameValueTableT (-> hash of entries),
+ * - name-value entry SdifNameValueT
+ * iterator to iterate over all entries in hash table
+ *
  * Revision 1.63  2008/12/18 11:42:19  diemo
  * Improvements of the public API for scripting languages binding to libSDIF:
  * - added SdifHashTableGetNbData
@@ -300,7 +307,7 @@
  * Revision 1.1.2.1  2000/08/21  13:07:41  tisseran
  * *** empty log message ***
  *
- * $Date: 2009-01-07 16:31:55 $
+ * $Date: 2009-04-17 16:51:10 $
  *
  */
 
@@ -315,7 +322,7 @@ extern "C" {
 #endif
 
 
-static const char _sdif_h_cvs_revision_ [] = "$Id: sdif.h,v 1.64 2009-01-07 16:31:55 diemo Exp $";
+static const char _sdif_h_cvs_revision_ [] = "$Id: sdif.h,v 1.65 2009-04-17 16:51:10 diemo Exp $";
 
 #ifdef HAVE_STDINT_H
 #include <stdint.h>
@@ -2866,7 +2873,7 @@ SDIF_API int SdifParseSignatureList (SdifListT *list, const char *str);
   [] _type_ is one of:  <br> Int, Real,   Signature,     String, for
   [] _datatype_ of:     <br> int, double, SdifSignature, char *, respectively.
 */
-void SdifSelectAdd_TYPE_ (SdifListT *list, _datatype_ value);
+void SdifSelectAdd_TYPE_ (SdifListT *List, _datatype_ Value);
 
 /*DOC:
   Create and add one range to selection element list.  There are four 
@@ -2878,24 +2885,24 @@ void SdifSelectAdd_TYPE_ (SdifListT *list, _datatype_ value);
   Example: to add the time range (t1, t2) to the selection in file, call
         SdifSelectAddRealRange(file->Selection->time, t1, sst_range, t2);
 */
-void SdifSelectAdd_TYPE_Range (SdifListT *list, 
-                               _datatype_ value, 
-                               SdifSelectTokens rt, 
-                               _datatype_ range);
+void SdifSelectAdd_TYPE_Range (SdifListT *List, 
+                               _datatype_ Value, 
+                               SdifSelectTokens Rt, 
+                               _datatype_ Range);
 
 #endif  /* if 0 */
 
 
-#define _addrangeproto(name, type, field) \
-SDIF_API void SdifSelectAdd##name##Range (SdifListT *list, \
-                                 type value, SdifSelectTokens rt, type range)
+#define _addrangeproto(_name_, _type_, _field_) \
+SDIF_API void SdifSelectAdd##_name_##Range (SdifListT *List, \
+                               _type_ Value, SdifSelectTokens Rt, _type_ Range)
 
-#define _addsimpleproto(name, type, field) \
-SDIF_API void SdifSelectAdd##name (SdifListT *list, type value)
+#define _addsimpleproto(_name_, _type_, _field_) \
+SDIF_API void SdifSelectAdd##_name_ (SdifListT *List, _type_ Value)
 
-#define _addproto(name, type, field) \
-_addsimpleproto (name, type, field); \
-_addrangeproto  (name, type, field);
+#define _addproto(_name_, _type_, _field_) \
+_addsimpleproto  (_name_, _type_, _field_); \
+_addrangeproto   (_name_, _type_, _field_);
 
 _addproto (Int,       int,              integer)
 _addproto (Real,      double,           real)

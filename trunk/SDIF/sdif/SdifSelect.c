@@ -1,4 +1,4 @@
-/* $Id: SdifSelect.c,v 3.27 2007-11-27 12:09:44 roebel Exp $
+/* $Id: SdifSelect.c,v 3.28 2009-04-17 16:50:44 diemo Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -96,6 +96,9 @@ TODO
 
 LOG
   $Log: not supported by cvs2svn $
+  Revision 3.27  2007/11/27 12:09:44  roebel
+  Removed unused functions.
+
   Revision 3.26  2007/11/26 18:50:56  roebel
   Changed data types to have less casts and
   less compilation warnings with MSVC.
@@ -878,22 +881,22 @@ macro (Signature, SdifSignature, signature) \
 macro (String,	  char *,	 string)
 
 
-#define _addrange(name, type, field) \
-_addrangeproto   (name, type, field) \
+#define _addrange(_name_, _type_, _field_) \
+_addrangeproto   (_name_, _type_, _field_) \
 {   SdifSelectElementT *elem = SdifMalloc (SdifSelectElementT);	        \
-    elem->value.field = value;     \
-    elem->range.field = range;     \
-    elem->rangetype   = rt;        \
-    SdifListPutTail (list, elem);  \
+    elem->value._field_ = Value;     \
+    elem->range._field_ = Range;     \
+    elem->rangetype   = Rt;        \
+    SdifListPutTail (List, elem);  \
 }
 
-#define _addsimple(name, type, field) \
-_addsimpleproto   (name, type, field) \
-{   SdifSelectAdd##name##Range (list, value, sst_norange, (type) 0);   }
+#define _addsimple(_name_, _type_, _field_) \
+_addsimpleproto   (_name_, _type_, _field_) \
+{   SdifSelectAdd##_name_##Range (List, Value, sst_norange, (_type_) 0);   }
 
-#define _add(name, type, field) \
-_addrange  (name, type, field)  \
-_addsimple (name, type, field)
+#define _add(_name_, _type_, _field_) \
+_addrange   (_name_, _type_, _field_)  \
+_addsimple  (_name_, _type_, _field_)
 
 _foralltypes (_add)
 
