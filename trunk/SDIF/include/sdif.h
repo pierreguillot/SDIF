@@ -1,4 +1,4 @@
-/* $Id: sdif.h,v 1.65 2009-04-17 16:51:10 diemo Exp $
+/* $Id: sdif.h,v 1.66 2009-04-20 14:12:28 diemo Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -30,6 +30,9 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.65  2009/04/17 16:51:10  diemo
+ * clarified syntax in code-generating macro
+ *
  * Revision 1.64  2009/01/07 16:31:55  diemo
  * access functions for integration in script languages for all fields of:
  * - name-value table list global struct SdifNameValuesLT (-> list of tables),
@@ -307,7 +310,7 @@
  * Revision 1.1.2.1  2000/08/21  13:07:41  tisseran
  * *** empty log message ***
  *
- * $Date: 2009-04-17 16:51:10 $
+ * $Date: 2009-04-20 14:12:28 $
  *
  */
 
@@ -322,7 +325,7 @@ extern "C" {
 #endif
 
 
-static const char _sdif_h_cvs_revision_ [] = "$Id: sdif.h,v 1.65 2009-04-17 16:51:10 diemo Exp $";
+static const char _sdif_h_cvs_revision_ [] = "$Id: sdif.h,v 1.66 2009-04-20 14:12:28 diemo Exp $";
 
 #ifdef HAVE_STDINT_H
 #include <stdint.h>
@@ -2624,6 +2627,14 @@ SDIF_API SdifListT *         SdifNameValueTableList (SdifNameValuesLT *nvtl);
 /*DOC:
   Get pointer to hash table of one nvt */
 SDIF_API SdifHashTableT*     SdifNameValueTableGetHashTable (SdifNameValueTableT* NVTable);
+
+/*DOC:
+  Get name string of Name--Value entry */
+SDIF_API char *SdifNameValueGetName (SdifNameValueT *nv);
+
+/*DOC:
+  Get value string of Name--Value entry */
+SDIF_API char *SdifNameValueGetValue (SdifNameValueT *nv);
 
 
 
