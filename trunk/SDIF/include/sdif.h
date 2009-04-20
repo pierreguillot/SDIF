@@ -1,4 +1,4 @@
-/* $Id: sdif.h,v 1.66 2009-04-20 14:12:28 diemo Exp $
+/* $Id: sdif.h,v 1.67 2009-04-20 14:18:37 diemo Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -30,6 +30,9 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.66  2009/04/20 14:12:28  diemo
+ * document two missing prototypes
+ *
  * Revision 1.65  2009/04/17 16:51:10  diemo
  * clarified syntax in code-generating macro
  *
@@ -310,7 +313,7 @@
  * Revision 1.1.2.1  2000/08/21  13:07:41  tisseran
  * *** empty log message ***
  *
- * $Date: 2009-04-20 14:12:28 $
+ * $Date: 2009-04-20 14:18:37 $
  *
  */
 
@@ -325,7 +328,7 @@ extern "C" {
 #endif
 
 
-static const char _sdif_h_cvs_revision_ [] = "$Id: sdif.h,v 1.66 2009-04-20 14:12:28 diemo Exp $";
+static const char _sdif_h_cvs_revision_ [] = "$Id: sdif.h,v 1.67 2009-04-20 14:18:37 diemo Exp $";
 
 #ifdef HAVE_STDINT_H
 #include <stdint.h>
@@ -2879,18 +2882,21 @@ SDIF_API int SdifParseSignatureList (SdifListT *list, const char *str);
 
 /*DOC:
   Create and add one value to selection element list.  There are four 
-  functions generated automatically, with the meta type-variables _type_ and 
+  functions generated automatically, with the meta type-variables _TYPE_ and 
   _datatype_:
-  [] _type_ is one of:  <br> Int, Real,   Signature,     String, for
+  [] _TYPE_ is one of:  <br> Int, Real,   Signature,     String, for
   [] _datatype_ of:     <br> int, double, SdifSignature, char *, respectively.
+
+  Example: to add a matrix signature XSIG to the selection in file, call
+        SdifSelectAddSignature(file->Selection->matrixsig, SdifStringToSignature("XSIG"));
 */
 void SdifSelectAdd_TYPE_ (SdifListT *List, _datatype_ Value);
 
 /*DOC:
   Create and add one range to selection element list.  There are four 
-  functions generated automatically, with the meta type-variables _type_ and 
+  functions generated automatically, with the meta type-variables _TYPE_ and 
   _datatype_:
-  [] _type_ is one of:  <br> Int, Real,   Signature,     String, for
+  [] _TYPE_ is one of:  <br> Int, Real,   Signature,     String, for
   [] _datatype_ of:     <br> int, double, SdifSignature, char *, respectively.
 
   Example: to add the time range (t1, t2) to the selection in file, call
@@ -2903,18 +2909,20 @@ void SdifSelectAdd_TYPE_Range (SdifListT *List,
 
 #endif  /* if 0 */
 
+/* two following macros generate the prototype declarations for any _type_: */
 
 #define _addrangeproto(_name_, _type_, _field_) \
-SDIF_API void SdifSelectAdd##_name_##Range (SdifListT *List, \
+void SdifSelectAdd##_name_##Range (SdifListT *List, \
                                _type_ Value, SdifSelectTokens Rt, _type_ Range)
 
 #define _addsimpleproto(_name_, _type_, _field_) \
-SDIF_API void SdifSelectAdd##_name_ (SdifListT *List, _type_ Value)
+void SdifSelectAdd##_name_ (SdifListT *List, _type_ Value)
 
 #define _addproto(_name_, _type_, _field_) \
-_addsimpleproto  (_name_, _type_, _field_); \
-_addrangeproto   (_name_, _type_, _field_);
+SDIF_API _addsimpleproto  (_name_, _type_, _field_); \
+SDIF_API _addrangeproto   (_name_, _type_, _field_);
 
+/* expand macros for each _type_ */
 _addproto (Int,       int,              integer)
 _addproto (Real,      double,           real)
 _addproto (Signature, SdifSignature,    signature)
