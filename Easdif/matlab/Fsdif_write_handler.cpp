@@ -6,7 +6,7 @@
  * @brief  handle write file io in matlab
  * 
  *
- * $Revision: 1.4 $   last changed on $Date: 2008-01-30 01:59:19 $
+ * $Revision: 1.5 $   last changed on $Date: 2009-07-31 21:27:05 $
  *
  *                                 Copyright (c) 2008 by IRCAM
  */
@@ -31,6 +31,7 @@ void cleanup() {
     ++it;
   }
   pList.clear();  
+  Easdif::EasdifEnd();
 }
 
 // validate pointer with list
