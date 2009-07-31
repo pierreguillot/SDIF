@@ -6,7 +6,7 @@
  * @brief  handle read file io in matlab
  * 
  *
- * $Revision: 1.8 $   last changed on $Date: 2008-07-31 18:14:05 $
+ * $Revision: 1.9 $   last changed on $Date: 2009-07-31 21:05:26 $
  *
  *                                    Copyright (c) 2008 by IRCAM
  * 
@@ -32,6 +32,7 @@ void cleanup() {
     ++it;
   }
   pList.clear();  
+  Easdif::EasdifEnd();
 }
 
 // validate file pointer
