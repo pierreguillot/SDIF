@@ -32,9 +32,12 @@
  * 
  * 
  * 
- * $Id: sdifentity.hpp,v 1.20 2008-06-16 08:53:44 roebel Exp $ 
+ * $Id: sdifentity.hpp,v 1.21 2009-07-31 21:26:03 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.20  2008/06/16 08:53:44  roebel
+ * added missing include file string.h
+ *
  * Revision 1.19  2008/05/31 22:53:13  roebel
  * Improved doc with respect to selection.
  *
@@ -827,12 +830,12 @@ namespace {
 
   template<int EASDIF_SC_CONST_FLAG>
   struct Base_Iterator {
-    typedef  std::list<Easdif::SDIFLocation>::iterator basic_iterator;
+    typedef  Directory::iterator basic_iterator;
   };
 
   template<>
   struct Base_Iterator<1> {
-    typedef std::list<Easdif::SDIFLocation>::const_iterator basic_iterator;
+    typedef Directory::const_iterator basic_iterator;
   };
 
   template<int EASDIF_SC_CONST_FLAG>

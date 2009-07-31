@@ -32,9 +32,12 @@
  * 
  * 
  * 
- * $Id: sdifentity.cpp,v 1.43 2008-05-31 22:54:15 roebel Exp $ 
+ * $Id: sdifentity.cpp,v 1.44 2009-07-31 21:25:47 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.43  2008/05/31 22:54:15  roebel
+ * Fixed TestFrameSelection and TestMatrixSelection in case no high-level selection is active.
+ *
  * Revision 1.42  2008/01/22 00:49:25  roebel
  * Clear NVTs and Types when closing the file.
  *
@@ -392,8 +395,8 @@ bool SDIFEntity::EnableFrameDir() {
 
 void SDIFEntity::PrintFrameDir() const {
   std::cerr << "Init pos "<< mFirstFramePos << "\n";
-  std::list<SDIFLocation>::const_iterator  start=mFrameDirectory.begin();
-  std::list<SDIFLocation>::const_iterator  end=mFrameDirectory.end();
+  Directory::const_iterator  start=mFrameDirectory.begin();
+  Directory::const_iterator  end=mFrameDirectory.end();
   while(start != end){
     std::cerr<< "Pos "<< start->LocPos()<< " sig " << SdifSignatureToString(start->LocSignature()) <<" time "<< start->LocTime() << " stream id "<< start->LocStreamID() << "\n";
     std::cerr <<" Matrices: ";
@@ -414,6 +417,7 @@ SDIFEntity::AddFramePos(SdifUInt4 id, SdifSignature sig,
 
   if(mNextDirPos == mFrameDirectory.end()){    
     it = mFrameDirectory.insert(mFrameDirectory.end(),SDIFLocation(pos,id,time,sig,nbmat));
+    mNextDirPos = mFrameDirectory.end();
     return true;
   }
   
