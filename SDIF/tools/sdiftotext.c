@@ -1,4 +1,4 @@
-/* $Id: sdiftotext.c,v 1.7 2006-01-09 10:21:01 ellis Exp $
+/* $Id: sdiftotext.c,v 1.8 2009-08-10 16:41:26 diemo Exp $
  *
  *               Copyright (c) 1998 by IRCAM - Centre Pompidou
  *                          All rights reserved.
@@ -11,6 +11,9 @@
  * sdiftotext.c
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.7  2006/01/09 10:21:01  ellis
+ * minimal set of files to add XP-gui to the sdif tools
+ *
  * Revision 1.6  2003/11/07 22:25:20  roebel
  * Removed last remainings of XpGuiCalls from tools files.
  *
@@ -77,11 +80,11 @@ usage(void)
 {
   fprintf(SdifStdErr, "\nsdiftotext, %s\n\n", SDIF_VERSION_STRING);
   SdifPrintVersion();
-  fprintf(SdifStdErr, "\nUsage : tosdif [-i <file>] [-o <file>] [-e <file>] [-t <file>]\n\
- i :   input file (default is \"stdin\")\n\
- o :   output file (default is \"stdout\")\n\
- e :   error file (default is \"stderr\")\n\
- t :   sdif types file (default is env SDIFTYPES\n\t\tor \"SdifTypes.STYP\" in current dir)\n");
+  fprintf(SdifStdErr, "\n\
+Usage: sdiftotext [options] infile [outfile (default is \"stdout\")]\n\
+options:\n\
+ -e <file>:   error file (default is \"stderr\")\n\
+ -t <file>:   sdif types file (default is env SDIFTYPES\n\t\tor \"SdifTypes.STYP\" in current dir)\n");
   exit(1);
 }
 
@@ -142,7 +145,7 @@ int main(int argc, char** argv)
     iArg = 1;
     while (iArg < argc)
     {
-	if (argv[iArg][0] == '-')
+	if (argv[iArg][0] == '-'  &&  argv[iArg][1] != 0)
 	{
 	    switch (argv[iArg][1])
 	    {
@@ -163,8 +166,17 @@ int main(int argc, char** argv)
 		usage();
 	    }
 	}
-	else
+	else if (argc - iArg > 2)
+	{   /* more than 2 non-option args given: complain */
 	    usage();
+	}
+	else
+	{
+	    if (!InF)
+		InF = argv[iArg];
+	    else
+		OutF = argv[iArg];
+	}
 	iArg++;
     }
 
