@@ -1,4 +1,4 @@
-/* $Id: querysdif.c,v 1.15 2009-08-10 16:16:18 diemo Exp $
+/* $Id: querysdif.c,v 1.16 2009-08-10 16:24:24 diemo Exp $
  
                 Copyright (c) 1998 by IRCAM - Centre Pompidou
                            All rights reserved.
@@ -14,6 +14,10 @@
    
 
    $Log: not supported by cvs2svn $
+   Revision 1.15  2009/08/10 16:16:18  diemo
+   - reimplemented querysdif using SdifQuery for consistency
+   - added header printing
+
    Revision 1.14  2008/12/10 19:22:45  bogaards
    support for frames that do not contain any matrix
 
@@ -151,7 +155,20 @@ static int PrintHeaders (SdifFileT *file, void *userdata)
 	SdifFPrintAllASCIIChunks(file);
     }
 
-    return vall || vdata;	/* continue reading data */
+    if (vnvt && SdifNameValuesLIsNotEmpty(file->NameValues))
+    {
+	SdifFPrintAllNameValueNVT(file);
+	printf("\n");
+    }
+
+    if (vtypes  &&  (SdifExistUserMatrixType(file->MatrixTypesTable)  ||
+		     SdifExistUserFrameType(file->FrameTypesTable)))
+    {
+      SdifFPrintAllType(file);
+      printf("\n");
+    }
+
+    return vall || vdata;	/* continue reading data? */
 }
 
 
