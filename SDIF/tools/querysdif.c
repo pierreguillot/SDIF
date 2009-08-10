@@ -1,4 +1,4 @@
-/* $Id: querysdif.c,v 1.14 2008-12-10 19:22:45 bogaards Exp $
+/* $Id: querysdif.c,v 1.15 2009-08-10 16:16:18 diemo Exp $
  
                 Copyright (c) 1998 by IRCAM - Centre Pompidou
                            All rights reserved.
@@ -14,6 +14,9 @@
    
 
    $Log: not supported by cvs2svn $
+   Revision 1.14  2008/12/10 19:22:45  bogaards
+   support for frames that do not contain any matrix
+
    Revision 1.13  2007/11/27 12:21:02  roebel
    prevent compiler warnings.
 
@@ -99,17 +102,18 @@ void usage (void)
     fprintf (SdifStdErr, "\n"
 "Usage: querysdif [options] [sdif-file]\n"
 "\n"
-"Options:\n"
+"Options: (no options mean: show all information)\n"
 "	-a	view ASCII chunks\n"
 "	-d	view data\n"
 "	-b	view data brief (output in SDIF selection syntax)\n"
-/* todo:
 "	-n	view NVTs (name value tables)\n"
 "	-T	view type declarations in sdif-file\n"
+/* todo:
 "	-D	view all type declarations in effect\n"
-"	-s	view stream id table\n"
 */
+"	-H	view file header info\n"
 "	-t <sdif types file>  specify file with additional sdif types\n"
+"	-V	print SDIF library version\n"
 "	-h	this help\n"
 "\n"
 "View summary of data in an SDIF-file.  Per default, all ASCII chunks are\n"
@@ -120,95 +124,34 @@ void usage (void)
     exit(1);
 }
 
+/* flags with default values */
+int		vall	  = 1,
+ 		vascii	  = 0,
+		vdata	  = 0,
+		vbrief	  = 0,
+		vnvt	  = 0,
+		vtypes	  = 0,
+		valltypes = 0,
+		vheader	  = 0; 
 
-typedef struct
-{ 
-    float min, max;
-} minmax;
-
-#define initminmax(m)	((m).min = FLT_MAX, (m).max = FLT_MIN)
-#define minmax(m, v)	{ if ((v) < (m).min)   (m).min = (v); \
-			  if ((v) > (m).max)   (m).max = (v); }
-
-
-/* Count occurence of signatures as frame or matrix under
-   different parent frames. */
-#define	MaxSignatures	1024
-int	nsig	  = 0;
-
-struct TwoLevelTree 
+static int PrintHeaders (SdifFileT *file, void *userdata)
 {
-    /* common fields */
-    SdifSignature sig;
-    int	      count;
-    int	      parent;	/* 0 for frames, index to parent frame for matrices */
+    file->TextStream = stdout;	/* SdifFPrint* functions need this */
 
-    /* frame fields */
-    int	      stream;
-    minmax    time, nmatrix;
-
-    /* matrix fields */
-    minmax    ncol, nrow;
-
-}   sigs [MaxSignatures];
-
-
-int SigEqual (SdifSignature s, int parent, int stream, int i)
-{
-    return sigs [i].sig    == s
-       &&  sigs [i].stream == stream
-       &&  sigs [i].parent == parent;
-}
-
-int GetSigIndex (SdifSignature s, int parent, int stream)
-{
-    int i = 0;
-    
-    while (i < nsig  &&  !SigEqual (s, parent, stream, i))
-	i++;
-
-    if (i == nsig)
-    {   /* add new signature */
-	if (nsig >= MaxSignatures)
-	{
-	    fprintf (SdifStdErr, "Too many different signatures, "
-		     "can't handle more than %d!\n", MaxSignatures);
-	    exit (1);
-	}
-
-	sigs [i].sig    = s;
-	sigs [i].parent = parent;
-	sigs [i].stream = stream;
-	sigs [i].count  = 0;
-	initminmax(sigs [i].time);
-	initminmax(sigs [i].nmatrix);
-	initminmax(sigs [i].ncol);
-	initminmax(sigs [i].nrow);
-
-	nsig++;
+    if (vall || vheader)
+    {
+	printf("Header info of file %s:\n\n", file->Name);
+	printf("Format version: %d\n", file->FormatVersion);
+	printf("Types version:  %d\n\n", file->TypesVersion);
     }
 
-    return (i);
-}
+    if (vall || vascii)
+    {
+	printf("Ascii chunks of file %s:\n\n", file->Name);
+	SdifFPrintAllASCIIChunks(file);
+    }
 
-int CountFrame (SdifSignature s, int stream, float time, int nmatrix)
-{
-    int i = GetSigIndex (s, -1, stream);
-
-    sigs [i].count++;
-    minmax(sigs [i].time,    time);
-    minmax(sigs [i].nmatrix, nmatrix);
-
-    return (i);
-}
-
-void CountMatrix (SdifSignature s, int parent, int nrow, float ncol)
-{
-    int i = GetSigIndex (s, parent, -1);
-
-    sigs [i].count++;
-    minmax(sigs [i].nrow, nrow);
-    minmax(sigs [i].ncol, ncol);
+    return vall || vdata;	/* continue reading data */
 }
 
 
@@ -228,25 +171,13 @@ int main(int argc, char** argv)
 
 #endif
 {
-    int		i, m, eof = 0;
-    size_t	bytesread = 0, nread = 0;
-    SdifFileT	*in;
-    int         result;
+    SdifFileT	   *in;
+    SdifQueryTreeT *sigs;
+    int             nread, i, m;
 
     /* arguments with default values */
-    char	*infile   = NULL, 
-		*types	  = NULL;
-    int		vall	  = 1,
- 		vascii	  = 0,
-		vdata	  = 0,
-                vbrief	  = 0;
-#if 0
-      /* todo */
-		vnvt	  = 0,
-		vtypes	  = 0,
-		valltypes = 0,
-		vstream	  = 0; 
-#endif
+    char 	   *infile = NULL, 
+		   *types  = NULL;
 
     SdifStdErr = stderr;
     for (i = 1; i < argc; i++)
@@ -261,14 +192,15 @@ int main(int argc, char** argv)
 		  case 'a': vall = 0;  vascii    = 1;  break;
 		  case 'd': vall = 0;  vdata     = 1;  break;
 		  case 'b': vall = 0;  vdata = vbrief = 1;  break;
-/* todo:	  case 'n': vall = 0;  vnvt      = 1;  break;
+		  case 'n': vall = 0;  vnvt      = 1;  break;
 		  case 'T': vall = 0;  vtypes    = 1;  break;
-		  case 'D': vall = 0;  valltypes = 1;  break;
-		  case 's': vall = 0;  vstream   = 1;  break;
-*/		  case 't': /* no arg after last option, complain */
+/* todo:	  case 'D': vall = 0;  valltypes = 1;  break;
+ */		  case 'H': vall = 0;  vheader   = 1;  break;
+		  case 't': /* no arg after last option, complain */
 			    if (i == argc - 1)   
 				usage ();
 			    types = argv [++i];	       break;
+		  case 'V':  SdifPrintVersion();       break;
 		  default :  usage();		       break;
 		}
 	}
@@ -293,126 +225,70 @@ int main(int argc, char** argv)
     if (!infile)   
     	infile  = "stdin";
 
-    if (!(in = SdifFOpen (infile, eReadFile)))
-    {
-	fprintf (SdifStdErr, "Can't open input file %s.\n", infile);
-        SdifGenKill ();
-        exit (1);
-    }
-    in->TextStream = stdout;	/* SdifFPrint* functions need this */
-
-    if ((nread = SdifFReadGeneralHeader(in)) == 0)
-    {
-        SdifGenKill ();
-	exit(1);
-    }
+    /* init query tree struct */
+    sigs = SdifCreateQueryTree(1024);
     
-    bytesread += SdifFReadAllASCIIChunks (in) + nread;
-    eof = SdifFCurrSignature(in) == eEmptySignature;
-
-    if (vall || vascii)
-    {
-	printf ("Ascii chunks of file %s:\n\n", infile);
-	SdifFPrintGeneralHeader(in);
-	SdifFPrintAllASCIIChunks(in);
-    }
+    /* perform query */
+    nread = SdifQuery(infile, PrintHeaders, sigs);
 
     if (vall || vdata)
-    {
-	/* 
-	 * read, count frame loop 
-	 */
-
-	while (!eof)
-	{
-	    int frameidx;
-
-	    /* Read frame header.  Current signature has already been read
-	       by SdifFReadAllASCIIChunks or the last loop.) */
-	    bytesread += SdifFReadFrameHeader (in);
-
-	    /* count frame */
-	    frameidx = CountFrame (SdifFCurrSignature(in), SdifFCurrID(in),
-				   SdifFCurrTime(in), SdifFCurrNbMatrix(in));
-
-	    /* for matrices loop */
-	    for (m = 0; m < SdifFCurrNbMatrix (in); m++)
-	    {
-		/* Read matrix header */
-		bytesread += SdifFReadMatrixHeader (in);
-
-		/* count matrix and do statistics about rows/columns */
-		CountMatrix (SdifFCurrMatrixSignature (in), frameidx, 
-			     SdifFCurrNbRow (in), SdifFCurrNbCol (in));
-
-		/* We're not actually interested in the matrix data, 
-		   so we skip it.  */
-		bytesread += SdifFSkipMatrixData (in);
-	    }   /* end for matrices */
-
-	    eof = SdifFGetSignature (in, &bytesread) == eEof;
-	}   /* end while frames */ 
-
-
-	/* 
-	 * print results 
-	 */
+    {	/* print data content */
 	if (vbrief)
 	{   /* brief selection-syntax output without counts */
-	    for (i = 0; i < nsig; i++)
+	    for (i = 0; i < sigs->num; i++)
 	    {
-			if (sigs[i].parent == -1)
-			{   /* search children matrices of this frame */
-				int numChildMatrices = 0;
-				for (m = 0; m < nsig; m++)
-				{
-					if (sigs[m].parent == i){
-						printf ("#%d:%s/%s@%f-%f\n", 
-								sigs[i].stream,
-								SdifSignatureToString (sigs[i].sig),
-								SdifSignatureToString (sigs[m].sig),
-								sigs[i].time.min,
-								sigs[i].time.max);
-						numChildMatrices++;
-					}
-				}
-				if(numChildMatrices == 0){
-					// frame had no child matrix. This can be the case for 1MRK frames that consist of only a time
-					printf ("#%d:%s@%f-%f\n", 
-							sigs[i].stream,
-							SdifSignatureToString (sigs[i].sig),
-							sigs[i].time.min,
-							sigs[i].time.max);
-				}
-			} 
+		if (sigs->elems[i].parent == -1)
+		{   /* search children matrices of this frame */
+		    int numChildMatrices = 0;
+		    for (m = 0; m < sigs->num; m++)
+		    {
+			if (sigs->elems[m].parent == i){
+			    printf ("#%d:%s/%s@%f-%f\n", 
+				    sigs->elems[i].stream,
+				    SdifSignatureToString (sigs->elems[i].sig),
+				    SdifSignatureToString (sigs->elems[m].sig),
+				    sigs->elems[i].time.min,
+				    sigs->elems[i].time.max);
+			    numChildMatrices++;
+			}
+		    }
+		    if(numChildMatrices == 0){
+			// frame had no child matrix. This can be the case for 1MRK frames that consist of only a time
+			printf ("#%d:%s@%f-%f\n", 
+				sigs->elems[i].stream,
+				SdifSignatureToString (sigs->elems[i].sig),
+				sigs->elems[i].time.min,
+				sigs->elems[i].time.max);
+		    }
+		} 
 	    }
 	}
 	else
 	{
-	    printf ("Data in file %s (%u bytes):\n", infile, (unsigned int) bytesread);
+	    printf ("Data in file %s (%u bytes):\n", infile, (unsigned int) nread);
 
-	    for (i = 0; i < nsig; i++)
+	    for (i = 0; i < sigs->num; i++)
 	    {
-		if (sigs [i].parent == -1)
+		if (sigs->elems[i].parent == -1)
 		{   /* frames */
 		    printf ("%5d %s frames in stream %d between time %f and %f containing\n", 
-			    sigs [i].count, 
-			    SdifSignatureToString (sigs [i].sig),
-			    sigs [i].stream,
-			    sigs [i].time.min,
-			    sigs [i].time.max);
+			    sigs->elems[i].count, 
+			    SdifSignatureToString (sigs->elems[i].sig),
+			    sigs->elems[i].stream,
+			    sigs->elems[i].time.min,
+			    sigs->elems[i].time.max);
 
 		    /* search children matrices of this frame */
-		    for (m = 0; m < nsig; m++)
+		    for (m = 0; m < sigs->num; m++)
 		    {
-			if (sigs [m].parent == i)
+			if (sigs->elems[m].parent == i)
 			    printf ("   %5d %s matrices with %3g --%3g rows, %3g --%3g columns\n",
-				    sigs [m].count, 
-				    SdifSignatureToString (sigs [m].sig),
-				    sigs [m].nrow.min,
-				    sigs [m].nrow.max,
-				    sigs [m].ncol.min,
-				    sigs [m].ncol.max);
+				    sigs->elems[m].count, 
+				    SdifSignatureToString (sigs->elems[m].sig),
+				    sigs->elems[m].nrow.min,
+				    sigs->elems[m].nrow.max,
+				    sigs->elems[m].ncol.min,
+				    sigs->elems[m].ncol.max);
 		    }
 		}
 	    }
@@ -420,15 +296,9 @@ int main(int argc, char** argv)
 	}
     }
 
-    /* check for error */
-    if (SdifFLastError(in) == NULL)
-	result = 0;
-    else
-	result = 1;
-
     /* cleanup */
-    SdifFClose (in);
+    SdifFreeQueryTree(sigs);
     SdifGenKill ();
 
-    return result;
+    return nread > 0;
 }    
