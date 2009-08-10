@@ -1,6 +1,9 @@
-# $Id: Makefile,v 1.9 2001-04-27 13:50:54 schwarz Exp $
+# $Id: Makefile,v 1.10 2009-08-10 17:29:26 diemo Exp $
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.9  2001/04/27 13:50:54  schwarz
+# $@ doesn't give the first of multiple targets????????
+#
 # Revision 1.8  2001/04/27 13:38:36  schwarz
 # Generate SdifTypes.STYP in its new place ../data.
 #
