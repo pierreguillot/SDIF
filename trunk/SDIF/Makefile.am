@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.36 2009-01-07 16:10:27 diemo Exp $
+# $Id: Makefile.am,v 1.37 2009-08-10 16:57:26 diemo Exp $
 #
 # ./Makefile.am		September 2000			Patrice Tisserand
 #
@@ -30,6 +30,9 @@
 
 
 # $Log: not supported by cvs2svn $
+# Revision 1.36  2009/01/07 16:10:27  diemo
+# include examples dir in target and dist
+#
 # Revision 1.35  2008/09/18 16:08:35  diemo
 # include Info.plist, update readme, remove zip before uploading, remove SdifVersion.h
 #
@@ -276,10 +279,12 @@ PUBLISH_FILES_DL  = $(EXTRA_PUBLISH) \
 # sourceforge user name!
 PUBLISH_USER      = diemo
 PUBLISH_HOST      = frs.sourceforge.net:uploads
+PUBLISH_DIR	  = /home/frs/project/s/sd/sdif/$(distbase)
+
 
 # upload only source dist to sourceforge file release system
 publish-sf:	$(PUBLISH_DIST) $(PUBLISH_FRAMEWORK)
-		rsync -auv $^ $(PUBLISH_USER)@$(PUBLISH_HOST)
+		rsync -auv $^ $(PUBLISH_USER),sdif@$(PUBLISH_HOST)$(PUBLISH_DIR)
 
 # tag the cvsrepository with the current version 
 # (to exactly reconstitute a published version)
