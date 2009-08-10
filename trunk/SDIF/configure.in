@@ -1,5 +1,5 @@
 dnl -*-autoconf-*-  (Tell emacs it's an autoconf file!)
-dnl $Id: configure.in,v 1.76 2009-01-07 16:33:20 diemo Exp $
+dnl $Id: configure.in,v 1.77 2009-08-10 17:21:05 diemo Exp $
 dnl
 dnl configure.in		September 2000		Patrice Tisserand
 dnl
@@ -31,6 +31,9 @@ dnl send email to:  sdif@ircam.fr
 
 
 dnl $Log: not supported by cvs2svn $
+dnl Revision 1.76  2009/01/07 16:33:20  diemo
+dnl bump up release to 3.11.1
+dnl
 dnl Revision 1.75  2008/12/18 11:53:16  diemo
 dnl Changed minor release number to 3.11 because of API change by new
 dnl access methods to struct elements of type definition.
@@ -321,7 +324,7 @@ PACKAGE=SDIF
 
 SDIF_VERSION_MAJOR=3
 SDIF_VERSION_MINOR=11
-SDIF_VERSION_RELEASE=1
+SDIF_VERSION_RELEASE=2
 
 VERSION=$SDIF_VERSION_MAJOR.$SDIF_VERSION_MINOR.$SDIF_VERSION_RELEASE
 
