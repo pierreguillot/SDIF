@@ -1,4 +1,0 @@
-<a name="SdifTextConvXhXmemberX1"><hr><p></p><h3>SdifTextConvXhXmemberX1_2</h3></a>
-<strong>#include "<a href="SdifTextConv.h">SdifTextConv.h</a>"</strong><p>
-  Converti un fichier SDIF ouvert en lecture (eReadFile) en un fichier
-  texte pseudo-SDIF de nom TextStreamName.  
