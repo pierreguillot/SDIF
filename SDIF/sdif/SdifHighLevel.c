@@ -24,11 +24,14 @@
  *                            sdif@ircam.fr
  */
 
-/* $Id: SdifHighLevel.c,v 3.19 2009-04-09 09:54:43 diemo Exp $
+/* $Id: SdifHighLevel.c,v 3.20 2009-08-10 17:22:23 diemo Exp $
  *
  * SdifHighLevel.c	8.12.1999	Diemo Schwarz
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.19  2009/04/09 09:54:43  diemo
+ * comm
+ *
  * Revision 3.18  2007/11/26 18:52:08  roebel
  * Changed data types to have less casts and
  * less compilation warnings with MSVC.
@@ -252,16 +255,20 @@ size_t SdifReadFile (const char             *filename,
 		{
 		    bytesread += newread;
 
-		    /* call matrix header handler */
-		    wantit = matrixfunc  ?  matrixfunc(file, m, userdata)  :  1;
+		    /* Check if matrix type is in selection */
+		    if (SdifFCurrMatrixIsSelected(file))
+		    {   /* call matrix header handler */
+			wantit = matrixfunc  ?  matrixfunc(file, m, userdata)  :  1;
+		    }
+		    else
+			wantit = 0;
 #if _DB
 		    fprintf(SdifStdErr, 
 			    "@matrix\t%s  rows %d  cols %d, wantit %d\n", 
 			    SdifSignatureToString(SdifFCurrMatrixSignature(file)), 
 			    SdifFCurrNbRow(file), SdifFCurrNbCol(file), wantit);
 #endif
-		    /* Check matrix type */
-		    if (wantit  &&  SdifFCurrMatrixIsSelected(file))
+		    if (wantit)
 		    {   /* read matrix data */
 			newread = SdifFReadMatrixData(file);
 		    
@@ -273,10 +280,10 @@ size_t SdifReadFile (const char             *filename,
 			else
 			{   /* read ok */
 			    bytesread += newread;
-
+			    
 			    /* call matrix data handler */
 			    if (matrixdatafunc)
-				go_on = matrixdatafunc(file, m, userdata);
+			    	go_on = matrixdatafunc(file, m, userdata);
 			}
 		    }
 		    else
@@ -363,7 +370,7 @@ int GetSigIndex (SdifQueryTreeT *tree, SdifSignature s, int parent, int stream)
     return (i);
 }
 
-static int CountFrame (SdifFileT *in, void *userdata)
+int SdifQueryCountFrame (SdifFileT *in, void *userdata)
 {
     SdifQueryTreeT *tree    = (SdifQueryTreeT *) userdata;
     SdifSignature   sig	    = SdifFCurrSignature(in);
@@ -382,7 +389,7 @@ static int CountFrame (SdifFileT *in, void *userdata)
 }
 
 
-static int CountMatrix (SdifFileT *in, int m, void *userdata)
+int SdifQueryCountMatrix (SdifFileT *in, int m, void *userdata)
 {
     SdifQueryTreeT *tree   = (SdifQueryTreeT *) userdata;
     SdifSignature   sig	   = SdifFCurrMatrixSignature(in);
@@ -410,6 +417,12 @@ SdifQueryTreeT *SdifCreateQueryTree(int max)
     return (SdifInitQueryTree(newtree));
 }
 
+void SdifFreeQueryTree(SdifQueryTreeT *tree)
+{
+    SdifFree(tree->elems);
+    SdifFree(tree);
+}
+
 /* reset to zero */
 SdifQueryTreeT *SdifInitQueryTree(SdifQueryTreeT *tree)
 {
@@ -426,6 +439,6 @@ size_t SdifQuery (const char            *filename,
 		  SdifOpenFileCallbackT  openfilefunc,
        /*out*/    SdifQueryTreeT        *tree)
 {
-    return (SdifReadFile(filename, openfilefunc, CountFrame, 
-			 CountMatrix, NULL, NULL, (void *) tree));
+    return (SdifReadFile(filename, openfilefunc, SdifQueryCountFrame, 
+			 SdifQueryCountMatrix, NULL, NULL, (void *) tree));
 }
