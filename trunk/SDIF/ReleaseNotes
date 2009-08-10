@@ -1,3 +1,12 @@
+Version 3.11.2   2009-08-10  Diemo Schwarz
+
+	* fix matrix selection for SdifQuery: In SdifReadFile
+          function, check if matrix header is selected before calling
+          matrix callback.
+	* reimplemented querysdif using SdifQuery for consistency
+	  added flags to switch header, nvt, and type def printing
+	* in sdiftotext, accept in/outfile without -i/-o also
+
 Version 3.11.1   2009-01-07  Diemo Schwarz
 
 	* Further Improvements of the public API for scripting
