@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.9 2009-08-10 17:20:35 diemo Exp $
+# $Id: Makefile.am,v 1.10 2009-08-11 14:16:55 diemo Exp $
 #
 # ./doc/Makefile.am             September 2000          Patrice Tisserand
 #
@@ -36,6 +36,10 @@
 
 
 # $Log: not supported by cvs2svn $
+# Revision 1.9  2009/08/10 17:20:35  diemo
+# new server for web files,
+# update standards doc also
+#
 # Revision 1.8  2008/09/18 14:04:48  diemo
 # publish doc on sourceforge
 # N.B.: DON'T USE THIS, BUT USE THE SDIF-WEBSITE MODULE
@@ -357,9 +361,10 @@ postinst-%:
 #$(matlabdlarch): download $(matlabdlfiles:%=$(matlabdldir)/%)
 #		tar cvf - -C $(matlabdldir) $(matlabdlfiles) | gzip -9 >$@
 
-# publish doc on sourceforge
+# DON'T! publish standards doc on sourceforge, this has moved to the sdif-website module
 pub-sf:
-		rsync -auv index-sf.html standard diemo,sdif@web.sourceforge.net:/home/groups/s/sd/sdif/htdocs/
+		@echo The SDIF documentation has moved to the sdif-website CVS module
+
 # cvs -z3 -d:ext:developername@sdif.cvs.sourceforge.net:/cvsroot/sdif co -P -d cvsroot-sdif CVSROOT
 # cvs -z3 -d:ext:diemo@sdif.cvs.sourceforge.net:/cvsroot/sdif co -P -d cvsroot-sdif CVSROOT
 
