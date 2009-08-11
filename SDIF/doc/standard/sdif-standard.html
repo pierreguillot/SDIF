@@ -1,5 +1,5 @@
 <html>
-<!-- $Id: sdif-standard.html,v 1.5 2009-08-10 17:21:37 diemo Exp $
+<!-- $Id: sdif-standard.html,v 1.6 2009-08-11 10:36:27 diemo Exp $
 
 SdifNormDoc.html		crée le 08/11/1998	Dominique Virolle 
 
@@ -23,7 +23,7 @@ Authors: <au>Dominique Virolle, Diemo Schwarz</au>
 
 <p><hr width="100%"></p>
 
-Document Revision: $Id: sdif-standard.html,v 1.5 2009-08-10 17:21:37 diemo Exp $
+Document Revision: $Id: sdif-standard.html,v 1.6 2009-08-11 10:36:27 diemo Exp $
 <!--#echo var="LAST_MODIFIED"-->
 
 <p>
@@ -31,6 +31,9 @@ Change Log:
 <font size=-3>
 <pre>
 $Log: not supported by cvs2svn $
+Revision 1.5  2009/08/10 17:21:37  diemo
+correct description of matrix data type, thanks to Matt Wright for pointing this out!
+
 Revision 1.4  2006/06/21 15:40:00  schwarz
 LAST commit on this repository before moving to sourceforge
 (documentation stuff)
@@ -320,10 +323,10 @@ with a alignement of 8 bytes for each block (matrix).
 
 <p>The Matrix Signature must be in the Frame Type specification
 </p>
-<p> The Matrix Data Type is represented by a integer
-
-   From version 3 of the standard on, the Matrix Data Type's low order byte encodes the number of bytes taken by each matrix
-   element, and the high order bytes come from this (extensible) enum:
+<p> The Matrix Data Type is represented by a integer.  From version 3
+   of the standard on, the Matrix Data Type's low order byte encodes
+   the number of bytes taken by each matrix element, and the high
+   order bytes come from this (extensible) enum:
 <table border=1 cellpadding=5>
 <tr><td>Float			 <td>0 
 <tr><td>Signed integer		 <td>1 
@@ -433,41 +436,43 @@ with a alignement of 8 bytes for each block (matrix).
     <a name="Informations Table Data"></a>
 
 
-<p> The table of information makes it possible to have general
+<p> The table of information, or <i>Name-Value Table</i> makes it possible to have general
 information like the author of the file, the version of SDIF library, the
-number of cannels...  The data of this Special Frame are in an ASCII text matrixwith name-value pairs of meta data.
+number of cannels...  
+There can be any number of NVT frames in the header.
+<p>The data of this special frame are in an ASCII text matrix with signature <code>1NVT</code> with name-value pairs of meta data.
 </p>
-<p> The data start with ' { ' and finish by ' } '. Each
-information is in the form <code> &lt;Name&gt; &lt;Value&gt; ';' </code>.
-It is necessary to have at least a space character between the
-name and the value (and not the character ' \0 ' because it
-is an ASCII part).
+<p> The text data starts with ' { ' and finishes by ' } '. Each
+entry is of the form <code> &lt;Name&gt; \t &lt;Value&gt; \n </code>.
 </p>
 
 
-<p> Informations Table Data Example :
+<p> Informations Table Data Example :<br>
+N.B.: The trailing ';' is added by the NVT print function for clarity, and is not part of the value.
 </p>
 1NVT text Matrix in 1NVT frame on stream 0xfffffffd (-3):
 <pre>
 {
   numChannels   6;
   IrcamSdifLibraryVersion    1.0.0.alpha;
-  MonProgrammeParametreSpecial  integer4  ;
+  MonProgrammeParametreSpecial  integer4;
 }
 </pre>
-<p>Associated grammar is:
+<p>The associated grammar is:
 </p>
 
 <pre>
 &lt;Info Table Data&gt;    := '{' &lt;Info declaration&gt; | ... '}'
-  &lt;Info declaration&gt; := [&lt;space chars&gt;] &lt;Name&gt; 
-                                 &lt;space chars&gt; &lt;Value&gt; [&lt;space chars&gt;]';'
-    &lt;space chars&gt;    := &lt;space&gt; | ...
-      &lt;space&gt;        :=  ' ' | '\t' | '\n' | '\f' | '\r' | '\v'
+  &lt;Info declaration&gt; := &lt;Name&gt; &lt;tab&gt; &lt;Value&gt; &lt;newline&gt;
+    &lt;tab&gt;            := '\t'
+    &lt;newline&gt;        := '\n'
     &lt;Name&gt;           := ASCII string
     &lt;Value&gt;          := ASCII string
 </pre>
 
+<p>By convention, each Name-Value table should contain one
+Name <code>TableName</code> with a unique string giving an identifier
+to the NVT.
 
 
 
