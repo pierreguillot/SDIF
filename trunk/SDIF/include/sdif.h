@@ -1,4 +1,4 @@
-/* $Id: sdif.h,v 1.67 2009-04-20 14:18:37 diemo Exp $
+/* $Id: sdif.h,v 1.68 2009-10-19 17:01:28 diemo Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -30,6 +30,10 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.67  2009/04/20 14:18:37  diemo
+ * example for SdifSelectAddSignature
+ * move SDIF_API out of generating macro, to avoid it in SdifSelect.c (error on windows compilation)
+ *
  * Revision 1.66  2009/04/20 14:12:28  diemo
  * document two missing prototypes
  *
@@ -313,7 +317,7 @@
  * Revision 1.1.2.1  2000/08/21  13:07:41  tisseran
  * *** empty log message ***
  *
- * $Date: 2009-04-20 14:18:37 $
+ * $Date: 2009-10-19 17:01:28 $
  *
  */
 
@@ -328,7 +332,7 @@ extern "C" {
 #endif
 
 
-static const char _sdif_h_cvs_revision_ [] = "$Id: sdif.h,v 1.67 2009-04-20 14:18:37 diemo Exp $";
+static const char _sdif_h_cvs_revision_ [] = "$Id: sdif.h,v 1.68 2009-10-19 17:01:28 diemo Exp $";
 
 #ifdef HAVE_STDINT_H
 #include <stdint.h>
@@ -2224,6 +2228,9 @@ SDIF_API SdifQueryTreeT *SdifCreateQueryTree(int max);
 
 /* clean all elements from tree */
 SDIF_API SdifQueryTreeT *SdifInitQueryTree(SdifQueryTreeT *tree);
+
+/* free memory for tree and its elements */
+SDIF_API void SdifFreeQueryTree(SdifQueryTreeT *tree);
 
 /* create summary of file's data in query tree, return bytesize of file */
 SDIF_API size_t SdifQuery (const char            *filename, 
