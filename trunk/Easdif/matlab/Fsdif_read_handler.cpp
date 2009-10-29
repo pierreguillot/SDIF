@@ -6,7 +6,7 @@
  * @brief  handle read file io in matlab
  * 
  *
- * $Revision: 1.11 $   last changed on $Date: 2009-10-29 23:44:29 $
+ * $Revision: 1.12 $   last changed on $Date: 2009-10-29 23:46:20 $
  *
  *                                    Copyright (c) 2008 by IRCAM
  * 
@@ -34,6 +34,10 @@ void cleanup() {
   }
   pList.clear();  
   //  Easdif::EasdifEnd();
+}
+void cleanupAndEEnd() {
+  cleanup();
+  Easdif::EasdifEnd();
 }
 
 // validate file pointer
@@ -347,7 +351,7 @@ mexFunction (int nlhs, mxArray *plhs [], int nrhs, const mxArray *prhs [])
   char command[128];
 
   if(Easdif::EasdifInit()) {
-    mexAtExit(cleanup);
+    mexAtExit(cleanupAndEEnd);
   }
 
   if(nrhs < 1 || nrhs > 3)
