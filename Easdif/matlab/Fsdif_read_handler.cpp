@@ -6,7 +6,7 @@
  * @brief  handle read file io in matlab
  * 
  *
- * $Revision: 1.10 $   last changed on $Date: 2009-10-29 23:41:31 $
+ * $Revision: 1.11 $   last changed on $Date: 2009-10-29 23:44:29 $
  *
  *                                    Copyright (c) 2008 by IRCAM
  * 
@@ -600,7 +600,7 @@ mexFunction (int nlhs, mxArray *plhs [], int nrhs, const mxArray *prhs [])
         }
       }
 
-      if(nlhs > 1) {
+      if(nlhs > 2) {
         // create frame directory output
         const char *dfields[4];
         dfields[0] = frameFrameSig_fieldString; 
@@ -617,15 +617,10 @@ mexFunction (int nlhs, mxArray *plhs [], int nrhs, const mxArray *prhs [])
         const Easdif::Directory & dir= p->GetDirectory();
        
         it      = p->begin();
-        mxArray *pp = mxCreateStructMatrix(dir.size(),1,4,dfields);
+        plhs[2] = mxCreateStructMatrix(dir.size(),1,4,dfields);
         for(int ii=0; it !=ite; ++it,++ii) {
-          createFrame(p, it, ii, pp, 4, dfields);
+          createFrame(p, it, ii, plhs[2], 4, dfields);
         }
-        if(nlhs > 2)
-          plhs[2] = pp;
-        else
-          mxDestroyArray(pp);
-        
       }
     }
   }
