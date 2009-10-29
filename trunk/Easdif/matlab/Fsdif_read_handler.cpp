@@ -6,7 +6,7 @@
  * @brief  handle read file io in matlab
  * 
  *
- * $Revision: 1.9 $   last changed on $Date: 2009-07-31 21:05:26 $
+ * $Revision: 1.10 $   last changed on $Date: 2009-10-29 23:41:31 $
  *
  *                                    Copyright (c) 2008 by IRCAM
  * 
@@ -29,10 +29,11 @@ void cleanup() {
   EASDList::iterator ite = pList.end();
   while(it!=ite){
     delete it->first;
+    it->first = 0;
     ++it;
   }
   pList.clear();  
-  Easdif::EasdifEnd();
+  //  Easdif::EasdifEnd();
 }
 
 // validate file pointer
@@ -372,6 +373,9 @@ mexFunction (int nlhs, mxArray *plhs [], int nrhs, const mxArray *prhs [])
         *mxGetPr(plhs[0]) = 0.;
     }
   }  
+  else if(!strcmp(command,"clear")){
+    cleanup();
+  }  
   else if(!strcmp(command,"open")){
 
     char	 filename [PATH_MAX];
@@ -595,8 +599,8 @@ mexFunction (int nlhs, mxArray *plhs [], int nrhs, const mxArray *prhs [])
           }
         }
       }
-      
-      if(nlhs > 2) {
+
+      if(nlhs > 1) {
         // create frame directory output
         const char *dfields[4];
         dfields[0] = frameFrameSig_fieldString; 
@@ -613,10 +617,15 @@ mexFunction (int nlhs, mxArray *plhs [], int nrhs, const mxArray *prhs [])
         const Easdif::Directory & dir= p->GetDirectory();
        
         it      = p->begin();
-        plhs[2] = mxCreateStructMatrix(dir.size(),1,4,dfields);
+        mxArray *pp = mxCreateStructMatrix(dir.size(),1,4,dfields);
         for(int ii=0; it !=ite; ++it,++ii) {
-          createFrame(p, it, ii, plhs[2], 4, dfields);
+          createFrame(p, it, ii, pp, 4, dfields);
         }
+        if(nlhs > 2)
+          plhs[2] = pp;
+        else
+          mxDestroyArray(pp);
+        
       }
     }
   }
