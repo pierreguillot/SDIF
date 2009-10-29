@@ -1,4 +1,4 @@
-/* $Id: SdifSelect.c,v 3.28 2009-04-17 16:50:44 diemo Exp $
+/* $Id: SdifSelect.c,v 3.29 2009-10-29 23:30:20 roebel Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -96,6 +96,9 @@ TODO
 
 LOG
   $Log: not supported by cvs2svn $
+  Revision 3.28  2009/04/17 16:50:44  diemo
+  clarified syntax in code-generating macro
+
   Revision 3.27  2007/11/27 12:09:44  roebel
   Removed unused functions.
 
@@ -411,7 +414,7 @@ int SdifFreeSelection (SdifSelectionT *sel)
     /* set ALL pointers to NULL */
     memset(sel, 0, sizeof(SdifSelectionT));
 #endif
-    
+    SdifFree(sel);
     return (1);
 }
 
