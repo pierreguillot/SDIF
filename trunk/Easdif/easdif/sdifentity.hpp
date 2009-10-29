@@ -32,9 +32,12 @@
  * 
  * 
  * 
- * $Id: sdifentity.hpp,v 1.21 2009-07-31 21:26:03 roebel Exp $ 
+ * $Id: sdifentity.hpp,v 1.22 2009-10-29 16:10:23 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.21  2009/07/31 21:26:03  roebel
+ * Replaced std::list<SDIFLocation> types by Directory typedef.
+ *
  * Revision 1.20  2008/06/16 08:53:44  roebel
  * added missing include file string.h
  *
@@ -364,9 +367,17 @@ namespace Easdif {
     bool mlActive;
     bool mlOpen;
   public:
-    SelectionSet() 
-      :  mlActive(false), mlOpen(false)   { }
-    
+
+    /** 
+     *  \brief default constructor 
+     * \ingroup selection
+     * 
+     *  creates an empty inactive selection
+     *
+     * @return 
+     */ 
+    SelectionSet()  :  mlActive(false), mlOpen(false)   { }
+
     /** 
      * \brief create a selection set 
      * \ingroup selection
@@ -381,11 +392,11 @@ namespace Easdif {
      * 
      * @return 
      */
-    SelectionSet(std::set<TYPE> &inset,bool _open=false) 
+    SelectionSet(std::set<TYPE> &inset,bool _open=false)
       :  std::set<TYPE>(inset),mlActive(false),mlOpen(false)  { 
-       if (!std::set<TYPE>::empty())
-         mlActive=true;
-     }
+      if (!std::set<TYPE>::empty())
+        mlActive=true;
+    }
 
     /** 
      * \brief Test whether a selection has been established
@@ -438,7 +449,7 @@ namespace Easdif {
      * is larger than the last selected element
      */
     bool isSelected(const TYPE inType) const {
-    	return (!isActive() || std::set<TYPE>::find(inType) != std::set<TYPE>::end() || (!std::set<TYPE>::empty() && isOpen() && inType > *--std::set<TYPE>::end()));
+      return (!isActive() || std::set<TYPE>::find(inType) != std::set<TYPE>::end() || (!std::set<TYPE>::empty() && isOpen() && inType > *--std::set<TYPE>::end()));
     }
 
     /** 
@@ -855,7 +866,7 @@ namespace {
 
   // forward declaration
   template<int EASDIF_FR_CONST_FLAG>
-  class FRIterator;
+  class EASDIF_API FRIterator;
 
 
 
@@ -1887,7 +1898,7 @@ public:
     mutable SDIFFrame     mFrame;     // internal frame to hold the current frame
     bool          mlEndUP;    // if true signals no further selected frame when moving to end of file
     bool          mlEndDOWN;  // if true signals no further selected frame when moving to start of file
-    bool          mlFrameIsLoaded;  // true if mFrame holds the frame that the iterator is pointing too.
+    mutable bool          mlFrameIsLoaded;  // true if mFrame holds the frame that the iterator is pointing too.
   private:
     
     
@@ -2232,7 +2243,7 @@ public:
      * 
      * @return pointer to frame
      */
-     typename IteratorTypes<1>::pointer operator->() const {      
+    typename IteratorTypes<1>::pointer operator->() const {      
       if(!mlFrameIsLoaded) {
         GotoPos();
         if(mpEnt->ReadNextSelectedFrame(mFrame) ) {
@@ -2251,7 +2262,7 @@ public:
      * 
      * @return pointer to frame
      */
-    pointer operator->()  {      
+     pointer operator->()  {
       if(!mlFrameIsLoaded) {
         GotoPos();
         if(mpEnt->ReadNextSelectedFrame(mFrame) ) {
@@ -2260,7 +2271,6 @@ public:
       }
       return &mFrame;
     }
-
 
     /** 
      * \brief check whether the iterator points to a selected frame
@@ -2325,7 +2335,7 @@ public:
      *
      *  \return true if position has been achieved
      */
-    bool GotoPos() throw(SDIFSeekError)  {
+    bool GotoPos() const throw(SDIFSeekError)  {
       SdiffPosT pos = mBase->LocPos();
       mpEnt->mNextDirPos   = mBase;
       mpEnt->mEof   = false;
