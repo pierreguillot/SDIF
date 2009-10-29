@@ -1,5 +1,5 @@
 # Easdif README
-# $Id: README,v 1.15 2009-02-19 16:57:35 roebel Exp $
+# $Id: README,v 1.16 2009-10-29 14:02:10 roebel Exp $
 #
 # Copyright (C) Ircam 2002-2008
 
@@ -143,6 +143,11 @@ manually as follows
 $> cmake -DMEX:STRING=/path_to_mex_script -DEASDIF_BUILD_MEX:BOOL=on path_to_top_level_easdif_dir 
 $> make mex
 $> make install
+
+ATTENTION: the mex script is often masked by the mex binary of the tex 
+program suite. If cmake finds the mex of tex first in its path it will
+not be able to run correctly. In this case you have to either change
+your PATH or specify the mex binary on the command line.
 
 For the octave compile script mkoctfile  there exists a similar syntax
 
