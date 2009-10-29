@@ -92,7 +92,7 @@ void mexFunction (int nlhs, mxArray *plhs [], int nrhs, const mxArray *prhs []){
         GET_FILENAME_COMPONENT(_abs_PATH ${_tmp_FILE} PATH)
         GET_FILENAME_COMPONENT(_basename ${_tmp_FILE} NAME_WE)
       
-        SET(_o_FILE ${EXECUTABLE_OUTPUT_PATH}/${_basename}${DEBUGEXT}${MEXEXT})
+        SET(_o_FILE ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${_basename}${DEBUGEXT}${MEXEXT})
         #          MESSAGE(STATUS "_current_FILE ${CMAKE_CURRENT_SOURCE_DIR}/${_current_FILE} _o_FILE ${_o_FILE}")
         SET(INSTALL_MEX_FILES ${INSTALL_MEX_FILES} ${_o_FILE})
         ADD_CUSTOM_COMMAND(OUTPUT ${_o_FILE} 
@@ -143,7 +143,7 @@ IF(MKOCT)
         GET_FILENAME_COMPONENT(_abs_PATH ${_tmp_FILE} PATH)
         GET_FILENAME_COMPONENT(_basename ${_tmp_FILE} NAME_WE)
         
-        SET(_o_FILE ${EXECUTABLE_OUTPUT_PATH}/${_basename}${DEBUGEXT}${OCTEXT})
+        SET(_o_FILE ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${_basename}${DEBUGEXT}${OCTEXT})
         #          MESSAGE(STATUS "_current_FILE ${CMAKE_CURRENT_SOURCE_DIR}/${_current_FILE} _o_FILE ${_o_FILE}")
         SET(INSTALL_OCT_FILES ${INSTALL_OCT_FILES} ${_o_FILE})
         ADD_CUSTOM_COMMAND(OUTPUT ${_o_FILE} 
