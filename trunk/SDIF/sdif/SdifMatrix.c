@@ -1,4 +1,4 @@
-/* $Id: SdifMatrix.c,v 3.18 2008-04-10 14:12:25 roebel Exp $
+/* $Id: SdifMatrix.c,v 3.19 2009-10-29 23:30:20 roebel Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -33,6 +33,9 @@
  *
  * author: Dominique Virolle 1997
  * $Log: not supported by cvs2svn $
+ * Revision 3.18  2008/04/10 14:12:25  roebel
+ * Don't create new vrariables on the fly
+ *
  * Revision 3.17  2007/11/27 12:12:22  roebel
  * Fixed warning due to missing return value.
  *
@@ -438,9 +441,8 @@ SdifKillOneRow(SdifOneRowT *OneRow)
 	}
 	break;
       }
-     SdifFree(OneRow);
-
 #endif
+     SdifFree(OneRow);
 
     }
   else
