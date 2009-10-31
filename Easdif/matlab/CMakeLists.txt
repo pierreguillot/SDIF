@@ -29,7 +29,7 @@ void mexFunction (int nlhs, mxArray *plhs [], int nrhs, const mxArray *prhs []){
   EXECUTE_PROCESS(COMMAND ${MEX}  ${CMAKE_CURRENT_BINARY_DIR}/cmake_tmp.cxx -v RESULT_VARIABLE res OUTPUT_VARIABLE out ERROR_VARIABLE err)
   
   IF(res)
-    MESSAGE(STATUS "mex command ${MEX} cannot be run, error ${res} '${err}' skipping mex ")
+    MESSAGE(STATUS "mex command ${MEX} cannot be run, error ${res} '${err}' skipping mex\n    make sure this is not the mex program from the tex distribution.")
   ELSE (res)
     STRING(REGEX REPLACE ".*LDEXTENSION[ \t]*=[ \t]*\([^ \t\n\r]*).*" "\\1" MEXEXT ${out})
     IF( "${out}" MATCHES "-fexception" )
@@ -116,6 +116,8 @@ void mexFunction (int nlhs, mxArray *plhs [], int nrhs, const mxArray *prhs []){
       ${CMAKE_CURRENT_SOURCE_DIR}/Fsdifwrite.m 
       ${CMAKE_CURRENT_SOURCE_DIR}/Fsdifread.m 
       ${CMAKE_CURRENT_SOURCE_DIR}/Fsdifexist.m 
+      ${CMAKE_CURRENT_SOURCE_DIR}/Fsdifclearall.m 
+      ${CMAKE_CURRENT_SOURCE_DIR}/Fsdifrewind.m 
       ${CMAKE_CURRENT_SOURCE_DIR}/Fsdifloadfile.m)
     
     INSTALL(FILES ${INSTALL_MEX_FILES} ${MFILES} DESTINATION ${INSTALL_LIB_DIR}/matlab/ )

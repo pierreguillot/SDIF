@@ -6,7 +6,7 @@
  * @brief  handle read file io in matlab
  * 
  *
- * $Revision: 1.12 $   last changed on $Date: 2009-10-29 23:46:20 $
+ * $Revision: 1.13 $   last changed on $Date: 2009-10-31 17:25:09 $
  *
  *                                    Copyright (c) 2008 by IRCAM
  * 
@@ -55,6 +55,40 @@ bool CheckList(Easdif::SDIFEntity *p, EASDList::iterator&it) {
 
 char errMess [PATH_MAX+50];
 
+mxClassID
+getClassFromString(const mxArray *pp){
+  if (mxGetClassID(pp) == mxCHAR_CLASS ) {
+    char buf [100];
+    buf[0] = '0';
+    mxGetString(pp, buf, 100);
+    std::string class_str = buf;
+    if(class_str == "double")
+      return mxDOUBLE_CLASS;
+    else if(class_str == "single" || class_str == "float")
+      return mxSINGLE_CLASS;
+    else if(class_str == "INT8")
+      return mxINT8_CLASS;
+    else if(class_str == "INT16")
+      return mxINT16_CLASS;
+    else if(class_str == "INT32")
+      return mxINT32_CLASS;
+    else if(class_str == "INT64")
+      return mxINT64_CLASS;
+    else if(class_str == "UINT8")
+      return mxUINT8_CLASS;
+    else if(class_str == "UINT16")
+      return mxUINT16_CLASS;
+    else if(class_str == "UINT32")
+      return mxUINT32_CLASS;
+    else if(class_str == "UINT64")
+      return mxINT64_CLASS;
+    else {
+      sprintf(errMess,"Fsdif_read_handler :: unsupported output class selected !");
+      mexErrMsgTxt(errMess);              
+    }    
+  }
+  return mxUNKNOWN_CLASS;
+}
 
 inline
 int
@@ -80,8 +114,8 @@ nbSelectedMatricesInFrame(Easdif::SDIFEntity*p,
 // either only meta data if nFields == 4
 // or meat and matrix data if nFields == 5
 void
-createFrame(Easdif::SDIFEntity*p, Easdif::SDIFEntity::const_iterator& it, int ii, mxArray *out,int nFields, 
-           const char **dfields) {
+createFrame(Easdif::SDIFEntity*p, Easdif::SDIFEntity::const_iterator& it, int ii, 
+            mxArray *out,int nFields, const char **dfields, mxClassID classid) {
   if(nFields ==4 ) {
     int nbMatrix = nbSelectedMatricesInFrame(p, it);
     int nbAllMatrix =  it.GetLoc().LocNbMatrix();
@@ -171,63 +205,106 @@ createFrame(Easdif::SDIFEntity*p, Easdif::SDIFEntity::const_iterator& it, int ii
       *(pd+3*nbMatrix) = sigstr[3];
       ++pd;        
       mxArray *data = 0;
-      switch(mat.GetType()) {
-      case eFloat4:
-      case eFloat4a:
-      case eFloat4b:
-        data = mxCreateNumericMatrix(mat.GetNbRows(),mat.GetNbCols(),mxSINGLE_CLASS,mxREAL);
-        for(int ic=0;ic!=mat.GetNbCols();++ic)
-          mat.GetCol(reinterpret_cast<float*> (mxGetData(data))+ic*mat.GetNbRows(),ic);
-        break;
-      case eFloat8:
-      case eFloat8a:
-      case eFloat8b:
-        data = mxCreateNumericMatrix(mat.GetNbRows(),mat.GetNbCols(),mxDOUBLE_CLASS,mxREAL);
-        for(int ic=0;ic!=mat.GetNbCols();++ic)
-          mat.GetCol(reinterpret_cast<double*> (mxGetData(data))+ic*mat.GetNbRows(),ic);
-        break;
-        
-      case eInt1 :
-        data = mxCreateNumericMatrix(mat.GetNbRows(),mat.GetNbCols(),mxINT8_CLASS,mxREAL);
-        for(int ic=0;ic!=mat.GetNbCols();++ic)
-          mat.GetCol(reinterpret_cast<unsigned char *> (mxGetData(data))+ic*mat.GetNbRows(),ic);
-        break;
-      case eInt2 :
-        data = mxCreateNumericMatrix(mat.GetNbRows(),mat.GetNbCols(),mxINT16_CLASS,mxREAL);
-        for(int ic=0;ic!=mat.GetNbCols();++ic)
-          mat.GetCol(reinterpret_cast<SdifInt2*> (mxGetData(data))+ic*mat.GetNbRows(),ic);
-        break;
-      case eInt4 :
-        data = mxCreateNumericMatrix(mat.GetNbRows(),mat.GetNbCols(),mxINT32_CLASS,mxREAL);
-        for(int ic=0;ic!=mat.GetNbCols();++ic)
-          mat.GetCol(reinterpret_cast<SdifInt4*> (mxGetData(data))+ic*mat.GetNbRows(),ic);
-        break;
-      case eUInt1 :
-        data = mxCreateNumericMatrix(mat.GetNbRows(),mat.GetNbCols(),mxUINT8_CLASS,mxREAL);
-        for(int ic=0;ic!=mat.GetNbCols();++ic)
-          mat.GetCol(reinterpret_cast<SdifUInt1*> (mxGetData(data))+ic*mat.GetNbRows(),ic);
-        break;
-      case eUInt2 :
-        data = mxCreateNumericMatrix(mat.GetNbRows(),mat.GetNbCols(),mxUINT16_CLASS,mxREAL);
-        for(int ic=0;ic!=mat.GetNbCols();++ic)
-          mat.GetCol(reinterpret_cast<SdifUInt2*> (mxGetData(data))+ic*mat.GetNbRows(),ic);
-        break;
-      case eUInt4 :
-        data = mxCreateNumericMatrix(mat.GetNbRows(),mat.GetNbCols(),mxUINT32_CLASS,mxREAL);
-        for(int ic=0;ic!=mat.GetNbCols();++ic)
-          mat.GetCol(reinterpret_cast<SdifUInt4*> (mxGetData(data))+ic*mat.GetNbRows(),ic);
-        break;
-      case eText:{
-        std::string str;
-        mat.Get(str);
-        data = mxCreateString(str.c_str());
-        break;
+      if(classid == mxUNKNOWN_CLASS) {
+        switch(mat.GetType()) {
+        case eFloat4:
+        case eFloat4a:
+        case eFloat4b:
+          data = mxCreateNumericMatrix(mat.GetNbRows(),mat.GetNbCols(),mxSINGLE_CLASS,mxREAL);
+          for(int ic=0;ic!=mat.GetNbCols();++ic)
+            mat.GetCol(reinterpret_cast<float*> (mxGetData(data))+ic*mat.GetNbRows(),ic);
+          break;
+        case eFloat8:
+        case eFloat8a:
+        case eFloat8b:
+          data = mxCreateNumericMatrix(mat.GetNbRows(),mat.GetNbCols(),mxDOUBLE_CLASS,mxREAL);
+          for(int ic=0;ic!=mat.GetNbCols();++ic)
+            mat.GetCol(reinterpret_cast<double*> (mxGetData(data))+ic*mat.GetNbRows(),ic);
+          break;          
+        case eInt1 :
+          data = mxCreateNumericMatrix(mat.GetNbRows(),mat.GetNbCols(),mxINT8_CLASS,mxREAL);
+          for(int ic=0;ic!=mat.GetNbCols();++ic)
+            mat.GetCol(reinterpret_cast<unsigned char *> (mxGetData(data))+ic*mat.GetNbRows(),ic);
+          break;
+        case eInt2 :
+          data = mxCreateNumericMatrix(mat.GetNbRows(),mat.GetNbCols(),mxINT16_CLASS,mxREAL);
+          for(int ic=0;ic!=mat.GetNbCols();++ic)
+            mat.GetCol(reinterpret_cast<SdifInt2*> (mxGetData(data))+ic*mat.GetNbRows(),ic);
+          break;
+        case eInt4 :
+          data = mxCreateNumericMatrix(mat.GetNbRows(),mat.GetNbCols(),mxINT32_CLASS,mxREAL);
+          for(int ic=0;ic!=mat.GetNbCols();++ic)
+            mat.GetCol(reinterpret_cast<SdifInt4*> (mxGetData(data))+ic*mat.GetNbRows(),ic);
+          break;
+        case eUInt1 :
+          data = mxCreateNumericMatrix(mat.GetNbRows(),mat.GetNbCols(),mxUINT8_CLASS,mxREAL);
+          for(int ic=0;ic!=mat.GetNbCols();++ic)
+            mat.GetCol(reinterpret_cast<SdifUInt1*> (mxGetData(data))+ic*mat.GetNbRows(),ic);
+          break;
+        case eUInt2 :
+          data = mxCreateNumericMatrix(mat.GetNbRows(),mat.GetNbCols(),mxUINT16_CLASS,mxREAL);
+          for(int ic=0;ic!=mat.GetNbCols();++ic)
+            mat.GetCol(reinterpret_cast<SdifUInt2*> (mxGetData(data))+ic*mat.GetNbRows(),ic);
+          break;
+        case eUInt4 :
+          data = mxCreateNumericMatrix(mat.GetNbRows(),mat.GetNbCols(),mxUINT32_CLASS,mxREAL);
+          for(int ic=0;ic!=mat.GetNbCols();++ic)
+            mat.GetCol(reinterpret_cast<SdifUInt4*> (mxGetData(data))+ic*mat.GetNbRows(),ic);
+          break;
+        case eText:{
+          std::string str;
+          mat.Get(str);
+          data = mxCreateString(str.c_str());
+          break;
+        }
+        default:
+          char tmperr[256];
+          sprintf(tmperr,"Unsupported data type %x",mat.GetType());
+          mexErrMsgTxt(tmperr);
+        } 
       }
-      default:
-        char tmperr[256];
-        sprintf(tmperr,"Unsupported data type %x",mat.GetType());
-        mexErrMsgTxt(tmperr);
-      } 
+      else {
+        data = mxCreateNumericMatrix(mat.GetNbRows(),mat.GetNbCols(), classid, mxREAL);
+        switch(classid) {
+        case mxDOUBLE_CLASS:
+          for(int ic=0;ic!=mat.GetNbCols();++ic)
+            mat.GetCol(reinterpret_cast<double*> (mxGetData(data))+ic*mat.GetNbRows(),ic);
+          break;
+        case mxSINGLE_CLASS:
+          for(int ic=0;ic!=mat.GetNbCols();++ic)
+            mat.GetCol(reinterpret_cast<float*> (mxGetData(data))+ic*mat.GetNbRows(),ic);
+          break;          
+        case mxINT8_CLASS :
+          data = mxCreateNumericMatrix(mat.GetNbRows(),mat.GetNbCols(),mxINT8_CLASS,mxREAL);
+          for(int ic=0;ic!=mat.GetNbCols();++ic)
+            mat.GetCol(reinterpret_cast<SdifInt1 *> (mxGetData(data))+ic*mat.GetNbRows(),ic);
+          break;
+        case  mxINT16_CLASS :
+          for(int ic=0;ic!=mat.GetNbCols();++ic)
+            mat.GetCol(reinterpret_cast<SdifInt2*> (mxGetData(data))+ic*mat.GetNbRows(),ic);
+          break;
+        case mxINT32_CLASS :
+          for(int ic=0;ic!=mat.GetNbCols();++ic)
+            mat.GetCol(reinterpret_cast<SdifInt4*> (mxGetData(data))+ic*mat.GetNbRows(),ic);
+          break;
+        case  mxUINT8_CLASS :
+          for(int ic=0;ic!=mat.GetNbCols();++ic)
+            mat.GetCol(reinterpret_cast<SdifUInt1*> (mxGetData(data))+ic*mat.GetNbRows(),ic);
+          break;
+        case mxUINT16_CLASS:
+          for(int ic=0;ic!=mat.GetNbCols();++ic)
+            mat.GetCol(reinterpret_cast<SdifUInt2*> (mxGetData(data))+ic*mat.GetNbRows(),ic);
+          break;
+        case mxUINT32_CLASS :
+          for(int ic=0;ic!=mat.GetNbCols();++ic)
+            mat.GetCol(reinterpret_cast<SdifUInt4*> (mxGetData(data))+ic*mat.GetNbRows(),ic);
+          break;
+        default:
+          char tmperr[256];
+          sprintf(tmperr,"Unsupported data type %x",mat.GetType());
+          mexErrMsgTxt(tmperr);
+        }         
+      }
       if(data)
         mxSetField(ftypmdata,0,ptr[im],data);      
     }
@@ -354,8 +431,8 @@ mexFunction (int nlhs, mxArray *plhs [], int nrhs, const mxArray *prhs [])
     mexAtExit(cleanupAndEEnd);
   }
 
-  if(nrhs < 1 || nrhs > 3)
-    mexErrMsgTxt ("Fsdif_read_handler::Wrong number of input arguments (at least 1, at most 3 )");
+  if(nrhs < 1 || nrhs > 4)
+    mexErrMsgTxt ("Fsdif_read_handler::Wrong number of input arguments (at least 1, at most 4 )");
 
   if(!mxIsChar(prhs[0]) ||  (mxGetString(prhs[0], command, 128) != 0) ){
      mexErrMsgTxt ("Fsdif_read_handler::no command at first argument");   
@@ -623,7 +700,7 @@ mexFunction (int nlhs, mxArray *plhs [], int nrhs, const mxArray *prhs [])
         it      = p->begin();
         plhs[2] = mxCreateStructMatrix(dir.size(),1,4,dfields);
         for(int ii=0; it !=ite; ++it,++ii) {
-          createFrame(p, it, ii, plhs[2], 4, dfields);
+          createFrame(p, it, ii, plhs[2], 4, dfields, mxUNKNOWN_CLASS);
         }
       }
     }
@@ -658,12 +735,25 @@ mexFunction (int nlhs, mxArray *plhs [], int nrhs, const mxArray *prhs [])
       *reinterpret_cast<int*>(mxGetData(plhs[0])) = ok;
     }
   }
+  // rewind pointer to frist frame
+  else if (!strcmp(command,"rewind")){
+    if(nrhs > 2)
+      mexErrMsgTxt ("Fsdif_read_handler:: Wrong number of input arguments for rewind: give only file handle\n");
+    if(mxIsInt32(prhs[1]) || mxIsInt64(prhs[1]) || mxIsUint32(prhs[1]) || mxIsUint64(prhs[1])){
+      Easdif::SDIFEntity *p = *reinterpret_cast<Easdif::SDIFEntity **>(mxGetData(prhs[1]));    
+      EASDList::iterator itl;
+      // validate pointer
+      if(CheckList(p,itl) && p->IsOpen()){
+        itl->second = itl->first->begin();
+      }    
+    } 
+  }
   // read file
   else  if(!strcmp(command,"read")){
 
     // check arguments
-    if(nrhs < 2 || nrhs > 3)
-      mexErrMsgTxt ("Fsdif_read_handler::Wrong number of input arguments, need to have filepointer and eventually a selectionmask");
+    if(nrhs < 2 || nrhs > 4)
+      mexErrMsgTxt ("Fsdif_read_handler::Wrong number of input arguments:\n supported are  filepointer, optional selectionmask or frame count and an optional class specification for returned data\n");
 
     if(nlhs != 1)
       mexErrMsgTxt ("Fsdif_read_handler::Wrong number of output arguments (at most 1 )");
@@ -681,33 +771,57 @@ mexFunction (int nlhs, mxArray *plhs [], int nrhs, const mxArray *prhs [])
       // validate pointer
       if(CheckList(p,itl) && p->IsOpen()){
         Easdif::SDIFEntity::const_iterator ite = p->end();        
-        if(nrhs == 2){
-          if(itl->second != ite && !itl->second.IsSelected())
-            ++(itl->second);
+        if(nrhs == 2 || (mxIsNumeric(prhs[2]) && mxGetNumberOfElements(prhs[2]) == 1) ){
+          mxClassID classid = mxUNKNOWN_CLASS;
+          if(nrhs == 4) {
+            classid = getClassFromString(prhs[3]);
+          }
+          int maxNum = nrhs > 2 ? static_cast<int>(mxGetScalar(prhs[2])): 1;
 
-          if(itl->second != ite){
-            const char *dfields[5];
-            dfields[0] = frameFrameSig_fieldString; 
-            dfields[1] = frameStreamID_fieldString; 
-            dfields[2] = frameTime_fieldString; 
-            dfields[3] = frameMatrixSig_fieldString; 
-            dfields[4] = frameData_fieldString; 
+          if (maxNum > 0) {
+            if(itl->second != ite && !itl->second.IsSelected())
+              ++(itl->second);
             
-            plhs[0] = mxCreateStructMatrix(1,1,5,dfields);
-            createFrame(p, itl->second, 0, plhs[0],5, dfields);
-            ++(itl->second);
+            if(itl->second != ite){
+              const char *dfields[5];
+              dfields[0] = frameFrameSig_fieldString; 
+              dfields[1] = frameStreamID_fieldString; 
+              dfields[2] = frameTime_fieldString; 
+              dfields[3] = frameMatrixSig_fieldString; 
+              dfields[4] = frameData_fieldString; 
+
+              
+              plhs[0] = mxCreateStructMatrix(maxNum, 1, 5, dfields);
+              while(maxNum && itl->second != ite) {
+                createFrame(p, itl->second, 0, plhs[0],5, dfields, classid);
+                ++(itl->second);
+                --maxNum;
+              }
+            }
+            else {
+              plhs[0] = mxCreateNumericMatrix(0,0, 
+                                              classid == mxUNKNOWN_CLASS ? mxDOUBLE_CLASS: classid, 
+                                              mxREAL);
+            }
           }
           else {
-            plhs[0] = mxCreateNumericMatrix(0,0,mxDOUBLE_CLASS,mxREAL);
+            plhs[0] = mxCreateNumericMatrix(0,0, 
+                                            classid == mxUNKNOWN_CLASS ? mxDOUBLE_CLASS: classid, 
+                                            mxREAL);
           }
         }
-        else if (nrhs == 3){
+        else if (nrhs >= 3){
           std::vector<double> timeSel;
           double startTime = 0;
           double endTime   = -1;
           unsigned int start_id = 0;
           unsigned int end_id   = static_cast<unsigned int>(-1);
+          Easdif::SDIFEntity::const_iterator it_stored = itl->second;
 
+          mxClassID classid = mxUNKNOWN_CLASS;
+          if(nrhs == 4) {
+            classid = getClassFromString(prhs[3]);
+          }
           // remove all high level selections 
           // == ( temporary selections working above the file name selections)
           p->ReestablishStreamSelection();
@@ -730,6 +844,7 @@ mexFunction (int nlhs, mxArray *plhs [], int nrhs, const mxArray *prhs [])
         
               if(fsig){
                 if( !mxIsNumeric(fsig) || !mxIsDouble(fsig) || mxIsComplex(fsig) || mxGetN(fsig) != 4 ){
+                  itl->second = it_stored;
                   sprintf(errMess,"Fsdif_read_handler :: frame signature selection .%s  has to be matrix of doubles with 4 columns !",frameFrameSig_fieldString);
                   mexErrMsgTxt(errMess);
                 }
@@ -750,6 +865,7 @@ mexFunction (int nlhs, mxArray *plhs [], int nrhs, const mxArray *prhs [])
 
               if(msig){
                 if( !mxIsNumeric(msig) || !mxIsDouble(msig) || mxIsComplex(msig) || mxGetN(msig) != 4 ){
+                  itl->second = it_stored;
                   sprintf(errMess,"Fsdif_read_handler :: matrix signature selection .%s  has to be matrix of doubles with 4 columns !",frameMatrixSig_fieldString);
                   mexErrMsgTxt(errMess);
                 }
@@ -769,6 +885,7 @@ mexFunction (int nlhs, mxArray *plhs [], int nrhs, const mxArray *prhs [])
 
               if(streamid){
                 if(!mxIsNumeric(streamid) || mxIsComplex(streamid)){
+                  itl->second = it_stored;
                   sprintf(errMess,"Fsdif_read_handler :: streamid selection .%s field has to be a real matrix !",frameStreamID_fieldString);
                   mexErrMsgTxt(errMess);
                 }
@@ -786,10 +903,12 @@ mexFunction (int nlhs, mxArray *plhs [], int nrhs, const mxArray *prhs [])
               if(streamid_range){
                 int numSel = mxGetNumberOfElements(streamid_range);
                 if(numStructs >1 && numSel  ){
+                  itl->second = it_stored;
                   sprintf(errMess,"Fsdif_read_handler :: more than a single selection with streamid range range  is not supported !");
                   mexErrMsgTxt(errMess);
                 }
                 if(!mxIsNumeric(streamid_range) || mxIsComplex(streamid_range) || numSel != 2){
+                  itl->second = it_stored;
                   sprintf(errMess,"Fsdif_read_handler :: streamidrange selection .%s field has to be a real matrix with exactly 2 elements !",frameStreamIDRange_fieldString);
                   mexErrMsgTxt(errMess);
                 }
@@ -805,6 +924,7 @@ mexFunction (int nlhs, mxArray *plhs [], int nrhs, const mxArray *prhs [])
               }
 
               if(ftime && ftime_range){
+                itl->second = it_stored;
                 sprintf(errMess,"Fsdif_read_handler :: cannot handle time and time range selection at the same time !");
                 mexErrMsgTxt(errMess);
               }
@@ -812,6 +932,7 @@ mexFunction (int nlhs, mxArray *plhs [], int nrhs, const mxArray *prhs [])
               if(ftime) {
                 int numSel = mxGetNumberOfElements(ftime);
                 if( !mxIsNumeric(ftime) || !mxIsDouble(ftime)|| mxIsComplex(ftime) ){
+                  itl->second = it_stored;
                   sprintf(errMess,"Fsdif_read_handler :: time selection .%s field has to be a real matrix  !",frameTime_fieldString);
                   mexErrMsgTxt(errMess);
                 }
@@ -826,11 +947,13 @@ mexFunction (int nlhs, mxArray *plhs [], int nrhs, const mxArray *prhs [])
                 int numSel = mxGetNumberOfElements(ftime_range);
                 if(numSel){
                   if(numStructs >1 && numSel){
+                    itl->second = it_stored;
                     sprintf(errMess,"Fsdif_read_handler :: more than a single selection with time range  is not supported !");
                     mexErrMsgTxt(errMess);
                   }
                   if( !mxIsNumeric(ftime_range) || !mxIsDouble(ftime_range)|| mxIsComplex(ftime_range) 
                       || numSel != 2 ){
+                    itl->second = it_stored;
                     sprintf(errMess,"Fsdif_read_handler :: time selection .%s field has to be a real matrix with no more than two elements !",frameTimeRange_fieldString);
                     mexErrMsgTxt(errMess);
                   }
@@ -897,13 +1020,14 @@ mexFunction (int nlhs, mxArray *plhs [], int nrhs, const mxArray *prhs [])
             plhs[0] = mxCreateStructMatrix(numFR,1,5,dfields);
             if(startTime<=endTime){
               if(timeSel.empty()){
-                for(int ir=0;itl->second != ite; ++(itl->second)){
+                for(int ir=0;itl->second != ite && numFR > 0; ++(itl->second)){
                   double locTime = itl->second.GetLoc().LocTime();
                   unsigned int locStreamID = itl->second.GetLoc().LocStreamID();
                   if(locTime >=  startTime && locTime <= endTime
                      && start_id <= locStreamID && end_id >=locStreamID){
-                    createFrame(p, itl->second, ir, plhs[0],5, dfields);
+                    createFrame(p, itl->second, ir, plhs[0],5, dfields, classid);
                     ++ir;
+                    --numFR;
                   }
                 }
               }
@@ -911,30 +1035,36 @@ mexFunction (int nlhs, mxArray *plhs [], int nrhs, const mxArray *prhs [])
                 std::vector<double>::const_iterator tit   = timeSel.begin();
                 std::vector<double>::const_iterator tit_e = timeSel.end();
 
-                for(int ir=0;tit!=tit_e && itl->second != ite; ++(itl->second)){
+                for(int ir=0;tit!=tit_e && itl->second != ite && numFR > 0; ++(itl->second)){
                   double locTime        = itl->second.GetLoc().LocTime();
                   unsigned int locStreamID = itl->second.GetLoc().LocStreamID();
                   while(tit != tit_e && *tit <locTime) ++tit;
                   if(tit != tit_e && *tit == locTime
                      && start_id <= locStreamID && end_id >=locStreamID){
-                    createFrame(p, itl->second, ir, plhs[0],5, dfields);
+                    createFrame(p, itl->second, ir, plhs[0],5, dfields, classid);
                     ++ir;
+                    --numFR;
                   }                    
                 }
               }
             }
             // no time selection
             else{
-              for(int ir=0;itl->second != ite; ++(itl->second),++ir){
+              for(int ir=0;itl->second != ite  && numFR > 0; ++(itl->second),++ir){
                 unsigned int locStreamID = itl->second.GetLoc().LocStreamID();
-                if ( start_id <= locStreamID && end_id >=locStreamID)
-                  createFrame(p, itl->second, ir, plhs[0],5, dfields);
+                if ( start_id <= locStreamID && end_id >=locStreamID) {
+                  createFrame(p, itl->second, ir, plhs[0],5, dfields, classid);
+                  --numFR;
+                }
               }
             }
           }
           else {
-            plhs[0] = mxCreateNumericMatrix(0,0,mxDOUBLE_CLASS,mxREAL);
+            plhs[0] = mxCreateNumericMatrix(0,0,
+                                            classid == mxUNKNOWN_CLASS ? mxDOUBLE_CLASS : classid,
+                                            mxREAL);
           }
+         itl->second = it_stored;
         }
       }
       else
