@@ -5,9 +5,9 @@
 % AUTHOR : Axel Roebel
 % DATE   : 31.10.2009
 %
-% $Revision: 1.1 $    last changed $Date: 2009-10-31 17:25:09 $
+% $Revision: 1.2 $    last changed $Date: 2009-10-31 17:26:56 $
 %
-%                                                       Copyright (c) 2008 by  IRCAM 
+%                                                       Copyright (c) 2009 by  IRCAM 
 
 function Fsdifrewind(fh)
 
