@@ -1,4 +1,4 @@
-% function frames=Fsdifread(file,select)
+% function frames=Fsdifread(file,select, class_str)
 %
 % read 1-d array of structured sdif frames from file related to
 % filehandle file. Note that data types in the returned matrix
@@ -8,22 +8,38 @@
 %
 % INPUT :
 %
-% file   : filehandle opened for reading returned by Fsdifopen 
-% select : selection controling the read
+% file      : filehandle opened for reading returned by Fsdifopen 
+% select    : selection controling the read
+% class_str : string representing a matlab classid used to specify a desried data type
 %
 % Frame selection :
+% ------------------------------------
+% If select is a scalar or not present
 %
-% frames=Fsdifread(file) read the next individual frame
-%                        empty return indicates end of file
+%   frames=Fsdifread(file) 
+%   frames=Fsdifread(file, N) 
+%   frames=Fsdifread(file, N, class_str) 
 %
-% frames=Fsdifread(file,select);
+% read the next single frame or next N frames from the current read postion
+% empty if less then requested frames are returned then
+% the eof has been reached 
+%
+% if class_str is given and a valid matlab data class id then the
+% returned data sections will converted from the files matrix dependend value type
+% into the specified type.
+%
+% -----------------------------------
+% If select is a struct :
+%
+% frames=Fsdifread(file, select);
+% frames=Fsdifread(file, select, class_str);
 % 
 % Selects a subset of frames and matrices according to the selection struct "select".
 % This local selection takes into account the selection specified in the filename.
 % The select argument can be an array of structs holding the fields of the frame
 % directory (see Fsdifopen). Each field can hold a set of values and the
 % selection will be formed by combining all values from all structs of
-% the array. The selection will work on the set ov frames and matrices
+% the array. The selection will work on the set of frames and matrices
 % that passes the selection mechanism that is part of the filename and
 % will pass only those values that are explicitely mentioned in the set
 % of selected values. The selection mechanism uses only the non empty fields
@@ -32,16 +48,23 @@
 % As an alternative to the time and stream fields the selection 
 % can use timerange and streamRange fields with exactly 2 values. These
 % will select the range of values between the two boundaries.
-% If range fields are present onluy a scalar selection struct can be used.
+% If range fields are present only a scalar selection struct can be used.
 %
 % All fields of the selection that are present are used to filter the elements of the
 % matrix to be read. Accordingly, a empty selection matrix does not
 % filter anything and accordingly reads the whole file.
 %
+% If the third element is given than it should be string represeting a
+% matrix class id. The data returned indicates the maximum number of
+% frames that will be returned. 
+%
+% NOTE : the read pointer position used for reading frames
+% without selection is not used nor modified by the calls to Fsdifread with a
+% selection set.
+%
 % OUTPUT :
 %
 % 1d array of data frames read
-%
 %
 % frame format :
 %    frames.fsig     = 1x4 double array indicating the matrix signature
@@ -52,9 +75,13 @@
 %                      where XXXX is representing the 4-char matrix
 %                      signature and each field contains exactly one real
 %                      valued matrix of any but 64-bit integer types.
-%  example :
-% frames = Fsdifread(filehandle)
 %
+% EXAMPLES :
+%
+% no selection -> read a single frame
+%
+% [filehandle] = Fsdifopen('file.sdif');
+% frames = Fsdifread(filehandle)
 % frames(1)
 %
 %        fsig: [73 71 66 71] ==  double('IGBG')
@@ -66,6 +93,8 @@
 % frames(1).data
 % 
 %  MD_IGBG: [1 44100 1 1024 185]
+%
+% using selections :
 %
 % [file,head,dir] = Fsdifopen('file.sdif');
 %
@@ -86,21 +115,26 @@
 % 
 %
 %
-% SEE also : Fsdifopen, Fsdifclose, Fsdifread, and the low level handlers
+% SEE also : Fsdifopen, Fsdifclose, Fsdifread, Fsdifrewind, Fsdifclearall and the low level handlers
 %     Fsdif_read_handler and Fsdif_write_handler
 %
 %
 % AUTHOR : Axel Roebel
 % DATE   : 21.01.2008
 %
-% $Revision: 1.4 $    last changed $Date: 2008-05-31 22:52:29 $
+% $Revision: 1.5 $    last changed $Date: 2009-10-31 17:25:09 $
 %
 %                                                       Copyright (c) 2008 by  IRCAM 
 
-function frames=Fsdifread(file,select)
+function frames=Fsdifread(file, select, class_str)
 
-  if(nargin == 1)
+  if nargin == 1
     frames = Fsdif_read_handler('read',file);
   else
-    frames = Fsdif_read_handler('read',file,select);
+    % either scalar or struct selection
+    if(nargin == 2)
+      frames = Fsdif_read_handler('read',file, select);
+    else 
+      frames = Fsdif_read_handler('read',file, select, class_str);
+    end
   end
