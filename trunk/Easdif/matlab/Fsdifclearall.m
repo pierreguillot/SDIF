@@ -3,9 +3,9 @@
 % release internal memory and close all files
 %
 % AUTHOR : Axel Roebel
-% DATE   : 21.01.2008
+% DATE   : 31.10.2009
 %
-% $Revision: 1.1 $    last changed $Date: 2009-10-31 17:25:09 $
+% $Revision: 1.2 $    last changed $Date: 2009-10-31 17:25:48 $
 %
 %                                                       Copyright (c) 2008 by  IRCAM 
 
