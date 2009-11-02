@@ -6,7 +6,7 @@
  * @brief  handle write file io in matlab
  * 
  *
- * $Revision: 1.5 $   last changed on $Date: 2009-07-31 21:27:05 $
+ * $Revision: 1.6 $   last changed on $Date: 2009-11-02 20:14:39 $
  *
  *                                 Copyright (c) 2008 by IRCAM
  */
@@ -17,6 +17,9 @@
 #include "easdif/easdif.h"
 
 #include "fieldnames.hpp"
+
+#define MAKE_STRING_FROM_MACRO(MM) MAKE_STRING_FROM_MACRO_HELP(MM) 
+#define MAKE_STRING_FROM_MACRO_HELP(MM) #MM
 
 // global list for all easdif file pointers
 typedef std::list<Easdif::SDIFEntity * > EASDList;
@@ -31,6 +34,10 @@ void cleanup() {
     ++it;
   }
   pList.clear();  
+}
+
+void cleanupAndEEnd() {
+  cleanup();
   Easdif::EasdifEnd();
 }
 
@@ -335,7 +342,7 @@ mexFunction (int nlhs, mxArray *plhs [], int nrhs, const mxArray *prhs [])
 
   // establish cleanup
   if(Easdif::EasdifInit()) {
-    mexAtExit(cleanup);
+    mexAtExit(cleanupAndEEnd);
   }
 
   if(nrhs < 1 || nrhs > 3)
@@ -361,6 +368,9 @@ mexFunction (int nlhs, mxArray *plhs [], int nrhs, const mxArray *prhs [])
       else
         *mxGetPr(plhs[0]) = 0.;
     }
+  }  
+  else if(!strcmp(command,"clear")){
+    cleanup();
   }  
   // open file for writing
   else if(!strcmp(command,"open")){
@@ -511,5 +521,23 @@ mexFunction (int nlhs, mxArray *plhs [], int nrhs, const mxArray *prhs [])
       *reinterpret_cast<double*>(mxGetData(plhs[0])) = written;
     }
   }
+  else if(!strcmp(command,"version")){
+    mexPrintf("Fsdif_write_handler: Version %s\n",MAKE_STRING_FROM_MACRO(EASDIF_MATLAB_VERSION));
+    mexPrintf("Easdif Version %s\n", EASDIF_VERSION_STRING);
+  }  
+  else if(!strcmp(command,"help")){
+    mexPrintf("Fsdif_write_handler: Version %s\n",MAKE_STRING_FROM_MACRO(EASDIF_MATLAB_VERSION));
+    mexPrintf("issdif    : check sdiffile\n");
+    mexPrintf("open      : open file \n");
+    mexPrintf("write      : read from file \n");
+    mexPrintf("close     : close file\n");
+    mexPrintf("clear     : close all files and release memory\n");
+    mexPrintf("version   : display version number\n");
+    mexPrintf("help      : this short help\n");
+  }
+  else{  
+    mexErrMsgTxt ("Fsdif_write_handler:: unknown command");
+  }
+
   return;
 }

@@ -6,7 +6,7 @@
  * @brief  handle read file io in matlab
  * 
  *
- * $Revision: 1.13 $   last changed on $Date: 2009-10-31 17:25:09 $
+ * $Revision: 1.14 $   last changed on $Date: 2009-11-02 20:14:39 $
  *
  *                                    Copyright (c) 2008 by IRCAM
  * 
@@ -18,6 +18,11 @@
 #include "easdif/easdif.h"
 
 #include "fieldnames.hpp"
+
+#define MAKE_STRING_FROM_MACRO(MM) MAKE_STRING_FROM_MACRO_HELP(MM) 
+#define MAKE_STRING_FROM_MACRO_HELP(MM) #MM
+
+
 
 // global list for all easdif file pointers
 typedef std::list<std::pair<Easdif::SDIFEntity *,Easdif::SDIFEntity::const_iterator> > EASDList;
@@ -1127,6 +1132,22 @@ mexFunction (int nlhs, mxArray *plhs [], int nrhs, const mxArray *prhs [])
     else {
       mexErrMsgTxt("Fsdif_read_handler::can only filepointer argument types int32/int64/uint32/uint64!");
     }
+  }
+  else if(!strcmp(command,"version")){
+    mexPrintf("Fsdif_read_handler: Version %s\n",MAKE_STRING_FROM_MACRO(EASDIF_MATLAB_VERSION));
+    mexPrintf("Easdif Version %s\n", EASDIF_VERSION_STRING);
+  }  
+  else if(!strcmp(command,"help")){
+    mexPrintf("Fsdif_read_handler: Version %s\n",MAKE_STRING_FROM_MACRO(EASDIF_MATLAB_VERSION));
+    mexPrintf("issdif    : check sdiffile\n");
+    mexPrintf("open      : open file \n");
+    mexPrintf("read      : read from file \n");
+    mexPrintf("close     : close file\n");
+    mexPrintf("clear     : close all files and release memory\n");
+    mexPrintf("rewind    : rewind file\n");
+    mexPrintf("loadfile  : load complete file\n");
+    mexPrintf("version   : display version number\n");
+    mexPrintf("help      : this short help\n");
   }
   else{  
     mexErrMsgTxt ("Fsdif_read_handler:: unknown command");
