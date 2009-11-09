@@ -32,9 +32,12 @@
  * 
  * 
  * 
- * $Id: sdifentity.hpp,v 1.22 2009-10-29 16:10:23 roebel Exp $ 
+ * $Id: sdifentity.hpp,v 1.23 2009-11-09 17:16:08 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.22  2009/10/29 16:10:23  roebel
+ * Added some missing mutable and EASDIF_API keywords.
+ *
  * Revision 1.21  2009/07/31 21:26:03  roebel
  * Replaced std::list<SDIFLocation> types by Directory typedef.
  *
@@ -864,11 +867,15 @@ namespace {
   };
 }
 
-  // forward declaration
+  // forward declaration not all gcc versions like the 
+  // attribute at this place. 
+#if defined( __GNUC__) && (__GNUC__ == 4 && __GNUC_MINOR__ <= 1)
+  template<int EASDIF_FR_CONST_FLAG>
+  class FRIterator;
+#else
   template<int EASDIF_FR_CONST_FLAG>
   class EASDIF_API FRIterator;
-
-
+#endif
 
 
   /** 
