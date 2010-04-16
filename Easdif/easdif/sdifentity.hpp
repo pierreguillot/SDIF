@@ -32,9 +32,12 @@
  * 
  * 
  * 
- * $Id: sdifentity.hpp,v 1.23 2009-11-09 17:16:08 roebel Exp $ 
+ * $Id: sdifentity.hpp,v 1.24 2010-04-16 10:39:44 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.23  2009/11/09 17:16:08  roebel
+ * modify FRIterator declaration according to compiler.
+ *
  * Revision 1.22  2009/10/29 16:10:23  roebel
  * Added some missing mutable and EASDIF_API keywords.
  *
@@ -1111,19 +1114,20 @@ public:
      * \brief add new frame type  (or extend existing)  frame type for the  entity
      *
      * ATTENTION: AddFrameType(const std::string&,const std::string&) is a deprecated function,
-     * use  AddFrameType(const MatrixType&) instead.
+     * use  AddFrameType(const FrameType&) instead.
      *
      * the description is added into the local file type descrption for the entity.
      * It is written  to the file when the entity is opened for wrinting. Therefore, 
      * type descriptors  have to be added to the entity before the file is opened.
      *
-     * AddFrameType() must be used after Easdif::SDIFEntity::AddMatrixType()
+     * AddFrameType() must be used after any new matrix types have been added using
+     * Easdif::SDIFEntity::AddMatrixType()
      *
      * @param frametype string that identifies the  new frame type,
      *  the identifier will use  at most 4 characters
      * @param matrix_description string that defines the matrix elements that may be part  
      * of the frame. Each matrix is descriped by a non empty test of two elements
-     * separated by a single space. The desritoins are separated by semicolon and no semicolon
+     * separated by a single space. The desriptions are separated by semicolon and no semicolon
      * should be present at the end of the matrix_description.
      *
      * Example: 
@@ -1143,7 +1147,8 @@ public:
      * It is written  to the file when the entity is opened for wrinting. Therefore, 
      * type descriptors  have to be added to the entity before the file is opened.
      *
-     * AddFrameType() must be used after Easdif::SDIFEntity::AddMatrixType()
+     * AddFrameType() must be used after any new matrixtypes have been 
+     * established by means of Easdif::SDIFEntity::AddMatrixType().
      *
      * @param frametype frametype to include into type description
      *
