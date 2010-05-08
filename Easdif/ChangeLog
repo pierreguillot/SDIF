@@ -1,3 +1,9 @@
+2010-05-08  axel roebel  <roebel@sam.localdomain>
+Version 1.4.11
+
+	* easdif/sdifentity.cpp :
+	Fixed SDIFEntity::GetStreamSelection to properly establish the selected streams.
+
 2009-02-18  Axel Roebel  <Axel.Roebel@ircam.fr>
 Version 1.4.10
 
@@ -9,13 +15,13 @@ Version 1.4.9
 
 	* matlab/Fsdif_read_handler.cpp:
 	Removed debug output.
-	
+
 2008-07-28  Axel Roebel  <Axel.Roebel@ircam.fr>
-	
-	* easdif/sdifexception.hpp : 
+
+	* easdif/sdifexception.hpp :
 	Added all derived exceptions to the public API
 	of the library.
-	
+
 2008-06-20  Axel Roebel  <Axel.Roebel@ircam.fr>
 Version 1.4.8
 
@@ -1140,4 +1146,4 @@ Version 0.21
 	* ChangeLog: Added changelog to repository.
 
 
-$Id: ChangeLog,v 1.81 2009-02-18 17:08:15 roebel Exp $
+$Id: ChangeLog,v 1.82 2010-05-08 19:41:22 roebel Exp $
