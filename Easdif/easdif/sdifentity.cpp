@@ -32,9 +32,12 @@
  * 
  * 
  * 
- * $Id: sdifentity.cpp,v 1.44 2009-07-31 21:25:47 roebel Exp $ 
+ * $Id: sdifentity.cpp,v 1.45 2010-05-08 19:35:55 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.44  2009/07/31 21:25:47  roebel
+ * Replaced std::list<SDIFLocation> types by Directory typedef.
+ *
  * Revision 1.43  2008/05/31 22:54:15  roebel
  * Fixed TestFrameSelection and TestMatrixSelection in case no high-level selection is active.
  *
@@ -1052,10 +1055,10 @@ bool SDIFEntity::GetStreamSelection(SelectionSet<unsigned int> &out) const
     SdifSelectIntMaskT &mask = efile->Selection->streammask;
     if(mask.num == 0)
       return true;
-    int len = mask.max;
+    int len = mask.max+1;
     for(int ii=0;ii<len;++ii)
       if(mask.mask[ii])
-        out.insert(mask.mask[ii]);
+        out.insert(ii);
     if( mask.openend)
       out.setOpen();
   }
