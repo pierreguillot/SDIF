@@ -6,7 +6,7 @@
  * @brief  handle write file io in matlab
  * 
  *
- * $Revision: 1.6 $   last changed on $Date: 2009-11-02 20:14:39 $
+ * $Revision: 1.7 $   last changed on $Date: 2010-12-14 17:36:24 $
  *
  *                                 Copyright (c) 2008 by IRCAM
  */
@@ -134,7 +134,7 @@ writeData(Easdif::SDIFEntity *p, const mxArray *toWrite) {
         for(int ic=0;ic!=mat.GetNbCols();++ic)
           mat.SetCol(reinterpret_cast<SdifInt2*> (mxGetData(data))+ic*mat.GetNbRows(),ic);
       }
-      else if(mxIsInt16(data)){       
+      else if(mxIsInt32(data)){       
         mat.Init(SdifStringToSignature(msig+3), mxGetM(data), mxGetN(data), eInt4);        
         for(int ic=0;ic!=mat.GetNbCols();++ic)
           mat.SetCol(reinterpret_cast<SdifInt4*> (mxGetData(data))+ic*mat.GetNbRows(),ic);
