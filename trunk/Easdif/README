@@ -1,5 +1,5 @@
 # Easdif README
-# $Id: README,v 1.17 2011-03-28 22:51:58 roebel Exp $
+# $Id: README,v 1.18 2011-03-28 23:13:07 roebel Exp $
 #
 # Copyright (C) Ircam 2002-2008
 
@@ -170,8 +170,16 @@ The choices that  exist are related to the  architecture, the compiler
 and the deployment  target your matlab has been  compiled for. In most
 cases matlab uses the gcc 4.0 compiler, and deployment target 10.5.
 
-The corrsponding choices can be made by means of comand line switches of the
-cmake command line as follows.
+The corrsponding choices can be  made by means of comand line switches
+of  the  cmake  command  line  as  follows. You  have  to  adjust  the
+architecture according  to the  Matlab you are  using.  You  find your
+matlab architecture by  issuing mexext on the matlab  comand line.  If
+you get mexmaci you should use 
+ -DCMAKE_OSX_ARCHITECTURES:STRING=x86_64
+and in case you get mexmaci 
+ -DCMAKE_OSX_ARCHITECTURES:STRING=i368
+
+Here the the command line for 64 bit Matlab.
 
 CC=gcc-4.0 CXX=g++-4.0 cmake ../EASDIF_SDIF -DCMAKE_OSX_ARCHITECTURES:STRING=x86_64 -DCMAKE_OSX_SYSROOT:STRING=/Developer/SDKs/MacOSX10.5.sdk -DCMAKE_MACOSX_DEPLOYMENT_TARGET=10.5 -DEASDIF_BUILD_MEX:BOOL=ON 
 
