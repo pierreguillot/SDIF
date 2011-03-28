@@ -1,5 +1,5 @@
 # Easdif README
-# $Id: README,v 1.16 2009-10-29 14:02:10 roebel Exp $
+# $Id: README,v 1.17 2011-03-28 22:51:58 roebel Exp $
 #
 # Copyright (C) Ircam 2002-2008
 
@@ -42,7 +42,7 @@ X,  Visual C++  and Borland  C++ on  Windows and  other  build systems
 should be directly supported.
  
 To configure  and compile Easdif  using the cmake  build configuration
-you should use cmake version  2.4.7. Earlier versions may work for you
+you should use cmake version  2.8.0. Earlier versions may work for you
 but,  they are are  not tested.   After installing  cmake you  need to
 extract the  Easdif distribution, and  create and cd into  a dedicated
 build directory.   To configure and  compile using Unix  makefiles you
@@ -92,6 +92,8 @@ target you want to build and  select build from there.  Note, that you
 should never  use the ALL  target because not  all of the  targets are
 supported in Xcode.
 
+For mex interface compilation under MAc SO 10.6 see below
+
 # Windows 
 ---------
 
@@ -120,6 +122,8 @@ untested for all the IDEs like Xcode and MSVC).
 To configure for comilation of the mex interface use
 
 $> cmake -DEASDIF_BUILD_MEX:BOOL=on path_to_top_level_easdif_dir
+
+See below for further info for configuring on Mac OS 10.6.
 
 To build for use in  matlab do
 
@@ -157,6 +161,23 @@ $> make install
 
 Mex wrappers and m-files  will be installed in 
 ${CMAKE_INSTALL_PREFIX}/lib/matlab.
+
+# Configuring the Matlab Mex interface for Mac OS 10.6
+-----------------------------------------------------
+
+You need to configure Easdif  according to the matlab version you use.
+The choices that  exist are related to the  architecture, the compiler
+and the deployment  target your matlab has been  compiled for. In most
+cases matlab uses the gcc 4.0 compiler, and deployment target 10.5.
+
+The corrsponding choices can be made by means of comand line switches of the
+cmake command line as follows.
+
+CC=gcc-4.0 CXX=g++-4.0 cmake ../EASDIF_SDIF -DCMAKE_OSX_ARCHITECTURES:STRING=x86_64 -DCMAKE_OSX_SYSROOT:STRING=/Developer/SDKs/MacOSX10.5.sdk -DCMAKE_MACOSX_DEPLOYMENT_TARGET=10.5 -DEASDIF_BUILD_MEX:BOOL=ON 
+
+For  csh you have  to set  the environment  variables that  select the
+compiler  before running  the cmake  command.  Please  note,  that you
+cannot change the compiler for a configured build directory.
 
 # SWIG Wrappers
 ===============
