@@ -6,7 +6,7 @@
  * @brief  handle write file io in matlab
  * 
  *
- * $Revision: 1.7 $   last changed on $Date: 2010-12-14 17:36:24 $
+ * $Revision: 1.8 $   last changed on $Date: 2011-03-28 23:03:18 $
  *
  *                                 Copyright (c) 2008 by IRCAM
  */
@@ -334,7 +334,9 @@ void addIDSs(Easdif::SDIFEntity* p, const mxArray *pIDS) {
   mexWarnMsgTxt("Fsdif_write_handler :: Writing of IDS String not yet supported - skipped");
 }
 
-
+#ifdef GCC_HAS_VISIBILITY
+__attribute__ ((visibility("default")))
+#endif
 void 
 mexFunction (int nlhs, mxArray *plhs [], int nrhs, const mxArray *prhs [])
 {

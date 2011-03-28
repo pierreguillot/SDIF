@@ -6,7 +6,7 @@
  * @brief  handle read file io in matlab
  * 
  *
- * $Revision: 1.14 $   last changed on $Date: 2009-11-02 20:14:39 $
+ * $Revision: 1.15 $   last changed on $Date: 2011-03-28 23:03:18 $
  *
  *                                    Copyright (c) 2008 by IRCAM
  * 
@@ -426,7 +426,9 @@ createMData(Easdif::SDIFEntity::const_iterator& it, int& ii, mxArray *mxData,
   ii += it.GetLoc().LocNbMatrix();
 }
 
-
+#ifdef GCC_HAS_VISIBILITY
+__attribute__ ((visibility("default")))
+#endif
 void 
 mexFunction (int nlhs, mxArray *plhs [], int nrhs, const mxArray *prhs [])
 {

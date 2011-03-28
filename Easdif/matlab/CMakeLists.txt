@@ -69,8 +69,6 @@ void mexFunction (int nlhs, mxArray *plhs [], int nrhs, const mxArray *prhs []){
       SET(MEXFLAGBUILDTYPE CXXOPTIMFLAGS)
     ENDIF(${CMAKE_BUILD_TYPE} MATCHES "debug")
     
-    SET(ADDFLAGS -DSIZEOF_VOID_P=${CMAKE_SIZEOF_VOID_P})
-    
     STRING(REGEX REPLACE ".*[^L][^D]${MEXFLAGBUILDTYPE}[ \t]*=[ \t]*\([^\n\r]*\).*" "\\1" MEXORIFLAGS ${out})
     STRING(REGEX REPLACE ".*[^L][^D]LDFLAGS[ \t]*=[ \t]*\([^\n\r]*\).*" "\\1" MEXORILDFLAGS ${out})
     STRING(REGEX REPLACE ".*[^L][^D]LDCXXFLAGS[ \t]*=[ \t]*\([^\n\r]*\).*" "\\1" MEXORILDCXXFLAGS ${out})
@@ -87,9 +85,12 @@ void mexFunction (int nlhs, mxArray *plhs [], int nrhs, const mxArray *prhs []){
     SET(CMAKE_SHARED_LIBRARY_CXX_FLAGS)
 
 
-    SET(ADDCFLAGS "-DEASDIF_MATLAB_VERSION=${EASDIF_MATLAB_VERSION_MAJ}.${EASDIF_MATLAB_VERSION_MIN}.${EASDIF_MATLAB_VERSION_REL}")
+    SET(ADDCFLAGS "-DEASDIF_MATLAB_VERSION=${EASDIF_MATLAB_VERSION_MAJ}.${EASDIF_MATLAB_VERSION_MIN}.${EASDIF_MATLAB_VERSION_REL} -DEASDIF_IS_STATIC")
 
-    
+    IF(GCC_HAS_VISIBILITY)
+      SET(ADDCFLAGS "${ADDCFLAGS} -DGCC_HAS_VISIBILITY -fvisibility=hidden")
+    ENDIF(GCC_HAS_VISIBILITY)
+
     ADD_CUSTOM_TARGET(mex)      
     SET(INSTALL_MEX_FILES )
     MACRO(MEXCOMPILE_FILES )
