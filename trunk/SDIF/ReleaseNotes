@@ -1,3 +1,8 @@
+Version 3.11.3   20011 TBC  Diemo Schwarz
+
+	* SdifQuery reallocates SdifQueryTree dynamically 
+	  (now even ircamdescriptor output files can be queried)
+
 Version 3.11.2   2009-08-10  Diemo Schwarz
 
 	* fix matrix selection for SdifQuery: In SdifReadFile
