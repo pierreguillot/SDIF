@@ -1,4 +1,4 @@
-/* $Id: sdif.h,v 1.68 2009-10-19 17:01:28 diemo Exp $
+/* $Id: sdif.h,v 1.69 2011-04-06 17:08:45 diemo Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -30,6 +30,9 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.68  2009/10/19 17:01:28  diemo
+ * added prototype for SdifFreeQueryTree
+ *
  * Revision 1.67  2009/04/20 14:18:37  diemo
  * example for SdifSelectAddSignature
  * move SDIF_API out of generating macro, to avoid it in SdifSelect.c (error on windows compilation)
@@ -317,7 +320,7 @@
  * Revision 1.1.2.1  2000/08/21  13:07:41  tisseran
  * *** empty log message ***
  *
- * $Date: 2009-10-19 17:01:28 $
+ * $Date: 2011-04-06 17:08:45 $
  *
  */
 
@@ -332,7 +335,7 @@ extern "C" {
 #endif
 
 
-static const char _sdif_h_cvs_revision_ [] = "$Id: sdif.h,v 1.68 2009-10-19 17:01:28 diemo Exp $";
+static const char _sdif_h_cvs_revision_ [] = "$Id: sdif.h,v 1.69 2011-04-06 17:08:45 diemo Exp $";
 
 #ifdef HAVE_STDINT_H
 #include <stdint.h>
@@ -2223,7 +2226,7 @@ typedef struct
 } SdifQueryTreeT;
 
 
-/* allocate query tree for max elements */
+/* allocate query tree, starting with max elements (will be reallocated dynamically) */
 SDIF_API SdifQueryTreeT *SdifCreateQueryTree(int max);
 
 /* clean all elements from tree */

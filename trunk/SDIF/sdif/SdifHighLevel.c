@@ -24,11 +24,15 @@
  *                            sdif@ircam.fr
  */
 
-/* $Id: SdifHighLevel.c,v 3.20 2009-08-10 17:22:23 diemo Exp $
+/* $Id: SdifHighLevel.c,v 3.21 2011-04-06 17:08:45 diemo Exp $
  *
  * SdifHighLevel.c	8.12.1999	Diemo Schwarz
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.20  2009/08/10 17:22:23  diemo
+ * fix matrix selection for SdifQuery: In SdifReadFile function, check if
+ * matrix header is selected before calling matrix callback.
+ *
  * Revision 3.19  2009/04/09 09:54:43  diemo
  * comm
  *
@@ -344,12 +348,10 @@ int GetSigIndex (SdifQueryTreeT *tree, SdifSignature s, int parent, int stream)
     if (i == tree->num)
     {   /* add new signature */
 	if (tree->num >= tree->allocated)
-	{
-	    char msg[_SdifStringLen];
-	    snprintf(msg, sizeof(msg), "Too many different signatures, "
-		     "can't handle more than %d!\n", tree->allocated);
-	    _SdifError(eArrayPosition, msg);
-	    return (tree->num - 1);
+	{ /* grow elems array */
+	    tree->allocated += 1024;
+	    tree->elems     = SdifRealloc(tree->elems, SdifQueryTreeElemT,  
+					  tree->allocated);
 	}
 
 	node         = &tree->elems[i];
