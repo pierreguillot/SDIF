@@ -1,4 +1,4 @@
-/* $Id: SdifErrMess.c,v 3.26 2008-01-09 16:09:16 bogaards Exp $
+/* $Id: SdifErrMess.c,v 3.27 2011-04-12 14:18:18 roebel Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -31,6 +31,9 @@
  * author: Dominique Virolle 1998
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.26  2008/01/09 16:09:16  bogaards
+ * clarified error message for badly formed strings
+ *
  * Revision 3.25  2006/02/03 11:36:45  roebel
  * Fixed SdifFsPrintError which now creates a proper
  * error message. Before the error messages were
@@ -411,11 +414,16 @@ SdifFsPrintError(char* oErrMess, unsigned int oErrMessLen,
 
     if (SdifF)
     {
-	if (SdifF->Stream)
-	    SdiffGetPos(SdifF->Stream, &(SdifF->Pos));
-	if (SdifF->Pos !=0)
+        long printable_pos = 0;
+        if (SdifF->Stream) {
+            /* cannot use SdifF->Pos for printing any more but still call SdiffGetPos to not chnage the 
+             * to keep the internal position info coherent with previous versions of the library */
+            SdiffGetPos(SdifF->Stream, &(SdifF->Pos));
+            printable_pos = ftell(SdifF->Stream);
+        }
+	if (printable_pos !=0)
 	    snprintf(PosErrMess, sizeof(PosErrMess), " (byte:%6lu=0x%04lx=0%06lo)", 
-		    SdifF->Pos, SdifF->Pos, SdifF->Pos);
+		    printable_pos, printable_pos, printable_pos);
 
 	if (SdifF->TextStream)
 	    snprintf(TextErrMess, sizeof(TextErrMess), ", TextFile: %s\n", SdifF->TextStreamName);

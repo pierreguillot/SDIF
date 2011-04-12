@@ -1,4 +1,4 @@
-/* $Id: SdifFile.c,v 3.61 2007-12-10 10:47:08 roebel Exp $
+/* $Id: SdifFile.c,v 3.62 2011-04-12 14:18:18 roebel Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -33,6 +33,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.61  2007/12/10 10:47:08  roebel
+ * Use const char* for read only function arguments.
+ *
  * Revision 3.60  2007/11/26 18:52:01  roebel
  * Changed data types to have less casts and
  * less compilation warnings with MSVC.
@@ -1359,11 +1362,15 @@ int SdifFRewind(SdifFileT *file)
 int SdifFTruncate(SdifFileT *file)
 {
 #ifdef HAVE_FTRUNCATE
-  SdiffPosT pos;
-  SdiffGetPos(file->Stream, &pos);
+  off_t pos = ftello(file->Stream);
   return (ftruncate(fileno(file->Stream), pos) == 0);
 #else
+#  if defined(WIN32)
+  __int64 pos = ftelli64(file->Stream);
+  return __chsize_s(_fileno(file->Stream), pos) == 0);
+#  else
   return SDIFFTRUNCATE_NOT_AVAILABLE;
+#  endif
 #endif
 
 }
@@ -1372,7 +1379,8 @@ int SdifFTruncate(SdifFileT *file)
 
 /* Get position in file.
    [return] file offset or -1 for error.
-   SdiffPosT is actually long.
+   SdiffPosT is a plattform dependent type that should correctly work with long files. 
+   Note, that the type may not be a integral type
  */
 int SdifFGetPos(SdifFileT *file, SdiffPosT *pos)
 {
@@ -1382,7 +1390,9 @@ int SdifFGetPos(SdifFileT *file, SdiffPosT *pos)
 
 
 /* Set absolute position in file.
-   SdiffPosT is actually long.
+   SdiffPosT is a plattform dependent type that should correctly work with long files. 
+   Note, that the type may not be a integral type
+
    [Return] 0 on success, 
 	   -1 on error (errno is set, see fseek(3) for details)
 
