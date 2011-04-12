@@ -1,4 +1,4 @@
-/* $Id: sdif.h,v 1.69 2011-04-06 17:08:45 diemo Exp $
+/* $Id: sdif.h,v 1.70 2011-04-12 14:18:18 roebel Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -30,6 +30,9 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.69  2011/04/06 17:08:45  diemo
+ * realloc query tree
+ *
  * Revision 1.68  2009/10/19 17:01:28  diemo
  * added prototype for SdifFreeQueryTree
  *
@@ -320,7 +323,7 @@
  * Revision 1.1.2.1  2000/08/21  13:07:41  tisseran
  * *** empty log message ***
  *
- * $Date: 2011-04-06 17:08:45 $
+ * $Date: 2011-04-12 14:18:18 $
  *
  */
 
@@ -335,7 +338,7 @@ extern "C" {
 #endif
 
 
-static const char _sdif_h_cvs_revision_ [] = "$Id: sdif.h,v 1.69 2011-04-06 17:08:45 diemo Exp $";
+static const char _sdif_h_cvs_revision_ [] = "$Id: sdif.h,v 1.70 2011-04-12 14:18:18 roebel Exp $";
 
 #ifdef HAVE_STDINT_H
 #include <stdint.h>
@@ -450,7 +453,6 @@ SDIF_API int SdifFTruncate(SdifFileT *file);
 /*DOC:
   Get position in file.
   [return] file offset or -1 for error.
-  SdiffPosT is actually long.
  */
 int SdiffGetPos(SdifFileT *file, SdiffPosT *pos);
 
@@ -468,32 +470,37 @@ int SdiffSetPos(SdifFileT *file, SdiffPosT *pos);
 #endif  /* if 0 */
 
 
-/* to do fpos_t compatible on MacinTosh */
-#if defined(MACINTOSH) || defined(WIN32)
-    /* on mac or windows, seeking on a stream is always considered
+/* support file positions with files larger than 2GB */
+#if defined(WIN32)
+    /* on  windows, seeking on a stream is always considered
        successful (return 0)! */
-#   define SdiffPosT            long
+#   define SdiffPosT            __int64
+/* these 2 are used only localy here to test whether the stream supports seeking */ 
 #   define SdiffIsFile(f)       ((f)!=stdin && (f)!=stdout && (f)!=stderr)
-#   define Sdiffftell(f)        (SdiffIsFile(f)  ?  ftell(f)  :  0)
+#   define Sdiffftell(f)        (SdiffIsFile(f)  ?  _ftelli64(f)  :  0)
 #   define SdiffGetPos(f,p)     ((*(p) = Sdiffftell(f)) == -1  ?  -1  :  0)
 #   define SdiffSetPos(f,p)     (SdiffIsFile(f)  \
-                                    ?  fseek(f, (long)(*(p)), SEEK_SET)  :  0)
+                                    ?  _fseeki64(f, (long)(*(p)), SEEK_SET)  :  0)
 #else
-/*
+
 #   define SdiffPosT            fpos_t
 #   define SdiffGetPos(f,p)     fgetpos((f),(p))
 #   define SdiffSetPos(f,p)     fsetpos((f),(p))
 
+/*
 #   define SdiffGetPos(f,p)     ((*(p) = ftell(f)) == -1  ?  -1  :  0)
 #   define SdiffSetPos(f,p)     (fseek(f, (long)(*(p)), SEEK_SET))
 */
 
+
 /*DS: FORCE long fpos*/
 /* ftell/fseek can be applied to stdin/out/err at least in a restricted manner
  * (same as fgetpos/fsetpos) so let's try */
+/* don't use ftell any more because it does not support files larger 2GB
 #   define SdiffPosT            long
 #   define SdiffGetPos(f,p)     ((*(p) = ftell(f)) == -1  ?  -1  :  0)
 #   define SdiffSetPos(f,p)     (fseek(f, (long)(*(p)), SEEK_SET))
+*/
 #endif
 
 
@@ -501,13 +508,15 @@ int SdiffSetPos(SdifFileT *file, SdiffPosT *pos);
 /*DOC:
   Get position in file.
   [return] file offset or -1 for error.
-  SdiffPosT is actually long.
+  SdiffPosT is a plattform dependent type that should correctly work with long files. 
+  Note, that the type may not be a integral type
  */
 SDIF_API int SdifFGetPos(SdifFileT *file, SdiffPosT *pos);
 
 /*DOC:
   Set absolute position in file.
-  SdiffPosT is actually long.
+  SdiffPosT is a plattform dependent type that should correctly work with long files. 
+  Note, that the type may not be a integral type.
   [Return] 0 on success, 
           -1 on error (errno is set, see fseek(3) for details)
 
