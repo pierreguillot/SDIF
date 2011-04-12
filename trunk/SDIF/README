@@ -1,6 +1,6 @@
 
 # SDIF README
-# $Id: README,v 3.5 2006-05-11 16:39:35 schwarz Exp $
+# $Id: README,v 3.6 2011-04-12 20:17:33 roebel Exp $
 
 (C) Copyright Ircam 1998-2003
 
@@ -18,7 +18,6 @@ parameters of analyses, syntheses...
 # Installation and compilation
 
 Refer to the file INSTALL
-
 
 # Utilisation
 
@@ -43,6 +42,12 @@ you must execute:
 
 There is an HTML documentation in doc directory. 
 
+# Large file support
+
+starting from version 3.11.3 sdif files being larger than 2GB are supported on
+Mac OS X, Windows, and for all systems using the gcc compiler that support
+enabling large file support by means of setting the  compiler macro 
+_FILE_OFFSET_BITS=64.
 
 # License Agreement
 
