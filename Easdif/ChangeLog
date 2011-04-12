@@ -1,3 +1,9 @@
+2011-04-12  Axel Roebel  <roebel@ANA-1873-Roebel.local>
+Version 1.4.12
+
+	* CMakeLists.txt :
+	Enable large file support ine Easdif and SDIF.
+
 2010-05-08  axel roebel  <roebel@sam.localdomain>
 Version 1.4.11
 
@@ -1146,4 +1152,4 @@ Version 0.21
 	* ChangeLog: Added changelog to repository.
 
 
-$Id: ChangeLog,v 1.82 2010-05-08 19:41:22 roebel Exp $
+$Id: ChangeLog,v 1.83 2011-04-12 20:17:55 roebel Exp $
