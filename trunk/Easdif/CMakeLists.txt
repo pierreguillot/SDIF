@@ -39,7 +39,7 @@ ENDIF(COMMAND cmake_policy)
 
 SET(EASDIF_VERSION_MAJ 1)
 SET(EASDIF_VERSION_MIN 4)
-SET(EASDIF_VERSION_RELEASE 11)
+SET(EASDIF_VERSION_RELEASE 12)
 SET(EASDIF_VERSION  "${EASDIF_VERSION_MAJ}.${EASDIF_VERSION_MIN}.${EASDIF_VERSION_RELEASE}")
 
 MESSAGE(STATUS "===============================================================")
@@ -106,6 +106,10 @@ IF(CMAKE_COMPILER_IS_GNUCXX)
       ADD_DEFINITIONS(-DGCC_HAS_VISIBILITY -fvisibility=hidden)
     ENDIF(GCC_HAS_VISIBILITY)
   ENDIF(NOT WIN32)
+  # many gcc implementations enable large file support when the 
+  # macro _FILE_OFFSET_BITS is compiled. We set it here, it will not harm if gcc does 
+  # honor it. In that case we are using the default large file support of the compiler
+  ADD_DEFINITIONS(-D_FILE_OFFSET_BITS=64)
 ENDIF(CMAKE_COMPILER_IS_GNUCXX)
 
 # set default values for build type and install prefix
