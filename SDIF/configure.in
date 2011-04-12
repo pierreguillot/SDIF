@@ -1,5 +1,5 @@
 dnl -*-autoconf-*-  (Tell emacs it's an autoconf file!)
-dnl $Id: configure.in,v 1.78 2011-04-06 17:08:07 diemo Exp $
+dnl $Id: configure.in,v 1.79 2011-04-12 20:17:33 roebel Exp $
 dnl
 dnl configure.in		September 2000		Patrice Tisserand
 dnl
@@ -31,6 +31,9 @@ dnl send email to:  sdif@ircam.fr
 
 
 dnl $Log: not supported by cvs2svn $
+dnl Revision 1.78  2011/04/06 17:08:07  diemo
+dnl v3.11.3
+dnl
 dnl Revision 1.77  2009/08/10 17:21:05  diemo
 dnl version 3.11.2
 dnl
@@ -378,6 +381,14 @@ dnl Check for BigEndian (WORDS_BIGENDIAN)
 AC_C_BIGENDIAN 
 dnl Check for Long 64 bits
 AC_CHECK_SIZEOF(long)
+
+dnl Add compiler/linker flags for large file support
+if test "$GCC" = "yes"; then
+     # many gcc implementations enable large file support when the 
+     # macro _FILE_OFFSET_BITS is compiled. We set it here, it will not harm if gcc does 
+     # honor it. In that case we are using the default large file support of the compiler
+     EXTERNAL_CFLAGS="$EXTERNAL_CFLAGS -D_FILE_OFFSET_BITS=64"
+fi
 	
 dnl ############################################################
 dnl Check for multi-character character constant inversion

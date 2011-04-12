@@ -1,4 +1,4 @@
-/* $Id: SdifErrMess.c,v 3.27 2011-04-12 14:18:18 roebel Exp $
+/* $Id: SdifErrMess.c,v 3.28 2011-04-12 20:17:32 roebel Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -31,6 +31,9 @@
  * author: Dominique Virolle 1998
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.27  2011/04/12 14:18:18  roebel
+ * Fixed Sdif[fF]GetPos and Sdif[fF]SetPos to correctly support large files (>2GB).
+ *
  * Revision 3.26  2008/01/09 16:09:16  bogaards
  * clarified error message for badly formed strings
  *
@@ -414,16 +417,12 @@ SdifFsPrintError(char* oErrMess, unsigned int oErrMessLen,
 
     if (SdifF)
     {
-        long printable_pos = 0;
-        if (SdifF->Stream) {
-            /* cannot use SdifF->Pos for printing any more but still call SdiffGetPos to not chnage the 
-             * to keep the internal position info coherent with previous versions of the library */
+        if (SdifF->Stream) 
             SdiffGetPos(SdifF->Stream, &(SdifF->Pos));
-            printable_pos = ftell(SdifF->Stream);
-        }
-	if (printable_pos !=0)
-	    snprintf(PosErrMess, sizeof(PosErrMess), " (byte:%6lu=0x%04lx=0%06lo)", 
-		    printable_pos, printable_pos, printable_pos);
+
+	if (SdifF->Pos !=0)
+	    snprintf(PosErrMess, sizeof(PosErrMess), " (byte:%6llu=0x%04llx=0%06llo)", 
+                     (long long) SdifF->Pos, (long long) SdifF->Pos, (long long) SdifF->Pos);
 
 	if (SdifF->TextStream)
 	    snprintf(TextErrMess, sizeof(TextErrMess), ", TextFile: %s\n", SdifF->TextStreamName);
@@ -454,7 +453,7 @@ SdifFsPrintError(char* oErrMess, unsigned int oErrMessLen,
     {
       case eNoError:
       case eUnknown:
-	  snprintf(ErrErrMess, sizeof(ErrErrMess), gSdifErrMessFormat[ErrorTag].UserMess);
+          snprintf(ErrErrMess, sizeof(ErrErrMess), "%s", gSdifErrMessFormat[ErrorTag].UserMess);
       break;
 
       case eBadMode:
