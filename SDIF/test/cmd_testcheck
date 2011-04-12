@@ -32,6 +32,7 @@ fi
 
 $QUERYPROG $FILE
 if [ "$?" != "0" ] ; then
+  echo querysdif returns an error for $FILE.
   exit 1;
 fi
   
