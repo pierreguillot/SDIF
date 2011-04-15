@@ -1,4 +1,4 @@
-/* $Id: SdifTimePosition.c,v 3.9 2005-04-07 15:56:48 schwarz Exp $
+/* $Id: SdifTimePosition.c,v 3.10 2011-04-15 23:21:31 roebel Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -32,6 +32,10 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.9  2005/04/07 15:56:48  schwarz
+ * removed some now empty local include files,
+ * added include of <sdif.h> and "SdifGlobals.h"
+ *
  * Revision 3.8  2003/11/07 21:47:18  roebel
  * removed XpGuiCalls.h and replaced preinclude.h  by local files
  *
@@ -80,8 +84,8 @@
 
 
 #include <stdlib.h>
-#include <sdif.h>
 #include "sdif_portability.h"
+#include "sdif.h"
 #include "SdifErrMess.h"
 
 
