@@ -1,4 +1,4 @@
-/* $Id: SdifSignatureTab.c,v 3.7 2007-11-26 18:50:48 roebel Exp $
+/* $Id: SdifSignatureTab.c,v 3.8 2011-04-15 23:21:31 roebel Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -30,6 +30,11 @@
  * Handling of a Table of Signatures
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.7  2007/11/26 18:50:48  roebel
+ * Changed data types to have less casts and
+ * less compilation warnings with MSVC.
+ * renamed some functions that are deprecated in MSVC.
+ *
  * Revision 3.6  2005/04/07 15:56:48  schwarz
  * removed some now empty local include files,
  * added include of <sdif.h> and "SdifGlobals.h"
@@ -57,7 +62,7 @@
 
 #include "sdif_portability.h"
 
-#include <sdif.h>
+#include "sdif.h"
 #include "SdifGlobals.h"
 
 
