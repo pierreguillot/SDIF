@@ -243,7 +243,52 @@ IF(NOT "${CURRENTCONFIG}" STREQUAL "${SDIFCMCONFIGURED}")
   FILE(WRITE ${PROJECT_BINARY_DIR}/sdifconfig/config.h ${SDIFCMCONFIGURED})
 ENDIF(NOT "${CURRENTCONFIG}" STREQUAL "${SDIFCMCONFIGURED}")
 
+
+#select 64bit int type for position type
+CHECK_SIZEOF(int64_t 0)
+CHECK_SIZEOF(__int64 0)
+CHECK_SIZEOF("long long" 0)
+CHECK_SIZEOF(loff_t 0)	# Fake default value.
+CHECK_SIZEOF(off64_t 0)	# Fake default value.
+CHECK_SIZEOF(off_t 1)	# Fake default value.
+
+IF(SIZEOF_INT64_T EQUAL 8)
+  MESSAGE(STATUS "use 64bit type int64_t")
+  SET(SDIF_POS_TYPE "int64_t")
+ELSE(SIZEOF_INT64_T EQUAL 8)
+  IF( SIZEOF_OFF64_T EQUAL 8)
+    MESSAGE(STATUS "use 64bit type off64_t")
+    SET(SDIF_POS_TYPE   "off64_t")
+  ELSE( SIZEOF_OFF64_T EQUAL 8)
+    # Check for common 64 bit file offset types.
+    IF( SIZEOF_LOFF_T EQUAL 8)
+      MESSAGE(STATUS "use 64bit type loff_t")
+      SET(SDIF_POS_TYPE "loff_t")
+    ELSE( SIZEOF_LOFF_T EQUAL 8)
+      IF( SIZEOF___INT64 EQUAL 8)
+        MESSAGE(STATUS "use 64bit type __int64")
+	SET(SDIF_POS_TYPE   "__int64")
+      ELSE( SIZEOF___INT64 EQUAL 8)
+        IF( SIZEOF_LONG_LONG EQUAL 8)
+          SET(SDIF_POS_TYPE   "long long")
+        ELSE( SIZEOF_LONG_LONG EQUAL 8)
+          IF( SIZEOF_OFF_T EQUAL 8)
+            # this one may change size with compiler options
+            MESSAGE(STATUS "use 64bit type off_t")
+            SET(SDIF_POS_TYPE   "off_t")
+          ELSE( SIZEOF_OFF_T EQUAL 8)
+            MESSAGE(STATUS "no 64bit integer type found ... use long ")
+            SET(SDIF_POS_TYPE   "long")              
+          ENDIF( SIZEOF_OFF_T EQUAL 8)
+        ENDIF( SIZEOF_LONG_LONG EQUAL 8)
+      ENDIF( SIZEOF___INT64 EQUAL 8)
+    ENDIF( SIZEOF_LOFF_T EQUAL 8)
+  ENDIF( SIZEOF_OFF64_T EQUAL 8)
+ENDIF(SIZEOF_INT64_T EQUAL 8 )  
+
+
 CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/include/sdif_version.h.in ${PROJECT_BINARY_DIR}/sdifconfig/sdif_version.h)
+CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/include/sdif.h.in ${PROJECT_BINARY_DIR}/sdifconfig/sdif.h)
 
 # include special traget to remove cache, system and compiler info
 IF(CMAKE_GENERATOR MATCHES "^Unix Makefiles")
@@ -299,7 +344,7 @@ ENDIF(NOT CMAKE_BUILD_TYPE MATCHES debug)
 
 # install sdif headers
 INSTALL(FILES  ${PROJECT_BINARY_DIR}/sdifconfig/sdif_version.h DESTINATION ${INSTALL_INC_DIR})
-INSTALL(FILES  ${PROJECT_SOURCE_DIR}/include/sdif.h DESTINATION ${INSTALL_INC_DIR})
+INSTALL(FILES  ${PROJECT_SOURCE_DIR}/sdifconfig/sdif.h DESTINATION ${INSTALL_INC_DIR})
 
 
 ADD_SUBDIRECTORY( tools ) 
