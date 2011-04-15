@@ -1,5 +1,5 @@
 dnl -*-autoconf-*-  (Tell emacs it's an autoconf file!)
-dnl $Id: configure.in,v 1.79 2011-04-12 20:17:33 roebel Exp $
+dnl $Id: configure.in,v 1.80 2011-04-15 23:23:43 roebel Exp $
 dnl
 dnl configure.in		September 2000		Patrice Tisserand
 dnl
@@ -31,6 +31,9 @@ dnl send email to:  sdif@ircam.fr
 
 
 dnl $Log: not supported by cvs2svn $
+dnl Revision 1.79  2011/04/12 20:17:33  roebel
+dnl Fixed large file support to properly work on linux as well.
+dnl
 dnl Revision 1.78  2011/04/06 17:08:07  diemo
 dnl v3.11.3
 dnl
@@ -363,10 +366,15 @@ dnl Check for librairies
 dnl Check for headers
 AC_MSG_RESULT(CHECK FOR HEADERS)
 AC_HEADER_STDC
-AC_CHECK_HEADERS( sys/types.h sys/stat.h)
+AC_CHECK_HEADERS( sys/types.h,[HAVE_SYS_TYPES_H=1])
+AC_CHECK_HEADERS( sys/stat.h )
 AC_CHECK_HEADERS(errno.h)
 AC_CHECK_HEADERS(unistd.h)
+AC_CHECK_HEADERS(stdint.h,[HAVE_STDINT_H=1])
 AC_CHECK_FUNCS(getenv)
+
+AC_SUBST(HAVE_STDINT_H)
+AC_SUBST(HAVE_SYS_TYPES_H)
 
 
 dnl ############################################################
@@ -381,6 +389,58 @@ dnl Check for BigEndian (WORDS_BIGENDIAN)
 AC_C_BIGENDIAN 
 dnl Check for Long 64 bits
 AC_CHECK_SIZEOF(long)
+dnl Check for Long 64 bits
+AC_CHECK_SIZEOF(long long)
+dnl Check for Long 64 bits
+AC_CHECK_SIZEOF(int64_t)
+dnl Check for Long 64 bits
+AC_CHECK_SIZEOF(__int64)
+dnl Check for Long 64 bits
+AC_CHECK_SIZEOF(off64_t)
+dnl Check for Long 64 bits
+AC_CHECK_SIZEOF(loff_t)
+dnl Check for Long 64 bits
+AC_CHECK_SIZEOF(off_t)
+
+AC_SUBST(SDIF_POS_TYPE)
+
+if test "$ac_cv_sizeof_int64_t" = 8; then
+  echo "use 64bit type int64_t"
+  SDIF_POS_TYPE="int64_t"
+else
+  if test "$ac_cv_sizeof_off64_t" = 8; then
+    echo "use 64bit type off64_t"
+    SDIF_POS_TYPE="off64_t"
+  else
+    # Check for common 64 bit file offset types.
+    if test "$ac_cv_sizeof_loff_t" = 8; then
+      echo "use 64bit type loff_t"
+      SDIF_POS_TYPE="loff_t"
+    else
+      if test "$ac_cv_sizeof___int64" = 8; then
+        echo "use 64bit type __int64"
+        SDIF_POS_TYPE="__int64"
+      else
+        if test "$ac_cv_sizeof_long_long" = 8; then
+          echo "use 64bit type long long"
+          SDIF_POS_TYPE="long long"
+        else
+          # these 2 will be different for 64bit and 32bit compiler switches, 
+          # only use as a last resort       
+          if test "$ac_cv_sizeof_off_t" = 8; then
+            # this one may change size with compiler options
+            echo "use 64bit type off_t"
+            SDIF_POS_TYPE="off_t"
+          else
+            echo "no 64bit integer type found ... use long "
+            SDIF_POS_TYPE="long"
+          fi
+        fi
+      fi
+    fi
+  fi
+fi
+
 
 dnl Add compiler/linker flags for large file support
 if test "$GCC" = "yes"; then
@@ -532,6 +592,8 @@ AC_MSG_RESULT(yes)
   fi			
 ])
 
+
+
 dnl don't remove
 dnl used by cmake on MacOSX for configuring oif universal binaries
 AC_SUBST(HAVE_MACHINE_ENDIAN_H)
@@ -548,6 +610,7 @@ tools/Makefile
 data/Makefile 
 include/Makefile 
 include/sdif_version.h
+include/sdif.h
 doc/Makefile 
 doc/pics/Makefile 
 doc/extern/Makefile 
