@@ -34,9 +34,13 @@
  * 
  * 
  * 
- * $Id: sdifexception.hpp,v 1.6 2008-07-28 16:19:57 roebel Exp $ 
+ * $Id: sdifexception.hpp,v 1.7 2011-06-11 17:05:31 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.6  2008/07/28 16:19:57  roebel
+ * Added all derived exceptions to the public API
+ * of the library.
+ *
  * Revision 1.5  2008/03/07 19:20:28  roebel
  * consistently define destructor of derived classes
  *
@@ -152,25 +156,9 @@ namespace Easdif {
 		  SdifFileT* _sdifFile,	
 		  int error, // either SdifErrorE or SdifErrorTagE
 		  const char* sourceFileName,
-		  int sourceFileLine) {
+		  int sourceFileLine);
 
-      mSourceFileLine = sourceFileLine;
-      if(sourceFileName)
-	mSourceFileName = std::string(sourceFileName);
-      else
-	mSourceFileName = std::string("");
-      
-      if(message)
-	mMessage = std::string(message);
-      else
-	mMessage = std::string("");
-      
-      mLevel = level;
-      mSdifFile = _sdifFile;
-      mError = error;
-    };
-
-    ~SDIFException() throw() {	};
+    ~SDIFException() throw() ;
 
     /** 
      * \ingroup exception 
@@ -257,9 +245,8 @@ namespace Easdif {
 
 #define constructor(class1,class2) class1(SdifErrorLevelET level,  const char* message, \
 					 SdifFileT* _sdifFile,   int error, \
-					 const char* sourceFileName, int sourceFileLine) \
-  : class2(level,message,_sdifFile,error,sourceFileName,sourceFileLine){} \
-    ~class1() throw() {}
+                                          const char* sourceFileName, int sourceFileLine); \
+  ~class1() throw();
 
   /****************** FILE ERRORS  *************************/
 

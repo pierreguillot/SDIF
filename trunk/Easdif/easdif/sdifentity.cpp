@@ -32,9 +32,12 @@
  * 
  * 
  * 
- * $Id: sdifentity.cpp,v 1.45 2010-05-08 19:35:55 roebel Exp $ 
+ * $Id: sdifentity.cpp,v 1.46 2011-06-11 17:05:31 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.45  2010/05/08 19:35:55  roebel
+ * Fixed SDIFEntity::GetStreamSelection to properly establish the selected streams.
+ *
  * Revision 1.44  2009/07/31 21:25:47  roebel
  * Replaced std::list<SDIFLocation> types by Directory typedef.
  *
@@ -268,6 +271,9 @@ void SdifSelectGetIntMask (SdifListP list, SdifSelectIntMaskP mask);
 
 namespace Easdif {
 
+  MatrixType::~MatrixType() {}
+  FrameType::~FrameType() {}
+
   SDIFEntity::SDIFEntity(): efile(0), mSize(0), mEof(true), mEofSeen(false),
                             mOpen(0), generalHeader(0), asciiChunks(0), 
                             isFrameDirEnabled(false), 
@@ -277,6 +283,13 @@ namespace Easdif {
   {
     mFirstFramePos = 0;
   };
+
+  SDIFEntity::~SDIFEntity()
+  {	    
+    Close();
+  };
+
+
 
 /* to open a file in mode Read  */
 bool SDIFEntity::OpenRead(const char* filename)

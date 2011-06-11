@@ -30,6 +30,99 @@
 #include "easdif/sdifexception.hpp"
 
 namespace Easdif {
+
+  SDIFException::SDIFException(SdifErrorLevelET level,
+                               const char* message,
+                               SdifFileT* _sdifFile,	
+                               int error, // either SdifErrorE or SdifErrorTagE
+                               const char* sourceFileName,
+                               int sourceFileLine) {
+    
+    mSourceFileLine = sourceFileLine;
+    if(sourceFileName)
+      mSourceFileName = std::string(sourceFileName);
+    else
+      mSourceFileName = std::string("");
+    
+    if(message)
+      mMessage = std::string(message);
+    else
+      mMessage = std::string("");
+    
+    mLevel = level;
+    mSdifFile = _sdifFile;
+    mError = error;
+  };
+
+  SDIFException::~SDIFException() throw() {	
+  };
+
+#define constructor_impl(class1,class2) class1::class1(SdifErrorLevelET level,  const char* message, \
+                                                       SdifFileT* _sdifFile,   int error, \
+                                                       const char* sourceFileName, int sourceFileLine) \
+    : class2(level,message,_sdifFile,error,sourceFileName,sourceFileLine){}
+
+  constructor_impl(SDIFFileError,SDIFException)
+  constructor_impl(SDIFOpeningError,SDIFFileError)
+  constructor_impl(SDIFReadWriteOnSameFile,SDIFOpeningError)
+  constructor_impl(SDIFBadStdFile,SDIFOpeningError)
+  constructor_impl(SDIFBadMode,SDIFOpeningError)
+  constructor_impl(SDIFHeaderError,SDIFFileError)
+  constructor_impl(SDIFFrameHeaderSizeError,SDIFFileError)
+  constructor_impl(SDIFDirError,SDIFFileError)
+  constructor_impl(SDIFSeekError,SDIFFileError)
+  constructor_impl(SDIFBadFormatVersion,SDIFHeaderError)
+  constructor_impl(SDIFBadHeader,SDIFHeaderError)
+  constructor_impl(SDIFAsciiChunkError,SDIFFileError)
+  constructor_impl(SDIFReDefined,SDIFAsciiChunkError)
+  constructor_impl(SDIFUnDefined,SDIFAsciiChunkError)
+  constructor_impl(SDIFReading,SDIFFileError)
+  constructor_impl(SDIFEof,SDIFReading)
+  constructor_impl(SDIFDescriptionTypeError,SDIFException)
+  constructor_impl(SDIFMatrixDataError,SDIFException)
+  constructor_impl(SDIFNotInDataTypeUnion,SDIFMatrixDataError)
+  constructor_impl(SDIFArrayPosition,SDIFMatrixDataError)
+  constructor_impl(SDIFMemoryError,SDIFException)
+  constructor_impl(SDIFFreeNull,SDIFMemoryError)
+  constructor_impl(SDIFAllocFail,SDIFMemoryError)
+  constructor_impl(SDIFTextReadingError,SDIFException)
+  constructor_impl(SDIFMatrixNotAvailable,SDIFException)
+  constructor_impl(SDIFTokenLength,SDIFTextReadingError)
+  constructor_impl(FrameDirError,SDIFException)
+  constructor_impl(TypeError,SDIFException)
+  
+
+#define destructor(class1) class1::~class1() throw() {}
+
+  destructor(SDIFFileError)
+  destructor(SDIFOpeningError)
+  destructor(SDIFReadWriteOnSameFile)
+  destructor(SDIFBadStdFile)
+  destructor(SDIFBadMode)
+  destructor(SDIFHeaderError)
+  destructor(SDIFFrameHeaderSizeError)
+  destructor(SDIFDirError)
+  destructor(SDIFSeekError)
+  destructor(SDIFBadFormatVersion)
+  destructor(SDIFBadHeader)
+  destructor(SDIFAsciiChunkError)
+  destructor(SDIFReDefined)
+  destructor(SDIFUnDefined)
+  destructor(SDIFReading)
+  destructor(SDIFEof)
+  destructor(SDIFDescriptionTypeError)
+  destructor(SDIFMatrixDataError)
+  destructor(SDIFNotInDataTypeUnion)
+  destructor(SDIFArrayPosition)
+  destructor(SDIFMemoryError)
+  destructor(SDIFFreeNull)
+  destructor(SDIFAllocFail)
+  destructor(SDIFTextReadingError)
+  destructor(SDIFTokenLength)
+  destructor(SDIFMatrixNotAvailable)
+  destructor(FrameDirError)
+  destructor(TypeError)
+
   extern "C" {
     
     void
