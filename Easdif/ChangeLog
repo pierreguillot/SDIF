@@ -1,3 +1,20 @@
+2011-06-11  Axel Roebel  <roebel@m1873.local>
+Version 1.4.14 
+
+	* easdif/sdifmatrixdata.hpp:
+	Moved constructor and destructor definition out of class scope to
+	lower probability of inlining.
+	Changed handling of empty matrices to avoid assertion failures
+	in MSVC.
+
+	* easdif/sdifentity.cpp, easdif/sdifentity.hpp, easdif/sdifexception.cpp, easdif/sdifexception.hpp:
+	Moved some member functions out of class scope to avoid unnecessary inlining
+	of constructor, destructor or other costly functions.
+
+2011-05-00  Axel Roebel  <roebel@m1873.local>
+Version 1.4.13 (local changes only)
+
+
 2011-04-12  Axel Roebel  <roebel@ANA-1873-Roebel.local>
 Version 1.4.12
 
@@ -1152,4 +1169,4 @@ Version 0.21
 	* ChangeLog: Added changelog to repository.
 
 
-$Id: ChangeLog,v 1.83 2011-04-12 20:17:55 roebel Exp $
+$Id: ChangeLog,v 1.84 2011-06-11 17:15:17 roebel Exp $
