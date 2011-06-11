@@ -1,4 +1,4 @@
-/* $Id: SdifFile.c,v 3.64 2011-06-11 17:29:06 roebel Exp $
+/* $Id: SdifFile.c,v 3.65 2011-06-11 23:58:04 roebel Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -33,6 +33,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.64  2011/06/11 17:29:06  roebel
+ * Fixed ftruncate implementation on windows.
+ *
  * Revision 3.63  2011/04/12 20:17:32  roebel
  * Fixed large file support to properly work on linux as well.
  *
@@ -357,6 +360,9 @@
 /* Include all Frame Type */
 #include "sdiftypes.h"
 
+#ifdef WIN32
+#include <io.h>
+#endif
 
 /* include file version in object code, to be extracted with "ident libsdif.a" */
 #ifndef lint
