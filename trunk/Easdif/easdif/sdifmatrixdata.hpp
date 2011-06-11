@@ -33,9 +33,12 @@
  * 
  * 
  * 
- * $Id: sdifmatrixdata.hpp,v 1.3 2008-01-22 00:51:28 roebel Exp $ 
+ * $Id: sdifmatrixdata.hpp,v 1.4 2011-06-11 17:08:16 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.3  2008/01/22 00:51:28  roebel
+ * Completed support for all sdif integer types.
+ *
  * Revision 1.2  2007/11/27 16:41:19  roebel
  * Prevent dereferencing vectors outside the range.
  *
@@ -246,23 +249,8 @@ private:
 
 
 public:
-    SDIFMatrixData(int nrows, int ncols)
-	{
-	    if (nrows<0|| ncols<0 )
-	    {
-		m_Nrows=0;
-		m_Ncols=0;
-		m_Data.resize(0);
-	    }
-	    m_Nrows = nrows;
-	    m_Ncols = ncols;
-	    m_Data.resize(m_Nrows*m_Ncols);
-	};
-
-    ~SDIFMatrixData()
-	{
-	};
-	
+  SDIFMatrixData(int nrows, int ncols);
+  ~SDIFMatrixData();
 
 
 /*************************************************************************/
@@ -300,7 +288,7 @@ public:
   template <class TT>
   void _GetRow(TT* out,int irow) const throw (SDIFArrayPosition) 
   {
-    if (irow<0 || irow >= m_Nrows)      {
+    if (irow<0 || irow >= m_Nrows || m_Data.empty())      {
       throw SDIFArrayPosition(eError,
 			      "Error in  SDIFMatrixData::GetRow!!! requested row is out of range !!!",
 			  0,eArrayPosition,__FILE__,__LINE__);
@@ -325,7 +313,7 @@ public:
   template <class TT>
   void _GetCol(TT* out,int icol) const throw (SDIFArrayPosition) 
   {
-    if (icol<0 || icol >= m_Ncols)      {
+    if (icol<0 || icol >= m_Ncols || m_Data.empty())      {
       throw SDIFArrayPosition(eError,
 			      "Error in  SDIFMatrixData::GetCol!!! requested column is out of range !!!",
 			  0,eArrayPosition,__FILE__,__LINE__);
@@ -656,8 +644,8 @@ public:
     int _cols = SdifFCurrNbCol(file);
     size_t bytesread = 0;
     /*Read matrix data*/
-	    
-    if(  m_Nrows == _rows && m_Ncols == _cols ) {
+
+    if(  m_Nrows == _rows && m_Ncols == _cols && !m_Data.empty() ) {
       bytesread += SdiffReadMatrix(&m_Data[0],_rows*_cols,file);
     }
     else{
@@ -695,7 +683,8 @@ public:
 	{
 	    size_t SizeFrameW = 0;
 	    /* Write matrix data */
-	    SizeFrameW += SdiffWriteMatrix(&m_Data[0],m_Nrows*m_Ncols,file);
+            if (!m_Data.empty())
+              SizeFrameW += SdiffWriteMatrix(&m_Data[0],m_Nrows*m_Ncols,file);
 
 	    /* Write matrix padding */
 	    SizeFrameW += SdifFWritePadding(file, SdifFPaddingCalculate (file->Stream, SizeFrameW));
@@ -756,7 +745,7 @@ public:
    *  all data entries are set to zero.
    */
   void Clear() {
-    std::fill(&m_Data[0],&m_Data[0]+m_Data.size(),T(0));
+    std::fill(m_Data.begin(),m_Data.end(),T(0));
   }
 
   /** 
@@ -925,7 +914,7 @@ public:
   template <class TT>
   void _SetRow(const TT* in,int irow)  throw (SDIFArrayPosition) 
   {
-    if (irow<0 || irow >= m_Nrows)      {
+    if (irow<0 || irow >= m_Nrows || m_Data.empty())      {
       throw SDIFArrayPosition(eError,
 			      "Error in  SDIFMatrixData::SetRow!!! requested row is out of range !!!",
 			  0,eArrayPosition,__FILE__,__LINE__);
@@ -950,7 +939,7 @@ public:
   template <class TT>
   void _SetCol(const TT* in,int icol)  throw (SDIFArrayPosition) 
   {
-    if (icol<0 || icol >= m_Ncols)      {
+    if (icol<0 || icol >= m_Ncols || m_Data.empty())      {
       throw SDIFArrayPosition(eError,
 			      "Error in  SDIFMatrixData::SetCol!!! requested column is out of range !!!",
 			  0,eArrayPosition,__FILE__,__LINE__);
@@ -1168,6 +1157,22 @@ public:
   }
 
 };
+
+
+  template <class T>
+  SDIFMatrixData<T>::SDIFMatrixData(int nrows, int ncols)	{
+    if (nrows<0|| ncols<0 )      {
+      m_Nrows=0;
+      m_Ncols=0;
+      m_Data.resize(0);
+    }
+    m_Nrows = nrows;
+    m_Ncols = ncols;
+    m_Data.resize(m_Nrows*m_Ncols);
+  };
+  
+  template <class T>
+  SDIFMatrixData<T>::~SDIFMatrixData(){};
 
 } // end of namespace Easdif
 
