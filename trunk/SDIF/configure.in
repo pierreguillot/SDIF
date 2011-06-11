@@ -1,5 +1,5 @@
 dnl -*-autoconf-*-  (Tell emacs it's an autoconf file!)
-dnl $Id: configure.in,v 1.80 2011-04-15 23:23:43 roebel Exp $
+dnl $Id: configure.in,v 1.81 2011-06-11 23:23:10 roebel Exp $
 dnl
 dnl configure.in		September 2000		Patrice Tisserand
 dnl
@@ -31,6 +31,12 @@ dnl send email to:  sdif@ircam.fr
 
 
 dnl $Log: not supported by cvs2svn $
+dnl Revision 1.80  2011/04/15 23:23:43  roebel
+dnl fixed use of stdint.h to be persistent in sdif.h even after
+dnl installation.
+dnl Added a complete configuration search to determine
+dnl SdiffPosT type such that it becomes a 64bit type.
+dnl
 dnl Revision 1.79  2011/04/12 20:17:33  roebel
 dnl Fixed large file support to properly work on linux as well.
 dnl
@@ -376,7 +382,6 @@ AC_CHECK_FUNCS(getenv)
 AC_SUBST(HAVE_STDINT_H)
 AC_SUBST(HAVE_SYS_TYPES_H)
 
-
 dnl ############################################################
 dnl documentation wanted
 AC_ARG_ENABLE(doc-compilation, [--enable-doc-compilation            compile documentation (only for maintainer releases)], want_doc_compilation=yes,want_doc_compilation=no)
@@ -396,6 +401,8 @@ AC_CHECK_SIZEOF(int64_t)
 dnl Check for Long 64 bits
 AC_CHECK_SIZEOF(__int64)
 dnl Check for Long 64 bits
+AC_CHECK_SIZEOF(INT64)
+dnl Check for Long 64 bits
 AC_CHECK_SIZEOF(off64_t)
 dnl Check for Long 64 bits
 AC_CHECK_SIZEOF(loff_t)
@@ -412,28 +419,33 @@ else
     echo "use 64bit type off64_t"
     SDIF_POS_TYPE="off64_t"
   else
-    # Check for common 64 bit file offset types.
-    if test "$ac_cv_sizeof_loff_t" = 8; then
-      echo "use 64bit type loff_t"
-      SDIF_POS_TYPE="loff_t"
+    if test "$ac_cv_sizeof_INT64" = 8; then
+      echo "use 64bit type INT64"
+      SDIF_POS_TYPE="INT64"
     else
       if test "$ac_cv_sizeof___int64" = 8; then
         echo "use 64bit type __int64"
         SDIF_POS_TYPE="__int64"
       else
-        if test "$ac_cv_sizeof_long_long" = 8; then
-          echo "use 64bit type long long"
-          SDIF_POS_TYPE="long long"
+        # Check for common 64 bit file offset types.
+        if test "$ac_cv_sizeof_loff_t" = 8; then
+          echo "use 64bit type loff_t"
+          SDIF_POS_TYPE="loff_t"
         else
-          # these 2 will be different for 64bit and 32bit compiler switches, 
-          # only use as a last resort       
-          if test "$ac_cv_sizeof_off_t" = 8; then
-            # this one may change size with compiler options
-            echo "use 64bit type off_t"
-            SDIF_POS_TYPE="off_t"
+          if test "$ac_cv_sizeof_long_long" = 8; then
+            echo "use 64bit type long long"
+            SDIF_POS_TYPE="long long"
           else
-            echo "no 64bit integer type found ... use long "
-            SDIF_POS_TYPE="long"
+            # these 2 will be different for 64bit and 32bit compiler switches, 
+            # only use as a last resort       
+            if test "$ac_cv_sizeof_off_t" = 8; then
+              # this one may change size with compiler options
+              echo "use 64bit type off_t"
+              SDIF_POS_TYPE="off_t"
+            else
+              echo "no 64bit integer type found ... use long "
+              SDIF_POS_TYPE="long"
+            fi
           fi
         fi
       fi
