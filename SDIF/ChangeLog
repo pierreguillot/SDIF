@@ -1,3 +1,197 @@
+2011-06-11  Axel Roebel  <roebel@m1873.local>
+
+	* CMakeLists.txt, configure.in, include/sdif.h.in:
+	Fixed a number of issues with the conditional include of stdint.h and sys/types.h in instaled include file
+	sdif.h.
+	Correctly use the types provided by these include files for definition of sdif types.
+
+	* sdif/SdifFile.c: Fixed ftruncate implementation on windows.
+
+2011-04-19  Axel Roebel  <roebel@m1873.local>
+
+	* CMakeLists.txt: Fixed source location for installation of sdif.h;
+
+2011-04-18  Axel Roebel  <roebel@m1873.local>
+
+	* include/sdif.h.in: added sdif.h.in to cvs
+
+2011-04-15  Axel Roebel  <roebel@m1873.local>
+
+	* CMakeLists.txt, configure.in, include/sdif.h:
+	fixed use of stdint.h to be persistent in sdif.h even after
+	installation.
+	Added a complete configuration search to determine
+	SdiffPosT type such that it becomes a 64bit type.
+
+	* sdif/SdifSignatureTab.c, sdif/SdifTimePosition.c:
+	Use double quotes not <> for sdif.h include file.
+
+	* sdif/SdifString.c: Added missing header sdif_portability.h
+
+2011-04-12  Axel Roebel  <roebel@m1873.local>
+
+	* CMakeLists.txt, README, configure.in, include/sdif.h, sdif/SdifErrMess.c, sdif/SdifFile.c:
+	Fixed large file support to properly work on linux as well.
+
+	* tools/querysdif.c:
+	Removed unused variable, and fixed return code to be nonzero in case file is empty.
+
+	* test/cmd_testcheck:
+	Output error message in case querysdif program fails.
+
+	* include/sdif.h, sdif/SdifErrMess.c, sdif/SdifFile.c:
+	Fixed Sdif[fF]GetPos and Sdif[fF]SetPos to correctly support large files (>2GB).
+
+2011-04-06  diemo  <diemo@m1873.local>
+
+	* ReleaseNotes: v3.11.3 preview
+
+	* include/sdif.h, sdif/SdifHighLevel.c: realloc query tree
+
+	* configure.in: v3.11.3
+
+2011-03-29  Axel Roebel  <roebel@m1873.local>
+
+	* cmModules/REDIRECT_COMPILERS_TO_SYSROOT.cmake:
+	Disabled redirection which can established by standard cmake means starting with cmake 2.8.
+	SYSROOT manipulation is only required for binary distribution which om now can be done only with
+	cmake internal means.
+
+2009-10-29  Axel Roebel  <roebel@m1873.local>
+
+	* sdif/SdifMatrix.c, sdif/SdifSelect.c: Fixed memory leaks.
+
+	* CMakeLists.txt, test/CMakeLists.txt, tools/CMakeLists.txt:
+	Modified to use cmake 2.6 output directory selection.
+
+2009-10-19  diemo  <diemo@m1873.local>
+
+	* Makefile.am: new upload host and dir, again
+
+	* include/sdif.h: added prototype for SdifFreeQueryTree
+
+2009-08-11  diemo  <diemo@m1873.local>
+
+	* doc/standard/sdif-standard.html, doc/Makefile.am:
+	Remove standards doc and publication make rule, since
+	SDIF documentation has moved to the sdif-website CVS module
+
+	* doc/standard/sdif-standard.html: updated nvt syntax
+
+2009-08-10  diemo  <diemo@m1873.local>
+
+	* types/Makefile: nl
+
+	* sdif/SdifHighLevel.c:
+	fix matrix selection for SdifQuery: In SdifReadFile function, check if
+	matrix header is selected before calling matrix callback.
+
+	* doc/standard/sdif-standard.html:
+	correct description of matrix data type, thanks to Matt Wright for pointing this out!
+
+	* configure.in: version 3.11.2
+
+	* doc/Makefile.am: new server for web files,
+	update standards doc also
+
+	* Makefile.am: frs changed again...
+
+	* ReleaseNotes: version 3.11.2
+
+	* tools/sdiftotext.c: accept in/outfile without -i/-o also
+
+	* tools/querysdif.c:
+	- added flags to switch header, nvt, and type def printing
+
+	* tools/querysdif.c:
+	- reimplemented querysdif using SdifQuery for consistency
+	- added header printing
+
+2009-04-20  diemo  <diemo@m1873.local>
+
+	* include/sdif.h: example for SdifSelectAddSignature
+	move SDIF_API out of generating macro, to avoid it in SdifSelect.c (error on windows compilation)
+
+	* include/sdif.h: document two missing prototypes
+
+	* sdif.sln, sdif.vcproj: updated for Windows compilation
+
+2009-04-17  diemo  <diemo@m1873.local>
+
+	* include/sdif.h, sdif/SdifSelect.c:
+	clarified syntax in code-generating macro
+
+2009-04-09  diemo  <diemo@m1873.local>
+
+	* macosxbuild/README.MacOSX: doc building under SDK and UB on Mac
+
+	* sdif/SdifHighLevel.c: comm
+
+	* examples/Makefile.am: force linking with freshly built lib
+
+	* macosxbuild/SDIF.xcodeproj/project.pbxproj: version 3.11.1
+
+	* examples/list-nvt.c: remove unused
+
+2009-02-18  Axel Roebel  <roebel@m1873.local>
+
+	* cmModules/REDIRECT_COMPILERS_TO_SYSROOT.cmake:
+	Added support for -mmacosx-version-min in case a specific SYSROOT is selected
+
+	* cmModules/GET_GCC_VERSION.cmake:
+	Protect againstb calling with non gcc compilers
+
+2009-02-18  diemo  <diemo@m1873.local>
+
+	* autogen.sh: on mac, avoid warnings, try glibtoolize first
+
+	* macosxbuild/SDIF.xcodeproj/Makefile.am:
+	empty makefile just to include Mac xcode compilation project in source distribution
+
+2009-02-05  Axel Roebel  <roebel@m1873.local>
+
+	* test/CMakeLists.txt: Adapted for cmake 2.6.0
+
+	* CMakeLists.txt: Enforce to use cmake 2.6.0
+
+2009-01-27  Axel Roebel  <roebel@m1873.local>
+
+	* doc/window-enumeration.txt:
+	Added window type enumeration information text to SDIF doc.
+
+2009-01-07  diemo  <diemo@m1873.local>
+
+	* ChangeLog, ReleaseNotes: notes for 3.11.1
+
+	* configure.in: bump up release to 3.11.1
+
+	* include/sdif.h:
+	access functions for integration in script languages for all fields of:
+	- name-value table list global struct SdifNameValuesLT (-> list of tables),
+	- name-value table SdifNameValueTableT (-> hash of entries),
+	- name-value entry SdifNameValueT
+	iterator to iterate over all entries in hash table
+
+	* sdif/SdifHash.c:
+	iterator for integration in script languages to iterate over all entries in hash table
+
+	* sdif/SdifNameValue.c:
+	access functions for integration in script languages for all fields of:
+	- name-value table list global struct SdifNameValuesLT (-> list of tables),
+	- name-value table SdifNameValueTableT (-> hash of entries),
+	- name-value entry SdifNameValueT
+
+	* examples/list-nvt.c:
+	use new nvt access functions and hash table iterator
+
+	* examples/Makefile.am: link list-nvt example with freshly built lib
+
+	* Makefile.am: include examples dir in target and dist
+
+	* examples/Makefile.am: added nvt listing example
+
+	* examples/list-nvt.c: nvt listing example for library version <= 3.10
+
 2009-01-07  diemo  <diemo@here>
 Version 3.11.1
 
@@ -1118,4 +1312,4 @@ Version 3.3:
 	  Operating System.
 
 	
-$Id: ChangeLog,v 1.62 2009-01-07 17:16:25 diemo Exp $
+$Id: ChangeLog,v 1.63 2011-06-11 23:24:51 roebel Exp $
