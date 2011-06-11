@@ -32,9 +32,12 @@
  * 
  * 
  * 
- * $Id: sdifentity.hpp,v 1.24 2010-04-16 10:39:44 roebel Exp $ 
+ * $Id: sdifentity.hpp,v 1.25 2011-06-11 17:05:31 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.24  2010/04/16 10:39:44  roebel
+ * Fixed/clarified documentation.
+ *
  * Revision 1.23  2009/11/09 17:16:08  roebel
  * modify FRIterator declaration according to compiler.
  *
@@ -533,11 +536,12 @@ namespace Easdif {
    * \brief matrix type descriptor
    * 
    */
-  struct MatrixType {
+  struct EASDIF_API  MatrixType {
     SdifSignature mSig;
     std::vector<std::string> mvColumnNames;
     MatrixType() :mSig(eEmptySignature) {}
     MatrixType(SdifSignature sig) :mSig(sig) {}
+    ~MatrixType();
 
     /** 
      * \ingroup description
@@ -602,13 +606,14 @@ namespace Easdif {
    * \brief frame type descriptor
    * 
    */
-  struct FrameType {
+  struct EASDIF_API FrameType {
     SdifSignature mSig;
     std::vector<std::string> mvMatrixNames;
     std::vector<MatrixType>  mvMatrixTypes;
 
     FrameType(SdifSignature sig) :mSig(sig) {}
     FrameType()                  : mSig(eEmptySignature) {}
+    ~FrameType();
 
     struct equal_mat : std::equal_to<SdifSignature> {
       typedef MatrixType second_argument_type;
@@ -997,10 +1002,7 @@ public:
   /// Default constructor
   SDIFEntity();
 
-  ~SDIFEntity()
-  {	    
-    Close();
-  };
+  ~SDIFEntity();
 
   /** 
    * \brief begin iterator 
