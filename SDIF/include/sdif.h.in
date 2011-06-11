@@ -1,4 +1,4 @@
-/* $Id: sdif.h.in,v 1.1 2011-04-18 18:46:27 roebel Exp $
+/* $Id: sdif.h.in,v 1.2 2011-06-11 23:23:10 roebel Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -30,6 +30,9 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.1  2011/04/18 18:46:27  roebel
+ * added sdif.h.in to cvs
+ *
  * Revision 1.71  2011/04/12 20:17:33  roebel
  * Fixed large file support to properly work on linux as well.
  *
@@ -329,7 +332,7 @@
  * Revision 1.1.2.1  2000/08/21  13:07:41  tisseran
  * *** empty log message ***
  *
- * $Date: 2011-04-18 18:46:27 $
+ * $Date: 2011-06-11 23:23:10 $
  *
  */
 
@@ -344,16 +347,21 @@ extern "C" {
 #endif
 
 
-static const char _sdif_h_cvs_revision_ [] = "$Id: sdif.h.in,v 1.1 2011-04-18 18:46:27 roebel Exp $";
+static const char _sdif_h_cvs_revision_ [] = "$Id: sdif.h.in,v 1.2 2011-06-11 23:23:10 roebel Exp $";
 
-  /* these all will be configured and the result will be 
-     kept in the installed version of sdif.h */
-#define HAVE_STDINT_HEADER @HAVE_STDINT_H@
-#if defined(HAVE_STDINT_HEADER) && HAVE_STDINT_HEADER
+  /* the following two #if are configured by autoconf/cmake
+   * and reflect capabilities of the installing compiler.
+   * You cannot use an installed sdif with a comiler that des not provide  
+   * stdint.h and/or sys/types.h when the configurin compiler provided those
+   */
+  /* will be 0 if HAVE_STDINT_H is not set or set to 0, will be 10 if HAVE_STDINT_H is set */
+#if @HAVE_STDINT_H@0
+#  define HAVE_STDINT_HEADER 1
 #  include <stdint.h>
 #endif
-#define HAVE_SYS_TYPES_HEADER @HAVE_SYS_TYPES_H@
-#if defined(HAVE_SYS_TYPES_HEADER) && HAVE_SYS_TYPES_HEADER
+
+  /* will be 0 if HAVE_SYS_TYPES_H  is not set or set to 0, will be 10 if HAVE_SYS_TYPES_H is set */
+#if @HAVE_SYS_TYPES_H@0
 #  include <sys/types.h>
 #endif
 
@@ -544,7 +552,7 @@ SDIF_API int SdifFSetPos(SdifFileT *file, SdiffPosT *pos);
 
 
 /* SdifHard_OS.h */
-#ifdef HAVE_STDINT_H
+#ifdef HAVE_STDINT_HEADER
 typedef char           SdifChar;
 typedef char           SdifInt1;
 typedef int16_t        SdifInt2;
