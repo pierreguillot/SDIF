@@ -1,4 +1,4 @@
-/* $Id: SdifFile.c,v 3.63 2011-04-12 20:17:32 roebel Exp $
+/* $Id: SdifFile.c,v 3.64 2011-06-11 17:29:06 roebel Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -33,6 +33,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.63  2011/04/12 20:17:32  roebel
+ * Fixed large file support to properly work on linux as well.
+ *
  * Revision 3.62  2011/04/12 14:18:18  roebel
  * Fixed Sdif[fF]GetPos and Sdif[fF]SetPos to correctly support large files (>2GB).
  *
@@ -1370,7 +1373,13 @@ int SdifFTruncate(SdifFileT *file)
   return (ftruncate(fileno(file->Stream), pos) == 0);
 #else
 #  if defined(WIN32)
-  return __chsize_s(_fileno(file->Stream), pos) == 0);
+#    if defined(_MSC_VER) && _MSC_VER >= 1400
+  // 64bit pos
+  return (_chsize_s(_fileno(file->Stream), pos) == 0);
+#    else
+  // 32bit pos
+  return (_chsize(_fileno(file->Stream), pos) == 0);
+#    endif 
 #  else
   return SDIFFTRUNCATE_NOT_AVAILABLE;
 #  endif
