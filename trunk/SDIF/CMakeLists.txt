@@ -294,21 +294,7 @@ ENDIF(SIZEOF_INT64_T EQUAL 8 )
 
 
 CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/include/sdif_version.h.in ${PROJECT_BINARY_DIR}/sdifconfig/sdif_version.h)
-
-#CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/include/sdif.h.in ${PROJECT_BINARY_DIR}/sdifconfig/sdif.h)
-FILE(READ ${PROJECT_SOURCE_DIR}/include/sdif.h.in SDIF_H_CONFIG)
-STRING(REGEX REPLACE "#undef[ \t]*\([^ \t\n\r]*\)" "#cmakedefine \\1 @\\1@" SDIF_H_CMCONFIG ${SDIF_H_CONFIG})
-STRING(CONFIGURE ${SDIF_H_CMCONFIG} SDIF_H_CMCONFIGURED)
-
-IF(EXISTS ${PROJECT_BINARY_DIR}/sdifconfig/sdif.h)
-  FILE(READ ${PROJECT_BINARY_DIR}/sdifconfig/sdif.h CURRENT_SDIF_H)
-ENDIF(EXISTS ${PROJECT_BINARY_DIR}/sdifconfig/sdif.h)
-
-IF(NOT "${CURRENT_SDIF_H}" STREQUAL "${SDIF_H_CMCONFIGURED}")
-  MESSAGE(STATUS "Writing sdif.h")
-  FILE(WRITE ${PROJECT_BINARY_DIR}/sdifconfig/sdif.h ${SDIF_H_CMCONFIGURED})
-ENDIF(NOT "${CURRENT_SDIF_H}" STREQUAL "${SDIF_H_CMCONFIGURED}")
-
+CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/include/sdif.h.in ${PROJECT_BINARY_DIR}/sdifconfig/sdif.h)
 
 # include special traget to remove cache, system and compiler info
 IF(CMAKE_GENERATOR MATCHES "^Unix Makefiles")
