@@ -6,7 +6,7 @@
  * @brief  handle read file io in matlab
  * 
  *
- * $Revision: 1.16 $   last changed on $Date: 2011-07-12 10:46:03 $
+ * $Revision: 1.17 $   last changed on $Date: 2011-09-27 11:27:35 $
  *
  *                                    Copyright (c) 2008 by IRCAM
  * 
@@ -210,105 +210,108 @@ createFrame(Easdif::SDIFEntity*p, Easdif::SDIFEntity::const_iterator& it, int ii
       *(pd+3*nbMatrix) = sigstr[3];
       ++pd;        
       mxArray *data = 0;
-      if(classid == mxUNKNOWN_CLASS) {
-        switch(mat.GetType()) {
-        case eFloat4:
-        case eFloat4a:
-        case eFloat4b:
-          data = mxCreateNumericMatrix(mat.GetNbRows(),mat.GetNbCols(),mxSINGLE_CLASS,mxREAL);
-          for(int ic=0;ic!=mat.GetNbCols();++ic)
-            mat.GetCol(reinterpret_cast<float*> (mxGetData(data))+ic*mat.GetNbRows(),ic);
-          break;
-        case eFloat8:
-        case eFloat8a:
-        case eFloat8b:
-          data = mxCreateNumericMatrix(mat.GetNbRows(),mat.GetNbCols(),mxDOUBLE_CLASS,mxREAL);
-          for(int ic=0;ic!=mat.GetNbCols();++ic)
-            mat.GetCol(reinterpret_cast<double*> (mxGetData(data))+ic*mat.GetNbRows(),ic);
-          break;          
-        case eInt1 :
-          data = mxCreateNumericMatrix(mat.GetNbRows(),mat.GetNbCols(),mxINT8_CLASS,mxREAL);
-          for(int ic=0;ic!=mat.GetNbCols();++ic)
-            mat.GetCol(reinterpret_cast<unsigned char *> (mxGetData(data))+ic*mat.GetNbRows(),ic);
-          break;
-        case eInt2 :
-          data = mxCreateNumericMatrix(mat.GetNbRows(),mat.GetNbCols(),mxINT16_CLASS,mxREAL);
-          for(int ic=0;ic!=mat.GetNbCols();++ic)
-            mat.GetCol(reinterpret_cast<SdifInt2*> (mxGetData(data))+ic*mat.GetNbRows(),ic);
-          break;
-        case eInt4 :
-          data = mxCreateNumericMatrix(mat.GetNbRows(),mat.GetNbCols(),mxINT32_CLASS,mxREAL);
-          for(int ic=0;ic!=mat.GetNbCols();++ic)
-            mat.GetCol(reinterpret_cast<SdifInt4*> (mxGetData(data))+ic*mat.GetNbRows(),ic);
-          break;
-        case eUInt1 :
-          data = mxCreateNumericMatrix(mat.GetNbRows(),mat.GetNbCols(),mxUINT8_CLASS,mxREAL);
-          for(int ic=0;ic!=mat.GetNbCols();++ic)
-            mat.GetCol(reinterpret_cast<SdifUInt1*> (mxGetData(data))+ic*mat.GetNbRows(),ic);
-          break;
-        case eUInt2 :
-          data = mxCreateNumericMatrix(mat.GetNbRows(),mat.GetNbCols(),mxUINT16_CLASS,mxREAL);
-          for(int ic=0;ic!=mat.GetNbCols();++ic)
-            mat.GetCol(reinterpret_cast<SdifUInt2*> (mxGetData(data))+ic*mat.GetNbRows(),ic);
-          break;
-        case eUInt4 :
-          data = mxCreateNumericMatrix(mat.GetNbRows(),mat.GetNbCols(),mxUINT32_CLASS,mxREAL);
-          for(int ic=0;ic!=mat.GetNbCols();++ic)
-            mat.GetCol(reinterpret_cast<SdifUInt4*> (mxGetData(data))+ic*mat.GetNbRows(),ic);
-          break;
-        case eText:{
-          std::string str;
-          mat.Get(str);
-          data = mxCreateString(str.c_str());
-          break;
+
+      if(mat.GetNbRows()) {
+        if(classid == mxUNKNOWN_CLASS) {
+          switch(mat.GetType()) {
+          case eFloat4:
+          case eFloat4a:
+          case eFloat4b:
+            data = mxCreateNumericMatrix(mat.GetNbRows(),mat.GetNbCols(),mxSINGLE_CLASS,mxREAL);
+            for(int ic=0;ic!=mat.GetNbCols();++ic)
+              mat.GetCol(reinterpret_cast<float*> (mxGetData(data))+ic*mat.GetNbRows(),ic);
+            break;
+          case eFloat8:
+          case eFloat8a:
+          case eFloat8b:
+            data = mxCreateNumericMatrix(mat.GetNbRows(),mat.GetNbCols(),mxDOUBLE_CLASS,mxREAL);
+            for(int ic=0;ic!=mat.GetNbCols();++ic)
+              mat.GetCol(reinterpret_cast<double*> (mxGetData(data))+ic*mat.GetNbRows(),ic);
+            break;          
+          case eInt1 :
+            data = mxCreateNumericMatrix(mat.GetNbRows(),mat.GetNbCols(),mxINT8_CLASS,mxREAL);
+            for(int ic=0;ic!=mat.GetNbCols();++ic)
+              mat.GetCol(reinterpret_cast<unsigned char *> (mxGetData(data))+ic*mat.GetNbRows(),ic);
+            break;
+          case eInt2 :
+            data = mxCreateNumericMatrix(mat.GetNbRows(),mat.GetNbCols(),mxINT16_CLASS,mxREAL);
+            for(int ic=0;ic!=mat.GetNbCols();++ic)
+              mat.GetCol(reinterpret_cast<SdifInt2*> (mxGetData(data))+ic*mat.GetNbRows(),ic);
+            break;
+          case eInt4 :
+            data = mxCreateNumericMatrix(mat.GetNbRows(),mat.GetNbCols(),mxINT32_CLASS,mxREAL);
+            for(int ic=0;ic!=mat.GetNbCols();++ic)
+              mat.GetCol(reinterpret_cast<SdifInt4*> (mxGetData(data))+ic*mat.GetNbRows(),ic);
+            break;
+          case eUInt1 :
+            data = mxCreateNumericMatrix(mat.GetNbRows(),mat.GetNbCols(),mxUINT8_CLASS,mxREAL);
+            for(int ic=0;ic!=mat.GetNbCols();++ic)
+              mat.GetCol(reinterpret_cast<SdifUInt1*> (mxGetData(data))+ic*mat.GetNbRows(),ic);
+            break;
+          case eUInt2 :
+            data = mxCreateNumericMatrix(mat.GetNbRows(),mat.GetNbCols(),mxUINT16_CLASS,mxREAL);
+            for(int ic=0;ic!=mat.GetNbCols();++ic)
+              mat.GetCol(reinterpret_cast<SdifUInt2*> (mxGetData(data))+ic*mat.GetNbRows(),ic);
+            break;
+          case eUInt4 :
+            data = mxCreateNumericMatrix(mat.GetNbRows(),mat.GetNbCols(),mxUINT32_CLASS,mxREAL);
+            for(int ic=0;ic!=mat.GetNbCols();++ic)
+              mat.GetCol(reinterpret_cast<SdifUInt4*> (mxGetData(data))+ic*mat.GetNbRows(),ic);
+            break;
+          case eText:{
+            std::string str;
+            mat.Get(str);
+            data = mxCreateString(str.c_str());
+            break;
+          }
+          default:
+            char tmperr[256];
+            sprintf(tmperr,"Unsupported data type %x",mat.GetType());
+            mexErrMsgTxt(tmperr);
+          } 
         }
-        default:
-          char tmperr[256];
-          sprintf(tmperr,"Unsupported data type %x",mat.GetType());
-          mexErrMsgTxt(tmperr);
-        } 
-      }
-      else {
-        data = mxCreateNumericMatrix(mat.GetNbRows(),mat.GetNbCols(), classid, mxREAL);
-        switch(classid) {
-        case mxDOUBLE_CLASS:
-          for(int ic=0;ic!=mat.GetNbCols();++ic)
-            mat.GetCol(reinterpret_cast<double*> (mxGetData(data))+ic*mat.GetNbRows(),ic);
-          break;
-        case mxSINGLE_CLASS:
-          for(int ic=0;ic!=mat.GetNbCols();++ic)
-            mat.GetCol(reinterpret_cast<float*> (mxGetData(data))+ic*mat.GetNbRows(),ic);
-          break;          
-        case mxINT8_CLASS :
-          data = mxCreateNumericMatrix(mat.GetNbRows(),mat.GetNbCols(),mxINT8_CLASS,mxREAL);
-          for(int ic=0;ic!=mat.GetNbCols();++ic)
-            mat.GetCol(reinterpret_cast<SdifInt1 *> (mxGetData(data))+ic*mat.GetNbRows(),ic);
-          break;
-        case  mxINT16_CLASS :
-          for(int ic=0;ic!=mat.GetNbCols();++ic)
-            mat.GetCol(reinterpret_cast<SdifInt2*> (mxGetData(data))+ic*mat.GetNbRows(),ic);
-          break;
-        case mxINT32_CLASS :
-          for(int ic=0;ic!=mat.GetNbCols();++ic)
-            mat.GetCol(reinterpret_cast<SdifInt4*> (mxGetData(data))+ic*mat.GetNbRows(),ic);
-          break;
-        case  mxUINT8_CLASS :
-          for(int ic=0;ic!=mat.GetNbCols();++ic)
-            mat.GetCol(reinterpret_cast<SdifUInt1*> (mxGetData(data))+ic*mat.GetNbRows(),ic);
-          break;
-        case mxUINT16_CLASS:
-          for(int ic=0;ic!=mat.GetNbCols();++ic)
-            mat.GetCol(reinterpret_cast<SdifUInt2*> (mxGetData(data))+ic*mat.GetNbRows(),ic);
-          break;
-        case mxUINT32_CLASS :
-          for(int ic=0;ic!=mat.GetNbCols();++ic)
-            mat.GetCol(reinterpret_cast<SdifUInt4*> (mxGetData(data))+ic*mat.GetNbRows(),ic);
-          break;
-        default:
-          char tmperr[256];
-          sprintf(tmperr,"Unsupported data type %x",mat.GetType());
-          mexErrMsgTxt(tmperr);
-        }         
+        else {
+          data = mxCreateNumericMatrix(mat.GetNbRows(),mat.GetNbCols(), classid, mxREAL);
+          switch(classid) {
+          case mxDOUBLE_CLASS:
+            for(int ic=0;ic!=mat.GetNbCols();++ic)
+              mat.GetCol(reinterpret_cast<double*> (mxGetData(data))+ic*mat.GetNbRows(),ic);
+            break;
+          case mxSINGLE_CLASS:
+            for(int ic=0;ic!=mat.GetNbCols();++ic)
+              mat.GetCol(reinterpret_cast<float*> (mxGetData(data))+ic*mat.GetNbRows(),ic);
+            break;          
+          case mxINT8_CLASS :
+            data = mxCreateNumericMatrix(mat.GetNbRows(),mat.GetNbCols(),mxINT8_CLASS,mxREAL);
+            for(int ic=0;ic!=mat.GetNbCols();++ic)
+              mat.GetCol(reinterpret_cast<SdifInt1 *> (mxGetData(data))+ic*mat.GetNbRows(),ic);
+            break;
+          case  mxINT16_CLASS :
+            for(int ic=0;ic!=mat.GetNbCols();++ic)
+              mat.GetCol(reinterpret_cast<SdifInt2*> (mxGetData(data))+ic*mat.GetNbRows(),ic);
+            break;
+          case mxINT32_CLASS :
+            for(int ic=0;ic!=mat.GetNbCols();++ic)
+              mat.GetCol(reinterpret_cast<SdifInt4*> (mxGetData(data))+ic*mat.GetNbRows(),ic);
+            break;
+          case  mxUINT8_CLASS :
+            for(int ic=0;ic!=mat.GetNbCols();++ic)
+              mat.GetCol(reinterpret_cast<SdifUInt1*> (mxGetData(data))+ic*mat.GetNbRows(),ic);
+            break;
+          case mxUINT16_CLASS:
+            for(int ic=0;ic!=mat.GetNbCols();++ic)
+              mat.GetCol(reinterpret_cast<SdifUInt2*> (mxGetData(data))+ic*mat.GetNbRows(),ic);
+            break;
+          case mxUINT32_CLASS :
+            for(int ic=0;ic!=mat.GetNbCols();++ic)
+              mat.GetCol(reinterpret_cast<SdifUInt4*> (mxGetData(data))+ic*mat.GetNbRows(),ic);
+            break;
+          default:
+            char tmperr[256];
+            sprintf(tmperr,"Unsupported data type %x",mat.GetType());
+            mexErrMsgTxt(tmperr);
+          }         
+        }
       }
       if(data)
         mxSetField(ftypmdata,0,ptr[im],data);      
@@ -362,109 +365,109 @@ createMData(Easdif::SDIFEntity::const_iterator& it, int& ii, mxArray *mxData,
       }
 
       mxArray *data = 0;
-
-      if(classid == mxUNKNOWN_CLASS) {
-        switch(mat.GetType()) {
-        case eFloat4:
-        case eFloat4a:
-        case eFloat4b:
-          data = mxCreateNumericMatrix(mat.GetNbRows(),mat.GetNbCols(),mxSINGLE_CLASS,mxREAL);
-          for(int ic=0;ic!=mat.GetNbCols();++ic)
-            mat.GetCol(reinterpret_cast<float*> (mxGetData(data))+ic*mat.GetNbRows(),ic);
-          break;
-        case eFloat8:
-        case eFloat8a:
-        case eFloat8b:
-          data = mxCreateNumericMatrix(mat.GetNbRows(),mat.GetNbCols(),mxDOUBLE_CLASS,mxREAL);
-          for(int ic=0;ic!=mat.GetNbCols();++ic)
-            mat.GetCol(reinterpret_cast<double*> (mxGetData(data))+ic*mat.GetNbRows(),ic);
-          break;
+      if(mat.GetNbRows()) {
+        if(classid == mxUNKNOWN_CLASS) {
+          switch(mat.GetType()) {
+          case eFloat4:
+          case eFloat4a:
+          case eFloat4b:
+            data = mxCreateNumericMatrix(mat.GetNbRows(),mat.GetNbCols(),mxSINGLE_CLASS,mxREAL);
+            for(int ic=0;ic!=mat.GetNbCols();++ic)
+              mat.GetCol(reinterpret_cast<float*> (mxGetData(data))+ic*mat.GetNbRows(),ic);
+            break;
+          case eFloat8:
+          case eFloat8a:
+          case eFloat8b:
+            data = mxCreateNumericMatrix(mat.GetNbRows(),mat.GetNbCols(),mxDOUBLE_CLASS,mxREAL);
+            for(int ic=0;ic!=mat.GetNbCols();++ic)
+              mat.GetCol(reinterpret_cast<double*> (mxGetData(data))+ic*mat.GetNbRows(),ic);
+            break;
         
-        case eInt1 :
-          data = mxCreateNumericMatrix(mat.GetNbRows(),mat.GetNbCols(),mxINT8_CLASS,mxREAL);
-          for(int ic=0;ic!=mat.GetNbCols();++ic)
-            mat.GetCol(reinterpret_cast<unsigned char *> (mxGetData(data))+ic*mat.GetNbRows(),ic);
-          break;
-        case eInt2 :
-          data = mxCreateNumericMatrix(mat.GetNbRows(),mat.GetNbCols(),mxINT16_CLASS,mxREAL);
-          for(int ic=0;ic!=mat.GetNbCols();++ic)
-            mat.GetCol(reinterpret_cast<SdifInt2*> (mxGetData(data))+ic*mat.GetNbRows(),ic);
-          break;
-        case eInt4 :
-          data = mxCreateNumericMatrix(mat.GetNbRows(),mat.GetNbCols(),mxINT32_CLASS,mxREAL);
-          for(int ic=0;ic!=mat.GetNbCols();++ic)
-            mat.GetCol(reinterpret_cast<SdifInt4*> (mxGetData(data))+ic*mat.GetNbRows(),ic);
-          break;
-        case eUInt1 :
-          data = mxCreateNumericMatrix(mat.GetNbRows(),mat.GetNbCols(),mxUINT8_CLASS,mxREAL);
-          for(int ic=0;ic!=mat.GetNbCols();++ic)
-            mat.GetCol(reinterpret_cast<SdifUInt1*> (mxGetData(data))+ic*mat.GetNbRows(),ic);
-          break;
-        case eUInt2 :
-          data = mxCreateNumericMatrix(mat.GetNbRows(),mat.GetNbCols(),mxUINT16_CLASS,mxREAL);
-          for(int ic=0;ic!=mat.GetNbCols();++ic)
-            mat.GetCol(reinterpret_cast<SdifUInt2*> (mxGetData(data))+ic*mat.GetNbRows(),ic);
-          break;
-        case eUInt4 :
-          data = mxCreateNumericMatrix(mat.GetNbRows(),mat.GetNbCols(),mxUINT32_CLASS,mxREAL);
-          for(int ic=0;ic!=mat.GetNbCols();++ic)
-            mat.GetCol(reinterpret_cast<SdifUInt4*> (mxGetData(data))+ic*mat.GetNbRows(),ic);
-          break;
-        case eText:{
-          std::string str;
-          mat.Get(str);
-          data = mxCreateString(str.c_str());
-          break;
+          case eInt1 :
+            data = mxCreateNumericMatrix(mat.GetNbRows(),mat.GetNbCols(),mxINT8_CLASS,mxREAL);
+            for(int ic=0;ic!=mat.GetNbCols();++ic)
+              mat.GetCol(reinterpret_cast<unsigned char *> (mxGetData(data))+ic*mat.GetNbRows(),ic);
+            break;
+          case eInt2 :
+            data = mxCreateNumericMatrix(mat.GetNbRows(),mat.GetNbCols(),mxINT16_CLASS,mxREAL);
+            for(int ic=0;ic!=mat.GetNbCols();++ic)
+              mat.GetCol(reinterpret_cast<SdifInt2*> (mxGetData(data))+ic*mat.GetNbRows(),ic);
+            break;
+          case eInt4 :
+            data = mxCreateNumericMatrix(mat.GetNbRows(),mat.GetNbCols(),mxINT32_CLASS,mxREAL);
+            for(int ic=0;ic!=mat.GetNbCols();++ic)
+              mat.GetCol(reinterpret_cast<SdifInt4*> (mxGetData(data))+ic*mat.GetNbRows(),ic);
+            break;
+          case eUInt1 :
+            data = mxCreateNumericMatrix(mat.GetNbRows(),mat.GetNbCols(),mxUINT8_CLASS,mxREAL);
+            for(int ic=0;ic!=mat.GetNbCols();++ic)
+              mat.GetCol(reinterpret_cast<SdifUInt1*> (mxGetData(data))+ic*mat.GetNbRows(),ic);
+            break;
+          case eUInt2 :
+            data = mxCreateNumericMatrix(mat.GetNbRows(),mat.GetNbCols(),mxUINT16_CLASS,mxREAL);
+            for(int ic=0;ic!=mat.GetNbCols();++ic)
+              mat.GetCol(reinterpret_cast<SdifUInt2*> (mxGetData(data))+ic*mat.GetNbRows(),ic);
+            break;
+          case eUInt4 :
+            data = mxCreateNumericMatrix(mat.GetNbRows(),mat.GetNbCols(),mxUINT32_CLASS,mxREAL);
+            for(int ic=0;ic!=mat.GetNbCols();++ic)
+              mat.GetCol(reinterpret_cast<SdifUInt4*> (mxGetData(data))+ic*mat.GetNbRows(),ic);
+            break;
+          case eText:{
+            std::string str;
+            mat.Get(str);
+            data = mxCreateString(str.c_str());
+            break;
+          }
+          default:
+            char tmperr[256];
+            sprintf(tmperr,"Unsupported data type %x",mat.GetType());
+            mexErrMsgTxt(tmperr);
+          }
         }
-        default:
-          char tmperr[256];
-          sprintf(tmperr,"Unsupported data type %x",mat.GetType());
-          mexErrMsgTxt(tmperr);
+        else {
+          data = mxCreateNumericMatrix(mat.GetNbRows(),mat.GetNbCols(), classid, mxREAL);
+          switch(classid) {
+          case mxDOUBLE_CLASS:
+            for(int ic=0;ic!=mat.GetNbCols();++ic)
+              mat.GetCol(reinterpret_cast<double*> (mxGetData(data))+ic*mat.GetNbRows(),ic);
+            break;
+          case mxSINGLE_CLASS:
+            for(int ic=0;ic!=mat.GetNbCols();++ic)
+              mat.GetCol(reinterpret_cast<float*> (mxGetData(data))+ic*mat.GetNbRows(),ic);
+            break;          
+          case mxINT8_CLASS :
+            data = mxCreateNumericMatrix(mat.GetNbRows(),mat.GetNbCols(),mxINT8_CLASS,mxREAL);
+            for(int ic=0;ic!=mat.GetNbCols();++ic)
+              mat.GetCol(reinterpret_cast<SdifInt1 *> (mxGetData(data))+ic*mat.GetNbRows(),ic);
+            break;
+          case  mxINT16_CLASS :
+            for(int ic=0;ic!=mat.GetNbCols();++ic)
+              mat.GetCol(reinterpret_cast<SdifInt2*> (mxGetData(data))+ic*mat.GetNbRows(),ic);
+            break;
+          case mxINT32_CLASS :
+            for(int ic=0;ic!=mat.GetNbCols();++ic)
+              mat.GetCol(reinterpret_cast<SdifInt4*> (mxGetData(data))+ic*mat.GetNbRows(),ic);
+            break;
+          case  mxUINT8_CLASS :
+            for(int ic=0;ic!=mat.GetNbCols();++ic)
+              mat.GetCol(reinterpret_cast<SdifUInt1*> (mxGetData(data))+ic*mat.GetNbRows(),ic);
+            break;
+          case mxUINT16_CLASS:
+            for(int ic=0;ic!=mat.GetNbCols();++ic)
+              mat.GetCol(reinterpret_cast<SdifUInt2*> (mxGetData(data))+ic*mat.GetNbRows(),ic);
+            break;
+          case mxUINT32_CLASS :
+            for(int ic=0;ic!=mat.GetNbCols();++ic)
+              mat.GetCol(reinterpret_cast<SdifUInt4*> (mxGetData(data))+ic*mat.GetNbRows(),ic);
+            break;
+          default:
+            char tmperr[256];
+            sprintf(tmperr,"Unsupported data type %x",mat.GetType());
+            mexErrMsgTxt(tmperr);
+          }         
         }
       }
-      else {
-        data = mxCreateNumericMatrix(mat.GetNbRows(),mat.GetNbCols(), classid, mxREAL);
-        switch(classid) {
-        case mxDOUBLE_CLASS:
-          for(int ic=0;ic!=mat.GetNbCols();++ic)
-            mat.GetCol(reinterpret_cast<double*> (mxGetData(data))+ic*mat.GetNbRows(),ic);
-          break;
-        case mxSINGLE_CLASS:
-          for(int ic=0;ic!=mat.GetNbCols();++ic)
-            mat.GetCol(reinterpret_cast<float*> (mxGetData(data))+ic*mat.GetNbRows(),ic);
-          break;          
-        case mxINT8_CLASS :
-          data = mxCreateNumericMatrix(mat.GetNbRows(),mat.GetNbCols(),mxINT8_CLASS,mxREAL);
-          for(int ic=0;ic!=mat.GetNbCols();++ic)
-            mat.GetCol(reinterpret_cast<SdifInt1 *> (mxGetData(data))+ic*mat.GetNbRows(),ic);
-          break;
-        case  mxINT16_CLASS :
-          for(int ic=0;ic!=mat.GetNbCols();++ic)
-            mat.GetCol(reinterpret_cast<SdifInt2*> (mxGetData(data))+ic*mat.GetNbRows(),ic);
-          break;
-        case mxINT32_CLASS :
-          for(int ic=0;ic!=mat.GetNbCols();++ic)
-            mat.GetCol(reinterpret_cast<SdifInt4*> (mxGetData(data))+ic*mat.GetNbRows(),ic);
-          break;
-        case  mxUINT8_CLASS :
-          for(int ic=0;ic!=mat.GetNbCols();++ic)
-            mat.GetCol(reinterpret_cast<SdifUInt1*> (mxGetData(data))+ic*mat.GetNbRows(),ic);
-          break;
-        case mxUINT16_CLASS:
-          for(int ic=0;ic!=mat.GetNbCols();++ic)
-            mat.GetCol(reinterpret_cast<SdifUInt2*> (mxGetData(data))+ic*mat.GetNbRows(),ic);
-          break;
-        case mxUINT32_CLASS :
-          for(int ic=0;ic!=mat.GetNbCols();++ic)
-            mat.GetCol(reinterpret_cast<SdifUInt4*> (mxGetData(data))+ic*mat.GetNbRows(),ic);
-          break;
-        default:
-          char tmperr[256];
-          sprintf(tmperr,"Unsupported data type %x",mat.GetType());
-          mexErrMsgTxt(tmperr);
-        }         
-      }
- 
       if(data)
         mxSetCell(mxData,ii+im,data);      
     }
