@@ -46,7 +46,7 @@
 % specified in the select struct.
 %
 % As an alternative to the time and stream fields the selection 
-% can use timerange and streamRange fields with exactly 2 values. These
+% can use timeRange and streamRange fields with exactly 2 values. These
 % will select the range of values between the two boundaries.
 % If range fields are present only a scalar selection struct can be used.
 %
@@ -122,7 +122,7 @@
 % AUTHOR : Axel Roebel
 % DATE   : 21.01.2008
 %
-% $Revision: 1.5 $    last changed $Date: 2009-10-31 17:25:09 $
+% $Revision: 1.6 $    last changed $Date: 2011-09-27 11:59:34 $
 %
 %                                                       Copyright (c) 2008 by  IRCAM 
 
