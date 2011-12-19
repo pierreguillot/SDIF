@@ -1,4 +1,5 @@
 2011-12-19  Axel Roebel  <roebel@m1712.ircam.fr>
+Version 3.11.4
 
 	* sdif/SdifFGet.c:
 	Gracefully handle NVT tables that do not include a trailing \000
@@ -1321,4 +1322,4 @@ Version 3.3:
 	  Operating System.
 
 	
-$Id: ChangeLog,v 1.64 2011-12-19 17:45:55 roebel Exp $
+$Id: ChangeLog,v 1.65 2011-12-19 17:48:10 roebel Exp $
