@@ -1,4 +1,4 @@
-/* $Id: SdifFGet.c,v 3.23 2007-11-26 18:51:53 roebel Exp $
+/* $Id: SdifFGet.c,v 3.24 2011-12-19 17:36:08 roebel Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -32,6 +32,11 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.23  2007/11/26 18:51:53  roebel
+ * Changed data types to have less casts and
+ * less compilation warnings with MSVC.
+ * renamed some functions that are deprecated in MSVC.
+ *
  * Revision 3.22  2005/10/21 14:32:29  schwarz
  * protect all static buffers from overflow by using snprintf instead of sprintf
  * move big errorMess buffers into error branch to avoid too large stack allocation
@@ -317,7 +322,11 @@ SdifFGetNameValueLCurrNVT(SdifFileT *SdifF)
 	  if (SdifFCurrNbCol (SdifF) != 1)
 	      _SdifFError (SdifF, eSyntax, "Name-Value Table text matrix must "
 			   "have exactly one column!");
-	  str    = SdifCalloc (char, nrow * SdifFCurrNbCol (SdifF));
+          /* force a zero at the end of the string 
+           * hacky use of the old writesdif function has created NVTs for that the  
+           * NVT matrices do not inlcude a trailing \000.
+           */
+	  str    = SdifCalloc (char, nrow * SdifFCurrNbCol (SdifF) + 1);
 	  SizeR += SdiffReadChar (str, nrow, SdifF);
 	  SizeR += SdifFReadPadding(SdifF, SdifFPaddingCalculate (SdifF->Stream, SizeR));
 	  SdifFNameValueLCurrNVTfromString (SdifF, str);
@@ -328,7 +337,7 @@ SdifFGetNameValueLCurrNVT(SdifFileT *SdifF)
     {
       int CharEnd;
       char sdifString[_SdifStringLen];
-	
+      
       _SdifRemark ("Warning, this file uses an intermediate format for "
 		   "the Name-Value Table.  Portablity with programs not "
 		   "using the IRCAM SDIF library is not guaranteed.  "
