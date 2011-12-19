@@ -1,3 +1,12 @@
+2011-12-19  Axel Roebel  <roebel@m1712.ircam.fr>
+
+	* sdif/SdifFGet.c:
+	Gracefully handle NVT tables that do not include a trailing \000
+	as for examples the once written with the writesdif function in the old
+	matlab sdif toolbox. Obligation to have a trailing 0 in the 1NVT
+	matrix is not required in the SDIF specs and therefore the
+	present change seems appropriate.
+
 2011-06-11  Axel Roebel  <roebel@m1873.local>
 
 	* CMakeLists.txt, configure.in, include/sdif.h.in:
@@ -1312,4 +1321,4 @@ Version 3.3:
 	  Operating System.
 
 	
-$Id: ChangeLog,v 1.63 2011-06-11 23:24:51 roebel Exp $
+$Id: ChangeLog,v 1.64 2011-12-19 17:45:55 roebel Exp $
