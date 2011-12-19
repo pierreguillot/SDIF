@@ -1,3 +1,13 @@
+2011-12-19  Axel Roebel  <roebel@m1712.ircam.fr>
+Version 1.4.15 
+
+	* link with sdif 3.11.4:
+	fixes problem in reading 1NVT matrices not containing a \000 at the end.
+
+	* matlab/Fsdif_read_handler.cpp, matlab/Fsdifloadfile.m:
+	Properly handle matrices with 0 rows.
+	Support Fsdifloadfile to force output type.
+
 2011-06-11  Axel Roebel  <roebel@m1873.local>
 Version 1.4.14 
 
@@ -1169,4 +1179,4 @@ Version 0.21
 	* ChangeLog: Added changelog to repository.
 
 
-$Id: ChangeLog,v 1.84 2011-06-11 17:15:17 roebel Exp $
+$Id: ChangeLog,v 1.85 2011-12-19 17:57:50 roebel Exp $
