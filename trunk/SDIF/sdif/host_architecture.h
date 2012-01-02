@@ -1,6 +1,6 @@
 /******************************************************************************
 
-  $Id: host_architecture.h,v 3.2 2004-02-08 14:26:58 ellis Exp $
+  $Id: host_architecture.h,v 3.3 2012-01-02 23:49:08 roebel Exp $
 
   host_architecture.h provides the following conditionals:
   
@@ -42,6 +42,10 @@
   Alberto Ricci, 19990315
 
   $Log: not supported by cvs2svn $
+  Revision 3.2  2004/02/08 14:26:58  ellis
+
+  now the textual scanner parses correctly character datas
+
   Revision 1.17  2002/05/30 08:31:35  roebel
   First attempt to extend host_architecture.h to MAC OSX.
 
@@ -236,7 +240,7 @@ typedef unsigned char *     StringPtr;
 /* WINDOWS */
 
 #elif   (defined(__INTEL__) && __INTEL__) || defined(_M_IX86) \
-        ||      defined(WIN32) || defined(OS2) || defined(__DOS__)
+  || defined(_WIN32) ||   defined(WIN32) || defined(OS2) || defined(__DOS__)
 
 #define HOST_OS_WIN32                                   1
 #define HOST_ARCH_X86                                   1

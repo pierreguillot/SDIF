@@ -1,4 +1,4 @@
-/* $Id: SdifHard_OS.c,v 3.17 2007-03-21 19:44:15 roebel Exp $
+/* $Id: SdifHard_OS.c,v 3.18 2012-01-02 23:49:08 roebel Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -28,6 +28,12 @@
 /* author: Dominique Virolle 1998
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.17  2007/03/21 19:44:15  roebel
+ * Don't use global variables without initialization. These globals are treated differently
+ * on MacOSX and they are not allowed in dynamic libraries without extra flags.
+ * To simplify the situation I now initialized all global variables
+ * or make them static.
+ *
  * Revision 3.16  2005/05/23 17:52:53  schwarz
  * Unified error handling:
  * - SdifErrorEnum (global errors) integrated into SdifErrorTagET (file errors)
@@ -125,7 +131,7 @@
 #include <ctype.h>
 #include <stdlib.h>
 
-#ifdef WIN32
+#if defined( _WIN32) || defined(WIN32)
 #include <io.h>
 #include <fcntl.h>
 #endif
@@ -455,7 +461,7 @@ SdifKillStr(char* String)
 /* Only for WIN32 */
 void SdifSetStdIOBinary (void)
 {
-#ifdef WIN32
+#if defined( _WIN32) || defined(WIN32)
     _setmode( _fileno( stdin  ), _O_BINARY );
     _setmode( _fileno( stdout ), _O_BINARY );
     _setmode( _fileno( stderr ), _O_BINARY );

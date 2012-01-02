@@ -1,4 +1,4 @@
-/* $Id: sdif.h.in,v 1.2 2011-06-11 23:23:10 roebel Exp $
+/* $Id: sdif.h.in,v 1.3 2012-01-02 23:49:08 roebel Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -30,6 +30,11 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  2011/06/11 23:23:10  roebel
+ * Fixed a number of issues with the conditional include of stdint.h and sys/types.h in instaled include file
+ * sdif.h.
+ * Correctly use the types provided by these include files for definition of sdif types.
+ *
  * Revision 1.1  2011/04/18 18:46:27  roebel
  * added sdif.h.in to cvs
  *
@@ -332,7 +337,7 @@
  * Revision 1.1.2.1  2000/08/21  13:07:41  tisseran
  * *** empty log message ***
  *
- * $Date: 2011-06-11 23:23:10 $
+ * $Date: 2012-01-02 23:49:08 $
  *
  */
 
@@ -347,7 +352,7 @@ extern "C" {
 #endif
 
 
-static const char _sdif_h_cvs_revision_ [] = "$Id: sdif.h.in,v 1.2 2011-06-11 23:23:10 roebel Exp $";
+static const char _sdif_h_cvs_revision_ [] = "$Id: sdif.h.in,v 1.3 2012-01-02 23:49:08 roebel Exp $";
 
   /* the following two #if are configured by autoconf/cmake
    * and reflect capabilities of the installing compiler.
@@ -499,7 +504,7 @@ int SdiffSetPos(SdifFileT *file, SdiffPosT *pos);
 typedef @SDIF_POS_TYPE@ SdiffPosT;
 
 /* support file positions with files larger than 2GB */
-#if defined(WIN32)
+#if defined(_WIN32) || defined(_WIN32)
     /* on  windows, seeking on a stream is always considered
        successful (return 0)! */
 /* these 2 are used only localy here to test whether the stream supports seeking */ 

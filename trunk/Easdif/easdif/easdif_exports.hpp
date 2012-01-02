@@ -30,7 +30,7 @@
 #if defined( EASDIF_IS_STATIC) || defined(SDIF_IS_STATIC)
 #  define EASDIF_API
 #else
-#  ifdef WIN32
+#  if defined( _WIN32) || defined(WIN32)
 #    ifdef DO_EXPORT_SDIF
 #      define EASDIF_API __declspec(dllexport)
 #    else
