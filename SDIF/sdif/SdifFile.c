@@ -1,4 +1,4 @@
-/* $Id: SdifFile.c,v 3.65 2011-06-11 23:58:04 roebel Exp $
+/* $Id: SdifFile.c,v 3.66 2012-01-02 23:49:08 roebel Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -33,6 +33,9 @@
  * author: Dominique Virolle 1997
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.65  2011/06/11 23:58:04  roebel
+ * Added missing include file io.h.
+ *
  * Revision 3.64  2011/06/11 17:29:06  roebel
  * Fixed ftruncate implementation on windows.
  *
@@ -360,7 +363,7 @@
 /* Include all Frame Type */
 #include "sdiftypes.h"
 
-#ifdef WIN32
+#if defined( _WIN32) || defined(WIN32)
 #include <io.h>
 #endif
 
@@ -1378,7 +1381,7 @@ int SdifFTruncate(SdifFileT *file)
 #ifdef HAVE_FTRUNCATE
   return (ftruncate(fileno(file->Stream), pos) == 0);
 #else
-#  if defined(WIN32)
+#  if defined( _WIN32) || defined(WIN32)
 #    if defined(_MSC_VER) && _MSC_VER >= 1400
   // 64bit pos
   return (_chsize_s(_fileno(file->Stream), pos) == 0);

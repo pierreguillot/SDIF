@@ -1,4 +1,4 @@
-/* $Id: sdifextract.c,v 1.17 2006-05-03 15:47:25 schwarz Exp $
+/* $Id: sdifextract.c,v 1.18 2012-01-02 23:49:08 roebel Exp $
  
                 Copyright (c) 1998 by IRCAM - Centre Pompidou
                            All rights reserved.
@@ -13,6 +13,9 @@
    Extract data from an SDIF-file.  
    
    $Log: not supported by cvs2svn $
+   Revision 1.17  2006/05/03 15:47:25  schwarz
+   added data only output option
+
    Revision 1.16  2005/05/13 16:04:59  schwarz
    more rows/columns
 
@@ -172,7 +175,7 @@
 #include <unistd.h>
 #elif defined(HOST_OS_MAC)
 #include <unistd.h>
-#elif defined(WIN32)
+#elif defined(HOST_OS_WIN32)
 #include <io.h>
 #endif
 
@@ -225,7 +228,7 @@ void usage (char *msg, char *arg, int longhelp)
     }
     if (longhelp)
     {
-    	fprintf (SdifStdErr, "\n" PROG "version $Revision: 1.17 $\n\n");
+    	fprintf (SdifStdErr, "\n" PROG "version $Revision: 1.18 $\n\n");
     
     	if (types)
     	{

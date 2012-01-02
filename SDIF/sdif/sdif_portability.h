@@ -1,6 +1,6 @@
 /******************************************************************************
  *
- * $Id: sdif_portability.h,v 3.4 2006-12-14 17:21:57 roebel Exp $
+ * $Id: sdif_portability.h,v 3.5 2012-01-02 23:49:08 roebel Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -33,6 +33,10 @@
  *
  * LOG
  * $Log: not supported by cvs2svn $
+ * Revision 3.4  2006/12/14 17:21:57  roebel
+ * Support universal binaries configuration for mac os x.
+ * Use endian.h for endianness determination.
+ *
  * Revision 3.3  2006/01/16 18:33:29  muller
  * updated visual studio 7.1 projects in order to build the latest sdif version. (only tested with FTM)
  *
@@ -40,7 +44,7 @@
  * for a DLL we either need a module definition file with the list of exported symbols
  * or something like:
  *
- * #ifdef WIN32
+ * #if defined( _WIN32) || defined(WIN32)
  * #if defined(SDIFDLL_EXPORTS)
  * #define SDIF_API __declspec(dllexport)
  * #else
@@ -66,7 +70,7 @@
 
 #include <sdif_version.h>
 
-#if defined(WIN32)
+#if defined( _WIN32) || defined(WIN32)
 #   include <stdio.h>
 #   define snprintf _snprintf
 #endif
