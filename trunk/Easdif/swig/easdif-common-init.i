@@ -27,6 +27,8 @@ return (((((unsigned int)(p1))&0xff)<<24)|((((unsigned int)(p2))&0xff)<<16)|((((
 // provide access to std::vector as eaSDIF.Vector and eaSDIF.Selection
 namespace std {
    %template(Vector) vector<double>;
+   %template(FVector) vector<float>;
+   %template(IVector) vector<int>;
    %template(Selection) vector<unsigned int>;
 };
 
