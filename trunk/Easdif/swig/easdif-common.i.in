@@ -1,10 +1,13 @@
-// $Id: easdif-common.i.in,v 1.14 2006-11-27 16:49:45 roebel Exp $ -*-c-*-
+// $Id: easdif-common.i.in,v 1.15 2012-01-03 23:56:35 roebel Exp $ -*-c-*-
 //
 // easdif.i		16.04.2003		Diemo Schwarz
 //
 // Interface file for swig, defining the callable easdif functions
 //
 // $Log: not supported by cvs2svn $
+// Revision 1.14  2006/11/27 16:49:45  roebel
+// Changed arguemnt mapping of SDIFMatrix::GetRow/GetCol functions.
+//
 // Revision 1.13  2006/11/26 22:53:39  roebel
 // Reput easdif source  directory.
 //
@@ -106,7 +109,7 @@ using namespace Easdif;
 
 
 
-// change SWIG class names because we prefix with SDIF:: anyway
+// change SWIG class names because we prefix with eaSDIF:: anyway
 %rename(Frame)          Easdif::SDIFFrame;
 %rename(Entity)         Easdif::SDIFEntity;
 %rename(Matrix)         Easdif::SDIFMatrix;
@@ -122,6 +125,7 @@ using namespace Easdif;
 // have to ignore constructor, because SdifSignature and
 // SdifDataTypeET are indistinguishably int for swig
 %ignore Easdif::SDIFMatrix::SDIFMatrix(SdifSignature, int, int, SdifDataTypeET);
+%ignore Easdif::SDIFMatrix::operator=(const SDIFMatrix&);
 // have to be ignrored due to bug in swig that does not handle
 // correctly the typemap for SdifSignature when resolving overloaded
 // functions (here const qualifier)
@@ -139,21 +143,43 @@ using namespace Easdif;
 
 // read all class definitions
 #define SWIG_RENAME_EASDIF
-%include "@EASDIF_INC_DIR@/easdif/sdif_matrix.hpp"
-%include "@EASDIF_INC_DIR@/easdif/sdifnamevaluetable.hpp"
-%include "@EASDIF_INC_DIR@/easdif/sdif_frame.hpp"
-%include "@EASDIF_INC_DIR@/easdif/sdifexception.hpp"
 
-// exceptions to be used for entity only
+
+// filter all exceptions and transform into Target exceptions preserving the error message 
 %exception {
         try {
                 $action
-        } catch(SDIFException e) {
-                SWIG_exception(SWIG_IOError,e.getmessage().c_str());
+        } catch(const SDIFArrayPosition& e) {
+                SWIG_exception(SWIG_IndexError,e.getmessage().c_str());
+        } catch(const SDIFException& e) {
+                SWIG_exception(SWIG_RuntimeError,e.getmessage().c_str());
+        } catch(const std::exception& e) {
+                SWIG_exception(SWIG_SystemError, e.what());
         } catch(...) {
                 SWIG_exception(SWIG_UnknownError,"Unknown exception");
         }
 }
 
+
+%include "@EASDIF_INC_DIR@/easdif/sdif_matrix.hpp"
+%include "@EASDIF_INC_DIR@/easdif/sdifnamevaluetable.hpp"
+%include "@EASDIF_INC_DIR@/easdif/sdif_frame.hpp"
+%include "@EASDIF_INC_DIR@/easdif/sdifexception.hpp"
+
+
+
+%template(GetRow) Easdif::SDIFMatrix::GetRow<double>;
+%template(GetRow) Easdif::SDIFMatrix::GetRow<float>;
+%template(GetRow) Easdif::SDIFMatrix::GetRow<int>;
+%template(GetCol) Easdif::SDIFMatrix::GetCol<double>;
+%template(GetCol) Easdif::SDIFMatrix::GetCol<float>;
+%template(GetCol) Easdif::SDIFMatrix::GetCol<int>;
+
+%template(SetRow) Easdif::SDIFMatrix::SetRow<double>;
+%template(SetRow) Easdif::SDIFMatrix::SetRow<float>;
+%template(SetRow) Easdif::SDIFMatrix::SetRow<int>;
+%template(SetCol) Easdif::SDIFMatrix::SetCol<double>;
+%template(SetCol) Easdif::SDIFMatrix::SetCol<float>;
+%template(SetCol) Easdif::SDIFMatrix::SetCol<int>;
 
 %include "@EASDIF_INC_DIR@/easdif/sdifentity.hpp"
