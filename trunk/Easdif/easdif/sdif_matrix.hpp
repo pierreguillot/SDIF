@@ -33,9 +33,12 @@
  * 
  * 
  * 
- * $Id: sdif_matrix.hpp,v 1.7 2008-06-20 17:07:02 roebel Exp $ 
+ * $Id: sdif_matrix.hpp,v 1.8 2012-01-03 23:59:25 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.7  2008/06/20 17:07:02  roebel
+ * Changed Print methods to be const.
+ *
  * Revision 1.6  2008/02/14 12:18:17  roebel
  * Extended the GetRow/GetCol functions ability to read into  std::vector
  * containing arbitrary types.
@@ -725,8 +728,14 @@ namespace Easdif {
      * @param irow row index
      * 
      */
+    template <class VECVAL_T>
     void
-    SetRow(const std::vector<double> &in,int irow) const throw (SDIFArrayPosition) {
+    SetRow(const std::vector<VECVAL_T> &in,int irow) throw (SDIFArrayPosition) {
+      if(static_cast<int>(in.size()) != GetNbCols())
+  	throw SDIFArrayPosition(eError,
+				"Error in  SDIFMatrix::SetRow!!! vector size of input vector does not match number of columns !!!",
+				0, eArrayPosition,__FILE__,__LINE__);
+
       mInter->SetRow(&(in[0]),irow);
       return;
     }
@@ -753,8 +762,14 @@ namespace Easdif {
      * @param icol col index
      * 
      */
+    template <class VECVAL_T>
     void
-    SetCol(const std::vector<double> &in,int icol) const throw (SDIFArrayPosition) {
+    SetCol(const std::vector<VECVAL_T> &in,int icol) throw (SDIFArrayPosition) {
+      if(static_cast<int>(in.size()) != GetNbRows()){
+  	throw SDIFArrayPosition(eError,
+				"Error in  SDIFMatrix::SetCol:: vector size of input vector does not match number of rows !!!",
+				0, eArrayPosition,__FILE__,__LINE__);
+      }
       mInter->SetCol(&(in[0]),icol);
     }
   };
