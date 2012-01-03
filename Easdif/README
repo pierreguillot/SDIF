@@ -1,5 +1,5 @@
 # Easdif README
-# $Id: README,v 1.19 2012-01-03 16:24:01 roebel Exp $
+# $Id: README,v 1.20 2012-01-03 23:38:25 roebel Exp $
 #
 # Copyright (C) Ircam 2002-2008
 
@@ -92,8 +92,6 @@ target you want to build and  select build from there.  Note, that you
 should never  use the ALL  target because not  all of the  targets are
 supported in Xcode.
 
-For mex interface compilation under MAc SO 10.6 see below
-
 # Windows 
 ---------
 
@@ -108,16 +106,28 @@ create the  selected project.   Note, that for  some IDEs  the default
 build style  may be debug  and you may  need to explicitly  select the
 release build.  Note,  as well that the ALL target  will fail for most
 IDEs  because  not  all  of  the  targets  are  supported  in  an  IDE
-environment. Therefore you better work wirh the individual library and
+environment. Therefore you better work with the individual library and
 program targets. 
 
 # Matlab/Octave mex interface
 ==============================
 
 Since  1.4.0  of the  library  a matlab  mex  interface  to easdif  is
-available.   Currently the mex  configuration is  only tested  for the
-command line  compiler configuration (especially  mex configuration is
-untested for all the IDEs like Xcode and MSVC). 
+available.   Building  mex files  will  work  for  command line  build
+generators (Makefile).  Since cmake version 2.8.5 and Easdif 1.4.16 it
+should work correctly  as well for GUI based  IDEs (MSVC, Xcode).  You
+need to make sure however, that the compiler used by the matlab/octave
+mex/mkoctfile  scripts is  the  same  that is  used  to configure  the
+library. To  change the compiler used  by cmake you  can either select
+the  compiler form  the menu  of the  cmake gui  or  set environnement
+variables prior  to the  first run of  the cmake command  line utility
+(you have to set CC for the  c compiler and CXX for the c++ compiler).
+Please  refer  to cmake  documentation  for  futher  details. In  some
+situations you can configure the  compiler used by the mex script from
+the  matlab environment  using  mex setup.  Architecture setup  (i386,
+x86_64) has to be coherent  as well.  For more details on architecture
+related problems see the discussion on mex interface compilation under
+Mac OS 10.6 below.
 
 To configure for comilation of the mex interface use
 
@@ -163,8 +173,6 @@ ATTENTION: the mex script is often masked by the mex binary of the tex
 program suite. If cmake finds the mex of tex first in its path it will
 not be able to run correctly. In this case you have to either change
 your PATH or specify the mex script on the command line as shown above.
-
-
 
 For the octave compile script mkoctfile  there exists a similar syntax
 

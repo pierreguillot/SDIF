@@ -21,8 +21,17 @@ IF(NOT MEX AND APPLE)
   ENDIF(MATLAB_PATH)
 ENDIF(NOT MEX AND APPLE)
 
+
+IF(${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION}.${CMAKE_PATCH_VERSION} VERSION_GREATER "2.8.4")
+  SET(USE_GEN_EXPRESSIONS ON)
+ELSE(${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION}.${CMAKE_PATCH_VERSION} VERSION_GREATER "2.8.4")
+  SET(USE_GEN_EXPRESSIONS ON)
+ENDIF(${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION}.${CMAKE_PATCH_VERSION} VERSION_GREATER "2.8.4")
+
+
 IF(MEX) 
   MESSAGE(STATUS "matlab mex wrapper :: using mex -> ${MEX}")
+  MESSAGE(STATUS "generator expression supported -> ${USE_GEN_EXPRESSIONS}")
   # Attention the line breaks are required for mac ppc
   SET(SOURCE "#include<mex.h> 
 void mexFunction (int nlhs, mxArray *plhs [], int nrhs, const mxArray *prhs []){
@@ -127,6 +136,8 @@ void mexFunction (int nlhs, mxArray *plhs [], int nrhs, const mxArray *prhs []){
       SET(ADDCFLAGS "${ADDCFLAGS} -DGCC_HAS_VISIBILITY -fvisibility=hidden")
     ENDIF(CMAKE_COMPILER_IS_GNUCXX AND GCC_HAS_VISIBILITY)
 
+
+
     ADD_CUSTOM_TARGET(mex)      
     SET(INSTALL_MEX_FILES )
     MACRO(MEXCOMPILE_FILES )
@@ -141,12 +152,19 @@ void mexFunction (int nlhs, mxArray *plhs [], int nrhs, const mxArray *prhs []){
         IF(DEBUG)
           MESSAGE("ADD CUSTOM COMMAND ::${MEX} ${MEXFLAGS} -v ${CMAKE_CURRENT_SOURCE_DIR}/${_current_FILE} \"${COMPILER_SELECTOR_VAR}=${CMAKE_CXX_COMPILER}\" \"${MEX_CXX_FLAGS} ${ADDCFLAGS}\"  -I${CMAKE_CURRENT_BINARY_DIR}/../SDIF/sdifconfig -I${CMAKE_CURRENT_BINARY_DIR}/.. -I${CMAKE_CURRENT_SOURCE_DIR}/../SDIF/include -I${CMAKE_CURRENT_SOURCE_DIR}/.. -output ${_o_FILE} -L${CMAKE_ARCHIVE_OUTPUT_DIRECTORY} -lEasdif_static_pic${DEBUGEXT}::")
         ENDIF(DEBUG)
-        ADD_CUSTOM_COMMAND(OUTPUT ${_o_FILE} 
-          COMMAND echo "Processing: ${_current_FILE}"
-          COMMAND
-          ${MEX} ${MEXFLAGS} -v ${CMAKE_CURRENT_SOURCE_DIR}/${_current_FILE} "${COMPILER_SELECTOR_VAR}=${CMAKE_CXX_COMPILER}" "${MEX_CXX_FLAGS} ${ADDCFLAGS}"  -I${CMAKE_CURRENT_BINARY_DIR}/../SDIF/sdifconfig -I${CMAKE_CURRENT_BINARY_DIR}/.. -I${CMAKE_CURRENT_SOURCE_DIR}/../SDIF/include -I${CMAKE_CURRENT_SOURCE_DIR}/.. -output ${_o_FILE} -L${CMAKE_ARCHIVE_OUTPUT_DIRECTORY} -lEasdif_static_pic${DEBUGEXT}
-          DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/${_current_FILE}  ${DEP_INCLUDES} Easdif_static_pic${DEBUGEXT}) 
-        
+        IF(USE_GEN_EXPRESSIONS)
+          ADD_CUSTOM_COMMAND(OUTPUT ${_o_FILE} 
+            COMMENT  "Processing: ${_current_FILE}"
+            COMMAND
+            ${MEX} ${MEXFLAGS} -v ${CMAKE_CURRENT_SOURCE_DIR}/${_current_FILE} "${COMPILER_SELECTOR_VAR}=${CMAKE_CXX_COMPILER}" "${MEX_CXX_FLAGS} ${ADDCFLAGS}"  -I${CMAKE_CURRENT_BINARY_DIR}/../SDIF/sdifconfig -I${CMAKE_CURRENT_BINARY_DIR}/.. -I${CMAKE_CURRENT_SOURCE_DIR}/../SDIF/include -I${CMAKE_CURRENT_SOURCE_DIR}/.. -output ${_o_FILE} -L$<TARGET_FILE_DIR:Easdif_static_pic${DEBUGEXT}> -lEasdif_static_pic${DEBUGEXT}
+            DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/${_current_FILE}  ${DEP_INCLUDES} Easdif_static_pic${DEBUGEXT})
+        ELSE(USE_GEN_EXPRESSIONS)
+          ADD_CUSTOM_COMMAND(OUTPUT ${_o_FILE} 
+            COMMENT "Processing: ${_current_FILE}"
+            COMMAND
+            ${MEX} ${MEXFLAGS} -v ${CMAKE_CURRENT_SOURCE_DIR}/${_current_FILE} "${COMPILER_SELECTOR_VAR}=${CMAKE_CXX_COMPILER}" "${MEX_CXX_FLAGS} ${ADDCFLAGS}"  -I${CMAKE_CURRENT_BINARY_DIR}/../SDIF/sdifconfig -I${CMAKE_CURRENT_BINARY_DIR}/.. -I${CMAKE_CURRENT_SOURCE_DIR}/../SDIF/include -I${CMAKE_CURRENT_SOURCE_DIR}/.. -output ${_o_FILE} -L${CMAKE_ARCHIVE_OUTPUT_DIRECTORY} -lEasdif_static_pic${DEBUGEXT} 
+            DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/${_current_FILE}  ${DEP_INCLUDES} Easdif_static_pic${DEBUGEXT})         
+        ENDIF(USE_GEN_EXPRESSIONS)
         ADD_CUSTOM_TARGET(${_basename}${DEBUGEXT}  DEPENDS  ${_o_FILE})      
         #ADD_DEPENDENCIES(${_basename}  ${_o_FILE} )
         ADD_DEPENDENCIES(mex  ${_basename}${DEBUGEXT} )
@@ -154,6 +172,7 @@ void mexFunction (int nlhs, mxArray *plhs [], int nrhs, const mxArray *prhs []){
     ENDMACRO(MEXCOMPILE_FILES )
     
     SET(SOURCES Fsdif_read_handler.cpp Fsdif_write_handler.cpp)
+    
     
     MEXCOMPILE_FILES(${SOURCES})
     
@@ -175,6 +194,7 @@ ENDIF(MEX)
 IF(MKOCT) 
 
   MESSAGE(STATUS "octave mex wrapper :: using mkoctfile -> ${MKOCT}")
+  MESSAGE(STATUS "generator expression supported -> ${USE_GEN_EXPRESSIONS}")
   EXECUTE_PROCESS(COMMAND ${MKOCT} -v RESULT_VARIABLE res OUTPUT_VARIABLE out ERROR_VARIABLE err)
 
   IF(res)
@@ -194,11 +214,19 @@ IF(MKOCT)
         SET(_o_FILE ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${_basename}${DEBUGEXT}${OCTEXT})
         #          MESSAGE(STATUS "_current_FILE ${CMAKE_CURRENT_SOURCE_DIR}/${_current_FILE} _o_FILE ${_o_FILE}")
         SET(INSTALL_OCT_FILES ${INSTALL_OCT_FILES} ${_o_FILE})
-        ADD_CUSTOM_COMMAND(OUTPUT ${_o_FILE} 
-          COMMAND echo "Processing: ${_current_FILE}"
-          COMMAND
-          ${MKOCT} --mex -v ${CMAKE_CURRENT_SOURCE_DIR}/${_current_FILE}  -I${CMAKE_CURRENT_BINARY_DIR}/../SDIF/sdifconfig -I${CMAKE_CURRENT_BINARY_DIR}/.. -I${CMAKE_CURRENT_SOURCE_DIR}/../SDIF/include -I${CMAKE_CURRENT_SOURCE_DIR}/.. --output ${_o_FILE} -L${CMAKE_ARCHIVE_OUTPUT_DIRECTORY} -lEasdif_static_pic${DEBUGEXT}
-          DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/${_current_FILE}  ${DEP_INCLUDES} Easdif_static_pic${DEBUGEXT}) 
+        IF(USE_GEN_EXPRESSIONS)
+          ADD_CUSTOM_COMMAND(OUTPUT ${_o_FILE} 
+            COMMENT  "Processing: ${_current_FILE}"
+            COMMAND
+            ${MKOCT} --mex -v ${CMAKE_CURRENT_SOURCE_DIR}/${_current_FILE}  -I${CMAKE_CURRENT_BINARY_DIR}/../SDIF/sdifconfig -I${CMAKE_CURRENT_BINARY_DIR}/.. -I${CMAKE_CURRENT_SOURCE_DIR}/../SDIF/include -I${CMAKE_CURRENT_SOURCE_DIR}/.. --output ${_o_FILE} -L$<TARGET_FILE_DIR:Easdif_static_pic${DEBUGEXT}> -lEasdif_static_pic${DEBUGEXT}
+            DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/${_current_FILE}  ${DEP_INCLUDES} Easdif_static_pic${DEBUGEXT})
+        ELSE(USE_GEN_EXPRESSIONS)
+          ADD_CUSTOM_COMMAND(OUTPUT ${_o_FILE} 
+            COMMENT "Processing: ${_current_FILE}"
+            COMMAND
+            ${MKOCT} --mex -v ${CMAKE_CURRENT_SOURCE_DIR}/${_current_FILE}  -I${CMAKE_CURRENT_BINARY_DIR}/../SDIF/sdifconfig -I${CMAKE_CURRENT_BINARY_DIR}/.. -I${CMAKE_CURRENT_SOURCE_DIR}/../SDIF/include -I${CMAKE_CURRENT_SOURCE_DIR}/.. --output ${_o_FILE} -L${CMAKE_ARCHIVE_OUTPUT_DIRECTORY} -lEasdif_static_pic${DEBUGEXT}            
+            DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/${_current_FILE}  ${DEP_INCLUDES} Easdif_static_pic${DEBUGEXT}) 
+        ENDIF(USE_GEN_EXPRESSIONS)
         
         ADD_CUSTOM_TARGET(${_basename}_oct${DEBUGEXT}  DEPENDS  ${_o_FILE})      
         #ADD_DEPENDENCIES(${_basename}  ${_o_FILE} )
