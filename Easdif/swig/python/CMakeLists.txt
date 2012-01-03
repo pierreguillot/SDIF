@@ -58,5 +58,16 @@ IF(PYTHON)
     COMMAND echo Testing python swig interface
     COMMAND ${LOADPATH}=$(CMAKE_BINARY_DIR)/lib ${PYTHON} ${CMAKE_CURRENT_BINARY_DIR}/test.py)
   ADD_DEPENDENCIES(checkswig pythonswig)
+  ADD_CUSTOM_TARGET(install_python_module_locally
+    COMMENT install python swig interface into userbase
+    COMMAND ${PYTHON} setup.py install --user
+    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
+  ADD_DEPENDENCIES(install_python_module_locally pythonswig)
+  ADD_CUSTOM_TARGET(install_python_module_globally    
+    COMMENT install python swig interface into userbase
+    COMMAND ${PYTHON} setup.py install
+    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
+
+  ADD_DEPENDENCIES(install_python_module_globally pythonswig)
 ENDIF(PYTHON) 
 
