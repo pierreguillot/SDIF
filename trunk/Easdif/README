@@ -1,5 +1,5 @@
 # Easdif README
-# $Id: README,v 1.18 2011-03-28 23:13:07 roebel Exp $
+# $Id: README,v 1.19 2012-01-03 16:24:01 roebel Exp $
 #
 # Copyright (C) Ircam 2002-2008
 
@@ -148,14 +148,27 @@ $> cmake -DMEX:STRING=/path_to_mex_script -DEASDIF_BUILD_MEX:BOOL=on path_to_top
 $> make mex
 $> make install
 
+Example for the directory structure
+
+build_EASDIF/
+EASDIF_SDIF/
+
+$> cd build_EASDIF
+$> cmake -DMEX:STRING=/Applications/MATLAB_R2010a.app/bin/mex -DEASDIF_BUILD_MEX:BOOL=on ../EASDIF_SDIF
+$> make mex
+$> make install
+
+
 ATTENTION: the mex script is often masked by the mex binary of the tex 
 program suite. If cmake finds the mex of tex first in its path it will
 not be able to run correctly. In this case you have to either change
-your PATH or specify the mex binary on the command line.
+your PATH or specify the mex script on the command line as shown above.
+
+
 
 For the octave compile script mkoctfile  there exists a similar syntax
 
-$> cmake -DOCT:STRING=/path_to_mkoctfile -DEASDIF_BUILD_MEX:BOOL=on path_to_top_level_easdif_dir 
+$> cmake -DMKOCT:STRING=/path_to_mkoctfile -DEASDIF_BUILD_MEX:BOOL=on path_to_top_level_easdif_dir 
 $> make oct
 $> make install
 
@@ -174,7 +187,7 @@ The corrsponding choices can be  made by means of comand line switches
 of  the  cmake  command  line  as  follows. You  have  to  adjust  the
 architecture according  to the  Matlab you are  using.  You  find your
 matlab architecture by  issuing mexext on the matlab  comand line.  If
-you get mexmaci you should use 
+you get mexmaci64 you should use 
  -DCMAKE_OSX_ARCHITECTURES:STRING=x86_64
 and in case you get mexmaci 
  -DCMAKE_OSX_ARCHITECTURES:STRING=i368
@@ -193,9 +206,6 @@ cannot change the compiler for a configured build directory.
 Easdif provides a number of swig wrapper templates that can be used to
 work  with  SDIF  files  from   python,  perl  or  java.  For  further
 information look into swig/README.
-
-For  the moment  the automake/autotools  build configuration  is still
-supported. For generic instructions look into the file INSTALL.
 
 
 # Documentation
