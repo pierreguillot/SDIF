@@ -6,8 +6,9 @@ setup(name='eaSDIF',
       version='1.4.15',
       description='SDIF file handling support for python',
       author='Numerous',
-      author_email='sdif@',
-      url='http://www.python.org/sigs/distutils-sig/',
+      author_email='sdif@ircam.fr',
+      url='http://sourceforge.net/projects/sdif/',
       py_modules=['eaSDIF'],
+      licence='LGPL'
       data_files=[('lib/python${PYTHON_VERSION}/site-packages', ['${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/_eaSDIF.so'])],
      )
