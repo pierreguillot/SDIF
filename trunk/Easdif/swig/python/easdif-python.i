@@ -1,10 +1,14 @@
-// $Id: easdif-python.i,v 1.7 2006-12-10 17:37:30 roebel Exp $ -*-c-*-
+// $Id: easdif-python.i,v 1.8 2012-01-04 12:19:09 roebel Exp $ -*-c-*-
 //
 // easdif-python.i		30.04.2003		Patrice Tisserand
 //
 // Interface file for swig, defining the callable easdif functions
 //
 // $Log: not supported by cvs2svn $
+// Revision 1.7  2006/12/10 17:37:30  roebel
+// SelectionSet now renamed to SelectionSetI to prevent
+// name clash in swig.
+//
 // Revision 1.6  2006/12/08 18:02:20  roebel
 // Extended python support for SelectionSet.
 //
@@ -20,7 +24,7 @@
 // Moved stlmap conditional to easdif-common.i.in
 //
 // Revision 1.2  2003/05/28 16:57:03  roebel
-// Made configure switching map support according tothe swig version installed.
+// Made configure switching map support according to the swig version installed.
 //
 // Revision 1.1  2003/04/30 11:45:48  tisseran
 // Added swig python stuff
@@ -46,5 +50,39 @@ namespace std {
    %template(ISet) set<unsigned int>;
 };
 
+%{
+#include "swig/python/Extensions.h"
+  %}
+
+
+%include "Extensions.h"
+
+
 %template(SelectionSetI) Easdif::SelectionSet<unsigned int>;
+
+%exception Easdif::SDIFEntity::next() {
+  try {
+    $action
+      }
+  catch(const Easdif::SDIFEof& e) {
+      Easdif::SDIFFrame localFrame;
+      PyErr_SetNone(PyExc_StopIteration);
+      return NULL;
+  }
+ }
+
+
+
+%extend Easdif::SDIFEntity{
+  Easdif::SDIFEntity&
+    __iter__() {
+    return *$self;
+  }
+  const Easdif::SDIFFrame
+    next() {
+      Easdif::SDIFFrame localFrame;
+      $self->ReadNextSelectedFrame(localFrame);
+      return localFrame;
+    }
+ }
 
