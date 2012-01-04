@@ -1,10 +1,14 @@
-// $Id: easdif-common.i.in,v 1.15 2012-01-03 23:56:35 roebel Exp $ -*-c-*-
+// $Id: easdif-common.i.in,v 1.16 2012-01-04 12:17:36 roebel Exp $ -*-c-*-
 //
 // easdif.i		16.04.2003		Diemo Schwarz
 //
 // Interface file for swig, defining the callable easdif functions
 //
 // $Log: not supported by cvs2svn $
+// Revision 1.15  2012/01/03 23:56:35  roebel
+// Improve exception handling and add instantiation of template member functions for swig.
+// While swig generates warnings that if will ignore the overloads the template functions are notin fact not ignored.
+//
 // Revision 1.14  2006/11/27 16:49:45  roebel
 // Changed arguemnt mapping of SDIFMatrix::GetRow/GetCol functions.
 //
@@ -131,6 +135,7 @@ using namespace Easdif;
 // functions (here const qualifier)
 %ignore Easdif::SDIFFrame::GetMatrixWithSig(const SdifSignature) const;
 
+
 // if this is given then the
 // Easdif::SDIFMatrix::GetRow(std::vector,int) and
 // Easdif::SDIFMatrix::GetCol(std::vector,int) functions
@@ -164,9 +169,7 @@ using namespace Easdif;
 %include "@EASDIF_INC_DIR@/easdif/sdif_matrix.hpp"
 %include "@EASDIF_INC_DIR@/easdif/sdifnamevaluetable.hpp"
 %include "@EASDIF_INC_DIR@/easdif/sdif_frame.hpp"
-%include "@EASDIF_INC_DIR@/easdif/sdifexception.hpp"
-
-
+%include "@EASDIF_INC_DIR@/easdif/sdifentity.hpp"
 
 %template(GetRow) Easdif::SDIFMatrix::GetRow<double>;
 %template(GetRow) Easdif::SDIFMatrix::GetRow<float>;
@@ -182,4 +185,4 @@ using namespace Easdif;
 %template(SetCol) Easdif::SDIFMatrix::SetCol<float>;
 %template(SetCol) Easdif::SDIFMatrix::SetCol<int>;
 
-%include "@EASDIF_INC_DIR@/easdif/sdifentity.hpp"
+
