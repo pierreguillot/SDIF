@@ -3,7 +3,7 @@
 from distutils.core import setup
 
 setup(name='eaSDIF',
-      version='1.4.15',
+      version="${EASDIF_VERSION}",
       description='SDIF file handling support for python',
       author='Numerous',
       author_email='sdif@ircam.fr',
