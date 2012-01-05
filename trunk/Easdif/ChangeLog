@@ -1,3 +1,73 @@
+2012-01-05  Axel Roebel  <roebel@m1873.local>
+Version 1.4.16
+
+	* swig/python/easdif-python.i:
+	Make Entity and Frame iterable and take car that iteration is efficient by means of
+	returning pointers to Frames and matrices.
+
+	* swig/easdif-common-init.i, swig/easdif-common.i.in:
+	Provide access to FrameDirectory.
+
+	* swig/CMakeLists.txt:
+	Support disabling of target languages.
+
+2012-01-04  Axel Roebel  <roebel@m1873.local>
+
+	* swig/python/CMakeLists.txt, swig/python/easdif-python.i:
+	Create derived class to render Frame and Entity into python iterable.
+
+	* swig/python/setup.py.in: Use configured version number.
+
+	* swig/easdif-common.i.in:
+	Removed all exception classes from the interface. They are not very useful anyway.
+
+2012-01-03  Axel Roebel  <roebel@m1873.local>
+
+	* easdif/sdif_matrix.hpp:
+	Changed SetRow(std::vector and SetCol(const std::vector into template member functions and add exception if inout vector size
+	does not fit the row or column size.
+
+	* swig/easdif-common.i.in:
+	Improve exception handling and add instantiation of template member functions for swig.
+	While swig generates warnings that if will ignore the overloads the template functions are notin fact not ignored.
+
+	* swig/easdif-common-init.i:
+	Added std::vector<float> and std::vector<int> proxy types for matrix access.
+
+	* README, matlab/CMakeLists.txt:
+	Support mex fie generation in GUI IDEs (MSVC and Xcode) for cmake version 2.8.5 and above.
+
+	* README: Improved doc.
+
+	* swig/python/CMakeLists.txt, swig/python/setup.py.in:
+	Added python install target.
+
+	* swig/python/setup.py.in: Updated info.
+
+	* swig/python/CMakeLists.txt, swig/python/setup.py.in:
+	Improved flexibility of swig python configuration.
+
+2012-01-02  Axel Roebel  <roebel@m1873.local>
+
+	* CMakeLists.txt: Added missing call to SET_COMPILER_FLAGS.
+
+	* matlab/CMakeLists.txt: Updated for windows/Visual C++ compatibility.
+
+	* easdif/easdif_exports.hpp, SDIF/include/sdif.h.in, SDIF/sdif/SdifFile.c, SDIF/sdif/SdifHard_OS.c, SDIF/sdif/host_architecture.h, SDIF/sdif/sdif_portability.h, SDIF/tools/sdifextract.c:
+	Base selection of WIN32 specific implementation on definition of macros  WIN32 OR _WIN32. The latter being standard in
+	Visual C++ it is most important to have it.
+
+2011-12-19  Axel Roebel  <roebel@m1873.local>
+
+	* CMakeLists.txt, ChangeLog: Version 1.4.15
+
+	* SDIF/ChangeLog, SDIF/configure.in: Version 3.11.4
+
+	* SDIF/ChangeLog: document change
+
+	* SDIF/sdif/SdifFGet.c:
+	Graefully handle NVT tables that do not include a trailing 0. This problem is related to the use of the writesdif function to create NVT tables
+
 2011-12-19  Axel Roebel  <roebel@m1712.ircam.fr>
 Version 1.4.15 
 
@@ -1179,4 +1249,4 @@ Version 0.21
 	* ChangeLog: Added changelog to repository.
 
 
-$Id: ChangeLog,v 1.85 2011-12-19 17:57:50 roebel Exp $
+$Id: ChangeLog,v 1.86 2012-01-05 01:29:32 roebel Exp $
