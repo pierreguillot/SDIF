@@ -1,10 +1,13 @@
-// $Id: easdif-common.i.in,v 1.16 2012-01-04 12:17:36 roebel Exp $ -*-c-*-
+// $Id: easdif-common.i.in,v 1.17 2012-01-05 00:55:54 roebel Exp $ -*-c-*-
 //
 // easdif.i		16.04.2003		Diemo Schwarz
 //
 // Interface file for swig, defining the callable easdif functions
 //
 // $Log: not supported by cvs2svn $
+// Revision 1.16  2012/01/04 12:17:36  roebel
+// Removed all exception classes that are not very useful anyway.
+//
 // Revision 1.15  2012/01/03 23:56:35  roebel
 // Improve exception handling and add instantiation of template member functions for swig.
 // While swig generates warnings that if will ignore the overloads the template functions are notin fact not ignored.
@@ -103,6 +106,7 @@
 #include "easdif/easdif.h"
 
 using namespace Easdif;
+
 %}
 
 
@@ -111,6 +115,8 @@ using namespace Easdif;
 // for name value table
 %template(stringmap) std::map<std::string,std::string>;
 
+// For SDIFDirectory Entity::GetDirectory.
+%template(Directory) std::list<Easdif::SDIFLocation>;
 
 
 // change SWIG class names because we prefix with eaSDIF:: anyway

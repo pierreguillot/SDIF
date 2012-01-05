@@ -12,8 +12,11 @@
 // include typemap for std::string from SWIG library
 %include std_string.i
 
-// include typemap for std::string from SWIG library
+// include typemap for std::vector from SWIG library
 %include std_vector.i
+
+// include typemap for std::list from SWIG library
+%include std_list.i
 
 // create signatures
 %inline %{
