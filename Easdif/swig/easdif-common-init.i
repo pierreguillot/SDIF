@@ -1,7 +1,7 @@
 %include typemaps.i
 
 // generate perl module named 'eaSDIF'
-%module eaSDIF
+%module(docstring="Easy SDIF wrapper module for reading wrting SDIF files") eaSDIF
 
 // module initialisation code
 %init 
