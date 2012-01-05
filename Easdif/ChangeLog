@@ -2,6 +2,15 @@
 Version 1.4.16
 
 	* swig/python/easdif-python.i:
+	Fixed memory leak during use of iterables.
+	Added automatic generation of documentation for generated python
+	module
+
+	* swig/easdif-common-init.i: Added documentation to module.
+
+2012-01-05  Axel Roebel  <roebel@m1873.local>
+
+	* swig/python/easdif-python.i:
 	Make Entity and Frame iterable and take car that iteration is efficient by means of
 	returning pointers to Frames and matrices.
 
@@ -1249,4 +1258,4 @@ Version 0.21
 	* ChangeLog: Added changelog to repository.
 
 
-$Id: ChangeLog,v 1.86 2012-01-05 01:29:32 roebel Exp $
+$Id: ChangeLog,v 1.87 2012-01-05 11:14:07 roebel Exp $
