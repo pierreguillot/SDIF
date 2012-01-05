@@ -1,10 +1,14 @@
-// $Id: easdif-python.i,v 1.9 2012-01-05 01:18:07 roebel Exp $ -*-c-*-
+// $Id: easdif-python.i,v 1.10 2012-01-05 11:11:21 roebel Exp $ -*-c-*-
 //
 // easdif-python.i		30.04.2003		Patrice Tisserand
 //
 // Interface file for swig, defining the callable easdif functions
 //
 // $Log: not supported by cvs2svn $
+// Revision 1.9  2012/01/05 01:18:07  roebel
+// Make Entity and Frame iterable and take car that iteration is efficient by means of
+// returning pointers to Frames and matrices.
+//
 // Revision 1.8  2012/01/04 12:19:09  roebel
 // Create derived class to render Frame and Entity into python iterable.
 //
@@ -35,6 +39,7 @@
 //
 // include common init
 %include ../easdif-common-init.i
+%feature("autodoc", "1");
 
 // include typemaps
 %include sdiftypemap-python.i
@@ -92,7 +97,7 @@ namespace std {
   }
  }
 
-
+%newobject Easdif::SDIFEntity::next;
 %extend Easdif::SDIFEntity{
   Easdif::SDIFEntity&
   __iter__() {
@@ -131,6 +136,7 @@ namespace std {
  }
 
 
+%newobject Easdif::SDIFFrame::next;
 %extend Easdif::SDIFFrame {
   Easdif::SDIFFrame*
   __iter__() {
