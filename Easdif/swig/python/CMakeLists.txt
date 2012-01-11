@@ -55,10 +55,12 @@ IF(PYTHON)
     ENDIF(WIN32)
   ENDIF(APPLE)
   
-  ADD_CUSTOM_TARGET(checkswig
+  ADD_CUSTOM_TARGET(checkswigpython
     COMMAND echo Testing python swig interface
     COMMAND ${LOADPATH}=$(CMAKE_BINARY_DIR)/lib ${PYTHON} ${CMAKE_CURRENT_BINARY_DIR}/test.py)
-  ADD_DEPENDENCIES(checkswig pythonswig)
+  ADD_DEPENDENCIES(checkswigpython pythonswig)
+  ADD_DEPENDENCIES(checkswig checkswigpython)
+
   ADD_CUSTOM_TARGET(install_python_module_locally
     COMMENT install python swig interface into userbase
     COMMAND ${PYTHON} setup.py install --user

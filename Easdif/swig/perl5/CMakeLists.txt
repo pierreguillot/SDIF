@@ -31,10 +31,11 @@ IF(PERL_EXECUTABLE)
         ENDIF(WIN32)
       ENDIF(APPLE)
       
-      ADD_CUSTOM_TARGET(checkswig
+      ADD_CUSTOM_TARGET(checkswigperl
         COMMAND echo Testing perl swig interface
         COMMAND ${LOADPATH}=$(CMAKE_BINARY_DIR)/easdif ${PERL_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/test.pl)
-      ADD_DEPENDENCIES(checkswig perlswig)
+      ADD_DEPENDENCIES(checkswigperl perlswig)
+      ADD_DEPENDENCIES(checkswig checkswigperl)
     ENDIF(EXISTS ${PERL_EXECUTABLE})
   ENDIF(PERL_INCLUDE_PATH)
 ENDIF(PERL_EXECUTABLE)
