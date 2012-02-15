@@ -30,7 +30,10 @@ IF(PYTHON)
   
   SET(CMAKE_SWIG_FLAGS "-I${CMAKE_CURRENT_BINARY_DIR}" "-I${CMAKE_CURRENT_SOURCE_DIR}")
   SWIG_ADD_MODULE(eaSDIF python  ${INTERFACE_SRC}     )
-  SWIG_LINK_LIBRARIES(eaSDIF  Easdif_static${DEBUGEXT}  ${PYTHON_LIBRARY})
+  #  SWIG_LINK_LIBRARIES(eaSDIF  Easdif_static_pic${DEBUGEXT}  ${PYTHON_LIBRARY})
+  # PYTHON LIBRARY seems not to be required because it is in fact part of python executable
+# linking with libpython.a fails for some compilers on linux 64 bit due to the fact that the librray is not compiled with -fPIC flag.
+  SWIG_LINK_LIBRARIES(eaSDIF  Easdif_static_pic${DEBUGEXT})
   ADD_CUSTOM_TARGET(pythonswig)
   ADD_DEPENDENCIES(pythonswig ${SWIG_MODULE_eaSDIF_REAL_NAME})
   CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/test.py.in ${CMAKE_CURRENT_BINARY_DIR}/test.py)
