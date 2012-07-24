@@ -33,7 +33,13 @@ IF(PYTHON)
   #  SWIG_LINK_LIBRARIES(eaSDIF  Easdif_static_pic${DEBUGEXT}  ${PYTHON_LIBRARY})
   # PYTHON LIBRARY seems not to be required because it is in fact part of python executable
 # linking with libpython.a fails for some compilers on linux 64 bit due to the fact that the librray is not compiled with -fPIC flag.
-  SWIG_LINK_LIBRARIES(eaSDIF  Easdif_static_pic${DEBUGEXT})
+  # as well on mac os x linking with _pic library fails.
+  #  no idea why. Keep non pic version for now. 
+  IF(APPLE)
+    SWIG_LINK_LIBRARIES(eaSDIF  Easdif_static_pic${DEBUGEXT}  ${PYTHON_LIBRARY})
+  ELSE(APPLE)
+    SWIG_LINK_LIBRARIES(eaSDIF  Easdif_static_pic${DEBUGEXT})
+  ENDIF(APPLE)
   ADD_CUSTOM_TARGET(pythonswig)
   ADD_DEPENDENCIES(pythonswig ${SWIG_MODULE_eaSDIF_REAL_NAME})
   CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/test.py.in ${CMAKE_CURRENT_BINARY_DIR}/test.py)
