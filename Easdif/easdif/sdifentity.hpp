@@ -32,9 +32,13 @@
  * 
  * 
  * 
- * $Id: sdifentity.hpp,v 1.25 2011-06-11 17:05:31 roebel Exp $ 
+ * $Id: sdifentity.hpp,v 1.26 2012-08-10 01:03:29 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.25  2011/06/11 17:05:31  roebel
+ * Moved some member functions out of class scope to avoid unnecessary inlining
+ * of constructor, destructor or other costly functions.
+ *
  * Revision 1.24  2010/04/16 10:39:44  roebel
  * Fixed/clarified documentation.
  *
@@ -315,6 +319,13 @@ namespace Easdif {
   struct SDIFLocation;
   class  SDIFEntity;
 
+  /** 
+   * \ingroup initialization 
+   * \brief return EaSDIF Version string
+   * 
+   */
+  EASDIF_API
+  const char* Version();
 
   /**
    * \defgroup  directory SDIFEntity - Directory 
@@ -1617,6 +1628,14 @@ public:
    * @return true if positioning was successful
    */  
   bool Rewind();
+
+  /** 
+   * \ingroup  file
+   * \brief skip through to te end of file
+   *  This function is usefull especially for filling the frame directory
+   * @return true if positioning was successful
+   */  
+  bool FillFrameDirAndRewind();
   
   /** 
    * \ingroup  file
@@ -1851,6 +1870,19 @@ public:
    * @return  number of data bytes read for selected matrices 
    */
   int ReadNextSelectedFrame(SDIFFrame& frame);
+
+  /**
+   * \brief read previous selected frame from file
+   * \ingroup rnwentity
+   *
+   * read the previous selected frame of the file
+   * return the number of bytes read, this function will only work if the frame directory is enabled
+   * 
+   * @param frame to fill
+   * 
+   * @return  number of data bytes read for selected matrices 
+   */
+  int ReadPrevSelectedFrame(SDIFFrame& frame);
   
   /**
    * \brief read next selected frame from file having time equal to  or after given time
@@ -1875,6 +1907,7 @@ public:
    * \see EnableFrameDir()
    */
   int ReadNextSelectedFrame(SDIFFrame& frame,SdifFloat8 timePos);
+
 
 
   /** 

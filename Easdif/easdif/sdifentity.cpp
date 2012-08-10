@@ -32,9 +32,13 @@
  * 
  * 
  * 
- * $Id: sdifentity.cpp,v 1.46 2011-06-11 17:05:31 roebel Exp $ 
+ * $Id: sdifentity.cpp,v 1.47 2012-08-10 01:03:29 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.46  2011/06/11 17:05:31  roebel
+ * Moved some member functions out of class scope to avoid unnecessary inlining
+ * of constructor, destructor or other costly functions.
+ *
  * Revision 1.45  2010/05/08 19:35:55  roebel
  * Fixed SDIFEntity::GetStreamSelection to properly establish the selected streams.
  *
@@ -262,6 +266,7 @@
 #include <algorithm>
 #include "easdif/easdif_config.hpp"
 #include "easdif/sdifentity.hpp"
+#include "easdif/easdif_version.hpp"
 
 // isx indicated as  exported but isn't
 int SdifParseSelection (SdifSelectionT *sel, const char *str);
@@ -270,6 +275,10 @@ void SdifSelectGetIntMask (SdifListP list, SdifSelectIntMaskP mask);
 
 
 namespace Easdif {
+
+  const char* Version() {
+    return EASDIF_VERSION_STRING;
+  }
 
   MatrixType::~MatrixType() {}
   FrameType::~FrameType() {}
@@ -547,6 +556,18 @@ bool SDIFEntity::Rewind()
 }
 
 
+bool SDIFEntity::FillFrameDirAndRewind()
+{
+  if(!isSeekable() || ! isFrameDirEnabled)
+    return false;
+
+  iterator it=lastRead(), ite=end();
+  while(it != ite)
+    ++it;
+  return Rewind();
+}
+
+
 SdifFileT* SDIFEntity::GetFile() const
 {
     return efile;
@@ -709,9 +730,14 @@ int SDIFEntity::ReadNextSelectedFrame(SDIFFrame& frame, SdifFloat8 time)
                          0,eUnknown,0,0);
     }
 
+    if (mLastReadPos->LocTime()== time) {
+      frame = *lastRead();
+      return frame.GetSize();
+    }
+
     bool up = false;
     // attention creation of iterator changes current position
-    if(mLastReadPos == mFrameDirectory.begin() 
+    if((mLastReadPos == mFrameDirectory.begin() && time > mLastReadPos->LocTime())
        ||(mLastReadPos == mFrameDirectory.end() 
           && !mFrameDirectory.empty() &&mFrameDirectory.back().LocTime() < time )
        ||(mLastReadPos != mFrameDirectory.end() && mLastReadPos->LocTime() < time )){
@@ -723,7 +749,6 @@ int SDIFEntity::ReadNextSelectedFrame(SDIFFrame& frame, SdifFloat8 time)
       throw SDIFEof(eError,"Error in SDIFEntity::ReadNextSelectedFrame -- Eof reached",
                     efile,eEof,0,0); 
     }
-
 
     // end works in both directions !!
     iterator it=lastRead(), ite=end();
@@ -740,7 +765,9 @@ int SDIFEntity::ReadNextSelectedFrame(SDIFFrame& frame, SdifFloat8 time)
       while (it!= ite && it.mBase->LocTime() >= time) {
         --it;
       }
-      ++it;        
+      // it == ite means in fact begin!!
+      if(it==ite || it.mBase->LocTime() < time)
+        ++it;        
     }
 
     if(it != ite) {
@@ -755,6 +782,39 @@ int SDIFEntity::ReadNextSelectedFrame(SDIFFrame& frame, SdifFloat8 time)
 
     return 0;
 }
+
+int SDIFEntity::ReadPrevSelectedFrame(SDIFFrame& frame)
+{
+
+    if(!isFrameDirEnabled){
+      throw SDIFDirError(eError,
+                         "Error in SDIFEntity::ReadNextFrame(SDIFFrame& frame, SdifFloat8 time):: !!! frame directoy not enabled  !!!",
+                         0,eUnknown,0,0);
+    }
+    
+    if(mLastReadPos == mFrameDirectory.begin()) {
+      // return -1;
+      throw SDIFEof(eError,"Error in SDIFEntity::ReadNextSelectedFrame -- Bof reached",
+                    efile,eEof,0,0); 
+    }
+
+    iterator it=lastRead(), ite=end();
+
+    --it;
+    if(it != ite) {
+      mEof = false;
+      frame = *it;
+      return frame.GetSize();
+    }
+    else {
+      frame.ClearData();
+      mEof = true;
+    }
+    
+    return 0;
+}
+
+
 
 int SDIFEntity::WriteFrame(SDIFFrame& frame)
 {    
