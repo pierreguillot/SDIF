@@ -1,3 +1,11 @@
+2012-08-10  Axel Roebel  <roebel@m1873.local>
+Version 1.4.17
+
+	* easdif/sdifentity.hpp, easdif/sdifentity.cpp :
+	Fixed ReadNextSelectedFrame with time argument when reading with
+	time set equal to or before the time of the first frame.
+	Added new function to fill the frame directory.
+
 2012-01-05  Axel Roebel  <roebel@m1873.local>
 Version 1.4.16
 
@@ -1258,4 +1266,4 @@ Version 0.21
 	* ChangeLog: Added changelog to repository.
 
 
-$Id: ChangeLog,v 1.87 2012-01-05 11:14:07 roebel Exp $
+$Id: ChangeLog,v 1.88 2012-08-10 01:07:36 roebel Exp $
