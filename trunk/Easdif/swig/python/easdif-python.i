@@ -1,10 +1,13 @@
-// $Id: easdif-python.i,v 1.10 2012-01-05 11:11:21 roebel Exp $ -*-c-*-
+// $Id: easdif-python.i,v 1.11 2012-08-19 18:28:57 roebel Exp $ -*-c-*-
 //
 // easdif-python.i		30.04.2003		Patrice Tisserand
 //
 // Interface file for swig, defining the callable easdif functions
 //
 // $Log: not supported by cvs2svn $
+// Revision 1.10  2012/01/05 11:11:21  roebel
+// Added documentation and fixed memory leak.
+//
 // Revision 1.9  2012/01/05 01:18:07  roebel
 // Make Entity and Frame iterable and take car that iteration is efficient by means of
 // returning pointers to Frames and matrices.
@@ -38,6 +41,8 @@
 // Started autoconfiscation of swig
 //
 // include common init
+
+
 %include ../easdif-common-init.i
 %feature("autodoc", "1");
 
@@ -68,8 +73,10 @@ FrameIt  {
 
 %}
 
+
 // include common module directive
 %include ../easdif-common.i
+
 
 // include typemap for std::string from SWIG library
 %include std_set.i
@@ -135,8 +142,8 @@ namespace std {
   }
  }
 
-
 %newobject Easdif::SDIFFrame::next;
+%newobject Easdif::SDIFFrame::copy;
 %extend Easdif::SDIFFrame {
   Easdif::SDIFFrame*
   __iter__() {
@@ -156,5 +163,11 @@ namespace std {
     }
     return pMat; 
   }
+
+  Easdif::SDIFFrame*
+  copy() {
+    return new Easdif::SDIFFrame(*$self);
+  }
+
 }
 
