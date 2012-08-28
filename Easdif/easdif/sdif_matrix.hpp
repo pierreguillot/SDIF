@@ -33,9 +33,13 @@
  * 
  * 
  * 
- * $Id: sdif_matrix.hpp,v 1.8 2012-01-03 23:59:25 roebel Exp $ 
+ * $Id: sdif_matrix.hpp,v 1.9 2012-08-28 22:00:44 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.8  2012/01/03 23:59:25  roebel
+ * Changed SetRow(std::vector and SetCol(const std::vector into template member functions and add exception if inout vector size
+ * does not fit the row or column size.
+ *
  * Revision 1.7  2008/06/20 17:07:02  roebel
  * Changed Print methods to be const.
  *
@@ -730,13 +734,13 @@ namespace Easdif {
      */
     template <class VECVAL_T>
     void
-    SetRow(const std::vector<VECVAL_T> &in,int irow) throw (SDIFArrayPosition) {
-      if(static_cast<int>(in.size()) != GetNbCols())
+    SetRow(const std::vector<VECVAL_T> &inVec,int irow) throw (SDIFArrayPosition) {
+      if(static_cast<int>(inVec.size()) != GetNbCols())
   	throw SDIFArrayPosition(eError,
 				"Error in  SDIFMatrix::SetRow!!! vector size of input vector does not match number of columns !!!",
 				0, eArrayPosition,__FILE__,__LINE__);
 
-      mInter->SetRow(&(in[0]),irow);
+      mInter->SetRow(&(inVec[0]),irow);
       return;
     }
 
@@ -764,13 +768,13 @@ namespace Easdif {
      */
     template <class VECVAL_T>
     void
-    SetCol(const std::vector<VECVAL_T> &in,int icol) throw (SDIFArrayPosition) {
-      if(static_cast<int>(in.size()) != GetNbRows()){
+    SetCol(const std::vector<VECVAL_T> &inVec, int icol) throw (SDIFArrayPosition) {
+      if(static_cast<int>(inVec.size()) != GetNbRows()){
   	throw SDIFArrayPosition(eError,
 				"Error in  SDIFMatrix::SetCol:: vector size of input vector does not match number of rows !!!",
 				0, eArrayPosition,__FILE__,__LINE__);
       }
-      mInter->SetCol(&(in[0]),icol);
+      mInter->SetCol(&(inVec[0]),icol);
     }
   };
 } // end of namespace Easdif
