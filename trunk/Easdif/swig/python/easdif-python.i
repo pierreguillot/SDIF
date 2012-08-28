@@ -1,10 +1,13 @@
-// $Id: easdif-python.i,v 1.11 2012-08-19 18:28:57 roebel Exp $ -*-c-*-
+// $Id: easdif-python.i,v 1.12 2012-08-28 22:08:14 roebel Exp $ -*-c-*-
 //
 // easdif-python.i		30.04.2003		Patrice Tisserand
 //
 // Interface file for swig, defining the callable easdif functions
 //
 // $Log: not supported by cvs2svn $
+// Revision 1.11  2012/08/19 18:28:57  roebel
+// Added copy method to Frame.
+//
 // Revision 1.10  2012/01/05 11:11:21  roebel
 // Added documentation and fixed memory leak.
 //
@@ -119,7 +122,8 @@ namespace std {
      //allocate new frame
      Easdif::SDIFFrame *localFrame = new(Easdif::SDIFFrame);
      try {
-       $self->ReadNextSelectedFrame(*localFrame);
+       // force to run into eof exception if unselected frames are located at the end of the file
+       while(!$self->ReadNextSelectedFrame(*localFrame)){};
      } catch(...) {
        delete localFrame;
        throw;
