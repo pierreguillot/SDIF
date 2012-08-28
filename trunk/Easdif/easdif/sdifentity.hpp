@@ -32,9 +32,15 @@
  * 
  * 
  * 
- * $Id: sdifentity.hpp,v 1.26 2012-08-10 01:03:29 roebel Exp $ 
+ * $Id: sdifentity.hpp,v 1.27 2012-08-28 22:02:39 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.26  2012/08/10 01:03:29  roebel
+ * Added new function that allows to retrieve easdif version during runtime.
+ * Fixed ReadNextSelectFrame when time argument is provided and the time is the same or smaller as the first frame,
+ * which would result in oscillating movements of the read frames between first and second frame for repeatedly asking to
+ * read the frame with first frames time.
+ *
  * Revision 1.25  2011/06/11 17:05:31  roebel
  * Moved some member functions out of class scope to avoid unnecessary inlining
  * of constructor, destructor or other costly functions.
@@ -800,19 +806,19 @@ namespace Easdif {
      * 
      * @return true if found
      */
-    bool  LocMatrixExists(SdifSignature in)     const { 
+    bool  LocMatrixExists(SdifSignature inSig)     const { 
       int nn = mFrameHdr.NbMatrix;
       if(!nn)
         return false;
-      if(nn && mMatrixSig0 == in)
+      if(nn && mMatrixSig0 == inSig)
         return true;
-      if(nn>1 && mMatrixSig1 == in)
+      if(nn>1 && mMatrixSig1 == inSig)
         return true;
-      if(nn>2 && mMatrixSig2 == in)
+      if(nn>2 && mMatrixSig2 == inSig)
         return true;
       nn -= 2;
       while(--nn)
-        if(mMatrixN[nn] == in)
+        if(mMatrixN[nn] == inSig)
           return true;
       return false;
     }
@@ -824,8 +830,8 @@ namespace Easdif {
      * 
      * @return true if found
      */
-    bool  LocMatrixExists(const std::string &in)     const { 
-      SdifSignature sig = SdifStringToSignature(const_cast<char*>(in.c_str()));
+    bool  LocMatrixExists(const std::string &inStr)     const { 
+      SdifSignature sig = SdifStringToSignature(const_cast<char*>(inStr.c_str()));
       return LocMatrixExists(sig);
     }
 
@@ -1863,11 +1869,15 @@ public:
    * \ingroup rnwentity
    *
    * read the next selected frame of the file
-   * return the number of bytes read
+   * return the number of bytes read, sets eof if there is no next frame available
+   * and throws SDIFEof if called with file already being at eof(). Wil return 0 bytes read only if 
+   * the last frames in the file are not selected such that eof is reached before a selected frame
+   * can be read.
    * 
    * @param frame to fill
    * 
    * @return  number of data bytes read for selected matrices 
+   *
    */
   int ReadNextSelectedFrame(SDIFFrame& frame);
 
@@ -2396,8 +2406,11 @@ public:
         size_t SizeR = 0;
         SdifFGetSignature(mpEnt->GetFile(), &SizeR);            
         if(SizeR!=sizeof(SdifSignature)){
+          char msg[512];
+          sprintf(msg,"Error in  SDIFEntity::FRIterator::GotoPos()!!!error while seeking to pos pos %ld !!!\n", 
+                  static_cast<long int>(pos));
           throw SDIFSeekError(eError,
-                              "Error in  SDIFEntity::FRIterator::GotoPos()!!!error while seeking  !!!",
+                              msg,
                               0,eUnknown,__FILE__,__LINE__);
         }
       }
