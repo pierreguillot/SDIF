@@ -1,3 +1,19 @@
+2012-08-29  Axel Roebel  <roebel@m1873.local>
+Version 1.4.18
+
+	* swig/python/easdif-python.i :
+	Fixed next iterator for sdifentity.
+
+	* easdif/sdifentity.hpp :
+	Renamed function arguments to avoid compiler warnings in swig python interface.
+	Enhanced documentation of ReadNextSelectedFrame()
+
+	* easdif/sdifentity.cpp :
+	Fixed last fix, avoid using frame iterators that point to FrameDirectory.end().
+
+	* easdif/sdif_matrix.hpp:
+	Renamed function arguments to avoid compiler warnings in swig python interface.
+
 2012-08-10  Axel Roebel  <roebel@m1873.local>
 Version 1.4.17
 
@@ -1266,4 +1282,4 @@ Version 0.21
 	* ChangeLog: Added changelog to repository.
 
 
-$Id: ChangeLog,v 1.88 2012-08-10 01:07:36 roebel Exp $
+$Id: ChangeLog,v 1.89 2012-08-28 22:09:36 roebel Exp $
