@@ -32,9 +32,15 @@
  * 
  * 
  * 
- * $Id: sdifentity.cpp,v 1.47 2012-08-10 01:03:29 roebel Exp $ 
+ * $Id: sdifentity.cpp,v 1.48 2012-08-28 22:01:48 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.47  2012/08/10 01:03:29  roebel
+ * Added new function that allows to retrieve easdif version during runtime.
+ * Fixed ReadNextSelectFrame when time argument is provided and the time is the same or smaller as the first frame,
+ * which would result in oscillating movements of the read frames between first and second frame for repeatedly asking to
+ * read the frame with first frames time.
+ *
  * Revision 1.46  2011/06/11 17:05:31  roebel
  * Moved some member functions out of class scope to avoid unnecessary inlining
  * of constructor, destructor or other costly functions.
@@ -730,7 +736,7 @@ int SDIFEntity::ReadNextSelectedFrame(SDIFFrame& frame, SdifFloat8 time)
                          0,eUnknown,0,0);
     }
 
-    if (mLastReadPos->LocTime()== time) {
+    if (mLastReadPos != mFrameDirectory.end() && mLastReadPos->LocTime()== time) {
       frame = *lastRead();
       return frame.GetSize();
     }
