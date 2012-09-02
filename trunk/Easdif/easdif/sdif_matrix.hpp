@@ -33,9 +33,12 @@
  * 
  * 
  * 
- * $Id: sdif_matrix.hpp,v 1.9 2012-08-28 22:00:44 roebel Exp $ 
+ * $Id: sdif_matrix.hpp,v 1.10 2012-09-02 01:10:27 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.9  2012/08/28 22:00:44  roebel
+ * Renamed function arguments to avoid compiler warnings in swig python interface.
+ *
  * Revision 1.8  2012/01/03 23:59:25  roebel
  * Changed SetRow(std::vector and SetCol(const std::vector into template member functions and add exception if inout vector size
  * does not fit the row or column size.
@@ -719,8 +722,8 @@ namespace Easdif {
      */
 
     template <class TT>
-    void SetRow(const TT* out,int irow)  throw (SDIFArrayPosition) {
-      mInter->SetRow(out,irow);
+    void SetRow(const TT* in_arr,int irow)  throw (SDIFArrayPosition) {
+      mInter->SetRow(in_arr,irow);
       return;
     }
 
@@ -753,8 +756,8 @@ namespace Easdif {
      * 
      */
     template <class TT>
-    void SetCol(const TT* out,int icol)  throw (SDIFArrayPosition){
-      mInter->SetCol(out,icol);
+    void SetCol(const TT* in_arr,int icol)  throw (SDIFArrayPosition){
+      mInter->SetCol(in_arr,icol);
       return;
     }
   
