@@ -20,15 +20,11 @@ IF(PYTHON)
   ENDFOREACH(PP ${PYTHON_INCLUDE_PATH})
 
   EXECUTE_PROCESS(COMMAND ${PYTHON} -c "import numpy\nif hasattr(numpy,'get_include'):\n ss=numpy.get_include()\nelse: ss=numpy.get_numpy_include()\nprint ss" OUTPUT_VARIABLE out ERROR_VARIABLE err OUTPUT_STRIP_TRAILING_WHITESPACE)
-  MESSAGE("out ${out}")
-  MESSAGE("err ${err}")
   STRING(REGEX REPLACE "[ \t]+" ";" NUMPY_INC_HINT ${out})
-  MESSAGE("NUMPY_INC_HINT ${NUMPY_INC_HINT}")
-  FIND_PATH(NUMPY_INCLUDE NAME "numpy/arrayobject.h" PATHS "{NUMPY_INC_HINT}")
+  FIND_PATH(NUMPY_INCLUDE NAME "numpy/arrayobject.h" PATHS "${NUMPY_INC_HINT}")
   MESSAGE("NUMPY_INCLUDE ${NUMPY_INCLUDE}")
 
   IF (NUMPY_INCLUDE)
-    MESSAGE("NUMPY_INCLUDE ${NUMPY_INCLUDE}")
     INCLUDE_DIRECTORIES("${NUMPY_INCLUDE}")    
   ENDIF(NUMPY_INCLUDE)
 
@@ -71,7 +67,7 @@ IF(PYTHON)
   ADD_CUSTOM_target(pythonswig2 
     ${PYTHON} setup2.py build
     DEPENDS  Easdif_static_pic${DEBUGEXT}
-    SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/easdif-python.i ${CMAKE_CURRENT_SOURCE_DIR}/numpy.i ${CMAKE_CURRENT_SOURCE_DIR}/sdiftypemap-python.i
+    SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/easdif-python.i ${CMAKE_CURRENT_SOURCE_DIR}/../numpy.i ${CMAKE_CURRENT_SOURCE_DIR}/sdiftypemap-python.i
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
     )
 
