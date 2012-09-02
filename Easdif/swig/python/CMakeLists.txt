@@ -19,6 +19,23 @@ IF(PYTHON)
     INCLUDE_DIRECTORIES("${PPP}")
   ENDFOREACH(PP ${PYTHON_INCLUDE_PATH})
 
+  EXECUTE_PROCESS(COMMAND ${PYTHON} -c "import numpy\nif hasattr(numpy,'get_include'):\n ss=numpy.get_include()\nelse: ss=numpy.get_numpy_include()\nprint ss" OUTPUT_VARIABLE out ERROR_VARIABLE err OUTPUT_STRIP_TRAILING_WHITESPACE)
+  MESSAGE("out ${out}")
+  MESSAGE("err ${err}")
+  STRING(REGEX REPLACE "[ \t]+" ";" NUMPY_INC_HINT ${out})
+  MESSAGE("NUMPY_INC_HINT ${NUMPY_INC_HINT}")
+  FIND_PATH(NUMPY_INCLUDE NAME "numpy/arrayobject.h" PATHS "{NUMPY_INC_HINT}")
+  MESSAGE("NUMPY_INCLUDE ${NUMPY_INCLUDE}")
+
+  IF (NUMPY_INCLUDE)
+    MESSAGE("NUMPY_INCLUDE ${NUMPY_INCLUDE}")
+    INCLUDE_DIRECTORIES("${NUMPY_INCLUDE}")    
+  ENDIF(NUMPY_INCLUDE)
+
+  IF (APPLE)
+    ADD_LINK_FLAGS(MODULE "-bundle -undefined dynamic_lookup " )
+  ENDIF(APPLE)
+
   EXECUTE_PROCESS(COMMAND ${PYTHON}  --version OUTPUT_VARIABLE out ERROR_VARIABLE err OUTPUT_STRIP_TRAILING_WHITESPACE)
   STRING(REGEX REPLACE "[a-zA-Z0-9 \t]* \([0-9]+[.][0-9]+\).*"  "\\1" PYTHON_VERSION ${err})
   MESSAGE(STATUS "PYTHON_VERSION ${PYTHON_VERSION}")
@@ -27,19 +44,19 @@ IF(PYTHON)
   SET(INTERFACE_SRC ${CMAKE_CURRENT_SOURCE_DIR}/easdif-python.i)
   
   SET_SOURCE_FILES_PROPERTIES(${INTERFACE_SRC} PROPERTIES CPLUSPLUS ON)
-  
-  SET(CMAKE_SWIG_FLAGS "-I${CMAKE_CURRENT_BINARY_DIR}" "-I${CMAKE_CURRENT_SOURCE_DIR}")
+  IF (NUMPY_INCLUDE)  
+    SET(CMAKE_SWIG_FLAGS "-I${CMAKE_CURRENT_BINARY_DIR}" "-I${CMAKE_CURRENT_SOURCE_DIR}" "-DSWIG_FILE_WITH_INIT=1"  "-DUSE_NUMPY=1")
+    ADD_DEFINITIONS( "-DSWIG_FILE_WITH_INIT=1"  "-DUSE_NUMPY=1")
+  ELSE(NUMPY_INCLUDE)  
+    SET(CMAKE_SWIG_FLAGS "-I${CMAKE_CURRENT_BINARY_DIR}" "-I${CMAKE_CURRENT_SOURCE_DIR}")
+  ENDIF(NUMPY_INCLUDE)  
+
   SWIG_ADD_MODULE(eaSDIF python  ${INTERFACE_SRC}     )
-  #  SWIG_LINK_LIBRARIES(eaSDIF  Easdif_static_pic${DEBUGEXT}  ${PYTHON_LIBRARY})
-  # PYTHON LIBRARY seems not to be required because it is in fact part of python executable
-# linking with libpython.a fails for some compilers on linux 64 bit due to the fact that the librray is not compiled with -fPIC flag.
-  # as well on mac os x linking with _pic library fails.
-  #  no idea why. Keep non pic version for now. 
-  IF(APPLE)
-    SWIG_LINK_LIBRARIES(eaSDIF  Easdif_static_pic${DEBUGEXT}  ${PYTHON_LIBRARY})
-  ELSE(APPLE)
-    SWIG_LINK_LIBRARIES(eaSDIF  Easdif_static_pic${DEBUGEXT})
-  ENDIF(APPLE)
+  # libraries will should be found on runtime for this to work on mac oswe need to add linker options 
+  # for MODULE targets as done above  "-bundle -undefined dynamic_lookup "
+  #   SWIG_LINK_LIBRARIES(eaSDIF  Easdif_static_pic${DEBUGEXT}  ${PYTHON_LIBRARY})
+  SWIG_LINK_LIBRARIES(eaSDIF  Easdif_static_pic${DEBUGEXT} )
+
   ADD_CUSTOM_TARGET(pythonswig)
   ADD_DEPENDENCIES(pythonswig ${SWIG_MODULE_eaSDIF_REAL_NAME})
   CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/test.py.in ${CMAKE_CURRENT_BINARY_DIR}/test.py)
@@ -47,6 +64,17 @@ IF(PYTHON)
   CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/example.py ${CMAKE_CURRENT_BINARY_DIR}/example.py)
   
   CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/setup.py.in ${CMAKE_CURRENT_BINARY_DIR}/setup.py)
+
+
+  # alternative version, will not  work with interl compiler!
+  CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/setup2.py.in ${CMAKE_CURRENT_BINARY_DIR}/setup2.py)
+  ADD_CUSTOM_target(pythonswig2 
+    ${PYTHON} setup2.py build
+    DEPENDS  Easdif_static_pic${DEBUGEXT}
+    SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/easdif-python.i ${CMAKE_CURRENT_SOURCE_DIR}/numpy.i ${CMAKE_CURRENT_SOURCE_DIR}/sdiftypemap-python.i
+    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+    )
+
 
 
   IF(APPLE)
