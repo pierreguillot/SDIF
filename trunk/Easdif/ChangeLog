@@ -1,3 +1,31 @@
+2012-09-03  Axel Roebel  <roebel@m1873.local>
+Version 1.4.19
+
+	* swig/easdif-common-init.i, swig/numpy.i, python/CMakeLists.txt,
+	* swig/python/easdif-python.i :
+	Added support for using numpy  arrays to Set/Get columns and rows from
+	matrices. For large matrices this can increase efficiency when accessing
+	matrix data by factor ~1000!
+
+	* python/CMakeLists.txt :
+	Added support for using numpy  arrays to Set/Get columns and rows from
+	matrices. For large matrices this can increase efficiency when accessing
+	matrix data by factor ~1000!
+
+	Fixed linker options for pythonswig build system on mac os x.
+
+	* swig/python/setup2.py.in :
+	Added support for using numpy  arrays to Set/Get columns and rows from
+	matrices. For large matrices this can increase efficiency when accessing
+	matrix data by factor ~1000!
+
+	setup2.py.in implements a purely pyhton distutils based pythonswig
+	build implementation which does, hower nor support intel icl
+	compiler which is why I stay with the cmake based version
+
+	* easdif/sdif_matrix.hpp:
+	Fixed confusing argument names.
+
 2012-08-29  Axel Roebel  <roebel@m1873.local>
 Version 1.4.18
 
@@ -1282,4 +1310,4 @@ Version 0.21
 	* ChangeLog: Added changelog to repository.
 
 
-$Id: ChangeLog,v 1.89 2012-08-28 22:09:36 roebel Exp $
+$Id: ChangeLog,v 1.90 2012-09-02 22:18:45 roebel Exp $
