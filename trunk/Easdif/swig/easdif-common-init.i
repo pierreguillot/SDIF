@@ -1,12 +1,24 @@
 %include typemaps.i
 
 // generate perl module named 'eaSDIF'
-%module(docstring="Easy SDIF wrapper module for reading wrting SDIF files") eaSDIF
+%module(docstring="Easy SDIF wrapper module for reading/writing SDIF files") eaSDIF
+
+#ifdef USE_NUMPY
+%include numpy.i
+
+#define HAVE_NUMPY 1
+#else
+#define HAVE_NUMPY 0 
+#endif
 
 // module initialisation code
 %init 
 %{
     EasdifInit();
+#ifdef USE_NUMPY
+    import_array();
+#endif
+
 %}
 
 // include typemap for std::string from SWIG library

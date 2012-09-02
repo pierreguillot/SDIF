@@ -1,10 +1,13 @@
-// $Id: easdif-python.i,v 1.12 2012-08-28 22:08:14 roebel Exp $ -*-c-*-
+// $Id: easdif-python.i,v 1.13 2012-09-02 01:19:03 roebel Exp $ -*-c-*-
 //
 // easdif-python.i		30.04.2003		Patrice Tisserand
 //
 // Interface file for swig, defining the callable easdif functions
 //
 // $Log: not supported by cvs2svn $
+// Revision 1.12  2012/08/28 22:08:14  roebel
+// Fixed next iterator for sdifentity.
+//
 // Revision 1.11  2012/08/19 18:28:57  roebel
 // Added copy method to Frame.
 //
@@ -51,6 +54,7 @@
 
 // include typemaps
 %include sdiftypemap-python.i
+
 
 // define only the needed basic SDIF stuff from sdif.h
 %include ../easdif-defines.i
@@ -175,3 +179,125 @@ namespace std {
 
 }
 
+
+#ifdef USE_NUMPY
+ 
+
+%extend Easdif::SDIFMatrix {
+
+%apply (double* INPLACE_ARRAY1, int DIM1) {(double *outarr, int outarrsize)}
+%apply (double* IN_ARRAY1, int DIM1) {(double *inarr, int inarrsize)}
+%apply (float* INPLACE_ARRAY1, int DIM1) {(float *outarr, int outarrsize)}
+%apply (float* IN_ARRAY1, int DIM1) {(float *inarr, int inarrsize)}
+%apply (int* INPLACE_ARRAY1, int DIM1) {(int *outarr, int outarrsize)}
+%apply (int* IN_ARRAY1, int DIM1) {(int *inarr, int inarrsize)}
+
+  void
+    GetColA(double * outarr, int outarrsize, int col) {
+    if ($self->GetNbRows() != outarrsize ) {
+      throw std::runtime_error("GetColA::output array does not match column size");
+    }
+    $self->GetCol(outarr, col);
+    return; 
+  }
+  void
+    GetRowA(double * outarr, int outarrsize, int row) {
+    if ($self->GetNbCols() != outarrsize ) {
+      throw std::runtime_error("GetRowA::output array does not match row size");
+    }
+    $self->GetRow(outarr, row);
+    return; 
+  }
+  void
+    SetColA(double * inarr, int inarrsize, int col) {
+    if ($self->GetNbRows() != inarrsize ) {
+      throw std::runtime_error("SetColA::input array does not match column size");
+    }
+    $self->SetCol(const_cast<const double *>(inarr), col);
+    return; 
+  }
+  void
+    SetRowA(double * inarr, int inarrsize, int row) {
+    if ($self->GetNbCols() != inarrsize ) {
+      throw std::runtime_error("SetRowA::output array does not match row size");
+    }
+    $self->SetRow(inarr, row);
+    return; 
+  }
+
+  void
+    GetColA(float * outarr, int outarrsize, int col) {
+    if ($self->GetNbRows() != outarrsize ) {
+      throw std::runtime_error("GetColA::output array does not match column size");
+    }
+    $self->GetCol(outarr, col);
+    return; 
+  }
+  void
+    GetRowA(float * outarr, int outarrsize, int row) {
+    if ($self->GetNbCols() != outarrsize ) {
+      throw std::runtime_error("GetRowA::output array does not match row size");
+    }
+    $self->GetRow(outarr, row);
+    return; 
+  }
+  void
+    SetColA(float * inarr, int inarrsize, int col) {
+    if ($self->GetNbRows() != inarrsize ) {
+      throw std::runtime_error("SetColA::input array does not match column size");
+    }
+    $self->SetCol(inarr, col);
+    return; 
+  }
+  void
+    SetRowA(float * inarr, int inarrsize, int row) {
+    if ($self->GetNbCols() != inarrsize ) {
+      throw std::runtime_error("SetRowA::output array does not match row size");
+    }
+    $self->SetRow(inarr, row);
+    return; 
+  }
+
+  void
+    GetColA(int * outarr, int outarrsize, int col) {
+    if ($self->GetNbRows() != outarrsize ) {
+      throw std::runtime_error("GetColA::output array does not match column size");
+    }
+    if (sizeof(int) != sizeof(SdifInt4))
+      throw std::runtime_error("SetColA::output array int type is not comptaible to SdifInt4");
+    $self->GetCol(outarr, col);
+    return; 
+  }
+  void
+    GetRowA(int * outarr, int outarrsize, int row) {
+    if ($self->GetNbCols() != outarrsize ) {
+      throw std::runtime_error("GetRowA::output array does not match row size");
+    }
+    if (sizeof(int) != sizeof(SdifInt4))
+      throw std::runtime_error("SetRowA::output array int type is not comptaible to SdifInt4");
+
+    $self->GetRow(outarr, row);
+    return; 
+  }
+  void
+    SetColA(int * inarr, int inarrsize, int col) {
+    if ($self->GetNbRows() != inarrsize ) {
+      throw std::runtime_error("SetColA::input array does not match column size");
+    }
+    if (sizeof(int) != sizeof(SdifInt4))
+      throw std::runtime_error("SetColA::input array int type is not comptaible to SdifInt4");
+    $self->SetCol(inarr, col);
+    return; 
+  }
+  void
+    SetRowA(int * inarr, int inarrsize, int row) {
+    if ($self->GetNbCols() != inarrsize ) {
+      throw std::runtime_error("SetRowA::output array does not match row size");
+    }
+    if (sizeof(int) != sizeof(SdifInt4))
+      throw std::runtime_error("SetRowA::input array int type is not comptaible to SdifInt4");
+    $self->SetRow(inarr, row);
+    return; 
+  }
+}
+#endif
