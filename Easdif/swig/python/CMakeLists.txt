@@ -21,7 +21,10 @@ IF(PYTHON)
 
   EXECUTE_PROCESS(COMMAND ${PYTHON} -c "import numpy\nif hasattr(numpy,'get_include'):\n ss=numpy.get_include()\nelse: ss=numpy.get_numpy_include()\nprint ss" OUTPUT_VARIABLE out ERROR_VARIABLE err OUTPUT_STRIP_TRAILING_WHITESPACE)
   STRING(REGEX REPLACE "[ \t]+" ";" NUMPY_INC_HINT ${out})
-  FIND_PATH(NUMPY_INCLUDE NAME "numpy/arrayobject.h" PATHS "${NUMPY_INC_HINT}")
+  MESSAGE("NUMPY_INC_HINT ${NUMPY_INC_HINT}")
+  IF (NUMPY_INC_HINT)
+    FIND_PATH(NUMPY_INCLUDE NAME "numpy/arrayobject.h" NO_DEFAULT_PATH PATHS "${NUMPY_INC_HINT}")
+  ENDIF(NUMPY_INC_HINT)
   MESSAGE("NUMPY_INCLUDE ${NUMPY_INCLUDE}")
 
   IF (NUMPY_INCLUDE)
