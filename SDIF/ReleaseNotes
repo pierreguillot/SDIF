@@ -1,4 +1,28 @@
-Version 3.11.3   20011 TBC  Diemo Schwarz
+Version 3.11.4	2011-12-19  Axel Roebel
+
+	* sdif/SdifFGet.c:
+	Gracefully handle NVT tables that do not include a trailing \000
+	as for examples the once written with the writesdif function in the old
+	matlab sdif toolbox. Obligation to have a trailing 0 in the 1NVT
+	matrix is not required in the SDIF specs and therefore the
+	present change seems appropriate.
+	* CMakeLists.txt, configure.in, include/sdif.h.in:
+	Fixed a number of issues with the conditional include of stdint.h and sys/types.h in instaled include file
+	sdif.h.
+	Correctly use the types provided by these include files for definition of sdif types.
+	* sdif/SdifFile.c: Fixed ftruncate implementation on windows.
+	* CMakeLists.txt: Fixed source location for installation of sdif.h;
+	* CMakeLists.txt, configure.in, include/sdif.h:
+	fixed use of stdint.h to be persistent in sdif.h even after
+	installation.
+	Added a complete configuration search to determine
+	SdiffPosT type such that it becomes a 64bit type.
+	* CMakeLists.txt, README, configure.in, include/sdif.h, sdif/SdifErrMess.c, sdif/SdifFile.c:
+	Fixed large file support to properly work on linux as well.
+	* include/sdif.h, sdif/SdifErrMess.c, sdif/SdifFile.c:
+	Fixed Sdif[fF]GetPos and Sdif[fF]SetPos to correctly support large files (>2GB).
+
+Version 3.11.3   2011-04-06 Diemo Schwarz (unreleased)
 
 	* SdifQuery reallocates SdifQueryTree dynamically 
 	  (now even ircamdescriptor output files can be queried)
