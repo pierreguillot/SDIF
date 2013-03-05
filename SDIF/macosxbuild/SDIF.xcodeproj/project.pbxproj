@@ -172,9 +172,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		0F5C2959047E760E006640BC /* English */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = file; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		0F5C2959047E760E006640BC /* English */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		6C639A6E08460E9100D1DBE2 /* SdifRWLowLevel.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = SdifRWLowLevel.h; path = ../sdif/SdifRWLowLevel.h; sourceTree = SOURCE_ROOT; };
-		6C8EEA15084602CE00972C15 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.xml; path = Info.plist; sourceTree = "<group>"; };
+		6C8EEA15084602CE00972C15 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		F4A4105A079BCB8E00ADEFEF /* SDIF.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SDIF.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		F4A410A7079BCB8E00ADEFEF /* libsdif.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libsdif.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		F70D0BDE0496241101664058 /* config.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = config.h; path = ../sdif/config.h; sourceTree = SOURCE_ROOT; };
@@ -461,7 +461,14 @@
 			isa = PBXProject;
 			buildConfigurationList = 21AFA3B60907D5740018539F /* Build configuration list for PBXProject "SDIF" */;
 			compatibilityVersion = "Xcode 2.4";
+			developmentRegion = English;
 			hasScannedForEncodings = 1;
+			knownRegions = (
+				English,
+				Japanese,
+				French,
+				German,
+			);
 			mainGroup = 0F5C28A5047E732E006640BC;
 			projectDirPath = "";
 			projectRoot = "";
@@ -629,9 +636,6 @@
 				PRINCIPAL_CLASS = "";
 				PRODUCT_NAME = SDIF;
 				SECTORDER_FLAGS = "";
-				VERSION_MAJOR = 3;
-				VERSION_MINOR = 10;
-				VERSION_RELEASE = 5;
 				WARNING_CFLAGS = (
 					"-Wmost",
 					"-Wno-four-char-constants",
@@ -687,9 +691,6 @@
 				PRINCIPAL_CLASS = "";
 				PRODUCT_NAME = SDIF;
 				SECTORDER_FLAGS = "";
-				VERSION_MAJOR = 3;
-				VERSION_MINOR = 10;
-				VERSION_RELEASE = 5;
 				WARNING_CFLAGS = (
 					"-Wmost",
 					"-Wno-four-char-constants",
@@ -912,7 +913,7 @@
 				FRAMEWORK_VERSION = "$(VERSION_MAJOR).$(VERSION_MINOR)";
 				VERSION_MAJOR = 3;
 				VERSION_MINOR = 11;
-				VERSION_RELEASE = 1;
+				VERSION_RELEASE = 4;
 			};
 			name = Development;
 		};
@@ -925,10 +926,11 @@
 				);
 				CURRENT_PROJECT_VERSION = "$(VERSION_MAJOR).$(VERSION_MINOR).$(VERSION_RELEASE)";
 				FRAMEWORK_VERSION = "$(VERSION_MAJOR).$(VERSION_MINOR)";
+				GCC_VERSION = 4.0;
 				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
 				VERSION_MAJOR = 3;
 				VERSION_MINOR = 11;
-				VERSION_RELEASE = 1;
+				VERSION_RELEASE = 4;
 			};
 			name = Deployment;
 		};
@@ -939,7 +941,7 @@
 				FRAMEWORK_VERSION = "$(VERSION_MAJOR).$(VERSION_MINOR)";
 				VERSION_MAJOR = 3;
 				VERSION_MINOR = 11;
-				VERSION_RELEASE = 1;
+				VERSION_RELEASE = 4;
 			};
 			name = Default;
 		};
