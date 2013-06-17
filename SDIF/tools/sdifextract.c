@@ -1,4 +1,4 @@
-/* $Id: sdifextract.c,v 1.18 2012-01-02 23:49:08 roebel Exp $
+/* $Id: sdifextract.c,v 1.19 2013-06-17 16:30:19 diemo Exp $
  
                 Copyright (c) 1998 by IRCAM - Centre Pompidou
                            All rights reserved.
@@ -13,6 +13,10 @@
    Extract data from an SDIF-file.  
    
    $Log: not supported by cvs2svn $
+   Revision 1.18  2012/01/02 23:49:08  roebel
+   Base selection of WIN32 specific implementation on definition of macros  WIN32 OR _WIN32. The latter being standard in
+   Visual C++ it is most important to have it.
+
    Revision 1.17  2006/05/03 15:47:25  schwarz
    added data only output option
 
@@ -199,6 +203,8 @@ typedef enum {OpenFile,    CloseFile,
 /* output functions */
 void outsdif   (OutAction what, double data);
 void outbpf    (OutAction what, double data);
+void outbpf_text   (OutAction what, double data);
+void outbpf_number (OutAction what, double data);
 void outtime   (OutAction what, double data);
 void outdata   (OutAction what, double data);
 void outformat (OutAction what, double data);
@@ -213,6 +219,7 @@ int  list_to_set  (SdifListT *list, int maxmax, int set []);
 #define        PROG	     "sdifextract: "
 int	       verb     = 0;	/* verbosity: -1=quiet, 0=normal, 1=verbose */
 int	       force    = 0;	/* allow iffy selections */
+int	       textout  = 0;	/* output text matrices as labels */
 char	       *types   = NULL;
 SdifFileT      *in      = NULL;
 char	       *outfile = NULL;
@@ -228,7 +235,7 @@ void usage (char *msg, char *arg, int longhelp)
     }
     if (longhelp)
     {
-    	fprintf (SdifStdErr, "\n" PROG "version $Revision: 1.18 $\n\n");
+    	fprintf (SdifStdErr, "\n" PROG "version $Revision: 1.19 $\n\n");
     
     	if (types)
     	{
@@ -263,6 +270,8 @@ void usage (char *msg, char *arg, int longhelp)
 "	-T <sdif types file>  specify file with additional sdif types\n"
 "	-v		      be verbose\n"
 "	-q		      be quiet\n"
+"	-l		      output text matrices as labels in bpf mode\n"
+"	-F		      allow SDIF output to stdout\n"
 "	-h		      short help\n"
 "	-help		      long help, prints sdif types if -T given,\n"
 "			      format details and remarks.\n"
@@ -298,7 +307,7 @@ void usage (char *msg, char *arg, int longhelp)
 "	If one column is selected, or all selected matrices contain only\n"
 "	one column, the output file can be used as a break-point-function.\n"
 "\n"
-"-format In the ASCII .format file format (as used with additive),\n"
+"-format In the ASCII .format file format (as used with additive or Pm),\n"
 "	each matrix is printed in the format:\n"
 "\n"
 "		number-of-rows  frame-time\n"
@@ -462,11 +471,14 @@ outsdif (OutAction what, double data)
 }
 
 
+// output file for outbpf_* functions
+static FILE	  *out = NULL;
+
 void 
 outbpf (OutAction what, double data)
 {
-    static FILE	  *out = NULL;
     static double time = -1;
+    static void (*outmatrix) (OutAction what, double data);
 
     switch (what)
     {
@@ -482,19 +494,59 @@ outbpf (OutAction what, double data)
 	break;
 
 	case BeginFrame:    time = data;			break;
-			    
-	case BeginMatrix:   
-	case EndMatrix:     
 	case EndFrame:	    
 	default:	    /* do nothing */			break;
 			    
-	case BeginRow:	    fprintf (out, "%f\t", time);	break;
-	case InRow:	    fprintf (out, "%10f\t", data);	break;
-	case EndRow:	    fprintf (out, "\n");		break;
+	case BeginMatrix:   outmatrix = (textout  &&  SdifFCurrDataType (in) == eText  
+					 ?  outbpf_text  :  outbpf_number);
+			    /*FALLTHROUGH*/
+	case EndMatrix:     
+	case BeginRow:	    outmatrix(what, time);		break;
+
+	case InRow:	    
+	case EndRow:	    outmatrix(what, data);		break;   
+
 	case CloseFile:	    fclose (out);			break;
     }
 }
 
+void 
+outbpf_number (OutAction what, double data)
+{
+    switch (what)
+    {
+	case BeginRow:	    fprintf (out, "%f\t", data);	break;
+	case InRow:	    fprintf (out, "%10f\t", data);	break;
+	case EndRow:	    fprintf (out, "\n");		break;
+	default:	    /* do nothing */			break;
+    }
+}
+
+void 
+outbpf_text (OutAction what, double data)
+{
+    static char   *textbuf = NULL;
+    static int	  textptr;
+
+    switch (what)
+    {
+	case BeginMatrix: 
+	    fprintf (out, "%f\t", data);
+	    textbuf = (char *) realloc(textbuf, SdifFCurrNbRow (in));
+	    textptr = 0;
+	break;
+
+	case EndMatrix:     
+	    fprintf (out, "%s\n", textbuf);	
+	break;
+
+	case InRow:
+	    textbuf[textptr++] = data;
+	break;
+
+	default:	    /* do nothing */			break;
+    }
+}
 
 
 void 
@@ -526,7 +578,6 @@ outdata (OutAction what, double data)
 			    
 	case InRow:	    fprintf (out, "%10f\t", data);	break;
 	case EndRow:	    fprintf (out, "\n");		break;
-	case CloseFile:	    fclose (out);			break;
     }
 }
 
@@ -680,7 +731,7 @@ int main(int argc, char** argv)
 	    }
 	    else
 	    {	/* do short args */
-#		define boolopt  "hqvF"	/* flags with no arguments */
+#		define boolopt  "hqvFl"	/* flags with no arguments */
 		if (i == argc - 1  &&  !strchr (boolopt, argv [i][1]))
 		    /* no arg after last option, complain */
 		    usage ("Argument to option %s missing", argv [i], 0);
@@ -710,6 +761,7 @@ int main(int argc, char** argv)
 	      	    case 'm':  matrixstr = argv [++i];			 break;
 	      	    case 'T':  types     = argv [++i];			 break;
 	      	    case 'F':  force     =  1;				 break;
+	      	    case 'l':  textout   =  1;				 break;
 	      	    case 'q':  verb	 = -1;			   	 break;
 	      	    case 'v':  verb	 =  1;			   	 break;
 	      	    case 'h':  usage(NULL, NULL, 0);		   	 break;
