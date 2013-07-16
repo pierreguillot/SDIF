@@ -30,9 +30,13 @@ if [ "$QUERYPROG" = "" ]; then
 fi
 fi
 
+echo Running $QUERYPROG ${FILE}:
+echo
+
 $QUERYPROG $FILE
-if [ $? -ne 0 ] ; then
-  echo querysdif returns error $? for $FILE.
+err=$?
+if [ $err -ne 0 ] ; then
+  echo querysdif returns error $err for $FILE.
   exit 1;
 fi
   
