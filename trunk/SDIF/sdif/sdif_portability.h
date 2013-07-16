@@ -1,6 +1,6 @@
 /******************************************************************************
  *
- * $Id: sdif_portability.h,v 3.5 2012-01-02 23:49:08 roebel Exp $
+ * $Id: sdif_portability.h,v 3.6 2013-07-16 10:26:13 diemo Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -33,6 +33,10 @@
  *
  * LOG
  * $Log: not supported by cvs2svn $
+ * Revision 3.5  2012/01/02 23:49:08  roebel
+ * Base selection of WIN32 specific implementation on definition of macros  WIN32 OR _WIN32. The latter being standard in
+ * Visual C++ it is most important to have it.
+ *
  * Revision 3.4  2006/12/14 17:21:57  roebel
  * Support universal binaries configuration for mac os x.
  * Use endian.h for endianness determination.
@@ -68,7 +72,7 @@
 #ifndef __H_SDIF_PORTABILITY__
 #define __H_SDIF_PORTABILITY__
 
-#include <sdif_version.h>
+#include "sdif_version.h"
 
 #if defined( _WIN32) || defined(WIN32)
 #   include <stdio.h>
