@@ -1,5 +1,5 @@
 dnl -*-autoconf-*-  (Tell emacs it's an autoconf file!)
-dnl $Id: configure.in,v 1.84 2013-07-16 11:26:53 diemo Exp $
+dnl $Id: configure.in,v 1.85 2013-07-16 11:41:33 diemo Exp $
 dnl
 dnl configure.in		September 2000		Patrice Tisserand
 dnl
@@ -31,6 +31,9 @@ dnl send email to:  sdif@ircam.fr
 
 
 dnl $Log: not supported by cvs2svn $
+dnl Revision 1.84  2013/07/16 11:26:53  diemo
+dnl v3.11.5
+dnl
 dnl Revision 1.83  2012/03/30 11:10:30  diemo
 dnl fix
 dnl
@@ -660,6 +663,8 @@ test/files/sdifw/Makefile
 test/files/sdifref/Makefile
 macosxbuild/Makefile
 macosxbuild/SDIF.xcodeproj/Makefile
+iosbuild/Makefile
+iosbuild/SDIF-lib-ios.xcodeproj/Makefile
 cmModules/Makefile
 sdif.pc 
 sdif.spec)

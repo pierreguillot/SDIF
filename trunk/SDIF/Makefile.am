@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.38 2009-10-19 17:02:02 diemo Exp $
+# $Id: Makefile.am,v 1.39 2013-07-16 11:41:33 diemo Exp $
 #
 # ./Makefile.am		September 2000			Patrice Tisserand
 #
@@ -30,6 +30,9 @@
 
 
 # $Log: not supported by cvs2svn $
+# Revision 1.38  2009/10/19 17:02:02  diemo
+# new upload host and dir, again
+#
 # Revision 1.37  2009/08/10 16:57:26  diemo
 # frs changed again...
 #
@@ -190,7 +193,7 @@ endif
 
 SUBDIRS = sdif include tools data examples test $(SDIF_CPP_DIR) macosxbuild $(DOC_SRC_DIR)
 
-DIST_SUBDIRS = sdif include tools data examples test  macosxbuild doc sdifcpp cmModules
+DIST_SUBDIRS = sdif include tools data examples test  macosxbuild iosbuild doc sdifcpp cmModules
 
 sdifincdir = @top_srcdir@/include
 
