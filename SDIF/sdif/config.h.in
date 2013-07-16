@@ -1,5 +1,8 @@
 /* sdif/config.h.in.  Generated from configure.in by autoheader.  */
 
+/* Define if building universal (internal helper macro) */
+#undef AC_APPLE_UNIVERSAL_BUILD
+
 /* Define to 1 if you have the <dlfcn.h> header file. */
 #undef HAVE_DLFCN_H
 
@@ -36,14 +39,15 @@
 /* Define to 1 if you have the <sys/stat.h> header file. */
 #undef HAVE_SYS_STAT_H
 
-/* Define to 1 if you are on Mac OSX and have the <machine/endian.h> header file. */
-#undef HAVE_MACHINE_ENDIAN_H
-
 /* Define to 1 if you have the <sys/types.h> header file. */
 #undef HAVE_SYS_TYPES_H
 
 /* Define to 1 if you have the <unistd.h> header file. */
 #undef HAVE_UNISTD_H
+
+/* Define to the sub-directory in which libtool stores uninstalled libraries.
+   */
+#undef LT_OBJDIR
 
 /* Name of package */
 #undef PACKAGE
@@ -67,8 +71,29 @@
    your system. */
 #undef PTHREAD_CREATE_JOINABLE
 
-/* The size of a `long', as computed by sizeof. */
+/* The size of `INT64', as computed by sizeof. */
+#undef SIZEOF_INT64
+
+/* The size of `int64_t', as computed by sizeof. */
+#undef SIZEOF_INT64_T
+
+/* The size of `loff_t', as computed by sizeof. */
+#undef SIZEOF_LOFF_T
+
+/* The size of `long', as computed by sizeof. */
 #undef SIZEOF_LONG
+
+/* The size of `long long', as computed by sizeof. */
+#undef SIZEOF_LONG_LONG
+
+/* The size of `off64_t', as computed by sizeof. */
+#undef SIZEOF_OFF64_T
+
+/* The size of `off_t', as computed by sizeof. */
+#undef SIZEOF_OFF_T
+
+/* The size of `__int64', as computed by sizeof. */
+#undef SIZEOF___INT64
 
 /* Define to 1 if you have the ANSI C header files. */
 #undef STDC_HEADERS
@@ -76,6 +101,14 @@
 /* Version number of package */
 #undef VERSION
 
-/* Define to 1 if your processor stores words with the most significant byte
-   first (like Motorola and SPARC, unlike Intel and VAX). */
-#undef WORDS_BIGENDIAN
+/* Define WORDS_BIGENDIAN to 1 if your processor stores words with the most
+   significant byte first (like Motorola and SPARC, unlike Intel). */
+#if defined AC_APPLE_UNIVERSAL_BUILD
+# if defined __BIG_ENDIAN__
+#  define WORDS_BIGENDIAN 1
+# endif
+#else
+# ifndef WORDS_BIGENDIAN
+#  undef WORDS_BIGENDIAN
+# endif
+#endif
