@@ -1,6 +1,6 @@
 /******************************************************************************
 
-  $Id: host_architecture.h,v 3.3 2012-01-02 23:49:08 roebel Exp $
+  $Id: host_architecture.h,v 3.4 2013-07-16 11:13:10 diemo Exp $
 
   host_architecture.h provides the following conditionals:
   
@@ -13,9 +13,12 @@
   HOST_ARCH_X86         - Current architecture is Intel PC (386..Pentium)
   HOST_ARCH_n86         - Current architecture is Intel (3|4)86, Pentium/K5 (586), 
                                                         or Pentium II (686)
+  HOST_ARCH_ARMv7	- Current architecture is ARM as in iPhone/iPad
 
-  HOST_OS_UNIX          - Generated code will run under Unix
-  HOST_OS_MAC           - Generated code will run under Mac OS
+  HOST_OS_UNIX          - Generated code will run under Unix or Mac OSX
+  HOST_OS_MAC           - Generated code will run under Mac OS 9
+  HOST_OS_IOS           - Generated code will run under iOS
+  HOST_OS_ANDROID       - Generated code will run under Android
   HOST_OS_WIN32         - Generated code will run under 32-bit Windows
                         
   HOST_ENDIAN_BIG       - Generated code uses big endian format for integers
@@ -42,6 +45,10 @@
   Alberto Ricci, 19990315
 
   $Log: not supported by cvs2svn $
+  Revision 3.3  2012/01/02 23:49:08  roebel
+  Base selection of WIN32 specific implementation on definition of macros  WIN32 OR _WIN32. The latter being standard in
+  Visual C++ it is most important to have it.
+
   Revision 3.2  2004/02/08 14:26:58  ellis
 
   now the textual scanner parses correctly character datas
@@ -145,11 +152,15 @@
 #     define HOST_ARCH_686                              1
 #     define HOST_ARCH_X86                              1
 
+#elif defined(__arm__)
+
+#     define HOST_ARCH_ARMv7				1
+
 #endif
 
 
 /*===========================================================================*/
-/* UNIX */
+/* UNIX (includes Apple Mac OSX and iOS)*/
 
 #if defined(unix) || defined(__unix) || defined(__unix__) || defined(__MACH__)
 
@@ -178,7 +189,7 @@ typedef unsigned char *     StringPtr;
 #if HOST_ARCH_SGI || HOST_ARCH_NEXT || HOST_ARCH_PPC
 #   define HOST_ENDIAN_BIG  1
 #   define WORDS_BIGENDIAN  1
-#elif HOST_ARCH_ALPHA || HOST_ARCH_X86
+#elif HOST_ARCH_ALPHA || HOST_ARCH_X86 || HOST_ARCH_ARMv7
 #   define HOST_ENDIAN_LITTLE  1
 #   undef  WORDS_BIGENDIAN
 #endif
@@ -202,7 +213,7 @@ typedef unsigned char *     StringPtr;
 
 
 /*===========================================================================*/
-/* MACINTOSH */
+/* MACINTOSH OS 9 */
 
 #elif defined(macintosh)
 
@@ -234,6 +245,15 @@ typedef unsigned char *     StringPtr;
 #define HOST_DIRECTORY_DIVIDER_STR                      ":"
 
 #define HOST_CALLBACK_API_C                             CALLBACK_API_C
+
+
+
+/*===========================================================================*/
+/* Android */
+
+#elif defined(__ANDROID__)
+
+#define HOST_OS_ANDROID					1
 
 
 /*===========================================================================*/
