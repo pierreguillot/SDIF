@@ -1,5 +1,5 @@
 dnl -*-autoconf-*-  (Tell emacs it's an autoconf file!)
-dnl $Id: configure.in,v 1.83 2012-03-30 11:10:30 diemo Exp $
+dnl $Id: configure.in,v 1.84 2013-07-16 11:26:53 diemo Exp $
 dnl
 dnl configure.in		September 2000		Patrice Tisserand
 dnl
@@ -31,6 +31,15 @@ dnl send email to:  sdif@ircam.fr
 
 
 dnl $Log: not supported by cvs2svn $
+dnl Revision 1.83  2012/03/30 11:10:30  diemo
+dnl fix
+dnl
+dnl configure: error: conditional "am__fastdepCXX" was never defined.
+dnl Usually this means the macro was only invoked conditionally.
+dnl
+dnl this macro must not be in a conditional, according to
+dnl http://osdir.com/ml/libtool-gnu/2010-05/msg00041.html
+dnl
 dnl Revision 1.82  2011/12/19 17:48:10  roebel
 dnl Version 3.11.4
 dnl
@@ -347,7 +356,7 @@ PACKAGE=SDIF
 
 SDIF_VERSION_MAJOR=3
 SDIF_VERSION_MINOR=11
-SDIF_VERSION_RELEASE=4
+SDIF_VERSION_RELEASE=5
 
 VERSION=$SDIF_VERSION_MAJOR.$SDIF_VERSION_MINOR.$SDIF_VERSION_RELEASE
 
