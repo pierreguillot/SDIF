@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.1 2009-02-18 14:02:57 diemo Exp $
+# $Id: Makefile.am,v 1.2 2013-07-16 11:41:33 diemo Exp $
 #
 # SDIF/macosxbuild/SDIF.xcodeproj/Makefile.am	
 #
@@ -6,6 +6,9 @@
 # distribution
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.1  2009/02/18 14:02:57  diemo
+# empty makefile just to include Mac xcode compilation project in source distribution
+#
 
 # distdir		= ../../$(PACKAGE)-$(VERSION)-src
 
@@ -13,4 +16,4 @@
 EXTRA_DIST 	= project.pbxproj
 
 all:
-		echo "Use Apple ProjectBuilder to build for Mac OS X"
+		echo "Use Xcode to build for Mac OS X"
