@@ -1,3 +1,20 @@
+Version 3.11.5	2013-07-16  Diemo Schwarz 
+
+	* iosbuild/SDIF-lib-ios.xcodeproj
+	static lib build project for ios
+
+	* sdif/host_architecture.h: add detection of iOS
+
+	* tools/sdifextract.c:
+	with option -l, output text matrices as labels in bpf mode
+
+	* test/cmd_testcheck:
+	proper numeric error val check: all tests pass now
+
+	* include/sdif.h.in, sdif/SdifFile.c, sdif/SdifHard_OS.c, sdif/host_architecture.h, sdif/sdif_portability.h, tools/sdifextract.c:
+	Base selection of WIN32 specific implementation on definition of macros  WIN32 OR _WIN32. The latter being standard in
+	Visual C++ it is most important to have it.
+
 Version 3.11.4	2011-12-19  Axel Roebel
 
 	* sdif/SdifFGet.c:
