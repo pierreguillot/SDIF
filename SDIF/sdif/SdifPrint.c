@@ -1,4 +1,4 @@
-/* $Id: SdifPrint.c,v 3.12 2007-11-26 18:51:12 roebel Exp $
+/* $Id: SdifPrint.c,v 3.13 2013-07-16 10:26:13 diemo Exp $
  *
  * IRCAM SDIF Library (http://www.ircam.fr/sdif)
  *
@@ -33,6 +33,11 @@
  *
  *
  * $Log: not supported by cvs2svn $
+ * Revision 3.12  2007/11/26 18:51:12  roebel
+ * Changed data types to have less casts and
+ * less compilation warnings with MSVC.
+ * renamed some functions that are deprecated in MSVC.
+ *
  * Revision 3.11  2005/04/07 15:56:48  schwarz
  * removed some now empty local include files,
  * added include of <sdif.h> and "SdifGlobals.h"
@@ -86,7 +91,7 @@
  */
 
 
-#include <sdif.h>
+#include "sdif.h"
 #include "sdif_portability.h"
 
 
