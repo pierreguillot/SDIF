@@ -32,9 +32,13 @@
  * 
  * 
  * 
- * $Id: sdifentity.hpp,v 1.27 2012-08-28 22:02:39 roebel Exp $ 
+ * $Id: sdifentity.hpp,v 1.28 2013-11-19 15:24:31 fcornu-ircam Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.27  2012/08/28 22:02:39  roebel
+ * Renamed function arguments to avoid compiler warnings in swig python interface.
+ * Enhanced documentation of ReadNextSelectedFrame()
+ *
  * Revision 1.26  2012/08/10 01:03:29  roebel
  * Added new function that allows to retrieve easdif version during runtime.
  * Fixed ReadNextSelectFrame when time argument is provided and the time is the same or smaller as the first frame,
@@ -892,16 +896,9 @@ namespace {
   };
 }
 
-  // forward declaration not all gcc versions like the 
-  // attribute at this place. 
-#if defined( __GNUC__) && (__GNUC__ == 4 && __GNUC_MINOR__ <= 1)
+  // forward declaration
   template<int EASDIF_FR_CONST_FLAG>
   class FRIterator;
-#else
-  template<int EASDIF_FR_CONST_FLAG>
-  class EASDIF_API FRIterator;
-#endif
-
 
   /** 
    * @brief class holding all information concerned with a single sdif file.
@@ -1948,7 +1945,7 @@ public:
    *
    */
   template<int EASDIF_FR_CONST_FLAG>
-  class EASDIF_API FRIterator {
+  class FRIterator {
     typename Base_Iterator<0>::basic_iterator mBase;
    //typename std::list<SDIFLocation>::iterator mBase;
     SDIFEntity   *mpEnt;      // internal pointer to entity that the iterator works on

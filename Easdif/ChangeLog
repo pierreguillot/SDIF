@@ -1,3 +1,9 @@
+2013-11-19  Frederic Cornu <cornu@ircam.fr>
+
+	* easdif/sdifentity.hpp :
+	Remove EASDIF_API attribute from FRIterator which is fully inline. This
+	was preventing the use of a shared library on windows
+
 2012-09-03  Axel Roebel  <roebel@m1873.local>
 Version 1.4.19
 
@@ -1310,4 +1316,4 @@ Version 0.21
 	* ChangeLog: Added changelog to repository.
 
 
-$Id: ChangeLog,v 1.90 2012-09-02 22:18:45 roebel Exp $
+$Id: ChangeLog,v 1.91 2013-11-19 15:24:30 fcornu-ircam Exp $
