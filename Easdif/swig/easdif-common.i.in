@@ -1,10 +1,13 @@
-// $Id: easdif-common.i.in,v 1.17 2012-01-05 00:55:54 roebel Exp $ -*-c-*-
+// $Id: easdif-common.i.in,v 1.18 2014-04-10 21:34:07 roebel Exp $ -*-c-*-
 //
 // easdif.i		16.04.2003		Diemo Schwarz
 //
 // Interface file for swig, defining the callable easdif functions
 //
 // $Log: not supported by cvs2svn $
+// Revision 1.17  2012/01/05 00:55:54  roebel
+// Provide access to FrameDirectory.
+//
 // Revision 1.16  2012/01/04 12:17:36  roebel
 // Removed all exception classes that are not very useful anyway.
 //
@@ -103,6 +106,7 @@
 
 // include header to make wrapper compile
 %{
+
 #include "easdif/easdif.h"
 
 using namespace Easdif;
@@ -171,24 +175,45 @@ using namespace Easdif;
         }
 }
 
-
-%include "@EASDIF_INC_DIR@/easdif/sdif_matrix.hpp"
-%include "@EASDIF_INC_DIR@/easdif/sdifnamevaluetable.hpp"
-%include "@EASDIF_INC_DIR@/easdif/sdif_frame.hpp"
-%include "@EASDIF_INC_DIR@/easdif/sdifentity.hpp"
+%include "@EASDIF_INC_DIR_FOR_SWIG@/easdif/sdif_matrix.hpp"
+%include "@EASDIF_INC_DIR_FOR_SWIG@/easdif/sdifnamevaluetable.hpp"
+%include "@EASDIF_INC_DIR_FOR_SWIG@/easdif/sdif_frame.hpp"
+%include "@EASDIF_INC_DIR_FOR_SWIG@/easdif/sdifentity.hpp"
 
 %template(GetRow) Easdif::SDIFMatrix::GetRow<double>;
 %template(GetRow) Easdif::SDIFMatrix::GetRow<float>;
+%template(GetRow) Easdif::SDIFMatrix::GetRow<char>;
+%template(GetRow) Easdif::SDIFMatrix::GetRow<short>;
 %template(GetRow) Easdif::SDIFMatrix::GetRow<int>;
+%template(GetRow) Easdif::SDIFMatrix::GetRow<unsigned char>;
+%template(GetRow) Easdif::SDIFMatrix::GetRow<unsigned short>;
+%template(GetRow) Easdif::SDIFMatrix::GetRow<unsigned int>;
+
 %template(GetCol) Easdif::SDIFMatrix::GetCol<double>;
 %template(GetCol) Easdif::SDIFMatrix::GetCol<float>;
+%template(GetCol) Easdif::SDIFMatrix::GetCol<char>;
+%template(GetCol) Easdif::SDIFMatrix::GetCol<short>;
 %template(GetCol) Easdif::SDIFMatrix::GetCol<int>;
+%template(GetCol) Easdif::SDIFMatrix::GetCol<unsigned char>;
+%template(GetCol) Easdif::SDIFMatrix::GetCol<unsigned short>;
+%template(GetCol) Easdif::SDIFMatrix::GetCol<unsigned int>;   
 
 %template(SetRow) Easdif::SDIFMatrix::SetRow<double>;
 %template(SetRow) Easdif::SDIFMatrix::SetRow<float>;
+%template(SetRow) Easdif::SDIFMatrix::SetRow<char>;
+%template(SetRow) Easdif::SDIFMatrix::SetRow<short>;
 %template(SetRow) Easdif::SDIFMatrix::SetRow<int>;
+%template(SetRow) Easdif::SDIFMatrix::SetRow<unsigned char>;
+%template(SetRow) Easdif::SDIFMatrix::SetRow<unsigned short>;
+%template(SetRow) Easdif::SDIFMatrix::SetRow<unsigned int>;
+
 %template(SetCol) Easdif::SDIFMatrix::SetCol<double>;
 %template(SetCol) Easdif::SDIFMatrix::SetCol<float>;
+%template(SetCol) Easdif::SDIFMatrix::SetCol<char>;
+%template(SetCol) Easdif::SDIFMatrix::SetCol<short>;
 %template(SetCol) Easdif::SDIFMatrix::SetCol<int>;
+%template(SetCol) Easdif::SDIFMatrix::SetCol<unsigned char>;
+%template(SetCol) Easdif::SDIFMatrix::SetCol<unsigned short>;
+%template(SetCol) Easdif::SDIFMatrix::SetCol<unsigned int>;
 
 

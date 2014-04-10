@@ -1,10 +1,15 @@
-// $Id: easdif-python.i,v 1.13 2012-09-02 01:19:03 roebel Exp $ -*-c-*-
+// $Id: easdif-python.i,v 1.14 2014-04-10 21:34:07 roebel Exp $ -*-c-*-
 //
 // easdif-python.i		30.04.2003		Patrice Tisserand
 //
 // Interface file for swig, defining the callable easdif functions
 //
 // $Log: not supported by cvs2svn $
+// Revision 1.13  2012/09/02 01:19:03  roebel
+// Added support for using numpy  arrays to Set/Get columns and rows from
+// matrices. For large matrices this can increase efficiency when accessing
+// matrix data by factor ~1000!
+//
 // Revision 1.12  2012/08/28 22:08:14  roebel
 // Fixed next iterator for sdifentity.
 //
@@ -181,123 +186,100 @@ namespace std {
 
 
 #ifdef USE_NUMPY
- 
 
 %extend Easdif::SDIFMatrix {
 
 %apply (double* INPLACE_ARRAY1, int DIM1) {(double *outarr, int outarrsize)}
-%apply (double* IN_ARRAY1, int DIM1) {(double *inarr, int inarrsize)}
+%apply (double* IN_ARRAY1, int DIM1) {(const double *inarr, int inarrsize)}
 %apply (float* INPLACE_ARRAY1, int DIM1) {(float *outarr, int outarrsize)}
-%apply (float* IN_ARRAY1, int DIM1) {(float *inarr, int inarrsize)}
+%apply (float* IN_ARRAY1, int DIM1) {(const float *inarr, int inarrsize)}
 %apply (int* INPLACE_ARRAY1, int DIM1) {(int *outarr, int outarrsize)}
-%apply (int* IN_ARRAY1, int DIM1) {(int *inarr, int inarrsize)}
+%apply (int* IN_ARRAY1, int DIM1) {(const int *inarr, int inarrsize)}
+%apply (short* INPLACE_ARRAY1, int DIM1) {(short *outarr, int outarrsize)}
+%apply (short* IN_ARRAY1, int DIM1) {(const short *inarr, int inarrsize)}
+%apply (char* INPLACE_ARRAY1, int DIM1) {(char *outarr, int outarrsize)}
+%apply (char* IN_ARRAY1, int DIM1) {(char *inarr, int inarrsize)}
+%apply (unsigned char* INPLACE_ARRAY1, int DIM1) {(unsigned char *outarr, int outarrsize)}
+%apply (unsigned char* IN_ARRAY1, int DIM1) {(const unsigned char *inarr, int inarrsize)}
+%apply (unsigned short* INPLACE_ARRAY1, int DIM1) {(unsigned short *outarr, int outarrsize)}
+%apply (unsigned short* IN_ARRAY1, int DIM1) {(const unsigned short *inarr, int inarrsize)}
+%apply (unsigned int* INPLACE_ARRAY1, int DIM1) {(unsigned int *outarr, int outarrsize)}
+%apply (unsigned int* IN_ARRAY1, int DIM1) {(const unsigned int *inarr, int inarrsize)}
 
-  void
-    GetColA(double * outarr, int outarrsize, int col) {
-    if ($self->GetNbRows() != outarrsize ) {
-      throw std::runtime_error("GetColA::output array does not match column size");
-    }
-    $self->GetCol(outarr, col);
-    return; 
-  }
-  void
-    GetRowA(double * outarr, int outarrsize, int row) {
-    if ($self->GetNbCols() != outarrsize ) {
-      throw std::runtime_error("GetRowA::output array does not match row size");
-    }
-    $self->GetRow(outarr, row);
-    return; 
-  }
-  void
-    SetColA(double * inarr, int inarrsize, int col) {
-    if ($self->GetNbRows() != inarrsize ) {
-      throw std::runtime_error("SetColA::input array does not match column size");
-    }
-    $self->SetCol(const_cast<const double *>(inarr), col);
-    return; 
-  }
-  void
-    SetRowA(double * inarr, int inarrsize, int row) {
-    if ($self->GetNbCols() != inarrsize ) {
-      throw std::runtime_error("SetRowA::output array does not match row size");
-    }
-    $self->SetRow(inarr, row);
-    return; 
+#define MakeGetColA(type) void \
+    GetColA(type * outarr, int outarrsize, int col) { \
+    if ($self->GetNbRows() != outarrsize ) {\
+      throw std::runtime_error("GetColA::output array does not match column size"); \
+    }\
+    $self->GetCol(outarr, col); \
+    return; \
   }
 
-  void
-    GetColA(float * outarr, int outarrsize, int col) {
-    if ($self->GetNbRows() != outarrsize ) {
-      throw std::runtime_error("GetColA::output array does not match column size");
-    }
-    $self->GetCol(outarr, col);
-    return; 
-  }
-  void
-    GetRowA(float * outarr, int outarrsize, int row) {
-    if ($self->GetNbCols() != outarrsize ) {
-      throw std::runtime_error("GetRowA::output array does not match row size");
-    }
-    $self->GetRow(outarr, row);
-    return; 
-  }
-  void
-    SetColA(float * inarr, int inarrsize, int col) {
-    if ($self->GetNbRows() != inarrsize ) {
-      throw std::runtime_error("SetColA::input array does not match column size");
-    }
-    $self->SetCol(inarr, col);
-    return; 
-  }
-  void
-    SetRowA(float * inarr, int inarrsize, int row) {
-    if ($self->GetNbCols() != inarrsize ) {
-      throw std::runtime_error("SetRowA::output array does not match row size");
-    }
-    $self->SetRow(inarr, row);
-    return; 
+   MakeGetColA(double);
+   MakeGetColA(float);
+   MakeGetColA(unsigned int);
+   MakeGetColA(unsigned short);
+   MakeGetColA(unsigned char);
+   MakeGetColA(int);
+   MakeGetColA(short);
+   MakeGetColA(char);
+
+#define MakeGetRowA(type) void \
+    GetRowA(type * outarr, int outarrsize, int col) { \
+    if ($self->GetNbCols() != outarrsize ) {\
+      throw std::runtime_error("GetRowA::output array does not match row size"); \
+    }\
+    $self->GetRow(outarr, col); \
+    return; \
   }
 
-  void
-    GetColA(int * outarr, int outarrsize, int col) {
-    if ($self->GetNbRows() != outarrsize ) {
-      throw std::runtime_error("GetColA::output array does not match column size");
-    }
-    if (sizeof(int) != sizeof(SdifInt4))
-      throw std::runtime_error("SetColA::output array int type is not comptaible to SdifInt4");
-    $self->GetCol(outarr, col);
-    return; 
-  }
-  void
-    GetRowA(int * outarr, int outarrsize, int row) {
-    if ($self->GetNbCols() != outarrsize ) {
-      throw std::runtime_error("GetRowA::output array does not match row size");
-    }
-    if (sizeof(int) != sizeof(SdifInt4))
-      throw std::runtime_error("SetRowA::output array int type is not comptaible to SdifInt4");
+   MakeGetRowA(double);
+   MakeGetRowA(float);
+   MakeGetRowA(unsigned int);
+   MakeGetRowA(unsigned short);
+   MakeGetRowA(unsigned char);
+   MakeGetRowA(short);
+   MakeGetRowA(int);
+   MakeGetRowA(char);
 
-    $self->GetRow(outarr, row);
-    return; 
+#define MakeSetColA(type) void \
+    SetColA(const type * inarr, int inarrsize, int col) { \
+    if ($self->GetNbRows() != inarrsize ) {\
+      throw std::runtime_error("SetColA::input array does not match column size"); \
+    }\
+    $self->SetCol(inarr, col);                  \
+    return; \
   }
-  void
-    SetColA(int * inarr, int inarrsize, int col) {
-    if ($self->GetNbRows() != inarrsize ) {
-      throw std::runtime_error("SetColA::input array does not match column size");
-    }
-    if (sizeof(int) != sizeof(SdifInt4))
-      throw std::runtime_error("SetColA::input array int type is not comptaible to SdifInt4");
-    $self->SetCol(inarr, col);
-    return; 
+
+   MakeSetColA(double);
+   MakeSetColA(float);
+   MakeSetColA(unsigned int);
+   MakeSetColA(unsigned short);
+   MakeSetColA(unsigned char);
+   MakeSetColA(short);
+   MakeSetColA(int);
+   MakeSetColA(char);
+
+#define MakeSetRowA(type) void \
+    SetRowA(const type * inarr, int inarrsize, int col) { \
+    if ($self->GetNbCols() != inarrsize ) {\
+      throw std::runtime_error("SetRowA::input array does not match row size"); \
+    }\
+    $self->SetRow(inarr, col); \
+    return; \
   }
-  void
-    SetRowA(int * inarr, int inarrsize, int row) {
-    if ($self->GetNbCols() != inarrsize ) {
-      throw std::runtime_error("SetRowA::output array does not match row size");
-    }
-    if (sizeof(int) != sizeof(SdifInt4))
-      throw std::runtime_error("SetRowA::input array int type is not comptaible to SdifInt4");
-    $self->SetRow(inarr, row);
-    return; 
-  }
+
+   MakeSetRowA(double);
+   MakeSetRowA(float);
+   MakeSetRowA(unsigned int);
+   MakeSetRowA(unsigned short);
+   MakeSetRowA(unsigned char);
+   MakeSetRowA(short);
+   MakeSetRowA(char);
+   MakeSetRowA(int);
+
+
+
+
 }
 #endif
