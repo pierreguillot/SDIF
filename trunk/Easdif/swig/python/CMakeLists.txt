@@ -91,6 +91,7 @@ IF(PYTHON)
     ENDIF(WIN32)
   ENDIF(APPLE)
   
+  ADD_CUSTOM_TARGET(checkswig)
   ADD_CUSTOM_TARGET(checkswigpython
     COMMAND echo Testing python swig interface
     COMMAND ${LOADPATH}=$(CMAKE_BINARY_DIR)/lib ${PYTHON} ${CMAKE_CURRENT_BINARY_DIR}/test.py)
