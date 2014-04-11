@@ -1,4 +1,4 @@
-$Id: README,v 1.9 2014-03-21 23:56:41 roebel Exp $ Diemo Schwarz
+$Id: README,v 1.10 2014-04-11 12:11:39 roebel Exp $ Diemo Schwarz
 
 README for SWIG wrapper generation for eaSDIF
 
@@ -53,7 +53,7 @@ directory.
 To configure cd into the Easdif build directory (see ../README) and run
 
 > # configuration
-> cmake PATH_TO_EASDIF_SRC_DIR -DDO_PYTHON:BOOL=ON 
+> cmake PATH_TO_EASDIF_SRC_DIR -DEASDIF_DO_PYTHON:BOOL=ON 
 
 # build swig interface (example for python)
 # assume that the build generator has created 
