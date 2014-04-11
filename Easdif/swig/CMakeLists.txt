@@ -20,6 +20,8 @@ IF(SWIG_FOUND)
   CONFIGURE_FILE(easdif-common.i.in ${CMAKE_CURRENT_BINARY_DIR}/easdif-common.i)
   CONFIGURE_FILE(sdif-common.i.in ${CMAKE_CURRENT_BINARY_DIR}/sdif-common.i)
 
+  ADD_CUSTOM_TARGET(checkswig)
+
   IF(EASDIF_DO_PYTHON)
     MESSAGE(STATUS "python")
     ADD_SUBDIRECTORY(python)
