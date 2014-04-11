@@ -1,10 +1,14 @@
-// $Id: easdif-python.i,v 1.14 2014-04-10 21:34:07 roebel Exp $ -*-c-*-
+// $Id: easdif-python.i,v 1.15 2014-04-11 17:33:31 roebel Exp $ -*-c-*-
 //
 // easdif-python.i		30.04.2003		Patrice Tisserand
 //
 // Interface file for swig, defining the callable easdif functions
 //
 // $Log: not supported by cvs2svn $
+// Revision 1.14  2014/04/10 21:34:07  roebel
+// More robust include file organisation.
+// Extended types of vector that are supported to read from matrices and vectors.
+//
 // Revision 1.13  2012/09/02 01:19:03  roebel
 // Added support for using numpy  arrays to Set/Get columns and rows from
 // matrices. For large matrices this can increase efficiency when accessing
@@ -199,6 +203,8 @@ namespace std {
 %apply (short* IN_ARRAY1, int DIM1) {(const short *inarr, int inarrsize)}
 %apply (char* INPLACE_ARRAY1, int DIM1) {(char *outarr, int outarrsize)}
 %apply (char* IN_ARRAY1, int DIM1) {(char *inarr, int inarrsize)}
+%apply (signed char* INPLACE_ARRAY1, int DIM1) {(signed char *outarr, int outarrsize)}
+%apply (signed char* IN_ARRAY1, int DIM1) {(signed char *inarr, int inarrsize)}
 %apply (unsigned char* INPLACE_ARRAY1, int DIM1) {(unsigned char *outarr, int outarrsize)}
 %apply (unsigned char* IN_ARRAY1, int DIM1) {(const unsigned char *inarr, int inarrsize)}
 %apply (unsigned short* INPLACE_ARRAY1, int DIM1) {(unsigned short *outarr, int outarrsize)}
@@ -213,6 +219,13 @@ namespace std {
     }\
     $self->GetCol(outarr, col); \
     return; \
+  }
+ void  GetColA(signed char * outarr, int outarrsize, int col) { 
+    if ($self->GetNbRows() != outarrsize ) {
+      throw std::runtime_error("GetColA::output array does not match column size"); 
+    }
+    $self->GetCol(reinterpret_cast<char*> (outarr), col); 
+    return; 
   }
 
    MakeGetColA(double);
@@ -233,13 +246,21 @@ namespace std {
     return; \
   }
 
+ void  GetRowA(signed char * outarr, int outarrsize, int col) { 
+    if ($self->GetNbRows() != outarrsize ) {
+      throw std::runtime_error("GetRowA::output array does not match column size"); 
+    }
+    $self->GetRow(reinterpret_cast<char*> (outarr), col); 
+    return; 
+  }
+
    MakeGetRowA(double);
    MakeGetRowA(float);
    MakeGetRowA(unsigned int);
    MakeGetRowA(unsigned short);
    MakeGetRowA(unsigned char);
-   MakeGetRowA(short);
    MakeGetRowA(int);
+   MakeGetRowA(short);
    MakeGetRowA(char);
 
 #define MakeSetColA(type) void \
@@ -251,14 +272,24 @@ namespace std {
     return; \
   }
 
+
+
    MakeSetColA(double);
    MakeSetColA(float);
    MakeSetColA(unsigned int);
    MakeSetColA(unsigned short);
    MakeSetColA(unsigned char);
-   MakeSetColA(short);
    MakeSetColA(int);
+   MakeSetColA(short);
    MakeSetColA(char);
+
+ void  SetColA(const signed char * outarr, int outarrsize, int col) { 
+    if ($self->GetNbRows() != outarrsize ) {
+      throw std::runtime_error("SetColA::output array does not match column size"); 
+    }
+    $self->SetCol(reinterpret_cast<const char*> (outarr), col); 
+    return; 
+  }
 
 #define MakeSetRowA(type) void \
     SetRowA(const type * inarr, int inarrsize, int col) { \
@@ -269,17 +300,23 @@ namespace std {
     return; \
   }
 
+
    MakeSetRowA(double);
    MakeSetRowA(float);
    MakeSetRowA(unsigned int);
    MakeSetRowA(unsigned short);
    MakeSetRowA(unsigned char);
+   MakeSetRowA(int);
    MakeSetRowA(short);
    MakeSetRowA(char);
-   MakeSetRowA(int);
 
-
-
+ void  SetRowA(const signed char * outarr, int outarrsize, int col) { 
+    if ($self->GetNbRows() != outarrsize ) {
+      throw std::runtime_error("SetRowA::output array does not match column size"); 
+    }
+    $self->SetRow(reinterpret_cast<const char*> (outarr), col); 
+    return; 
+  }
 
 }
 #endif
