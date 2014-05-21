@@ -1,10 +1,13 @@
-// $Id: easdif-python.i,v 1.15 2014-04-11 17:33:31 roebel Exp $ -*-c-*-
+// $Id: easdif-python.i,v 1.16 2014-05-21 23:55:21 roebel Exp $ -*-c-*-
 //
 // easdif-python.i		30.04.2003		Patrice Tisserand
 //
 // Interface file for swig, defining the callable easdif functions
 //
 // $Log: not supported by cvs2svn $
+// Revision 1.15  2014/04/11 17:33:31  roebel
+// Support reading with int8 numpy type.
+//
 // Revision 1.14  2014/04/10 21:34:07  roebel
 // More robust include file organisation.
 // Extended types of vector that are supported to read from matrices and vectors.
@@ -188,6 +191,41 @@ namespace std {
 
 }
 
+%extend Easdif::FrameType{
+    PyObject* __str__() {
+      std::string str;
+      str = " 1FTD ";
+      str += SdifSignatureToString($self->mSig);
+      str += "\n\t{\n\t ";
+      for(int ii=0; ii< $self->mvMatrixTypes.size(); ++ii) {
+        str += SdifSignatureToString($self->mvMatrixTypes[ii].GetSignature());
+        str += "\t";
+        str += $self->mvMatrixNames[ii];
+        str += ";\n\t ";
+      }
+      str += "}\n";
+      
+      return PyString_FromString(str.c_str());
+    }
+ }
+
+%extend Easdif::MatrixType{
+    PyObject* __str__() {
+      std::string str;
+      str = " 1MTD ";
+      str += SdifSignatureToString($self->mSig);
+      str += "\t{";
+      int nb = $self->GetNbCols();
+      for(int ii=0; ii< nb; ++ii) {
+        str += $self->mvColumnNames[ii];
+        if (ii < nb - 1)
+          str += ",";
+      }
+      str += "}\n";
+      
+      return PyString_FromString(str.c_str());
+    }
+ }
 
 #ifdef USE_NUMPY
 
