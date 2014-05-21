@@ -1,10 +1,14 @@
-// $Id: easdif-common.i.in,v 1.18 2014-04-10 21:34:07 roebel Exp $ -*-c-*-
+// $Id: easdif-common.i.in,v 1.19 2014-05-21 22:11:28 roebel Exp $ -*-c-*-
 //
 // easdif.i		16.04.2003		Diemo Schwarz
 //
 // Interface file for swig, defining the callable easdif functions
 //
 // $Log: not supported by cvs2svn $
+// Revision 1.18  2014/04/10 21:34:07  roebel
+// More robust include file organisation.
+// Extended types of vector that are supported to read from matrices and vectors.
+//
 // Revision 1.17  2012/01/05 00:55:54  roebel
 // Provide access to FrameDirectory.
 //
@@ -217,3 +221,7 @@ using namespace Easdif;
 %template(SetCol) Easdif::SDIFMatrix::SetCol<unsigned int>;
 
 
+namespace std {
+  %template(MatrixTypeVector) vector<Easdif::MatrixType>;
+  %template(FrameTypeVector) vector<Easdif::FrameType>;
+}
