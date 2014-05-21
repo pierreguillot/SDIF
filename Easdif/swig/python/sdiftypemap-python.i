@@ -1,10 +1,13 @@
-// $Id: sdiftypemap-python.i,v 1.5 2006-11-26 20:35:41 roebel Exp $ -*-c-*-
+// $Id: sdiftypemap-python.i,v 1.6 2014-05-21 23:55:21 roebel Exp $ -*-c-*-
 //
 // sdiftypemap-python.i		30.04.2003		Patrice Tisserand
 //
 // typemaps for SWIG to map SdifSignature to strings and back
 //
 // $Log: not supported by cvs2svn $
+// Revision 1.5  2006/11/26 20:35:41  roebel
+// Unified by means of ../easdif-common-init.i
+//
 // Revision 1.4  2006/11/26 16:39:30  roebel
 // Renamed representation of std::vector<double> from eaSDIF.vectord
 // into eaSDIF.Vector
@@ -28,7 +31,7 @@
 //
 %typemap(in) SdifSignature 
 {
-    if (PyString_Check($input))
+  if (PyString_Check($input) && (PyString_Size($input) == 4))
     {
 	$1 = SdifStringToSignature(PyString_AsString($input));
     }
@@ -38,9 +41,14 @@
     }
     else  
     {
-	PyErr_SetString(PyExc_TypeError, "not a String");
+      PyErr_SetString(PyExc_TypeError, "Signature argument has to be an integer or a 4 char string");
 	return NULL;
     }
+}
+
+%typemap(typecheck, precedence=SWIG_TYPECHECK_INTEGER) SdifSignature {
+  $1 = (PyString_Check($input)  
+         || PyInt_Check($input)) ? 1 : 0;
 }
 
 %typemap(out) SdifSignature 
