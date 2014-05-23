@@ -97,16 +97,16 @@ IF(PYTHON)
   ADD_DEPENDENCIES(checkswigpython pythonswig)
   ADD_DEPENDENCIES(checkswig checkswigpython)
 
-  ADD_CUSTOM_TARGET(install_python_module_locally
+  ADD_CUSTOM_TARGET(install_python_easdif_module_locally
     COMMENT install python swig interface into userbase
     COMMAND ${PYTHON} setup.py install --user
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
-  ADD_DEPENDENCIES(install_python_module_locally pythonswig)
-  ADD_CUSTOM_TARGET(install_python_module_globally    
+  ADD_DEPENDENCIES(install_python_easdif_module_locally pythonswig)
+  ADD_CUSTOM_TARGET(install_python_easdif_module_globally    
     COMMENT install python swig interface into userbase
     COMMAND ${PYTHON} setup.py install
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
 
-  ADD_DEPENDENCIES(install_python_module_globally pythonswig)
+  ADD_DEPENDENCIES(install_python_easdif_module_globally pythonswig)
 ENDIF(PYTHON) 
 
