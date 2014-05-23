@@ -1,3 +1,61 @@
+2014-05-23  Axel Roebel  <roebel@m2336.local>
+Version 1.4.22 (mostly 
+
+	* swig/python/CMakeLists.txt:
+	changed install swig python target name to avoid conflicts
+
+	* swig/easdif-common.i.in:
+	added exception typemap for Accessing matrices in frames
+
+	* CMakeLists.txt: Fixed verbose output.
+
+	* swig/python/easdif-python.i:
+	Changed so that ReadNext..Frame methods properly throw EOF exception.
+
+	* swig/easdif-common.i.in:
+	Use exception typemap to improve exception handling for
+	Matrix.Get/Set methods.
+
+	* easdif/sdifmatrixdatainterface.hpp, easdif/sdifmatrixdata.hpp:
+	Added interface for retrieving raw pointer and elementsize.
+
+	* easdif/sdif_matrix.hpp: 
+	Added throw specifications.
+
+2014-05-21  Axel Roebel  <roebel@m2336.local>
+
+	* swig/python/easdif-python.i, swig/python/sdiftypemap-python.i:
+	Fixed FrameType constructor to accept python strings with exactly 4 chars.
+	Added __str__ method to FrameType and MatrixType structs to be able to print them.
+
+	* swig/easdif-common.i.in:
+	Added vector template for std::vector<MatrixType> and std::vector<FrameType> that are used by Entity::GetTypes functions.
+
+2014-04-11  Axel Roebel  <roebel@m2336.local>
+
+	* swig/python/easdif-python.i: Support reading with int8 numpy type.
+
+	* swig/CMakeLists.txt, swig/python/CMakeLists.txt, CMakeLists.txt:
+	Fixed remaining conditions that use old swig option variables.
+
+	* swig/CMakeLists.txt, swig/README, CMakeLists.txt:
+	Changed control variables for swig interfaces from DO_XYZ to EASDIF_DO_XYZ to improve readability when run within another module
+
+2014-04-10  Axel Roebel  <roebel@m2336.local>
+
+	* swig/easdif-common.i.in, swig/easdif-defines.i,
+	* swig/python/CMakeLists.txt, swig/python/easdif-python.i, swig/sdif-common.i.in, swig/CMakeLists.txt:
+	More robust include file organisation.
+	Extended types of vector that are supported to read from matrices and vectors.
+
+2014-03-21  Axel Roebel  <roebel@m2336.local>
+
+	* CMakeLists.txt, swig/CMakeLists.txt, swig/README:
+	Support individal selection of swig interfaces
+
+	* SDIF/cmModules/SET_COMPILER_FLAGS.cmake:
+	Support clang compiler on Darwin.
+
 2013-11-19  Frederic Cornu <cornu@ircam.fr>
 
 	* easdif/sdifentity.hpp :
@@ -1316,4 +1374,4 @@ Version 0.21
 	* ChangeLog: Added changelog to repository.
 
 
-$Id: ChangeLog,v 1.91 2013-11-19 15:24:30 fcornu-ircam Exp $
+$Id: ChangeLog,v 1.92 2014-05-23 11:01:24 roebel Exp $
