@@ -33,9 +33,12 @@
  * 
  * 
  * 
- * $Id: sdifmatrixdatainterface.hpp,v 1.2 2008-01-22 00:51:36 roebel Exp $ 
+ * $Id: sdifmatrixdatainterface.hpp,v 1.3 2014-05-23 10:30:26 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  2008/01/22 00:51:36  roebel
+ * Completed support for all sdif integer types.
+ *
  * Revision 1.1  2005/05/30 21:43:00  roebel
  * Changed all include files from .h into .hpp to prevent name clash between
  * sdifmatix.h and SDIF/sdifcpp/SdifMatrix.h on MacOSX where filenames are
@@ -157,8 +160,11 @@ public:
   virtual void   SetCol(const SdifUInt4 *,int i)=0;
   virtual void   SetCol(const SdifUInt2 *,int i)=0;
   virtual void   SetCol(const SdifUInt1 *,int i)=0;
-  
+
+  virtual void * GetData() = 0;
+  virtual int    GetElementSize() = 0;
   virtual SDIFMatrixDataInterface * clone()=0;
+
 
     virtual ~SDIFMatrixDataInterface() {};
 };
