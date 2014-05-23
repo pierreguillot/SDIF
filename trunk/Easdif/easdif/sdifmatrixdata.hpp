@@ -33,9 +33,15 @@
  * 
  * 
  * 
- * $Id: sdifmatrixdata.hpp,v 1.4 2011-06-11 17:08:16 roebel Exp $ 
+ * $Id: sdifmatrixdata.hpp,v 1.5 2014-05-23 10:30:25 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.4  2011/06/11 17:08:16  roebel
+ * Moved constructor and destructor definition out of class scope to
+ * lower probability of inlining.
+ * Changed handling of empty matrices to avoid assertion failures
+ * in MSVC.
+ *
  * Revision 1.3  2008/01/22 00:51:28  roebel
  * Completed support for all sdif integer types.
  *
@@ -594,12 +600,18 @@ public:
 
 /** 
  * \ingroup getdata
- * get the vector of data
- * @return vector of template type
+ * get a void pointer to the start of the memory of the internal matrix
+ * @return void * to internal storage
  */
-    inline std::vector<T>& GetData()
+     void* GetData()
 	{
-	    return m_Data;
+          if (m_Data.size() )
+	    return &m_Data[0];
+          return 0;
+	}
+     int GetElementSize()
+	{
+          return sizeof(T);
 	}
 
 
