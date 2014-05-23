@@ -1,10 +1,14 @@
-// $Id: easdif-common.i.in,v 1.20 2014-05-23 10:31:56 roebel Exp $ -*-c-*-
+// $Id: easdif-common.i.in,v 1.21 2014-05-23 10:55:22 roebel Exp $ -*-c-*-
 //
 // easdif.i		16.04.2003		Diemo Schwarz
 //
 // Interface file for swig, defining the callable easdif functions
 //
 // $Log: not supported by cvs2svn $
+// Revision 1.20  2014/05/23 10:31:56  roebel
+// Use exception typemap to improve exception handling for
+// Matrix.Get/Set methods.
+//
 // Revision 1.19  2014/05/21 22:11:28  roebel
 // Added vector template for std::vector<MatrixType> and std::vector<FrameType> that are used y Entity::GetTypes functions.
 //
@@ -179,6 +183,10 @@ using namespace Easdif;
   SWIG_fail;
 %}
 
+%typemap(throws) SDIFMatrixNotAvailable  %{
+  SWIG_exception(SWIG_IndexError, $1.getmessage().c_str());
+  SWIG_fail;
+%}
 
 %include "@EASDIF_INC_DIR_FOR_SWIG@/easdif/sdif_matrix.hpp"
 %include "@EASDIF_INC_DIR_FOR_SWIG@/easdif/sdifnamevaluetable.hpp"
