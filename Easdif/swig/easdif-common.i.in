@@ -1,10 +1,13 @@
-// $Id: easdif-common.i.in,v 1.19 2014-05-21 22:11:28 roebel Exp $ -*-c-*-
+// $Id: easdif-common.i.in,v 1.20 2014-05-23 10:31:56 roebel Exp $ -*-c-*-
 //
 // easdif.i		16.04.2003		Diemo Schwarz
 //
 // Interface file for swig, defining the callable easdif functions
 //
 // $Log: not supported by cvs2svn $
+// Revision 1.19  2014/05/21 22:11:28  roebel
+// Added vector template for std::vector<MatrixType> and std::vector<FrameType> that are used y Entity::GetTypes functions.
+//
 // Revision 1.18  2014/04/10 21:34:07  roebel
 // More robust include file organisation.
 // Extended types of vector that are supported to read from matrices and vectors.
@@ -149,6 +152,8 @@ using namespace Easdif;
 // functions (here const qualifier)
 %ignore Easdif::SDIFFrame::GetMatrixWithSig(const SdifSignature) const;
 
+// cannot be used (returns a void *)
+%ignore GetData;
 
 // if this is given then the
 // Easdif::SDIFMatrix::GetRow(std::vector,int) and
@@ -164,20 +169,16 @@ using namespace Easdif;
 #define SWIG_RENAME_EASDIF
 
 
-// filter all exceptions and transform into Target exceptions preserving the error message 
-%exception {
-        try {
-                $action
-        } catch(const SDIFArrayPosition& e) {
-                SWIG_exception(SWIG_IndexError,e.getmessage().c_str());
-        } catch(const SDIFException& e) {
-                SWIG_exception(SWIG_RuntimeError,e.getmessage().c_str());
-        } catch(const std::exception& e) {
-                SWIG_exception(SWIG_SystemError, e.what());
-        } catch(...) {
-                SWIG_exception(SWIG_UnknownError,"Unknown exception");
-        }
-}
+%typemap(throws) SDIFArrayPosition  %{
+  SWIG_exception(SWIG_IndexError, $1.getmessage().c_str());
+  SWIG_fail;
+%}
+
+%typemap(throws) SDIFMatrixDataError  %{
+  SWIG_exception(SWIG_ValueError, $1.getmessage().c_str());
+  SWIG_fail;
+%}
+
 
 %include "@EASDIF_INC_DIR_FOR_SWIG@/easdif/sdif_matrix.hpp"
 %include "@EASDIF_INC_DIR_FOR_SWIG@/easdif/sdifnamevaluetable.hpp"
@@ -219,6 +220,19 @@ using namespace Easdif;
 %template(SetCol) Easdif::SDIFMatrix::SetCol<unsigned char>;
 %template(SetCol) Easdif::SDIFMatrix::SetCol<unsigned short>;
 %template(SetCol) Easdif::SDIFMatrix::SetCol<unsigned int>;
+
+// filter all exceptions and transform into Target exceptions preserving the error message 
+%exception {
+        try {
+                $action
+        } catch(const SDIFException& e) {
+                SWIG_exception(SWIG_RuntimeError,e.getmessage().c_str());
+        } catch(const std::exception& e) {
+                SWIG_exception(SWIG_SystemError, e.what());
+        } catch(...) {
+                SWIG_exception(SWIG_UnknownError,"Unknown exception");
+        }
+}
 
 
 namespace std {
