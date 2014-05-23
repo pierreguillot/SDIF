@@ -1,10 +1,14 @@
-// $Id: easdif-python.i,v 1.16 2014-05-21 23:55:21 roebel Exp $ -*-c-*-
+// $Id: easdif-python.i,v 1.17 2014-05-23 10:33:15 roebel Exp $ -*-c-*-
 //
 // easdif-python.i		30.04.2003		Patrice Tisserand
 //
 // Interface file for swig, defining the callable easdif functions
 //
 // $Log: not supported by cvs2svn $
+// Revision 1.16  2014/05/21 23:55:21  roebel
+// Fixed FrameType constructor to accept python strings with exactly 4 chars.
+// Added __str__ method to FrameType and MatrixType structs to be able to print them.
+//
 // Revision 1.15  2014/04/11 17:33:31  roebel
 // Support reading with int8 numpy type.
 //
@@ -70,6 +74,40 @@
 
 // define only the needed basic SDIF stuff from sdif.h
 %include ../easdif-defines.i
+
+%exception ReadNextFrame {
+        try {
+                $action
+        } catch(const SDIFEof& e) {
+                PyErr_SetString(PyExc_EOFError,e.getmessage().c_str());
+                return 0;
+        } catch(const SDIFException& e) {
+                PyErr_SetString(PyExc_IOError,e.getmessage().c_str());
+                return 0;
+        } catch(const std::exception& e) {
+                PyErr_SetString(PyExc_IOError, e.what());
+                return 0;
+        } catch(...) {
+                SWIG_exception(SWIG_UnknownError,"Unknown exception");
+        }
+}
+
+%exception ReadNextSelectedFrame {
+        try {
+                $action
+        } catch(const SDIFEof& e) {
+                PyErr_SetString(PyExc_EOFError,e.getmessage().c_str());
+                return 0;
+        } catch(const SDIFException& e) {
+                PyErr_SetString(PyExc_IOError,e.getmessage().c_str());
+                return 0;
+        } catch(const std::exception& e) {
+                PyErr_SetString(PyExc_IOError, e.what());
+                return 0;
+        } catch(...) {
+                SWIG_exception(SWIG_UnknownError,"Unknown exception");
+        }
+}
 
 %{
 #include "easdif/easdif.h"
@@ -227,9 +265,44 @@ namespace std {
     }
  }
 
+
+
 #ifdef USE_NUMPY
 
+%exception GetColA {
+  $action
+  if( result == 0) {
+    PyErr_SetString(PyExc_IndexError,"GetColA::output array does not match column size"); 
+    return 0;
+  }
+}
+%exception SetColA {
+  $action
+  if( result == 0) {
+    PyErr_SetString(PyExc_IndexError,"SetColA::input array does not match column size"); 
+    return 0;
+  }
+}
+%exception GetRowA {
+  $action
+  if( result == 0) {
+    PyErr_SetString(PyExc_IndexError,"GetRowA::output array does not match row size"); 
+    return 0;
+  }
+}
+%exception SetRowA {
+  $action
+  if( result == 0) {
+    PyErr_SetString(PyExc_IndexError,"SetRowA::input array does not match row size"); 
+    return 0;
+  }
+}
+
+
+
+
 %extend Easdif::SDIFMatrix {
+
 
 %apply (double* INPLACE_ARRAY1, int DIM1) {(double *outarr, int outarrsize)}
 %apply (double* IN_ARRAY1, int DIM1) {(const double *inarr, int inarrsize)}
@@ -250,20 +323,20 @@ namespace std {
 %apply (unsigned int* INPLACE_ARRAY1, int DIM1) {(unsigned int *outarr, int outarrsize)}
 %apply (unsigned int* IN_ARRAY1, int DIM1) {(const unsigned int *inarr, int inarrsize)}
 
-#define MakeGetColA(type) void \
+#define MakeGetColA(type) int \
     GetColA(type * outarr, int outarrsize, int col) { \
     if ($self->GetNbRows() != outarrsize ) {\
-      throw std::runtime_error("GetColA::output array does not match column size"); \
+      return 0; \
     }\
     $self->GetCol(outarr, col); \
-    return; \
+    return 1; \
   }
- void  GetColA(signed char * outarr, int outarrsize, int col) { 
+  int  GetColA(signed char * outarr, int outarrsize, int col) { 
     if ($self->GetNbRows() != outarrsize ) {
-      throw std::runtime_error("GetColA::output array does not match column size"); 
+      return 0;
     }
     $self->GetCol(reinterpret_cast<char*> (outarr), col); 
-    return; 
+    return 1; 
   }
 
    MakeGetColA(double);
@@ -275,21 +348,21 @@ namespace std {
    MakeGetColA(short);
    MakeGetColA(char);
 
-#define MakeGetRowA(type) void \
+#define MakeGetRowA(type) int \
     GetRowA(type * outarr, int outarrsize, int col) { \
     if ($self->GetNbCols() != outarrsize ) {\
-      throw std::runtime_error("GetRowA::output array does not match row size"); \
+      return 0; \
     }\
     $self->GetRow(outarr, col); \
-    return; \
+    return 1; \
   }
 
- void  GetRowA(signed char * outarr, int outarrsize, int col) { 
+ int  GetRowA(signed char * outarr, int outarrsize, int col) { 
     if ($self->GetNbRows() != outarrsize ) {
-      throw std::runtime_error("GetRowA::output array does not match column size"); 
+      return 0; 
     }
     $self->GetRow(reinterpret_cast<char*> (outarr), col); 
-    return; 
+    return 1; 
   }
 
    MakeGetRowA(double);
@@ -301,16 +374,14 @@ namespace std {
    MakeGetRowA(short);
    MakeGetRowA(char);
 
-#define MakeSetColA(type) void \
+#define MakeSetColA(type) int \
     SetColA(const type * inarr, int inarrsize, int col) { \
     if ($self->GetNbRows() != inarrsize ) {\
-      throw std::runtime_error("SetColA::input array does not match column size"); \
+      return 0; \
     }\
     $self->SetCol(inarr, col);                  \
-    return; \
+    return 1; \
   }
-
-
 
    MakeSetColA(double);
    MakeSetColA(float);
@@ -321,21 +392,21 @@ namespace std {
    MakeSetColA(short);
    MakeSetColA(char);
 
- void  SetColA(const signed char * outarr, int outarrsize, int col) { 
+   int SetColA(const signed char * outarr, int outarrsize, int col) { 
     if ($self->GetNbRows() != outarrsize ) {
-      throw std::runtime_error("SetColA::output array does not match column size"); 
+      return 0;
     }
     $self->SetCol(reinterpret_cast<const char*> (outarr), col); 
-    return; 
+    return 1; 
   }
 
-#define MakeSetRowA(type) void \
+#define MakeSetRowA(type) int \
     SetRowA(const type * inarr, int inarrsize, int col) { \
     if ($self->GetNbCols() != inarrsize ) {\
-      throw std::runtime_error("SetRowA::input array does not match row size"); \
+      return 0; \
     }\
     $self->SetRow(inarr, col); \
-    return; \
+    return 1; \
   }
 
 
@@ -348,13 +419,72 @@ namespace std {
    MakeSetRowA(short);
    MakeSetRowA(char);
 
- void  SetRowA(const signed char * outarr, int outarrsize, int col) { 
+  int  SetRowA(const signed char * outarr, int outarrsize, int col) { 
     if ($self->GetNbRows() != outarrsize ) {
-      throw std::runtime_error("SetRowA::output array does not match column size"); 
+      return 0;
     }
     $self->SetRow(reinterpret_cast<const char*> (outarr), col); 
-    return; 
+    return 1; 
   }
+
+
+  PyObject*                                         
+    GetMatrixData() { 
+    int ssrows = $self->GetNbRows();
+    int sscols = $self->GetNbCols();
+    int type = 0;
+    int internal_type = $self->GetType();
+    if (internal_type == eFloat8)
+      type =NPY_DOUBLE;
+    else if (internal_type == eFloat4)
+      type =NPY_FLOAT32;
+    else if (internal_type == eInt8)
+      type =NPY_INT64;
+    else if (internal_type == eUInt8)
+      type =NPY_UINT64;
+    else if (internal_type == eInt4)
+      type =NPY_INT32;
+    else if (internal_type == eUInt4)
+      type =NPY_UINT32;
+    else if (internal_type == eInt2)
+      type =NPY_INT16;
+    else if (internal_type == eUInt2)
+      type =NPY_UINT16;
+
+    npy_intp ss[2];
+    ss[0] = ssrows;
+    ss[1] = sscols;
+    PyArrayObject *pa = reinterpret_cast<PyArrayObject*>(PyArray_SimpleNew(2, ss, type));
+    if (!pa) { 
+      PyErr_SetString(PyExc_RuntimeError, "cannot create umpy array for matrix content\n");
+      return 0;
+    }
+    // or fortran style column continuous which is the format used in SDIF
+    PyArray_ENABLEFLAGS(pa, NPY_ARRAY_F_CONTIGUOUS);
+    PyArray_CLEARFLAGS(pa, NPY_ARRAY_C_CONTIGUOUS);
+    if (ssrows * sscols) {
+      void *pp = PyArray_DATA(pa);
+      memcpy(pp, $self->GetData(), ssrows*sscols*$self->GetElementSize());
+    }
+    return reinterpret_cast<PyObject*>(pa);
+  }
+
+ int  GetRowA(signed char * outarr, int outarrsize, int col) { 
+    if ($self->GetNbRows() != outarrsize ) {
+      return 0; 
+    }
+    $self->GetRow(reinterpret_cast<char*> (outarr), col); 
+    return 1; 
+  }
+
+   MakeGetRowA(double);
+   MakeGetRowA(float);
+   MakeGetRowA(unsigned int);
+   MakeGetRowA(unsigned short);
+   MakeGetRowA(unsigned char);
+   MakeGetRowA(int);
+   MakeGetRowA(short);
+   MakeGetRowA(char);
 
 }
 #endif
