@@ -1,5 +1,5 @@
 2014-05-23  Axel Roebel  <roebel@m2336.local>
-Version 1.4.22 (mostly 
+Version 1.4.22 
 
 	* swig/python/CMakeLists.txt:
 	changed install swig python target name to avoid conflicts
@@ -1374,4 +1374,4 @@ Version 0.21
 	* ChangeLog: Added changelog to repository.
 
 
-$Id: ChangeLog,v 1.92 2014-05-23 11:01:24 roebel Exp $
+$Id: ChangeLog,v 1.93 2014-05-23 11:01:52 roebel Exp $
