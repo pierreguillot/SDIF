@@ -33,9 +33,12 @@
  * 
  * 
  * 
- * $Id: sdif_matrix.hpp,v 1.10 2012-09-02 01:10:27 roebel Exp $ 
+ * $Id: sdif_matrix.hpp,v 1.11 2014-05-23 10:23:46 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.10  2012/09/02 01:10:27  roebel
+ * Fixed confusing argument names.
+ *
  * Revision 1.9  2012/08/28 22:00:44  roebel
  * Renamed function arguments to avoid compiler warnings in swig python interface.
  *
@@ -482,6 +485,22 @@ namespace Easdif {
      */
     std::string GetColName(int i) const;
 
+    /** 
+     * \ingroup membmat
+     * get a void pointer to the start of the memory of the internal matrix
+     * @return void * to internal data
+     */
+    void* GetData() {
+      return mInter->GetData();
+    }
+
+    /** 
+     * \ingroup membmat
+     * @return element size in bytes of internal representation
+     */
+    int GetElementSize()	{
+      return mInter->GetElementSize();
+    }
 
 
     /** 
@@ -515,7 +534,8 @@ namespace Easdif {
      * 
      * @return the value
      */
-    int GetUChar(int i, int j) const {return mInter->GetUChar(i, j);};
+    int GetUChar(int i, int j) const throw (SDIFArrayPosition){
+      return mInter->GetUChar(i, j);};
 
     /**
      * \ingroup valmat 
@@ -525,7 +545,8 @@ namespace Easdif {
      * 
      * @return the value
      */
-    int GetInt(int i, int j) const {return mInter->GetInt(i, j);};
+    int GetInt(int i, int j) const throw (SDIFArrayPosition){
+      return mInter->GetInt(i, j);};
 
 
     /**
@@ -536,7 +557,8 @@ namespace Easdif {
      * 
      * @return the value
      */
-    float GetFloat(int i, int j)const {    return mInter->GetFloat(i, j);}
+    float GetFloat(int i, int j)const throw (SDIFArrayPosition){ 
+      return mInter->GetFloat(i, j);}
 
     /**
      * \ingroup valmat  
@@ -547,7 +569,8 @@ namespace Easdif {
      * 
      * @return the value
      */
-    double GetDouble(int i, int j) const {   return mInter->GetDouble(i, j);}
+    double GetDouble(int i, int j) const throw (SDIFArrayPosition) {
+      return mInter->GetDouble(i, j);}
 
 
     /** 
@@ -560,19 +583,19 @@ namespace Easdif {
      * 
      */
     template<typename Tout>
-    void Get(int i, int j, Tout& value)
+    void Get(int i, int j, Tout& value) const throw (SDIFArrayPosition)
     {
       value = static_cast<Tout>(mInter->GetDouble(i, j));
     }
 
     // specialization for float that does not use cast
-    void Get(int i, int j, float& value)
+    void Get(int i, int j, float& value) const throw (SDIFArrayPosition)
     {
       value = mInter->GetFloat(i, j);
     }
   
     // specialization for int that does not use cast
-    void Get(int i, int j, int& value)
+    void Get(int i, int j, int& value)  const throw (SDIFArrayPosition)
     {
       value = mInter->GetInt(i, j);
     }
@@ -580,8 +603,7 @@ namespace Easdif {
 
 
     // std::string Get() ??? exception when not string matrix?
-    void Get(std::string& value)
-      throw(SDIFMatrixDataError)
+    void Get(std::string& value)  const throw(SDIFMatrixDataError)
     {
 
       if (mType != eText)
@@ -674,26 +696,25 @@ namespace Easdif {
      * 
      */
     template<typename Tin>
-    void Set(int i, int j, const Tin& value)
+    void Set(int i, int j, const Tin& value) throw (SDIFArrayPosition)
     {
       mInter->Set(i, j, static_cast<double>(value) );
     }
   
-    void Set(int i, int j, const float value)
+    void Set(int i, int j, const float value) throw (SDIFArrayPosition)
     {
       mInter->Set(i, j, value);
     }
   
-    void Set(int i, int j, const int value)
+    void Set(int i, int j, const int value) throw (SDIFArrayPosition)
     {
       mInter->Set(i, j, value);
     }
 
-    void Set(int i, int j, const unsigned char value)
+    void Set(int i, int j, const unsigned char value) throw (SDIFArrayPosition)
     {
       mInter->Set(i, j, value);
     }
-
 
 
     /** 
