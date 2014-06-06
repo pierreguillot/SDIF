@@ -32,9 +32,12 @@
  * 
  * 
  * 
- * $Id: sdifentity.hpp,v 1.28 2013-11-19 15:24:31 fcornu-ircam Exp $ 
+ * $Id: sdifentity.hpp,v 1.29 2014-06-06 15:30:54 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.28  2013/11/19 15:24:31  fcornu-ircam
+ * remove EASDIF_API from FRIterator which is fully inline
+ *
  * Revision 1.27  2012/08/28 22:02:39  roebel
  * Renamed function arguments to avoid compiler warnings in swig python interface.
  * Enhanced documentation of ReadNextSelectedFrame()
@@ -1852,11 +1855,13 @@ public:
    * \brief read next frame from file
    *
    * read the next frame of the file
-   * return the number of bytes read
+   * return the number of bytes read. This function will read the next frame and will 
+   * return an unmodified frame if the next frame his not selected
    * 
    * @param frame to fill
    * 
-   * @return number of data bytes read for selected matrices 
+   * @return number of data bytes read for frame header and selected matrices of selected frames
+   *  returns 0 if next frame is not selected. In this case frame will be uninitialized.
    */
   int ReadNextFrame(SDIFFrame& frame);
 
@@ -1867,13 +1872,13 @@ public:
    *
    * read the next selected frame of the file
    * return the number of bytes read, sets eof if there is no next frame available
-   * and throws SDIFEof if called with file already being at eof(). Wil return 0 bytes read only if 
+   * and throws SDIFEof if called with file already being at eof(). Will return 0 bytes read only if 
    * the last frames in the file are not selected such that eof is reached before a selected frame
    * can be read.
    * 
    * @param frame to fill
    * 
-   * @return  number of data bytes read for selected matrices 
+   * @return  number of data bytes read for frame header and selected matrices of selected frames
    *
    */
   int ReadNextSelectedFrame(SDIFFrame& frame);

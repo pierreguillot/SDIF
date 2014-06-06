@@ -32,9 +32,12 @@
  * 
  * 
  * 
- * $Id: sdif_frame.cpp,v 1.4 2008-06-20 17:07:02 roebel Exp $ 
+ * $Id: sdif_frame.cpp,v 1.5 2014-06-06 15:30:54 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.4  2008/06/20 17:07:02  roebel
+ * Changed Print methods to be const.
+ *
  * Revision 1.3  2007/04/30 11:33:17  roebel
  * Frame reading methods return the number of bytes read for all selected matrices.
  * Accordingly the return value can be used to decide whether anything was selected in
@@ -182,23 +185,25 @@ namespace Easdif {
 /* for reading */
 int SDIFFrame::Read(SdifFileT* file, bool &eof)
 {
+    size_t sigBytesRead = 0;
     mFrameBytesRead = 0;
     ClearData();
 
     /* for selection */
-    if (!ReadHeader(file))
+    if (!(mFrameBytesRead = ReadHeader(file)))
     {
       SdifFSkipFrameData (file);
       //to have exception
-      eof = (SdifFGetSignature (file, &mFrameBytesRead) == eEof);
+      eof = (SdifFGetSignature (file, &sigBytesRead) == eEof);
       return 0;
     }
 
     Resize(mNbMatrix);
-    mFrameBytesRead = ReadData(file);
+    mFrameBytesRead += ReadData(file);
 
     /* to have exception */
-    eof = (SdifFGetSignature (file, &mFrameBytesRead) == eEof);
+    
+    eof = (SdifFGetSignature (file, &sigBytesRead) == eEof);
     return mFrameBytesRead;    
 }
 
@@ -220,7 +225,7 @@ int SDIFFrame::Read(SDIFEntity& entity)
     if(entity.IsFrameDir()){
 
       ClearData();
-      if(!ReadHeader(file)) {
+      if(!(mFrameBytesRead = ReadHeader(file))) {
         SdifFSkipFrameData (file);
         //to have exception
       }
@@ -233,11 +238,12 @@ int SDIFFrame::Read(SDIFEntity& entity)
         Resize(mNbMatrix);
         if(!isnew) {
           if(entity.isFrameHLSelected(SdifFCurrID(file),SdifFCurrFrameSignature(file))){
-            mFrameBytesRead = ReadData(entity);
+            size_t tmp  = ReadData(entity);
 
-            if(mFrameBytesRead){
+            if(tmp){
               entity.mLastReadPos = it; 
             }
+            mFrameBytesRead += tmp;
           }
           else {
             SdifFSkipFrameData (file);
