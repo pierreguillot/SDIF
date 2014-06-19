@@ -1,10 +1,13 @@
-// $Id: easdif-python.i,v 1.17 2014-05-23 10:33:15 roebel Exp $ -*-c-*-
+// $Id: easdif-python.i,v 1.18 2014-06-19 20:48:52 roebel Exp $ -*-c-*-
 //
 // easdif-python.i		30.04.2003		Patrice Tisserand
 //
 // Interface file for swig, defining the callable easdif functions
 //
 // $Log: not supported by cvs2svn $
+// Revision 1.17  2014/05/23 10:33:15  roebel
+// Changed so that ReadNext..Frame methods properly throw EOF exception.
+//
 // Revision 1.16  2014/05/21 23:55:21  roebel
 // Fixed FrameType constructor to accept python strings with exactly 4 chars.
 // Added __str__ method to FrameType and MatrixType structs to be able to print them.
@@ -98,6 +101,21 @@
         } catch(const SDIFEof& e) {
                 PyErr_SetString(PyExc_EOFError,e.getmessage().c_str());
                 return 0;
+        } catch(const SDIFException& e) {
+                PyErr_SetString(PyExc_IOError,e.getmessage().c_str());
+                return 0;
+        } catch(const std::exception& e) {
+                PyErr_SetString(PyExc_IOError, e.what());
+                return 0;
+        } catch(...) {
+                SWIG_exception(SWIG_UnknownError,"Unknown exception");
+        }
+}
+
+
+%exception OpenRead {
+        try {
+                $action
         } catch(const SDIFException& e) {
                 PyErr_SetString(PyExc_IOError,e.getmessage().c_str());
                 return 0;
