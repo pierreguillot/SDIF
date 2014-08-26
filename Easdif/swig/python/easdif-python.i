@@ -1,10 +1,13 @@
-// $Id: easdif-python.i,v 1.18 2014-06-19 20:48:52 roebel Exp $ -*-c-*-
+// $Id: easdif-python.i,v 1.19 2014-08-26 14:38:24 roebel Exp $ -*-c-*-
 //
 // easdif-python.i		30.04.2003		Patrice Tisserand
 //
 // Interface file for swig, defining the callable easdif functions
 //
 // $Log: not supported by cvs2svn $
+// Revision 1.18  2014/06/19 20:48:52  roebel
+// Properly handle exception in OpenRead.
+//
 // Revision 1.17  2014/05/23 10:33:15  roebel
 // Changed so that ReadNext..Frame methods properly throw EOF exception.
 //
@@ -77,6 +80,26 @@
 
 // define only the needed basic SDIF stuff from sdif.h
 %include ../easdif-defines.i
+
+%exception OpenRead {
+        try {
+                $action
+        } catch(const SDIFBadHeader& e) {
+                PyErr_SetString(PyExc_EOFError,e.getmessage().c_str());
+                return 0;
+        } catch(const SDIFEof& e) {
+                PyErr_SetString(PyExc_EOFError,e.getmessage().c_str());
+                return 0;
+        } catch(const SDIFException& e) {
+                PyErr_SetString(PyExc_IOError,e.getmessage().c_str());
+                return 0;
+        } catch(const std::exception& e) {
+                PyErr_SetString(PyExc_IOError, e.what());
+                return 0;
+        } catch(...) {
+                SWIG_exception(SWIG_UnknownError,"Unknown exception");
+        }
+}
 
 %exception ReadNextFrame {
         try {
