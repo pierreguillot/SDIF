@@ -1,5 +1,5 @@
 SET(EASDIF_MATLAB_VERSION_MAJ 1)
-SET(EASDIF_MATLAB_VERSION_MIN 1)
+SET(EASDIF_MATLAB_VERSION_MIN 2)
 SET(EASDIF_MATLAB_VERSION_REL 1)
 
 MESSAGE(STATUS "-------------------------------------------------")
@@ -93,6 +93,10 @@ void mexFunction (int nlhs, mxArray *plhs [], int nrhs, const mxArray *prhs []){
       ENDIF(WIN32)
     ENDIF(${CMAKE_BUILD_TYPE} MATCHES "debug")
 
+   IF(CMAKE_MEXOPTS_FILE)
+     SET(MEXFLAGS ${MEXFLAGS} -f ${CMAKE_MEXOPTS_FILE})
+   ENDIF(CMAKE_MEXOPTS_FILE)
+   MESSAGE("MEXFLAGS ${MEXFLAGS}")
     IF(WIN32)
       SET(COMPILER_SELECTOR_VAR "COMPILER")
     ELSE(WIN32)
