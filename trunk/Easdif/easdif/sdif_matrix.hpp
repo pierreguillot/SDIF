@@ -33,9 +33,12 @@
  * 
  * 
  * 
- * $Id: sdif_matrix.hpp,v 1.11 2014-05-23 10:23:46 roebel Exp $ 
+ * $Id: sdif_matrix.hpp,v 1.12 2014-09-24 14:09:19 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.11  2014/05/23 10:23:46  roebel
+ * Added throw specifications.
+ *
  * Revision 1.10  2012/09/02 01:10:27  roebel
  * Fixed confusing argument names.
  *
@@ -611,7 +614,8 @@ namespace Easdif {
                                   "Error in  SDIFMatrix::!!! string matrix access to matrix containing binary data !!!",
                                   0,eUnknown,0,0); 
 
-      for(int ii=0;ii<GetNbRows();++ii)
+      // garcefully handle errors where text is stored as a row and not as a column.
+      for(int ii=0;ii<GetNbRows()*GetNbCols();++ii)
         value.append(1,static_cast<char>(GetInt(ii,0)));
 
     }
