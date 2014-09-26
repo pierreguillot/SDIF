@@ -32,9 +32,13 @@
  * 
  * 
  * 
- * $Id: sdif_frame.cpp,v 1.5 2014-06-06 15:30:54 roebel Exp $ 
+ * $Id: sdif_frame.cpp,v 1.6 2014-09-26 17:46:16 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.5  2014/06/06 15:30:54  roebel
+ * Clarified documentation or Entity::ReadNextFrame, Entity::ReadNextSelectedFrame and fixed implementation such that it works for frames not containing any matrices being located at the end of the SDIF file.
+ * This fixes a bug notably in the python Entity iterator that would not retriev empty frames located at the end of an SDIF file.
+ *
  * Revision 1.4  2008/06/20 17:07:02  roebel
  * Changed Print methods to be const.
  *
@@ -234,7 +238,7 @@ int SDIFFrame::Read(SDIFEntity& entity)
         bool isnew =  entity.AddFramePos(SdifFCurrID(file),SdifFCurrFrameSignature(file),
                                          SdifFCurrTime(file),SdifFCurrNbMatrix(file),
                                          file->StartChunkPos,it);
-        
+
         Resize(mNbMatrix);
         if(!isnew) {
           if(entity.isFrameHLSelected(SdifFCurrID(file),SdifFCurrFrameSignature(file))){
@@ -260,8 +264,8 @@ int SDIFFrame::Read(SDIFEntity& entity)
             it->SetMSignature(i,file->CurrMtrxH->Signature);
           }
 
-          if(ir && entity.isFrameHLSelected(SdifFCurrID(file),
-                                            SdifFCurrFrameSignature(file))){
+          if(entity.isFrameHLSelected(SdifFCurrID(file),
+                                      SdifFCurrFrameSignature(file))){
             Resize(ir);            
             entity.mLastReadPos = it;
           }
@@ -319,7 +323,6 @@ int SDIFFrame::ReadHeader(SdifFileT* file)
         //eof = SdifFGetSignature (file, &bytesread) == eEof;
         return 0;
       }
-    
     mTime    = SdifFCurrTime(file);
     mSig      = SdifFCurrFrameSignature(file);
     mStreamID = SdifFCurrID(file);
