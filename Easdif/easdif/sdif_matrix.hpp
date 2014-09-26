@@ -33,9 +33,12 @@
  * 
  * 
  * 
- * $Id: sdif_matrix.hpp,v 1.13 2014-09-24 15:20:15 roebel Exp $ 
+ * $Id: sdif_matrix.hpp,v 1.14 2014-09-26 13:41:09 roebel Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.13  2014/09/24 15:20:15  roebel
+ * Fixed previous fix that did not use the GetInt function properly for strings stored in rows.
+ *
  * Revision 1.12  2014/09/24 14:09:19  roebel
  * Fixed reading text stored i a column for text matrices.
  *
@@ -618,12 +621,12 @@ namespace Easdif {
                                   0,eUnknown,0,0); 
 
       // garcefully handle errors where text is stored as a row and not as a column.
-      if(GetNbRows() > 1) 
+      if(GetNbCols() == 1) 
         for(int ii=0;ii<GetNbRows();++ii)
-          value.append(1,static_cast<char>(GetInt(0,ii)));
-      else if(GetNbCols() >1)
+          value.append(1,static_cast<char>(GetInt(ii, 0)));
+      else if(GetNbRows()  == 1)
         for(int ii=0;ii<GetNbCols();++ii)
-          value.append(1,static_cast<char>(GetInt(0,ii)));
+          value.append(1,static_cast<char>(GetInt(0, ii)));
     }
 
 
