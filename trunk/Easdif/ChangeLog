@@ -1,3 +1,8 @@
+2014-10-17  Frederic Cornu <cornu@ircam.fr>
+
+	* easdif/sdifentity.hpp:
+	Include <functional> header for std::bind2nd
+
 2014-05-23  Axel Roebel  <roebel@m2336.local>
 Version 1.4.22 
 
@@ -1374,4 +1379,4 @@ Version 0.21
 	* ChangeLog: Added changelog to repository.
 
 
-$Id: ChangeLog,v 1.93 2014-05-23 11:01:52 roebel Exp $
+$Id: ChangeLog,v 1.94 2014-10-17 14:42:28 fcornu-ircam Exp $
