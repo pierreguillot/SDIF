@@ -32,9 +32,13 @@
  * 
  * 
  * 
- * $Id: sdifentity.hpp,v 1.29 2014-06-06 15:30:54 roebel Exp $ 
+ * $Id: sdifentity.hpp,v 1.30 2014-10-17 14:41:47 fcornu-ircam Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.29  2014/06/06 15:30:54  roebel
+ * Clarified documentation or Entity::ReadNextFrame, Entity::ReadNextSelectedFrame and fixed implementation such that it works for frames not containing any matrices being located at the end of the SDIF file.
+ * This fixes a bug notably in the python Entity iterator that would not retriev empty frames located at the end of an SDIF file.
+ *
  * Revision 1.28  2013/11/19 15:24:31  fcornu-ircam
  * remove EASDIF_API from FRIterator which is fully inline
  *
@@ -318,6 +322,7 @@
 #include <list>
 #include <set>
 #include <algorithm>
+#include <functional>
 #include "sdif.h"
 
 #include "easdif_exports.hpp"
