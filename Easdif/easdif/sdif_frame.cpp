@@ -32,9 +32,12 @@
  * 
  * 
  * 
- * $Id: sdif_frame.cpp,v 1.6 2014-09-26 17:46:16 roebel Exp $ 
+ * $Id: sdif_frame.cpp,v 1.7 2014-11-18 13:56:12 fcornu-ircam Exp $ 
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.6  2014/09/26 17:46:16  roebel
+ * fixed reading empty frames if FrameDireectory is active
+ *
  * Revision 1.5  2014/06/06 15:30:54  roebel
  * Clarified documentation or Entity::ReadNextFrame, Entity::ReadNextSelectedFrame and fixed implementation such that it works for frames not containing any matrices being located at the end of the SDIF file.
  * This fixes a bug notably in the python Entity iterator that would not retriev empty frames located at the end of an SDIF file.
@@ -251,6 +254,7 @@ int SDIFFrame::Read(SDIFEntity& entity)
           }
           else {
             SdifFSkipFrameData (file);
+            mFrameBytesRead = 0;
           }
         }
         else{
@@ -269,8 +273,10 @@ int SDIFFrame::Read(SDIFEntity& entity)
             Resize(ir);            
             entity.mLastReadPos = it;
           }
-          else
+          else {
             ClearData();
+            mFrameBytesRead = 0;
+          }
         }
       }
 

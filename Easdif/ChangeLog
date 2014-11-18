@@ -1,3 +1,10 @@
+2014-11-18  Frederic Cornu <cornu@ircam.fr>
+Version 1.4.23
+
+	* easdif/sdif_frame.cpp:
+	Change SDIFFrame::Read(SDIFEntity&) to return 0 when the read frame does
+	not pass the selection defined at the entity level
+
 2014-10-17  Frederic Cornu <cornu@ircam.fr>
 
 	* easdif/sdifentity.hpp:
@@ -1379,4 +1386,4 @@ Version 0.21
 	* ChangeLog: Added changelog to repository.
 
 
-$Id: ChangeLog,v 1.94 2014-10-17 14:42:28 fcornu-ircam Exp $
+$Id: ChangeLog,v 1.95 2014-11-18 13:56:12 fcornu-ircam Exp $
