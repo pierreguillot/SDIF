@@ -1,6 +1,6 @@
 /******************************************************************************
 
-  $Id: host_architecture.h,v 3.4 2013-07-16 11:13:10 diemo Exp $
+  $Id: host_architecture.h,v 3.5 2015-10-14 16:00:38 diemo Exp $
 
   host_architecture.h provides the following conditionals:
   
@@ -11,6 +11,7 @@
   HOST_ARCH_PPC         - Current architecture is PowerPC
   HOST_ARCH_68K         - Current architecture is 680x0
   HOST_ARCH_X86         - Current architecture is Intel PC (386..Pentium)
+  HOST_ARCH_X86_64      - Current architecture is Intel 64bit
   HOST_ARCH_n86         - Current architecture is Intel (3|4)86, Pentium/K5 (586), 
                                                         or Pentium II (686)
   HOST_ARCH_ARMv7	- Current architecture is ARM as in iPhone/iPad
@@ -45,6 +46,9 @@
   Alberto Ricci, 19990315
 
   $Log: not supported by cvs2svn $
+  Revision 3.4  2013/07/16 11:13:10  diemo
+  add detection of iOS and android (untested)
+
   Revision 3.3  2012/01/02 23:49:08  roebel
   Base selection of WIN32 specific implementation on definition of macros  WIN32 OR _WIN32. The latter being standard in
   Visual C++ it is most important to have it.
@@ -151,6 +155,11 @@
 
 #     define HOST_ARCH_686                              1
 #     define HOST_ARCH_X86                              1
+
+#elif defined(x86_64) || defined(__x86_64)
+
+#     define HOST_ARCH_X86                              1
+#     define HOST_ARCH_X86_64                           1
 
 #elif defined(__arm__)
 
