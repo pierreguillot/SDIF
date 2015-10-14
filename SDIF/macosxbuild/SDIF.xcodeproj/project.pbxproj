@@ -459,6 +459,8 @@
 /* Begin PBXProject section */
 		0F5C28A9047E732E006640BC /* Project object */ = {
 			isa = PBXProject;
+			attributes = {
+			};
 			buildConfigurationList = 21AFA3B60907D5740018539F /* Build configuration list for PBXProject "SDIF" */;
 			compatibilityVersion = "Xcode 2.4";
 			developmentRegion = English;
@@ -909,8 +911,10 @@
 		21AFA3B70907D5740018539F /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				CURRENT_PROJECT_VERSION = "$(VERSION_MAJOR).$(VERSION_MINOR).$(VERSION_RELEASE)";
 				FRAMEWORK_VERSION = "$(VERSION_MAJOR).$(VERSION_MINOR)";
+				SDKROOT = macosx10.6;
 				VERSION_MAJOR = 3;
 				VERSION_MINOR = 11;
 				VERSION_RELEASE = 4;
@@ -920,14 +924,11 @@
 		21AFA3B80907D5740018539F /* Deployment */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = (
-					ppc,
-					i386,
-				);
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				CURRENT_PROJECT_VERSION = "$(VERSION_MAJOR).$(VERSION_MINOR).$(VERSION_RELEASE)";
 				FRAMEWORK_VERSION = "$(VERSION_MAJOR).$(VERSION_MINOR)";
-				GCC_VERSION = 4.0;
-				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
+				GCC_OPTIMIZATION_LEVEL = 3;
+				SDKROOT = macosx10.6;
 				VERSION_MAJOR = 3;
 				VERSION_MINOR = 11;
 				VERSION_RELEASE = 4;
@@ -937,8 +938,10 @@
 		21AFA3B90907D5740018539F /* Default */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				CURRENT_PROJECT_VERSION = "$(VERSION_MAJOR).$(VERSION_MINOR).$(VERSION_RELEASE)";
 				FRAMEWORK_VERSION = "$(VERSION_MAJOR).$(VERSION_MINOR)";
+				SDKROOT = macosx10.6;
 				VERSION_MAJOR = 3;
 				VERSION_MINOR = 11;
 				VERSION_RELEASE = 4;
