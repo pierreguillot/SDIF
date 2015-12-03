@@ -19,7 +19,7 @@ IF(PYTHON)
     INCLUDE_DIRECTORIES("${PPP}")
   ENDFOREACH(PP ${PYTHON_INCLUDE_PATH})
 
-  EXECUTE_PROCESS(COMMAND ${PYTHON} -c "import numpy\nif hasattr(numpy,'get_include'):\n ss=numpy.get_include()\nelse: ss=numpy.get_numpy_include()\nprint ss" OUTPUT_VARIABLE out ERROR_VARIABLE err OUTPUT_STRIP_TRAILING_WHITESPACE)
+  EXECUTE_PROCESS(COMMAND ${PYTHON} -c "from __future__ import print_function\nimport numpy\nif hasattr(numpy,'get_include'):\n ss=numpy.get_include()\nelse: ss=numpy.get_numpy_include()\nprint(ss)" OUTPUT_VARIABLE out ERROR_VARIABLE err OUTPUT_STRIP_TRAILING_WHITESPACE)
   STRING(REGEX REPLACE "[ \t]+" ";" NUMPY_INC_HINT ${out})
   MESSAGE("NUMPY_INC_HINT ${NUMPY_INC_HINT}")
   IF (NUMPY_INC_HINT)
@@ -36,7 +36,8 @@ IF(PYTHON)
   ENDIF(APPLE)
 
   EXECUTE_PROCESS(COMMAND ${PYTHON}  --version OUTPUT_VARIABLE out ERROR_VARIABLE err OUTPUT_STRIP_TRAILING_WHITESPACE)
-  STRING(REGEX REPLACE "[a-zA-Z0-9 \t]* \([0-9]+[.][0-9]+\).*"  "\\1" PYTHON_VERSION ${err})
+  STRING(REGEX REPLACE "[a-zA-Z0-9 \t]* \([0-9]+[.][0-9]+\).*"  "\\1" PYTHON_VERSION ${err}${out})
+  STRING(REGEX REPLACE "\([0-9]+\)[.][0-9]+.*"  "\\1" PYTHON_VERSION_MAJOR ${PYTHON_VERSION})
   MESSAGE(STATUS "PYTHON_VERSION ${PYTHON_VERSION}")
   SET(BUILD_WITH_INSTALL_RPATH ON)
   
@@ -48,8 +49,15 @@ IF(PYTHON)
     ADD_DEFINITIONS( "-DSWIG_FILE_WITH_INIT=1"  "-DUSE_NUMPY=1")
   ELSE(NUMPY_INCLUDE)  
     SET(CMAKE_SWIG_FLAGS "-I${CMAKE_CURRENT_BINARY_DIR}" "-I${CMAKE_CURRENT_SOURCE_DIR}")
-  ENDIF(NUMPY_INCLUDE)  
+  ENDIF(NUMPY_INCLUDE)
 
+  MESSAGE("PYTHON Major VERSION ${PYTHON_VERSION_MAJOR}")
+
+  IF(PYTHON_VERSION_MAJOR  EQUAL 3)
+    MESSAGE("ENABLE SWIG Python 3 flag")
+    SET(CMAKE_SWIG_FLAGS ${CMAKE_SWIG_FLAGS} "-py3" )    
+  ENDIF(PYTHON_VERSION_MAJOR EQUAL 3)
+  
   SWIG_ADD_MODULE(eaSDIF python  ${INTERFACE_SRC}     )
   # libraries will should be found on runtime for this to work on mac oswe need to add linker options 
   # for MODULE targets as done above  "-bundle -undefined dynamic_lookup "
