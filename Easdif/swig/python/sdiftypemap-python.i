@@ -1,10 +1,14 @@
-// $Id: sdiftypemap-python.i,v 1.6 2014-05-21 23:55:21 roebel Exp $ -*-c-*-
+// $Id: sdiftypemap-python.i,v 1.7 2015-12-03 18:03:01 roebel Exp $ -*-c-*-
 //
 // sdiftypemap-python.i		30.04.2003		Patrice Tisserand
 //
 // typemaps for SWIG to map SdifSignature to strings and back
 //
 // $Log: not supported by cvs2svn $
+// Revision 1.6  2014/05/21 23:55:21  roebel
+// Fixed FrameType constructor to accept python strings with exactly 4 chars.
+// Added __str__ method to FrameType and MatrixType structs to be able to print them.
+//
 // Revision 1.5  2006/11/26 20:35:41  roebel
 // Unified by means of ../easdif-common-init.i
 //
@@ -35,10 +39,18 @@
     {
 	$1 = SdifStringToSignature(PyString_AsString($input));
     }
+%#if PY_MAJOR_VERSION < 3  
     else if (PyInt_Check($input))
     {
 	$1 = PyInt_AS_LONG($input);
     }
+%#else  
+    else if (PyInt_Check($input))
+    {
+	$1 = PyLong_AS_LONG($input);
+    }
+%#endif
+  
     else  
     {
       PyErr_SetString(PyExc_TypeError, "Signature argument has to be an integer or a 4 char string");
