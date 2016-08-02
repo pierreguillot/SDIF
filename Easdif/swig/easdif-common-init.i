@@ -27,6 +27,9 @@
 // include typemap for std::vector from SWIG library
 %include std_vector.i
 
+// include typemap for std::map from SWIG library
+%include std_map.i
+
 // include typemap for std::list from SWIG library
 %include std_list.i
 
