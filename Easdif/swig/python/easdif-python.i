@@ -1,10 +1,13 @@
-// $Id: easdif-python.i,v 1.19 2014-08-26 14:38:24 roebel Exp $ -*-c-*-
+// $Id: easdif-python.i,v 1.20 2017-03-11 09:15:07 roebel Exp $ -*-c-*-
 //
 // easdif-python.i		30.04.2003		Patrice Tisserand
 //
 // Interface file for swig, defining the callable easdif functions
 //
 // $Log: not supported by cvs2svn $
+// Revision 1.19  2014/08/26 14:38:24  roebel
+// Added special exception specification for OpenRead to be able to catch the SDIFBadHeader exception.
+//
 // Revision 1.18  2014/06/19 20:48:52  roebel
 // Properly handle exception in OpenRead.
 //
@@ -150,9 +153,13 @@
         }
 }
 
+
+
+%define NEXT_INTERFACE_SUPPORT(NEXT_FUN_NAME)
 %{
 #include "easdif/easdif.h"
 
+  
 // proxy class for frame that provides Frame iterator with storage location for iterator position
 struct
 FrameIt  {
@@ -160,14 +167,14 @@ FrameIt  {
   int mIterPos;
   FrameIt(const Easdif::SDIFFrame& in ) : mpOriFrame(&in), mIterPos(0) {}
   ~FrameIt() {}
+
   const Easdif::SDIFMatrix&  
-  next() {
+  NEXT_FUN_NAME() {
     if(mIterPos < static_cast<int>(mpOriFrame->GetNbMatrix()))
       return mpOriFrame->GetMatrix(mIterPos++);
     throw std::runtime_error("StopIteration");
   }
 };
-
 
 %}
 
@@ -192,7 +199,8 @@ namespace std {
 // but attention next method does not provide a reference
 // but a pointer to a new Frame so we cannot modify the entity by means of the 
 // frames in a loop
-%exception Easdif::SDIFEntity::next() {
+
+%exception Easdif::SDIFEntity::NEXT_FUN_NAME() {
   try {
     $action
       }
@@ -202,7 +210,8 @@ namespace std {
   }
  }
 
-%newobject Easdif::SDIFEntity::next;
+%newobject Easdif::SDIFEntity::NEXT_FUN_NAME;
+
 %extend Easdif::SDIFEntity{
   Easdif::SDIFEntity&
   __iter__() {
@@ -213,7 +222,7 @@ namespace std {
 
    // prefer to work with pointers in python
    Easdif::SDIFFrame*
-   next() {
+   NEXT_FUN_NAME() {
      //allocate new frame
      Easdif::SDIFFrame *localFrame = new(Easdif::SDIFFrame);
      try {
@@ -231,7 +240,7 @@ namespace std {
 // but attention next method does not provide a reference
 // but a pointer to a new Matrix.  This avoids problems with the missing reference counting
 // that would arise if teh original frame disappears before the matrix
-%exception Easdif::SDIFFrame::next() {
+%exception Easdif::SDIFFrame::NEXT_FUN_NAME() {
   try {
     $action
       }
@@ -241,7 +250,7 @@ namespace std {
   }
  }
 
-%newobject Easdif::SDIFFrame::next;
+%newobject Easdif::SDIFFrame::NEXT_FUN_NAME;
 %newobject Easdif::SDIFFrame::copy;
 %extend Easdif::SDIFFrame {
   Easdif::SDIFFrame*
@@ -250,11 +259,11 @@ namespace std {
   }
   // prefer to work with pointers in python
   Easdif::SDIFMatrix*
-  next() {
+  NEXT_FUN_NAME() {
     FrameIt * it = reinterpret_cast<FrameIt*>($self);
     Easdif::SDIFMatrix *pMat = new(Easdif::SDIFMatrix);
     try {
-      *pMat = it->next();
+      *pMat = it->NEXT_FUN_NAME();
     }
     catch(...) {
       delete  pMat;
@@ -267,8 +276,16 @@ namespace std {
   copy() {
     return new Easdif::SDIFFrame(*$self);
   }
-
 }
+
+%enddef
+
+#ifdef SWIG_PYTHON_3
+   NEXT_INTERFACE_SUPPORT(__next__)
+#else
+   NEXT_INTERFACE_SUPPORT(next)
+#endif
+
 
 %extend Easdif::FrameType{
     PyObject* __str__() {

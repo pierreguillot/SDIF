@@ -1,3 +1,10 @@
+2017-03-11  Axel Roebel  <roebel@m2336.local>
+Version 1.4.24
+
+	* swig/python/CMakeLists.txt, swig/python/easdif-python.i :
+	Correctly handle differences in iterator interfaces of python 2 and
+	python 3
+
 2014-11-18  Frederic Cornu <cornu@ircam.fr>
 Version 1.4.23
 
@@ -1386,4 +1393,4 @@ Version 0.21
 	* ChangeLog: Added changelog to repository.
 
 
-$Id: ChangeLog,v 1.95 2014-11-18 13:56:12 fcornu-ircam Exp $
+$Id: ChangeLog,v 1.96 2017-03-11 09:15:06 roebel Exp $
