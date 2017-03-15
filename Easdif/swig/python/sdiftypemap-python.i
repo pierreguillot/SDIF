@@ -1,10 +1,13 @@
-// $Id: sdiftypemap-python.i,v 1.7 2015-12-03 18:03:01 roebel Exp $ -*-c-*-
+// $Id: sdiftypemap-python.i,v 1.8 2017-03-15 10:54:34 roebel Exp $ -*-c-*-
 //
 // sdiftypemap-python.i		30.04.2003		Patrice Tisserand
 //
 // typemaps for SWIG to map SdifSignature to strings and back
 //
 // $Log: not supported by cvs2svn $
+// Revision 1.7  2015/12/03 18:03:01  roebel
+// Added support for python 3.
+//
 // Revision 1.6  2014/05/21 23:55:21  roebel
 // Fixed FrameType constructor to accept python strings with exactly 4 chars.
 // Added __str__ method to FrameType and MatrixType structs to be able to print them.
@@ -35,16 +38,35 @@
 //
 %typemap(in) SdifSignature 
 {
+%#if PY_MAJOR_VERSION < 3  
+  fprintf(stderr,"StringCheck %d\n",PyString_Check($input));
+  if(PyString_Check($input))
+    fprintf(stderr,"StringSize %ld\n",PyString_Size($input));
   if (PyString_Check($input) && (PyString_Size($input) == 4))
     {
 	$1 = SdifStringToSignature(PyString_AsString($input));
     }
-%#if PY_MAJOR_VERSION < 3  
-    else if (PyInt_Check($input))
+  else if (PyInt_Check($input))
     {
 	$1 = PyInt_AS_LONG($input);
     }
 %#else  
+  if (PyUnicode_Check($input) )
+    {
+      Py_ssize_t len = 0;
+      char *ascii_string = PyUnicode_AsUTF8AndSize($input, &len);
+
+      if (ascii_string==0) {
+        /* exception is set in conversion function */
+        return NULL;
+      }
+      if(len ==4) 
+	$1 = SdifStringToSignature(ascii_string);
+      else{
+        PyErr_SetString(PyExc_TypeError, "Signature argument has to be an integer or a 4 char ASCII string");
+	return NULL;
+      }
+    }
     else if (PyInt_Check($input))
     {
 	$1 = PyLong_AS_LONG($input);
@@ -53,7 +75,7 @@
   
     else  
     {
-      PyErr_SetString(PyExc_TypeError, "Signature argument has to be an integer or a 4 char string");
+      PyErr_SetString(PyExc_TypeError, "Signature argument has to be an integer or a 4 char ASCII string");
 	return NULL;
     }
 }
