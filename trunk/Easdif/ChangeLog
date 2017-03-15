@@ -1,3 +1,9 @@
+2017-03-15  Axel Roebel  <roebel@m2336.local>
+Version 1.4.25
+
+	* swig/python/sdiftypemap-python.i :
+	Fixed typemap converting strings to SdifSignatures for Python 3.
+
 2017-03-11  Axel Roebel  <roebel@m2336.local>
 Version 1.4.24
 
@@ -1393,4 +1399,4 @@ Version 0.21
 	* ChangeLog: Added changelog to repository.
 
 
-$Id: ChangeLog,v 1.96 2017-03-11 09:15:06 roebel Exp $
+$Id: ChangeLog,v 1.97 2017-03-15 10:54:34 roebel Exp $
