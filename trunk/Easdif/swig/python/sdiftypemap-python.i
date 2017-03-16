@@ -1,10 +1,15 @@
-// $Id: sdiftypemap-python.i,v 1.8 2017-03-15 10:54:34 roebel Exp $ -*-c-*-
+// $Id: sdiftypemap-python.i,v 1.9 2017-03-16 19:46:25 roebel Exp $ -*-c-*-
 //
 // sdiftypemap-python.i		30.04.2003		Patrice Tisserand
 //
 // typemaps for SWIG to map SdifSignature to strings and back
 //
 // $Log: not supported by cvs2svn $
+// Revision 1.8  2017/03/15 10:54:34  roebel
+// Summary: Version 1.4.25 - Python 3 fix
+//
+// Fixed typemap for converting strings into sdif signatures.
+//
 // Revision 1.7  2015/12/03 18:03:01  roebel
 // Added support for python 3.
 //
@@ -39,9 +44,6 @@
 %typemap(in) SdifSignature 
 {
 %#if PY_MAJOR_VERSION < 3  
-  fprintf(stderr,"StringCheck %d\n",PyString_Check($input));
-  if(PyString_Check($input))
-    fprintf(stderr,"StringSize %ld\n",PyString_Size($input));
   if (PyString_Check($input) && (PyString_Size($input) == 4))
     {
 	$1 = SdifStringToSignature(PyString_AsString($input));
