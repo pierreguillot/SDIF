@@ -138,6 +138,22 @@
         }
 }
 
+%exception ReadPrevSelectedFrame {
+        try {
+                $action
+        } catch(const SDIFEof& e) {
+                PyErr_SetString(PyExc_EOFError,e.getmessage().c_str());
+                return 0;
+        } catch(const SDIFException& e) {
+                PyErr_SetString(PyExc_IOError,e.getmessage().c_str());
+                return 0;
+        } catch(const std::exception& e) {
+                PyErr_SetString(PyExc_IOError, e.what());
+                return 0;
+        } catch(...) {
+                SWIG_exception(SWIG_UnknownError,"Unknown exception");
+        }
+}
 
 %exception OpenRead {
         try {
