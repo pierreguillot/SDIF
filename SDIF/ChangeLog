@@ -1,3 +1,9 @@
+2018-02-22  Frederic Cornu <cornu@ircam.fr>
+Version 3.11.6
+
+	* sdif/SdifRWLowLevel.c:
+	Fix parsing from text of matrices of characters that contain whitespace
+
 2013-07-16  diemo  <diemo@m1997.ircam.fr>
 Version 3.11.5
 	
