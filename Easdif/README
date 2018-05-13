@@ -18,13 +18,12 @@ to  facilitate error  handling  by  means of  exceptions.  Due to  the
 complete availability of  SDIF in Easdif it can be  used as a complete
 SDIF replacement library.
 
-Due to time constraints releases  of the Essdif library are rare.  The
-sourceforge cvs, however, is constantly maintained and should give you
+Due to time constraints releases  of the Easdif library are rare.  The
+sourceforge svn, however, is constantly maintained and should give you
 a clean build.  To get the proper source layout from cvs check out the
 cvs module EASDIF_SDIF as below :
 
-cvs -d:pserver:anonymous@sdif.cvs.sourceforge.net:/cvsroot/sdif login  
-cvs -z3 -d:pserver:anonymous@sdif.cvs.sourceforge.net:/cvsroot/sdif co -P EASDIF_SDIF
+svn co svn://svn.code.sf.net/p/sdif/code/trunk/Easdif  EASDIF_SDIF
 
 This  creates a directory  EASDIF_SDIF with  a subdirectory  SDIF. The
 directory ESDIF_SDIF should  be used as source root  directory for the
@@ -87,7 +86,7 @@ The command line for configuration with universal binaries is then
 cmake -GXcode path_to_top_level_easdif_dir -DDOUNIVERSAL:=1
 
 Warning :  With some versions of  Xcode the build button  in the tools
-menu does not  build the selected tartget. Better  ritght click on the
+menu does not  build the selected target. Better  right click on the
 target you want to build and  select build from there.  Note, that you
 should never  use the ALL  target because not  all of the  targets are
 supported in Xcode.
