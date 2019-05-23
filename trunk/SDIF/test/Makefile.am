@@ -104,6 +104,14 @@ TESTS_ENVIRONMENT = SDIFTYPES=$(SDIFTYPES) $(SHELL)
 TESTS = test_conv2  test_Header test_NVT cmd_testcheck
 
 
+#
+# run with valgrind (leak check only reports system level leaks in dylib loading)
+#
+
+grind:
+	SDIFTYPES=$(SDIFTYPES) ./test_conv -p "valgrind --leak-check=no --track-origins=yes --error-limit=no"
+	SDIFTYPES=$(SDIFTYPES) ./test_conv2 -p "valgrind --leak-check=no --track-origins=yes --error-limit=no"
+	SDIFTYPES=$(SDIFTYPES) ./cmd_testcheck -p "valgrind --leak-check=no --track-origins=yes --error-limit=no"
 
 #
 # profiling targets
