@@ -1237,7 +1237,7 @@ SdiffGetStringWeakUntilfromSdifString(SdifStringT *SdifString, char* s,
 /* read ASCII */
 
 /* static const char *formatText	  = "%c";   todo */
-static const char *formatChar     = " '%c'";
+static const char *formatChar     = " '%c'";	/*TODO: this scan format doesn't work for spaces in char matrices!!! */
 static const char *formatFloat4   = "%f";
 static const char *formatFloat8   = "%lf";
 static const char *formatInt1     = "%hhi";
