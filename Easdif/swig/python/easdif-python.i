@@ -309,7 +309,7 @@ namespace std {
       str = " 1FTD ";
       str += SdifSignatureToString($self->mSig);
       str += "\n\t{\n\t ";
-      for(int ii=0; ii< $self->mvMatrixTypes.size(); ++ii) {
+      for(size_t ii=0; ii< $self->mvMatrixTypes.size(); ++ii) {
         str += SdifSignatureToString($self->mvMatrixTypes[ii].GetSignature());
         str += "\t";
         str += $self->mvMatrixNames[ii];
@@ -536,7 +536,7 @@ namespace std {
     // or fortran style column continuous which is the format used in SDIF
     PyArray_ENABLEFLAGS(pa, NPY_ARRAY_F_CONTIGUOUS);
     PyArray_CLEARFLAGS(pa, NPY_ARRAY_C_CONTIGUOUS);
-    if (ssrows * sscols) {
+    if (ssrows && sscols) {
       void *pp = PyArray_DATA(pa);
       memcpy(pp, $self->GetData(), ssrows*sscols*$self->GetElementSize());
     }
