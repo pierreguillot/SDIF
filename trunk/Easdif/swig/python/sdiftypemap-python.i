@@ -56,7 +56,7 @@
   if (PyUnicode_Check($input) )
     {
       Py_ssize_t len = 0;
-      char *ascii_string = PyUnicode_AsUTF8AndSize($input, &len);
+      const char *ascii_string = PyUnicode_AsUTF8AndSize($input, &len);
 
       if (ascii_string==0) {
         /* exception is set in conversion function */
