@@ -4,15 +4,15 @@ import string
 import eaSDIF
 
 file = eaSDIF.Entity()
-print "created new SDIFEntity ", file
+print("created new SDIFEntity ", file)
 
 
 frame = eaSDIF.Frame();
-print "created new SDIFFrame ", frame
+print("created new SDIFFrame ", frame)
 
 #with shadow class: 
 res = file.OpenRead("@CMAKE_CURRENT_SOURCE_DIR@/../../test/mrk.sdif")
-print "open (mode ", eaSDIF.eReadFile , ")...",res
+print("open (mode ", eaSDIF.eReadFile , ")...",res)
 
 set=eaSDIF.SelectionSetI()
 set.insert(eaSDIF.CreateSignature('1','T','R','C'))
@@ -30,7 +30,7 @@ while not file.eof():
     if res:
         fsig = frame.GetSignature();
         # need typemap SdifSignature -> string 
-        if count.has_key(fsig):
+        if fsig in count:
             count[fsig] += 1;
         else:
             count[fsig] = 1;
@@ -52,7 +52,7 @@ while not file.eof():
                 
             valfsig[sig]  = fsig
             valmsig[sig]  = msig;
-            if valcount.has_key(sig):
+            if sig in valcount:
                 valcount[sig] += 1
                 valsum[sig]   += val
                 valssum[sig]  += val * val
@@ -61,11 +61,11 @@ while not file.eof():
                 valsum[sig]   = val
                 valssum[sig]  = val * val
                 
-            print "frame " + fsig + " matrix " + msig + "(" + str(nrow) + ", " + str(ncol) + "), val(0,0) = " + str(val);
+            print("frame " + fsig + " matrix " + msig + "(" + str(nrow) + ", " + str(ncol) + "), val(0,0) = " + str(val))
         else :
-            print "matrix skipped"
+            print("matrix skipped")
 
-print "\ntypes defined in file:\n";
+print("\ntypes defined in file:\n")
 file.PrintTypes();
 
 # close file
@@ -77,13 +77,13 @@ omt = eaSDIF.Matrix();	# create matrix with same type
 stream=0
 bytes = 0
 out.OpenWrite("mean.sdif")
-print "writing file 'mean.sdif'...\n";
+print("writing file 'mean.sdif'...\n")
 
 
 for sig in valcount.keys():
      mu    = valsum[sig] / valcount[sig];
      sigma = math.sqrt(valssum[sig] / valcount[sig] - mu * mu)
-     print "found %d %s matrices, mean = %g, sigma = %g\n" % (valcount[sig] , sig, mu, sigma)
+     print("found %d %s matrices, mean = %g, sigma = %g\n" % (valcount[sig] , sig, mu, sigma))
 
      # write one matrix with mean at time sigma per type found
      omt.Init(valmsig[sig], 1, 1, eaSDIF.eFloat4)
@@ -95,4 +95,4 @@ for sig in valcount.keys():
      ofr.ClearData()
 
 out.Close();
-print "...wrote ", bytes," bytes\n";
+print("...wrote ", bytes," bytes\n")
