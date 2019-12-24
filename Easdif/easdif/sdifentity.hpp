@@ -658,6 +658,21 @@ namespace Easdif {
       }
 #endif
     };
+
+    // depending on the standard, std::bind and std::bind2nd may be defined, but
+    // maybe not the other
+    // since there is no distributed configuration file, avoid both and lambdas
+    struct bound_equal_mat {
+      equal_mat mEqualMat;
+      const MatrixType& mSecond;
+
+      bound_equal_mat(const MatrixType& second) : mSecond(second) {}
+
+      bool operator()(const MatrixType& mat) const {
+        return mEqualMat(mat, mSecond);
+      }
+    };
+
     /**
      * \ingroup description
      * \brief add matrix type to frame type
@@ -673,7 +688,7 @@ namespace Easdif {
       if(!matrix_name || !*matrix_name) 
         throw  TypeError(eError,"Error in FrameType::AddMatrixType:: empty column",0,eUnknown,0,0);
 
-      if(std::find_if(mvMatrixTypes.begin(),mvMatrixTypes.end(),std::bind2nd(equal_mat(),mat)) != mvMatrixTypes.end())
+      if(std::find_if(mvMatrixTypes.begin(),mvMatrixTypes.end(),bound_equal_mat(mat)) != mvMatrixTypes.end())
         throw  TypeError(eError,"Error in FrameType::AddMatrixType:: matrix type exists.",0,eUnknown,0,0);
 
       const char *ic = matrix_name;
