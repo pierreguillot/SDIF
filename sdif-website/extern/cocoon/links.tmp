@@ -1,8 +1,0 @@
-%SdifFileModeET%<a href="file:///u/formes/schwarz/src/SDIF/doc/extern/cocoon/./SDIF.html\#typedef_enum_SdifFileModeE_SdifFileModeET_$">SdifFileModeET</a>%
-%SdifMatrixCallbackT%<a href="file:///u/formes/schwarz/src/SDIF/doc/extern/cocoon/./SDIF.html\#typedef_int_(*SdifMatrixCallbackT)_(SdifFileT_*file,_int_nummatrix,_void_*userdata)$">SdifMatrixCallbackT</a>%
-%SdifSelectElementIntT;%<a href="file:///u/formes/schwarz/src/SDIF/doc/extern/cocoon/./SDIF.html\#typedef_struct_SdifSelectElementIntT$$">SdifSelectElementIntT;</a>%
-%SdifSelectValueT%<a href="file:///u/formes/schwarz/src/SDIF/doc/extern/cocoon/./SDIF.html\#typedef_union_SdifSelectValueS_SdifSelectValueT$">SdifSelectValueT</a>%
-%SdifSelectElementP%<a href="file:///u/formes/schwarz/src/SDIF/doc/extern/cocoon/./SDIF.html\#typedef_struct_SdifSelectElementS_SdifSelectElementT,_*SdifSelectElementP$">SdifSelectElementP</a>%
-%SdifSelectionT%<a href="file:///u/formes/schwarz/src/SDIF/doc/extern/cocoon/./SDIF.html\#typedef_struct_SdifSelectionT$">SdifSelectionT</a>%
-%SdifStreamIDT%<a href="file:///u/formes/schwarz/src/SDIF/doc/extern/cocoon/./SDIF.html\#typedef_struct_SdifStreamIDS_SdifStreamIDT$">SdifStreamIDT</a>%
-%SdifStreamIDTableT%<a href="file:///u/formes/schwarz/src/SDIF/doc/extern/cocoon/./SDIF.html\#typedef_struct_SdifStreamIDTableS_SdifStreamIDTableT$">SdifStreamIDTableT</a>%
