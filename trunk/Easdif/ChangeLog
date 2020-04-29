@@ -1,7 +1,8 @@
 2019-12-24  Frederic Cornu <cornu@ircam.fr>
+Version 1.4.28
 
 	* easdif/sdifentity.hpp [r1845]:
-	Use custome functor instead of std::bind2nd, as it was removed in c++17
+	Use custom functor instead of std::bind2nd, as it was removed in c++17
 	and dropped in MSVC 2019, whereas the replacements (std::bind and
 	lambdas) are not supported by all compilers, and there is no
 	configurated header in Easdif for compiler support of features
