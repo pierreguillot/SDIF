@@ -379,7 +379,6 @@ SdifFOpen(const char* Name, SdifFileModeET Mode)
 {
   SdifFileT* SdifF;
 
-
   assert (gSdifInitialised  &&  "SDIF library not initialised!");
 
   SdifF = SdifMalloc(SdifFileT);
